@@ -245,6 +245,18 @@ public class EqRequestForChangeSubmitResultChange {
         return false;
     }
 
+    public static boolean eqAddFloorNo( List<AppGrpPremisesDto> appGrpPremisesDtoList , List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos=new ArrayList<>(10);
+        appGrpPremisesDtoList.forEach((v)->{
+            appPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
+        });
+        List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos=new ArrayList<>(10);
+        oldAppGrpPremisesDtoList.forEach((v)->{
+            oldAppPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
+        });
+        return eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
+
+    }
     public static boolean eqAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
         List<AppSvcDisciplineAllocationDto> list = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList);
         List<AppSvcDisciplineAllocationDto> list1 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(oldAppSvcDisciplineAllocationDtoList);
@@ -357,30 +369,134 @@ public class EqRequestForChangeSubmitResultChange {
                 }
             }
         }
-
+        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        if(oldAppSvcVehicleDtoList!=null){
+            if(oldAppSvcVehicleDtoList.size()!=appSvcVehicleDtoList.size()){
+                return true;
+            }else if(appSvcVehicleDtoList.size() == oldAppSvcVehicleDtoList .size()){
+                int i=0;
+                for (AppSvcVehicleDto v : appSvcVehicleDtoList) {
+                    for (AppSvcVehicleDto v1 : oldAppSvcVehicleDtoList) {
+                        if(v.getVehicleName().equals(v1.getVehicleName())){
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                if(i != oldAppSvcVehicleDtoList.size()){
+                    return true;
+                }
+            }
+        }
+        AppSvcChargesPageDto appSvcChargesPageDto = appSvcRelatedInfoDto.getAppSvcChargesPageDto();
+        AppSvcChargesPageDto oldAppSvcChargesPageDto = oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto();
+        boolean compareAppSvcChargesPage = compareAppSvcChargesPage(appSvcChargesPageDto, oldAppSvcChargesPageDto);
+        if(compareAppSvcChargesPage){
+           return compareAppSvcChargesPage;
+        }
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        if(oldAppSvcClinicalDirectorDtoList!=null){
+            if(appSvcClinicalDirectorDtoList.size()!=oldAppSvcClinicalDirectorDtoList.size()){
+                return true;
+            }else if(appSvcClinicalDirectorDtoList.size()==oldAppSvcClinicalDirectorDtoList.size()){
+                int i=0;
+                for (AppSvcClinicalDirectorDto v : appSvcClinicalDirectorDtoList) {
+                    for (AppSvcClinicalDirectorDto v1 : oldAppSvcClinicalDirectorDtoList) {
+                        if(v.getIdNo().equals(v1.getIdNo())){
+                            i++;
+                        }
+                    }
+                }
+                if(i!=oldAppSvcClinicalDirectorDtoList.size()){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
+    private static boolean compareAppSvcChargesPage(AppSvcChargesPageDto appSvcChargesPageDto ,AppSvcChargesPageDto oldAppSvcChargesPageDto){
+        if(oldAppSvcChargesPageDto!=null){
+            List<AppSvcChargesDto> oldGeneralChargesDtos = oldAppSvcChargesPageDto.getGeneralChargesDtos();
+            List<AppSvcChargesDto> oldOtherChargesDtos = oldAppSvcChargesPageDto.getOtherChargesDtos();
+            List<AppSvcChargesDto> generalChargesDtos = appSvcChargesPageDto.getGeneralChargesDtos();
+            List<AppSvcChargesDto> otherChargesDtos = appSvcChargesPageDto.getOtherChargesDtos();
+            if(oldGeneralChargesDtos ==null && generalChargesDtos!=null){
+                return true;
+            }else if(oldGeneralChargesDtos!=null && generalChargesDtos==null){
+                return true;
+            }else if(oldGeneralChargesDtos!=null && generalChargesDtos!= null){
+                if(oldGeneralChargesDtos.size()!=generalChargesDtos.size()){
+                    return true;
+                }else if(oldGeneralChargesDtos.size()== generalChargesDtos.size()){
+                    int i=0;
+                    for (AppSvcChargesDto v : generalChargesDtos) {
+                        for (AppSvcChargesDto v1 : oldGeneralChargesDtos) {
+                            if(v.getMaxAmount().equals(v1.getMaxAmount())&&v.getMinAmount().equals(v1.getMinAmount())){
+                                i++;
+                            }
+                        }
+                    }
+                    if(i!=oldGeneralChargesDtos.size()){
+                        return true;
+                    }
+                }
+            }
+            if(oldOtherChargesDtos==null&&otherChargesDtos!=null){
+                return true;
+            }else if(oldOtherChargesDtos!=null&&otherChargesDtos==null){
+                return true;
+            }else if(oldOtherChargesDtos!=null && otherChargesDtos!=null){
+                if(oldOtherChargesDtos.size()!=otherChargesDtos.size()){
+                    return true;
+                }else if(oldOtherChargesDtos.size()== otherChargesDtos.size()){
+                    int i=0;
+                    for (AppSvcChargesDto v : otherChargesDtos) {
+                        for (AppSvcChargesDto v1 : oldOtherChargesDtos) {
+                            if(v.getMinAmount().equals(v1.getMinAmount())&&v.getMaxAmount().equals(v1.getMaxAmount())){
+                                i++;
+                            }
+                        }
+                    }
+                    if(i!=oldOtherChargesDtos.size()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
 
         String newHciName = "";
         String oldHciName = "";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getConveyanceHciName();
+            oldVehicleNo=premisesListQueryDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             oldHciName = premisesListQueryDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            oldHciName=premisesListQueryDto.getEasMtsHciName();
+
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             newHciName = appGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getEasMtsHciName();
         }
 
-        if (!newHciName.equals(oldHciName)) {
+        if (!newHciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)) {
             return false;
         }
 

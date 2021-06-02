@@ -796,9 +796,9 @@ public class WithOutRenewalDelegator {
                                 appGrpPremisesDtoList.get(i).setHciNameChanged(0);
                             }
                         }
-                        List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                        if (attribute != null) {
-                            for (LicenceDto licenceDto : attribute) {
+                        List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                        if (licenceDtos != null) {
+                            for (LicenceDto licenceDto : licenceDtos) {
                                 AppEditSelectDto rfcAppEditSelectDto = new AppEditSelectDto();
                                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
                                 appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

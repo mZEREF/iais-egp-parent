@@ -596,7 +596,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appDeclarationMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         return appDeclarationMessageDto;
     }
-
+    @Deprecated
     @Override
     public List<AppDeclarationDocDto> getAppDeclarationDocDto(HttpServletRequest request) {
         Map<String, File> fileMap = (Map<String, File>)request.getSession().getAttribute("seesion_files_map_ajax_feselectedDeclFile");
@@ -1777,7 +1777,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         requestForChangeService.changeDocToNewVersion(appSubmissionDto);
-        appSubmissionDto.setAmount(amount);
+        appSubmissionDto.setAmount(appSubmissionDto.getAmount()==null?amount:appSubmissionDto.getAmount());
         appSubmissionDto.setAuditTrailDto(internet);
         appSubmissionDto.setPreInspection(true);
         appSubmissionDto.setRequirement(true);
@@ -2514,7 +2514,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
+        HashMap<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
