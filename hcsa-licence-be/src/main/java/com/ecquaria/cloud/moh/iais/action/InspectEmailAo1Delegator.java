@@ -194,7 +194,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                 }
             }
         }
-        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,appViewDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,COM_DTO,commonDto);

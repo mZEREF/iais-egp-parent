@@ -195,7 +195,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         //
         //comparative data for sef and check list nc.
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
-        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,appViewDto);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);

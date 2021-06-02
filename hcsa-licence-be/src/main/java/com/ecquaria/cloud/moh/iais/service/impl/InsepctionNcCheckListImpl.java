@@ -743,7 +743,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(List<InspectionFillCheckListDto> fillcheckDtoList, AppPremPreInspectionNcDto ncDto,AdCheckListShowDto showDto) {
+    private List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(List<InspectionFillCheckListDto> fillcheckDtoList, AppPremPreInspectionNcDto ncDto,AdCheckListShowDto showDto) {
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(fillcheckDtoList)){
             for(InspectionFillCheckListDto dto:fillcheckDtoList){
@@ -777,7 +777,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return ncItemDtoList;
     }
 
-    public void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList){
+    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList){
         if("No".equals(temp.getChkanswer())){
             AppPremisesPreInspectionNcItemDto ncItemDto = new AppPremisesPreInspectionNcItemDto();
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -796,7 +796,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(String appPremCorrId) {
+    private AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(String appPremCorrId) {
         AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         if(ncDto!=null){
             ncDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);

@@ -257,16 +257,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         String applicationType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
         applicationViewDto.setApplicationType(applicationType);
-        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
-        applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
 //        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
 //        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
-
-
+        applicationViewDto.setSvcCode(hcsaServiceDto.getSvcCode());
         List<String> actionByList= IaisCommonUtils.genNewArrayList();
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
         ) {
