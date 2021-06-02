@@ -1934,6 +1934,8 @@ public class NewApplicationHelper {
             premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getConveyancePostalCode(),appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getOffSitePostalCode(),appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getEasMtsPostalCode(),appGrpPremisesDto.getEasMtsBlockNo(),appGrpPremisesDto.getEasMtsFloorNo(),appGrpPremisesDto.getEasMtsUnitNo());
         }
         return premKey;
     }
@@ -1944,26 +1946,16 @@ public class NewApplicationHelper {
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
             premHci = appGrpPremisesDto.getHciName()+ premKey;
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-            premHci = appGrpPremisesDto.getConveyanceVehicleNo() + premKey;
+            premHci = appGrpPremisesDto.getConveyanceHciName() + appGrpPremisesDto.getConveyanceVehicleNo() + premKey;
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-            premHci = premKey;
-
+            premHci = appGrpPremisesDto.getOffSiteHciName() + premKey;
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            premHci = appGrpPremisesDto.getEasMtsHciName() + premKey;
         }
         return premHci;
 
     }
 
-    public static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto,List<String> premisesHci){
-        String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getHciName()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getVehicleNo()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesKey);
-        }
-        return premisesHci;
-    }
 
     public static boolean checkIsRfi(HttpServletRequest request){
         Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
@@ -2109,9 +2101,11 @@ public class NewApplicationHelper {
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
             premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            premisesHci = item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName()+ item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
-            premisesHci = IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         }
         return premisesHci;
     }
@@ -2296,6 +2290,9 @@ public class NewApplicationHelper {
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
                 premisesHciPre = appGrpPremisesDto.getOffSiteHciName() + appGrpPremisesDto.getOffSitePostalCode() + appGrpPremisesDto.getOffSiteBlockNo();
                 premisesHciList.add(premisesHciPre + appGrpPremisesDto.getOffSiteFloorNo() + appGrpPremisesDto.getOffSiteUnitNo());
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+                premisesHciPre = appGrpPremisesDto.getEasMtsHciName() + appGrpPremisesDto.getEasMtsPostalCode() + appGrpPremisesDto.getEasMtsBlockNo();
+                premisesHciList.add(premisesHciPre + appGrpPremisesDto.getEasMtsFloorNo() + appGrpPremisesDto.getEasMtsUnitNo());
             }
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
             if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
@@ -2317,6 +2314,8 @@ public class NewApplicationHelper {
                 premisesHciPre = premisesDto.getHciName() +premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName() +premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
             List<PremisesOperationalUnitDto> operationalUnitDtos = premisesDto.getPremisesOperationalUnitDtos();

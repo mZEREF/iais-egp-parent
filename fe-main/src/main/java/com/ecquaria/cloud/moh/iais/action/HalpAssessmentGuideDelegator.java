@@ -2350,9 +2350,11 @@ public class HalpAssessmentGuideDelegator {
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
             premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            premisesHci = item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName() + item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
-            premisesHci = IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         }
         return premisesHci;
     }
@@ -2491,6 +2493,8 @@ public class HalpAssessmentGuideDelegator {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());

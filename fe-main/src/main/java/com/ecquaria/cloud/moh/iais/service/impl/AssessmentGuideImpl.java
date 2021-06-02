@@ -195,17 +195,6 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
         return canCreateEasOrMts;
     }
 
-    private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
-        String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getHciName()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getVehicleNo()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesKey);
-        }
-        return premisesHci;
-    }
 
     private static List<String> genPremisesHciList(PremisesDto premisesDto){
         List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
@@ -216,6 +205,8 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());
