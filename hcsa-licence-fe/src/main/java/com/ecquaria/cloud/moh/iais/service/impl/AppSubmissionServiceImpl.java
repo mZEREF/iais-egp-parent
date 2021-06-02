@@ -2241,7 +2241,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
+        HashMap<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
