@@ -401,8 +401,8 @@ public class AppealServiceImpl implements AppealService {
                 }
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
                 List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
-                Map<String,File> map=new HashMap<>();
-                Map<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
+                HashMap<String,File> map = IaisCommonUtils.genNewHashMap();
+                HashMap<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
                 int indexMax = -1;
                 if(appPremisesSpecialDocDtos!=null&&!appPremisesSpecialDocDtos.isEmpty()){
                     for(int i=0;i<appPremisesSpecialDocDtos.size();i++){
@@ -1560,8 +1560,8 @@ public class AppealServiceImpl implements AppealService {
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         List<AppliSpecialDocDto> appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
         List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
-        Map<String,File> map=new HashMap<>();
-        Map<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
+        HashMap<String,File> map = IaisCommonUtils.genNewHashMap();
+        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
         if (appliSpecialDocDto != null) {
             int indexMax = -1;
             for(int i=0;i<appliSpecialDocDto.size();i++){

@@ -219,8 +219,8 @@ public class LicenceViewServiceDelegator {
 //                        withdrawnDto.setAppPremisesSpecialDocDto();
                         List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-                        Map<String,File> map= IaisCommonUtils.genNewHashMap();
-                        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+                        HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
+                        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
                                 if(appealSpecialDocDto!=null&&!appealSpecialDocDto.isEmpty()){
                                     for(int i=0;i<appealSpecialDocDto.size();i++){
                                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
