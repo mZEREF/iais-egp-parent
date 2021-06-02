@@ -206,7 +206,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 }
             }
         }
-        setSpecServiceCheckListData(request,serListDto,adchklDto,beforeFinishList,orgUserDtoUsers);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,beforeFinishList,orgUserDtoUsers,appViewDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
