@@ -2213,7 +2213,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     //for preview get one svc's DisciplineAllocation
     @Override
-    public Map<String, List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException {
+    public HashMap<String, List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("get DisciplineAllocationDtoList start..."));
         if(appSubmissionDto == null || StringUtil.isEmpty(svcId)){
             return null;
