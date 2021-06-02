@@ -97,7 +97,7 @@
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide"><em class="fa fa-angle-left"></em> Back</a></div>
+                                                <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/IaisSubmissionData/1/prepareData"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit</button>
                                             </div>
