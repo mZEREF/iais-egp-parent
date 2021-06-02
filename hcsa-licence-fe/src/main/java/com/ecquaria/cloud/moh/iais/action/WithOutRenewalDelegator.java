@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -50,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -86,15 +84,6 @@ import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonAbs
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -102,7 +91,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -533,6 +529,7 @@ public class WithOutRenewalDelegator {
         if(appSubmissionDtos != null && appSubmissionDtos.size() > 0){
             appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
         }
+        String err24 = MessageUtil.getMessageDesc("NEW_ERR0024");
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
@@ -566,7 +563,7 @@ public class WithOutRenewalDelegator {
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
             } else {
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                errorMap.put("pay",err24);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 //jump page to payment
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
@@ -577,7 +574,7 @@ public class WithOutRenewalDelegator {
             String switch_value = ParamUtil.getString(bpc.request, "switch_value");
             if(switch_value==null||PAYMENT.equals(switch_value)){
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
+                errorMap.put("pay",err24);
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             }
@@ -1295,7 +1292,7 @@ public class WithOutRenewalDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"needShowErr",AppConsts.TRUE);
             ParamUtil.setRequestAttr(bpc.request, "svcSecMaps", errMap);
-            log.info("-----svcSecMaps------"+JsonUtil.parseToJson(allErrMap));
+            log.info("-----svcSecMaps------ {}", JsonUtil.parseToJson(allErrMap));
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
             return;
 
