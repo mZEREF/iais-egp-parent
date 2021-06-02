@@ -797,16 +797,6 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             if(!IaisCommonUtils.isEmpty(dashAppDetailsQueryDtos)) {
                 for(DashAppDetailsQueryDto dashAppDetailsQueryDto : dashAppDetailsQueryDtos) {
                     if(dashAppDetailsQueryDto != null) {
-                        //set officer's name
-                        String userId = dashAppDetailsQueryDto.getUserId();
-                        if(StringUtil.isEmpty(userId)) {
-                            dashAppDetailsQueryDto.setAppOwner("Pending Assignment");
-                        } else {
-                            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(userId).getEntity();
-                            if(orgUserDto != null) {
-                                dashAppDetailsQueryDto.setAppOwner(orgUserDto.getDisplayName());
-                            }
-                        }
                         //set app appType
                         String appType = dashAppDetailsQueryDto.getAppType();
                         dashAppDetailsQueryDto.setAppTypeStrShow(MasterCodeUtil.getCodeDesc(appType));
@@ -826,11 +816,25 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                             color = getKpiColorByTask(taskDto);
                         }
                         dashAppDetailsQueryDto.setKpiColor(color);
+                        //set officer's name
+                        List<String> appOwnerList = IaisCommonUtils.genNewArrayList();
+                        if(IaisCommonUtils.isEmpty(taskDtos)) {
+                            appOwnerList.add("Pending Assignment");
+                        } else {
+                            for(TaskDto taskDto : taskDtos) {
+                                if(taskDto != null && !StringUtil.isEmpty(taskDto.getUserId())) {
+                                    OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
+                                    if(orgUserDto != null) {
+                                        appOwnerList.add(orgUserDto.getDisplayName());
+                                    }
+                                }
+                            }
+                        }
+                        dashAppDetailsQueryDto.setAppOwnerList(appOwnerList);
                     }
                 }
             }
         }
-
         return searchResult;
     }
 
