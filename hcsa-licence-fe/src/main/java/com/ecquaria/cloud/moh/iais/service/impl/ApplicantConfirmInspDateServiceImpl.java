@@ -231,7 +231,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             Date lastEndDate = getLastEndDate(apptUserCalendarDto);
             if(endDate == null){
                 endDate = lastEndDate;
-            } else {
+            } else if (lastEndDate != null) {
                 if(lastEndDate.after(endDate)){
                     endDate = lastEndDate;
                 }
@@ -266,7 +266,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             Date earliestStartDate = getEarliestStartDate(apptUserCalendarDto);
             if(inspStartDate == null){
                 inspStartDate = earliestStartDate;
-            } else {
+            } else if (earliestStartDate != null) {
                 if(earliestStartDate.before(inspStartDate)){
                     inspStartDate = earliestStartDate;
                 }
