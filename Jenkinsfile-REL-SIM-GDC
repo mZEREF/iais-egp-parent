@@ -909,7 +909,6 @@ def runAutomatedTests(){
                     "-e TZ=Asia/Singapore",
                     "-u root",
                     "--add-host=egp.sit.inter.iais.com:192.168.1.229",
-                    "--add-host=nas.sit.inter.iais.com:192.168.1.229",
                     "--add-host=egp.sit.intra.iais.com:192.168.0.222"
                 ]
 
@@ -928,7 +927,7 @@ def runAutomatedTests(){
                                 -runMode=console \
                                 -projectPath="${CHECKOUT_DIRECTORY}/iais-qa/moh_iais.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/Automation Test Suite - CICD" \
+                                -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
                                 -executionProfile="SG_SIT" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
