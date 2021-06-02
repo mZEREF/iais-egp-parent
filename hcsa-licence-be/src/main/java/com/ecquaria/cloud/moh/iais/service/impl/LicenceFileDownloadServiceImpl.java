@@ -872,7 +872,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) throws Exception {
+    private TaskHistoryDto getRoutingTaskForRequestForInformation(List<ApplicationDto> applicationDtos,AuditTrailDto auditTrailDto) {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskForRequestForInformation start ...."));
         TaskHistoryDto result = new TaskHistoryDto();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
