@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -9,16 +10,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,6 +58,12 @@ public class CreateDoInspTaskBatchJob {
     @Autowired
     private ApplicationService applicationService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private OrganizationClient organizationClient;
+
     /**
      * StartStep: mohCreateInspectionTaskStart
      *
@@ -77,10 +87,15 @@ public class CreateDoInspTaskBatchJob {
         List<ApplicationDto> applicationDtoList = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION).getEntity();
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
             for(ApplicationDto applicationDto : applicationDtoList){
-                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
-                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                if(appPremisesRecommendationDto != null) {
-                    appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                try {
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                    if(appPremisesRecommendationDto != null) {
+                        appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    continue;
                 }
             }
         }
@@ -89,23 +104,45 @@ public class CreateDoInspTaskBatchJob {
         }
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
-            if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
-                Date today = new Date();
-                String inspecDateStr = Formatter.formatDateTime(aRecoDto.getRecomInDate(), Formatter.DATE);
-                String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
-                if(todayStr.equals(inspecDateStr) || today.after(aRecoDto.getRecomInDate())) {
-                    ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
-                    AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
-                    if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
-                        log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
-                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, intranet);
-                        applicationDto1.setAuditTrailDto(intranet);
-                        applicationService.updateFEApplicaiton(applicationDto1);
-                        updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
+            try {
+                if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                    Date today = new Date();
+                    String inspecDateStr = Formatter.formatDateTime(aRecoDto.getRecomInDate(), Formatter.DATE);
+                    String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
+                    if(todayStr.equals(inspecDateStr) || today.after(aRecoDto.getRecomInDate())) {
+                        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
+                        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
+                        if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
+                            log.info(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, intranet);
+                            applicationService.updateFEApplicaiton(applicationDto1);
+                            updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
+                            //update Tasks' assign date
+                            List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(aRecoDto.getAppPremCorreId()).getEntity();
+                            updateTaskAssignDate(taskDtos);
+                        }
                     }
+                }
+            } catch (Exception e) {
+                JobLogger.log(e);
+                log.error(e.getMessage(), e);
+                continue;
+            }
+        }
+    }
+
+
+    private void updateTaskAssignDate(List<TaskDto> taskDtos) {
+        log.info(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date"));
+        if(!IaisCommonUtils.isEmpty(taskDtos)) {
+            for(TaskDto taskDto : taskDtos) {
+                if(taskDto != null) {
+                    taskDto.setDateAssigned(new Date());
+                    taskService.updateTask(taskDto);
                 }
             }
         }
+        log.info(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date End!!!!!"));
     }
 
     private void updateInspectionStatus(String appPremCorreId, String status, AuditTrailDto intranet) {
