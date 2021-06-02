@@ -50,6 +50,7 @@ public class FeUserManagement {
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         getSearchParam(bpc.request,true);
+        ParamUtil.setSessionAttr(bpc.request,"uenNo",null);
     }
 
     public void prepare(BaseProcessClass bpc){

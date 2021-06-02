@@ -11,6 +11,21 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-blank"/>
+<style>
+    .form-check input.form-check-input:checked + .form-check-label span.check-circle:before,
+    .form-check input.form-check-input:active + .form-check-label span.check-circle:before {
+        color: #147aab !important;
+        background-color: #FFF;
+        content: "\f111";
+        font-family: fontawesome;
+        position: absolute;
+        font-size: 12px;
+        top: 38%;
+        left: 48%;
+    }
+    @page { size: landscape; }
+</style>
+
 <div class="main-content">
     <div class="container">
         <div class="row">
@@ -126,7 +141,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="patYes" hidden>
+                                                <%--<div class="form-group" id="patYes" hidden>
                                                     <label class="col-xs-12 col-md-6 control-label">Who will
                                                         take over your patients' case records?</label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
@@ -230,6 +245,18 @@
                                                             <label class="form-check-label" for="patNoConfirm"><span
                                                                     class="check-square"></span><iais:message key="CESS_DEC001"/></label>
                                                         </div>
+                                                    </div>
+                                                </div>--%>
+                                                <div class="form-group" id="transferDetail" hidden>
+                                                    <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <textarea name="transferDetail"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="transferredWhere" hidden>
+                                                    <label class="col-xs-12 col-md-6">Please state where the patient's  records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
+                                                    <div class="col-xs-6 col-sm-4 col-md-3">
+                                                        <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                     </div>
                                                 </div>
                                                 <c:if test="${isGrpLic}">
@@ -350,7 +377,7 @@
         }
     }
 
-    function changePatientCessFe() {
+ /*   function changePatientCessFe() {
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
@@ -377,50 +404,52 @@
             $("#patOthersEmailAddress").hide();
 
         }
-    }
+    }*/
 
     function changePatSelectCessFe() {
-        changePatientCessFe();
+       // changePatientCessFe();
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
-            $("#patNoConfirmID").hide();
+            $("#transferDetail").hide();
+            $("#transferredWhere").show();
         } else if ($('#radioNo').is(':checked')) {
-            $("#patNo").show();
-            $("#patYes").hide();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patNoConfirmID").show();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
+            $("#transferDetail").show();
+            $("#transferredWhere").hide();
         }
     }
 
     $(document).ready(function () {
+        $(':input', '#declarations').prop('disabled', true);
+
+        var btn = $('.file-upload-gp a', '#declarations');
+        if (btn.length > 0) {
+            btn.each(function(index, ele) {
+                $(ele).parent().html($(ele).text());
+            });
+        }
         changeReasonCessFe();
-        changePatientCessFe();
+       // changePatientCessFe();
         changePatSelectCessFe();
 
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
-            $("#patHciName").hide();
+            /*$("#patHciName").hide();
             $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
-            $("#div").hide();
+            $("#div").hide();*/
         }
 
         $('input[type="text"]').css('border-color', '#ededed');
         $('input[type="text"]').css('color', '#999');
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
-            $("#patHciName").hide();
+           /* $("#patHciName").hide();
             $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
-            $("#div").hide();
+            $("#div").hide();*/
         }
         doPrint();
     });

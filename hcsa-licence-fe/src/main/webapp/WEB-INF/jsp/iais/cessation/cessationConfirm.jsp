@@ -135,7 +135,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="form-group" id="${num.count}patYes${uid.count}" hidden>
+                        <%--<div class="form-group" id="${num.count}patYes${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Who will
                             take over your patients' case records?<span style="color: red">*</span></label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -148,8 +148,8 @@
                                          value="${appCessHci.patientSelect}"
                                          cssClass="nice-select cessationTransfer"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}patHciName${uid.count}"
+                        </div>--%>
+                       <%-- <div class="form-group" id="${num.count}patHciName${uid.count}"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Name / Code <span style="color: #ff0000">*</span></label>
@@ -158,28 +158,28 @@
                                         value="${appCessHci.patHciName}" maxLength="100"
                                         name="${num.count}patHciName${uid.count}"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
+                        </div>--%>
+                       <%-- <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Name </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
+                        </div>--%>
+                       <%-- <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
+                        </div>--%>
+                       <%-- <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Address </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}patRegNo${uid.count}"
+                        </div>--%>
+                        <%--<div class="form-group" id="${num.count}patRegNo${uid.count}"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Professional
                             Regn. No. <span style="color: #ff0000">*</span></label>
@@ -189,8 +189,8 @@
                                         name="${num.count}patRegNo${uid.count}"
                                         value="${appCessHci.patRegNo}"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}patOthersTakeOver${uid.count}"
+                        </div>--%>
+                        <%--<div class="form-group" id="${num.count}patOthersTakeOver${uid.count}"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Others <span
                                   style="color: red">*</span></label>
@@ -199,8 +199,8 @@
                                         name="${num.count}patOthersTakeOver${uid.count}"
                                         value="${appCessHci.patOthers}"/>
                           </div>
-                        </div>
-                        <div class="form-group"
+                        </div>--%>
+                       <%-- <div class="form-group"
                              id="${num.count}patOthersMobileNo${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Mobile
                             No. <span style="color: red">*</span></label>
@@ -210,8 +210,8 @@
                                         maxLength="8"
                                         name="${num.count}patOthersMobileNo${uid.count}"/>
                           </div>
-                        </div>
-                        <div class="form-group"
+                        </div>--%>
+                        <%--<div class="form-group"
                              id="${num.count}patOthersEmailAddress${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Email Address <span
                                   style="color: red">*</span></label>
@@ -220,8 +220,8 @@
                                         maxLength="66" needDisabled="true"
                                         name="${num.count}patOthersEmailAddress${uid.count}"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}patNo${uid.count}" hidden>
+                        </div>--%>
+                        <%--<div class="form-group" id="${num.count}patNo${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Reason for
                             no patients' records transfer <span style="color: red">*</span></label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -229,8 +229,20 @@
                                         name="${num.count}patNoRemarks${uid.count}"
                                         value="${appCessHci.patNoRemarks}"/>
                           </div>
+                        </div>--%>
+                        <div class="form-group" id="${num.count}transferDetail${uid.count}" hidden>
+                          <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                          </div>
                         </div>
-                        <div class="form-group" id="${num.count}patNoConfirmID${uid.count}"
+                        <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
+                          <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
+                          </div>
+                        </div>
+                        <%--<div class="form-group" id="${num.count}patNoConfirmID${uid.count}"
                              hidden>
                           <div class="col-xs-6 col-sm-4 col-md-6">
                             <div class="form-check disabled">
@@ -245,7 +257,7 @@
                             <span id="error_${num.count}patNoConfirm${uid.count}" name="iaisErrorMsg"
                                   class="error-msg"></span>
                           </div>
-                        </div>
+                        </div>--%>
                         <c:if test="${isGrpLic}">
                           <div>
                             <div class="form-group">
@@ -418,7 +430,7 @@
         }
     }
 
-    function changePatientCessFe() {
+    /*function changePatientCessFe() {
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($("#" + i + "patientSelectId" + j).val() == "CES004") {
@@ -448,18 +460,22 @@
                 }
             }
         }
-    }
+    }*/
 
     function changePatSelectCessFe() {
-        changePatientCessFe();
+        //changePatientCessFe();
         for (var i = 1; i < 8; i++) {
             for (var j = 1; j < 8; j++) {
                 if ($('#' + i + 'radioYes' + j).is(':checked')) {
                     $("#" + i + "patYes" + j).show();
                     $("#" + i + "patNo" + j).hide();
-                    $("#" + i + "patNoConfirmID" + j).hide();
+                    // $("#" + i + "patNoConfirmID" + j).hide();
+                    $("#" + i + "transferDetail" + j).hide();
+                    $("#" + i + "transferredWhere" + j).show();
                 } else if ($('#' + i + 'radioNo' + j).is(':checked')) {
-                    $("#" + i + "patNo" + j).show();
+                    $("#" + i + "transferDetail" + j).show();
+                    $("#" + i + "transferredWhere" + j).hide();
+                   /* $("#" + i + "patNo" + j).show();
                     $("#" + i + "patYes" + j).hide();
                     $("#" + i + "patHciName" + j).hide();
                     $("#" + i + "hciName" + j).hide();
@@ -467,7 +483,7 @@
                     $("#" + i + "patRegNo" + j).hide();
                     $("#" + i + "patOthersMobileNo" + j).hide();
                     $("#" + i + "patOthersEmailAddress" + j).hide();
-                    $("#" + i + "patNoConfirmID" + j).show();
+                    $("#" + i + "patNoConfirmID" + j).show();*/
                 }
             }
         }
@@ -475,7 +491,7 @@
 
     $(document).ready(function () {
         changeReasonCessFe();
-        changePatientCessFe();
+        //changePatientCessFe();
         changePatSelectCessFe();
     });
 

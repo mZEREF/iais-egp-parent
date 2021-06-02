@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAppDetailsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -83,4 +85,22 @@ public interface BeDashboardAjaxService {
      * @Descripation: getWaitApproveDropResult
      */
     Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchParam
+     * @return: SearchResult<DashAllActionAppQueryDto>
+     * @Descripation: getDashAllActionResult
+     */
+    SearchResult<DashAppDetailsQueryDto> getDashAllActionResult(SearchParam searchParam);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchResult
+     * @return: SearchResult<DashAppDetailsQueryDto>
+     * @Descripation: setDashSysDetailsDropOtherData
+     */
+    SearchResult<DashAppDetailsQueryDto> setDashSysDetailsDropOtherData(SearchResult<DashAppDetailsQueryDto> searchResult);
 }

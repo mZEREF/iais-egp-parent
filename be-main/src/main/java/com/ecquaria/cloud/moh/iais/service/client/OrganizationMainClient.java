@@ -129,4 +129,8 @@ public interface OrganizationMainClient {
 
     @GetMapping(value = "/iais-workgroup/work-group/name-hcsa",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<WorkingGroupDto>> getHcsaWorkGroupsByName(@RequestParam("workGroupName") String workGroupName);
+
+    @GetMapping(value = "/iais-task/curr-tasks/{refNo}",produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<List<TaskDto>> getCurrTaskByRefNo(@PathVariable(name = "refNo") String refNo);
 }

@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -285,6 +287,11 @@ public class DealSessionUtil {
                 //set oldAppSubmission when rfi,rfc,rene
                 if(isRfi){
                     groupLicencePremiseRelationDis(appSubmissionDto);
+                }else {
+                    AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                    List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
+                    appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                    appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
                 }
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);

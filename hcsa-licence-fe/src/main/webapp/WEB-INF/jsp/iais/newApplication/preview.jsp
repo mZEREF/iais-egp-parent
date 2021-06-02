@@ -69,7 +69,7 @@
                                                 </c:choose>
 
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
                                                 <div class="row">
                                                     <div class="col-md-7"  style="text-align: justify;width: 70%">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -86,6 +86,19 @@
                                                     </div>
                                                 </div>
                                                 <br/>
+                                            </c:if>
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
+                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
+                                                </div>
+                                                <div>
+                                                    <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                </div>
+
+                                                <div>
+                                                    <span id="error_charityHci"  class="error-msg"></span>
+                                                </div>
                                             </c:if>
                                         </div>
                                     </div>
@@ -165,6 +178,7 @@
 <input type="hidden" value="${RFC_ERROR_NO_CHANGE}" id="RFC_ERROR_NO_CHANGE">
 <input type="hidden" value="${RFC_ERR004}" id="RFC_ERR004">
 <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
+<input type="hidden" value="${RFC_eqHciNameChange}" id="RFC_eqHciNameChange">
 <script type="text/javascript">
 
     $(document).ready(function() {
@@ -198,10 +212,19 @@
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
+            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+            var canSubmit = true;
+            let jQuery = $('#verifyInfoCheckbox').prop("checked");
+            if(!jQuery){
+                $('#error_fieldMandatory').html($('#RFC_ERR004').val());
+                return;
+            }else{
+                $('#error_fieldMandatory').html("");
+            }
+            </c:if>
             showWaiting();
             submit('payment','doSubmit',null);
         });
-
         $('.doSvcEdit').click(function () {
             showWaiting();
             var svcCode = $(this).next().val();
@@ -231,13 +254,28 @@
         </c:if>
         </c:if>
 
-
     });
 
     function preview(){
         // window.print();
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
-        window.open(url,'_blank');
+        var txt = '';
+        <c:if test="${empty viewPrint}">
+        $(':checked, textarea','#declarations').each(function(){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
+        $("input[name='effectiveDt']").each(function (){
+            txt += '&' + $(this).attr('name') + '=' + $(this).val();
+        });
+        if (url.indexOf('?') < 0) {
+            url += '?';
+            if (txt != '') {
+                txt = txt.substring()
+            }
+        }
+        </c:if>
+        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        window.open(url +rfc+ txt,'_blank');
     };
 
     function saveDraft() {

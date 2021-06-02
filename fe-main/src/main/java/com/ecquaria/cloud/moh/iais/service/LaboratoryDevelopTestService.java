@@ -1,5 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service;
 
-public interface LaboratoryDevelopTestService {
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
+
+public interface LaboratoryDevelopTestService {
+    void sendLDTTestEmailAndSMS(LaboratoryDevelopTestDto laboratoryDevelopTestDto,String orgId,String licenseeId) throws IOException, TemplateException;
 }

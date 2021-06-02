@@ -9,10 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
@@ -32,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -40,10 +45,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -61,6 +68,9 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -85,7 +95,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -142,11 +154,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-    @Autowired
-    private ApplicationGroupService applicationGroupService;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
-    private InspectionAssignTaskService inspectionAssignTaskService;
+    private EmailSmsClient emailSmsClient;
+    @Autowired
+    private EmailHistoryCommonClient emailHistoryCommonClient;
+    @Autowired
+    private CessationClient cessationClient;
 
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
@@ -474,6 +490,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
 
         List<AppPremisesCorrelationDto> appPremisesCorrelation = applicationListDto.getAppPremisesCorrelation();
+        List<AppPremiseMiscDto> appPremiseMiscEntities = applicationListDto.getAppPremiseMiscEntities();
         List<AppGrpPremisesEntityDto> appGrpPremises = applicationListDto.getAppGrpPremises();
         for(ApplicationDto applicationDto : application){
             String id = applicationDto.getId();
@@ -506,6 +523,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
+        try {
+            sendAsoWithdrow(applicationGroup,application,appPremisesCorrelation, appPremiseMiscEntities);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
@@ -572,6 +594,132 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         log.info("---- end ----start withdrowAppToBe-----");
         return false;
+    }
+
+    private void sendAsoWithdrow(List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> applicationList,List<AppPremisesCorrelationDto> appPremisesCorrelation,List<AppPremiseMiscDto> appPremiseMiscEntities){
+        log.info("withdrow email function start");
+        Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
+        for (ApplicationGroupDto every : applicationGroup) {
+            List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
+            for (ApplicationDto application : applicationList) {
+                if (every.getId().equals(application.getAppGrpId())) {
+                    applicationslist.add(application);
+                }
+            }
+            map.put(every,applicationslist);
+        }
+        Map<String,String> appIdAndAppCorrIds=IaisCommonUtils.genNewHashMap();
+        for (AppPremisesCorrelationDto appCorr:appPremisesCorrelation
+             ) {
+            appIdAndAppCorrIds.put(appCorr.getApplicationId(),appCorr.getId());
+        }
+        Map<String,String> appPremiseMiscMap=IaisCommonUtils.genNewHashMap();
+        if(appPremiseMiscEntities!=null){
+            for (AppPremiseMiscDto miscDto:appPremiseMiscEntities
+            ) {
+                appPremiseMiscMap.put(miscDto.getAppPremCorreId(),miscDto.getRelateRecId());
+            }
+        }
+        map.forEach((k,v)->{
+            for(ApplicationDto application :v){
+                if(k.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                    try {
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(k.getLicenseeId()).getEntity();
+                        String oldAppId=appPremiseMiscMap.get(appIdAndAppCorrIds.get(application.getId()));
+                        ApplicationDto oldAppDto=applicationClient.getApplicationById(oldAppId).getEntity();
+                        List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
+                        String asoId="";
+                        for (TaskDto task:oldTaskDtos
+                        ) {
+                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                asoId=task.getUserId();
+                            }
+                            if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
+                                task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                taskService.updateTask(task);
+                            }
+                        }
+                        OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
+
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                            emailMap.put("officer_name", orgUserDto.getDisplayName());
+                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            emailMap.put("ApplicationNumber", oldAppDto.getApplicationNo());
+                            AppGrpPremisesEntityDto premisesDto=applicationClient.getPremisesByAppNo(oldAppDto.getApplicationNo()).getEntity();
+                            emailMap.put("hci_name", premisesDto.getHciName());
+                            emailMap.put("submission_date", Formatter.formatDate(k.getSubmitDt()));
+                            emailMap.put("licensee_name", licenseeDto.getName());
+                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                            emailMap.put("address", address);
+                            if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
+                                emailMap.put("already", "already");
+                                String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                                emailMap.put("systemLink", loginUrl);
+                                Calendar calendar=Calendar.getInstance();
+                                calendar.add(Calendar.DATE, systemParamConfig.getWithdrewTatDate());
+                                String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
+                                emailMap.put("TAT_time", dueDay);
+
+                            }
+
+                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL).getEntity();
+                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
+                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
+                            map1.put("ApplicationNumber", oldAppDto.getApplicationNo());
+                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
+                            log.info("start send email start");
+                            EmailDto emailDto = new EmailDto();
+                            List<String> receiptEmail=IaisCommonUtils.genNewArrayList();
+                            receiptEmail.add(orgUserDto.getEmail());
+                            List<String> mobile = IaisCommonUtils.genNewArrayList();
+                            mobile.add(orgUserDto.getMobileNo());
+                            emailDto.setReceipts(receiptEmail);
+                            String emailContent = getEmailContent(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_EMAIL,emailMap);
+                            emailDto.setContent(emailContent);
+                            emailDto.setSubject(subject);
+                            emailDto.setSender(this.mailSender);
+                            emailDto.setClientQueryCode(oldAppDto.getApplicationNo());
+                            emailDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getEmail()!=null){
+                                emailSmsClient.sendEmail(emailDto, null);
+                            }
+                            log.info("start send email end");
+
+                            //sms
+                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.TEMPLATE_WITHDRAWAL_005_SMS).getEntity();
+                            subject = null;
+                            try {
+                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
+                            } catch (IOException |TemplateException e) {
+                                log.info(e.getMessage(),e);
+                            }
+
+
+                            log.info("start send sms start");
+                            SmsDto smsDto = new SmsDto();
+                            smsDto.setSender(mailSender);
+                            smsDto.setContent(subject);
+                            smsDto.setOnlyOfficeHour(false);
+                            smsDto.setReceipts(mobile);
+                            smsDto.setReqRefNum(oldAppDto.getApplicationNo());
+                            if(orgUserDto.getMobileNo()!=null){
+                                emailHistoryCommonClient.sendSMS(mobile, smsDto, oldAppDto.getApplicationNo());
+                            }
+                            log.info("start send sms end");
+                        }
+
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+
+            }
+
+        });
+        log.info("withdrow email function end");
+
     }
 
     private List<ApplicationDto> withdrow(List<ApplicationDto> applicationDtos){
@@ -932,6 +1080,24 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         updateTaskList.removeAll(requestForInforList);
     }
 
+    private String getEmailContent(String templateId, Map<String, Object> subMap){
+        String mesContext = "-";
+        if(!StringUtil.isEmpty(templateId)){
+            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            if(emailTemplateDto != null){
+                try {
+                    if(!IaisCommonUtils.isEmpty(subMap)){
+                        mesContext = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getMessageContent(), subMap);
+                    }
+                    //replace num
+                    mesContext = MessageTemplateUtil.replaceNum(mesContext);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+        }
+        return mesContext;
+    }
     private void update( List<ApplicationDto> cessionOrwith,List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
 
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
@@ -989,8 +1155,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(cession==i){
                         cessionOrwith.addAll(applicationDtoList);
                     }
+
                 }
-            } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            }
+            else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 log.info(StringUtil.changeForLog("=============="+k.getGroupNo()));
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
@@ -1011,7 +1179,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -1098,7 +1266,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            }
+            else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                 }else {
@@ -1118,8 +1287,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 
@@ -1131,7 +1300,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }
 
 
-            }else {
+            }
+            else {
                 List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     int i=v.size();

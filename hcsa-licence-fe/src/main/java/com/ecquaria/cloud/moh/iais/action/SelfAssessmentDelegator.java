@@ -56,14 +56,18 @@ public class SelfAssessmentDelegator {
     private AppSubmissionService appSubmissionService;
 
     /**
+     * Refer from InterInboxDelegator.doSelfAssMt
+     *
      * @AutoStep: startStep
      * @author: yichen
      */
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        // action: inbox - (appSelfFlag: 0);  other: rfi
         String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION, action);
 
+        // From inbox action
         String groupId;
         try {
             groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
@@ -168,8 +172,6 @@ public class SelfAssessmentDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP, correlationMap);
     }
-
-
 
     private void loadSelfAssessment(HttpServletRequest request) {
         SelfAssessment selfAssessment = getCurrentSelfAssessment(request);

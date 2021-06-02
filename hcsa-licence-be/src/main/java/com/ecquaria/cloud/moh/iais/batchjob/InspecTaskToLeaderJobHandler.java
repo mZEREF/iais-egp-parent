@@ -4,6 +4,7 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -109,11 +110,12 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                     }
                     String status = appInspectionStatusDtos.get(i).getStatus();
                     String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
-                    //SKIP Inspection
+                    //SKIP Inspection or in ASO/PSO and fast tracking
                     if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)){
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
                                 InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
+                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status) ||
+                                ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
                             report = report + 1;
                         }
                         continue;

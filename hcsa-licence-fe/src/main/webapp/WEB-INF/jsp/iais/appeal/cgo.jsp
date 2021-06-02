@@ -1,7 +1,7 @@
-
-
-
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+
+
+
 <style>
   table.control-grid.columns1 > tbody > tr > td > .section.control input[type=text], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=email], table.control-grid.columns1 > tbody > tr > td > .section.control input[type=number], table.control-grid.columns1 > tbody > tr > td > .section.control .nice-select {
     margin-bottom: 15px;margin-top: 25px;
@@ -13,7 +13,7 @@
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table class="control-grid columns1 " style="width: 100%;">
+      <table class="control-grid columns1 table.assignContent" style="width: 100%;">
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">
@@ -170,6 +170,22 @@
                               </td>
                             </tr>
                             <tr height="1">
+                            <td class="first last" style="width: 100%;">
+                              <div class="control control-caption-horizontal otherDesignationDiv hidden ">
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="control-label formtext col-sm-5">
+                                  </div>
+                                  <div class="col-md-7 col-xs-5 col-sm-3">
+                                    <div class="">
+                                      <input type="text" name="otherDesignation" value="${currentCgo.otherDesignation}" class="otherDesignation" maxlength="100" autocomplete="off">
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_otherDesignation${status.index}"></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            </tr>
+                            <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
@@ -200,7 +216,7 @@
                                     </div>
                                     <div class="col-sm-5 col-md-7">
                                       <div class="">
-                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="aaa(this)">
+                                        <input maxlength="20"  name="professionRegoNo" value="${currentCgo.profRegNo}" type="text" onblur="profRegNoBlur()">
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
                                       </div>
                                     </div>
@@ -208,40 +224,31 @@
                                 </div>
                               </td>
                             </tr>
+
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div id="control--runtime--29" class="control control-caption-horizontal">
                                   <div class="form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext">
+                                    <div class="control-label formtext col-sm-5">
                                       <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
-                                      <span class="mandatory">*</span>
                                     </div>
-                                    <div class="col-sm-5 col-md-7" id="specialty${suffix}">
-                                      <div class="specialtyContent">
-                                        <div class="specialtyDiv">
-                                          <c:choose>
-                                            <c:when test="${currentCgo.needSpcOptList}">
-                                              ${currentCgo.specialityHtml}
-                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
-                                            </c:when>
-                                            <c:otherwise>
-                                              <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
-                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
-                                            </c:otherwise>
-                                          </c:choose>
-                                        </div>
-                                        <div class="specialtyOtherDiv">
-                                          <c:choose>
-                                            <c:when test="${currentCgo.speciality eq 'other'}">
-                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
-                                              <span name="iaisErrorMsg" class="error-msg" id="error_other${status.index}"></span>
-                                            </c:when>
-                                            <c:otherwise>
-                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">
-                                            </c:otherwise>
-                                          </c:choose>
-                                        </div>
-                                      </div>
+                                    <div class="col-xs-8 col-sm-4 col-md-7">
+                                      <label class="control-label control-set-font control-font-label specialty-label">${currentCgo.speciality}</label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Sub-specialty</label>
+                                    </div>
+                                    <div class="col-md-7 col-xs-8 col-sm-4">
+                                      <label class="control-label control-set-font control-font-label sub-specialty-label">${currentCgo.subSpeciality}</label>
                                     </div>
                                   </div>
                                 </div>
@@ -249,23 +256,38 @@
                             </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--32" class="control control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--32--label" class="control-label control-set-font control-font-label">
-                                        Sub-specialty or relevant qualification
-                                      </label>
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Qualification</label>
                                     </div>
-                                    <div class="col-sm-5 col-md-7">
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
+                                      <label class="control-label control-set-font control-font-label qualification-label">${currentCgo.qualification}</label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div class="control control-caption-horizontal">
+                                  <div class="form-group form-horizontal formgap">
+                                    <div class="control-label formtext col-sm-5">
+                                      <label class="control-label control-set-font control-font-label">Other Qualification</label>
+                                      <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-md-7 col-xs-9 col-sm-5">
                                       <div class="">
-                                        <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}"></iais:input>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
+                                        <input type="text" name="otherQualification" value="${currentCgo.otherQualification}" class="otherQualification" maxlength="100" autocomplete="off">
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_otherQualification${status.index}"></span>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </td>
                             </tr>
+
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
@@ -330,6 +352,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -344,7 +367,9 @@
     </div>
   </div>
 </div>
+<%@include file="../common/prsLoading.jsp"%>
 <script>
+    var init;
     $(document).ready(function () {
         $('.hideen-div').addClass('hidden');
         //coverage  cpl_custom_form_script init css
@@ -376,6 +401,12 @@
 
         $('#control--runtime--0').children().remove("hr")
         $('.assignSel ').trigger('change');
+        init = 1;
+        if($('.designationSel').val()=='DES999'){
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else {
+            $('.designationSel').closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
     });
 
     var disabledAll = function () {
@@ -438,6 +469,8 @@
                 });
                 <!--change psn item -->
                 changePsnItem();
+                designationChange();
+                profRegNoBlur();
             },
             'error':function (data) {
                 console.log("err");
@@ -470,12 +503,12 @@
             if(data.regno==null){
                 $('#PRS_SERVICE_DOWN').modal('show');
             }else {
-                loading(data,obj);
+                loadings(data,obj);
             }
 
         });
     };
-    const loading = function (data,obj) {
+    const loadings = function (data,obj) {
         const qualification = data.qualification[0];
         const specialty = data.specialty[0];
         const $CurrentPsnEle = $(obj).closest('table.assignContent');
@@ -511,4 +544,107 @@
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
     }
+    var designationChange = function () {
+        $('.designationSel').change(function () {
+            var thisVal = $(this).val();
+            if("DES999" == thisVal){
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+            }else{
+                $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+            }
+        });
+    };
+    $('.designationSel').change(function () {
+        var thisVal = $(this).val();
+        if("DES999" == thisVal){
+            $(this).closest('table.assignContent').find('div.otherDesignationDiv').removeClass('hidden');
+        }else{
+            $(this).closest('table.assignContent').find('div.otherDesignationDiv').addClass('hidden');
+        }
+    });
+    var profRegNoBlur = function () {
+        $('input[name="professionRegoNo"]').blur(function(){
+            var prgNo = $(this).val();
+            var $currContent = $(this).closest('.new-officer-form');
+            var $prsLoadingContent = $(this).closest('table.assignContent');
+            var specialty = $prsLoadingContent.find('label.specialty-label').html();
+            //prs loading
+            if(init == 1){
+                prdLoading($prsLoadingContent,prgNo);
+            }
+            //add Remark For Subspecialty
+            if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                $currContent.find('span.otherQualificationSpan').html('*');
+            }
+        });
+    };
+    var prdLoading = function ($loadingContent,prgNo) {
+        console.log('loading prs info ...');
+        if(prgNo == "" || prgNo == null || prgNo == undefined){
+            clearPrsInfo($loadingContent);
+            return;
+        }
+        var jsonData = {
+            'prgNo': prgNo
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/prg-input-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if(data.regno == null){
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo($loadingContent);
+                    return;
+                }
+                if(data.name == null){
+                    //prgNo is incorrect
+                    clearPrsInfo($loadingContent);
+                    return;
+                }
+                loadingData(data,$loadingContent);
+            },
+            'error': function () {
+                //
+                clearPrsInfo($loadingContent);
+            }
+        });
+    };
+
+    var clearPrsInfo = function ($loadingContent) {
+        $loadingContent.find('.specialty-label').html('');
+        $loadingContent.find('.sub-specialty-label').html('');
+        $loadingContent.find('.qualification-label').html('');
+        $loadingContent.find('span.otherQualificationSpan').html('*');
+    };
+
+    var loadingData = function (data,$loadingContent) {
+        loading(data.specialty,$loadingContent,'specialty-label');
+        loading(data.subspecialty,$loadingContent,'sub-specialty-label');
+        loading(data.qualification,$loadingContent,'qualification-label');
+
+        addMandatoryForOtherQua(data.specialty,$loadingContent);
+    };
+
+    var addMandatoryForOtherQua = function (data,$loadingContent) {
+        if(data == null || data == undefined || data == ''){
+            $loadingContent.find('span.otherQualificationSpan').html('*');
+        }else{
+            $loadingContent.find('span.otherQualificationSpan').html('');
+        }
+    }
+
+    var loading = function (dataArr,$loadingContent,labelClass) {
+        var displayVal = "";
+        if(dataArr != null && dataArr != undefined && dataArr != ''){
+            $.each(dataArr,function (k,v) {
+                displayVal = displayVal + v + ',';
+            });
+            var endLength = displayVal.length-1;
+            displayVal = displayVal.substring(0,endLength);
+        }
+        $loadingContent.find('.'+labelClass).html(displayVal);
+    }
+
 </script>

@@ -121,7 +121,7 @@
                             </div>
                           </div>
                         </div>
-                        <div class="form-group" id="patYes" hidden>
+                        <%--<div class="form-group" id="patYes" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Who will
                             take over your patients' case records?</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -134,8 +134,8 @@
                                          value="${appCessHci.patientSelect}"
                                          cssClass="nice-select cessationTransfer"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="patHciName"
+                        </div>--%>
+                        <%--<div class="form-group" id="patHciName"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Name / Code</label>
@@ -144,28 +144,28 @@
                                         value="${appCessHci.patHciName}" maxLength="100"
                                         name="patHciName"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
+                        </div>--%>
+                        <%--<div class="form-group" id="${num.count}hciNamePat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Name </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciNamePat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
+                        </div>--%>
+                        <%--<div class="form-group" id="${num.count}hciCodePat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI Code </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciCodePat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
+                        </div>--%>
+                       <%-- <div class="form-group" id="${num.count}hciAddressPat${uid.count}" hidden>
                           <label class="col-xs-12 col-md-6 control-label">HCI
                             Address </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
                             <span><c:out value="${appCessHci.hciAddressPat}"></c:out></span>
                           </div>
-                        </div>
-                        <div class="form-group" id="patRegNo"
+                        </div>--%>
+                        <%--<div class="form-group" id="patRegNo"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Professional
                             Regn. No.</label>
@@ -175,8 +175,8 @@
                                         name="patRegNo"
                                         value="${appCessHci.patRegNo}"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="patOthers"
+                        </div>--%>
+                        <%--<div class="form-group" id="patOthers"
                              hidden>
                           <label class="col-xs-12 col-md-6 control-label">Others</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -184,8 +184,8 @@
                                         name="patOthers"
                                         value="${appCessHci.patOthers}"/>
                           </div>
-                        </div>
-                        <div class="form-group"
+                        </div>--%>
+                        <%--<div class="form-group"
                              id="patOthersMobileNo" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Mobile
                             No.</label>
@@ -195,8 +195,8 @@
                                         maxLength="8"
                                         name="patOthersMobileNo"/>
                           </div>
-                        </div>
-                        <div class="form-group"
+                        </div>--%>
+                        <%--<div class="form-group"
                              id="patOthersEmailAddress" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Email Address </label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -204,8 +204,8 @@
                                         maxLength="66" needDisabled="true"
                                         name="patOthersEmailAddress"/>
                           </div>
-                        </div>
-                        <div class="form-group" id="patNo" hidden>
+                        </div>--%>
+                        <%--<div class="form-group" id="patNo" hidden>
                           <label class="col-xs-12 col-md-6 control-label">Reason for
                             no patients' records transfer</label>
                           <div class="col-xs-6 col-sm-4 col-md-3">
@@ -213,8 +213,20 @@
                                         name="patNoRemarks"
                                         value="${appCessHci.patNoRemarks}"/>
                           </div>
+                        </div>--%>
+                        <div class="form-group" id="transferDetail" hidden>
+                          <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <textarea name="transferDetail"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                          </div>
                         </div>
-                        <div class="form-group" id="patNoConfirmID"
+                        <div class="form-group" id="transferredWhere" hidden>
+                          <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
+                          <div class="col-xs-6 col-sm-4 col-md-3">
+                            <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
+                          </div>
+                        </div>
+                       <%-- <div class="form-group" id="patNoConfirmID"
                              hidden>
                           <div class="col-xs-6 col-sm-4 col-md-6">
                             <div class="form-check">
@@ -226,7 +238,7 @@
                                       class="check-square"></span><iais:message key="CESS_DEC001"/></label>
                             </div>
                           </div>
-                        </div>
+                        </div>--%>
                         <c:if test="${isGrpLic}">
                           <div>
                             <div class="form-group">
@@ -367,7 +379,7 @@
         }
     }
 
-    function changePatientCessFe() {
+    /*function changePatientCessFe() {
         if ($("#patientSelectId").val() == "CES004") {
             $("#patOthers").show();
             $("#patHciName").hide();
@@ -394,38 +406,32 @@
             $("#patOthersEmailAddress").hide();
 
         }
-    }
+    }*/
 
     function printCSPDF(){
         window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=cessViewPage",'_blank');
     }
 
     function changePatSelectCessFe() {
-        changePatientCessFe();
+        //changePatientCessFe();
         if ($('#radioYes').is(':checked')) {
             $("#patYes").show();
             $("#patNo").hide();
-            $("#patNoConfirmID").hide();
+            $("#transferDetail").hide();
+            $("#transferredWhere").show();
         } else if ($('#radioNo').is(':checked')) {
-            $("#patNo").show();
-            $("#patYes").hide();
-            $("#patHciName").hide();
-            $("#hciName").hide();
-            $("#patOthers").hide();
-            $("#patRegNo").hide();
-            $("#patNoConfirmID").show();
-            $("#patOthersMobileNo").hide();
-            $("#patOthersEmailAddress").hide();
+            $("#transferDetail").show();
+            $("#transferredWhere").hide();
         }
     }
 
     $(document).ready(function () {
         changeReasonCessFe();
-        changePatientCessFe();
+        //changePatientCessFe();
         changePatSelectCessFe();
     });
 
-    $(document).ready(function () {
+  /*  $(document).ready(function () {
         if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
@@ -434,19 +440,19 @@
             $("#patRegNo").hide();
             $("#div").hide();
         }
-    });
+    });*/
 
     $(document).ready(function () {
         $('input[type="text"]').css('border-color', '#ededed');
         $('input[type="text"]').css('color', '#999');
-        if ($('#radioNo').is(':checked')) {
+        /*if ($('#radioNo').is(':checked')) {
             $("#patYes").hide();
             $("#patHciName").hide();
             $("#hciName").hide();
             $("#patOthers").hide();
             $("#patRegNo").hide();
             $("#div").hide();
-        }
+        }*/
     });
 
 </script>

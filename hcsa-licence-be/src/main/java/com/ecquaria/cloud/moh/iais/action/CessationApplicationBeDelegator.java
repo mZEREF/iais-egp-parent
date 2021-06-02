@@ -7,16 +7,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -25,6 +26,13 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,15 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author weilu
@@ -73,6 +72,8 @@ public class CessationApplicationBeDelegator {
     private static final String PATREGNO = "patRegNo";
     private static final String PATOTHERS = "patOthersTakeOver";
     private static final String PATOTHERSMOBILENO = "patOthersMobileNo";
+    private static final String TRANSFERREDWHERE = "transferredWhere";
+    private static final String TRANSFERDETAIL = "transferDetail";
     private static final String PATOTHERSEMAILADDRESS = "patOthersEmailAddress";
     private static final String ERROR = "GENERAL_ERR0006";
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
@@ -250,6 +251,8 @@ public class CessationApplicationBeDelegator {
                 String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);
                 String hciName = appCessHciDto.getHciName();
                 String hciAddress = appCessHciDto.getHciAddress();
+                String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
+                String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
 
                 appCessHciDto.setHciAddress(hciAddress);
                 appCessHciDto.setHciAddress(hciAddress);
@@ -279,6 +282,8 @@ public class CessationApplicationBeDelegator {
                 appCessHciDto.setPremiseIdChecked(whichTodo);
                 appCessHciDto.setPatNoConfirm(patNoConfirm);
                 appCessHciDto.setReadInfo(readInfo);
+                appCessHciDto.setTransferredWhere(transferredWhere);
+                appCessHciDto.setTransferDetail(transferDetail);
                 appCessHciDtos.add(appCessHciDto);
             }
             appCessLicDto.setAppCessHciDtos(appCessHciDtos);
@@ -337,6 +342,8 @@ public class CessationApplicationBeDelegator {
                         appCessationDto.setPatOthers(patOthers);
                         appCessationDto.setMobileNo(mobileNo);
                         appCessationDto.setEmailAddress(emailAddress);
+                        appCessationDto.setTransferDetail(appCessHciDto.getTransferDetail());
+                        appCessationDto.setTransferredWhere(appCessHciDto.getTransferredWhere());
                         appCessationDto.setPatNoRemarks(patNoRemarks);
                         appCessationDto.setPremiseId(whichTodo);
                         appCessationDto.setReadInfo(readInfo);
@@ -389,30 +396,34 @@ public class CessationApplicationBeDelegator {
         if (StringUtil.isEmpty(patRadio)) {
             errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
         }
-        String readInfo = ParamUtil.getRequestString(httpServletRequest, READINFO);
-        if (StringUtil.isEmpty(readInfo)) {
-            errorMap.put(i + READINFO + j, ERROR);
-        }
         String cessationReason = ParamUtil.getRequestString(httpServletRequest, i + REASON + j);
         String otherReason = ParamUtil.getRequestString(httpServletRequest, i + OTHERREASON + j);
-        String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + PATIENTSELECT + j);
+       /* String patientSelect = ParamUtil.getRequestString(httpServletRequest, i + PATIENTSELECT + j);
         String patNoRemarks = ParamUtil.getRequestString(httpServletRequest, i + PATNOREMARKS + j);
         String patHciName = ParamUtil.getRequestString(httpServletRequest, i + PATHCINAME + j);
         String patRegNo = ParamUtil.getRequestString(httpServletRequest, i + PATREGNO + j);
         String patMobile = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSMOBILENO + j);
         String patEmailAddress = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERSEMAILADDRESS + j);
         String patOthers = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERS + j);
-        String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);
+        String patNoConfirm = ParamUtil.getRequestString(bpc.request, i + TRANSFORMNO + j);*/
+        String transferredWhere = ParamUtil.getRequestString(bpc.request, i + TRANSFERREDWHERE + j);
+        String transferDetail = ParamUtil.getRequestString(bpc.request, i + TRANSFERDETAIL + j);
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
                 errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
             }
         }
-        if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
+       /* if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
             errorMap.put(i + PATIENTSELECT + j, MessageUtil.replaceMessage(ERROR, "Who will take over your patients' case records", "field"));
-        }
-        if ("yes".equals(patRadio) && !StringUtil.isEmpty(patientSelect)) {
-            if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
+        }*/
+        String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
+        general_err0041=general_err0041.replace("{field}","this");
+        general_err0041=general_err0041.replace("{maxlength}","1000");
+        if ("yes".equals(patRadio) ) {
+            if (!StringUtil.isEmpty(transferredWhere) && transferredWhere.length()>1000) {
+                errorMap.put(i + TRANSFERREDWHERE + j, general_err0041);
+            }
+            /*if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
                 errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", "field"));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
@@ -467,16 +478,19 @@ public class CessationApplicationBeDelegator {
                         errorMap.put(i + PATOTHERSEMAILADDRESS + j, "GENERAL_ERR0014");
                     }
                 }
-            }
+            }*/
         }
         if ("no".equals(patRadio)) {
-            String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
+            if (!StringUtil.isEmpty(transferDetail) && transferDetail.length()>1000) {
+                errorMap.put(i + TRANSFERDETAIL + j, general_err0041);
+            }
+            /*String genErr006 = MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field");
             if (StringUtil.isEmpty(patNoRemarks)) {
                 errorMap.put(i + PATNOREMARKS + j, genErr006);
             }
             if (StringUtil.isEmpty(patNoConfirm)) {
                 errorMap.put(i + "patNoConfirm" + j, genErr006);
-            }
+            }*/
         }
         //max length
         return errorMap;

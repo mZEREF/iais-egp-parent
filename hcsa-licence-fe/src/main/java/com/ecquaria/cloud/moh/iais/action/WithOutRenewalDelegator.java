@@ -185,8 +185,12 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"");
         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,0);
         ParamUtil.setSessionAttr(bpc.request, "selectedRENEWFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedRFCFileDocShowPageDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "selectedNewFileDocShowPageDto", null);
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
+        bpc.request.getSession().removeAttribute("declaration_page_is");
+        ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -385,6 +389,7 @@ public class WithOutRenewalDelegator {
                     appEditSelectDto.setDocEdit(true);
                     appEditSelectDto.setServiceEdit(true);
                     ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
+                    ParamUtil.setSessionAttr(bpc.request,"renew_licence_no",appSubmissionDto.getLicenceNo());
                 } else {
                     ParamUtil.setSessionAttr(bpc.request, "isSingle", "N");
                 }
@@ -654,6 +659,9 @@ public class WithOutRenewalDelegator {
                     }
                 }
 
+            }
+            if(newAppSubmissionDtos.size()==1){
+                appSubmissionService.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
             }
         }
         if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
@@ -1700,7 +1708,7 @@ public class WithOutRenewalDelegator {
      * @param bpc
      * @throws
      */
-    public void toPrepareData(BaseProcessClass bpc) throws CloneNotSupportedException {
+    public void toPrepareData(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the do toPrepareData start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto != null) {
@@ -1754,6 +1762,17 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         appSubmissionDtos.add(appSubmissionDto);
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
+        if(oldAppSubmissionDto!=null){
+            boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+            boolean eqServiceChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+            boolean eqDocChange = EqRequestForChangeSubmitResultChange.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
+            if(eqGrpPremises || eqServiceChange || eqDocChange){
+                bpc.request.getSession().setAttribute(PREFIXTITLE,"amending");
+            }else {
+                bpc.request.getSession().setAttribute(PREFIXTITLE,"renewing");
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.FIRSTVIEW, AppConsts.TRUE);

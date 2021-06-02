@@ -20,6 +20,7 @@
         $("#"+id).remove();
     }
     function callAjaxDeleteFile(repoId,fileIndex){
+        showWaiting();
         var data = {"fileAppendId":repoId,"fileIndex":fileIndex};
         $.post(
             "${pageContext.request.contextPath}/deleteFeCallFile",
@@ -28,6 +29,7 @@
                 if(data != null && data == 1){
                     deleteFileFeDiv(repoId+"Div"+fileIndex);
                 }
+                dismissWaiting();
             }
         )
     }
@@ -76,9 +78,7 @@
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
-                        <c:if test="${empty declaration_page_request}">
                             cloneUploadFile();
-                        </c:if>
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }

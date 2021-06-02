@@ -405,6 +405,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
             syncDataDto.setAppNoList(selfAssessmentList.stream().map(SelfAssessment::getApplicationNumber).collect(Collectors.toList()));
             syncDataDto.setFeSyncData(result.getEntity());
+            syncDataDto.setAuditTrail(IaisEGPHelper.getCurrentAuditTrailDto());
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     SelfAssessmentServiceImpl.class.getName(),
                     "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,

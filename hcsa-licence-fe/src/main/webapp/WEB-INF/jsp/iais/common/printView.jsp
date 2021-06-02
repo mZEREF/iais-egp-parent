@@ -8,9 +8,23 @@
 %>
 
 <webui:setLayout name="iais-blank"/>
+<style>
+    .form-check input.form-check-input:checked + .form-check-label span.check-circle:before,
+    .form-check input.form-check-input:active + .form-check-label span.check-circle:before {
+        color: #147aab !important;
+        background-color: #FFF;
+        content: "\f111";
+        font-family: fontawesome;
+        position: absolute;
+        font-size: 12px;
+        top: 38%;
+        left: 48%;
+    }
+</style>
 <br/>
 <%--<%@include file="../common/dashboard.jsp" %>--%>
 <form method="post" class="table-responsive" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <iais:input type="hidden" name="viewPrint" value="${viewPrint}" />
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -60,6 +74,7 @@
                                                             </div>
                                                         </div>
                                                     </c:forEach>
+                                                    <%@include file="../common/declarations.jsp"%>
                                                 </div>
                                             </div>
                                         </div>
@@ -76,9 +91,23 @@
     </div>
 
 </form>
-
 <script type="text/javascript">
     $(document).ready(function () {
+        $(':input', '#declarations').prop('disabled', true);
+
+        var btn = $('.file-upload-gp a', '#declarations');
+        if (btn.length > 0) {
+            btn.each(function(index, ele) {
+                $(ele).parent().html($(ele).text());
+            });
+        }
+        // textarea
+        $('textarea', '#declarations').each(function(index, ele){
+            $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
+                + $(ele).val() + '</div>');
+            $(ele).remove();
+        });
+
         var userAgent = navigator.userAgent;
         var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
 

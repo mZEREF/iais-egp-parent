@@ -86,7 +86,7 @@ public class HcsaPremiseWorkload {
         String res = "";
         switch (type){
             case ApplicationConsts.PREMISES_TYPE_ON_SITE:
-                res = "Onsite";
+                res = ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW;
                 break;
             case ApplicationConsts.PREMISES_TYPE_OFF_SITE:
                 res = "Offsite";

@@ -17,7 +17,7 @@
                         <div class="col-xs-12"></div>
                     </c:when>
                     <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
-                        <div class="tab-gp steps-tab">
+                        <div class=" steps-tab">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="previewTab" role="tabpanel">
                                     <h1 class="font-weight 0">${DashboardTitle}</h1>

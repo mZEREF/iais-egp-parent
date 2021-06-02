@@ -1953,6 +1953,13 @@ input[type=number]::-webkit-outer-spin-button {
 .form-check input.form-check-input:disabled {
   cursor: not-allowed;
 }
+.form-check input.form-check-input:disabled + .form-check-label span.check-circle{
+    border-color: #999999;
+}
+.form-check input.form-check-input:checked:disabled + .form-check-label span.check-circle:before{
+    background-color: #999999;
+}
+
 .form-check input.form-check-input:hover + .form-check-label {
   border: 0;
 }
@@ -4304,7 +4311,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   background-color: #fafafa;
   border-radius: 14px;
   padding: 20px;
-  margin-bottom: 10px;
   border:1px solid #d1d1d1;
 }
 .withdraw-content-box {

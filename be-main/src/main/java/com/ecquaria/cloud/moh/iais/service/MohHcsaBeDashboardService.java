@@ -5,11 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolQuery;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -106,4 +109,76 @@ public interface MohHcsaBeDashboardService {
      * @Descripation: getSearchAppStatus
      */
     List<String> getSearchAppStatus(String application_status);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: null
+     * @return: List<SelectOption>
+     * @Descripation: getHashServiceOption
+     */
+    List<SelectOption> getHashServiceOption();
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: searchResult
+     * @return: List<DashStageCircleKpiDto>
+     * @Descripation: getDashStageCircleKpiShow
+     */
+    List<DashStageCircleKpiDto> getDashStageCircleKpiShow(SearchResult<DashAllActionAppQueryDto> searchResult);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: searchParam
+     * @return: SearchResult<DashAllActionAppQueryDto>
+     * @Descripation: getDashAllActionResult
+     */
+    SearchResult<DashAllActionAppQueryDto> getDashAllActionResult(SearchParam searchParam);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/25
+     * @Param: searchParam, services, appTypes
+     * @return: SearchParam
+     * @Descripation: setSysDashFilter
+     */
+    SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: dashSysStageVal
+     * @return: String
+     * @Descripation: getStageIdByJspClickVal
+     */
+    String getStageIdByJspClickVal(String dashSysStageVal);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountParam
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailQueryResult
+     */
+    SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailQueryResult(SearchParam searchCountParam);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchResult
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailOtherData
+     */
+    SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailOtherData(SearchResult<DashAllGrpAppQueryDto> searchResult);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountResult, serviceOption
+     * @return: List<DashStageCircleKpiDto>
+     * @Descripation: getDashStageSvcKpiShow
+     */
+    List<DashStageCircleKpiDto> getDashStageSvcKpiShow(SearchResult<DashAllActionAppQueryDto> searchCountResult, List<SelectOption> serviceOption);
 }

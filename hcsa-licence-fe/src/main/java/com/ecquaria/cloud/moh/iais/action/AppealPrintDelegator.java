@@ -120,11 +120,13 @@ public class AppealPrintDelegator {
 
 
     private void printCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessPrint");
     }
 
     private void printViewCessation(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
         bpc.request.setAttribute("crud_action_type","cessViewPage");
     }

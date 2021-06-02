@@ -150,4 +150,12 @@ public class HcsaConfigMainClientFallback implements HcsaConfigMainClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<HcsaServiceDto>> getActiveServices() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

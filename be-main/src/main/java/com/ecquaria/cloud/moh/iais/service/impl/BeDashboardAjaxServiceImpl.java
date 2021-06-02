@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAppDetailsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
@@ -24,11 +25,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQue
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
@@ -42,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +85,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Autowired
     private IntraDashboardClient intraDashboardClient;
+
+    @Autowired
+    private OrganizationMainClient organizationMainClient;
 
     @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
@@ -775,6 +782,74 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashAppReplyAjax")
     private SearchResult<DashReplyAjaxQueryDto> getReplyAjaxResultByParam(SearchParam searchParam) {
         return intraDashboardClient.searchDashReplyPoolDropResult(searchParam).getEntity();
+    }
+
+    @Override
+    @SearchTrack(catalog = "intraDashboardQuery", key = "dashSystemDetailAjax")
+    public SearchResult<DashAppDetailsQueryDto> getDashAllActionResult(SearchParam searchParam) {
+        return intraDashboardClient.searchDashAppDetailsResult(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<DashAppDetailsQueryDto> setDashSysDetailsDropOtherData(SearchResult<DashAppDetailsQueryDto> searchResult) {
+        if(searchResult != null) {
+            List<DashAppDetailsQueryDto> dashAppDetailsQueryDtos = searchResult.getRows();
+            if(!IaisCommonUtils.isEmpty(dashAppDetailsQueryDtos)) {
+                for(DashAppDetailsQueryDto dashAppDetailsQueryDto : dashAppDetailsQueryDtos) {
+                    if(dashAppDetailsQueryDto != null) {
+                        //set officer's name
+                        String userId = dashAppDetailsQueryDto.getUserId();
+                        if(StringUtil.isEmpty(userId)) {
+                            dashAppDetailsQueryDto.setAppOwner("Pending Assignment");
+                        } else {
+                            OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(userId).getEntity();
+                            if(orgUserDto != null) {
+                                dashAppDetailsQueryDto.setAppOwner(orgUserDto.getDisplayName());
+                            }
+                        }
+                        //set app appType
+                        String appType = dashAppDetailsQueryDto.getAppType();
+                        dashAppDetailsQueryDto.setAppTypeStrShow(MasterCodeUtil.getCodeDesc(appType));
+                        //set service name
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(dashAppDetailsQueryDto.getSvcCode());
+                        if(hcsaServiceDto != null) {
+                            dashAppDetailsQueryDto.setServiceName(hcsaServiceDto.getSvcName());
+                            //set all stage kpi
+                            HcsaSvcKpiDto hcsaSvcKpiDto = hcsaConfigMainClient.searchKpiResult(hcsaServiceDto.getSvcCode(), appType).getEntity();
+                            dashAppDetailsQueryDto = setSumKpiByHcsaSvcKpiDto(hcsaSvcKpiDto, dashAppDetailsQueryDto);
+                        }
+                        //set kpi color
+                        String color = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+                        List<TaskDto> taskDtos = organizationMainClient.getCurrTaskByRefNo(dashAppDetailsQueryDto.getId()).getEntity();
+                        if(!IaisCommonUtils.isEmpty(taskDtos)) {
+                            TaskDto taskDto = taskDtos.get(0);
+                            color = getKpiColorByTask(taskDto);
+                        }
+                        dashAppDetailsQueryDto.setKpiColor(color);
+                    }
+                }
+            }
+        }
+
+        return searchResult;
+    }
+
+    private DashAppDetailsQueryDto setSumKpiByHcsaSvcKpiDto(HcsaSvcKpiDto hcsaSvcKpiDto, DashAppDetailsQueryDto dashAppDetailsQueryDto) {
+        dashAppDetailsQueryDto.setAllStageSumKpi(0 + "");
+        if(hcsaSvcKpiDto != null) {
+            Map<String, Integer> stageIdKpi = hcsaSvcKpiDto.getStageIdKpi();
+            if(stageIdKpi != null) {
+                int sumKpi = 0;
+                for(Map.Entry<String, Integer> map : stageIdKpi.entrySet()) {
+                    Integer kpi = map.getValue();
+                    if(kpi != null) {
+                        sumKpi = sumKpi + kpi;
+                    }
+                }
+                dashAppDetailsQueryDto.setAllStageSumKpi(sumKpi + "");
+            }
+        }
+        return dashAppDetailsQueryDto;
     }
 
     @SearchTrack(catalog = "intraDashboardQuery", key = "dashAssignMeAjax")

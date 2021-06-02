@@ -82,4 +82,7 @@ public interface HcsaConfigMainClient {
 
     @PostMapping(value = "/hcsa-config/get-risk-score-lic-tenure", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaRiskScoreDto> getHcsaRiskScoreDtoByHcsaRiskScoreDto(@RequestBody HcsaRiskScoreDto hcsaRiskScoreDto);
+
+    @GetMapping(value = "/iais-hcsa-service/active-service", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaServiceDto>> getActiveServices();
 }

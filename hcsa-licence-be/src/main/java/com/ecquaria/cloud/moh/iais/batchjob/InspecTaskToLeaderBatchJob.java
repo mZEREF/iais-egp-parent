@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -114,15 +115,16 @@ public class InspecTaskToLeaderBatchJob {
                     }
                     String status = appInspectionStatusDtos.get(i).getStatus();
                     String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
-                    //SKIP Inspection
+                    //SKIP Inspection or in ASO/PSO and fast tracking
                     if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)){
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
                                 InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
+                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status) ||
+                                ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
                             report = report + 1;
                         }
                         continue;
-                    //in ASO/PSO
+                        //in ASO/PSO
                     } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
                         continue;
                     }
@@ -135,7 +137,7 @@ public class InspecTaskToLeaderBatchJob {
                         createTask(0, 1, allApp, fastInspectionList);
                         appInspectionStatusDtos.remove(i);
                         i--;
-                    //Other Application
+                        //Other Application
                     } else {
                         if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
                             leadTask = leadTask + 1;

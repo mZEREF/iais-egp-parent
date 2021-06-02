@@ -125,10 +125,10 @@ public class RetriggerGiroPaymentDelegator {
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
         }
-        if(!StringUtil.isEmpty(appType)){
-            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                requestForChangeService.svcDocToPresmise(appSubmissionDto);
-            }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            requestForChangeService.svcDocToPresmise(appSubmissionDto);
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+            requestForChangeService.svcDocToPrimaryForGiroDeduction(appSubmissionDto);
         }
         //set doc name
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
@@ -155,10 +155,12 @@ public class RetriggerGiroPaymentDelegator {
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
             }
 
-            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+//            List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
+            List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 String currentSvcId = appSvcRelatedInfoDto.getServiceId();
-                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
+//                serviceConfigIds.add(appSvcRelatedInfoDto.getServiceId());
+                hcsaServiceDtoList.add(HcsaServiceCacheHelper.getServiceById(currentSvcId));
                 String relLicenceNo = appSvcRelatedInfoDto.getRelLicenceNo();
                 if(!StringUtil.isEmpty(relLicenceNo)){
                     LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(relLicenceNo);
@@ -196,7 +198,7 @@ public class RetriggerGiroPaymentDelegator {
                 appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
             }
-            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
+//            List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceDtosById(serviceConfigIds);
             //do sort
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
                 hcsaServiceDtoList = NewApplicationHelper.sortHcsaServiceDto(hcsaServiceDtoList);

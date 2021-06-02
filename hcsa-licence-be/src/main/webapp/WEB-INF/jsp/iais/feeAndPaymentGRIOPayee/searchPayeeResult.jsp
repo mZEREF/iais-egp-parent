@@ -37,7 +37,7 @@
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="cusRefNo" maxlength="12"
+                                           name="cusRefNo" maxlength="35"
                                            value="${cusRefNo}"/>
                                 </label>
                             </iais:value>

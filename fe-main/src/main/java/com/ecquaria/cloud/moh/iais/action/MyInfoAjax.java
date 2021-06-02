@@ -2,8 +2,15 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.AccessTokenDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 
@@ -13,14 +20,22 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.Signature;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.HttpClientErrorException;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
@@ -62,6 +77,106 @@ public class MyInfoAjax {
 		return null;
 	}
 
+	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix){
+		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
+			log.info("-----------myinfo.true.open is No-------");
+			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
+			return ;
+		}
+		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
+    	LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		if(loginContext != null){
+			String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
+			String nric = loginContext.getNricNum();
+			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric)); ;
+			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
+			if(takenStartTime == null){
+				ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
+			}else {
+				long takenStartTimeL = Long.parseLong(takenStartTime);
+				long time = new Date().getTime();
+				if(time - takenStartTimeL < MyinfoUtil.TAKEN_DURATION_TIME){
+					ParamUtil.setSessionAttr(request,"verifyTakenConfiguration",takenStartTime);
+				}else {
+					ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
+					setTakenSession(MyinfoUtil.clearSessionForMyInfoTaken(nric),request);
+				}
+			}
+		}
+	}
+
+	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix){
+		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
+			log.info("-----------myinfo.true.open is No-------");
+			return null;
+		}
+		HttpServletResponse response =  bpc.response;
+		HttpServletRequest request = bpc.request;
+		if(HttpServletResponse.SC_MOVED_TEMPORARILY == response.getStatus()){
+			String code = ParamUtil.getString(request,"code");
+			String state = ParamUtil.getString(request,"state");
+			String error = ParamUtil.getString(request,"error");
+			String errorDescription = ParamUtil.getString(request,"error_description");
+			if("500".equalsIgnoreCase(error)){
+				log.info("Unknown or other server side errors");
+			}else if("503".equalsIgnoreCase(error)){
+				log.info("MyInfo under maintenance. Error description will also be given in error_description parameter");
+			}else if("access_denied".equalsIgnoreCase(error)){
+				log.info("When user did not give consent, refer to error_description parameter for the reason");
+				log.info(errorDescription);
+			}else {
+				//Assembly data acquisition get taken
+				LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+				if(loginContext != null){
+					String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
+					MyInfoTakenDto accessTokenDto =  getTakenCallMyInfo(code,loginContext.getNricNum(),redirectUri);
+					if(accessTokenDto != null){
+						setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(loginContext.getNricNum(),accessTokenDto.getToken_type(),accessTokenDto.getAccess_token()),request);
+						MyInfoDto myInfoDto =  getMyInfoByTrue(loginContext.getNricNum(),accessTokenDto.getToken_type(),accessTokenDto.getAccess_token());
+						return myInfoDto;
+					}else {
+						log.info("------------The myinfo fetch taken connection failed-----------");
+					}
+				}else {
+					log.info("-----------prepareGetTakenFromMyInfo no find loginContext-----------------");
+				}
+
+			}
+		}
+
+		return null;
+	}
+
+	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){
+		String grantType = ConfigHelper.getString("myinfo.taken.grant.type");
+		String   priclientkey = ConfigHelper.getString("myinfo.taken.priclientkey");
+		String	clientId = ConfigHelper.getString("myinfo.taken.client.id");
+		String clientSecret =  ConfigHelper.getString("myinfo.taken.client.secret");
+		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
+		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
+		return myInfoTakenDto;
+	}
+	public MyInfoDto getMyInfo(String NircNum, HttpServletRequest request){
+		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		String taken = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+NircNum);
+		String takenType = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN+NircNum+MyinfoUtil.KEY_TAKEN_TYPE);
+		MyInfoDto myInfoDto;
+		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
+			myInfoDto = getMyInfoByTrue(NircNum,takenType,taken);
+		}else {
+			myInfoDto = getMyInfo(NircNum);
+		}
+		return myInfoDto;
+	}
+
+
+	public void  setTakenSession(Map<String,String> map,HttpServletRequest request){
+		for (Map.Entry<String, String> m : map.entrySet()) {
+           ParamUtil.setSessionAttr(request,m.getKey(),m.getValue());
+		}
+	}
 	private  MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
 		if (StringUtil.isEmpty(response))
 			return dto;
@@ -181,6 +296,44 @@ public class MyInfoAjax {
 	private List<String> getAttrList() {
 		List<String> list = Arrays.asList(ss);
 		return list;
+	}
+
+	public String getAuthoriseApiUrl(String redirectUri,String nric){
+		String authApiUrl                   = ConfigHelper.getString("myinfo.authorise.url");
+		String	clientId 					= ConfigHelper.getString("myinfo.authorise.client.id");
+		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
+		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),purpose,nric,redirectUri);
+	}
+
+	public MyInfoDto getMyInfoByTrue(String nric,String takenType,String taken){
+		log.info("-------getMyInfoByTrue start ---------");
+		String keyStore = ConfigHelper.getString("myinfo.person.priclientkey");
+		String	clientId = ConfigHelper.getString("myinfo.person.client.id");
+		String appid = ConfigHelper.getString("myinfo.application.id");
+		String  uri = ConfigHelper.getString("myinfo.person.url")+nric+'/';
+		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
+		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,appid,uri,takenType,taken);
+		Map <String,Object> param = IaisCommonUtils.genNewHashMap();
+		param.put(AcraConsts.CLIENT_ID, clientId);
+		param.put(AcraConsts.ATTRIBUTE, attrs);
+		ResponseEntity<String> resEntity;
+		try {
+			resEntity = IaisCommonUtils.callEicGatewayWithParam(uri, HttpMethod.GET, param, MediaType.APPLICATION_JSON, null,
+					authorizationHeader, null, null, String.class);
+			// HttpStatus httpStatus = resEntity.getStatusCode();
+			String responseStr = MyinfoUtil.decodeEncipheredData(resEntity.getBody());
+			MyInfoDto dto = new MyInfoDto();
+			dto = updateDtoFromResponse(dto, responseStr);
+			log.info(JsonUtil.parseToJson(dto));
+			return dto;
+		}catch (HttpClientErrorException e){
+			// resEntity = ResponseEntity.badRequest().body(e.getResponseBodyAsString());
+			// httpStatus = e.getStatusCode();
+			log.error(e.getMessage(), e);
+		}catch (Exception e){
+			log.error(e.getMessage(), e);
+		}
+        return null;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ import java.util.Map;
 public class FePrintViewDelegator {
     private final static String SESSION_VIEW_SUBMISSONS = "viewSubmissons";
     private final static  String ATTR_PRINT_VIEW = "printView";
+    private final static String LICENCE_VIEW="licenceView";
 
     @Autowired
     AppSubmissionService appSubmissionService;
@@ -47,13 +50,42 @@ public class FePrintViewDelegator {
         log.debug(StringUtil.changeForLog("print view doStart start ..."));
         //remove session
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, null);
-
+        // View and Print
+        String viewPrint = (String) ParamUtil.getSessionAttr(bpc.request,"viewPrint");
         String appType = ParamUtil.getString(bpc.request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        String licenceView = bpc.request.getParameter(LICENCE_VIEW);
+        if(LICENCE_VIEW.equals(licenceView)){
+            bpc.request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
+        }
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
-            if(appSubmissionDto != null){
+            if (appSubmissionDto != null) {
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                    String rfc_eqHciNameChange = bpc.request.getParameter("RFC_eqHciNameChange");
+                    if("RFC_eqHciNameChange".equals(rfc_eqHciNameChange)){
+                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        if(StringUtil.isEmpty(viewPrint)){
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                            appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
+                        }
+                    }
+                }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
+                    RenewDto renewDto=new RenewDto();
+                    renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
+                    bpc.request.setAttribute("renewDto",renewDto);
+                } else {
+                    // View and Print
+                    if (StringUtil.isEmpty(viewPrint)) {
+                        appSubmissionDto.setAppDeclarationMessageDto(
+                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                        appSubmissionDto.setAppDeclarationDocDtos(
+                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                    }
+                }
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
@@ -61,6 +93,14 @@ public class FePrintViewDelegator {
             if(renewDto != null){
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+                    if(appSubmissionDtos.size()==1){
+                        if (StringUtil.isEmpty(viewPrint)) {
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                            appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
+                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
+                            appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+                        }
+                    }
                     appSubmissionDtoList.addAll(appSubmissionDtos);
                 }
             }
@@ -70,8 +110,8 @@ public class FePrintViewDelegator {
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint", "Y");
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
-
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }
 

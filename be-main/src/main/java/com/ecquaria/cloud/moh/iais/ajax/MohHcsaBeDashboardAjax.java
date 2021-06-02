@@ -20,6 +20,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAppDetailsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashKpiPoolAjaxQuery;
@@ -35,6 +37,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BeDashboardAjaxService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
@@ -161,6 +166,63 @@ public class MohHcsaBeDashboardAjax {
             map = setWorkTeamPoolUrl(map);
         }
         return map;
+    }
+
+    @RequestMapping(value = "dashSysDetail.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> dashSysDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+        List<String> serviceList = (List<String>)ParamUtil.getSessionAttr(request, "dashSvcCheckList");
+        List<String> appTypeList = (List<String>)ParamUtil.getSessionAttr(request, "dashAppTypeCheckList");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
+        String groupId = request.getParameter("groupId");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(groupId)){
+            SearchParam searchParam = new SearchParam(DashAppDetailsQueryDto.class.getName());
+            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageNo(1);
+            searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+            //set filter
+            searchParam = dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup);
+            //search
+            QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetailAjax", searchParam);
+            SearchResult<DashAppDetailsQueryDto> searchResult = beDashboardAjaxService.getDashAllActionResult(searchParam);
+            //set other data
+            searchResult = beDashboardAjaxService.setDashSysDetailsDropOtherData(searchResult);
+
+            map.put("result", "Success");
+            map.put("ajaxResult", searchResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+    private SearchParam dashSysDetailDropFilter(SearchParam searchParam, String groupId, List<String> serviceList, List<String> appTypeList,
+                                                SearchParam searchParamGroup) {
+        //filter appGroup NO.
+        searchParam.addFilter("groupId", groupId, true);
+        if(serviceList != null && serviceList.size() > 0) {
+            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", serviceList.size());
+            searchParam.addParam("svc_codes", serviceStr);
+            for(int i = 0; i < serviceList.size(); i++){
+                searchParam.addFilter("viewApp.SVC_CODE" + i, serviceList.get(i));
+            }
+        }
+        if(appTypeList != null && appTypeList.size() > 0) {
+            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypeList.size());
+            searchParam.addParam("application_types", appTypeStr);
+            for(int i = 0; i < appTypeList.size(); i++){
+                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypeList.get(i));
+            }
+        }
+        Map<String, Object> filters = searchParamGroup.getFilters();
+        if(filters != null) {
+            String stage_id = (String) filters.get("stage_id");
+            if(!StringUtil.isEmpty(stage_id)) {
+                searchParam.addFilter("stage_id", stage_id, true);
+            }
+        }
+        return searchParam;
     }
 
     private Map<String, Object> setDashWaitApproveUrl(Map<String, Object> map, HttpServletRequest request, LoginContext loginContext) {
@@ -399,6 +461,52 @@ public class MohHcsaBeDashboardAjax {
         return map;
     }
 
+    @RequestMapping(value = "dashRole.switch", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> dashChangeRoleSwitch(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>(1);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        PoolRoleCheckDto poolRoleCheckDto = (PoolRoleCheckDto)ParamUtil.getSessionAttr(request, "dashRoleCheckDto");
+        String roleSelectVal = request.getParameter("roleSelectVal");
+        map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+        if(loginContext != null && poolRoleCheckDto != null) {
+            String curRoleId = loginContext.getCurRoleId();
+            if(!StringUtil.isEmpty(roleSelectVal)) {
+                Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
+                String roleId = getCheckRoleIdByMap(roleSelectVal, roleMap);
+                if(!StringUtil.isEmpty(curRoleId)) {
+                    if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                        if (curRoleId.equals(roleId)) {
+                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                        } else {
+                            map.put("dashRoleSwitchFlag", AppConsts.FAIL);
+                        }
+                    } else if(!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
+                        if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
+                            map.put("dashRoleSwitchFlag", AppConsts.SUCCESS);
+                        } else {
+                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
+                        }
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
+    private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {
+        String roleId = "";
+        if(roleMap != null && !StringUtil.isEmpty(roleIdCheck)){
+            roleId = roleMap.get(roleIdCheck);
+            if(!StringUtil.isEmpty(roleId)){
+                return roleId;
+            } else {
+                return "";
+            }
+        }
+        return roleId;
+    }
+
     @RequestMapping(value = "applicationView.show", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> dashApplicationView(HttpServletRequest request, HttpServletResponse response) {
@@ -543,6 +651,8 @@ public class MohHcsaBeDashboardAjax {
                 appCessHciDto.setReason(reason);
                 appCessHciDto.setOtherReason(otherReason);
                 appCessHciDto.setEffectiveDate(effectiveDate);
+                appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
+                appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
                 Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
                 MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
                 Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();

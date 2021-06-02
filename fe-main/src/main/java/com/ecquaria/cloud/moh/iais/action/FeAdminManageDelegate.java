@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,8 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
+        myInfoAjax.noTakenCallMyInfo(bpc,"MohFeAdminUserManagement");
+        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement");
     }
 
     /**
@@ -68,7 +71,8 @@ public class FeAdminManageDelegate {
     public void preparePage(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+        ParamUtil.setSessionAttr(bpc.request, MyinfoUtil.MYINFODTO_REFRESH + loginContext.getNricNum(), null);
+        if (loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
             String organizationId = loginContext.getOrgId();
             SearchParam searchParam = new SearchParam(FeUserQueryDto.class.getName());
             searchParam.setSort("ID", SearchParam.ASCENDING);
@@ -162,9 +166,7 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
-        }
-        else if("save".equalsIgnoreCase(action)){
-
+        } else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
@@ -225,12 +227,13 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
                 LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-                MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+                MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
                 boolean amendLicensee = (needRefersh && licenseeDto!=null);
-                if( !needRefersh){
+                if (!needRefersh) {
                     myInfoDto = null;
                 }
+                log.info(StringUtil.changeForLog("AmendLicensee : " + amendLicensee + " - NeedRefersh : " + needRefersh));
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
@@ -254,16 +257,20 @@ public class FeAdminManageDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, "inter_user_attr");
         if(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber())){
-            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum());
+            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),request);
             if(myInfoDto != null){
                 if(!myInfoDto.isServiceDown()){
                     feUserDto.setEmail(myInfoDto.getEmail());
                     feUserDto.setMobileNo(myInfoDto.getMobileNo());
                     feUserDto.setDisplayName(myInfoDto.getUserName());
                     ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
+                    ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum(),myInfoDto);
                 }else {
                     ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
                 }
+            }
+            if (myInfoDto != null && !myInfoDto.isServiceDown()) {
+                ParamUtil.setRequestAttr(request,"fromMyinfo", "Y");
             }
         }else {
             log.info("------- Illegal operation get Myinfo ---------");
