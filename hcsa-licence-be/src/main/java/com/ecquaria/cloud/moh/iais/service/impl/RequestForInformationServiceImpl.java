@@ -311,19 +311,19 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        if(new File(inSharedPath+File.separator).isDirectory()){
-            File[] files = new File(inSharedPath+File.separator).listFiles();
-            for(File fil:files){
-                if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
-                    String name = fil.getName();
-                    String path = fil.getPath();
-                    String relPath=name;
-                    HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
-                    map.put("fileName",name);
-                    map.put("filePath",relPath);
+        List<ProcessFileTrackDto> processFileTrackDtos=systemBeLicClient.getFileTypeAndStatus(RequestForInformationConstants.RFI_CLOSE,ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();
+        if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
+            log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>"+processFileTrackDtos.size()));
+            for (ProcessFileTrackDto v : processFileTrackDtos) {
+                File fil = new File(inSharedPath + File.separator + v.getFileName());
+                if(fil.exists()&&fil.isFile()){
+                    if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
+                        String name = fil.getName();
+                        String path = fil.getPath();
+                        HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
+                        map.put("fileName",name);
+                        map.put("filePath", name);
 
-                    ProcessFileTrackDto processFileTrackDto = systemBeLicClient.isFileExistence(map).getEntity();
-                    if(processFileTrackDto!=null){
                         try (InputStream is= Files.newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
@@ -344,7 +344,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                             log.error(e.getMessage(),e);
                             continue;
                         }
-                        String refId = processFileTrackDto.getRefId();
+                        String refId = v.getRefId();
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
                         BufferedOutputStream bos=null;
@@ -361,13 +361,14 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                         try {
                             String submissionId = generateIdClient.getSeqId().getEntity();
-                            this.download(processFileTrackDto,name,refId,submissionId);
+                            this.download(v,name,refId,submissionId);
                             //save success
                         }catch (Exception e){
                             //save bad
 
                         }
                     }
+
                 }
             }
         }
