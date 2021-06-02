@@ -11,16 +11,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,6 +59,12 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
     @Autowired
     private ApplicationService applicationService;
 
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private OrganizationClient organizationClient;
+
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
@@ -66,10 +75,16 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             List<ApplicationDto> applicationDtoList = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION).getEntity();
             if(!IaisCommonUtils.isEmpty(applicationDtoList)){
                 for(ApplicationDto applicationDto : applicationDtoList){
-                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
-                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    if(appPremisesRecommendationDto != null) {
-                        appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                    try {
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                        if(appPremisesRecommendationDto != null) {
+                            appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
+                        }
+                    } catch (Exception e) {
+                        JobLogger.log(e);
+                        log.error(e.getMessage(), e);
+                        continue;
                     }
                 }
             }
@@ -78,20 +93,30 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             }
 
             for(AppPremisesRecommendationDto aRecoDto:appPremisesRecommendationDtos){
-                if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
-                    Date today = new Date();
-                    String inspecDateStr = Formatter.formatDateTime(aRecoDto.getRecomInDate(), Formatter.DATE);
-                    String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
-                    if(todayStr.equals(inspecDateStr) || today.after(aRecoDto.getRecomInDate())) {
-                        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
-                        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
-                        if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
-                            log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
-                            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
-                            applicationService.updateFEApplicaiton(applicationDto1);
-                            updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                try {
+                    if(aRecoDto.getRecomInDate() != null && aRecoDto.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
+                        Date today = new Date();
+                        String inspecDateStr = Formatter.formatDateTime(aRecoDto.getRecomInDate(), Formatter.DATE);
+                        String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
+                        if(todayStr.equals(inspecDateStr) || today.after(aRecoDto.getRecomInDate())) {
+                            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
+                            AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
+                            if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
+                                log.info(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                                JobLogger.log(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                                ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
+                                applicationService.updateFEApplicaiton(applicationDto1);
+                                updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                                //update Tasks' assign date
+                                List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(aRecoDto.getAppPremCorreId()).getEntity();
+                                updateTaskAssignDate(taskDtos);
+                            }
                         }
                     }
+                } catch (Exception e) {
+                    JobLogger.log(e);
+                    log.error(e.getMessage(), e);
+                    continue;
                 }
             }
             return ReturnT.SUCCESS;
@@ -100,6 +125,21 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             JobLogger.log(e);
             return ReturnT.FAIL;
         }
+    }
+
+    private void updateTaskAssignDate(List<TaskDto> taskDtos) {
+        log.info(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date"));
+        JobLogger.log(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date"));
+        if(!IaisCommonUtils.isEmpty(taskDtos)) {
+            for(TaskDto taskDto : taskDtos) {
+                if(taskDto != null) {
+                    taskDto.setDateAssigned(new Date());
+                    taskService.updateTask(taskDto);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date End!!!!!"));
+        JobLogger.log(StringUtil.changeForLog("Pending Inspection Update Tasks' Assign date End!!!!!"));
     }
 
     private void logAbout(String methodName){
