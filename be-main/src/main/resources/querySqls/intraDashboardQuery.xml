@@ -287,7 +287,7 @@
             FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
-            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_no??> and charindex(:application_no, T7.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -308,7 +308,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
-            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
