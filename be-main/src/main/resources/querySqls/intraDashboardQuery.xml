@@ -505,7 +505,7 @@
             SELECT DISTINCT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE, viewApp.STATUS, viewApp.SERVICE_ID, viewApp.APP_TYPE,
             viewApp.APPLICATION_ID, viewApp.APPLICATION_NO, isnull (viewApp.KPI,0) as KPI, isnull (viewApp.RMD_THRESHOLD,0) as RMD_THRESHOLD,
             viewApp.ROLE_ID, isnull (viewApp.SLA_DAYS,0) as SLA_DAYS, viewApp.STAGE_ID, viewApp.SUB_STAGE, viewApp.ACTION_BY, viewApp.act_time,
-            viewApp.user_id, isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
+            isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
             FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW viewApp
             WHERE 1 = 1
             <#if application_types??> and ${application_types}</#if>
@@ -513,7 +513,6 @@
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and viewApp.ROLE_ID= :role_id</#if>
             <#if action_by??> and viewApp.ACTION_BY= :action_by</#if>
-            <#if user_id??> and viewApp.user_id= :user_id</#if>
             <#if app_grp_id??> and viewApp.APP_GRP_ID= :app_grp_id</#if>
             <#if stage_id??> and (CONVERT(NVARCHAR(36), viewApp.STAGE_ID) = :stage_id or CONVERT(NVARCHAR(36), viewApp.SUB_STAGE) = :stage_id)</#if>
         ]]>
