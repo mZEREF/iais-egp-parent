@@ -24,11 +24,11 @@
                 <div class="intranet-content">
                     <div class="row">
                         <div class="col-md-4 col-xs-12">
-                            <a data-tab="#" href="javascript:;">
-                                <div class="cursor-default" id="canvas-holder">
+                            <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                <div id="canvas-holder">
                                     <canvas id="overAllCanvas"></canvas>
                                 </div>
-                                <p class="dashboard-txt main-chart-text cursor-default font-color-black"> Overall</p>
+                                <p class="dashboard-txt main-chart-text font-color-black"> Overall</p>
                             </a>
                         </div>
                         <div class="col-md-8 col-xs-12">
@@ -36,7 +36,7 @@
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                     <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                        <iais:select cssClass="" name="appType" firstOption="" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
+                                        <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
                                     </div>
                                 </div>
                                 <div class="form-group">

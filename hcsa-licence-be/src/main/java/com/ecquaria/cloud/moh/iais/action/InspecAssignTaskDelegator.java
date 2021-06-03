@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -115,6 +116,9 @@ public class InspecAssignTaskDelegator {
             List<SelectOption> commonPoolRoleIds = poolRoleCheckDto.getRoleOptions();
             GroupRoleFieldDto groupRoleFieldDto = inspectionAssignTaskService.getGroupRoleField(loginContext);
             //get task by user workGroupId
+            if (loginContext == null) {
+                throw new IaisRuntimeException("Login context Null");
+            }
             List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
             List<String> workGroupIds = new ArrayList<>(loginContext.getWrkGrpIds());
             int workGroupIdsSize = 0;
@@ -378,9 +382,10 @@ public class InspecAssignTaskDelegator {
         String roleIdCheck = ParamUtil.getRequestString(bpc.request, "commonRoleId");
         Map<String, String> roleMap = poolRoleCheckDto.getRoleMap();
         String roleId = getCheckRoleIdByMap(roleIdCheck, roleMap);
-        if(loginContext != null) {
-            loginContext.setCurRoleId(roleId);
+        if (loginContext == null) {
+            throw new IaisRuntimeException("Login context Null");
         }
+        loginContext.setCurRoleId(roleId);
         if(!StringUtil.isEmpty(roleId)){
             poolRoleCheckDto.setCheckCurRole(roleIdCheck);
             ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);

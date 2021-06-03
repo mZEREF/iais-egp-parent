@@ -724,7 +724,7 @@
         var appealRecommendation = $("[name='appealRecommendationValues']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         var isAppealType = $('#isAppealType').val();
-        if((('other' == recommendation) && !isAppealType) || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
+        if((('other' == recommendation) && ('false' == isAppealType)) || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
             if('${applicationViewDto.applicationDto.status}' != 'APST014'){
                 $('#recommendationOtherDropdown').removeClass('hidden');
             }
@@ -894,18 +894,18 @@
         showWaiting();
         var data = {"repoId":verify};
         $.post(
-            "${pageContext.request.contextPath}/verifyFileExist",
-            data,
-            function (data) {
-                if(data != null ){
-                    if(data.verify == 'N'){
-                        $('#supportReport').modal('show');
-                    }else {
-                        $("#"+verify+"Down").click();
+                "${pageContext.request.contextPath}/verifyFileExist",
+                data,
+                function (data) {
+                    if(data != null ){
+                        if(data.verify == 'N'){
+                            $('#supportReport').modal('show');
+                        }else {
+                            $("#"+verify+"Down").click();
+                        }
+                        dismissWaiting();
                     }
-                    dismissWaiting();
                 }
-            }
         )
     }
 

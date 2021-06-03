@@ -13,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -53,7 +52,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -71,7 +69,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -155,7 +152,7 @@ import java.util.UUID;
 public class NewApplicationDelegator {
     public static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String PREMISESTYPE = "premisesType";
-    private static final String HCSASERVICEDTO = "hcsaServiceDto";
+    public static final String HCSASERVICEDTO = "hcsaServiceDto";
     public static final String CURRENTSERVICEID = "currentServiceId";
     public static final String CURRENTSVCCODE = "currentSvcCode";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
@@ -682,15 +679,22 @@ public class NewApplicationDelegator {
         }*/
         appSubmissionDto.setMultipleGrpPrimaryDoc(reloadPrimaryDocMap);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
-                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                    boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
-                    if(eqHciNameChange){
-                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+            if(!NewApplicationHelper.checkIsRfi(bpc.request)){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(oldAppGrpPremisesDtoList!=null&& appGrpPremisesDtoList!=null){
+                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDtoList.get(i));
+                        if(eqHciNameChange){
+                            bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        }
                     }
+                }
+            }else {
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                 }
             }
         }
@@ -1468,13 +1472,12 @@ public class NewApplicationDelegator {
     }
 
     public void inboxToPreview(BaseProcessClass bpc) throws Exception {
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        // clear session
+        appSubmissionService.clearSession(bpc.request);
         // View and Print
         ParamUtil.setSessionAttr(bpc.request, "viewPrint","Y");
-        bpc.request.getSession().removeAttribute("renewDto");
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         if (!StringUtil.isEmpty(appNo)) {
-            clearSessionForShowAppDetail(bpc.request);
             ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(applicationDto != null) {
                 if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
@@ -1556,25 +1559,26 @@ public class NewApplicationDelegator {
                     appCessHciDto.setTransferDetail(appCessMiscDto.getTransferDetail());
                     appCessHciDto.setTransferredWhere(appCessMiscDto.getTransferredWhere());
                     if(patNeedTrans){
-                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatHciName(patTransTo);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
-                            String hciAddressPat = premisesDto.getHciAddress();
-                            String hciNamePat = premisesDto.getHciName();
-                            String hciCodePat= premisesDto.getHciCode();
-                            appCessHciDto.setHciNamePat(hciNamePat);
-                            appCessHciDto.setHciAddressPat(hciAddressPat);
-                            appCessHciDto.setHciCodePat(hciCodePat);
-                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatRegNo(patTransTo);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
-                            appCessHciDto.setPatOthers(patTransTo);
-                            appCessHciDto.setMobileNo(mobileNo);
-                            appCessHciDto.setEmailAddress(emailAddress);
-                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
-                        }
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatHciName(patTransTo);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(patTransTo);
+//                            String hciAddressPat = premisesDto.getHciAddress();
+//                            String hciNamePat = premisesDto.getHciName();
+//                            String hciCodePat= premisesDto.getHciCode();
+//                            appCessHciDto.setHciNamePat(hciNamePat);
+//                            appCessHciDto.setHciAddressPat(hciAddressPat);
+//                            appCessHciDto.setHciCodePat(hciCodePat);
+//                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatRegNo(patTransTo);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+//                            appCessHciDto.setPatOthers(patTransTo);
+//                            appCessHciDto.setMobileNo(mobileNo);
+//                            appCessHciDto.setEmailAddress(emailAddress);
+//                            appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+//                        }
                     }else {
                         String remarks = appCessMiscDto.getPatNoReason();
                         appCessHciDto.setPatNoRemarks(remarks);
@@ -1671,9 +1675,6 @@ public class NewApplicationDelegator {
         }
     }
 
-    private void clearSessionForShowAppDetail(HttpServletRequest request){
-        ParamUtil.setSessionAttr(request, HCSASERVICEDTO, null);
-    }
     private void premiseView(AppSubmissionDto appSubmissionDto,ApplicationDto applicationDto,HttpServletRequest request) throws CloneNotSupportedException {
         if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())

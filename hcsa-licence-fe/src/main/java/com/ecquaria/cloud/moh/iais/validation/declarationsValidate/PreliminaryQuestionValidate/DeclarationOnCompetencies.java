@@ -21,8 +21,9 @@ public class DeclarationOnCompetencies implements Declarations {
         }
         boolean flag=false;
         String competenciesItem1 = appDeclarationMessageDto.getCompetenciesItem1();
+        String err06 = MessageUtil.replaceMessage("GENERAL_ERR0006","this","field");
         if(StringUtil.isEmpty(competenciesItem1)){
-            map.put("competenciesItem1", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("competenciesItem1", err06);
         }else {
             if("1".equals(competenciesItem1)){
                 flag=true;
@@ -30,7 +31,7 @@ public class DeclarationOnCompetencies implements Declarations {
         }
         String competenciesItem2 = appDeclarationMessageDto.getCompetenciesItem2();
         if(StringUtil.isEmpty(competenciesItem2)){
-            map.put("competenciesItem2", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("competenciesItem2", err06);
         }else {
             if("1".equals(competenciesItem2)){
                 flag=true;
@@ -38,7 +39,7 @@ public class DeclarationOnCompetencies implements Declarations {
         }
         String competenciesItem3 = appDeclarationMessageDto.getCompetenciesItem3();
         if(StringUtil.isEmpty(competenciesItem3)){
-            map.put("competenciesItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("competenciesItem3", err06);
         }else {
             if("1".equals(competenciesItem3)){
                 flag=true;
@@ -46,7 +47,7 @@ public class DeclarationOnCompetencies implements Declarations {
         }
         String competenciesRemark = appDeclarationMessageDto.getCompetenciesRemark();
         if(StringUtil.isEmpty(competenciesRemark)&&flag){
-            map.put("competenciesRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("competenciesRemark", err06);
         }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("competenciesRemark",general_err0041);

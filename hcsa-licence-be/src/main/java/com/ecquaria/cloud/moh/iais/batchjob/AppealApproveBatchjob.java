@@ -234,7 +234,7 @@ public class AppealApproveBatchjob {
                                    List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
                                    List<ApplicationGroupDto> appealApplicationGroupDtos,
                                    List<ApplicationGroupDto> rollBackApplicationGroupDtos,
-                                   AppealApproveDto appealApproveDto) throws Exception {
+                                   AppealApproveDto appealApproveDto) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is start ..."));
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
@@ -271,7 +271,7 @@ public class AppealApproveBatchjob {
                                       List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
                                       List<ApplicationGroupDto> appealApplicationGroupDtos,
                                       List<ApplicationGroupDto> rollBackApplicationGroupDtos,
-                                      AppealApproveDto appealApproveDto) throws Exception {
+                                      AppealApproveDto appealApproveDto) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is start ..."));
         ApplicationGroupDto applicationGroupDto = appealApproveDto.getAppealApplicationGroupDto();
         ApplicationDto appealApplicationDto = appealApproveDto.getAppealApplicationDto();
@@ -367,7 +367,7 @@ public class AppealApproveBatchjob {
     }
     private void applicationAddCGO(List<ApplicationDto> appealApplicaiton,List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
-                                   AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
+                                   AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is start ..."));
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
@@ -429,7 +429,7 @@ public class AppealApproveBatchjob {
     //sync hciName
     public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
-                                          AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
+                                          AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
@@ -570,7 +570,7 @@ public class AppealApproveBatchjob {
     }
     private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,
-                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) throws Exception {
+                               LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
         if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
             return;
@@ -636,7 +636,7 @@ public class AppealApproveBatchjob {
     }
     private void appealOther(List<ApplicationDto> appealApplicaiton,
                              List<ApplicationDto> rollBackApplication,
-                             ApplicationDto applicationDto) throws Exception {
+                             ApplicationDto applicationDto) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealOther is start ..."));
         if(applicationDto!=null){
             rollBackApplication.add(applicationDto);

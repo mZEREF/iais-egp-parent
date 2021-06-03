@@ -5,13 +5,13 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-<meta http-equiv="refresh" content="${GatewayConfig.refreshTime};url=${failUrl}">
+    <meta http-equiv="refresh" content="${GatewayConfig.refreshTime};url=${failUrl}">
 
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+    <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
     <webui:setLayout name="none"/>
 
-<title><egov-smc:commonLabel>MasterCard Payment Gateway</egov-smc:commonLabel></title>
+    <title><egov-smc:commonLabel>MasterCard Payment Gateway</egov-smc:commonLabel></title>
     <script src="https://js.stripe.com/v3/"></script>
 
 </head>
@@ -19,12 +19,11 @@
 <body class="3PP_body">
 
 <c:set var="coutSessionId" value="${CHECKOUT_SESSION_ID}"></c:set>
-<c:set var="failedUrl" value="${failUrl}"></c:set>
 
 <script >
     var stripe = Stripe("${GatewayConfig.stripePKey}");
     var cSessionId="${coutSessionId}";
-    var url="${failedUrl}";
+
     stripe.redirectToCheckout({
         // Make the id field from the Checkout Session creation API response
         // available to this file, so you can provide it as argument here
@@ -32,7 +31,6 @@
         sessionId: cSessionId
     }).then(function (result) {
         console.error(result.error.message);
-        window.location.href=url;
         // If `redirectToCheckout` fails due to a browser or network
         // error, display the localized error message to your customer
         // using `result.error.message`.

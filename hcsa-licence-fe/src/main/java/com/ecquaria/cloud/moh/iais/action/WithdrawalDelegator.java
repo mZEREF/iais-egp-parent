@@ -34,20 +34,20 @@ import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 /**
  * @Author: Hc
@@ -146,8 +146,8 @@ public class WithdrawalDelegator {
     private void getFileInfo(WithdrawnDto withdrawnDto, HttpServletRequest request){
         List<AppPremisesSpecialDocDto> viewDoc = withdrawnDto.getAppPremisesSpecialDocDto();
         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-        Map<String,File> map= IaisCommonUtils.genNewHashMap();
-        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+        HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
+        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
             if (viewDoc != null && !viewDoc.isEmpty()) {
                 for (int i = 0; i < viewDoc.size(); i++) {
                     PageShowFileDto pageShowFileDto = new PageShowFileDto();

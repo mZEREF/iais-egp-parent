@@ -29,6 +29,21 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
+import java.io.File;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,16 +54,6 @@ import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @Author Hua_Chong
@@ -199,7 +204,7 @@ public class MasterCodeDelegator {
             masterCodeDto.setVersion(1f);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        Optional<MasterCodeToExcelDto> cartOptional = null;
+        Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
         if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
             cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeDto.getCodeValue())
                     && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
@@ -220,7 +225,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {
+        if (cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (validationResult != null && validationResult.isHasErrors()) {
@@ -255,7 +260,7 @@ public class MasterCodeDelegator {
                 }
 
             }
-            if (cartOptional != null && cartOptional.isPresent()) {
+            if (cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);
@@ -541,7 +546,7 @@ public class MasterCodeDelegator {
                         result = true;
                     }
                 }
-                Optional<MasterCodeToExcelDto> cartOptional = null;
+                Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
                     if (StringUtil.isEmpty(codeCategory)){
@@ -557,7 +562,7 @@ public class MasterCodeDelegator {
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    if (cartOptional != null && cartOptional.isPresent()) {
+                    if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         if(masterCodeToExcelDto1.getFilterValue() != null){
                             log.info(StringUtil.changeForLog("masterCodeToExcelDto1  ===========> " + masterCodeToExcelDto1.getFilterValue()));
@@ -643,7 +648,7 @@ public class MasterCodeDelegator {
                     errItems.add( MessageUtil.getMessageDesc("GENERAL_ERR0041",stringMap));
                     result = true;
                 }
-                if (cartOptional != null && cartOptional.isPresent()) {
+                if (cartOptional.isPresent()) {
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                     masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
                     masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
@@ -791,7 +796,7 @@ public class MasterCodeDelegator {
         getValueFromPage(masterCodeDto, request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto, SystemAdminBaseConstants.SAVE_ACTION);
-        Optional<MasterCodeToExcelDto> cartOptional = null;
+        Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
         if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
             cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeDto.getCodeValue())
                     && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
@@ -813,7 +818,7 @@ public class MasterCodeDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (cartOptional != null && cartOptional.isPresent()) {
+        if (cartOptional.isPresent()) {
             validationResult.setHasErrors(true);
         }
         if (masterCodeDto.getSequence() != null){
@@ -853,7 +858,7 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", errMsg);
                 }
             }
-            if (cartOptional != null && cartOptional.isPresent()) {
+            if (cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
                 String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
                 errorMap.put("codeValue", errMsg);

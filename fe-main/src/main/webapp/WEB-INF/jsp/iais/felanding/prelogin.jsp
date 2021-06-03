@@ -84,17 +84,17 @@
 <%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
 <%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
 <%--                    </div>--%>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<%--                    <div class="modal-body">--%>
+<%--                      <div class="row">--%>
+<%--                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>--%>
+<%--                      </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="modal-footer">--%>
+<%--                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>--%>
+<%--                    </div>--%>
+<%--                  </div>--%>
+<%--                </div>--%>
+<%--              </div>--%>
             <div class="prelogin-content">
               <div class="white-content-box login-IAIS" style="height: 274px;">
                 <h3>Login to HALP</h3>
@@ -134,7 +134,6 @@
                 <h3>Healthcare Services Act (HCSA)</h3>
                 <ul>
                   <li>
-
                     <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
                   </li>
                   <li>

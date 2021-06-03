@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -42,7 +41,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -101,16 +106,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-import sop.webflow.rt.api.Process;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -124,6 +119,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+import sop.webflow.rt.api.Process;
 
 /**
  * AppSubmisionServiceImpl
@@ -439,7 +443,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
         for (int i = 0, len = appDeclarationDocDtos.size(); i < len; i++) {
             AppDeclarationDocDto viewDoc = appDeclarationDocDtos.get(i);
-            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElse(0));
+            String index = String.valueOf(Optional.ofNullable(viewDoc.getSeqNum()).orElseGet(() -> 0));
             PageShowFileDto pageShowFileDto = new PageShowFileDto();
             pageShowFileDto.setFileMapId(fileAppendId + "Div" + index);
             pageShowFileDto.setIndex(index);
@@ -447,7 +451,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             pageShowFileDto.setSize(viewDoc.getDocSize());
             pageShowFileDto.setMd5Code(viewDoc.getMd5Code());
             pageShowFileDto.setFileUploadUrl(viewDoc.getFileRepoId());
-            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElse(1));
+            pageShowFileDto.setVersion(Optional.ofNullable(viewDoc.getVersion()).orElseGet(() -> 1));
             pageShowFileDtos.add(pageShowFileDto);
             map.put(fileAppendId + index, null);
             pageShowFileHashMap.put(fileAppendId + index, pageShowFileDto);
@@ -516,7 +520,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setMd5Code(singeFileUtil.getFileMd5(file));
                     docDto.setDocSize(Integer.valueOf(size.toString()));
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    docDto.setSeqNum(Integer.parseInt(index));
+                    docDto.setSeqNum(Integer.valueOf(index));
                     Optional<Integer> versions = pageShowFileHashMap.entrySet()
                             .stream()
                             .filter(i -> s.equals(i.getKey()))
@@ -542,8 +546,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setDocSize(pageShowFileDto.getSize());
                     docDto.setFileRepoId(pageShowFileDto.getFileUploadUrl());
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    docDto.setSeqNum(Integer.parseInt(index));
-                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElse(1));
+                    docDto.setSeqNum(Integer.valueOf(index));
+                    docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(() -> 1));
                     docDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
@@ -824,7 +828,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        log.info("Save Draft dto ==> " + JsonUtil.parseToJson(appSubmissionDto));
         return applicationFeClient.saveDraft(appSubmissionDto).getEntity();
     }
 
@@ -2210,7 +2213,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     //for preview get one svc's DisciplineAllocation
     @Override
-    public Map<String, List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException {
+    public HashMap<String, List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("get DisciplineAllocationDtoList start..."));
         if(appSubmissionDto == null || StringUtil.isEmpty(svcId)){
             return null;
@@ -2238,7 +2241,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
+        HashMap<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
@@ -3061,56 +3064,66 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (request == null) {
             return;
         }
+        HttpSession session = request.getSession();
+        session.removeAttribute("declaration_page_is");
         // New Application - Declaration - clear uploaded dto
         String fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
-        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
-        request.getSession().setAttribute("declaration_page_is", null);
-        request.getSession().setAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, null);
+        session.removeAttribute(fileAppendId + "DocShowPageDto");
+        session.removeAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        // Request for Change
         fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        request.getSession().setAttribute(fileAppendId + "DocShowPageDto", null);
-        request.getSession().setAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId, null);
+        session.removeAttribute(fileAppendId + "DocShowPageDto");
+        session.removeAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        // Cessation
+        fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        session.removeAttribute(fileAppendId + "DocShowPageDto");
+        session.removeAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
+        // Renewal
+        fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+        session.removeAttribute(fileAppendId + "DocShowPageDto");
+        session.removeAttribute(HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + fileAppendId);
         // View and Print
-        ParamUtil.setSessionAttr(request, "viewPrint", null);
+        session.removeAttribute("viewPrint");
 
         //clear Session
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
+        session.removeAttribute(NewApplicationDelegator.APPSUBMISSIONDTO);
+        session.removeAttribute(NewApplicationDelegator.HCSASERVICEDTO);
+        session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         //Primary Documents
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PREMHCSASVCDOCCONFIGDTO, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.RELOADAPPGRPPRIMARYDOCMAP, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.DRAFTCONFIG, null);
+        session.removeAttribute(NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO);
+        session.removeAttribute(NewApplicationDelegator.PREMHCSASVCDOCCONFIGDTO);
+        session.removeAttribute(NewApplicationDelegator.RELOADAPPGRPPRIMARYDOCMAP);
+        session.removeAttribute(NewApplicationDelegator.DRAFTCONFIG);
         Map<String, AppSvcPrincipalOfficersDto> psnMap = IaisCommonUtils.genNewHashMap();
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) psnMap);
-        ParamUtil.setSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST, null);
+        session.setAttribute(NewApplicationDelegator.PERSONSELECTMAP, (Serializable) psnMap);
+        session.removeAttribute(AppServicesConsts.HCSASERVICEDTOLIST);
 
-        request.getSession().removeAttribute("oldSubmitAppSubmissionDto");
-        request.getSession().removeAttribute("submitAppSubmissionDto");
-        request.getSession().removeAttribute("appSubmissionDtos");
-        request.getSession().removeAttribute("rfiHcsaService");
-        request.getSession().removeAttribute("ackPageAppSubmissionDto");
-        request.getSession().removeAttribute("serviceConfig");
-        request.getSession().removeAttribute("app-rfc-tranfer");
-        request.getSession().removeAttribute("rfc_eqHciCode");
-        request.getSession().removeAttribute("declaration_page_is");
+        session.removeAttribute("oldSubmitAppSubmissionDto");
+        session.removeAttribute("submitAppSubmissionDto");
+        session.removeAttribute("appSubmissionDtos");
+        session.removeAttribute("rfiHcsaService");
+        session.removeAttribute("ackPageAppSubmissionDto");
+        session.removeAttribute("serviceConfig");
+        session.removeAttribute("app-rfc-tranfer");
+        session.removeAttribute("rfc_eqHciCode");
+        session.removeAttribute("declaration_page_is");
 
-        ParamUtil.setSessionAttr(request, NewApplicationConstant.PREMISES_HCI_LIST, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP, null);
-        ParamUtil.setSessionAttr(request, HcsaLicenceFeConstant.DASHBOARDTITLE, null);
-        ParamUtil.setSessionAttr(request, "AssessMentConfig", null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.CURR_ORG_USER_ACCOUNT, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.SVC_DOC_CONFIG, null);
-        ParamUtil.setSessionAttr(request, "app-rfc-tranfer", null);
+        session.removeAttribute(NewApplicationConstant.PREMISES_HCI_LIST);
+        session.removeAttribute(NewApplicationDelegator.LICPERSONSELECTMAP);
+        session.removeAttribute(HcsaLicenceFeConstant.DASHBOARDTITLE);
+        session.removeAttribute("AssessMentConfig");
+        session.removeAttribute(NewApplicationDelegator.CURR_ORG_USER_ACCOUNT);
+        session.removeAttribute(NewApplicationDelegator.PRIMARY_DOC_CONFIG);
+        session.removeAttribute(NewApplicationDelegator.SVC_DOC_CONFIG);
+        session.removeAttribute("app-rfc-tranfer");
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
         coMap.put("information", "");
         coMap.put("previewli", "");
-        request.getSession().setAttribute("coMap", coMap);
+        session.setAttribute("coMap", coMap);
         //request For Information Loading
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
-        ParamUtil.setSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto", null);
+        session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
     }
-
 }

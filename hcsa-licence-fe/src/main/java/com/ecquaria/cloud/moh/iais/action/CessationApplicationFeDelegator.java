@@ -513,25 +513,26 @@ public class CessationApplicationFeDelegator {
         String preliminaryquestionkindly = ParamUtil.getRequestString(bpc.request, PRELIMINARYQUESTIONKINDLY);
         String isbefore = ParamUtil.getRequestString(bpc.request, ISBEFORE);
         String issurrendering = ParamUtil.getRequestString(bpc.request, ISSURRENDERING);
+        String otherError = MessageUtil.replaceMessage(ERROR, "Others", "field");
         if (StringUtil.isEmpty(preliminaryquestionkindly)){
-            errorMap.put(PRELIMINARYQUESTIONKINDLY, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+            errorMap.put(PRELIMINARYQUESTIONKINDLY, otherError);
         }else{
             if (AppConsts.NO.equals(preliminaryquestionkindly)){
                 List<AppDeclarationDocDto> cessationDocData = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_CESSATION,bpc.request);
                 if (cessationDocData == null){
-                    errorMap.put(SELECTEDFILEERROR, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                    errorMap.put(SELECTEDFILEERROR, otherError);
                 }
             }
         }
         if (StringUtil.isEmpty(isbefore)){
-            errorMap.put(ISBEFORE, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+            errorMap.put(ISBEFORE, otherError);
         }
         if (StringUtil.isEmpty(issurrendering)){
-            errorMap.put(ISSURRENDERING, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+            errorMap.put(ISSURRENDERING, otherError);
         }
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
-                errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                errorMap.put(i + OTHERREASON + j, otherError);
             }
         }
        /* if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
@@ -585,7 +586,7 @@ public class CessationApplicationFeDelegator {
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect)) {
                 if (StringUtil.isEmpty(patOthers)) {
-                    errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
+                    errorMap.put(i + PATOTHERS + j, otherError);
                 }
                 if (StringUtil.isEmpty(patMobile)) {
                     errorMap.put(i + PATOTHERSMOBILENO + j, MessageUtil.replaceMessage(ERROR, PATOTHERSMOBILENO, "field"));

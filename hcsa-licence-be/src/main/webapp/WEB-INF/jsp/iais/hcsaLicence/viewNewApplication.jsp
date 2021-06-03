@@ -338,7 +338,26 @@
                     </p>
                   </td>
                 </tr>
-
+                <c:if test="${cgo.designation=='DES999'||currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].designation=='DES999'}">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-12 col-md-12">
+                        <span class="newVal " attr="${cgo.otherDesignation}"><iais:code code="${cgo.otherDesignation}"/></span>
+                        <br>
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherDesignation}"
+                              style="display: none"><iais:code
+                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].otherDesignation}"/></span>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
+                </c:if>
                 <tr>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
@@ -1607,6 +1626,25 @@
                       </div>
                     </td>
                   </tr>
+                  <c:if test="${po.designation=='DES999'|| currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation=='DES999'}">
+                    <tr>
+                      <td class="col-xs-6">
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                      </td>
+                      <td>
+
+                        <div class="col-xs-6">
+                          <span class="newVal " attr="${po.otherDesignation}"><iais:code code="${po.otherDesignation}"/></span>
+                        </div>
+                        <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].otherDesignation}"
+                              style="display: none"><iais:code
+                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].otherDesignation}"/></span>
+                        </div>
+                      </td>
+                    </tr>
+                  </c:if>
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office

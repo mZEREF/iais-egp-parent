@@ -27,12 +27,13 @@
     <input type="hidden" name="RDSVal" value='${dashRDSCircleKpi}'/>
     <input type="hidden" name="TSBVal" value='${dashTSBCircleKpi}'/>
 
-
     <form method="post" id="beDashboardForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="hcsaBeDashboardSwitchType" value="">
         <%--<input type="hidden" id="dashSysStageVal" name="dashSysStageVal" value=''/>--%>
         <input type="hidden" name="dashSysStageVal" value="${dashSysStageValReq}"/>
+        <input type="hidden" id="switchAction" name="switchAction" value="${dashSwitchActionValue}">
+
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -57,13 +58,13 @@
                                         Post Inspection
                                     </c:when>
                                     <c:when test="${'AO1' == dashSysStageValReq}">
-                                        Admin Officer 1
+                                        Approval Officer 1
                                     </c:when>
                                     <c:when test="${'AO2' == dashSysStageValReq}">
-                                        Admin Officer 2
+                                        Approval Officer 2
                                     </c:when>
                                     <c:when test="${'AO3' == dashSysStageValReq}">
-                                        Admin Officer 3
+                                        Approval Officer 3
                                     </c:when>
                                 </c:choose>
                                  Tasks
@@ -71,11 +72,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-xs-12">
-                                <a data-tab="#" href="javascript:;">
-                                    <div id="canvas-holder" class="cursor-default">
+                                <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                    <div id="canvas-holder">
                                         <canvas id="overAllCanvas"></canvas>
                                     </div>
-                                    <p class="dashboard-txt main-chart-text cursor-default font-color-black"> Overall</p>
+                                    <p class="dashboard-txt main-chart-text font-color-black"> Overall</p>
                                 </a>
                             </div>
                             <div class="col-md-8 col-xs-12">
@@ -83,7 +84,7 @@
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                         <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                            <iais:select cssClass="" name="appType" firstOption="" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
+                                            <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -99,8 +100,8 @@
                                     <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
                                 </div>
+                                <br/>
                             </div>
-                            <br/>
                             <hr>
                             <div class="col-xs-12">
                                 <div class="dashboard-chart" style="cursor: default;">
@@ -267,7 +268,11 @@
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>' + res.rows[i].appOwner + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>';
+                        for (let j = 0; j < res.rows[i].appOwnerList.length; j++) {
+                            html += res.rows[i].appOwnerList[j] + '<br>';
+                        }
+                        html += '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Days at Current Stage</p><p>' + res.rows[i].slaDays + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Target TAT at Current Stage</p><p>' + res.rows[i].kpi + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Total Days Taken for Application</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +

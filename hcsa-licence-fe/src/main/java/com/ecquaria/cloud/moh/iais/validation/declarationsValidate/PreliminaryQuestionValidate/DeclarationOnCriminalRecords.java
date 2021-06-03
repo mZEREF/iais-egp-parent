@@ -21,16 +21,16 @@ public class DeclarationOnCriminalRecords implements Declarations {
         }
         boolean flag=false;
         String criminalRecordsItem1 = appDeclarationMessageDto.getCriminalRecordsItem1();
+        String err06 = MessageUtil.replaceMessage("GENERAL_ERR0006","this","field");
         if(StringUtil.isEmpty(criminalRecordsItem1)){
-            map.put("criminalRecordsItem1", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
-        }else {
+            map.put("criminalRecordsItem1", err06);
             if("1".equals(criminalRecordsItem1)){
                 flag=true;
             }
         }
         String criminalRecordsItem2 = appDeclarationMessageDto.getCriminalRecordsItem2();
         if(StringUtil.isEmpty(criminalRecordsItem2)){
-            map.put("criminalRecordsItem2", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("criminalRecordsItem2", err06);
 
         }else {
             if("1".equals(criminalRecordsItem2)){
@@ -39,7 +39,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         }
         String criminalRecordsItem3 = appDeclarationMessageDto.getCriminalRecordsItem3();
         if(StringUtil.isEmpty(criminalRecordsItem3)){
-            map.put("criminalRecordsItem3", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("criminalRecordsItem3", err06);
 
         }else {
             if("1".equals(criminalRecordsItem3)){
@@ -48,7 +48,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         }
         String criminalRecordsItem4 = appDeclarationMessageDto.getCriminalRecordsItem4();
         if(StringUtil.isEmpty(criminalRecordsItem4)){
-            map.put("criminalRecordsItem4", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("criminalRecordsItem4", err06);
 
         }else {
             if("1".equals(criminalRecordsItem4)){
@@ -57,7 +57,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         }
         String criminalRecordsRemark = appDeclarationMessageDto.getCriminalRecordsRemark();
         if(StringUtil.isEmpty(criminalRecordsRemark)&&flag){
-            map.put("criminalRecordsRemark", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("criminalRecordsRemark", err06);
         }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("criminalRecordsRemark",general_err0041);
