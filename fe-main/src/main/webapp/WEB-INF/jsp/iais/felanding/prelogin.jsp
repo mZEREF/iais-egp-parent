@@ -50,23 +50,23 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-  <div class="col-md-12" style="margin-top:10px;">
-  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertMaintainace">
-      <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-                            <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-  </c:if>
-  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertBanner">
-      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+    <div class="col-md-12" style="margin-top:10px;">
+      <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertMaintainace">
+          <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+          <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
+      </c:if>
+      <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertBanner">
+          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
+          <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+        </div>
+      </c:if>
     </div>
   </c:if>
-  </div>
-</c:if>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
@@ -77,75 +77,75 @@
               <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
               <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
             </div>
-              <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-<%--                    <div class="modal-header">--%>
-<%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
-<%--                    </div>--%>
-<%--                    <div class="modal-body">--%>
-<%--                      <div class="row">--%>
-<%--                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>--%>
-<%--                      </div>--%>
-<%--                    </div>--%>
-<%--                    <div class="modal-footer">--%>
-<%--                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>--%>
-<%--                    </div>--%>
-<%--                  </div>--%>
-<%--                </div>--%>
-<%--              </div>--%>
-            <div class="prelogin-content">
-              <div class="white-content-box login-IAIS" style="height: 274px;">
-                <h3>Login to HALP</h3>
-                <div class="left-content">
-                  <ul>
-                    <li>
-                      <p>Apply for a new licence</p>
-                    </li>
-                    <li>
-                      <p>Check the status of your applications</p>
-                    </li>
-                    <li>
-                      <p>Manage your existing licences</p>
-                    </li>
-                    <li>
-                      <p>Manage your account profile</p>
-                    </li>
-                    <li>
-                      <p>View messages &amp; notifications from MOH</p>
-                    </li>
-                  </ul>
+            <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <%--                    <div class="modal-header">--%>
+                  <%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+                  <%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+                  <%--                    </div>--%>
+                  <%--                    <div class="modal-body">--%>
+                  <%--                      <div class="row">--%>
+                  <%--                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>--%>
+                  <%--                      </div>--%>
+                  <%--                    </div>--%>
+                  <%--                    <div class="modal-footer">--%>
+                  <%--                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>--%>
+                  <%--                    </div>--%>
+                  <%--                  </div>--%>
+                  <%--                </div>--%>
+                  <%--              </div>--%>
+                  <div class="prelogin-content">
+                    <div class="white-content-box login-IAIS" style="height: 274px;">
+                      <h3>Login to HALP</h3>
+                      <div class="left-content">
+                        <ul>
+                          <li>
+                            <p>Apply for a new licence</p>
+                          </li>
+                          <li>
+                            <p>Check the status of your applications</p>
+                          </li>
+                          <li>
+                            <p>Manage your existing licences</p>
+                          </li>
+                          <li>
+                            <p>Manage your account profile</p>
+                          </li>
+                          <li>
+                            <p>View messages &amp; notifications from MOH</p>
+                          </li>
+                        </ul>
+                      </div>
+
+
+                      <div class="right-content login-btns">
+                        <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+                          if ("prod".equalsIgnoreCase(testMode)){%>
+                        <a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>" >LOGIN USING CorpPass</a>
+                        <%}else{%>
+                        <a class="btn btn-primary" href="javascript:void(0)" onclick="Utils.submit('mainForm','corppassLogin')">LOGIN USING CorpPass</a>
+                        <%} %>
+
+                        <p class="text-center"><a href="javascript:void(0)" onclick="Utils.submit('mainForm','registry')">Don't have a CorpPass?</a></p>
+                      </div>
+                    </div>
+                    <div class="white-content-box hcsa" style="height: 274px;">
+                      <h3>Healthcare Services Act (HCSA)</h3>
+                      <ul>
+                        <li>
+                          <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
+                        </li>
+                        <li>
+                          <p><a href="<iais:code code="RELURL002"></iais:code>">Services under HALP today</a></p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-
-
-                <div class="right-content login-btns">
-                  <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
-                    if ("prod".equalsIgnoreCase(testMode)){%>
-                  <a class="btn btn-primary" href="<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>" >LOGIN USING CorpPass</a>
-                  <%}else{%>
-                  <a class="btn btn-primary" href="javascript:void(0)" onclick="Utils.submit('mainForm','corppassLogin')">LOGIN USING CorpPass</a>
-                  <%} %>
-
-                  <p class="text-center"><a href="javascript:void(0)" onclick="Utils.submit('mainForm','registry')">Don't have a CorpPass?</a></p>
-                </div>
-              </div>
-              <div class="white-content-box hcsa" style="height: 274px;">
-                <h3>Healthcare Services Act (HCSA)</h3>
-                <ul>
-                  <li>
-                    <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
-                  </li>
-                  <li>
-                    <p><a href="<iais:code code="RELURL002"></iais:code>">Services under HALP today</a></p>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
   </form>
 </div>
 
