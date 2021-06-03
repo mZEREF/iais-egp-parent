@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -115,7 +114,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		QRGenerator qrGenerator = new QRGeneratorImpl();
 
 		//sample
-		QRDimensions qrDetails = qrGenerator.getQRDimensions(500, 500, Color.decode("#7C1A78"), IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT+"img/paymentPayNow.png");
+		QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), "D:\\IntelliJ idea\\workspace\\iais-egp\\payment\\src\\main\\resources\\image\\paymentPayNow.png");
 
 		// sample Static QR
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
@@ -129,6 +128,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		double amount = Double.parseDouble(amo)/100;
 		String amoStr=Double.toString(amount);
+		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,"1234567890123456789012345");
 
 		PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,appGrpNo);
 		payNowObject.setPayloadFormatInd("01");
