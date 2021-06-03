@@ -22,6 +22,13 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<style>
+    @media only screen and (max-width : 1200px){
+        .form-padding {
+            padding: 35px 5%;
+        }
+    }
+</style>
 <div class="main-content">
     <div class="navigation-gp"></div>
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -29,7 +36,7 @@
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
                 <div class="tab-gp steps-tab">
                     <div class="tab-content">
-                        <div class="tab-pane active" id="premisesTab" role="tabpanel">
+                        <div class="tab-pane active form-padding" id="premisesTab" role="tabpanel">
                             <div class="row">
                                 <div class="col-xs-12">
                                     <h2>Authorised Person Particulars Form</h2>
