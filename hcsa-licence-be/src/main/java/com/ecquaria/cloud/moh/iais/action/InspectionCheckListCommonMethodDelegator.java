@@ -452,36 +452,39 @@ public class InspectionCheckListCommonMethodDelegator {
 
 
     public void setSpecServiceCheckListData(HttpServletRequest request,InspectionFDtosDto serListDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers,ApplicationViewDto applicationViewDto){
-         if(AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation")) &&(HcsaChecklistConstants.SPEC_SERVICE_EAS.equalsIgnoreCase(applicationViewDto.getSvcCode())|| HcsaChecklistConstants.SPEC_SERVICE_MTS.equalsIgnoreCase(applicationViewDto.getSvcCode()))){
+         if(checklistNeedVehicleSeparation(applicationViewDto.getSvcCode())){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
              List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
              if(IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
                  List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
-                 appSvcVehicleDtos.forEach((appSvcVehicleDto)->{
-                     InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
-                     inspectionSpecServiceDto.setIdentify(appSvcVehicleDto.getVehicleName());
-                     List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
-                     if(serListDto.getFdtoList() == null){
-                         serListDto.setFdtoList(IaisCommonUtils.genNewArrayList());
-                     }
-                     for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
-                         try{
-                             InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
-                             inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
-                             fdtoList.add(inspectionFillCheckListDtoCopy);
-                         }catch (Exception e){
-                             log.error(e.getMessage());
+                 for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
+                         InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
+                         inspectionSpecServiceDto.setIdentify(appSvcVehicleDto.getVehicleName());
+                         List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
+                         if(serListDto.getFdtoList() == null){
+                             serListDto.setFdtoList(IaisCommonUtils.genNewArrayList());
                          }
-                     }
-                     inspectionSpecServiceDto.setFdtoList(fdtoList);
-                     inspectionSpecServiceDto.setAdchklDto(fillupChklistService.getSpecAhocData(adchklDto,inspectionSpecServiceDto.getIdentify(),beforeFinishList,orgUserDtoUsers));
-                     fDtosDtos.add(inspectionSpecServiceDto);
-                 });
+                         for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
+                             try{
+                                 InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
+                                 inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
+                                 fdtoList.add(inspectionFillCheckListDtoCopy);
+                             }catch (Exception e){
+                                 log.error(e.getMessage());
+                             }
+                         }
+                         inspectionSpecServiceDto.setFdtoList(fdtoList);
+                         inspectionSpecServiceDto.setAdchklDto(fillupChklistService.getSpecAhocData(adchklDto,inspectionSpecServiceDto.getIdentify(),beforeFinishList,orgUserDtoUsers));
+                         fDtosDtos.add(inspectionSpecServiceDto);
+                 }
                  ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
              }
         }
     }
 
+    public boolean checklistNeedVehicleSeparation(String svcCode){
+        return  AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation")) &&(HcsaChecklistConstants.SPEC_SERVICE_EAS.equalsIgnoreCase(svcCode)|| HcsaChecklistConstants.SPEC_SERVICE_MTS.equalsIgnoreCase(svcCode));
+    }
 
     public void setRate(HttpServletRequest request){
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
