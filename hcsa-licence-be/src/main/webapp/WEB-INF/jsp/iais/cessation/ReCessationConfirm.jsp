@@ -396,6 +396,7 @@
 <script type="text/javascript">
 
     function confirmSubmit(action) {
+        showWaiting();
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }

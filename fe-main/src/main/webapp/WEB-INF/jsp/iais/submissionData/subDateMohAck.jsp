@@ -41,7 +41,7 @@
             </div>
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content " style="padding-top: 10px">
-                    <a href="/main-web/eservice/INTERNET/MohAccessmentGuide"><em
+                    <a href="${backUrl}"><em
                             class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>

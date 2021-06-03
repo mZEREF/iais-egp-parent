@@ -28,6 +28,10 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,9 +39,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @Process MohKpiColourShow
@@ -341,7 +342,10 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
         //get The scope of date
         Date endDate = sortLastEndDate(endDates);
         Date beginDate = sortFirstDate(beginDates);
-
+        log.info(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(beginDate, "dd/MM/yyyy")));
+        log.info(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(endDate, "dd/MM/yyyy")));
+        JobLogger.log(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(beginDate, "dd/MM/yyyy")));
+        JobLogger.log(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(endDate, "dd/MM/yyyy")));
         Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
         workAndNonWorkDays = new ArrayList<>(setDate);
         //count work days

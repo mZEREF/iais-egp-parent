@@ -44,7 +44,7 @@ public class LicencePrint {
             for (String licId:ids) {
                 LicenceViewDto licenceViewDto = inboxService.getLicenceViewDtoByLicenceId(licId);
                 File templateDir = ResourceUtils.getFile("classpath:pdfTemplate");
-                log.info("=======templateDir.getPath()-->:"+templateDir.getPath());
+                log.info("=======templateDir.getPath()-->:{}", templateDir.getPath());
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 String fileName = "LICENCE" + fileNum ;
                 File pdfFile = new File(fileName+".pdf");

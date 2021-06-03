@@ -216,8 +216,8 @@ public class LicenceViewServiceDelegator {
 //                        withdrawnDto.setAppPremisesSpecialDocDto();
                         List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
                         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-                        Map<String,File> map= IaisCommonUtils.genNewHashMap();
-                        Map<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+                        HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
+                        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
                                 if(appealSpecialDocDto!=null&&!appealSpecialDocDto.isEmpty()){
                                     for(int i=0;i<appealSpecialDocDto.size();i++){
                                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
@@ -593,7 +593,7 @@ public class LicenceViewServiceDelegator {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<ProfessionalResponseDto> professionalResponseDtos = null;
-        Map<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
+        HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
         try {
             professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
@@ -1847,7 +1847,10 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
-    private static void setCopyAppSvcDisciplineAllocationDtoList(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList,String premiseVal,Map<String,String> map) throws  Exception{
+    private static void setCopyAppSvcDisciplineAllocationDtoList(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,
+                                                                 List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,
+                                                                 List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList,
+                                                                 String premiseVal,Map<String,String> map) {
         for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
             String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
             String s = map.get(chkLstConfId);
@@ -1937,7 +1940,7 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void copy(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList,List<AppSvcChckListDto> copyAppSvcChckListDtoList, List<AppSvcChckListDto> copyOldAppSvcChckListDtoList) throws Exception{
+    private void copy(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList,List<AppSvcChckListDto> copyAppSvcChckListDtoList, List<AppSvcChckListDto> copyOldAppSvcChckListDtoList) {
         for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
             String chkName = appSvcChckListDto.getChkName();
             boolean flag=false;

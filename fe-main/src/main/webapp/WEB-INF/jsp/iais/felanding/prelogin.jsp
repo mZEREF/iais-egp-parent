@@ -50,23 +50,23 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-  <div class="col-md-12" style="margin-top:10px;">
-  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertMaintainace">
-      <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-                            <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-  </c:if>
-  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertBanner">
-      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+    <div class="col-md-12" style="margin-top:10px;">
+      <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertMaintainace">
+          <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+          <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
+      </c:if>
+      <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertBanner">
+          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
+          <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+        </div>
+      </c:if>
     </div>
   </c:if>
-  </div>
-</c:if>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
@@ -77,24 +77,24 @@
               <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
               <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
             </div>
-              <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-<%--                    <div class="modal-header">--%>
-<%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
-<%--                    </div>--%>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <%--             <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">--%>
+            <%--                <div class="modal-dialog" role="document">--%>
+            <%--                  <div class="modal-content">--%>
+            <%--                    <div class="modal-header">--%>
+            <%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+            <%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+            <%--                    </div>--%>
+            <%--                    <div class="modal-body">--%>
+            <%--                      <div class="row">--%>
+            <%--                        <div class="col-md-12"><span style="font-size: 2rem">You already have UEN, please login with corppass</span></div>--%>
+            <%--                      </div>--%>
+            <%--                    </div>--%>
+            <%--                    <div class="modal-footer">--%>
+            <%--                      <button type="button" class="btn btn-primary" onclick="" >Confirm</button>--%>
+            <%--                    </div>--%>
+            <%--                  </div>--%>
+            <%--                </div>--%>
+            <%--              </div>--%>
             <div class="prelogin-content">
               <div class="white-content-box login-IAIS" style="height: 274px;">
                 <h3>Login to HALP</h3>
@@ -118,7 +118,6 @@
                   </ul>
                 </div>
 
-
                 <div class="right-content login-btns">
                   <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
                     if ("prod".equalsIgnoreCase(testMode)){%>
@@ -134,7 +133,6 @@
                 <h3>Healthcare Services Act (HCSA)</h3>
                 <ul>
                   <li>
-
                     <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
                   </li>
                   <li>
@@ -150,4 +148,48 @@
   </form>
 </div>
 
+<%--
+<iais:confirm msg="Please select service licence to login" popupOrder="loginModal" callBack="$('#loginModal').modal('hide');" needCancel="false" needFungDuoJi="false"/>
+--%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<%--
+<script type="text/javascript">
+//$(document).ready(landing);
+
+function landing() {
+  <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
+  if ("prod".equalsIgnoreCase(testMode)){%>
+  var prd = "<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>";
+  <%}else{%>
+  var prd = "";
+  <%}%>
+  var oldSys = "<%=ConfigHelper.getString("moh.halp.old.internet.web", "#")%>";
+  if (isEmpty(oldSys)) {
+      oldSys = '#';
+  }
+
+  var serviceGroups = $('input[name="serviceGroup"]:checked');
+  if (serviceGroups.length == 0) {
+      $('#corppass').attr("href", "javascript:void(0);");
+      $('#corppass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
+      $('#singpass').attr("href", "javascript:void(0);");
+      $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
+  } else if ($('#oldSystem').is(':checked')) {
+      $('#corppass').attr("href", oldSys);
+      $('#corppass').removeAttr("onclick");
+      $('#singpass').attr("href", oldSys);
+      $('#singpass').removeAttr("onclick");
+  } else if (!prd || "" == prd) {
+      $('#corppass').attr("href", "javascript:void(0);");
+      $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
+      $('#singpass').attr("href", "javascript:void(0);");
+      $('#singpass').attr("onclick", "Utils.submit('mainForm','registry');");
+  } else {
+      $('#corppass').attr("href", prd);
+      $('#corppass').removeAttr("onclick");
+      $('#singpass').attr("href", "javascript:void(0);");
+      $('#singpass').attr("onclick", "Utils.submit('mainForm','registry');");
+  }
+}
+</script>
+--%>

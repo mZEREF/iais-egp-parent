@@ -53,6 +53,7 @@ public class IaisSubmissionDataDelegator {
 
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, null);
         if (loginContext != null){
             String licenseeId = loginContext.getLicenseeId();
             List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId).getEntity();
@@ -75,12 +76,17 @@ public class IaisSubmissionDataDelegator {
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
+            String backUrl = "/main-web";
+            String isSelf = ParamUtil.getString(bpc.request,"selfAssessmentGuide");
+            if("true".equals(isSelf)){
+                backUrl = "/main-web/eservice/INTERNET/MohAccessmentGuide";
+            }
+            ParamUtil.setSessionAttr(bpc.request, "backUrl", backUrl);
         }
         log.info(StringUtil.changeForLog("Step ---> startLDT"));
     }
 
     public void prepareData(BaseProcessClass bpc){
-
     }
 
     public void confirmStep(BaseProcessClass bpc){

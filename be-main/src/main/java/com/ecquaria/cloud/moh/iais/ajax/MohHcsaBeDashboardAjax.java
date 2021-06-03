@@ -333,6 +333,12 @@ public class MohHcsaBeDashboardAjax {
                 List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos = ajaxResult.getRows();
                 if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)) {
                     for(DashWorkTeamAjaxQueryDto dashWorkTeamAjaxQueryDto : dashWorkTeamAjaxQueryDtos) {
+                        if(!StringUtil.isEmpty(dashWorkTeamAjaxQueryDto.getTaskId())) {
+                            TaskDto taskDto = taskService.getTaskById(dashWorkTeamAjaxQueryDto.getTaskId());
+                            //set kpi color
+                            String color = beDashboardAjaxService.getKpiColorByTask(taskDto);
+                            dashWorkTeamAjaxQueryDto.setKpiColor(color);
+                        }
                         dashWorkTeamAjaxQueryDto.setCanDoTask(BeDashboardConstant.TASK_SHOW);
                     }
                 }
@@ -488,9 +494,13 @@ public class MohHcsaBeDashboardAjax {
                             map.put("dashRoleSwitchFlag", AppConsts.TRUE);
                         }
                     }
+                    loginContext.setCurRoleId(roleId);
+                    poolRoleCheckDto.setCheckCurRole(roleSelectVal);
                 }
             }
         }
+        ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+        ParamUtil.setSessionAttr(request, "dashRoleCheckDto", poolRoleCheckDto);
         return map;
     }
 

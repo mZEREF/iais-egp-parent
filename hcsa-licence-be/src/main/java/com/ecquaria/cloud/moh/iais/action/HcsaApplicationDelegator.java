@@ -2215,7 +2215,9 @@ public class HcsaApplicationDelegator {
                                 stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(), taskDto.getRoleId(), taskDto.getWkGrpId());
                         List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                        broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        if (!applicationDto.isFastTracking()) {
+                            broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                        }
                         broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
                     }
                 }
@@ -2462,6 +2464,22 @@ public class HcsaApplicationDelegator {
 //                             */
 //                            sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
                         if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(withdrawApplicationDto.getStatus())) {
+                            try {
+                                //WITHDRAWAL To restore the old task
+                                List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos=applicationClient.getAppPremisesCorrelationsByAppId(oldAppId).getEntity();
+                                String corrId=oldAppPremisesCorrelationDtos.get(0).getId();
+                                List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(corrId).getEntity();
+                                TaskDto oldTaskDto=taskDtos.get(0);
+                                oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_READ);
+                                oldTaskDto.setId(null);
+                                taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                                List<TaskDto> newTaskDto=IaisCommonUtils.genNewArrayList();
+                                newTaskDto.add(oldTaskDto);
+                                taskService.createTasks(newTaskDto);
+                            }catch (Exception e){
+                                log.error(e.getMessage(),e);
+                            }
+
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));

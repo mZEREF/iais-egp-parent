@@ -287,7 +287,7 @@
             FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
-            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_no??> and charindex(:application_no, T7.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -308,7 +308,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
-            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -471,7 +471,7 @@
 
     <sql key = "dashSystemOverAll"  remarks = "System admin dashboard Over all Search">
         <![CDATA[
-            SELECT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE ,viewApp.STATUS ,viewApp.SERVICE_ID ,viewApp.APP_TYPE ,
+            SELECT DISTINCT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE ,viewApp.STATUS ,viewApp.SERVICE_ID ,viewApp.APP_TYPE ,
             viewApp.APPLICATION_ID ,viewApp.APPLICATION_NO ,viewApp.KPI ,viewApp.RMD_THRESHOLD ,viewApp.ROLE_ID ,
             viewApp.SLA_DAYS ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.ACTION_BY ,viewApp.act_time
             FROM DASHBOARD_ALL_ACTIVE_APPLICATIONS_VIEW viewApp
@@ -486,7 +486,7 @@
 
     <sql key = "dashSystemDetail"  remarks = "System admin dashboard Detail Search">
         <![CDATA[
-             SELECT viewApp.APP_GRP_ID as ID, viewApp.wrk_grp_id, viewApp.GROUP_NO ,viewApp.PMT_STATUS ,viewApp.cou ,viewApp.APP_TYPE ,
+             SELECT DISTINCT viewApp.APP_GRP_ID as ID, viewApp.wrk_grp_id, viewApp.GROUP_NO ,viewApp.PMT_STATUS ,viewApp.cou ,viewApp.APP_TYPE ,
             viewApp.ROLE_ID ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.UPDATED_DT ,viewApp.SUBMIT_DT ,
             viewApp.ACTION_BY
             FROM DASHBOARD_ALL_GRP_APPLICATIONS_VIEW viewApp
@@ -502,10 +502,10 @@
 
     <sql key = "dashSystemDetailAjax"  remarks = "System admin dashboard Detail Drop Search">
         <![CDATA[
-            SELECT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE, viewApp.STATUS, viewApp.SERVICE_ID, viewApp.APP_TYPE,
+            SELECT DISTINCT viewApp.ID, viewApp.wrk_grp_id, viewApp.SVC_CODE, viewApp.STATUS, viewApp.SERVICE_ID, viewApp.APP_TYPE,
             viewApp.APPLICATION_ID, viewApp.APPLICATION_NO, isnull (viewApp.KPI,0) as KPI, isnull (viewApp.RMD_THRESHOLD,0) as RMD_THRESHOLD,
             viewApp.ROLE_ID, isnull (viewApp.SLA_DAYS,0) as SLA_DAYS, viewApp.STAGE_ID, viewApp.SUB_STAGE, viewApp.ACTION_BY, viewApp.act_time,
-            viewApp.user_id, isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
+            isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
             FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW viewApp
             WHERE 1 = 1
             <#if application_types??> and ${application_types}</#if>
@@ -513,7 +513,6 @@
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and viewApp.ROLE_ID= :role_id</#if>
             <#if action_by??> and viewApp.ACTION_BY= :action_by</#if>
-            <#if user_id??> and viewApp.user_id= :user_id</#if>
             <#if app_grp_id??> and viewApp.APP_GRP_ID= :app_grp_id</#if>
             <#if stage_id??> and (CONVERT(NVARCHAR(36), viewApp.STAGE_ID) = :stage_id or CONVERT(NVARCHAR(36), viewApp.SUB_STAGE) = :stage_id)</#if>
         ]]>
