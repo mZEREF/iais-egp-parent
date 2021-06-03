@@ -77,9 +77,9 @@
               <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
               <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
             </div>
-<%--             <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">--%>
-<%--                <div class="modal-dialog" role="document">--%>
-<%--                  <div class="modal-content">--%>
+              <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
 <%--                    <div class="modal-header">--%>
 <%--                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
 <%--                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
@@ -118,6 +118,7 @@
                   </ul>
                 </div>
 
+
                 <div class="right-content login-btns">
                   <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
                     if ("prod".equalsIgnoreCase(testMode)){%>
@@ -148,48 +149,4 @@
   </form>
 </div>
 
-<%--
-<iais:confirm msg="Please select service licence to login" popupOrder="loginModal" callBack="$('#loginModal').modal('hide');" needCancel="false" needFungDuoJi="false"/>
---%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
-<%--
-<script type="text/javascript">
-//$(document).ready(landing);
-
-function landing() {
-  <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
-  if ("prod".equalsIgnoreCase(testMode)){%>
-  var prd = "<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>";
-  <%}else{%>
-  var prd = "";
-  <%}%>
-  var oldSys = "<%=ConfigHelper.getString("moh.halp.old.internet.web", "#")%>";
-  if (isEmpty(oldSys)) {
-      oldSys = '#';
-  }
-
-  var serviceGroups = $('input[name="serviceGroup"]:checked');
-  if (serviceGroups.length == 0) {
-      $('#corppass').attr("href", "javascript:void(0);");
-      $('#corppass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
-      $('#singpass').attr("href", "javascript:void(0);");
-      $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
-  } else if ($('#oldSystem').is(':checked')) {
-      $('#corppass').attr("href", oldSys);
-      $('#corppass').removeAttr("onclick");
-      $('#singpass').attr("href", oldSys);
-      $('#singpass').removeAttr("onclick");
-  } else if (!prd || "" == prd) {
-      $('#corppass').attr("href", "javascript:void(0);");
-      $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
-      $('#singpass').attr("href", "javascript:void(0);");
-      $('#singpass').attr("onclick", "Utils.submit('mainForm','registry');");
-  } else {
-      $('#corppass').attr("href", prd);
-      $('#corppass').removeAttr("onclick");
-      $('#singpass').attr("href", "javascript:void(0);");
-      $('#singpass').attr("onclick", "Utils.submit('mainForm','registry');");
-  }
-}
-</script>
---%>
