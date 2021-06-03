@@ -2150,6 +2150,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
                         appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                     }
