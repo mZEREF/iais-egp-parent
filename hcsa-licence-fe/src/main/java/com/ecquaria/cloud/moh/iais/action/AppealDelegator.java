@@ -130,6 +130,7 @@ public class AppealDelegator {
         bpc. request.setAttribute("crud_action_type","appeal");
     }
     public void ackPage(BaseProcessClass bpc){
+        bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
     }
     public void appealFrom(BaseProcessClass bpc){
     }
