@@ -5908,3 +5908,11 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .datepicker {
   z-index: 999 !important;
 }
+
+@media only screen and (min-width: 1201px) and (max-width: 1920px) {
+  .dashboard-multiple .dashboard-tile-item .dashboard-tile {
+    border-radius: 18px;
+    height: 265px;
+    margin-bottom: 55px;
+  }
+}
