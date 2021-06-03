@@ -135,6 +135,7 @@
                 and T2.STATUS != 'APST009'
                 <#if workGroup_list??> and ${workGroup_list} </#if>
                 <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+                <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
                 and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                 and T7.USER_ID is NULL
             ) T5
@@ -189,6 +190,7 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
@@ -207,6 +209,7 @@
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
@@ -229,6 +232,7 @@
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
@@ -248,6 +252,7 @@
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_no??> and charindex(:application_no, T7.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -271,6 +276,7 @@
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
@@ -287,7 +293,8 @@
             FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
-            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
+            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_no??> and charindex(:application_no, T7.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -308,7 +315,8 @@
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
-            <#if dashRoleId??> and charindex(:dashRoleId, T7.ROLE_ID) >0 </#if>
+            <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
             <#if dashUserId??> and T7.ACTION_BY = :dashUserId </#if>
             <#if application_type??> and T7.APP_TYPE = :application_type</#if>
@@ -328,6 +336,7 @@
             WHERE 1 = 1
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if lic_renew_exp??> and T1.licExpDays <= :lic_renew_exp</#if>
             <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
@@ -352,6 +361,7 @@
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
+            <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             <#if dashUserId??> and T7.user_id = :dashUserId </#if>
             <#if lic_renew_exp??> and T1.LICEXPDAYS <= :lic_renew_exp</#if>
             <#if application_type??> and T1.APP_TYPE = :application_type</#if>
@@ -400,6 +410,7 @@
              WHERE 1 = 1
              <#if workGroup_list??> and ${workGroup_list} </#if>
              <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
+             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
              <#if dashUserId??> and T4.ID = :dashUserId </#if>
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
@@ -457,6 +468,7 @@
                 <#if dashCommonPoolStatus??> and T7.USER_ID is NULL</#if>
                 <#if dashUserId??> and T4.ID = :dashUserId </#if>
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
+                <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             ) T5
             WHERE 1 = 1
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
