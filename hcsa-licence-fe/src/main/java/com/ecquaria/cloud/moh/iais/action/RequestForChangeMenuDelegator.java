@@ -820,6 +820,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         for(AppSubmissionDto v : appSubmissionDtos1){
+            requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
         }
         //save
