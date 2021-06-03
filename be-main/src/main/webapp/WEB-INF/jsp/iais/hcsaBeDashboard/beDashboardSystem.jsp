@@ -106,7 +106,7 @@
                                             <div>
                                                 <canvas id="postInspCanvas"></canvas>
                                             </div>
-                                            <p align="center" > Post Inspection</p>
+                                            <p align="center" > Post-Inspection</p>
                                         </a>
                                     </div>
                                 </div>
