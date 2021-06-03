@@ -148,10 +148,10 @@ public class NewApplicationAjaxController {
             String width = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 className = "onSite";
-                width = "col-md-3";
+                width = "col-md-2";
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
-                width = "col-md-4";
+                width = "col-md-3";
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(type)) {
                 className = "offSite";
                 width = "col-md-3";
