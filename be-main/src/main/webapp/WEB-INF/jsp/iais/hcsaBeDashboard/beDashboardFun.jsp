@@ -34,20 +34,21 @@
         });
     };
 
-    var initChart = function (canvasName) {
+    var initChart = function (canvasName, jumpId) {
         var jsonStr = $('input[name="'+canvasName+'Val"]').val();
 
+        var emptyDisplayVal = '-';
         var redSize = 0;
         var blueSize = 0;
         var yellowSize = 0;
-        var redCount = '-';
+        var stageCount = emptyDisplayVal;
         if(jsonStr != null && jsonStr != '' && jsonStr != undefined){
             var canvasJsonObj = eval(JSON.parse(jsonStr));
             redSize = canvasJsonObj.dashRedCount;
             blueSize = canvasJsonObj.dashBlueCount;
             yellowSize = canvasJsonObj.dashAmberCount;
             if('0' != canvasJsonObj.dashStageCount){
-                redCount = canvasJsonObj.dashStageCount;
+                stageCount = canvasJsonObj.dashStageCount;
             }
         }
         var data = {
@@ -66,7 +67,7 @@
             options: {
                 elements: {
                     center: {
-                        text: redCount
+                        text: stageCount
                     }
                 },
                 cutoutPercentage: 75,
@@ -76,10 +77,15 @@
             }
         });
 
+        if(emptyDisplayVal == stageCount && jumpId != null){
+            $('#'+jumpId).addClass('empty-chart');
+            $('#'+jumpId).unbind('click');
+        }
+
         //reset chart title size
-        var chart1Title = $('#'+canvasId).closest('div.dashboard-tile');
+        /*var chart1Title = $('#'+canvasId).closest('div.dashboard-tile');
         chart1Title.css('width',$('#'+canvasId).width() * 1.2);
-        chart1Title.css('height',$('#'+canvasId).height() * 1.4);
+        chart1Title.css('height',$('#'+canvasId).height() * 1.4);*/
     };
 
     var doClear = function () {

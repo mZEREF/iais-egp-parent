@@ -5,6 +5,24 @@
   Time: 9:48
   To change this template use File | Settings | File Templates.
 --%>
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
+%>
+<style>
+    @media only screen and (min-width: 1201px) and (max-width: 1920px) {
+        .dashboard-multiple .dashboard-tile-item .dashboard-tile {
+            border-radius: 18px;
+            height: 265px;
+            margin-bottom: 55px;
+        }
+    }
+    .dashboard-chart .dashboard-tile-item .dashboard-tile a.empty-chart {
+        cursor: default;
+        background-image: url('<%=webroot1%>img/chart-0.png');
+        background-repeat: no-repeat;
+        background-position: center 25%;
+    }
+</style>
 
 <input type="hidden" name="overAllVal" value='${dashOverAllCircleKpi}'/>
 <input type="hidden" name="asoVal" value='${dashAsoCircleKpi}'/>
@@ -58,7 +76,7 @@
                             <h3>
                                 <span>Applications at each stage </span>
                             </h3>
-                            <div class="dashboard-chart">
+                            <div class="dashboard-chart dashboard-multiple">
                                 <div class="dashboard-tile-item">
                                     <div class="dashboard-tile">
                                         <a id="sysAsoCanvas" data-tab="#" href="javascript:;">
@@ -154,24 +172,6 @@
 
         chartRegister();
 
-        initChart('aso');
-
-        initChart('pso');
-
-        initChart('preInsp');
-
-        initChart('insp');
-
-        initChart('postInsp');
-
-        initChart('ao1');
-
-        initChart('ao2');
-
-        initChart('ao3');
-
-        initChart('overAll');
-
         $('#sysAsoCanvas').click(function () {
             showWaiting();
             $('#dashSysStageVal').val('ASO');
@@ -212,6 +212,27 @@
             $('#dashSysStageVal').val('AO3');
             intraDashboardSubmit('sysdet');
         });
+
+
+        initChart('aso', 'sysAsoCanvas');
+
+        initChart('pso', 'sysPsoCanvas');
+
+        initChart('preInsp', 'sysPreInspCanvas');
+
+        initChart('insp', 'sysInspCanvas');
+
+        initChart('postInsp', 'sysPostInspCanvas');
+
+        initChart('ao1', 'sysAo1Canvas');
+
+        initChart('ao2', 'sysAo2Canvas');
+
+        initChart('ao3', 'sysAo3Canvas');
+
+        initChart('overAll', null);
+
+
 
         $('#sysClearBtn').click(function () {
             doClear();
