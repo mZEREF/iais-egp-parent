@@ -1098,8 +1098,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String, String> map : stageRoleMap.entrySet()) {
                     ApplicationDto applicationDto = applicationDtos.get(0);
-                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
-                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
                     String subStage = null;
                     String stageId;
                     String role = map.getValue();
@@ -1110,7 +1108,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         }
                     } else {
                         stageId = map.getKey();
+                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                            subStage = HcsaConsts.ROUTING_STAGE_POT;
+                        }
                     }
+                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
+                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), subStage, td.getWkGrpId());
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                     int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
