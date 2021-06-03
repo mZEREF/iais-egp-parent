@@ -337,23 +337,30 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedWdFile",true);
+        uploadFileValidate();
     }
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
+        console.log('maxFileSize : '+configFileSize);
+
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+        console.log(error);
+
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
+            $('#error_selectedWdFileError').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
+            ajaxCallUploadForMax('mainForm', "selectedWdFile",true);
         } else if(error == "E"){
             $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
+            $('#error_selectedWdFileError').html("");
         } else{
             $("#selectedFile").val("");
+            $('#error_selectedWdFileError').html("");
             $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
@@ -399,7 +406,6 @@
     });
 
     function doSubmit() {
-        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
