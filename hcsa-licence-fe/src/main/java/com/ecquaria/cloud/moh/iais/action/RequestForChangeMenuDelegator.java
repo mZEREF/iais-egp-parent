@@ -141,7 +141,7 @@ public class RequestForChangeMenuDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
+
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
@@ -800,6 +800,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         for(AppSubmissionDto v : appSubmissionDtos1){
+            requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
         }
         //save
@@ -2132,6 +2133,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
                         appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                     }

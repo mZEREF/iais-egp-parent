@@ -18,7 +18,7 @@ public interface ValidateFlow {
 
    default void doValidateAdressType(String floorNo,String blkNo,String unitNo,Integer index,Map<String ,String> map,List<String> errorName){};
 
-   default void doValidateVehicles(Map<String,String>map,List<AppSvcVehicleDto> appSvcVehicleDtos){};
+   default void doValidateVehicles(Map<String,String>map,List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId){};
 
    default void doValidateClincalDirector(Map<String,String>map,List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,String serviceCode){};
 

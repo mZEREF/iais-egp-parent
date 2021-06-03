@@ -358,5 +358,5 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-application/declaration-doc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppDeclarationDocDto>> getAppDeclarationDocDto(@RequestParam("appGrpId")String appGrpId);
     @GetMapping(value = "/get-vehicle-vehicle-number",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoByVehicleNumber(@RequestParam("vehicleNumber") String vehicleNumber);
+    FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoByVehicleNumber(@RequestParam("vehicleNumber") String vehicleNumber,@RequestParam("licenseeId") String licenseeId);
 }

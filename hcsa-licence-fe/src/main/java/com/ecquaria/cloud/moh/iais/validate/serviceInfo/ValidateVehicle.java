@@ -29,7 +29,7 @@ public class ValidateVehicle implements ValidateFlow {
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Override
-    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId) {
         if(appSvcVehicleDtos==null){
             return;
         }
@@ -37,7 +37,6 @@ public class ValidateVehicle implements ValidateFlow {
         List<String>chassisNumList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String>engineNumNumList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String> validateVehicleName=new ArrayList<>(appSvcVehicleDtos.size());
-        Map<Integer,String> indexMap=new HashMap<>(appSvcVehicleDtos.size());
         for(int i=0;i<appSvcVehicleDtos.size();i++){
             String vehicleName = appSvcVehicleDtos.get(i).getVehicleName();
             String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
@@ -57,7 +56,7 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
                 }else {
                     //validate  vehicle number used
-                    List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName).getEntity();
+                    List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
                     if(!appSvcVehicleDtoList.isEmpty()){
                         map.put("vehicleName" + i, "NEW_ERR0028");
                     }

@@ -706,6 +706,17 @@ public class NewApplicationDelegator {
                     bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                 }
             }
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            if(NewApplicationHelper.checkIsRfi(bpc.request)){
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appDeclarationMessageDto!=null){
+                    RenewDto renewDto=new RenewDto();
+                    List<AppSubmissionDto> list=new ArrayList<>(1);
+                    list.add(appSubmissionDto);
+                    renewDto.setAppSubmissionDtos(list);
+                    bpc.request.setAttribute("renewDto",renewDto);
+                }
+            }
         }
 
         // init uploaded File
