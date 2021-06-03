@@ -2176,6 +2176,7 @@ public class RequestForChangeMenuDelegator {
                     appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
+                    appSvcCgoDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                     appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
@@ -2192,6 +2193,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                     }
                 }
