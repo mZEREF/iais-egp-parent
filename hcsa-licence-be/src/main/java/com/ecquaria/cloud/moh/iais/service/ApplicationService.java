@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -79,4 +80,22 @@ public interface ApplicationService {
     void rollBackInspAo1InspLead(BaseProcessClass bpc, String roleId, String routeBackStatus, String wrkGpId, String userId) throws CloneNotSupportedException;
 
     void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/6/3
+      * @Param: taskDto, vehicleOpenFlag
+      * @return: String
+      * @Descripation: getVehicleFlagToShowOrEdit
+      */
+    String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/6/3
+      * @Param: vehicleFlag, applicationViewDto
+      * @return: List<String>
+      * @Descripation: getVehicleNoByFlag
+      */
+    List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto);
 }

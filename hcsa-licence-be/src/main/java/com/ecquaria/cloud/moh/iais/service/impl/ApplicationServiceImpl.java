@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
@@ -80,6 +81,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1061,6 +1063,45 @@ public class ApplicationServiceImpl implements ApplicationService {
                 updateInspectionStatus(appPremisesCorrelationDto.getId(), inspectionStatus);
             }
         }
+    }
+
+    @Override
+    public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag) {
+        String vehicleFlag = AppConsts.FALSE;
+        if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+            if(taskDto != null) {
+                String stageId = taskDto.getTaskKey();
+                if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                    vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                          HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                          HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                ) {
+                    vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                }
+            }
+        }
+        return vehicleFlag;
+    }
+
+    @Override
+    public List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto) {
+        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlag)) {
+            if(applicationViewDto != null) {
+                List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+                if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                    List<String> vehicleNoList = IaisCommonUtils.genNewArrayList();
+                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                        if(appSvcVehicleDto != null) {
+                            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+                        }
+                    }
+                    Collections.sort(vehicleNoList);
+                    return vehicleNoList;
+                }
+            }
+        }
+        return null;
     }
 
     private TaskDto completedTask(TaskDto taskDto) {

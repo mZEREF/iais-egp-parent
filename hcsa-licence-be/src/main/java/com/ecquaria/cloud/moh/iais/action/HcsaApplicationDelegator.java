@@ -160,6 +160,10 @@ public class HcsaApplicationDelegator {
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
+
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
+
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
@@ -227,6 +231,10 @@ public class HcsaApplicationDelegator {
             String newCorrelationId = appPremisesCorrelationDto.getId();
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
             applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+            //get vehicle flag
+            String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag);
+            //get vehicleNoList for edit
+            List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
