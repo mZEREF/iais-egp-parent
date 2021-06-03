@@ -145,6 +145,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         List<InspectionFillCheckListDto>   cDtoList ;
         List<InspectionFillCheckListDto>   commonList;
         AdCheckListShowDto adchklDto;
+        boolean needVehicleSeparation = checklistNeedVehicleSeparation(appViewDto.getSvcCode());
         if( beforeFinishList){
               cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
               commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
@@ -157,13 +158,15 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
             }
         }
-            if(commonList!=null&&!commonList.isEmpty()){
+        if(IaisCommonUtils.isNotEmpty(commonList)){
                 commonDto = commonList.get(0);
-            }
+        }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         List<OrgUserDto> orgUserDtoUsers = fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos);
-        // get ah draft
-        adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtoUsers);
+         if( !needVehicleSeparation){
+             // get ah draft
+             adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtoUsers);
+         }
         //get  commonDto draft
         fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(commonDto,orgUserDtoUsers);
         // change common data;
@@ -179,9 +182,11 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
                 inspectionFillCheckListDtos.addAll(fdtoList);
-              for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
-                  //get Service draft
-                  fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtoUsers);
+               for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                   if(!needVehicleSeparation){
+                       //get Service draft
+                       fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtoUsers);
+                   }
                   insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
               }
             }

@@ -1434,7 +1434,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             setDraftRemarkMaps(draftRemarkMaps,appPremInsDraftDtos);
             inspectionFillCheckListDto.setStringInspectionCheckQuestionDtoMap( getStringInspectionCheckQuestionDtoMapByList( inspectionCheckQuestionDtos));
             inspectionFillCheckListDto.setOtherInspectionOfficer(getOtherOffs(appPremInsDraftDtos));
-            List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos);
+            List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos,inspectionFillCheckListDto.getVehicleName());
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto :  inspectionCheckQuestionDtos ){
                  List<InspectionCheckListAnswerDto> answerDtosOne = new ArrayList<>(1);
                   for(InspectionCheckListAnswerDto inspectionCheckListAnswerDto : answerDtos){
@@ -1520,15 +1520,25 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         return  otherOffs;
     }
-    private  List<InspectionCheckListAnswerDto>  getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(List<AppPremInsDraftDto> appPremInsDraftDtos){
+    private  List<InspectionCheckListAnswerDto>  getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(List<AppPremInsDraftDto> appPremInsDraftDtos,String identify){
         List<InspectionCheckListAnswerDto> answerDtos = new ArrayList<>(3);
         for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){
             if( !StringUtil.isEmpty (appPremInsDraftDto.getAnswer())){
                 List<InspectionCheckListAnswerDto> inspectionCheckListAnswerDto = JsonUtil.parseToList(appPremInsDraftDto.getAnswer(),InspectionCheckListAnswerDto.class);
-                for(InspectionCheckListAnswerDto a :  inspectionCheckListAnswerDto){
-                    a.setSubBy(appPremInsDraftDto.getCreatedBy());
+                if(StringUtil.isEmpty(identify)){
+                    for(InspectionCheckListAnswerDto a :  inspectionCheckListAnswerDto){
+                        a.setSubBy(appPremInsDraftDto.getCreatedBy());
+                    }
+                    answerDtos.addAll(inspectionCheckListAnswerDto);
+                }else {
+                    //set spec check list
+                    for(InspectionCheckListAnswerDto a :  inspectionCheckListAnswerDto){
+                        if(identify.equalsIgnoreCase(a.getIdentify())){
+                            a.setSubBy(appPremInsDraftDto.getCreatedBy());
+                            answerDtos.add(a);
+                        }
+                    }
                 }
-                answerDtos.addAll(inspectionCheckListAnswerDto);
             }
         }
         return   answerDtos;

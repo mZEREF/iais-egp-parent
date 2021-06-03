@@ -460,6 +460,7 @@ public class InspectionCheckListCommonMethodDelegator {
                  for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
                          InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
                          inspectionSpecServiceDto.setIdentify(appSvcVehicleDto.getVehicleName());
+                         inspectionSpecServiceDto.setServiceTab(appSvcVehicleDto.getVehicleName());
                          List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
                          if(serListDto.getFdtoList() == null){
                              serListDto.setFdtoList(IaisCommonUtils.genNewArrayList());
@@ -468,6 +469,10 @@ public class InspectionCheckListCommonMethodDelegator {
                              try{
                                  InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
                                  inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
+                                 if(!beforeFinishList){
+                                     inspectionFillCheckListDtoCopy.setVehicleName(appSvcVehicleDto.getVehicleName());
+                                     fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDtoCopy,orgUserDtoUsers);
+                                 }
                                  fdtoList.add(inspectionFillCheckListDtoCopy);
                              }catch (Exception e){
                                  log.error(e.getMessage());
