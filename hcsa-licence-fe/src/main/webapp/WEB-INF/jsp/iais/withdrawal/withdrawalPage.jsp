@@ -230,7 +230,7 @@
                                         </c:choose>
                                         <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"
                                               style="color: #D22727; font-size: 1.6rem"></span>
-                                        <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
+                                        <span id="error_selectedWdFileError" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </div>
                             </div>
