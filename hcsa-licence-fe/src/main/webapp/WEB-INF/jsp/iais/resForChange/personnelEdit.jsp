@@ -475,8 +475,8 @@
 
         }else {
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
+            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
 
         }
         if($('#ackMessage').val()=='personnelAck'){
@@ -595,8 +595,8 @@
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
         }else {
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
-            $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
-            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
         }
     });
     function addNew() {
