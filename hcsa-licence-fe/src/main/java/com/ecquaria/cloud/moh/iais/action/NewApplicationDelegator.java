@@ -1657,6 +1657,9 @@ public class NewApplicationDelegator {
                         if(appDeclarationMessageDto!=null){
                             bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
                         }
+                        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppGroupAppType())){
+                            bpc.request.setAttribute("group_renewal_app_rfc","1");
+                        }
                     }
                     if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                         AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
