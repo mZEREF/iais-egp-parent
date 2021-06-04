@@ -477,9 +477,11 @@
             }
         });
         if(flag){
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
+            if($("input[type='radio']:checked").val() == 'replace'){
+                $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            }else if($("input[type='radio']:checked").val() == 'update'){
+                $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
+            }
         }else {
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
@@ -595,14 +597,13 @@
     });
 
     $('.designationSel').change(function (){
-        if($(this).val()=='DES999'){
-            $(this).closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
+        if($(this).val()=='DES999'&&$("input[type='radio']:checked").val() == 'replace'){
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
-            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
-        }else {
+        }else if($(this).val()=='DES999'&&$("input[type='radio']:checked").val() == 'update') {
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
+        }else if($(this).val()!='DES999'){
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
-            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
         }
     });
     function addNew() {
