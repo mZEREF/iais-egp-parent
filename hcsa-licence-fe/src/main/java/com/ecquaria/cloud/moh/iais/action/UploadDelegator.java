@@ -50,45 +50,48 @@ public class UploadDelegator {
     /**********************************/
 
     private void start(){
-        String data = uploadFileService.getData();
-        log.info("------------------- getData  end --------------");
-        //Parse the
-        List<ApplicationListFileDto> parse = uploadFileService.parse(data);
-        AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
-        for(ApplicationListFileDto applicationListFileDto :parse){
-            applicationListFileDto.setAuditTrailDto(intenet);
-            Map<String,List<String>> map=new HashMap();
-            List<String> oldStatus= IaisCommonUtils.genNewArrayList();
-            oldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
-            try {
-                uploadFileService.getRelatedDocuments(applicationListFileDto);
-                String grpId = uploadFileService.saveFile(applicationListFileDto);
-                if(StringUtil.isEmpty(grpId)){
-                    continue;
-                }
-                log.info("------------------- saveFile  end --------------");
-                String compressFileName = uploadFileService.compressFile(grpId);
-                boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
-                log.info("------------------- compressFile  end --------------");
-                if(rename){
-                    List<String> newStatus=IaisCommonUtils.genNewArrayList();
-                    newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
-                    map.put("oldStatus",oldStatus);
-                    map.put("newStatus",newStatus);
-                    uploadFileService.changeStatus(applicationListFileDto,map);
-                }
-            }catch (Throwable e){
-                Map<String,List<String>> errorMap=new HashMap();
-                List<String> newStatus=IaisCommonUtils.genNewArrayList();
-                List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
-                errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
-                newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
-                errorMap.put("oldStatus",errorOldStatus);
-                errorMap.put("newStatus",newStatus);
-                uploadFileService.changeStatus(applicationListFileDto,errorMap);
+        for (int i=0;i<10;i++){// loop 10 time
+            String data = uploadFileService.getData();
+            log.info("------------------- getData  end --------------");
+            //Parse the
+            List<ApplicationListFileDto> parse = uploadFileService.parse(data);
+            if (parse.isEmpty()){
+                return;
             }
-
-
+            AuditTrailDto intenet = AuditTrailHelper.getCurrentAuditTrailDto();
+            for(ApplicationListFileDto applicationListFileDto :parse){
+                applicationListFileDto.setAuditTrailDto(intenet);
+                Map<String,List<String>> map=new HashMap();
+                List<String> oldStatus= IaisCommonUtils.genNewArrayList();
+                oldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
+                try {
+                    uploadFileService.getRelatedDocuments(applicationListFileDto);
+                    String grpId = uploadFileService.saveFile(applicationListFileDto);
+                    if(StringUtil.isEmpty(grpId)){
+                        continue;
+                    }
+                    log.info("------------------- saveFile  end --------------");
+                    String compressFileName = uploadFileService.compressFile(grpId);
+                    boolean rename = uploadFileService.renameAndSave(compressFileName,grpId);
+                    log.info("------------------- compressFile  end --------------");
+                    if(rename){
+                        List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                        newStatus.add(ApplicationConsts.APPLICATION_SUCCESS_ZIP);
+                        map.put("oldStatus",oldStatus);
+                        map.put("newStatus",newStatus);
+                        uploadFileService.changeStatus(applicationListFileDto,map);
+                    }
+                }catch (Throwable e){
+                    Map<String,List<String>> errorMap=new HashMap();
+                    List<String> newStatus=IaisCommonUtils.genNewArrayList();
+                    List<String> errorOldStatus= IaisCommonUtils.genNewArrayList();
+                    errorOldStatus.add(ApplicationConsts.APPLICATION_GROUP_PENDING_ZIP);
+                    newStatus.add(ApplicationConsts.APPLICATION_GROUP_ERROR_ZIP);
+                    errorMap.put("oldStatus",errorOldStatus);
+                    errorMap.put("newStatus",newStatus);
+                    uploadFileService.changeStatus(applicationListFileDto,errorMap);
+                }
+            }
         }
     }
     private  void logAbout(String methodName){

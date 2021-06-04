@@ -12,7 +12,7 @@
         <input disabled class="form-check-input other-lic co-location" <c:if test="${appSubmissionDto.appDeclarationMessageDto.preliminaryQuestionItem1=='1'}">checked="checked"</c:if> type="radio" name="preliminaryQuestionItem1" value = "1" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
       </div>
-      <div class="form-check col-xs-3">
+      <div class="form-check col-xs-9">
         <input disabled class="form-check-input other-lic co-location" <c:if test="${appSubmissionDto.appDeclarationMessageDto.preliminaryQuestionItem1=='0'}">checked="checked"</c:if>  type="radio" name="preliminaryQuestionItem1" value = "0" aria-invalid="false">
         <label class="form-check-label" ><span class="check-circle"></span>No</label>
       </div>
