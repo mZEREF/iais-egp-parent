@@ -745,7 +745,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         add(roleIds,RoleConsts.USER_ROLE_AUDIT_PLAN,selectOptionArrayList,roles);
-        add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
+        //add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
+        add(roleIds,RoleConsts.USER_ROLE_INSPECTION_LEAD,selectOptionArrayList,roles);
        return selectOptionArrayList;
     }
 
