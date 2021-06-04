@@ -468,16 +468,20 @@
         $('#ackMessageEdit').modal('hide');
     }
     $(document).ready(function () {
-        if( $('.designationSel').val()=='DES999'){
+        var flag=false;
+        $('.designationSel').each(function (){
+            if($(this).val()=='DES999'){
+                flag=true;
+            }
+        });
+        if(flag){
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
-
         }else {
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
-
         }
         if($('#ackMessage').val()=='personnelAck'){
             $('#ackMessageConfim').modal('show');
