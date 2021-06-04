@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
@@ -15,6 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
@@ -25,7 +29,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -36,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -1142,6 +1149,34 @@ public class NewApplicationAjaxController {
             ops.flush();
         }
     }
+    @GetMapping(value = "/renew-ack-print")
+    public @ResponseBody void generateRenewAckPdf(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        String txndt = (String) ParamUtil.getSessionAttr(request, "txnDt");
+        String txnRefNo = (String) ParamUtil.getSessionAttr(request, "txnRefNo");
+        List<String> svcNames = (List<String>) ParamUtil.getSessionAttr(request, "serviceNamesAck");
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext != null){
+            licenseeId = loginContext.getLicenseeId();
+        }
+        String totalString = (String) ParamUtil.getSessionAttr(request, "totalStr");
+        byte[] bytes = doRenewPrint(renewDto.getAppSubmissionDtos().get(0), txnRefNo, txndt, svcNames, licenseeId, totalString);
+
+
+
+        if(bytes != null){
+            String fileName = "renewAppAck.pdf";
+            response.setContentType("application/OCTET-STREAM");
+            response.addHeader("Content-Disposition", "attachment;filename="+fileName);
+            response.addHeader("Content-Length", "" + bytes.length);
+            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+            ops.write(bytes);
+            ops.close();
+            ops.flush();
+        }
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -1183,10 +1218,15 @@ public class NewApplicationAjaxController {
 
                 List<String> svcNameList = IaisCommonUtils.genNewArrayList();
                 StringBuilder serviceName = new StringBuilder();
+                List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    svcNameList.add("<strong>"+appSvcRelatedInfoDto.getServiceName()+"</strong>");
+                    hcsaServiceDtos.add(HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode()));
+                }
+                hcsaServiceDtos = NewApplicationHelper.sortHcsaServiceDto(hcsaServiceDtos);
+                for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                    svcNameList.add("<strong>"+hcsaServiceDto.getSvcName()+"</strong>");
                     serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")
-                            .append(appSvcRelatedInfoDto.getServiceName())
+                            .append(hcsaServiceDto.getSvcName())
                             .append("</strong></p></div>");
                 }
                 String serviceNameTitle = String.join(" | ",svcNameList);
@@ -1255,6 +1295,54 @@ public class NewApplicationAjaxController {
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 bytes = pdfGenerator.convertHtmlToPDF("newAppAck.ftl", paramMap);
             }
+        }
+        return bytes;
+    }
+
+    private static byte[] doRenewPrint(AppSubmissionDto appSubmissionDto, String txnRefNo, String txnDt, List<String> svcNames, String licenseeId, String totalString) throws IOException, TemplateException {
+        byte[] bytes = null;
+        if(appSubmissionDto != null){
+            String emptyStr = "N/A";
+            Map<String,String> paramMap = IaisCommonUtils.genNewHashMap();
+            StringBuilder serviceName = new StringBuilder();
+            if(!IaisCommonUtils.isEmpty(svcNames)){
+                for(String svcName:svcNames){
+                    serviceName.append("<div class=\"col-xs-12\"><p class=\"ack-font-20\">- <strong>")
+                            .append(svcName)
+                            .append("</strong></p></div>");
+                }
+            }
+            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+            String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+            String newAck005 = MessageUtil.getMessageDesc("NEW_ACK005");
+
+            if(StringUtil.isEmpty(txnRefNo)){
+                paramMap.put("txnRefNo",StringUtil.viewHtml(emptyStr));
+            }else{
+                paramMap.put("txnRefNo",StringUtil.viewHtml(txnRefNo));
+            }
+            if(StringUtil.isEmpty(txnDt)){
+                paramMap.put("txnDt",StringUtil.viewHtml(emptyStr));
+            }else{
+                paramMap.put("txnDt",StringUtil.viewHtml(txnDt));
+            }
+            if(StringUtil.isEmpty(appSubmissionDto.getPaymentMethod())){
+                paramMap.put("paymentMethod",StringUtil.viewHtml(emptyStr));
+            }else {
+                String pmtName = MasterCodeUtil.getCodeDesc(appSubmissionDto.getPaymentMethod());
+                paramMap.put("paymentMethod",StringUtil.viewHtml(pmtName));
+            }
+            paramMap.put("amountStr",StringUtil.viewHtml(totalString));
+            paramMap.put("emailAddress",StringUtil.viewHtml(emailAddress));
+            paramMap.put("serviceName",serviceName.toString());
+            paramMap.put("NEW_ACK005",StringUtil.viewHtml(newAck005));
+            paramMap.put("dateColumn",StringUtil.viewHtml("Date & Time"));
+
+            File pdfFile = new File("renew application report.pdf");
+            JarFileUtil.copyFileToDir("pdfTemplate", "renewAck.ftl");
+            File templateDir = new File(JarFileUtil.DEFAULT_TMP_DIR_PATH + "/pdfTemplate");
+            PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
+            bytes = pdfGenerator.convertHtmlToPDF("renewAck.ftl", paramMap);
         }
         return bytes;
     }
