@@ -693,8 +693,22 @@ public class NewApplicationDelegator {
                 }
             }else {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                if(appDeclarationMessageDto!=null){
-                    bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                if(appSubmissionDto.getAppGrpNo()!=null&&appSubmissionDto.getAppGrpNo().startsWith("AR")){
+                    if(appDeclarationMessageDto!=null){
+                        RenewDto renewDto=new RenewDto();
+                        List<AppSubmissionDto> appSubmissionDtos=new ArrayList<>(1);
+                        AppSubmissionDto renewAppsub=new AppSubmissionDto();
+                        renewAppsub.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                        renewAppsub.setAppDeclarationDocDtos(appSubmissionDto.getAppDeclarationDocDtos());
+                        renewAppsub.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                        appSubmissionDtos.add(renewAppsub);
+                        renewDto.setAppSubmissionDtos(appSubmissionDtos);
+                        bpc.request.setAttribute("renewDto",renewDto);
+                    }
+                }else {
+                    if(appDeclarationMessageDto!=null){
+                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                    }
                 }
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
