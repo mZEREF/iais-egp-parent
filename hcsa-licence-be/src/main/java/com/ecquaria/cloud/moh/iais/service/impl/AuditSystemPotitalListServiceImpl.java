@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     private ComSystemAdminClient comSystemAdminClient;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+    @Autowired
+    private OrganizationClient organizationClient;
     @Override
     public AuditSystemPotentialDto initDtoForSearch() {
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
@@ -328,8 +332,25 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             searchParam.addFilter("number_generate", dto.getGenerateNum(), true);
         }
 
-        if(RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(dto.getSelectRole())){
+        /*if(RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(dto.getSelectRole())){
             searchParam.addFilter("ins_id", IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid(), true);
+        }*/
+        if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(dto.getSelectRole())){
+            List<String>  inspectioners = getInspectionorsByUseId(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+            if(IaisCommonUtils.isEmpty( inspectioners)){
+                inspectioners.add(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+            }
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; i <  inspectioners.size(); i++) {
+                sb.append(":ins_id")
+                        .append(i)
+                        .append(',');
+            }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam("ins_id",inSql);
+            for (int i = 0; i <  inspectioners.size(); i++) {
+                searchParam.addFilter("ins_id" + i, inspectioners.get(i));
+            }
         }
         if(!StringUtil.isEmpty(dto.getLastInspectionStart())){
             try {
@@ -387,6 +408,25 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return searchParam;
     }
 
+
+    private List<String>  getInspectionorsByUseId(String userId){
+        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupLeadByUserId(userId).getEntity();
+        List<String> inspectioners = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(userGroupCorrelationDtos)){
+            for(UserGroupCorrelationDto userGroupCorrelationDto : userGroupCorrelationDtos){
+                if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(userGroupCorrelationDto.getUserRoleName())){
+                    String workGroupId = userGroupCorrelationDto.getGroupId();
+                    List<OrgUserDto> orgUserDtos = organizationClient. getUsersByWorkGroupNameNotAvailable(workGroupId,AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                    for(OrgUserDto orgUserDto : orgUserDtos){
+                        if(!inspectioners.contains(orgUserDto.getId())){
+                            inspectioners.add(orgUserDto.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return inspectioners;
+    }
     private int getDayByAduitInspectionMonthBeforeTcu( int aduitInspectionMonthBeforeTcu){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
