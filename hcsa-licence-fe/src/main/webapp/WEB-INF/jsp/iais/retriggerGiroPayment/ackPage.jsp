@@ -45,7 +45,7 @@
                                 <p class="print"><a href="${pageContext.request.contextPath}/new-app-ack-print?action=noHeader" > <em class="fa fa-print"></em>Print</a></p>
                             </c:when>
                             <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                                <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
+                                <p class="print"><a href="${pageContext.request.contextPath}/renew-ack-print" > <em class="fa fa-print"></em>Print</a></p>
                             </c:when>
                         </c:choose>
                     </c:if>

@@ -453,7 +453,24 @@ public class RetriggerGiroPaymentDelegator {
             }
             bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",oneSubmsonDtoList);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-
+            RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+            if(renewDto != null){
+                List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+                if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+                    List<String> svcNames = IaisCommonUtils.genNewArrayList();
+                    for (AppSubmissionDto submissionDto : appSubmissionDtos) {
+                        String serviceName = submissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                        String currAppType = submissionDto.getAppType();
+                        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(currAppType)){
+                            serviceName = serviceName + " (Renewal)" ;
+                        }else {
+                            serviceName = serviceName + " (Amendment)" ;
+                        }
+                        svcNames.add(serviceName);
+                    }
+                    ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) svcNames);
+                }
+            }
         }
 
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
