@@ -117,7 +117,7 @@
                                         <div class="document-upload-list">
                                             <h3>File upload for Withdrawal Reasons</h3>
                                             <div class="file-upload-gp">
-                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                                <span name="selectedWdFileShowId" id="selectedWdFileShowId">
                                                 <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
                                                   <div id="${withdrawPageShowFile.fileMapId}">
@@ -143,12 +143,13 @@
                                                        class="selectedFile commDoc"
                                                        type="file" style="display: none;"
                                                        aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                       onclick="fileClicked(event)"
+                                                       onchange="doUserRecUploadConfirmFile(event)"/><a
                                                     class="btn btn-file-upload btn-secondary"
                                                     onclick="doFileAddEvent()">Upload</a>
                                             </div>
                                             <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                                            <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_selectedWdFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -208,24 +209,31 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedFile",true);
+        uploadFileValidate();
+
     }
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        console.log(configFileSize)
+        console.log('maxFileSize : '+configFileSize);
+
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+        console.log(error);
+
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
+            $('#error_selectedWdFileError').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
+            ajaxCallUploadForMax('mainForm', "selectedWdFile",true);
         } else if(error == "E"){
             $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
-        }else {
+            $('#error_selectedWdFileError').html("");
+        } else{
             $("#selectedFile").val("");
+            $('#error_selectedWdFileError').html("");
             $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
