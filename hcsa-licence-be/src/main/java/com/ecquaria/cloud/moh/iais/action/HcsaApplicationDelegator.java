@@ -1717,7 +1717,7 @@ public class HcsaApplicationDelegator {
             initRecommendationDto.setRemarks(reportRemarks);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             if (recomInNumber != null) {
-                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
+                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber, appPremisesRecommendationDto.getChronoUnit());
                 initRecommendationDto.setPeriod(recommendationOnlyShowStr);
             }
             String remarks = appPremisesRecommendationDto.getRemarks();
@@ -3252,7 +3252,7 @@ public class HcsaApplicationDelegator {
             if (recomInNumber == null || recomInNumber == 0) {
                 recommendationOnlyShow = "Reject";
             } else {
-                recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
+                recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber, chronoUnit);
             }
             if (isRequestForChange) {
                 if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
@@ -3462,46 +3462,6 @@ public class HcsaApplicationDelegator {
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
         return selectOptions;
-    }
-
-    private String getRecommendationOnlyShowStr(Integer recomInNumber) {
-        if (recomInNumber == null) {
-            return "-";
-        }
-        String recommendationOnlyShow = "-";
-        if (recomInNumber >= 12) {
-            if (recomInNumber % 12 == 0) {
-                if (recomInNumber / 12 == 1) {
-                    recommendationOnlyShow = "1 Year";
-                } else {
-                    recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
-                }
-            } else {
-                if (recomInNumber / 12 == 1) {
-                    if (recomInNumber % 12 == 1) {
-                        recommendationOnlyShow = 1 + " Year " + 1 + " Month";
-                    } else {
-                        recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
-                    }
-
-                } else {
-                    if (recomInNumber % 12 == 1) {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
-                    } else {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
-                    }
-                }
-            }
-        } else {
-            if (recomInNumber == 1) {
-                recommendationOnlyShow = recomInNumber + " Month";
-            } else if (recomInNumber == 0) {
-                recommendationOnlyShow = "Reject";
-            } else {
-                recommendationOnlyShow = recomInNumber + " Month(s)";
-            }
-        }
-        return recommendationOnlyShow;
     }
 
     private String getRecommendationOnlyShowStr(Integer recomInNumber, String chronoUnit) {
