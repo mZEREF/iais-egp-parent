@@ -753,7 +753,9 @@ public class WithOutRenewalDelegator {
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
 
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
+            if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
+                appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
+            }
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
