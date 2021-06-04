@@ -73,7 +73,7 @@
                                         Inspection
                                     </c:when>
                                     <c:when test="${'POT' == dashSysStageValReq}">
-                                        Post Inspection
+                                        Post-Inspection
                                     </c:when>
                                     <c:when test="${'AO1' == dashSysStageValReq}">
                                         Approval Officer 1
