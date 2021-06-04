@@ -400,14 +400,16 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <iais:field value="" width="12" />
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                <iais:input cssClass="otherDesignation2 hidden" name="otherDesignation2"
-                                                            maxLength="100" type="text"
-                                                            value="${newPerson.otherDesignation}" ></iais:input>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:if test="${newPerson.designation=='DES999'}">
+                                            <iais:row>
+                                                <iais:field value="" width="12" />
+                                                <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                    <iais:input cssClass="otherDesignation2 " name="otherDesignation2"
+                                                                maxLength="100" type="text"
+                                                                value="${newPerson.otherDesignation}" ></iais:input>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:if>
                                     </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
