@@ -198,6 +198,8 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", null);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", null);
 
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request, "backSearchParamFromHcsaApplication", searchParamGroup);
@@ -217,7 +219,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
 
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        String correlationId = "";
+        String correlationId;
         if (taskDto != null) {
             correlationId = taskDto.getRefNo();
         } else {
@@ -235,6 +237,10 @@ public class HcsaApplicationDelegator {
             String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag);
             //get vehicleNoList for edit
             List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
+            //sort AppSvcVehicleDto List
+            applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
+            ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

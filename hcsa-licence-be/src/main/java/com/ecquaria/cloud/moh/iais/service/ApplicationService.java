@@ -98,4 +98,13 @@ public interface ApplicationService {
       * @Descripation: getVehicleNoByFlag
       */
     List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/6/4
+      * @Param: applicationViewDto
+      * @return: ApplicationViewDto
+      * @Descripation: sortAppSvcVehicleListToShow
+      */
+    ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto);
 }

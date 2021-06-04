@@ -1104,6 +1104,27 @@ public class ApplicationServiceImpl implements ApplicationService {
         return null;
     }
 
+    @Override
+    public ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto) {
+        if(!IaisCommonUtils.isEmpty(vehicleNoList) && applicationViewDto != null) {
+            List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = IaisCommonUtils.genNewArrayList();
+                for (String appSvcVehicle : vehicleNoList) {
+                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                        if(!StringUtil.isEmpty(appSvcVehicle) && appSvcVehicleDto != null) {
+                            if(appSvcVehicle.equals(appSvcVehicleDto.getVehicleName())) {
+                                appSvcVehicleDtoList.add(appSvcVehicleDto);
+                            }
+                        }
+                    }
+                }
+                applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtoList);
+            }
+        }
+        return applicationViewDto;
+    }
+
     private TaskDto completedTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());
