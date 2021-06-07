@@ -105,20 +105,17 @@ public class InspectEmailAo1Delegator {
     InspEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
-    @Autowired
-    private TaskService taskService;
+
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    InsepctionNcCheckListService insepctionNcCheckListService;
+
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    FillupChklistService fillupChklistService;
+
     @Autowired
     OrganizationClient organizationClient;
     @Autowired

@@ -758,10 +758,10 @@ public class RoundRobinCommPoolBatchJob {
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
 
         List<AppointmentUserDto> appointmentUserDtoList = null;
-        if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
-            for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
-                if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
-                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appointmentUserDtos)) {
+            appointmentUserDtoList = new ArrayList<>(appointmentUserDtos.size());
+            for (AppointmentUserDto appointmentUserDto : appointmentUserDtos) {
+                if (appointmentUserDtoList.isEmpty()) {
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
                     appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);

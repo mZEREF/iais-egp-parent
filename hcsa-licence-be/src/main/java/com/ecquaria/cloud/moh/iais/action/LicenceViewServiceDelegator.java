@@ -1793,8 +1793,11 @@ public class LicenceViewServiceDelegator {
         appSvcDisciplineAllocationDtos.clear();
         appSvcDisciplineAllocationDtos.addAll(list);
     }
-    private static void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal,Map<String,String> map) throws Exception{
-        if(appSvcDisciplineAllocationDtoList==null || oldAppSvcDisciplineAllocationDtoList==null){
+
+    private static void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,
+            List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, String premiseVal, String oldPremiseVal,
+            Map<String, String> map) {
+        if (appSvcDisciplineAllocationDtoList == null || oldAppSvcDisciplineAllocationDtoList == null) {
             return;
         }
         if(appSvcDisciplineAllocationDtoList.size() == oldAppSvcDisciplineAllocationDtoList.size()){
@@ -1911,8 +1914,9 @@ public class LicenceViewServiceDelegator {
     private void sortAppSvcChckListDto(AppSvcChckListDto appSvcChckListDto){
 
     }
-    private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) throws  Exception{
-        if(appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null){
+
+    private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) {
+        if (appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null) {
             return;
         }
         if(appSvcChckListDtoList.size()==oldAppSvcChckListDtoList.size()){

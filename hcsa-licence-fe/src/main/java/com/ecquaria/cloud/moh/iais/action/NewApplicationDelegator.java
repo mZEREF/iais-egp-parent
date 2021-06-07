@@ -398,8 +398,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             log.debug(StringUtil.changeForLog("svc id List :"+JsonUtil.parseToJson(svcIds)));
-            Set<String> premisesType = IaisCommonUtils.genNewHashSet();
-            premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             boolean readOnlyPrem = false;
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1218,18 +1217,15 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        if("doSubmit".equals(action)){
-            if (!errorMap.isEmpty()) {
-                NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
-                return;
-            }
+        if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request), appSubmissionDto.getAppType(), errorMap,
+                    appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
-
 
     /**
      * StartStep: doPreview

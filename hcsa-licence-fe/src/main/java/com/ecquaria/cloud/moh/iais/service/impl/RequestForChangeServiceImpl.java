@@ -1877,7 +1877,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             EmailParam smsParam = new EmailParam();
             smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
             smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-            smsParam.setRefId(applicationGroupDto.getLicenseeId());
+            if (applicationGroupDto != null) {
+                smsParam.setRefId(applicationGroupDto.getLicenseeId());
+            }
             smsParam.setTemplateContent(emailMap);
             smsParam.setSubject(subject);
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
@@ -2012,7 +2014,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         EmailParam smsParam = new EmailParam();
         smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
         smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        smsParam.setRefId(applicationGroupDto.getLicenseeId());
+        if (applicationGroupDto != null) {
+            smsParam.setRefId(applicationGroupDto.getLicenseeId());
+        }
         smsParam.setTemplateContent(emailMap);
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS);

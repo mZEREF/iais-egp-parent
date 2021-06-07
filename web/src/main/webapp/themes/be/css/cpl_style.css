@@ -1522,7 +1522,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   content: "";
   font-size: 4rem;
   color: #2199E8;
-  line-height: 20px;
   font-weight: 400;
   vertical-align: middle;
   position: absolute;
@@ -1837,7 +1836,6 @@ input[type=number]::-webkit-outer-spin-button {
   position: relative;
 }
 .form-check input.form-check-input {
-  height: auto;
   position: absolute;
   opacity: 0;
   width: 100%;
@@ -2793,7 +2791,6 @@ span.error-msg {
   color: #333333;
   position: absolute;
   display: block;
-  margin-left: auto;
   margin-right: auto;
   font-weight: 600;
   margin-bottom: 0;
@@ -2939,7 +2936,6 @@ span.error-msg {
   color: #333333;
   flex-basis: 100%;
   position: relative;
-  padding-left: 0;
   text-align: center;
   padding: 0 10px;
 }
@@ -3863,7 +3859,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 @media only screen and (min-width : 768px) and (max-width : 992px) {
   .tab-search.license-search .licence-btns {
     flex: 1;
-    width: auto;
     margin-right: 0;
     order: 1;
     margin-top: 0;
@@ -5154,7 +5149,6 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox],
 .control-item-container input.control-input[type=radio] {
-  height: auto;
   position: absolute;
   opacity: 0;
   width: 100%;
@@ -5176,11 +5170,6 @@ table select.form-control.control-input {
   min-height: 22px;
   line-height: 22px !important;
   font-family: "Open Sans", sans-serif;
-  color: #333333;
-  font-size: 1.6rem;
-  font-weight: 400;
-  position: relative;
-  padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
   .control-item-container input.control-input[type=checkbox] + label.control-label,
