@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -201,10 +202,46 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
             }
         }
+        //validate vehicle EAS / MTS
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto);
         return errMap;
     }
 
-
+    private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto) {
+        if(applicationViewDto != null) {
+            List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                for(int i = 1; i <= appSvcVehicleDtos.size(); i++) {
+                    String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
+                    String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
+                    if(vehicleNoRadios == null || vehicleNoRadios.length == 0) {
+                        errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                    } else {
+                        String vehicleNoRadio = vehicleNoRadios[0];
+                        if(StringUtil.isEmpty(vehicleNoRadio)) {
+                            errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                        } else {
+                            appSvcVehicleDtos.get(i).setStatus(vehicleNoRadio);
+                        }
+                    }
+                    if(StringUtil.isEmpty(vehicleNoRemarks)) {
+                        appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
+                    } else {
+                        if(vehicleNoRemarks.length() <= 400) {
+                            appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
+                        } else {
+                            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                            repMap.put("number","400");
+                            repMap.put("fieldNo","Remarks");
+                            errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                        }
+                    }
+                }
+                applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+            }
+        }
+        return errMap;
+    }
 
 
     /**
