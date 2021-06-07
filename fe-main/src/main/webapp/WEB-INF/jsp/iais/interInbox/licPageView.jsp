@@ -20,7 +20,7 @@
 <%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {
-        margin: 20px 0px 5px 0px;
+        margin: 20px 15px 25px 12px;
         background: #efefef;
         padding: 8px;
         border-radius: 8px;
@@ -33,8 +33,9 @@
         float: left;
         margin-top: 5px;
     }
+    .nav {background:#transparent;}
     .nav ul.pagination{
-        padding-top: 7px;
+        padding: 10px;
     }
 
     .nav ul.pagination > li{
