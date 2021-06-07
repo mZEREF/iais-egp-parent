@@ -233,10 +233,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                             repMap.put("number","400");
                             repMap.put("fieldNo","Remarks");
-                            errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+                            errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
                         }
                     }
                 }
+                applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
             }
         }
         return errMap;
