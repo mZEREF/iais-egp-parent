@@ -2185,6 +2185,15 @@ public class NewApplicationDelegator {
                 }
             }
         }
+        requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
+        String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+        if(StringUtil.isEmpty(baseServiceId)){
+            rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+            bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            return;
+        }
         boolean grpPremiseIsChange = false;
         boolean serviceIsChange = false;
         boolean docIsChange = false;

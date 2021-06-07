@@ -756,6 +756,7 @@ public class WithOutRenewalDelegator {
             if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
                 appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
             }
+            requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
@@ -1362,6 +1363,13 @@ public class WithOutRenewalDelegator {
                                             }
                                         }
                                     }
+                                    boolean b = requestForChangeService.baseSpecLicenceRelation(licenceDto);
+                                    if(!b){
+                                        rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
+                                        bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                        return;
+                                    }
                                     log.info("-----appByLicIdAndExcludeNewOther---- ");
                                     List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
                                     if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
@@ -1400,6 +1408,14 @@ public class WithOutRenewalDelegator {
                             }
                         }
                     }
+                }
+                requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
+                String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+                if(StringUtil.isEmpty(baseServiceId)){
+                    rfc_err020=rfc_err020.replace("{ServiceName}",appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
+                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                    return;
                 }
             }
         }

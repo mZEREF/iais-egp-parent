@@ -1516,6 +1516,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         appSubmissionDto.setAppGrpId(null);
         setRiskToDto(appSubmissionDto);
+        requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
     }
 
     @Override
