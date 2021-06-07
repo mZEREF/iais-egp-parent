@@ -311,81 +311,22 @@ public class LicenceServiceImpl implements LicenceService {
         }
         log.info("----- create save-lic-app-risk-by-licdtos end ");
     }
-    private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos){
+
+    private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         log.info(StringUtil.changeForLog("save New Acra"));
-        for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
-        ) {
-            for (SuperLicDto superLicDto:item.getSuperLicDtos()
-            ) {
+        for (LicenceGroupDto item : eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
+            for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
                 LicenceDto licenceDto = superLicDto.getLicenceDto();
-                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-                GenerateUENDto generateUENDto = new GenerateUENDto();
-                int sequenceNumber = 1;
-                String consumerId = "waiting";
-                String agencyReferenceNumber = "waiting";
-                generateUENDto.setSequenceNumber(sequenceNumber);
-                //basic
-                IssuanceBasic issuanceBasic = new IssuanceBasic();
-                generateUENDto.getBasic().setAgencyReferenceNumber(agencyReferenceNumber);
-                String uen = generateUen();
-                issuanceBasic.setUen(uen);
-                issuanceBasic.setIssuanceAgency("ACRA");
-                issuanceBasic.setEntityType("CL");
-                issuanceBasic.setEntityName(licenseeDto.getName());
-                Date now = new Date();
-                issuanceBasic.setUenIssueDate(Formatter.formatDateTime(now," YYYY-MM-DD"));
-                issuanceBasic.setRegistrationDate(Formatter.formatDateTime(now," YYYY-MM-DD"));
-                issuanceBasic.setTelephone(licenseeDto.getOfficeTelNo());
-                issuanceBasic.setEmail(licenseeDto.getEmilAddr());
-                generateUENDto.setBasic(issuanceBasic);
-
-                //address
-                IssuanceAddresses addresses = new IssuanceAddresses();
-                addresses.setSequenceNumber(sequenceNumber);
-                addresses.setAgencyReferenceNumber(agencyReferenceNumber);
-                addresses.setStandard("D");
-                addresses.setPostalCode(Integer.valueOf(licenseeDto.getPostalCode()));
-                addresses.setHouseBlockNumber(licenseeDto.getBlkNo());
-                addresses.setStreetName(licenseeDto.getStreetName());
-                addresses.setBuildingName(licenseeDto.getBuildingName());
-                addresses.setLevelNumber(licenseeDto.getFloorNo());
-                addresses.setUnitNumber(licenseeDto.getUnitNo());
-                addresses.setIsInvalid(Boolean.TRUE);
-                List<IssuanceAddresses> addressesList = IaisCommonUtils.genNewArrayList();
-                addressesList.add(addresses);
-                generateUENDto.setAddresses(addressesList);
-                log.info(StringUtil.changeForLog("generateUenDto : " + JsonUtil.parseToJson(generateUENDto)));
                 IaisUENDto iaisUENDto = new IaisUENDto();
-                iaisUENDto.setGenerateUENDto(generateUENDto);
-                iaisUENDto.setLicenseeId("licensee");
+                iaisUENDto.setLicenseeId(licenceDto.getLicenseeId());
+                iaisUENDto.setSvcCode(licenceDto.getSvcCode());
+                List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                iaisUENDto.setPremises(premisesGroupDto.getPremisesDto());
+                log.info(StringUtil.changeForLog("Iais UEN Dto is -->: " + JsonUtil.parseToJson(iaisUENDto)));
                 acraUenBeClient.generateUen(iaisUENDto);
-
             }
         }
-    }
-
-    private String generateUen(){
-        int max=10,min=0;
-        List<Integer> retNum = new ArrayList<Integer>(9);
-        for(Integer i=0;i<9;i++){
-            Integer ran2 = (int) (Math.random()*(max-min)+min);
-            retNum.add(ran2);
-        }
-
-        List<Integer> uenIdx = Arrays.asList(4, 5, 6, 7, 8, 0, 1, 2, 3);
-        Integer chkSum = 0;
-        for (Integer i = 1; i < 10; i++) {
-            chkSum += retNum.get(uenIdx.get(i-1))*i;
-        }
-        chkSum = 11 - (chkSum % 11) - 1;
-        String sNo = "CDEGHKMNRWZ";
-        String lastAlphabet = sNo.substring(chkSum, chkSum + 1);
-        StringBuilder resBuilder = new StringBuilder();
-        for (Integer integer : retNum) {
-            resBuilder.append(integer);
-        }
-        resBuilder.append(lastAlphabet);
-        return resBuilder.toString();
     }
 
     @Override
