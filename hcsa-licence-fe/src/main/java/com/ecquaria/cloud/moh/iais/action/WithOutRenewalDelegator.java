@@ -804,7 +804,6 @@ public class WithOutRenewalDelegator {
                                 AppEditSelectDto rfcAppEditSelectDto = new AppEditSelectDto();
                                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
                                 requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
-                                String baseServiceId = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
                                 appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                                 appSubmissionService.transform(appSubmissionDtoByLicenceId, licenseeId);
                                 boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();

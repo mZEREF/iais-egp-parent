@@ -545,6 +545,7 @@
             $('#show').hide();
             $('#newPerson').show();
             $('#newPersonExist').hide();
+            $('.designationSel').trigger('change');
         });
 
         if ($("input[type='radio']:checked").val() == 'update') {

@@ -712,6 +712,7 @@ public class NewApplicationDelegator {
                         appSubmissionDtos.add(renewAppsub);
                         renewDto.setAppSubmissionDtos(appSubmissionDtos);
                         bpc.request.setAttribute("renewDto",renewDto);
+                        bpc.request.setAttribute("renew_rfc_show","Y");
                     }
                 }else {
                     if(appDeclarationMessageDto!=null){
@@ -2729,121 +2730,7 @@ public class NewApplicationDelegator {
         return list;
     }
 
-    private List<AppSubmissionDto> personContact(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
-        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setServiceEdit(true);
-        appEditSelectDto.setPremisesEdit(false);
-        appEditSelectDto.setDocEdit(false);
-        appEditSelectDto.setPoEdit(false);
-        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        if (appSvcRelatedInfoDto == null || oldAppSvcRelatedInfoDto == null) {
-            return null;
-        }
-        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
 
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-
-        Set<String> set = IaisCommonUtils.genNewHashSet();
-        List<String> list = IaisCommonUtils.genNewArrayList();
-        List<String> list1 = changeCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
-        List<String> list2 = changeMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
-        List<String> list3 = changePo(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
-        List<String> list4 = changeClinicalDirector(appSvcClinicalDirectorDtoList, oldAppSvcClinicalDirectorDtoList);
-        set.addAll(list1);
-        set.addAll(list2);
-        set.addAll(list3);
-        Set<String> set1=new HashSet<>(list4);
-        list.addAll(set);
-        List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
-        for (String string : list) {
-            List<String> personnelDtoByIdNo = requestForChangeService.getPersonnelIdsByIdNo(string);
-            List<LicKeyPersonnelDto> licKeyPersonnelDtoByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personnelDtoByIdNo);
-            licKeyPersonnelDtos.addAll(licKeyPersonnelDtoByPerId);
-        }
-        List<LicSvcClinicalDirectorDto> licSvcClinicalDirectorDtos = licenceClient.getLicSvcClinicalDirectorDtoByIdNos(new ArrayList<>(set1)).getEntity();
-        List<String> stringList=new ArrayList<>(licSvcClinicalDirectorDtos.size());
-        for (LicSvcClinicalDirectorDto v : licSvcClinicalDirectorDtos) {
-            stringList.add(v.getAppPremCorreId());
-        }
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByPremCorreIds(stringList).getEntity();
-        Set<String> licenceId = IaisCommonUtils.genNewHashSet();
-        List<String> licenceIdList = IaisCommonUtils.genNewArrayList();
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = loginContext.getLicenseeId();
-        if (StringUtil.isEmpty(licenseeId)) {
-            return null;
-        }
-        for (LicKeyPersonnelDto licKeyPersonnelDto : licKeyPersonnelDtos) {
-            if (licenseeId.equals(licKeyPersonnelDto.getLicenseeId())) {
-                licenceId.add(licKeyPersonnelDto.getLicenceId());
-            }
-        }
-        for(LicenceDto v : licenceDtoList){
-            if(licenseeId.equals(v.getLicenseeId())){
-                licenceId.add(v.getId());
-            }
-        }
-        licenceIdList.addAll(licenceId);
-        licenceIdList.remove(appSubmissionDto.getLicenceId());
-        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
-        for (String string : licenceIdList) {
-            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
-            if (appSubmissionDtoByLicenceId == null || appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList() == null) {
-                continue;
-            }
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0);
-
-            List<AppSvcCgoDto> appSvcCgoDtoList2 = appSvcRelatedInfoDto2.getAppSvcCgoDtoList();
-            if(!list1.isEmpty()){
-                if (appSvcCgoDtoList2 != null && appSvcCgoDtoList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList);
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
-            if(!list2.isEmpty()){
-                if (appSvcMedAlertPersonList2 != null && appSvcMedAlertPersonList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
-            if(!list3.isEmpty()){
-                if (appSvcPrincipalOfficersDtoList2 != null && appSvcPrincipalOfficersDtoList != null) {
-                    appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
-                }
-            }
-            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList1 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList();
-            if(!list4.isEmpty()){
-                if(appSvcClinicalDirectorDtoList1!=null && appSvcClinicalDirectorDtoList!=null){
-                    appSvcRelatedInfoDto2.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtoList);
-                }
-            }
-            appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
-            appSubmissionDtoByLicenceId.setPartPremise(false);
-            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-            requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAutoRfc(true);
-            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-            for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
-                appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                appGrpPremisesDto.setSelfAssMtFlag(4);
-            }
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
-        }
-
-        return appSubmissionDtoList;
-    }
     private List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
