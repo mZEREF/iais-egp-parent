@@ -130,6 +130,7 @@ public class AppealDelegator {
         bpc. request.setAttribute("crud_action_type","appeal");
     }
     public void ackPage(BaseProcessClass bpc){
+        bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
     }
     public void appealFrom(BaseProcessClass bpc){
     }
@@ -185,6 +186,7 @@ public class AppealDelegator {
             licFeInboxClient.updateMsgStatusTo(attribute, MessageConstants.MESSAGE_STATUS_RESPONSE);
             bpc.request.getSession().removeAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         }
+        bpc.getSession().setAttribute("isPopApplicationView",Boolean.FALSE);
         log.info("end**************submit************");
     }
 

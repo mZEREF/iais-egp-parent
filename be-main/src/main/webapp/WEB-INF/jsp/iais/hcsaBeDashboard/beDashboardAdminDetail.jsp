@@ -9,12 +9,30 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+
+<style>
+    @media only screen and (min-width: 1201px) and (max-width: 1920px) {
+        .dashboard-multiple .dashboard-tile-item .dashboard-tile {
+            border-radius: 18px;
+            height: 265px;
+            margin-bottom: 55px;
+        }
+    }
+    .dashboard-chart .dashboard-tile-item .dashboard-tile a.empty-chart {
+        cursor: default;
+        background-image: url('<%=webroot1%>img/chart-0.png');
+        background-repeat: no-repeat;
+        background-position: center 25%;
+    }
+</style>
 <div class="main-content" style="min-height: 73vh;">
 
     <input type="hidden" name="overAllVal" value='${dashAllSvcCircleKpi}'/>
@@ -55,7 +73,7 @@
                                         Inspection
                                     </c:when>
                                     <c:when test="${'POT' == dashSysStageValReq}">
-                                        Post Inspection
+                                        Post-Inspection
                                     </c:when>
                                     <c:when test="${'AO1' == dashSysStageValReq}">
                                         Approval Officer 1
@@ -104,7 +122,7 @@
                             </div>
                             <hr>
                             <div class="col-xs-12">
-                                <div class="dashboard-chart" style="cursor: default;">
+                                <div class="dashboard-chart dashboard-multiple" style="cursor: default;">
                                     <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
                                         <div class="dashboard-tile-item">
                                             <div class="dashboard-tile">
@@ -193,7 +211,7 @@
         chartRegister();
         initChart('overAll');
         <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
-            initChart('${svcOp.value}');
+            initChart('${svcOp.value}', null);
         </c:forEach>
 
         $('#sysClearBtn').click(function () {

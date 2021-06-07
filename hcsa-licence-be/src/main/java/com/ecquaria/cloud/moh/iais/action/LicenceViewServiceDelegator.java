@@ -457,16 +457,17 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
-        if(appSubmissionDto.getOldAppSubmissionDto()!=null){
-            if(publicHolidayDtos!=null){
-                formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
-            }
-            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto(),bpc.request);
-        }
         ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
         if(groupDto!=null){
             authorisedPerson(groupDto.getLicenseeId(),appSubmissionDto);
         }
+        if(appSubmissionDto.getOldAppSubmissionDto()!=null){
+            if(publicHolidayDtos!=null){
+                formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
+            }
+            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto(),bpc.request,groupDto);
+        }
+
         List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
         if(appDeclarationDocDtos!=null){
             Collections.sort(appDeclarationDocDtos,(s1,s2)->(s1.getSeqNum()-s2.getSeqNum()));
@@ -1792,8 +1793,11 @@ public class LicenceViewServiceDelegator {
         appSvcDisciplineAllocationDtos.clear();
         appSvcDisciplineAllocationDtos.addAll(list);
     }
-    private static void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal,Map<String,String> map) throws Exception{
-        if(appSvcDisciplineAllocationDtoList==null || oldAppSvcDisciplineAllocationDtoList==null){
+
+    private static void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,
+            List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList, String premiseVal, String oldPremiseVal,
+            Map<String, String> map) {
+        if (appSvcDisciplineAllocationDtoList == null || oldAppSvcDisciplineAllocationDtoList == null) {
             return;
         }
         if(appSvcDisciplineAllocationDtoList.size() == oldAppSvcDisciplineAllocationDtoList.size()){
@@ -1910,8 +1914,9 @@ public class LicenceViewServiceDelegator {
     private void sortAppSvcChckListDto(AppSvcChckListDto appSvcChckListDto){
 
     }
-    private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) throws  Exception{
-        if(appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null){
+
+    private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) {
+        if (appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null) {
             return;
         }
         if(appSvcChckListDtoList.size()==oldAppSvcChckListDtoList.size()){
@@ -2201,7 +2206,7 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request){
+    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request,ApplicationGroupDto groupDto){
         if(appSubmissionDto==null||oldAppSubmissionDto==null){
             return;
         }
@@ -2299,8 +2304,14 @@ public class LicenceViewServiceDelegator {
             }
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                if(appDeclarationMessageDto!=null){
-                    request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(false));
+                if(groupDto!=null&& groupDto.getGroupNo()!=null&& groupDto.getGroupNo().startsWith("AR")){
+                    if(appDeclarationMessageDto!=null){
+                        request.setAttribute("renew_rfc_show","Y");
+                    }
+                }else {
+                    if(appDeclarationMessageDto!=null){
+                        request.setAttribute("RFC_HCAI_NAME_CHNAGE",String.valueOf(false));
+                    }
                 }
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();

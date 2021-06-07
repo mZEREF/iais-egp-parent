@@ -399,7 +399,7 @@ public class TaskServiceImpl implements TaskService {
             AppGrpPremisesEntityDto appGrpPremisesEntityDto = hcsaAppClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getRoutingServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
@@ -473,15 +473,11 @@ public class TaskServiceImpl implements TaskService {
             receiptEmail.add(orgUserDto.getEmail());
             templateMap.put("appNo",appNo);
             String mesContext;
-            if (templateMap != null && !templateMap.isEmpty()) {
-                try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
-            } else {
-                mesContext = emailTemplate;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
             }
             //send email
             EmailDto emailDto = new EmailDto();

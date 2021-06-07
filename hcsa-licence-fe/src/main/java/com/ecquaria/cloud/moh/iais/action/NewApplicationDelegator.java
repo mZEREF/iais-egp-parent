@@ -398,8 +398,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             log.debug(StringUtil.changeForLog("svc id List :"+JsonUtil.parseToJson(svcIds)));
-            Set<String> premisesType = IaisCommonUtils.genNewHashSet();
-            premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             boolean readOnlyPrem = false;
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -693,8 +692,34 @@ public class NewApplicationDelegator {
                 }
             }else {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
+                if(appSubmissionDto.getAppGrpNo()!=null&&appSubmissionDto.getAppGrpNo().startsWith("AR")){
+                    if(appDeclarationMessageDto!=null){
+                        RenewDto renewDto=new RenewDto();
+                        List<AppSubmissionDto> appSubmissionDtos=new ArrayList<>(1);
+                        AppSubmissionDto renewAppsub=new AppSubmissionDto();
+                        renewAppsub.setAppDeclarationMessageDto(appDeclarationMessageDto);
+                        renewAppsub.setAppDeclarationDocDtos(appSubmissionDto.getAppDeclarationDocDtos());
+                        renewAppsub.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                        appSubmissionDtos.add(renewAppsub);
+                        renewDto.setAppSubmissionDtos(appSubmissionDtos);
+                        bpc.request.setAttribute("renewDto",renewDto);
+                        bpc.request.setAttribute("renew_rfc_show","Y");
+                    }
+                }else {
+                    if(appDeclarationMessageDto!=null){
+                        bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                    }
+                }
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            if(NewApplicationHelper.checkIsRfi(bpc.request)){
+                AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                 if(appDeclarationMessageDto!=null){
-                    bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                    RenewDto renewDto=new RenewDto();
+                    List<AppSubmissionDto> list=new ArrayList<>(1);
+                    list.add(appSubmissionDto);
+                    renewDto.setAppSubmissionDtos(list);
+                    bpc.request.setAttribute("renewDto",renewDto);
                 }
             }
         }
@@ -1192,18 +1217,15 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        if("doSubmit".equals(action)){
-            if (!errorMap.isEmpty()) {
-                NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
-                return;
-            }
+        if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request), appSubmissionDto.getAppType(), errorMap,
+                    appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
-
 
     /**
      * StartStep: doPreview
@@ -1647,6 +1669,9 @@ public class NewApplicationDelegator {
                         AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
                         if(appDeclarationMessageDto!=null){
                             bpc.request.setAttribute("RFC_eqHciNameChange","RFC_eqHciNameChange");
+                        }
+                        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppGroupAppType())){
+                            bpc.request.setAttribute("group_renewal_app_rfc","1");
                         }
                     }
                     if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
@@ -2156,6 +2181,15 @@ public class NewApplicationDelegator {
                     }
                 }
             }
+        }
+        requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
+        String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+        if(StringUtil.isEmpty(baseServiceId)){
+            rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+            bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
+            return;
         }
         boolean grpPremiseIsChange = false;
         boolean serviceIsChange = false;

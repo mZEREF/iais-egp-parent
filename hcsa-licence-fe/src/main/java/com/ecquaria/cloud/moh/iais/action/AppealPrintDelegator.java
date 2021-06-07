@@ -60,15 +60,15 @@ public class AppealPrintDelegator {
         WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
         if (withdrawnDto == null){
             withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
-            if (withdrawnDto != null){
-                String withdrawnReason = withdrawnDto.getWithdrawnReason();
-                String codeDesc = MasterCodeUtil.getCodeDesc(withdrawnReason);
-                if (StringUtil.isEmpty(codeDesc)){
-                    codeDesc = withdrawnReason;
-                }
-                withdrawnDto.setWithdrawnReason(codeDesc);
-                ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
+        }
+        if (withdrawnDto != null){
+            String withdrawnReason = withdrawnDto.getWithdrawnReason();
+            String codeDesc = MasterCodeUtil.getCodeDesc(withdrawnReason);
+            if (StringUtil.isEmpty(codeDesc)){
+                codeDesc = withdrawnReason;
             }
+            withdrawnDto.setWithdrawnReason(codeDesc);
+            ParamUtil.setSessionAttr(bpc.request, "withdrawDtoView", withdrawnDto);
         }
         bpc.request.setAttribute("crud_action_type","wdPrint");
     }

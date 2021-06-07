@@ -187,10 +187,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<String> workGrpIdList = new ArrayList<>(workGrpIds);
         for (String workGrpId : workGrpIdList) {
             for (TaskDto tDto : taskService.getCommPoolByGroupWordId(workGrpId)) {
-                if(tDto.getRoleId() != null) {
-                    if (tDto.getRoleId().equals(curRole)) {
-                        taskDtoList.add(tDto);
-                    }
+                if (tDto.getRoleId() != null && tDto.getRoleId().equals(curRole)) {
+                    taskDtoList.add(tDto);
                 }
             }
         }
@@ -345,7 +343,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     roleOptions.add(so);
                     roleMap.put(index + "", role);
                     //set current role check key
-                    if (role.equals(curRole)) {
+                    if ("".equals(curCheckRole) && role.equals(curRole)) {
                         curCheckRole = String.valueOf(index);
                     }
                     index++;
@@ -1017,15 +1015,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
-
         List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
-                if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
-                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+                if(appointmentUserDtoList.isEmpty()){
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
@@ -1098,8 +1095,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
                 for (Map.Entry<String, String> map : stageRoleMap.entrySet()) {
                     ApplicationDto applicationDto = applicationDtos.get(0);
-                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
-                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), null, td.getWkGrpId());
                     String subStage = null;
                     String stageId;
                     String role = map.getValue();
@@ -1110,7 +1105,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         }
                     } else {
                         stageId = map.getKey();
+                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+                            subStage = HcsaConsts.ROUTING_STAGE_POT;
+                        }
                     }
+                    createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
+                            InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, td.getRoleId(), subStage, td.getWkGrpId());
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, stageId);
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                     int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
@@ -1333,13 +1333,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     @Override
     public String getAddress(AppGrpPremisesDto appGrpPremisesDto) {
         String result = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
-                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
-        } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
-                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
-        } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
+                ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
+                ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
                     appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
         }

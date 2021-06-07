@@ -475,7 +475,18 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     private SearchParam setRoleAndWrkGrpsInParam(String memberRole, List<String> workGroupIds, SearchParam searchParam) {
-        searchParam.addFilter("dashRoleId", memberRole, true);
+        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(memberRole)) {
+            List<String> dashRoleIdList = IaisCommonUtils.genNewArrayList();
+            dashRoleIdList.add(RoleConsts.USER_ROLE_INSPECTIOR);
+            dashRoleIdList.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            String dashRoleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", dashRoleIdList.size());
+            searchParam.addParam("dashRoleIdList", dashRoleIdStr);
+            for (int i = 0; i < dashRoleIdList.size(); i++) {
+                searchParam.addFilter("T7.ROLE_ID" + i, dashRoleIdList.get(i));
+            }
+        } else {
+            searchParam.addFilter("dashRoleId", memberRole, true);
+        }
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();

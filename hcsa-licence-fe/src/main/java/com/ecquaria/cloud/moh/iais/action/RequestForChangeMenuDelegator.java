@@ -820,6 +820,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         for(AppSubmissionDto v : appSubmissionDtos1){
+            requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
         }
         //save
@@ -1710,6 +1711,16 @@ public class RequestForChangeMenuDelegator {
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
+                requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
+                String baseServiceId = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+                if(StringUtil.isEmpty(baseServiceId)){
+                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+                    bpc.request.setAttribute("RFC_ERROR_NO_CHANGE", rfc_err020);
+                    return;
+                }
                 String premisesIndexNo = "";
                 List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                 if (grpLic) {
@@ -2149,6 +2160,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
                         appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                     }
@@ -2176,6 +2188,7 @@ public class RequestForChangeMenuDelegator {
                     appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
+                    appSvcCgoDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                     appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
@@ -2192,6 +2205,7 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                         appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                         appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                     }
                 }

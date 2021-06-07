@@ -317,7 +317,7 @@
                and tableall.rowNum<= :number_generate
               </#if>
                 <#if ins_id??>
-               and tableall.INSPECTOR_ID = :ins_id
+               and tableall.INSPECTOR_ID in ${ins_id}
               </#if>
         ]]>
     </sql>

@@ -180,7 +180,7 @@
                 <div class="row" style="margin-top: 1.5%">
                     <div class="col-md-12">
                         <C:if test="${msgPage == 'msgView'}">
-                            <div class="col-md-5 pull-right">
+                            <div class="col-md-6 pull-right">
                                 <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px;">Archive</button>
                                 <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access Archive</button>
                             </div>

@@ -49,8 +49,6 @@ public class IaisSubmissionDataDelegator {
 
     private final String LABORATORY_DEVELOP_TEST_DTO = "laboratoryDevelopTestDto";
 
-    private static String applicationNo;
-
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, null);
@@ -87,6 +85,7 @@ public class IaisSubmissionDataDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc){
+        // nothing to do
     }
 
     public void confirmStep(BaseProcessClass bpc){
@@ -95,7 +94,7 @@ public class IaisSubmissionDataDelegator {
         String licenseeId = interInboxUserDto.getLicenseeId();
         String orgId = interInboxUserDto.getOrgId();
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = (LaboratoryDevelopTestDto)ParamUtil.getSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO);
-        String hciCode = laboratoryDevelopTestDto.getHciCode();
+        String hciCode = Optional.ofNullable(laboratoryDevelopTestDto).map(LaboratoryDevelopTestDto::getHciCode).orElseGet(() -> "");
         List<LicenceDto> licenceDtoList = inboxClient.getLicenceDtoByHciCode(hciCode, licenseeId).getEntity();
 
         if (!IaisCommonUtils.isEmpty(licenceDtoList)){
