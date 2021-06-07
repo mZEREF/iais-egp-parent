@@ -60,7 +60,7 @@
                                                     </div>
                                                 </c:forEach>
                                                 <c:choose>
-                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
 
                                                     </c:when>
                                                     <c:otherwise>
@@ -69,7 +69,7 @@
                                                 </c:choose>
 
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
                                                 <div class="row">
                                                     <div class="col-md-7"  style="text-align: justify;width: 70%">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -87,7 +87,7 @@
                                                 </div>
                                                 <br/>
                                             </c:if>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
                                                     <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>

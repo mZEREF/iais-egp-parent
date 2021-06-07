@@ -704,6 +704,7 @@ public class NewApplicationDelegator {
                         appSubmissionDtos.add(renewAppsub);
                         renewDto.setAppSubmissionDtos(appSubmissionDtos);
                         bpc.request.setAttribute("renewDto",renewDto);
+                        bpc.request.setAttribute("renew_rfc_show","Y");
                     }
                 }else {
                     if(appDeclarationMessageDto!=null){

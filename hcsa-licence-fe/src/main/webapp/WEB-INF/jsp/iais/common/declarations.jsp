@@ -1,5 +1,5 @@
 <c:choose>
-  <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}"></c:when>
+  <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}"></c:when>
   <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}"></c:when>
   <c:when test=">${licenceView=='licenceView'}"></c:when>
   <c:otherwise>
