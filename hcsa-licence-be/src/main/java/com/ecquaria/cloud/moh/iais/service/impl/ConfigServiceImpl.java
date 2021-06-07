@@ -1050,20 +1050,19 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if(list!=null){
-            return list;
-        }
-        synchronized (this){
-            if(list==null){
-                //this config cannot change,so need init once
-                List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-                list=hcsaServiceCategoryDtos;
-                return hcsaServiceCategoryDtos;
-            }else {
-                return list;
+        if (list == null) {
+            synchronized (this) {
+                if (list == null) {
+                    //this config cannot change,so need init once
+                    List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+                    list = hcsaServiceCategoryDtos;
+                    return list;
+                }
             }
         }
+        return list;
     }
+
     @Override
     public Map<String,String> getMaskHcsaServiceCategory(){
         List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = getHcsaServiceCategoryDto();

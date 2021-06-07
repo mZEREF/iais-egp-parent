@@ -54,14 +54,7 @@ import java.util.Map;
 @Delegator(value = "inspectionNcCheckListDelegator")
 @Slf4j
 public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMethodDelegator{
-    @Autowired
-    private FillupChklistService fillupChklistService;
-    @Autowired
-    private InsepctionNcCheckListService insepctionNcCheckListService;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private AdhocChecklistService adhocChecklistService;
+
     private static final String SERLISTDTO="serListDto";
     private static final String COMMONDTO="commonDto";
     private static final String ADHOCLDTO="adchklDto";

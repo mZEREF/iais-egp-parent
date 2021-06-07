@@ -25,6 +25,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -88,12 +89,12 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 for (ProcessFileTrackDto v : processFileTrackDtos) {
                     File fil = new File(inSharedPath + File.separator + v.getFileName());
                     if(fil.exists()&&fil.isFile()){
-                        if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
-                            String name = fil.getName();
-                            String path = fil.getPath();
-                            log.info(name);
-                            try{
-                                try (InputStream is= Files.newInputStream(fil.toPath());
+                        String name = fil.getName();
+                        String path = fil.getPath();
+                        log.info(StringUtil.changeForLog(name));
+                        if (name.endsWith(RequestForInformationConstants.ZIP_NAME)) {
+                            try {
+                                try (InputStream is = new FileInputStream(fil);
                                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                                     int count;
                                     byte [] size=new byte[1024];

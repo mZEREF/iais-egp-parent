@@ -52,7 +52,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -193,8 +192,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                     Integer integer = map1.get(entity.getDocTitle() + personType + seqNum);
                     if(integer==null){
-                        Set<String> strings = map1.keySet();
-                        if(strings==null||strings.isEmpty()){
+                        if (map1.isEmpty()) {
                             map1.put(entity.getDocTitle() + personType + seqNum,1);
                         }else {
                             Integer max=1;
@@ -221,7 +219,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(configDocId).getEntity();
                     Integer personTypeNum = appSupDocDtos.get(i).getPersonTypeNum();
                     String personType = appSupDocDtos.get(i).getPersonType();
-                    map1.get(entity.getDocTitle() + personType + personTypeNum);
                     Integer integer = map1.get(entity.getDocTitle() + personType + personTypeNum);
                     String  psnIndex = StringUtil.nullToEmpty(integer);
                     if("0".equals(docTitleList.get(j).getDupForPrem())&&docTitleList.get(j).getDupForPerson()!=null){
@@ -362,7 +359,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             //get appeal type
             String appId = applicationDto.getId();
             List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-            if(premiseMiscDtoList != null && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            if (premiseMiscDtoList != null) {
                 AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
                 String appealNo = "";
                 String reason = premiseMiscDto.getReason();

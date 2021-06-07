@@ -506,8 +506,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
                     }
                 }
+                appDeclarationDocShowPageDto.setFileMaxIndex(appDeclarationDocDtoList.size());
             }
-            appDeclarationDocShowPageDto.setFileMaxIndex(appDeclarationDocDtoList.size());
             appDeclarationDocShowPageDto.setPageShowFileMap(map);
             appDeclarationDocShowPageDto.setPageShowFileDtos(pageShowFileDtos);
             appDeclarationDocShowPageDto.setPageShowFileHashMap(pageShowFileHashMap);
@@ -2048,7 +2048,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 notEmptyDocList.add(appGrpPrimaryDocDto);
             }
         }
-        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
+        // log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
         //add empty doc
         List<HcsaSvcDocConfigDto> docConfigDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();
@@ -3353,7 +3353,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     break;
                 }
             }
-            if(!StringUtil.isEmpty(bundleId)){
+            if (bundleId != null) {
                 for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:hcsaFeeBundleItemDtos){
                     if(bundleId.equals(hcsaFeeBundleItemDto.getBundleId()) && !svcCode.equals(hcsaFeeBundleItemDto.getSvcCode())){
                         result.add(hcsaFeeBundleItemDto);
@@ -3414,7 +3414,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return;
         }
         HttpSession session = request.getSession();
-        session.removeAttribute("declaration_page_is");
         // New Application - Declaration - clear uploaded dto
         String fileAppendId = getFileAppendId(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
         session.removeAttribute(fileAppendId + "DocShowPageDto");

@@ -404,8 +404,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(svcIds)) {
             log.info(StringUtil.changeForLog("svcId not null"));
             log.debug(StringUtil.changeForLog("svc id List :"+JsonUtil.parseToJson(svcIds)));
-            Set<String> premisesType = IaisCommonUtils.genNewHashSet();
-            premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            Set<String> premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
             boolean readOnlyPrem = false;
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1218,18 +1217,15 @@ public class NewApplicationDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        if("doSubmit".equals(action)){
-            if (!errorMap.isEmpty()) {
-                NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
-                return;
-            }
+        if ("doSubmit".equals(action) && !errorMap.isEmpty()) {
+            NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request), appSubmissionDto.getAppType(), errorMap,
+                    appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, "test");
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
     }
-
 
     /**
      * StartStep: doPreview
@@ -1702,6 +1698,9 @@ public class NewApplicationDelegator {
     }
 
     private void premiseView(AppSubmissionDto appSubmissionDto,ApplicationDto applicationDto,HttpServletRequest request) throws CloneNotSupportedException {
+        if (appSubmissionDto == null || applicationDto == null) {
+            return;
+        }
         if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())
                     || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())
@@ -2980,7 +2979,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             changePerson.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
-        changePerson.setAmount(appSubmissionDto.getAmount()==null? 0.0 : appSubmissionDto.getAmount());
+        changePerson.setAmount(appSubmissionDto.getAmount() == null ? new Double(0.0) : appSubmissionDto.getAmount());
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         changePerson.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         changePerson.setIsNeedNewLicNo(AppConsts.NO);

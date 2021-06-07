@@ -2693,6 +2693,7 @@ public class ClinicalLaboratoryDelegator {
                 for(AppSvcVehicleDto appSvcVehicleDto:appSvcVehicleDtos){
                     if(indexNo.equals(appSvcVehicleDto.getVehicleIndexNo())){
                         result = appSvcVehicleDto;
+                        break;
                     }
                 }
             }
@@ -2708,6 +2709,7 @@ public class ClinicalLaboratoryDelegator {
                 for(AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectorDtos){
                     if(indexNo.equals(appSvcClinicalDirectorDto.getCdIndexNo())){
                         result = appSvcClinicalDirectorDto;
+                        break;
                     }
                 }
             }

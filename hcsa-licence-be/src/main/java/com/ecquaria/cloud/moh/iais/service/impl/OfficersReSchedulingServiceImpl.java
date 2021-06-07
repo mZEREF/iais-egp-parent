@@ -375,9 +375,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Override
     public void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
         String appNo = reschedulingOfficerDto.getAssignNo();
-        ApplicationDto appDto = getApplicationByAppNo(appNo);
-        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appDto.getAppGrpId()).getEntity();
-        String licenseeId = applicationGroupDto.getLicenseeId();
+        // ApplicationDto appDto = getApplicationByAppNo(appNo);
+        // ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appDto.getAppGrpId()).getEntity();
+        // String licenseeId = applicationGroupDto.getLicenseeId();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap != null) {
@@ -1525,12 +1525,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
         List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
-                if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
-                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+                if(appointmentUserDtoList.isEmpty()){
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }

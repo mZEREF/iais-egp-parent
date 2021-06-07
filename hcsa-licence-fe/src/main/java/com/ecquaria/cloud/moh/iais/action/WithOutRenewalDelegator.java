@@ -1773,7 +1773,7 @@ public class WithOutRenewalDelegator {
         appSubmissionDtos.add(appSubmissionDto);
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
-        if(oldAppSubmissionDto!=null){
+        if (oldAppSubmissionDto != null && appSubmissionDto != null) {
             boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
             boolean eqServiceChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
             boolean eqDocChange = EqRequestForChangeSubmitResultChange.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());

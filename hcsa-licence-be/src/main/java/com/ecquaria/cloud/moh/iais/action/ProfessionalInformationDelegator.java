@@ -203,11 +203,11 @@ public class ProfessionalInformationDelegator {
 
 		if("Y".equals(prsFlag)){
 			Set<String> redNo=new HashSet<>();
-			Set<String> idNoSet=new HashSet<>();
+			//  Set<String> idNoSet=new HashSet<>();
 			String id = ParamUtil.getMaskedString(request, "prRegNo");
 			String[] prsIdNoSplit=id.split("\\|");
 			redNo.add(prsIdNoSplit[1]);
-			idNoSet.add(prsIdNoSplit[0]);
+			// idNoSet.add(prsIdNoSplit[0]);
 			ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
 			List<String> list = new ArrayList<>(redNo);
 			professionalParameterDto.setRegNo(list);

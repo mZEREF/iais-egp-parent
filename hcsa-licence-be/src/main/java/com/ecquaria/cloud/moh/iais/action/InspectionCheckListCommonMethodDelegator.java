@@ -59,14 +59,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 @Delegator(value = "inspectionCheckListCommonMethodDelegator")
 @Slf4j
 public class InspectionCheckListCommonMethodDelegator {
+
     @Autowired
-    private FillupChklistService fillupChklistService;
+    protected FillupChklistService fillupChklistService;
     @Autowired
-    private InsepctionNcCheckListService insepctionNcCheckListService;
+    protected InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
-    private TaskService taskService;
+    protected TaskService taskService;
     @Autowired
-    private AdhocChecklistService adhocChecklistService;
+    protected AdhocChecklistService adhocChecklistService;
+
     private static final String SERLISTDTO="serListDto";
     private static final String COMMONDTO="commonDto";
     private static final String ADHOCLDTO="adchklDto";

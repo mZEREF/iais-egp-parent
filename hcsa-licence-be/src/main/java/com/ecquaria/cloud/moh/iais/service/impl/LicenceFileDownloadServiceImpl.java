@@ -88,6 +88,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -195,14 +196,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         List<ProcessFileTrackDto> processFileTrackDtos = applicationClient.allNeedProcessFile().getEntity();
         if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
-            log.info("-----start process file-----, process file size ==>"+processFileTrackDtos.size());
+            log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>" + processFileTrackDtos.size()));
             for (ProcessFileTrackDto v : processFileTrackDtos) {
                 File file = new File(inFolder + File.separator + v.getFileName());
                 if(file.exists()&&file.isFile()){
                     String name = file.getName();
                     String path = file.getPath();
-                    log.info("-----file name is "+name+"====> file path is ==>"+path);
-                    try (InputStream is=Files.newInputStream(file.toPath());
+                    log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
+                    try (InputStream is = new FileInputStream(file);
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];

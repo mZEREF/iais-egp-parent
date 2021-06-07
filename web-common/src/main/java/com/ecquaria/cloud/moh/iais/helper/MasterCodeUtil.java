@@ -218,7 +218,7 @@ public final class MasterCodeUtil {
                     .filter(i -> StringUtil.isEmpty(codeValue) ? StringUtil.isEmpty(i.getCodeValue()) :
                             codeValue.equalsIgnoreCase(i.getCodeValue()))
                     .findAny()
-                    .map(i -> i.getCode());
+                    .map(MasterCodeView::getCode);
             codeKey = code.orElse(null);
         }
         return codeKey;

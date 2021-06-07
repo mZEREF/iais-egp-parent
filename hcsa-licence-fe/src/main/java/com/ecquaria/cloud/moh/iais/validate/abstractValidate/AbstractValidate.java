@@ -32,18 +32,9 @@ public abstract class AbstractValidate implements Validate {
     public Map<String, String> validate(Object o,Integer index) {
         Map<String,String> map=new HashMap<>();
         Class<?> aClass = o.getClass();
-        FieldNotNull annotation = aClass.getAnnotation(FieldNotNull.class);
-        if(annotation!=null){
-            Field[] declaredFields = aClass.getDeclaredFields();
-            if(declaredFields!=null){
-                validateFidld(map,declaredFields,o,index);
-            }
-
-        }else {
-            Field[] declaredFields = aClass.getDeclaredFields();
-            if(declaredFields!=null){
-                validateFidld(map,declaredFields,o,index);
-            }
+        Field[] declaredFields = aClass.getDeclaredFields();
+        if(declaredFields!=null){
+            validateFidld(map,declaredFields,o,index);
         }
 
         return map;
