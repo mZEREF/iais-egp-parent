@@ -480,6 +480,7 @@ header .container .sg-gov-logo a img {
     header {
         padding-top: 12px;
         padding-bottom: 12px;
+        background: #fff;
     }
     header .menu-icon {
         width: 27px;
@@ -889,7 +890,7 @@ header .container .sg-gov-logo a img {
 @media only screen and (min-width : 993px) and (max-width : 1200px) {
     .navigation {
         width: 50vw;
-        top: 92px;
+        top: 160px; /*top: 92px;*/
         height: calc(100vh - 65px);
     }
     .navigation.open {
@@ -2230,11 +2231,11 @@ input[type=number]::-webkit-outer-spin-button {
 @media only screen and (max-width : 767px) {
     .search-wrap .input-group .input-group-btn {
         width: 46px;
-        height: 46px;
+        height: auto;
     }
     .search-wrap .input-group .input-group-btn .btn.buttonsearch {
         width: 46px;
-        height: 46px;
+        /*height: 46px;*/
     }
 }
 
@@ -5742,6 +5743,14 @@ section.logo img {
         margin-bottom: 0;
         line-height: 25px;
     }
+    .table-info-display {
+        margin: 20px 15px 25px 12px;
+        background: #efefef;
+        padding: 8px;
+        border-radius: 8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+    }
 }
 
 
@@ -5760,7 +5769,7 @@ section.logo img {
     }
     .navigation {
         width: 100vw;
-        top: 110px;
+        top: 155px; /*top: 110px;*/
         height: calc(100vh - 65px);
     }
     footer.footerlogin {
