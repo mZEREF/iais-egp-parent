@@ -1711,6 +1711,16 @@ public class RequestForChangeMenuDelegator {
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
+                requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
+                String baseServiceId = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+                if(StringUtil.isEmpty(baseServiceId)){
+                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+                    bpc.request.setAttribute("RFC_ERROR_NO_CHANGE", rfc_err020);
+                    return;
+                }
                 String premisesIndexNo = "";
                 List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                 if (grpLic) {
