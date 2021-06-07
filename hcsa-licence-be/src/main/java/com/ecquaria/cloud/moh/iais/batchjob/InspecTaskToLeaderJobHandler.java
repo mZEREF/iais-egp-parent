@@ -163,7 +163,12 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInspectionStatusDtos.get(0).getAppPremCorreId()).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            //base flow
+            if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+            } else {
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            }
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(3);
