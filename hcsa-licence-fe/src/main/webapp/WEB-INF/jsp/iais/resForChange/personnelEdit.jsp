@@ -403,12 +403,12 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                                <iais:field value="" width="12" />
-                                                <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                    <iais:input cssClass="otherDesignation2 " name="otherDesignation2"
-                                                                maxLength="100" type="text"
-                                                                value="${newPerson.otherDesignation}" ></iais:input>
-                                                </iais:value>
+                                            <iais:field value="" width="12" />
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                <iais:input cssClass="needDisableI " name="otherDesignation2"
+                                                            maxLength="100" type="text"
+                                                            value="${newPerson.otherDesignation}" ></iais:input>
+                                            </iais:value>
                                         </iais:row>
 
                                     </c:if>
@@ -545,6 +545,7 @@
             $('#show').hide();
             $('#newPerson').show();
             $('#newPersonExist').hide();
+            $('.designationSel').trigger('change');
         });
 
         if ($("input[type='radio']:checked").val() == 'update') {
