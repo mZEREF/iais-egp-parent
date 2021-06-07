@@ -757,6 +757,7 @@ public class WithOutRenewalDelegator {
             if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
                 appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
             }
+            requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);

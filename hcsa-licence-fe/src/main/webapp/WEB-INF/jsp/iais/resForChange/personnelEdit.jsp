@@ -164,14 +164,16 @@
                                                              firstOption="Please Select" disabled="true"></iais:select>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <iais:field value="" width="12" />
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                <iais:input cssClass="otherDesignationShow hidden" name="otherDesignationShow"
-                                                            maxLength="100" type="text"
-                                                            value="${personnelEditDto.otherDesignation}" needDisabled="true"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
+                                        <c:if test="${personnelEditDto.designation=='DES999'}">
+                                            <iais:row>
+                                                <iais:field value="" width="12" />
+                                                <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                    <iais:input cssClass=" needDisableI" name="otherDesignationShow"
+                                                                maxLength="100" type="text"
+                                                                value="${personnelEditDto.otherDesignation}" needDisabled="true"></iais:input>
+                                                </iais:value>
+                                            </iais:row>
+                                        </c:if>
                                     </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>

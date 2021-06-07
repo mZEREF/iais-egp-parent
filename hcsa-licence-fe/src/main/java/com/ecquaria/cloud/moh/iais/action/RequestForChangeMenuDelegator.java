@@ -676,6 +676,7 @@ public class RequestForChangeMenuDelegator {
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
+        oldPersonnelDto.setSalutation("DES999");
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
@@ -1627,6 +1628,15 @@ public class RequestForChangeMenuDelegator {
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
                 }
+                boolean b = requestForChangeService.baseSpecLicenceRelation(string);
+                if(!b){
+                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
+                    rfc_err020=rfc_err020.replace("{ServiceName}",string.getSvcName());
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+                    bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+                    return;
+                }
             }
         }
 
@@ -1691,6 +1701,7 @@ public class RequestForChangeMenuDelegator {
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
+                requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
                 String premisesIndexNo = "";
                 List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                 if (grpLic) {
