@@ -91,15 +91,6 @@
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
-                <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
-                    <tr>
-                        <td colspan="6" align="left">
-                            <iais:message key="GENERAL_ACK018"
-                                          escape="true"/>
-                        </td>
-                    </tr>
-                </c:if>
-                <c:if test="${applicationViewDto.applicationDto.applicationType !='APTY008'}">
                     <c:choose>
                         <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                             <tr>
@@ -155,8 +146,6 @@
                             </c:forEach>
                         </c:otherwise>
                     </c:choose>
-                </c:if>
-
 
                 </tbody>
             </table>

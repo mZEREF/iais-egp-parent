@@ -90,7 +90,7 @@
             function (data) {
                 if(data != null && data.fileSn != -1){
                     if(data.fileSn == 0){
-                        var tr ="<tr><td colspan='6'  align=\"center\" > " +data.noFilesMessage +"</td></tr> " ;
+                        var tr ="<tr><td colspan='6'  align=\"left\" > " +data.noFilesMessage +"</td></tr> " ;
                         doAddTr(tr);
                     }
                 }
