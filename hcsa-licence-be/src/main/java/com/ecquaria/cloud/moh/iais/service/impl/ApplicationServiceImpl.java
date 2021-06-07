@@ -1066,18 +1066,22 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag) {
+    public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
         if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
-            if(taskDto != null) {
-                String stageId = taskDto.getTaskKey();
-                if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
-                    vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
-                } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
-                          HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
-                          HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
-                ) {
-                    vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+            if (taskDto != null) {
+                if(applicationViewDto != null && !IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
+                    String stageId = taskDto.getTaskKey();
+                    if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                    } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                    ) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                    }
+                } else {
+                    log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
                 }
             }
         }

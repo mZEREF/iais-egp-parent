@@ -88,7 +88,7 @@ public interface ApplicationService {
       * @return: String
       * @Descripation: getVehicleFlagToShowOrEdit
       */
-    String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag);
+    String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto);
 
     /**
       * @author: shicheng
