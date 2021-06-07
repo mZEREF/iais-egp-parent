@@ -679,7 +679,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
-        String serviceId = applicationDto.getServiceId();
+        String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String applicationType = applicationDto.getApplicationType();
@@ -717,7 +717,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks, String newCorrelationId) throws Exception {
-        String serviceId = applicationDto.getServiceId();
+        String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         String status = applicationDto.getStatus();
@@ -842,7 +842,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void routBackTaskToInspector(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) {
-        String serviceId = applicationDto.getServiceId();
+        String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
@@ -870,7 +870,7 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public void routTaskToRoutBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
-        String serviceId = applicationDto.getServiceId();
+        String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String applicationType = applicationDto.getApplicationType();
@@ -963,7 +963,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void routTaskToRoutBackAo3(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
         {
-            String serviceId = applicationDto.getServiceId();
+            String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
             String status = applicationDto.getStatus();
             String applicationNo = applicationDto.getApplicationNo();
             String taskKey = taskDto.getTaskKey();
