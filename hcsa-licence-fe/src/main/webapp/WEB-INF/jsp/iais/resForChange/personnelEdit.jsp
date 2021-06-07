@@ -402,16 +402,15 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                         </iais:row>
-                                        <c:if test="${newPerson.designation=='DES999'}">
                                             <iais:row>
                                                 <iais:field value="" width="12" />
                                                 <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                    <iais:input cssClass="otherDesignation2 needDisableI" name="otherDesignation2"
+                                                    <iais:input cssClass="otherDesignation2 needDisableI hidden" name="otherDesignation2"
                                                                 maxLength="100" type="text"
                                                                 value="${newPerson.otherDesignation}" ></iais:input>
                                                 </iais:value>
                                             </iais:row>
-                                        </c:if>
+
                                     </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
@@ -601,11 +600,13 @@
     $('.designationSel').change(function (){
         if($(this).val()=='DES999'&&$("input[type='radio']:checked").val() == 'replace'){
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').removeClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').removeClass('hidden');
         }else if($(this).val()=='DES999'&&$("input[type='radio']:checked").val() == 'update') {
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation').removeClass('hidden');
         }else if($(this).val()!='DES999'){
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
             $(this).closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
+            $(this).closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
         }
     });
     function addNew() {
