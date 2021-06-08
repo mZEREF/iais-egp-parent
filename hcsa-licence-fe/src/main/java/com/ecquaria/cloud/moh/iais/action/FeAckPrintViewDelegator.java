@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -26,11 +27,13 @@ public class FeAckPrintViewDelegator {
         log.debug(StringUtil.changeForLog("ack print view doStart start ..."));
         String appType = ParamUtil.getString(bpc.request, "appType");
         String menuRfc = ParamUtil.getString(bpc.request, "menuRfc");
+        String action = ParamUtil.getString(bpc.request, "action");
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
 
 
         StringBuilder smallTitle = new StringBuilder();
+        String title = null;
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             smallTitle.append("You are applying for ");
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
@@ -45,8 +48,7 @@ public class FeAckPrintViewDelegator {
                     count ++;
                 }
             }
-            ParamUtil.setRequestAttr(bpc.request,"title", "New Licence Application");
-            ParamUtil.setRequestAttr(bpc.request, "smallTitle", smallTitle);
+            title = "New Licence Application";
         } else if(StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
             smallTitle.append("You are amending the ");
             if(hcsaServiceDtoList != null && hcsaServiceDtoList.size() > 0){
@@ -57,15 +59,19 @@ public class FeAckPrintViewDelegator {
                         .append("</strong>)");
             }
             smallTitle.append("</p>");
-
-            ParamUtil.setRequestAttr(bpc.request,"title", "Amendment");
-            ParamUtil.setRequestAttr(bpc.request, "smallTitle", smallTitle);
+            title = "Amendment";
         } else if(!StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
 
 
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
 
+        } else if("retrigger".equals(action)){
+            title = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_TITLE);
+            smallTitle = (StringBuilder) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE);
         }
+        ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
+        ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle.toString());
+
         log.debug(StringUtil.changeForLog("ack print view doStart end ..."));
     }
 
