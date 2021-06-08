@@ -357,6 +357,11 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,CURR_STEP_NAME,stepName);
         String svcScopePageName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
         ParamUtil.setRequestAttr(bpc.request,"svcScopePageName",svcScopePageName);
+        StringBuilder sb=new StringBuilder();
+        sb.append("Please ensure that a clinical governance officer is assigned to each");
+        String s = svcScopePageName.toLowerCase();
+        sb.append(" "+s);
+        ParamUtil.setRequestAttr(bpc.request,"CURR_STEP_NAME_LABLE",sb.toString());
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
