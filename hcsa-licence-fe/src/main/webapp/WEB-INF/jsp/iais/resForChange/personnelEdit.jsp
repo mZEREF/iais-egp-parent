@@ -168,7 +168,7 @@
                                             <iais:row>
                                                 <iais:field value="" width="12" />
                                                 <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                    <iais:input cssClass="otherDesignationShow designationSel" name="otherDesignationShow"
+                                                    <iais:input cssClass="otherDesignationShow needDisableI" name="otherDesignationShow"
                                                                 maxLength="100" type="text"
                                                                 value="${personnelEditDto.otherDesignation}" needDisabled="true"></iais:input>
                                                 </iais:value>
