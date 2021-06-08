@@ -545,7 +545,6 @@
             $('#show').hide();
             $('#newPerson').show();
             $('#newPersonExist').hide();
-            $('.designationSel').trigger('change');
         });
 
         if ($("input[type='radio']:checked").val() == 'update') {
@@ -671,8 +670,13 @@
         $CurrentPsnEle.find('select[name="designation2"]').val(designation);
         var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
         $CurrentPsnEle.find('select[name="designation2"]').next().find('.current').html(designationVal);
-
-
+        if(designation=='DES999'){
+            $('.otherDesignation2').removeClass('hidden');
+        }else {
+            $('.otherDesignation2').addClass('hidden');
+        }
+        var otherDesignation = data.otherDesignation;
+        $CurrentPsnEle.find('input[name="otherDesignation2"]').val(otherDesignation);
         <!-- professionType-->
         var professionType = data.professionType;
         if (professionType == null || professionType == 'undefined' || professionType == '') {

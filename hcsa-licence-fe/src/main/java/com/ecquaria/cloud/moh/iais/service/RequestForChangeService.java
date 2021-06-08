@@ -101,5 +101,6 @@ public interface RequestForChangeService {
     void changeDocToNewVersion(AppSubmissionDto appSubmissionDto) throws  Exception;
     void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto);
     void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
+    String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     }

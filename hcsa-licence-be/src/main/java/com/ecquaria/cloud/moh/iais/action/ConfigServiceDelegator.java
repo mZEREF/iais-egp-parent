@@ -293,6 +293,15 @@ public class ConfigServiceDelegator {
                 hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
             }
         }
+        String manvehicles = request.getParameter("man-vehicles");
+        String mixvehicles = request.getParameter("mix-vehicles");
+
+        String manclinicaldirectorr = request.getParameter("man-clinical_directorr");
+        String mixclinicaldirector = request.getParameter("mix-clinical_director");
+
+        String mancharges = request.getParameter("man-charges");
+        String mixcharges = request.getParameter("mix-charges");
+
 
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");

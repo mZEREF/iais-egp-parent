@@ -1805,17 +1805,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
+    public String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag) {
         String svcName = licenceDto.getSvcName();
         HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
         if(activeHcsaServiceDtoByName!=null){
             String svcType = activeHcsaServiceDtoByName.getSvcType();
             if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
-                return true;
+                return flag==true ? String.valueOf(true): activeHcsaServiceDtoByName.getId();
             }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
                 List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
                 if(serviceCorrelationDtos==null ||serviceCorrelationDtos.isEmpty()){
-                    return false;
+                    return flag==true ? String.valueOf(false): "";
                 }
                 String baseService="";
                 Iterator<HcsaServiceCorrelationDto> iterator = serviceCorrelationDtos.iterator();
@@ -1827,12 +1827,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
                 if(StringUtil.isEmpty(baseService)){
-                    return false;
+                    return flag==true ?String.valueOf(false):"";
                 }
 
                 List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licenceDto.getId()).getEntity();
                 if(entity==null||entity.isEmpty()){
-                    return false;
+                    return flag==true ? String.valueOf(false): "";
                 }
                 Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
                 while (iterator1.hasNext()){
@@ -1841,20 +1841,26 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String baseLicId = next.getBaseLicId();
                         LicenceDto licenceDto1 = licenceClient.getLicBylicId(baseLicId).getEntity();
                         if(licenceDto1==null){
-                            return false;
+                            return flag==true ? String.valueOf(false): "";
                         }
                         String svcName1 = licenceDto1.getSvcName();
                         String svc_name = appConfigClient.getServiceNameById(baseService).getEntity();
                         if(svcName1.equals(svc_name)){
-                            return true;
+                            return flag==true ?String.valueOf(true):baseService;
                         }
                     }
                 }
 
             }
         }
-        return false;
+        return flag==true ? String.valueOf(false): "";
     }
+
+    @Override
+    public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
+        return Boolean.valueOf( baseSpecLicenceRelation(licenceDto,true));
+    }
+
 
     @Override
     public boolean serviceConfigIsChange(List<String> serviceId, String presmiseType) {

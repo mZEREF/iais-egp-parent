@@ -676,7 +676,6 @@ public class RequestForChangeMenuDelegator {
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
-        oldPersonnelDto.setSalutation("DES999");
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
