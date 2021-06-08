@@ -1169,7 +1169,8 @@ def runAutomatedTests(){
                 docker
                     .image('hub.ecquaria.com/ecq/katalonstudio/katalon:7.8.2-ffmpeg')
                     .inside(dockerArgs.join(" ")){
-                        def browserType = 'Chrome'
+                        // def browserType = 'Chrome'
+                        def browserType = 'Chrome (headless)'
                         sh """
                             mkdir -p ~/.katalon/license/ && \
                                 ln -s "$KATALON_OFFLINE_LICENSE" ~/.katalon/license/offline.lic || \
