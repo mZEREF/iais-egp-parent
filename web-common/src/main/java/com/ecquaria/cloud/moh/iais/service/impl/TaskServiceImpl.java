@@ -164,7 +164,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
             log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
 
-            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getRoutingServiceId(),
                     statgId,applicationDto.getApplicationType());
             //handle the taskUrl
             String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
@@ -264,7 +264,7 @@ public class TaskServiceImpl implements TaskService {
                     TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
                 }
                 for(ApplicationDto applicationDto : applicationDtos){
-                    int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
+                    int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getRoutingServiceId(),
                             stageId,applicationDto.getApplicationType());
                     List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
