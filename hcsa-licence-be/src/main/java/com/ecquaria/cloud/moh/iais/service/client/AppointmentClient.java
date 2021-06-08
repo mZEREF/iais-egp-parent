@@ -79,6 +79,6 @@ public interface AppointmentClient {
 
     @PutMapping(value = "/iais-appointment/appt-calendar-refno-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatus(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
-    @PutMapping(value = "/iais-appointment/appt-calendar-refno-status-orderby-time_slot", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-appointment/appt-calendar-refno-status-orderby-timeslot", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatusOrderByTimeSlot(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
 }

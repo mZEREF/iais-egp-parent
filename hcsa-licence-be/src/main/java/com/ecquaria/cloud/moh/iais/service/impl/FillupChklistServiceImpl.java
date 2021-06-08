@@ -2098,7 +2098,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
                 cancelCalendarDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
-                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatusOrderByTimeSlot(cancelCalendarDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
                     Date startDate = apptUserCalendarDtos.get(0).getTimeSlot();
                     Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getTimeSlot();
