@@ -190,7 +190,7 @@ public class GiroDeductionBeDelegator {
     }
 
     private HttpServletRequest determineType(HttpServletRequest request){
-        HttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         if(multipartHttpServletRequest!=null){
             return multipartHttpServletRequest;
         }
