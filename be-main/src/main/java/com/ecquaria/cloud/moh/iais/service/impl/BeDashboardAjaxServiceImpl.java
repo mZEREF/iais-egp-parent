@@ -830,6 +830,9 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                                     }
                                 }
                             }
+                            if(IaisCommonUtils.isEmpty(appOwnerList)) {
+                                appOwnerList.add("Pending Assignment");
+                            }
                         }
                         Collections.sort(appOwnerList);
                         dashAppDetailsQueryDto.setAppOwnerList(appOwnerList);
