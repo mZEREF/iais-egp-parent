@@ -150,4 +150,12 @@ public class AppointmentClientFallback implements AppointmentClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatusOrderByTimeSlot(ApptUserCalendarDto apptUserCalendarDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
