@@ -136,6 +136,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
         for (WithdrawnDto h : withdrawnDtoList) {
+            String newApplicationId = h.getNewApplicationId();
+            String oldApplicationId = h.getApplicationId();
+            ApplicationDto newApplication = applicationFeClient.getApplicationById(newApplicationId).getEntity();
+            ApplicationDto oldApplication = applicationFeClient.getApplicationById(oldApplicationId).getEntity();
             h.setMaxFileIndex(maxSeqNum);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
@@ -156,6 +160,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
                     }
+                    if(oldApplication.getBaseServiceId()!=null){
+                        applicationDto.setBaseServiceId(oldApplication.getBaseServiceId());
+                    }
                 }
             }
             applicationFeClient.updateApplicationList(applicationDtoList);
@@ -165,16 +172,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             /**
              *
              */
-            String newApplicationId = h.getNewApplicationId();
-            String oldApplicationId = h.getApplicationId();
             RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
             List<String> refNoList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = applicationFeClient.listAppPremisesCorrelation(oldApplicationId).getEntity();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList) {
                 refNoList.add(appPremisesCorrelationDto.getId());
             }
-            ApplicationDto newApplication = applicationFeClient.getApplicationById(newApplicationId).getEntity();
-            ApplicationDto oldApplication = applicationFeClient.getApplicationById(oldApplicationId).getEntity();
             ApplicationGroupDto oldApplicationGroupDtox = applicationFeClient.getApplicationGroup(oldApplication.getAppGrpId()).getEntity();
             recallApplicationDto.setAppId(oldApplicationId);
             recallApplicationDto.setRefNo(refNoList);
@@ -291,6 +294,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             h.setMaxFileIndex(maxSeqNum);
             String appId = h.getNewApplicationId();
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appId).getEntity();
+            ApplicationDto oldApplicationDto = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
             String originLicenceId = applicationDto.getOriginLicenceId();
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.add(originLicenceId);
@@ -302,6 +306,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     ApplicationDto applicationDto1 = applicationDtos.get(0);
                     h.setNewApplicationId(applicationDto1.getId());
                     h.setNewApplicationNo(applicationDto1.getApplicationNo());
+                    for (ApplicationDto applicationDto2:applicationDtos
+                    ) {
+                        if(oldApplicationDto.getBaseServiceId()!=null){
+                            applicationDto2.setBaseServiceId(oldApplicationDto.getBaseServiceId());
+                        }
+                    }
+                    applicationFeClient.updateApplicationList(applicationDtos);
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
