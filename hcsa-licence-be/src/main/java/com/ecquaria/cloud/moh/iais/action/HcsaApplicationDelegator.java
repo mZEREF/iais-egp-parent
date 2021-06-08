@@ -233,14 +233,6 @@ public class HcsaApplicationDelegator {
             String newCorrelationId = appPremisesCorrelationDto.getId();
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
             applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
-            //get vehicle flag
-            String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
-            //get vehicleNoList for edit
-            List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
-            //sort AppSvcVehicleDto List
-            applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
-            ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
-            ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -3216,6 +3208,14 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        //get vehicle flag
+        String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
+        //get vehicleNoList for edit
+        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
+        //sort AppSvcVehicleDto List
+        applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request, applicationViewDto);
