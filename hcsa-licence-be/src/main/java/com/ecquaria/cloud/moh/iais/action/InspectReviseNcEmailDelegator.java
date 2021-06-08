@@ -110,12 +110,16 @@ public class InspectReviseNcEmailDelegator {
     InspEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
-
+    @Autowired
+    private TaskService taskService;
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
-
+    @Autowired
+    InsepctionNcCheckListService insepctionNcCheckListService;
+    @Autowired
+    FillupChklistService fillupChklistService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
