@@ -719,7 +719,12 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        //base flow
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+        } else {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        }
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
