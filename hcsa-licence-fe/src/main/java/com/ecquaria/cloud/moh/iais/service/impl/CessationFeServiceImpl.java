@@ -9,8 +9,23 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -26,12 +41,29 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +72,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-
-import java.text.ParseException;
-import java.util.*;
 
 /**
  * @author weilu
@@ -649,7 +678,8 @@ public class CessationFeServiceImpl implements CessationFeService {
         return premisesDto;
     }
 
-
+    @Autowired
+private RequestForChangeService requestForChangeService;
     /*
     utils
      */
@@ -664,8 +694,18 @@ public class CessationFeServiceImpl implements CessationFeService {
         String svcId = hcsaServiceDto.getId();
         HcsaServiceDto hcsaServiceDto1 = appConfigClient.getActiveHcsaServiceDtoById(svcId).getEntity();
         String svcCode = hcsaServiceDto.getSvcCode();
+        //get the base service id
+        LicenceDto licenceDto = new LicenceDto();
+        licenceDto.setId(appSubmissionDto.getLicenceId());
+        licenceDto.setSvcName(serviceName);
+        log.info(StringUtil.changeForLog("The appSubmissionDto.getLicenceId() is -->:"+appSubmissionDto.getLicenceId()));
+        log.info(StringUtil.changeForLog("The serviceName is -->:"+serviceName));
+        String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
+        log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSvcRelatedInfoDtoList.get(0).setBaseServiceId(baseServiceId);
+
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);
