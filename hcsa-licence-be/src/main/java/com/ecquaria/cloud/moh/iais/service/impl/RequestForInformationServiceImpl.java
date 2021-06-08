@@ -65,7 +65,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -323,9 +322,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         String path = fil.getPath();
                         HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                         map.put("fileName",name);
-                        map.put("filePath", name);
+                        map.put("filePath", path);
 
-                        try (InputStream is = new FileInputStream(fil);
+                        try (InputStream is = Files.newInputStream(Paths.get(path));
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];

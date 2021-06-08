@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
@@ -68,10 +69,12 @@ import java.util.*;
 @Service
 @Slf4j
 public class ConfigServiceImpl implements ConfigService {
-    private static final String DATE_FORMAT="yyyy-MM-dd";
-    private static final String VERSION="version";
 
-    private static final String DATE_PARSE="yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String VERSION = "version";
+    private static final String DATE_PARSE = "yyyy-MM-dd HH:mm:ss";
+    private static final String ILLEGAL_OPERATION = "Illegal operation";
+
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -106,9 +109,10 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private  List<HcsaServiceCategoryDto> list;
+    private volatile List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
-    private  List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+    private volatile List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -142,8 +146,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void viewPageInfo(HttpServletRequest request) {
-        String crud_action_value = request.getParameter("crud_action_value");
-        String crud_action_type = request.getParameter("crud_action_type");
+        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String crud_action_type = request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         if(VERSION.equals(crud_action_value)){
             String crud_action_additional = ParamUtil.getMaskedString(request,"crud_action_additional");
             log.info(crud_action_additional);
@@ -160,7 +164,7 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute(VERSION,VERSION);
             setAttribute(request,hcsaServiceDto);
         }else if(crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)){
-            String crud_action_value1 = ParamUtil.getMaskedString(request, "crud_action_value");
+            String crud_action_value1 = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             view(request, crud_action_value1);
         }else if("back".equals(crud_action_value)){
             String crud_action_additional = request.getParameter("crud_action_additional");
@@ -178,12 +182,12 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
         }else if("back".equals(crud_action_value)){
-            request.setAttribute("crud_action_type", "back");
+            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             return;
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -216,9 +220,9 @@ public class ConfigServiceImpl implements ConfigService {
 
             request.setAttribute("PremisesType", premisesSet);
             request.setAttribute("hcsaServiceDto", hcsaServiceDto);
-            request.setAttribute("crud_action_type", "dovalidate");
-            request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-            request.setAttribute("errorMap", errorMap);
+            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "dovalidate");
+            request.setAttribute(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            request.setAttribute(IaisEGPConstant.ERRORMAP, errorMap);
             return;
         }
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
@@ -238,7 +242,7 @@ public class ConfigServiceImpl implements ConfigService {
         } catch (Exception e) {
          log.error(e.getMessage(),e);
         }
-        request.setAttribute("crud_action_type", "save");
+        request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "save");
     }
     static String[] code ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
 
@@ -268,16 +272,16 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
         }else if("back".equals(crud_action_value)){
-            request.setAttribute("crud_action_type", "back");
+            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             return;
         }
          if("version".equals(crud_action_value)){
-            request.setAttribute("crud_action_type", "version");
+            request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "version");
         }else {
              doValidate(hcsaServiceConfigDto, errorMap,request);
              if (!errorMap.isEmpty()) {
@@ -313,12 +317,12 @@ public class ConfigServiceImpl implements ConfigService {
                  request.setAttribute("hcsaServiceStepSchemeDto", stringList);
                  request.setAttribute("PremisesType", premisesSet);
                  request.setAttribute("hcsaServiceDto", hcsaServiceDto);
-                 request.setAttribute("crud_action_type", "validate");
+                 request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "validate");
 
                  Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
                  request.setAttribute("routingStagess", tables);
-                 request.setAttribute("errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                 request.setAttribute("errorMap", errorMap);
+                 request.setAttribute(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                 request.setAttribute(IaisEGPConstant.ERRORMAP, errorMap);
                  return;
              }
              if ("save".equals(crud_action_value)) {
@@ -359,7 +363,7 @@ public class ConfigServiceImpl implements ConfigService {
                  transFor(hcsaServiceConfigDto);
                  hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
                  eicGateway(hcsaServiceConfigDto);
-                 request.setAttribute("crud_action_type", "save");
+                 request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, "save");
                  //todo send email update (if start date or end date change need send  Effective Start/End )
                  HcsaServiceCacheHelper.flushServiceMapping();
          /*   request.setAttribute("option","updated");
@@ -395,8 +399,8 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void delete(HttpServletRequest request) {
-        String crud_action_type = request.getParameter("crud_action_type");
-        String crud_action_value = ParamUtil.getMaskedString(request,"crud_action_value");
+        String crud_action_type = request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        String crud_action_value = ParamUtil.getMaskedString(request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if ("delete".equals(crud_action_type)) {
             if (!StringUtil.isEmpty(crud_action_value)) {
                 view(request, crud_action_value);
@@ -408,7 +412,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
-        String crud_action_value = request.getParameter("crud_action_value");
+        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
         if(!StringUtil.isEmpty(crud_action_value)){
             if("cancel".equals(crud_action_value)){
                 sendURL(request,response);
@@ -561,22 +565,22 @@ public class ConfigServiceImpl implements ConfigService {
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
         }else if(svcCode.length()>3){
-            errorMap.put("svcCode","Illegal operation");
+            errorMap.put("svcCode",ILLEGAL_OPERATION);
         }
         if (StringUtil.isEmpty(svcName)) {
             errorMap.put("svcName", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Name","field"));
         }else  if(svcName.length()>100){
-            errorMap.put("svcName","Illegal operation");
+            errorMap.put("svcName",ILLEGAL_OPERATION);
         }
         if (StringUtil.isEmpty(svcDisplayDesc)) {
             errorMap.put("svcDisplayDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Display Description","field"));
         }else if(svcDisplayDesc.length()>255){
-            errorMap.put("svcDisplayDesc","Illegal operation");
+            errorMap.put("svcDisplayDesc",ILLEGAL_OPERATION);
         }
         if (StringUtil.isEmpty(svcDesc)) {
             errorMap.put("svcDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Description","field"));
         }else if(svcDesc.length()>255){
-            errorMap.put("svcDesc","Illegal operation");
+            errorMap.put("svcDesc",ILLEGAL_OPERATION);
         }
         if (StringUtil.isEmpty(svcType)) {
             errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
@@ -732,7 +736,7 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
         }else if(numberDocument.length()>2){
-            errorMap.put("NumberDocument","Illegal operation");
+            errorMap.put("NumberDocument",ILLEGAL_OPERATION);
         }else if(!numberDocument.matches("^[0-9]+$")){
             errorMap.put("NumberDocument","GENERAL_ERR0002");
         }
@@ -740,7 +744,7 @@ public class ConfigServiceImpl implements ConfigService {
         if(StringUtil.isEmpty(numberfields)){
             errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
         }else if(numberfields.length()>2){
-            errorMap.put("Numberfields","Illegal operation");
+            errorMap.put("Numberfields",ILLEGAL_OPERATION);
         }else if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","GENERAL_ERR0002");
         }
@@ -754,7 +758,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("serviceDoc"+i,Name_of_Info_Field);
                 }else if(docTitle.length()>255){
-                    errorMap.put("serviceDoc","Illegal operation");
+                    errorMap.put("serviceDoc",ILLEGAL_OPERATION);
                 }else {
                     if(stringBuilder.toString().contains(docTitle)){
                         errorMap.put("serviceDoc"+i,"SC_ERR011");
@@ -771,7 +775,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if(StringUtil.isEmpty(docTitle)){
                     errorMap.put("commonDoc"+i,Name_of_Info_Field);
                 }else if(docTitle.length()>255){
-                    errorMap.put("commonDoc","Illegal operation");
+                    errorMap.put("commonDoc",ILLEGAL_OPERATION);
                 }else {
                     if(stringBuilder.toString().contains(docTitle)){
 
@@ -956,28 +960,29 @@ public class ConfigServiceImpl implements ConfigService {
         }
         return hcsaConfigPageDtos;
     }
+
     @Override
     public List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
-        synchronized (this){
-            if(this.hcsaSvcRoutingStageDtos==null){
-                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-                for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
-                    String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
-                    try {
-                        if (Integer.parseInt(stageOrder) % 100 != 0) {
-                            hcsaSvcRoutingStageDtos.remove(i);
-                            i--;
+        if (this.hcsaSvcRoutingStageDtos == null) {
+            synchronized (this) {
+                if (this.hcsaSvcRoutingStageDtos == null) {
+                    List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+                    for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
+                        String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+                        try {
+                            if (Integer.parseInt(stageOrder) % 100 != 0) {
+                                hcsaSvcRoutingStageDtos.remove(i);
+                                i--;
+                            }
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
                         }
-                    } catch (Exception e) {
-
                     }
+                    this.hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
                 }
-                this.hcsaSvcRoutingStageDtos=hcsaSvcRoutingStageDtos;
-                return hcsaSvcRoutingStageDtos;
-            }else {
-                return this.hcsaSvcRoutingStageDtos;
             }
         }
+        return this.hcsaSvcRoutingStageDtos;
     }
 
     private List<WorkingGroupDto> getWorkingGroup() {
@@ -1050,17 +1055,15 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if (list == null) {
+        if (this.hcsaServiceCatgoryDtos == null) {
             synchronized (this) {
-                if (list == null) {
+                if (this.hcsaServiceCatgoryDtos == null) {
                     //this config cannot change,so need init once
-                    List<HcsaServiceCategoryDto> hcsaServiceCategoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-                    list = hcsaServiceCategoryDtos;
-                    return list;
+                    this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
                 }
             }
         }
-        return list;
+        return this.hcsaServiceCatgoryDtos;
     }
 
     @Override

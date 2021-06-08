@@ -29,13 +29,14 @@ public class Statements implements Declarations {
         if(appDeclarationMessageDto==null){
             return;
         }
+        String manatoryMsg = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         String preliminaryQuestionItem1 = appDeclarationMessageDto.getPreliminaryQuestionItem1();
         if(StringUtil.isEmpty(preliminaryQuestionItem1)){
-            map.put("preliminaryQuestionItem1", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("preliminaryQuestionItem1", manatoryMsg);
         }
         String preliminaryQuestiontem2 = appDeclarationMessageDto.getPreliminaryQuestiontem2();
         if(StringUtil.isEmpty(preliminaryQuestiontem2)){
-            map.put("preliminaryQuestiontem2", MessageUtil.replaceMessage("GENERAL_ERR0006","this","field"));
+            map.put("preliminaryQuestiontem2", manatoryMsg);
         }
         Date effectiveDt = appDeclarationMessageDto.getEffectiveDt();
         Date date = new Date();

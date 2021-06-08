@@ -1735,7 +1735,7 @@ public class LicenceViewServiceDelegator {
                 appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
             }
 
-        } else if (appSvcPrincipalOfficersDtoList != null && olAppSvcPrincipalOfficersDtoList != null) {
+        } else {
             int size = appSvcPrincipalOfficersDtoList.size();
             int oldSize = olAppSvcPrincipalOfficersDtoList.size();
             if (size < oldSize) {
@@ -1914,9 +1914,11 @@ public class LicenceViewServiceDelegator {
         oldAppSvcDisciplineAllocationDtoList.removeAll(copyOldAppSvcDisciplineAllocationDtoList);
 
     }
-    private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList , List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList,Map<String,String> map) throws Exception{
-       if(appSvcLaboratoryDisciplinesDtoList==null || oldAppSvcLaboratoryDisciplinesDtoList==null){
-           return;
+
+    private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList,
+            List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList, Map<String, String> map) {
+        if (appSvcLaboratoryDisciplinesDtoList == null || oldAppSvcLaboratoryDisciplinesDtoList == null) {
+            return;
        }
        if(appSvcLaboratoryDisciplinesDtoList.size()==oldAppSvcLaboratoryDisciplinesDtoList.size()){
            for(int i = 0 ; i < appSvcLaboratoryDisciplinesDtoList.size() ; i++){

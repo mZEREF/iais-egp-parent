@@ -1491,7 +1491,7 @@ public class LicenceApproveBatchjob {
 
     private List<AppSvcPremisesScopeDto> getAppSvcPremisesScopeDtoByCorrelationId(List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos, String appPremCorrecId) {
         List<AppSvcPremisesScopeDto> result = IaisCommonUtils.genNewArrayList();
-        if (IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos) || StringUtil.isEmpty(appPremCorrecId)) {
+        if (IaisCommonUtils.isEmpty(appSvcPremisesScopeDtos) || appPremCorrecId == null || StringUtil.isEmpty(appPremCorrecId)) {
             return result;
         }
 

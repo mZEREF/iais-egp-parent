@@ -928,7 +928,8 @@ public class RequestForChangeMenuDelegator {
             personnelEditDto.setOfficeTelNo(officeTelNo);
         }
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        String generalSixDes = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation ", "field");
+        String emailMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field");
+        String designationMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
         if ("replace".equals(editSelect) && "new".equals(replaceName)) {
             newPerson.setIdNo(idNo1);
             newPerson.setIdType(idType1);
@@ -941,7 +942,7 @@ public class RequestForChangeMenuDelegator {
             newPerson.setOfficeTelNo(officeTelNo1);
             newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
             if (StringUtil.isEmpty(email1)) {
-                errMap.put("emailAddr1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                errMap.put("emailAddr1", emailMsg);
             } else if (!StringUtil.isEmpty(email1)) {
                 if (!email1.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                     errMap.put("emailAddr1", "GENERAL_ERR0014");
@@ -981,21 +982,21 @@ public class RequestForChangeMenuDelegator {
                 }
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", generalSixDes);
+                errMap.put("designation1", designationMsg);
             }else if(psnTypes.contains("CGO") &&"DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
-                    errMap.put("otherDesignation1" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                    errMap.put("otherDesignation1" , designationMsg);
                 }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", generalSixDes);
+                errMap.put("designation1", designationMsg);
             }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
-                    errMap.put("otherDesignation1" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                    errMap.put("otherDesignation1" , designationMsg);
                 }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo1)) {
-                errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                errMap.put("officeTelNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No.", "field"));
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 errMap.put("officeTelNo1", "GENERAL_ERR0015");
@@ -1009,7 +1010,7 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("psnName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
             if (StringUtil.isEmpty(email)) {
-                errMap.put("emailAddr", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                errMap.put("emailAddr", emailMsg);
             } else if (!StringUtil.isEmpty(email)) {
                 if (!ValidationUtils.isEmail(email)) {
                     errMap.put("emailAddr", "GENERAL_ERR0014");
@@ -1023,17 +1024,17 @@ public class RequestForChangeMenuDelegator {
                 }
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", generalSixDes);
+                errMap.put("designation", designationMsg);
             }else if(psnTypes.contains("CGO")&&"DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
-                    errMap.put("otherDesignation" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                    errMap.put("otherDesignation" , designationMsg);
                 }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", generalSixDes);
+                errMap.put("designation", designationMsg);
             }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
-                    errMap.put("otherDesignation" , MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                    errMap.put("otherDesignation" , designationMsg);
                 }
             }
             if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(officeTelNo)) {
@@ -1066,7 +1067,7 @@ public class RequestForChangeMenuDelegator {
                 newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
 
                 if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
-                    errMap.put("emailAddr2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Email Address", "field"));
+                    errMap.put("emailAddr2", emailMsg);
                 } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
                     if (!newPerson.getEmailAddr().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
                         errMap.put("emailAddr2", "GENERAL_ERR0014");
@@ -1093,17 +1094,17 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("idNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "ID No.", "field"));
                 }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", generalSixDes);
+                    errMap.put("designation2", designationMsg);
                 }else if(psnTypes.contains("CGO") &&  "DES999".equals(newPerson.getDesignation())){
                     if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
-                        errMap.put("otherDesignation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                        errMap.put("otherDesignation2", designationMsg);
                     }
                 }
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                    errMap.put("designation2", designationMsg);
                 }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(newPerson.getDesignation())){
                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
-                       errMap.put("otherDesignation2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field"));
+                       errMap.put("otherDesignation2", designationMsg);
                    }
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
@@ -1612,11 +1613,9 @@ public class RequestForChangeMenuDelegator {
                     for (AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList) {
                         boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
                         if (!configIsChange) {
-                            String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
-                            rfc_err020 = rfc_err020.replace("{ServiceName}", string.getSvcName());
                             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
-                            bpc.request.setAttribute("SERVICE_CONFIG_CHANGE", rfc_err020);
+                            bpc.request.setAttribute("SERVICE_CONFIG_CHANGE", MessageUtil.replaceMessage("RFC_ERR020", string.getSvcName(), "ServiceName"));
                             return;
                         }
                     }
@@ -1630,8 +1629,6 @@ public class RequestForChangeMenuDelegator {
                 }
                 boolean b = requestForChangeService.baseSpecLicenceRelation(string);
                 if(!b){
-                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
-                    rfc_err020=rfc_err020.replace("{ServiceName}",string.getSvcName());
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");

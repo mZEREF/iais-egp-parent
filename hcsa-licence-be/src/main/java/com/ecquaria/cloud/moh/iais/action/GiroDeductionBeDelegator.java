@@ -33,13 +33,14 @@ import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -420,8 +421,10 @@ public class GiroDeductionBeDelegator {
         response.setContentType("application/x-octet-stream");
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
-        try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              InputStream in = new FileInputStream(file)){
+        String path = file.getPath();
+        log.info(StringUtil.changeForLog("File Path: " + path));
+        try (OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+             InputStream in = Files.newInputStream(Paths.get(path))){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){
