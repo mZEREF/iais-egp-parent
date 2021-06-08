@@ -160,7 +160,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     if (!StringUtil.isEmpty(appStatus)){
                         applicationDto.setStatus(appStatus);
                     }
-                    applicationDto.setBaseServiceId(oldApplication.getBaseServiceId());
+                    if(oldApplication.getBaseServiceId()!=null){
+                        applicationDto.setBaseServiceId(oldApplication.getBaseServiceId());
+                    }
                 }
             }
             applicationFeClient.updateApplicationList(applicationDtoList);
@@ -306,7 +308,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     h.setNewApplicationNo(applicationDto1.getApplicationNo());
                     for (ApplicationDto applicationDto2:applicationDtos
                     ) {
-                        applicationDto2.setBaseServiceId(oldApplicationDto.getBaseServiceId());
+                        if(oldApplicationDto.getBaseServiceId()!=null){
+                            applicationDto2.setBaseServiceId(oldApplicationDto.getBaseServiceId());
+                        }
                     }
                     applicationFeClient.updateApplicationList(applicationDtos);
                 }
