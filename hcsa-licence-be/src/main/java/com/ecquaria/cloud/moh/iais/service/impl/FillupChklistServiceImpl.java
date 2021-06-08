@@ -98,8 +98,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(cDtoList!=null && !cDtoList.isEmpty()){
             List<InspectionCheckQuestionDto> cqDtoList = IaisCommonUtils.genNewArrayList();
             for(ChecklistQuestionDto temp:cDtoList){
-                InspectionCheckQuestionDto inspectionCheckQuestionDto = null;
-                inspectionCheckQuestionDto = transferQuestionDtotoInDto(temp);
+                InspectionCheckQuestionDto inspectionCheckQuestionDto  = transferQuestionDtotoInDto(temp);
                 inspectionCheckQuestionDto.setAppPreCorreId(appPremCorrId);
                 cqDtoList.add(inspectionCheckQuestionDto);
             }
@@ -2148,7 +2147,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
            }
             adCheckListShowDtoCopy.setAdItemList(adItemList);
         }else {
-            for(AdhocNcCheckItemDto adhocNcCheckItemDto : adCheckListShowDto.getAdItemList()){
+            for(AdhocNcCheckItemDto adhocNcCheckItemDto : adCheckListShowDtoCopy.getAdItemList()){
                 adhocNcCheckItemDto.setIdentify(identify);
             }
             //get draft ahoc

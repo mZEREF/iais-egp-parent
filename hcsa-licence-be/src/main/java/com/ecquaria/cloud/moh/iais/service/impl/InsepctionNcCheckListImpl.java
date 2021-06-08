@@ -750,7 +750,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             for(InspectionFillCheckListDto dto:fillcheckDtoList){
                 List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
                 for (InspectionCheckQuestionDto temp : insqDtoList) {
-                    getAppNcByTemp(temp,ncDto,ncItemDtoList);
+                    getAppNcByTemp(temp,ncDto,ncItemDtoList, dto.getVehicleName());
                 }
             }
         }
@@ -771,6 +771,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                         ncItemDto.setIsRecitfied(0);
                     }
                     ncItemDto.setNcs(adhocNcCheckItemDto.getNcs());
+                    ncItemDto.setVehicleName(adhocNcCheckItemDto.getIdentify());
                     ncItemDtoList.add(ncItemDto);
                 }
             }
@@ -778,7 +779,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return ncItemDtoList;
     }
 
-    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList){
+    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList,String vehicleName){
         if("No".equals(temp.getChkanswer())){
             AppPremisesPreInspectionNcItemDto ncItemDto = new AppPremisesPreInspectionNcItemDto();
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -793,6 +794,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncItemDto.setIsRecitfied(0);
             }
             ncItemDto.setNcs(temp.getNcs());
+            ncItemDto.setVehicleName(vehicleName);
             ncItemDtoList.add(ncItemDto);
         }
     }

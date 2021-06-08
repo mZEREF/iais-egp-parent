@@ -6,7 +6,7 @@
     <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
         <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
         <li class="complete ${nowComTabIn == errorTabName ? 'active' : ''}" role="presentation"  onclick="javascript:doChangeTab('${errorTabName}')"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab"
-                                                    data-toggle="tab"><c:out value="${service.serviceName}"/></a></li>
+                                                    data-toggle="tab"><c:out value="${service.identify}"/></a></li>
       </c:forEach>
 </ul>
 
@@ -14,7 +14,7 @@
     <div class="swiper-wrapper" role="tablist">
         <div class="swiper-slide"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></div>
         <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
-            <div class="swiper-slide"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab" data-toggle="tab"><c:out value="${service.serviceName}"/></a></div>
+            <div class="swiper-slide"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab" data-toggle="tab"><c:out value="${service.identify}"/></a></div>
         </c:forEach>
 
     </div>

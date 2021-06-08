@@ -469,13 +469,20 @@ public class InspectionCheckListCommonMethodDelegator {
                          }
                          for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
                              try{
-                                 InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
-                                 inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
                                  if(!beforeFinishList){
-                                     inspectionFillCheckListDtoCopy.setVehicleName(appSvcVehicleDto.getVehicleName());
-                                     fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDtoCopy,orgUserDtoUsers);
+                                  InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
+                                  inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
+                                  inspectionFillCheckListDtoCopy.setVehicleName(appSvcVehicleDto.getVehicleName());
+                                  fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDtoCopy,orgUserDtoUsers);
+                                  fdtoList.add(inspectionFillCheckListDtoCopy);
+                                 }else {
+                                      if(appSvcVehicleDto.getVehicleName().equalsIgnoreCase(inspectionFillCheckListDto.getVehicleName())){
+                                          InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);
+                                          inspectionFillCheckListDtoCopy.setSubName(inspectionFillCheckListDto.getSubName() + appSvcVehicleDto.getVehicleName());
+                                          fdtoList.add(inspectionFillCheckListDtoCopy);
+                                      }
                                  }
-                                 fdtoList.add(inspectionFillCheckListDtoCopy);
+
                              }catch (Exception e){
                                  log.error(e.getMessage());
                              }
