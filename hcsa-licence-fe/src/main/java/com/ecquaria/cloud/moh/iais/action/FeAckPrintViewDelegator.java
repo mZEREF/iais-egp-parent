@@ -32,7 +32,7 @@ public class FeAckPrintViewDelegator {
 
         StringBuilder smallTitle = new StringBuilder();
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-            smallTitle.append("<h3 id=\"newSvc\">You are applying for ");
+            smallTitle.append("You are applying for ");
             if(!IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
                 int count = 0;
                 for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtoList){
@@ -45,7 +45,6 @@ public class FeAckPrintViewDelegator {
                     count ++;
                 }
             }
-            smallTitle.append("</h3>");
             ParamUtil.setRequestAttr(bpc.request,"title", "New Licence Application");
             ParamUtil.setRequestAttr(bpc.request, "smallTitle", smallTitle);
         } else if(StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){

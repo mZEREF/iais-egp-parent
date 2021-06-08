@@ -19,7 +19,7 @@
             <div class="dashboard-page-title">
                 <h1>${title}</h1>
                 <br/>
-                ${smallTitle}
+                <h3>${smallTitle}</h3>
             </div>
         </div>
         <div class="col-xs-12">
