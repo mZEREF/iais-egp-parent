@@ -2230,7 +2230,7 @@ public class HcsaApplicationDelegator {
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, HcsaConsts.ROUTING_STAGE_PRE,
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
                 //set inspector leads
