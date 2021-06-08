@@ -1328,7 +1328,10 @@ public class AppealServiceImpl implements AppealService {
             applicationDto.setServiceId(hcsaServiceDto.getId());
             applicationDto.setApplicationNo(s);
             applicationDto.setOriginLicenceId(licenceDto.getOriginLicenceId());
-
+            String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto, false);
+            if(!StringUtil.isEmpty(baseServiceId)){
+                applicationDto.setBaseServiceId(baseServiceId);
+            }
             applicationDtoListlist.add(applicationDto);
         }
         String reasonSelect = appealDto.getAppealReason();
@@ -1459,6 +1462,7 @@ public class AppealServiceImpl implements AppealService {
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
         HcsaServiceDto hcsaServiceDto = appConfigClient.getActiveHcsaServiceDtoById(applicationDto.getServiceId()).getEntity();
         applicationDto1.setServiceId(hcsaServiceDto.getId());
+        applicationDto1.setBaseServiceId(applicationDto.getBaseServiceId());
         applicationDto1.setVersion(1);
         List<ApplicationDto> list = IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);

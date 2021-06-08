@@ -102,4 +102,5 @@ public interface RequestForChangeService {
     void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto);
     void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
+    String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     }
