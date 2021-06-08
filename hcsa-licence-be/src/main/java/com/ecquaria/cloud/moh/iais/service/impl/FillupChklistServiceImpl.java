@@ -1426,7 +1426,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
         }
 
-        List<AppPremInsDraftDto> appPremInsDraftDtos =   fillUpCheckListGetAppClient.getInspDraftAnswer(getCheckListIdsByInspectionCheckQuestionDtos(inspectionFillCheckListDto.getPreCheckId())).getEntity();
+        List<AppPremInsDraftDto> appPremInsDraftDtos = getAppPremInsDraftDtos(inspectionFillCheckListDto);
         if(IaisCommonUtils.isEmpty(appPremInsDraftDtos)){
             return inspectionFillCheckListDto;
         }else {
@@ -1461,6 +1461,22 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return inspectionFillCheckListDto;
     }
 
+    private   List<AppPremInsDraftDto> getAppPremInsDraftDtos(InspectionFillCheckListDto inspectionFillCheckListDto){
+        List<AppPremInsDraftDto> appPremInsDraftDtos =   fillUpCheckListGetAppClient.getInspDraftAnswer(getCheckListIdsByInspectionCheckQuestionDtos(inspectionFillCheckListDto.getPreCheckId())).getEntity();
+        if(IaisCommonUtils.isNotEmpty(appPremInsDraftDtos) && StringUtil.isNotEmpty(inspectionFillCheckListDto.getVehicleName())){
+            List<AppPremInsDraftDto> appPremInsDraftDtosOneVeh = IaisCommonUtils.genNewArrayList();
+            for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){
+                if(!StringUtil.isEmpty(appPremInsDraftDto.getAnswer())){
+                    List<InspectionCheckListAnswerDto> inspectionCheckListAnswerDto = JsonUtil.parseToList(appPremInsDraftDto.getAnswer(),InspectionCheckListAnswerDto.class);
+                    if(IaisCommonUtils.isNotEmpty(inspectionCheckListAnswerDto) && inspectionFillCheckListDto.getVehicleName().equalsIgnoreCase( inspectionCheckListAnswerDto.get(0).getIdentify())){
+                        appPremInsDraftDtosOneVeh.add(appPremInsDraftDto);
+                    }
+                }
+            }
+            return appPremInsDraftDtosOneVeh;
+        }
+        return appPremInsDraftDtos;
+    }
     private  void setDraftRemarkMaps( Map<String, String> draftRemarkMaps, List<AppPremInsDraftDto> appPremInsDraftDtos){
         for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){
             if(!StringUtil.isEmpty(appPremInsDraftDto.getRemarks())){
