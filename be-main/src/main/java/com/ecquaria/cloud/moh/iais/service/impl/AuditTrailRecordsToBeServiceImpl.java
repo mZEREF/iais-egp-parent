@@ -25,14 +25,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -95,7 +93,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                         log.info(StringUtil.changeForLog(name));
                         if (name.endsWith(RequestForInformationConstants.ZIP_NAME)) {
                             try {
-                                try (InputStream is = new FileInputStream(fil);
+                                try (InputStream is = Files.newInputStream(Paths.get(path));
                                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                                     int count;
                                     byte [] size=new byte[1024];

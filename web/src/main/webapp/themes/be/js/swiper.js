@@ -907,7 +907,7 @@
         // Latest Chrome and webkits Fix
         if (win.WebKitCSSMatrix) { curTransform = transformMatrix.m42; }
         // Crazy IE10 Matrix
-        else if (matrix.length === 16) { curTransform = parseFloat(matrix[13]); }
+        else if (matrix && matrix.length === 16) { curTransform = parseFloat(matrix[13]); }
         // Normal Browsers
         else { curTransform = parseFloat(matrix[5]); }
       }
@@ -7576,7 +7576,9 @@
 
       if (params.shadow) {
         if (isHorizontal) {
-          $cubeShadowEl.transform(("translate3d(0px, " + ((swiperWidth / 2) + params.shadowOffset) + "px, " + (-swiperWidth / 2) + "px) rotateX(90deg) rotateZ(0deg) scale(" + (params.shadowScale) + ")"));
+          if ($cubeShadowEl) {
+            $cubeShadowEl.transform(("translate3d(0px, " + ((swiperWidth / 2) + params.shadowOffset) + "px, " + (-swiperWidth / 2) + "px) rotateX(90deg) rotateZ(0deg) scale(" + (params.shadowScale) + ")"));
+          }
         } else {
           var shadowAngle = Math.abs(wrapperRotate) - (Math.floor(Math.abs(wrapperRotate) / 90) * 90);
           var multiplier = 1.5 - (

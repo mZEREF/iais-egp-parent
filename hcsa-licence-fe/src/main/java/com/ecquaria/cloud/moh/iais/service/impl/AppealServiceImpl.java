@@ -1054,6 +1054,7 @@ public class AppealServiceImpl implements AppealService {
                     //todo
                     map.put("addCgo",  MessageUtil.replaceMessage("GENERAL_ERR0006","Add Another Clinical Governance Officer ","field"));
                 }
+                String designationMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Designation", "field");
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
                     StringBuilder stringBuilder1 = new StringBuilder();
@@ -1079,16 +1080,16 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
-                            map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                            map.put("designation" + i, designationMsg);
                         }else if("DES999".equals(designation)){
                             String otherDesignation = appSvcCgoList.get(i).getOtherDesignation();
                             if(StringUtil.isEmpty(otherDesignation)){
-                                map.put("otherDesignation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                                map.put("otherDesignation" + i, designationMsg);
                             }
                         }
                         String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                         if(StringUtil.isEmpty(otherQualification)){
-                            map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
+                            map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {

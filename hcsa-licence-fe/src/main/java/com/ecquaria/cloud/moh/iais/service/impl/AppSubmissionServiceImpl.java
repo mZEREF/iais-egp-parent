@@ -1772,7 +1772,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 notEmptyDocList.add(appGrpPrimaryDocDto);
             }
         }
-        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
+        // log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
         //add empty doc
         List<HcsaSvcDocConfigDto> docConfigDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();

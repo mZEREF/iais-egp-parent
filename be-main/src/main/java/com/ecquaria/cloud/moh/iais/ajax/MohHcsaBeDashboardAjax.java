@@ -127,7 +127,7 @@ public class MohHcsaBeDashboardAjax {
             //set url and kpi color
             map = setDashAssignMeUrl(map, request, loginContext);
             //set dash support flag
-            if(loginContext != null) {
+            if(loginContext != null && map != null) {
                 String curRole = loginContext.getCurRoleId();
                 if(!StringUtil.isEmpty(curRole)) {
                     if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||

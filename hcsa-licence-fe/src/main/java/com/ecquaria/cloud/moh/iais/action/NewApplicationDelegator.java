@@ -1692,8 +1692,8 @@ public class NewApplicationDelegator {
                         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
                                 appSubmissionDto.getAppType(), bpc.request);
                     }
+                    premiseView(appSubmissionDto, applicationDto, bpc.request);
                 }
-                premiseView(appSubmissionDto,applicationDto,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
@@ -2203,7 +2203,9 @@ public class NewApplicationDelegator {
         * 2. migrated ->premises -> is 0 all to -> 0 . can 2-> 0. but cannot 0->2
         *
         * */
-        grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+        if (appGrpPremisesDtoList != null) {
+            grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+        }
         AppSubmissionDto n = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
