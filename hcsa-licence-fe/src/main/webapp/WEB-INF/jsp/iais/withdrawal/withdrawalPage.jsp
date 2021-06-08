@@ -191,10 +191,10 @@
                                                               <span class="error-msg" name="iaisErrorMsg"
                                                                     id="error_${configIndex}error"></span>
                                                             <button type="button" class="btn btn-secondary btn-sm"
-                                                                    onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
+                                                                    onclick="javascript:deleteFileFeAjax('selectedWdFile',${withdrawPageShowFile.index});">
                                                             Delete</button>  <button type="button"
                                                                                      class="btn btn-secondary btn-sm"
-                                                                                     onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
+                                                                                     onclick="javascript:reUploadFileFeAjax('selectedWdFile',${withdrawPageShowFile.index},'mainForm');">
                                                           ReUpload</button>
                                                           </div>
                                                         </c:forEach>

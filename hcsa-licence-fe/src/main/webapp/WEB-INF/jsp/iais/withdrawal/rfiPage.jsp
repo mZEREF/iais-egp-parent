@@ -10,7 +10,14 @@
 <%@include file="./dashboard.jsp" %>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+        <c:if test="${ apply_page_print=='Y'}">
+            <script>
+                window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+            </script>
+        </c:if>
         <input type="hidden" name="app_action_type" value="">
+        <input type="hidden" name="print_action_type" value="">
+
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
@@ -131,10 +138,10 @@
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="error_${configIndex}error"></span>
                                                     <button type="button" class="btn btn-secondary btn-sm"
-                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
+                                                            onclick="javascript:deleteFileFeAjax('selectedWdFile',${withdrawPageShowFile.index});">
                                                     Delete</button>  <button type="button"
                                                                              class="btn btn-secondary btn-sm"
-                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
+                                                                             onclick="javascript:reUploadFileFeAjax('selectedWdFile',${withdrawPageShowFile.index},'mainForm');">
                                                   ReUpload</button>
                                                   </div>
                                                 </c:forEach>
@@ -271,7 +278,6 @@
     });
 
     function doSubmit() {
-        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
@@ -284,6 +290,14 @@
     }
 
     function printWDPDF(){
-        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+        let appNoList = "";
+        let withdrawContent$ = $(".withdraw-content-box");
+        withdrawContent$.find(".withdraw-info p").each(function (){
+            appNoList = appNoList + $(this).text() + "#";
+        });
+        $("[name='withdraw_app_list']").val(appNoList);
+        $("[name='print_action_type']").val("applyPagePrint");
+
+        submit("withdrawalStep");
     }
 </script>

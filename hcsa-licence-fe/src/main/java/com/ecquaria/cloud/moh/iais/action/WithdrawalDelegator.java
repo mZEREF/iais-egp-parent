@@ -34,6 +34,13 @@ import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicFeInboxClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,12 +49,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -99,7 +100,7 @@ public class WithdrawalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile", null);
         ParamUtil.setSessionAttr(bpc.request, "seesion_files_map_ajax_feselectedWdFile_MaxIndex", null);
         ParamUtil.setSessionAttr(bpc.request, "configFileSize",configFileSize);
-   //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
+        //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (StringUtil.isEmpty(isDoView)){
             isDoView = "N";
         }
@@ -148,35 +149,35 @@ public class WithdrawalDelegator {
         List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
         HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
         HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-            if (viewDoc != null && !viewDoc.isEmpty()) {
-                for (int i = 0; i < viewDoc.size(); i++) {
-                    PageShowFileDto pageShowFileDto = new PageShowFileDto();
-                    String index = viewDoc.get(i).getIndex();
-                    if (StringUtil.isEmpty(index)){
-                        pageShowFileDto.setIndex(String.valueOf(i));
-                        pageShowFileDto.setFileMapId("selectedFileDiv" + i);
-                    }else{
-                        pageShowFileDto.setFileMapId("selectedFileDiv" + index);
-                        pageShowFileDto.setIndex(index);
-                    }
-                    pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
-                    pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
-                    pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
-                    pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
-                    pageShowFileDtos.add(pageShowFileDto);
-                    if (StringUtil.isEmpty(index)){
-                        map.put("selectedFile" + i, null);
-                        pageShowFileHashMap.put("selectedFile" + i, pageShowFileDto);
-                    }else{
-                        map.put("selectedFile" + index, null);
-                        pageShowFileHashMap.put("selectedFile" + index, pageShowFileDto);
-                    }
+        if (viewDoc != null && !viewDoc.isEmpty()) {
+            for (int i = 0; i < viewDoc.size(); i++) {
+                PageShowFileDto pageShowFileDto = new PageShowFileDto();
+                String index = viewDoc.get(i).getIndex();
+                if (StringUtil.isEmpty(index)){
+                    pageShowFileDto.setIndex(String.valueOf(i));
+                    pageShowFileDto.setFileMapId("selectedWdFileDiv" + i);
+                }else{
+                    pageShowFileDto.setFileMapId("selectedWdFileDiv" + index);
+                    pageShowFileDto.setIndex(index);
                 }
-                request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile", map);
-                request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile_MaxIndex", viewDoc.size());
-                request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+                pageShowFileDto.setFileName(viewDoc.get(i).getDocName());
+                pageShowFileDto.setSize(viewDoc.get(i).getDocSize());
+                pageShowFileDto.setMd5Code(viewDoc.get(i).getMd5Code());
+                pageShowFileDto.setFileUploadUrl(viewDoc.get(i).getFileRepoId());
+                pageShowFileDtos.add(pageShowFileDto);
+                if (StringUtil.isEmpty(index)){
+                    map.put("selectedWdFile" + i, null);
+                    pageShowFileHashMap.put("selectedWdFile" + i, pageShowFileDto);
+                }else{
+                    map.put("selectedWdFile" + index, null);
+                    pageShowFileHashMap.put("selectedWdFile" + index, pageShowFileDto);
+                }
             }
+            request.getSession().setAttribute("withdrawPageShowFileHashMap", pageShowFileHashMap);
+            request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile", map);
+            request.getSession().setAttribute("seesion_files_map_ajax_feselectedWdFile_MaxIndex", viewDoc.size());
+            request.getSession().setAttribute("withdrawPageShowFiles", pageShowFileDtos);
+        }
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -444,7 +445,7 @@ public class WithdrawalDelegator {
                                 PageShowFileDto pageShowFileDto =new PageShowFileDto();
                                 pageShowFileDto.setIndex(e);
                                 pageShowFileDto.setFileName(file.getName());
-                                pageShowFileDto.setFileMapId("selectedFileDiv"+e);
+                                pageShowFileDto.setFileMapId("selectedWdFileDiv"+e);
                                 pageShowFileDto.setSize(Integer.valueOf(size.toString()));
                                 pageShowFileDto.setMd5Code(fileMd5);
                                 pageShowFileDtos.add(pageShowFileDto);
