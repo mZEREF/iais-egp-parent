@@ -733,7 +733,12 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        //base flow
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+        } else {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        }
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
@@ -2245,7 +2250,7 @@ public class HcsaApplicationDelegator {
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, HcsaConsts.ROUTING_STAGE_PRE,
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
                 //set inspector leads
@@ -2380,6 +2385,9 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //set appSvcVehicleDto
+        broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto);
+        broadcastApplicationDto.setAppSvcVehicleDtos(applicationViewDto.getAppSvcVehicleDtos());
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
