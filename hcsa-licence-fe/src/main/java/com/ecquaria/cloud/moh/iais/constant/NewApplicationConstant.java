@@ -23,4 +23,6 @@ public class NewApplicationConstant {
     public static final String ACK_STATUS_ERROR = "error";
     public static final String PREMISES_HCI_LIST= "premisesHciList";
 
+    public static final String ACK_TITLE = "title";
+    public static final String ACK_SMALL_TITLE = "smallTitle";
 }
