@@ -69,6 +69,9 @@ public class FeAckPrintViewDelegator {
         } else if("retrigger".equals(action)){
             title = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_TITLE);
             smallTitle = (StringBuilder) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE);
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                ParamUtil.setRequestAttr(bpc.request,"renewAck", "test");
+            }
         }
         ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
         ParamUtil.setRequestAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle.toString());

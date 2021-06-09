@@ -19,7 +19,9 @@
             <div class="dashboard-page-title">
                 <h1>${title}</h1>
                 <br/>
-                <h3>${smallTitle}</h3>
+                <c:if test="${empty renewAck}">
+                    <h3>${smallTitle}</h3>
+                </c:if>
             </div>
         </div>
         <div class="col-xs-12">
