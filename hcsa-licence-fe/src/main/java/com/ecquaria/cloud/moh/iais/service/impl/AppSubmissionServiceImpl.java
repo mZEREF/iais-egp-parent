@@ -482,6 +482,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public LicenceDto getLicenceDtoById(String licenceId) {
+        return licenceClient.getLicDtoById(licenceId).getEntity();
+    }
+
+    @Override
     public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
         return getDeclarationFiles(appType, request, false);
     }

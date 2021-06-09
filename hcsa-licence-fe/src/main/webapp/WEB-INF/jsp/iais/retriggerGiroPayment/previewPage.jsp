@@ -83,6 +83,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        $('.dashboard').css('padding-bottom','0px');
         $('#Next').click(function () {
             $('#mainForm').submit();
         });

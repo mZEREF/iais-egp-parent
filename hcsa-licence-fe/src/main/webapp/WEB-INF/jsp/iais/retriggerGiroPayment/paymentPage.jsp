@@ -59,6 +59,8 @@
         $('#paymentTab').css('margin-top','3%');
         $('.progress-tracker').css('display','none');
         $('#BACK').remove();
+        $('.dashboard').css('padding-bottom','0px');
+        $('.tab-content').css('padding-top','0px');
 
         $('#premisesli').removeClass('incomplete');
         $('#premisesli').addClass('complete');

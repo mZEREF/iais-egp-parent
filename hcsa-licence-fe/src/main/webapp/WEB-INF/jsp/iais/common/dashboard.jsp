@@ -13,6 +13,18 @@
             </c:if>
             <div class="row">
                 <c:choose>
+                    <c:when test="${'retriggerGiro' == DashboardTitle}">
+                        <div class="col-xs-12">
+                            <div class="tab-gp steps-tab">
+                                <div class="tab-content">
+                                    <h1>${title}</h1>
+                                    <c:if test="${empty renewAck}">
+                                        <p>${smallTitle}</p>
+                                    </c:if>
+                                </div>
+                            </div>
+                        </div>
+                    </c:when>
                     <c:when test="${'empty' == DashboardTitle }">
                         <div class="col-xs-12"></div>
                     </c:when>
