@@ -5537,7 +5537,6 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox],
 .control-item-container input.control-input[type=radio] {
-  height: auto;
   position: absolute;
   opacity: 0;
   width: 100%;

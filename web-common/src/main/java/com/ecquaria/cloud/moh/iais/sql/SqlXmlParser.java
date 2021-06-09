@@ -44,6 +44,10 @@ public class SqlXmlParser extends DefaultHandler {
     public List<Sql> parseSqlXml(String xmlFileName) throws SAXException, ParserConfigurationException, IOException {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
         SAXParser sp = spf.newSAXParser();
 //        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 //        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
