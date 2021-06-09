@@ -20,17 +20,17 @@
                                 <span>List of GIRO Payees</span>
                             </h2>
                         </div>
-                        <iais:row>
-                            <iais:field value="HCI Code :"/>
-                            <iais:value width="18">
-                                <label>
-                                    <input type="text"
-                                           style="width:180%; font-weight:normal;"
-                                           name="hciCode" maxlength="20"
-                                           value="${hciCode}"/>
-                                </label>
-                            </iais:value>
-                        </iais:row>
+<%--                        <iais:row>--%>
+<%--                            <iais:field value="HCI Code :"/>--%>
+<%--                            <iais:value width="18">--%>
+<%--                                <label>--%>
+<%--                                    <input type="text"--%>
+<%--                                           style="width:180%; font-weight:normal;"--%>
+<%--                                           name="hciCode" maxlength="20"--%>
+<%--                                           value="${hciCode}"/>--%>
+<%--                                </label>--%>
+<%--                            </iais:value>--%>
+<%--                        </iais:row>--%>
                         <iais:row>
                             <iais:field value="Customer Reference No. :"/>
                             <iais:value width="18">
@@ -73,11 +73,11 @@
                                                             <th style="width:2%">
 
                                                             </th>
-                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"
-                                                                                 value="HCI Code"/>
-                                                            <iais:sortableHeader needSort="true"
-                                                                                 field="HCI_NAME"
-                                                                                 value="HCI Name"/>
+<%--                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"--%>
+<%--                                                                                 value="HCI Code"/>--%>
+<%--                                                            <iais:sortableHeader needSort="true"--%>
+<%--                                                                                 field="HCI_NAME"--%>
+<%--                                                                                 value="HCI Name"/>--%>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
@@ -128,12 +128,12 @@
                                                                                     class="check-square"></span>
                                                                             </label>
                                                                         </td>
-                                                                        <td >
-                                                                            <c:out value="${pool.hciCode}"/>
-                                                                        </td>
-                                                                        <td>
-                                                                            <c:out value="${pool.hciName}"/>
-                                                                        </td>
+<%--                                                                        <td >--%>
+<%--                                                                            <c:out value="${pool.hciCode}"/>--%>
+<%--                                                                        </td>--%>
+<%--                                                                        <td>--%>
+<%--                                                                            <c:out value="${pool.hciName}"/>--%>
+<%--                                                                        </td>--%>
                                                                         <td>
                                                                             <c:out value="${pool.acctName}"/>
                                                                         </td>
