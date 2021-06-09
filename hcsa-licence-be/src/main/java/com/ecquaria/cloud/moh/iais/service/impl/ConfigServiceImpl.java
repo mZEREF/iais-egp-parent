@@ -107,9 +107,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private volatile List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
-    private volatile List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+    private List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
 
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
@@ -960,25 +960,21 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
+    public synchronized List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
         if (this.hcsaSvcRoutingStageDtos == null) {
-            synchronized (this) {
-                if (this.hcsaSvcRoutingStageDtos == null) {
-                    List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-                    for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
-                        String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
-                        try {
-                            if (Integer.parseInt(stageOrder) % 100 != 0) {
-                                hcsaSvcRoutingStageDtos.remove(i);
-                                i--;
-                            }
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                        }
+            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+            for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
+                String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+                try {
+                    if (Integer.parseInt(stageOrder) % 100 != 0) {
+                        hcsaSvcRoutingStageDtos.remove(i);
+                        i--;
                     }
-                    this.hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                 }
             }
+            this.hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
         }
         return this.hcsaSvcRoutingStageDtos;
     }
@@ -1052,14 +1048,10 @@ public class ConfigServiceImpl implements ConfigService {
         return map;
     }
 
-    private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+    private synchronized List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
         if (this.hcsaServiceCatgoryDtos == null) {
-            synchronized (this) {
-                if (this.hcsaServiceCatgoryDtos == null) {
-                    //this config cannot change,so need init once
-                    this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-                }
-            }
+            //this config cannot change,so need init once
+            this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
         }
         return this.hcsaServiceCatgoryDtos;
     }

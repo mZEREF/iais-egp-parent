@@ -2314,7 +2314,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
-        return Boolean.valueOf( baseSpecLicenceRelation(licenceDto,true));
+        return Boolean.parseBoolean(baseSpecLicenceRelation(licenceDto, true));
     }
 
     @Override

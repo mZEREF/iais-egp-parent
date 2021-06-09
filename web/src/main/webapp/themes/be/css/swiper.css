@@ -40,9 +40,8 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-transition-property: -webkit-transform;
-  transition-property: -webkit-transform;
   -o-transition-property: transform;
-  transition-property: transform;
+  transition-property: transform, -webkit-transform;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
 }
@@ -70,9 +69,8 @@
   height: 100%;
   position: relative;
   -webkit-transition-property: -webkit-transform;
-  transition-property: -webkit-transform;
   -o-transition-property: transform;
-  transition-property: transform;
+  transition-property: transform, -webkit-transform;
 }
 .swiper-slide-invisible-blank {
   visibility: hidden;

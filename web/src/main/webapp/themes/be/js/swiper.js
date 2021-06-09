@@ -899,7 +899,7 @@
         // Latest Chrome and webkits Fix
         if (win.WebKitCSSMatrix) { curTransform = transformMatrix.m41; }
         // Crazy IE10 Matrix
-        else if (matrix.length === 16) { curTransform = parseFloat(matrix[12]); }
+        else if (matrix && matrix.length === 16) { curTransform = parseFloat(matrix[12]); }
         // Normal Browsers
         else { curTransform = parseFloat(matrix[4]); }
       }
@@ -909,7 +909,7 @@
         // Crazy IE10 Matrix
         else if (matrix && matrix.length === 16) { curTransform = parseFloat(matrix[13]); }
         // Normal Browsers
-        else { curTransform = parseFloat(matrix[5]); }
+        else if (matrix && matrix.length >= 6) { curTransform = parseFloat(matrix[5]); }
       }
       return curTransform || 0;
     },
@@ -7588,7 +7588,9 @@
           var scale1 = params.shadowScale;
           var scale2 = params.shadowScale / multiplier;
           var offset = params.shadowOffset;
-          $cubeShadowEl.transform(("scale3d(" + scale1 + ", 1, " + scale2 + ") translate3d(0px, " + ((swiperHeight / 2) + offset) + "px, " + (-swiperHeight / 2 / scale2) + "px) rotateX(-90deg)"));
+          if ($cubeShadowEl) {
+            $cubeShadowEl.transform(("scale3d(" + scale1 + ", 1, " + scale2 + ") translate3d(0px, " + ((swiperHeight / 2) + offset) + "px, " + (-swiperHeight / 2 / scale2) + "px) rotateX(-90deg)"));
+          }
         }
       }
       var zFactor = (Browser.isSafari || Browser.isUiWebView) ? (-swiperSize / 2) : 0;
