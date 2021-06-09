@@ -76,6 +76,7 @@ public class BroadcastServiceImpl implements BroadcastService {
             }
             //get db data
             List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
+            //vehicle details show
             if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
                 if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
                     if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
@@ -87,6 +88,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                     //set db data for roll back
                     broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
                 }
+            //vehicle details don't show
             } else {
                 for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                     if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
