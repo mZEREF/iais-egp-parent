@@ -1068,6 +1068,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
+        boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
         if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
             if (taskDto != null) {
                 if(applicationViewDto != null && !IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
@@ -1086,6 +1087,20 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         return vehicleFlag;
+    }
+
+    private boolean getVehicleAppTypeFlag(ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if(applicationDto != null) {
+            String applicationType = applicationDto.getApplicationType();
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

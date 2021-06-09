@@ -74,13 +74,27 @@ public class BroadcastServiceImpl implements BroadcastService {
             } else {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
             }
-            //get db data
-            List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
-            //vehicle details show
-            if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
-                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
-                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                        for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+            if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                //get db data
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
+                //vehicle details show
+                if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+
+                        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                                appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
+                            }
+                        }
+                        broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                        //set db data for roll back
+                        broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+
+                //vehicle details don't show
+                } else {
+                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                        } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
                         }
                     }
@@ -88,18 +102,6 @@ public class BroadcastServiceImpl implements BroadcastService {
                     //set db data for roll back
                     broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
                 }
-            //vehicle details don't show
-            } else {
-                for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
-                    if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
-                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
-                    } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
-                    }
-                }
-                broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
-                //set db data for roll back
-                broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
             }
         }
         return broadcastApplicationDto;
