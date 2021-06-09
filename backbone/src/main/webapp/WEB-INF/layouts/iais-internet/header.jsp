@@ -1,12 +1,16 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
 <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.dto.LoginContext" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
 //    String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
     String currentApp = ConfigHelper.getString("spring.application.name", "Y");
+    LoginContext loginContext_attr = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
 %>
 <%--<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>--%>
 <section class="logo">
@@ -37,7 +41,7 @@
             <div class="col-xs-12 col-lg-6 text-right">
                 <div class="gcse-search" style="width:50%;float:right;"></div>
                 <%
-                  if ("main-web".equals(currentApp)) {
+                  if ("main-web".equals(currentApp) && loginContext_attr != null) {
                 %>
                 <div class="visible-xs visible-sm visible-md"><a class="menu-icon" href="javascript:;"><span class="icon-bar"></span></a></div>
                 <%}%>
