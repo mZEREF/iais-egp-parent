@@ -138,7 +138,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         List<InspectionFillCheckListDto>   cDtoList ;
         List<InspectionFillCheckListDto>   commonList;
         AdCheckListShowDto adchklDto;
-        boolean needVehicleSeparation = checklistNeedVehicleSeparation(appViewDto.getSvcCode());
+        boolean needVehicleSeparation = checklistNeedVehicleSeparation(appViewDto);
         if( beforeFinishList){
               cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
               commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");

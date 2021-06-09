@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -19,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.CommonUseHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -2262,4 +2265,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         return adCheckListShowDtoCopy;
     }
+
+    @Override
+    public boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto){
+        if( AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation"))){
+            ChecklistConfigDto checklistConfigDto =  hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), CommonUseHelper.compareAppTypeToCheckListType(appViewDto.getApplicationDto().getApplicationType()),CommonUseHelper.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity();
+            return  checklistConfigDto == null ? false : true;
+        }
+        return false;
+    }
+
 }

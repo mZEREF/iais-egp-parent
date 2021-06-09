@@ -100,4 +100,6 @@ public interface FillupChklistService {
     AdCheckListShowDto getSpecAhocData(AdCheckListShowDto adCheckListShowDto,String identify,boolean beforeFinishList,List<OrgUserDto>  orgUserDtos);
 
     AppPremisesPreInspectChklDto getAppPremChklDtoByCorrIdAndVehicleName(String CorrId, String configId, String vehicleName);
+
+    boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto);
 }

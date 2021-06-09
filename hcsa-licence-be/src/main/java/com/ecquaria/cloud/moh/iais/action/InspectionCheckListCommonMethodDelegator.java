@@ -454,7 +454,7 @@ public class InspectionCheckListCommonMethodDelegator {
 
 
     public void setSpecServiceCheckListData(HttpServletRequest request,InspectionFDtosDto serListDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers,ApplicationViewDto applicationViewDto){
-         if(checklistNeedVehicleSeparation(applicationViewDto.getSvcCode())){
+         if(checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
              List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
              if(IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
@@ -496,8 +496,9 @@ public class InspectionCheckListCommonMethodDelegator {
         }
     }
 
-    public boolean checklistNeedVehicleSeparation(String svcCode){
-        return  AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation")) &&(HcsaChecklistConstants.SPEC_SERVICE_EAS.equalsIgnoreCase(svcCode)|| HcsaChecklistConstants.SPEC_SERVICE_MTS.equalsIgnoreCase(svcCode));
+    public boolean checklistNeedVehicleSeparation(ApplicationViewDto applicationViewDto){
+        return fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto);
+       // return  AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation")) &&(HcsaChecklistConstants.SPEC_SERVICE_EAS.equalsIgnoreCase(svcCode)|| HcsaChecklistConstants.SPEC_SERVICE_MTS.equalsIgnoreCase(svcCode));
     }
 
     public void setRate(HttpServletRequest request){
