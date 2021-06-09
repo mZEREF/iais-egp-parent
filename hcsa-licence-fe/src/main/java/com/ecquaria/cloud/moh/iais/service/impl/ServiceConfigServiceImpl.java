@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -722,7 +723,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if( applicationGroupDto == null){
             return "";
         }
-        String submitBy = applicationGroupDto.getSubmitBy();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
+        if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
+            return orgGiroAccountInfoDto.getAcctNo();
+        }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+            return  ConfigHelper.getString("col.giro.test.account","");
+        }
+        return "";
+       /* String submitBy = applicationGroupDto.getSubmitBy();
         OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(submitBy).getEntity();
         if(orgUserDto == null){
             return "";
@@ -732,7 +741,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             return accNo;
         }else {
             return  ConfigHelper.getString("col.giro.test.account","");
-        }
+        }*/
     }
 
     private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
