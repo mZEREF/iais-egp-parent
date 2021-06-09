@@ -128,7 +128,7 @@
                                                                                    id="orgPer${status.index + 1}"
                                                                                    type="checkbox"
                                                                                    name="opIds"
-                                                                                   value="${pool.id}">
+                                                                                   value="${pool.orgId}">
                                                                             <label class="form-check-label"
                                                                                    for="orgPer${status.index + 1}"><span
                                                                                     class="check-square"></span>
