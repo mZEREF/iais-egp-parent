@@ -24,7 +24,7 @@
         </div>
         <div class="col-xs-12">
             <br/>
-            <p class="ack-font-20"><strong>Submission successful</strong></p>
+            <label style="font-size: 20px">Submission successful</label>
         </div>
         <c:choose>
             <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
@@ -32,6 +32,12 @@
                     <div class="col-xs-12">
                         <p class="ack-font-20">- <strong><c:out value="${serviceName}"/> </strong></p>
                     </div>
+                </c:forEach>
+            </c:when>
+            <c:when test="${menuRfc=='rfc'}">
+
+                <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
+                    <p>-<strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -118,6 +124,55 @@
                             </table>
                         </div>
                     </div>
+                </c:when>
+                <c:when test="${menuRfc=='rfc'}">
+                    <p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p>
+                    <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
+                    <c:if test="${dAmount!='$0.0'}">
+                        <p class="ack-font-14">Transactional Information:</p>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Application No.</th>
+                                        <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                            <th>Transactional No.</th>
+                                        </c:if>--%>
+                                    <th>Transactional No.</th>
+                                    <th>Date & Time</th>
+                                    <th>Amount Deducted</th>
+                                    <th>Payment Method</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>${appSubmissionDtos.get(0).appGrpNo}</td>
+                                        <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                            <td><c:out value="${pmtRefNo}"/></td>
+                                        </c:if>--%>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty txnRefNo}">
+                                                N/A
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:out value="${txnRefNo}"/>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                    <td>${dAmount}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${empty payMethod}">N/A</c:when>
+                                            <c:otherwise> <iais:code code="${payMethod}"/></c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:if>
                 </c:when>
                 <c:otherwise>
                     <div class="col-xs-12">
