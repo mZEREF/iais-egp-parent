@@ -40,7 +40,7 @@ DOCKER_IMAGES = [
     'fe-main|fe-main',
     'hcsa-licence-be|hcsa-licence',
     'hcsa-licence-fe|hcsa-application',
-    'payment|payment-web',
+    'payment|egov-app',
     'systemadmin|systemadmin-web',
     'web|web'
 ]
