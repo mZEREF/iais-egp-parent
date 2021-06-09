@@ -23,7 +23,7 @@ import java.util.List;
  * @author junyu
  * @date 2021/3/3
  */
-@FeignClient(name = "hcsa-organization", configuration = FeignConfiguration.class,
+@FeignClient(name = "iais-organization", configuration = FeignConfiguration.class,
         fallback = OrgGiroAccountBeClientFallback.class)
 public interface OrgGiroAccountBeClient {
     @PostMapping(value = "/hcsa-org-giro/lic-giro-acct-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
