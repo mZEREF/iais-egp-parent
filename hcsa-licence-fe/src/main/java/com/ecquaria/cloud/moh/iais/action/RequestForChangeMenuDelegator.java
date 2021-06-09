@@ -1412,7 +1412,7 @@ public class RequestForChangeMenuDelegator {
         }
         AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         if(mainSubmisDto != null){
-            boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(mainSubmisDto, orgId);
+            boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
         }
