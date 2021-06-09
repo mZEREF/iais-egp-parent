@@ -185,6 +185,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "selectedNewFileDocShowPageDto", null);
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile");
         bpc.request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRENEWFile_MaxIndex");
+        bpc.request.getSession().removeAttribute("emailAddress");
         bpc.request.getSession().removeAttribute("declaration_page_is");
         ParamUtil.setSessionAttr(bpc.request, "viewPrint",null);
         HashMap<String, String> coMap = new HashMap<>(4);
@@ -1199,7 +1200,7 @@ public class WithOutRenewalDelegator {
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = emailAddressesToString(licenseeEmailAddrs);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request, "hasDetail", "N");
     }
 
