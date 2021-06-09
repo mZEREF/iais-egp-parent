@@ -888,6 +888,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 chkDtoList.add(fDto);
             }else if("service".equals(conifgType)&&!dto.isCommon()){
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
+                if(StringUtil.isNotEmpty(temp.getAnswer())){
+                    List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(temp.getAnswer(), InspectionCheckListAnswerDto.class);
+                    if(IaisCommonUtils.isNotEmpty(answerDtoList) ){
+                        for(InspectionCheckListAnswerDto inspectionCheckListAnswerDto : answerDtoList){
+                            String vehicleName = inspectionCheckListAnswerDto.getIdentify();
+                            if(StringUtil.isNotEmpty( vehicleName)){
+                                fDto.setVehicleName(vehicleName);
+                                break;
+                            }
+                        }
+                    }
+                }
                 if(!StringUtil.isEmpty(dto.getSvcName())){
                     fDto.setSvcName(dto.getSvcName());
                 }
@@ -911,11 +923,90 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         List<InspectionFillCheckListDto> fillCheckDtoList = getInspectionFillCheckListDtoList(taskId,service);
         if(fillCheckDtoList!=null&&!fillCheckDtoList.isEmpty()){
             for(InspectionFillCheckListDto temp:fillCheckDtoList){
-                AppPremisesPreInspectChklDto appPremPreCklDto = insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,temp.getConfigId());
-                insepctionNcCheckListService.getCommonDto(temp,appPremPreCklDto);
+                AppPremisesPreInspectChklDto appPremPreCklDto =  getAppPremChklDtoByTaskIdAndVehicleName(taskId,temp.getConfigId(),temp.getVehicleName());
+                if(appPremPreCklDto != null){
+                    insepctionNcCheckListService.getCommonDto(temp,appPremPreCklDto);
+                }
             }
         }
         return fillCheckDtoList;
+    }
+
+    private AppPremisesPreInspectChklDto getAppPremChklDtoByTaskIdAndVehicleName(String taskId,String configId,String vehicleName){
+        if(StringUtil.isNotEmpty(vehicleName)){
+            List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDtos =  getAppPremChklDtsByTaskId(taskId, configId);
+            return getAppPremisesPreInspectChklDtoByVehicleName( vehicleName,appPremisesPreInspectChklDtos);
+        }else {
+          return   insepctionNcCheckListService.getAppPremChklDtoByTaskId(taskId,configId);
+        }
+    }
+
+    private List<AppPremisesPreInspectChklDto> getAppPremChklDtsByTaskId(String taskId, String configId){
+        if (StringUtil.isEmpty(taskId)) {
+            log.info("-----------getAppPremChklDtoByTaskId TASKID is null -------------------------- ");
+            return null;
+        }
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        String appPremCorrId = null;
+        if (taskDto != null) {
+            appPremCorrId = taskDto.getRefNo();
+        }
+        List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDto = fillUpCheckListGetAppClient.getPremInsChkls(appPremCorrId,configId).getEntity();
+        return appPremisesPreInspectChklDto;
+    }
+
+    @Override
+    public AppPremisesPreInspectChklDto getAppPremChklDtoByCorrIdAndVehicleName(String corrId, String configId, String vehicleName) {
+        if(StringUtil.isNotEmpty(vehicleName)){
+            List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDtos = fillUpCheckListGetAppClient.getPremInsChkls(corrId,configId).getEntity();
+            return getAppPremisesPreInspectChklDtoByVehicleNameAndMaxVersion( vehicleName,appPremisesPreInspectChklDtos);
+        } else {
+            return  fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(corrId,configId).getEntity();
+        }
+    }
+
+    private  AppPremisesPreInspectChklDto getAppPremisesPreInspectChklDtoByVehicleNameAndMaxVersion(String vehicleName, List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDtos){
+        if(IaisCommonUtils.isNotEmpty(appPremisesPreInspectChklDtos)){
+            AppPremisesPreInspectChklDto appPremisesPreInspectChklDtoOriginalVersion = null;
+            int maxVersion = 1;
+            for(AppPremisesPreInspectChklDto appPremisesPreInspectChklDto : appPremisesPreInspectChklDtos){
+                if(StringUtil.isNotEmpty(appPremisesPreInspectChklDto.getAnswer())){
+                    List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(appPremisesPreInspectChklDto.getAnswer(), InspectionCheckListAnswerDto.class);
+                    if(IaisCommonUtils.isNotEmpty(answerDtoList) && vehicleName.equalsIgnoreCase(answerDtoList.get(0).getIdentify())){
+                        return appPremisesPreInspectChklDto;
+                    }
+                    int nowVerison = StringUtil.isNotEmpty(appPremisesPreInspectChklDto.getVersion()) ? Integer.parseInt(appPremisesPreInspectChklDto.getVersion()) : 1;
+                    maxVersion =  nowVerison > maxVersion ? nowVerison : maxVersion;
+                }else {
+                    appPremisesPreInspectChklDtoOriginalVersion = appPremisesPreInspectChklDto;
+                }
+            }
+            if(appPremisesPreInspectChklDtoOriginalVersion != null){
+                return  appPremisesPreInspectChklDtoOriginalVersion;
+            }
+            appPremisesPreInspectChklDtoOriginalVersion = new AppPremisesPreInspectChklDto();
+            appPremisesPreInspectChklDtoOriginalVersion.setVersion(String.valueOf(maxVersion-1));
+            return appPremisesPreInspectChklDtoOriginalVersion;
+        }
+        return null;
+    }
+
+    private  AppPremisesPreInspectChklDto getAppPremisesPreInspectChklDtoByVehicleName(String vehicleName, List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDtos){
+        if(IaisCommonUtils.isNotEmpty(appPremisesPreInspectChklDtos)){
+            AppPremisesPreInspectChklDto appPremisesPreInspectChklDtoOriginalVersion = null;
+            for(AppPremisesPreInspectChklDto appPremisesPreInspectChklDto : appPremisesPreInspectChklDtos){
+                if(StringUtil.isNotEmpty(appPremisesPreInspectChklDto.getAnswer())){
+                    List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(appPremisesPreInspectChklDto.getAnswer(), InspectionCheckListAnswerDto.class);
+                    if(IaisCommonUtils.isNotEmpty(answerDtoList) && vehicleName.equalsIgnoreCase(answerDtoList.get(0).getIdentify())){
+                        return appPremisesPreInspectChklDto;
+                    }
+                }else {
+                    appPremisesPreInspectChklDtoOriginalVersion = appPremisesPreInspectChklDto;
+                }
+            }
+            return  appPremisesPreInspectChklDtoOriginalVersion;
+        }
+        return null;
     }
 
     @Override
