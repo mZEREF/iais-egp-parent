@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
@@ -12,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.Process;
 
@@ -32,6 +35,9 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
+
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
 
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
@@ -59,14 +65,28 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto) {
+    public BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
+                                                                String appStatus, String appType) {
         if(applicationViewDto != null) {
             List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
-            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
-                broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
-                //get db data
-                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
-                broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+            //get db data
+            List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
+            if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                    broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+                }
+            } else {
+                if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+
+                    } else {
+
+                    }
+                } else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+
+                }
             }
         }
         return broadcastApplicationDto;

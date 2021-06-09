@@ -24,5 +24,6 @@ public interface BroadcastService {
       * @return: BroadcastApplicationDto
       * @Descripation: setAppSvcVehicleDtoByAppView
       */
-    BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto);
+    BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
+                                                         String appStatus, String appType);
 }
