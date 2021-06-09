@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -86,7 +87,7 @@
 
                         <div class="col-xs-12 col-sm-12 margin-bottom-10">
                             <div class="button-group col-xs-12 col-sm-6">
-                                <p class="print"><div style="font-size: 16px;"><a id="Acknowledgement" href="${pageContext.request.contextPath}/rfc-app-ack-print"> <em class="fa fa-print"></em>Print</a></div></p>
+                                <p class="print"><div style="font-size: 16px;"><a id="Acknowledgement" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div></p>
                             </div>
                             <div class="button-group col-xs-12 col-sm-6 ">
                                 <a class="btn btn-primary aMarginleft col-md-6 pull-right" id="GotoDashboard" href="javascript:void(0);">Go to Dashboard</a>
@@ -101,9 +102,18 @@
 
 
 <script>
-<%--$('#Acknowledgement').click(function () {
- window.print();
-});--%>
+$('#Acknowledgement').click(function () {
+
+    var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFeAckPrintView/1/",request)%>';
+    var appType = $('input[name="appType"]').val();
+    var suffix = "appType=APTY005&menuRfc=rfc";
+    if(url.indexOf('MohFeAckPrintView/1/?') != -1){
+        url = url + '&' + suffix;
+    }else{
+        url = url + '?' + suffix;
+    }
+    window.open(url,'_blank');
+});
 $('#GotoDashboard').click(function () {
     Utils.submit('menuListForm','dashboard','','','');
 });

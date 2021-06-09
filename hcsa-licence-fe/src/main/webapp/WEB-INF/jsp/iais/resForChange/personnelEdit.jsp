@@ -517,6 +517,7 @@
             $('#newPerson').hide();
             $('#show').hide();
             $('#newPersonExist').hide();
+            $('.designationSel').trigger('change');
         });
         $('#checkitem2').click(function () {
             $("#update").hide();

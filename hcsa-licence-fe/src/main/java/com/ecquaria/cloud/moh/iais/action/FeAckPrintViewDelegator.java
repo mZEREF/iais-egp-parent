@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,8 +62,8 @@ public class FeAckPrintViewDelegator {
             smallTitle.append("</p>");
             title = "Amendment";
         } else if(!StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-
-
+            bpc.request.setAttribute("menuRfc",menuRfc);
+            ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
 
         } else if("retrigger".equals(action)){
