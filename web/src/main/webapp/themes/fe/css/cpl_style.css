@@ -889,16 +889,16 @@ header .container .sg-gov-logo a img {
 }
 @media only screen and (min-width : 993px) and (max-width : 1200px) {
     .navigation {
-        width: 50vw;
+        width: 100vw; /*50vw*/
         top: 160px; /*top: 92px;*/
         height: calc(100vh - 65px);
     }
     .navigation.open {
-        -webkit-transform: translateX(50vw);
-        -moz-transform: translateX(50vw);
-        -ms-transform: translateX(50vw);
-        -o-transform: translateX(50vw);
-        transform: translateX(50vw);
+        -webkit-transform: translateX(0vw); /*50vw*/
+        -moz-transform: translateX(0vw); /*50vw*/
+        -ms-transform: translateX(0vw); /*50vw*/
+        -o-transform: translateX(0vw); /*50vw*/
+        transform: translateX(0vw); /*50vw*/
     }
 }
 
@@ -5237,6 +5237,11 @@ table select.form-control.control-input {
     min-height: 22px;
     line-height: 22px !important;
     font-family: "Open Sans", sans-serif;
+    color: #333333;
+    font-size: 1.6rem;
+    font-weight: 400;
+    position: relative;
+    padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
     .control-item-container input.control-input[type=checkbox] + label.control-label,
@@ -5707,9 +5712,10 @@ section.logo img {
     table.control-grid.columns1 > tbody > tr > td > .section.control {
         min-height: auto;
     }
+    .nav {background:#transparent;}
     .navigation {
         position: fixed;
-        top: 93px;
+        top: 120px; /* top: 93px;*/
         left: 0;
         width: 100vw;
         z-index: 99;
@@ -5728,6 +5734,11 @@ section.logo img {
         -o-transition: all 0.3s ease;
         transition: all 0.3s ease;
     }
+    .nav ul.pagination > li > a, .nav ul.pagination > li span {
+        font-size: 1.4rem;
+        padding: 6px 8px;
+    }
+
     .table-gp table.table > tbody > tr > td p {
         margin-bottom: 0;
         line-height: 25px;
