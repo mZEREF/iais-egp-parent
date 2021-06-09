@@ -251,13 +251,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(orgPremResult==null){
             String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
             SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-            String typeStr = SqlHelper.constructInCondition("opv.OP_ID",orgPerIds.length);
+            String typeStr = SqlHelper.constructInCondition("opv.ID",orgPerIds.length);
             int indx = 0;
             for (String s : orgPerIds){
-                orgPremParam.addFilter("opv.OP_ID"+indx, s);
+                orgPremParam.addFilter("opv.ID"+indx, s);
                 indx++;
             }
-            orgPremParam.addParam("orgPremIds",typeStr);
+            orgPremParam.addParam("orgIds",typeStr);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
@@ -473,6 +473,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setAcctNo(bankAccountNo);
             giroAccountInfoDto.setBranchCode(branchCode);
             giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
+            giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());

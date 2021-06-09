@@ -8,16 +8,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -26,16 +22,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
-import com.ecquaria.cloud.moh.iais.service.client.GiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgGiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +73,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    GiroAccountBeClient giroAccountBeClient;
+    OrgGiroAccountBeClient giroAccountBeClient;
     @Autowired
     private NotificationHelper notificationHelper;
     @Autowired
@@ -156,10 +151,10 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     public void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto,int size) {
         try{
             List<LicenseeDto> licenseeDtos=organizationClient.getLicenseeByOrgId(giroAccountInfoDto.getOrganizationId()).getEntity();
-            List<LicenceDto> licenceDtos=hcsaLicenceClient.getLicenceDtoByHciCode(giroAccountInfoDto.getHciCode(),licenseeDtos.get(0).getId()).getEntity();
+//            List<LicenceDto> licenceDtos=hcsaLicenceClient.getLicenceDtoByHciCode(giroAccountInfoDto.getHciCode(),licenseeDtos.get(0).getId()).getEntity();
             String applicationNumber = giroAccountInfoDto.getHciCode();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            subMap.put("ApplicationType", "HCI");
+            subMap.put("ApplicationType", " ");
             subMap.put("ApplicationNumber", applicationNumber);
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,subMap);
@@ -173,13 +168,13 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             if(size<5){
                 List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
                 if(applicationGroupDtos!=null){
-                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
-                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+//                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
+//                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
                     for (OrgUserDto user:orgUserDtoList
                     ) {
                         for (ApplicationGroupDto apg:applicationGroupDtos
                         ) {
-                            if (apg.getSubmitBy().equals(user.getId())&&applicationDto.getAppGrpId().equals(apg.getId())){
+                            if (apg.getSubmitBy().equals(user.getId())){
                                 applicantName=user.getDisplayName();
                                 break;
                             }
@@ -240,20 +235,20 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             msgParam.setQueryCode(giroAccountInfoDto.getHciCode());
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
 
-            if(licenceDtos!=null){
-                msgParam.setReqRefNum(licenceDtos.get(0).getId());
-                msgParam.setRefId(licenceDtos.get(0).getId());
-                for (LicenceDto lic:licenceDtos
-                ) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
-                    if(hcsaServiceDto!=null){
-                        svcCodeSet.add(hcsaServiceDto.getSvcCode());
-                    }
-                }
-            }else {
-                msgParam.setReqRefNum(licenseeDtos.get(0).getId());
-                msgParam.setRefId(licenseeDtos.get(0).getId());
-            }
+//            if(licenceDtos!=null){
+//                msgParam.setReqRefNum(licenceDtos.get(0).getId());
+//                msgParam.setRefId(licenceDtos.get(0).getId());
+//                for (LicenceDto lic:licenceDtos
+//                ) {
+//                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
+//                    if(hcsaServiceDto!=null){
+//                        svcCodeSet.add(hcsaServiceDto.getSvcCode());
+//                    }
+//                }
+//            }else {
+            msgParam.setReqRefNum(licenseeDtos.get(0).getId());
+            msgParam.setRefId(licenseeDtos.get(0).getId());
+//            }
 
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             svcCodeList.addAll(svcCodeSet);

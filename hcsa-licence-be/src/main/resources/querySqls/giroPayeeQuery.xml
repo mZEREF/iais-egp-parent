@@ -2,14 +2,12 @@
 <sqls catalog="giroPayee">
     <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
         <![CDATA[
-            SELECT distinct gai.ID, gai.ORGANIZATION_ID, gai.HCI_CODE,
+            SELECT distinct gai.ID, gai.ORGANIZATION_ID,
             gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
-            gai.DDA_REF_NO ,p.HCI_NAME
+            gai.DDA_REF_NO
 
-            FROM giro_account_info gai
-            join premises p on p.HCI_CODE = gai.HCI_CODE and version =(select Max(version) from premises pre where pre.HCI_CODE =p.HCI_CODE)
+            FROM org_giro_account_info gai
             where gai.STATUS = 'CMSTAT001'
-            <#if hciCode??> AND charindex(:hciCode, gai.HCI_CODE) >0 </#if>
             <#if cusRefNo??> AND charindex(:cusRefNo, gai.DDA_REF_NO) >0 </#if>
 
         ]]>
@@ -17,13 +15,11 @@
 
     <sql key = "searchByOrgPremView" remarks="search by Organization Premises View">
         <![CDATA[
-            SELECT distinct opv.OP_ID,opv.ID, opv.HCI_CODE, opv.HCI_NAME, opv.UEN_NO
-            from organizationPremisesView opv
+            SELECT distinct opv.ID OP_ID, opv.UEN_NO
+            from organization opv
             where 1 = 1
-            <#if hciCode??> AND charindex(:hciCode, opv.HCI_CODE) >0 </#if>
-            <#if hciName??> AND charindex(:hciName, opv.HCI_NAME) >0 </#if>
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
-            <#if orgPremIds??> AND ${orgPremIds} </#if>
+            <#if orgIds??> AND ${orgIds} </#if>
 
         ]]>
     </sql>
