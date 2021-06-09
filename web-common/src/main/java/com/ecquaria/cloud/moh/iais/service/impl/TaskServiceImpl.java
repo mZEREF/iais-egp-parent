@@ -164,7 +164,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
             log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
 
-            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getRoutingServiceId(),
+            int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
             //handle the taskUrl
             String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
@@ -264,7 +264,7 @@ public class TaskServiceImpl implements TaskService {
                     TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
                 }
                 for(ApplicationDto applicationDto : applicationDtos){
-                    int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getRoutingServiceId(),
+                    int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
                     List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
@@ -399,7 +399,8 @@ public class TaskServiceImpl implements TaskService {
             AppGrpPremisesEntityDto appGrpPremisesEntityDto = hcsaAppClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getRoutingServiceId());
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setBaseServiceId(applicationDto.getRoutingServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
