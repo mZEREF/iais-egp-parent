@@ -1,5 +1,5 @@
 // List of email recipients.
-EMAILS_TO_NOTIFY = 'tanweijie@toppanecquaria.com, zamri@toppanecquaria.com'
+EMAILS_TO_NOTIFY = 'zamri@toppanecquaria.com'
 // Specify the connection URL to the Docker daemon.
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // Destination directory when we do `git clone`.
@@ -26,7 +26,7 @@ PROJECT_GITLAB_URL =
 
 SONARQUBE_CREDENTIALS_ID = 'moh-iais-sonartoken'
 
-MAVEN_LOCAL_REPO = '/var/jenkins_home/.m2_for_moh_iais'
+MAVEN_LOCAL_REPO = 'mvn-cache'
 
 //Repos for pushing docker images
 DOCKER_BUILD_REPO = 'hub.ecquaria.com:8251'
@@ -55,10 +55,14 @@ NEXUS_CREDENTIALS = [usernamePassword(
         usernameVariable: 'NEXUS_USERNAME')
 ]
 
+NEXUS_GROUP='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel-grp/'
+NEXUS_RELEASE='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
+NEXUS_SNAPSHOT='https://hub.ecquaria.com/nexus/repository/maven-mohiais-rel/'
+
 // Specify the project ID for the project (this value is retrieved from Dependency Track).
 DEPENDENCY_TRACK_PROJECT = '47741070-b027-4430-acc7-1e04adba7780'
 
-AD_TOOLS_VERSION = "7361af0"
+AD_TOOLS_VERSION = '6cdfe5e'
 
 // Working directory for when we're handling the cicd folder.
 AUTO_DEPLOYMENT_DIRECTORY="auto-deployment"
@@ -93,7 +97,7 @@ ARCHIVE_2 = "${TX_BUILD_FOLDER}/project-files-with-approval.tar"
 ARCHIVE_3 = "${TX_BUILD_FOLDER}/project-files-with-approval.bin"
 
 // This is a new archive consisting of ARCHIVE_3 + encrypted symmetric key + initialization vector (IV)
-ARCHIVE_4 = "${TX_BUILD_FOLDER}/project-payload.tar"
+// ARCHIVE_4 = "${TX_BUILD_FOLDER}/project-payload.tar"
 
 // This file contains the signature that the verifier will have to verify.
 SIGNATURE_FROM_JENKINS="${ARCHIVE_1_HASH}.jenkins"
@@ -110,10 +114,33 @@ INITIALIZATION_VECTOR_SIZE = 16
 INITIALIZATION_VECTOR = "${TX_BUILD_FOLDER}/iv"
 
 // jenkins keys used for signing the package
-JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
-        credentialsId: 'jenkins-hub-ci-key',
+// JENKINS_PRIVATE_KEY_CREDENTIALS = [file(
+//         credentialsId: 'jenkins-hub-ci-key',
+//         variable: 'JENKINS_PRIVATE_KEY')
+// ]
+
+// uses: signing of verification package
+JENKINS_PRIVATE_KEY_CREDENTIALS = file(
+        credentialsId: 'd4bfe0b9-4890-4284-bae2-609df165bee2',
         variable: 'JENKINS_PRIVATE_KEY')
-]
+
+
+// uses: slift -> encryption
+JENKINS_PFX_CREDENTIALS = file(
+        credentialsId: 'c7e96f25-c13e-4f78-866d-64a825ba7044',
+        variable: 'JENKINS_PFX')
+
+
+// uses: password for JENKINS_PFX
+JENKINS_PFX_PASSWORD_CREDENTIALS = string(
+        credentialsId: '5b2e5569-9485-4302-8a8f-867453225a71',
+        variable: 'JENKINS_PFX_PASSWORD')
+
+
+// uses: slift -> encryption (certificate of receiver)
+JENKINS_RECEIVER_CER_CREDENTIALS = file(
+        credentialsId: 'e6b1e911-2be3-4a77-ad69-11a29fe2ea7c',
+        variable: 'JENKINS_RECEIVER_CER')
 
 // remote SFTP uses 2 authentication (private key, and password -- maybe not in that order.)
 //TODO change from mock sftp to actual sftp server
@@ -127,9 +154,17 @@ SFTP_CREDENTIALS = [
                 usernameVariable: 'SFTP_USER_ID')
 ]
 
+SFTP_CREDENTIALS_GDC = [
+    sshUserPrivateKey(
+        credentialsId: '1b0cdbea-954c-4b77-9a68-94ce6dc03dd7',
+        keyFileVariable: 'SFTP_PRIVATE_KEY',
+        passphraseVariable: '',
+                usernameVariable: 'SFTP_USER_ID')
+]
+
 // used by Katalon Runtime Engine
 KATALON_OFFLINE_LICENSE_CREDENTIALS = [file(
-    credentialsId: '0bfbaa23-a895-48ce-b367-8a91cad331ec',
+    credentialsId: '80b49081-93ca-48cf-96ec-e53b988902ba',
     variable: 'KATALON_OFFLINE_LICENSE')
 ]
 
@@ -144,8 +179,8 @@ configurePipeline()
 
 try{
     node{
-        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container 
-        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment 
+        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container
+        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment
         // variable.
         def dockerArgs = [
             "--entrypoint=''",
@@ -243,9 +278,9 @@ def configurePipeline(){
                 string(
                     defaultValue: '',
                     description: '''\
-                    Since we will need to transport commits over to the other side, this tag 
-                    provides some sort of a baseline (or a hint) that would be given to Git in 
-                    order for it to decide which commits to include (in an attempt to save the 
+                    Since we will need to transport commits over to the other side, this tag
+                    provides some sort of a baseline (or a hint) that would be given to Git in
+                    order for it to decide which commits to include (in an attempt to save the
                     payload size).
 
                     Please note that this field is optional.
@@ -324,16 +359,23 @@ def buildAndDeploy(){
         docker
             .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
             .inside(getDockerArgs()){
+                withCredentials(NEXUS_CREDENTIALS) {
                 sh """
                 cd ${CHECKOUT_DIRECTORY}
 
                 mvn \
                     --no-transfer-progress \
-                    -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                    -P sg-nexus \
-                    -s settings.xml \
+                        -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
+                        -P "!sg-nexus,cicd-sg-nexus" \
+                        -s settings-cicd-sg.xml \
+                        -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
+                        -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
+                        -Dsg.nexus.group.repo="$NEXUS_GROUP" \
+                        -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
+                        -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
                     clean deploy
                 """
+                }
             }
     }
 }
@@ -347,18 +389,25 @@ def sonarqube(){
             docker
                 .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
                 .inside(getDockerArgs()){
+                    withCredentials(NEXUS_CREDENTIALS) {
                     sh """
                         cd ${CHECKOUT_DIRECTORY}
 
                         mvn \
                             --no-transfer-progress \
-                            -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                            -Dsonar.projectKey=iais-iais-egp-sit \
-                            -Dsonar.projectName=iais-iais-egp-sit \
-                            -P sg-nexus \
-                            -s settings.xml \
+                                -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
+                                -Dsonar.projectKey=iais-iais-egp-rel \
+                                -Dsonar.projectName=iais-iais-egp-rel \
+                                -P "!sg-nexus,cicd-sg-nexus" \
+                                -s settings-cicd-sg.xml \
+                                -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
+                                -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
+                                -Dsg.nexus.group.repo="$NEXUS_GROUP" \
+                                -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
+                                -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
                             sonar:sonar
                     """
+                    }
                 }
         }
     }
@@ -463,7 +512,7 @@ def scanDockerImages(){
 
         // declare clair images (yes, we are going bleeding edge!)
         def clairDB = docker.image('hub.ecquaria.com/arminc/clair-db:latest')
-        def clairServer = docker.image('hub.ecquaria.com/arminc/clair-local-scan:v2.1.4_a536c757b48ebca4b7b8bffca794d52b42a3de9d')
+        def clairServer = docker.image('hub.ecquaria.com/arminc/clair-local-scan:v2.1.7_5125fde67edee46cb058a3feee7164af9645e07d')
         def clairClient = docker.image('hub.ecquaria.com/objectiflibre/clair-scanner:latest')
 
         //to force grab the latest
@@ -566,16 +615,23 @@ def dependencyTrack() {
         docker
             .image('hub.ecquaria.com/maven:3.6.3-jdk-8')
             .inside(getDockerArgs()){
+                withCredentials(NEXUS_CREDENTIALS) {
                 sh """
                     cd ${CHECKOUT_DIRECTORY}
 
                     mvn \
                         --no-transfer-progress \
-                        -Dmaven.repo.local=${MAVEN_LOCAL_REPO} \
-                        -P sg-nexus \
-                        -s settings.xml \
+                            -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
+                            -P "!sg-nexus,cicd-sg-nexus" \
+                            -s settings-cicd-sg.xml \
+                            -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
+                            -Dmoh.iais.nexus.password="$NEXUS_PASSWORD" \
+                            -Dsg.nexus.group.repo="$NEXUS_GROUP" \
+                            -Dsg.nexus.release.repo="$NEXUS_RELEASE" \
+                            -Dsg.nexus.snapshot.repo="$NEXUS_SNAPSHOT" \
                         org.cyclonedx:cyclonedx-maven-plugin:1.6.4:makeAggregateBom
                 """
+                }
 
                 dependencyTrackPublisher projectId: DEPENDENCY_TRACK_PROJECT,
                     artifact: "${CHECKOUT_DIRECTORY}/target/bom.xml", artifactType: 'bom', synchronous: false
@@ -609,7 +665,7 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-intranet.zip \\
                             /scripts/deploy-to-eds.sh
-                            
+
                         fi
                     """
 
@@ -621,9 +677,9 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-internet.zip \\
                             /scripts/deploy-to-eds.sh
-                            
+
                         fi
-                        
+
                     """
                 }
             }
@@ -689,23 +745,37 @@ def createVerificationPackage(){
                 git config --global user.email "mohiais@nowhere.com"
                 git config --global user.name "moh-iais"
 
+                (
                 cd ${CHECKOUT_DIRECTORY}
 
-                if [[ -z ${BASELINE_TAG} ]]; then 
+                if [[ -z ${BASELINE_TAG} ]]; then
                     git bundle create iais-egp.bundle ${TAG_TO_BUILD}
-                    
                 else
                     git bundle create iais-egp.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
                 fi
 
                 mv iais-egp.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
+                )
+
+                (
+                    cd ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING}
+
+                    if [[ -z ${BASELINE_TAG} ]]; then
+                        git bundle create iais-qa.bundle ${TAG_TO_BUILD}
+                    else
+                        git bundle create iais-qa.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
+                    fi
+
+                    mv iais-qa.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
+                )
             """
         }
 
     //TODO Add .m2 delta rules here
     sh """
-        cd ${env.WORKSPACE}
-        tar -zcf ${PAYLOAD_FOLDER}/m2.tar ${MAVEN_LOCAL_REPO}
+        cd "${env.WORKSPACE}"
+        rm -rf "${env.WORKSPACE}/${MAVEN_LOCAL_REPO}/sg/gov/moh"
+        tar -zcf "${PAYLOAD_FOLDER}/m2.tar" "${env.WORKSPACE}/${MAVEN_LOCAL_REPO}"
     """
 
     // store TAG_TO_BUILD variable
@@ -737,7 +807,7 @@ def createVerificationPackage(){
             """
 
             // sign the hash
-            withCredentials(JENKINS_PRIVATE_KEY_CREDENTIALS) {
+            withCredentials([JENKINS_PRIVATE_KEY_CREDENTIALS]) {
                 sh """
                     openssl dgst -sign \
                         "$JENKINS_PRIVATE_KEY" \
@@ -760,6 +830,7 @@ def uploadVerificationPackage(){
             sh """
                 zip -j \
                     "$VERIFICATION_PACKAGE" \
+                    "$ARCHIVE_1" \
                     "$ARCHIVE_1_HASH" \
                     "$SIGNATURE_FROM_JENKINS"
             """
@@ -829,7 +900,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin',
+                    submitter: 'admin, mingde, anantharaj',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
@@ -906,6 +977,7 @@ def createAndUploadDeploymentPackage(){
         createTransferPackage()
         uploadTransferPackage()
         uploadTransferPackageToSFTP()
+        uploadTransferPackageToGDCSFTP()
     }
 }
 
@@ -922,25 +994,25 @@ def createTransferPackage(){
         "-e TZ=Asia/Singapore"
     ]
 
-    def credA = file(credentialsId: "moh-iais-jenkins-remote.public", variable: 'RECEIVER_PUBLIC_KEY')
-    withCredentials([credA]) {
+    // def credA = file(credentialsId: "moh-iais-jenkins-remote.public", variable: 'RECEIVER_PUBLIC_KEY')
+    // withCredentials([credA]) {
+    withCredentials([JENKINS_PFX_CREDENTIALS, JENKINS_PFX_PASSWORD_CREDENTIALS, JENKINS_RECEIVER_CER_CREDENTIALS]) {
         docker
             .image("hub.ecquaria.com/ecq/ad-tools:$AD_TOOLS_VERSION")
             .inside(dockerArgs.join(" ")){
                 sh """
                     tar -cf "$ARCHIVE_2" -C "\$(dirname "$ARCHIVE_1")" "\$(basename "$ARCHIVE_1")"
                     tar -rf "$ARCHIVE_2" -C "\$(dirname "$SIGNATURE_FROM_VERIFIER")" "\$(basename "$SIGNATURE_FROM_VERIFIER")"
-    
-                    openssl rand -hex "$SYMMETRIC_KEY_SIZE" > "$SYMMETRIC_KEY"
-                    openssl rand -hex "$INITIALIZATION_VECTOR_SIZE" > "$INITIALIZATION_VECTOR"
-    
-                    openssl enc -e "$SYMMETRIC_KEY_ALGO" -K "\$(cat $SYMMETRIC_KEY)" -iv "\$(cat $INITIALIZATION_VECTOR)" -in "$ARCHIVE_2" -out "$ARCHIVE_3"
-    
-                    openssl rsautl -encrypt -inkey "$RECEIVER_PUBLIC_KEY" -pubin -in "$SYMMETRIC_KEY" -out "$SYMMETRIC_KEY_ENCRYPTED"
-    
-                    tar -cf "$ARCHIVE_4" -C "\$(dirname "$ARCHIVE_3")" "\$(basename "$ARCHIVE_3")"
-                    tar -rf "$ARCHIVE_4" -C "\$(dirname "$SYMMETRIC_KEY_ENCRYPTED")" "\$(basename "$SYMMETRIC_KEY_ENCRYPTED")"
-                    tar -rf "$ARCHIVE_4" -C "\$(dirname "$INITIALIZATION_VECTOR")" "\$(basename "$INITIALIZATION_VECTOR")"
+
+                    (
+                        cd "/slift/" || exit
+                        ./run.sh \
+                            -e "${env.WORKSPACE}/$ARCHIVE_2" "${env.WORKSPACE}/$ARCHIVE_3" \
+                            -pfx "$JENKINS_PFX" "$JENKINS_PFX_PASSWORD" \
+                            -verbose \
+                            -cer "$JENKINS_RECEIVER_CER" \
+                            -aes
+                    )
                 """
             }
     }
@@ -958,7 +1030,7 @@ def uploadTransferPackage(){
                     curl \
                     --insecure \
                     --user '${NEXUS_USERNAME}:${NEXUS_PASSWORD}' \
-                    --upload-file "$ARCHIVE_4" \
+                    --upload-file "$ARCHIVE_3" \
                     https://hub.ecquaria.com/nexus/repository/moh-iais-ecq-raw-hosted/moh-iais-egp-transfer-${BUILD_NUMBER}.tar
                 """
             }
@@ -982,7 +1054,7 @@ def uploadTransferPackageToSFTP(){
 
         // sftp will be running in "batch" mode
         def BATCH_FILE_CONTENTS = """\
-            put \"$ARCHIVE_4\" \"$REMOTE_PATH\"
+            put \"$ARCHIVE_3\" \"$REMOTE_PATH\"
         """.stripIndent().stripMargin()
 
         def BATCH_FILE='sftp-batch-file'
@@ -995,10 +1067,51 @@ def uploadTransferPackageToSFTP(){
             .inside(dockerArgs.join(" ")){
                 sh """
                     echo \"$BATCH_FILE_CONTENTS\" > \"$BATCH_FILE\"
-    
+
                     cat $BATCH_FILE
-    
+
                     cat \"$BATCH_FILE\" | sshpass -e sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
+                """
+            }
+    }
+}
+
+/**
+ * Transfer the verification package to SFTP.
+ */
+def uploadTransferPackageToGDCSFTP(){
+    withCredentials(SFTP_CREDENTIALS_GDC) {
+        // setup parameters to use when calling docker
+        def dockerArgs = [
+                "--entrypoint=''",
+                "-u 0:0", // prevents ssh from throwing "No user exists for uid xxx"
+                "-e TZ=Asia/Singapore"
+        ]
+
+        // temporarily upload here first (to prevent it from being partially picked up by ctrl M)
+        def TMP_REMOTE_PATH="/HOME/CICD/IN_TMP/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+        // this is where the file will end up on the remote
+        def REMOTE_PATH="/HOME/CICD/IN/moh-iais-egp-transfer-${BUILD_NUMBER}.tar"
+
+        // sftp will be running in "batch" mode
+        def BATCH_FILE_CONTENTS = """\
+            put \"$ARCHIVE_3\" \"$TMP_REMOTE_PATH\"
+            rename \"$TMP_REMOTE_PATH\" \"$REMOTE_PATH\"
+        """.stripIndent().stripMargin()
+
+        def BATCH_FILE='sftp-batch-file'
+        def SFTP_ADDRESS ='160.96.221.9'
+        def SFTP_PORT ='22'
+
+        docker
+            .image("hub.ecquaria.com/ecq/ad-tools:$AD_TOOLS_VERSION")
+            .inside(dockerArgs.join(" ")){
+                sh """
+                    echo \"$BATCH_FILE_CONTENTS\" > \"$BATCH_FILE\"
+
+                    cat $BATCH_FILE
+
+                    cat \"$BATCH_FILE\" | sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
                 """
             }
     }
@@ -1039,7 +1152,6 @@ def runAutomatedTests(){
                     "-e TZ=Asia/Singapore",
                     "-u root",
                     "--add-host=egp.sit.inter.iais.com:192.168.1.229",
-                    "--add-host=nas.sit.inter.iais.com:192.168.1.229",
                     "--add-host=egp.sit.intra.iais.com:192.168.0.222"
                 ]
 
@@ -1058,7 +1170,7 @@ def runAutomatedTests(){
                                 -runMode=console \
                                 -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/moh_iais.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/Automation Test Suite - CICD" \
+                                -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
                                 -executionProfile="SG_SIT" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
