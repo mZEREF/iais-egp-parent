@@ -1186,12 +1186,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            //base flow
-            if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
-                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
-            } else {
-                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-            }
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
