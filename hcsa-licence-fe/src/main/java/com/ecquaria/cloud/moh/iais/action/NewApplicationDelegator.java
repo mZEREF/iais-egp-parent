@@ -833,12 +833,7 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String orgId = "";
-        if(loginContext != null){
-            orgId = loginContext.getOrgId();
-        }
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto,orgId);
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,paymentMethod);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));

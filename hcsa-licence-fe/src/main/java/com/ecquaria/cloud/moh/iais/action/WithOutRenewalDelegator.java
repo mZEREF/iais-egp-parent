@@ -725,7 +725,7 @@ public class WithOutRenewalDelegator {
         }
         AppSubmissionDto targetSubmisnDto = new AppSubmissionDto();
         targetSubmisnDto.setAppGrpPremisesDtoList(allPremiseList);
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(targetSubmisnDto,orgId);
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         if(isGiroAcc){
             for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
