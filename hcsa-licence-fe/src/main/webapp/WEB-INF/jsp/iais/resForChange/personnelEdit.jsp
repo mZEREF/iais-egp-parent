@@ -517,12 +517,15 @@
             $('#newPerson').hide();
             $('#show').hide();
             $('#newPersonExist').hide();
+            $('.designationSel').trigger('change');
         });
         $('#checkitem2').click(function () {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
             $('#newPersonExist').hide();
+            $('#replaceOptionsId').trigger('click');
+            $('.designationSel').trigger('change');
         });
 
         $('#cancel').click(function () {
