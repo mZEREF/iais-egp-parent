@@ -524,8 +524,6 @@
             $('#show').hide();
             $('#replace').show();
             $('#newPersonExist').hide();
-            $('#replaceOptionsId').trigger('click');
-            $('.designationSel').trigger('change');
         });
 
         $('#cancel').click(function () {
