@@ -1200,7 +1200,7 @@ public class WithOutRenewalDelegator {
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = emailAddressesToString(licenseeEmailAddrs);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         ParamUtil.setRequestAttr(bpc.request, "hasDetail", "N");
     }
 
