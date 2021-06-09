@@ -1090,22 +1090,37 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto) {
-        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlag)) {
+        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlag) || InspectionConstants.SWITCH_ACTION_VIEW.equals(vehicleFlag)) {
             if(applicationViewDto != null) {
                 List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
-                if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
-                    List<String> vehicleNoList = IaisCommonUtils.genNewArrayList();
-                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
-                        if(appSvcVehicleDto != null) {
-                            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                        List<String> vehicleNoList = IaisCommonUtils.genNewArrayList();
+                        for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                            if (appSvcVehicleDto != null) {
+                                vehicleNoList = addVehicleNameByAppType(applicationDto, appSvcVehicleDto, vehicleNoList);
+                            }
                         }
+                        Collections.sort(vehicleNoList);
+                        return vehicleNoList;
                     }
-                    Collections.sort(vehicleNoList);
-                    return vehicleNoList;
                 }
             }
         }
         return null;
+    }
+
+    private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+            if(ApplicationConsts.VEHICLE_STATUS_SUBMIT.equals(appSvcVehicleDto.getStatus())
+                    && ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
+                vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+            }
+        } else {
+            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+        }
+        return vehicleNoList;
     }
 
     @Override
@@ -1123,7 +1138,14 @@ public class ApplicationServiceImpl implements ApplicationService {
                         }
                     }
                 }
-                applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtoList);
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                        applicationViewDto.setVehicleRfcShowDtos(appSvcVehicleDtoList);
+                    } else {
+                        applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtoList);
+                    }
+                }
             }
         }
         return applicationViewDto;
