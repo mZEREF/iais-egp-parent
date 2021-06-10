@@ -551,16 +551,14 @@ public class CessationFeServiceImpl implements CessationFeService {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                 }
             }
-            String serviceId = applicationDto.getServiceId();
-            String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            String appStatus = getStageId(applicationDto.getRoutingServiceId(), ApplicationConsts.APPLICATION_TYPE_CESSATION);
             if (!StringUtil.isEmpty(appStatus)) {
                 applicationDto.setStatus(appStatus);
             }
         }
         applicationFeClient.updateApplicationList(applicationDtos);
         applicationFeClient.updateApplicationList(specApplicationDtos);
-        String serviceId = applicationDtos.get(0).getServiceId();
-        String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+        String appStatus = getStageId(applicationDtos.get(0).getRoutingServiceId(), ApplicationConsts.APPLICATION_TYPE_CESSATION);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(appStatus)) {
             for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
