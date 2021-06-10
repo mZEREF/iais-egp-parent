@@ -397,3 +397,14 @@ $.fn.clearFields = function() {
         }
     });
 };
+function controlEdit($ele, property, canEdit){
+    if(canEdit){
+        $ele.attr(property, !canEdit);
+        $ele.css('border-color', '');
+        $ele.css('color', '');
+    }else{
+        $ele.prop(property, !canEdit);
+        $ele.css('border-color', '#ededed');
+        $ele.css('color', '#999');
+    }
+};
