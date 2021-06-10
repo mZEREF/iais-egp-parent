@@ -158,51 +158,12 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
             return;
         }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
-        String appPremCorrId = taskDto.getRefNo();
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-        InspectionFillCheckListDto commonDto = null;
-        List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
-        if(commonList!=null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-            commonDto.setCommonConfig(true);
-            inspectionFillCheckListDtos.add(commonDto);
-        }
-        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        appViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(appViewDto.getApplicationDto().getStatus()));
-
-        // change common data;
-        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
-        //  change service checklist data
-        if(serListDto != null){
-            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
-            if(fdtoList != null && fdtoList.size() >0){
-                inspectionFillCheckListDtos.addAll(fdtoList);
-                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
-                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
-                }
-            }
-        }
-        //
-        //comparative data for sef and check list nc.
-        fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
-        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,appViewDto);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
+        setCheckDataHaveFinished(request,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
-        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
-        //set num
-        setRate(request);
         //get selections dd hh
-        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
-        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
-        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
+        setSelectionsForDDMMAndAuditRiskSelect(request);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
