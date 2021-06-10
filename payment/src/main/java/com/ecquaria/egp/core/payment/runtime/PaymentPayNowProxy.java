@@ -25,14 +25,17 @@ import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import ecq.commons.helper.StringHelper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.util.ResourceUtils;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -68,6 +71,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 	public static final Locale LOCALE = new Locale("en", "SG");
 
+	@SneakyThrows
 	@Override
 	public void pay(BaseProcessClass bpc) throws PaymentException {
 		//AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_PAYMENT, "");
@@ -113,9 +117,9 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		QRGenerator qrGenerator = new QRGeneratorImpl();
 
+		File inputFile = ResourceUtils.getFile("classpath:image/paymentPayNow.png");
 		//sample
-		QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), "D:\\IntelliJ idea\\workspace\\iais-egp\\payment\\src\\main\\resources\\image\\paymentPayNow.png");
-
+		QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), inputFile.getPath());
 		// sample Static QR
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
 
