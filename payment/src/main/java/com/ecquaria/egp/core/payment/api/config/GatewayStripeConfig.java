@@ -3,9 +3,6 @@ package com.ecquaria.egp.core.payment.api.config;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.Properties;
-
 @Slf4j
 public class GatewayStripeConfig {
 	
