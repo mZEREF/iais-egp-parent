@@ -102,7 +102,7 @@ public class NewApplicationAjaxController {
     /**
      * @param
      * @description: ajax
-     * @author: zixia
+     * @author: zixian
      */
     @GetMapping(value = "/retrieve-address")
     public @ResponseBody
@@ -133,14 +133,14 @@ public class NewApplicationAjaxController {
     @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
     public @ResponseBody
     String addPremisesHtml(HttpServletRequest request) {
-        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < 24; i++) {
-            timeHourList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
-        }
-        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < 60; i++) {
-            timeMinList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
-        }
+//        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+//        for (int i = 0; i < 24; i++) {
+//            timeHourList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
+//        }
+//        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+//        for (int i = 0; i < 60; i++) {
+//            timeMinList.add(new SelectOption(String.valueOf(i), i < 10 ? "0" + String.valueOf(i) : String.valueOf(i)));
+//        }
 
         log.debug(StringUtil.changeForLog("the add premises html start ...."));
         String currentLength = ParamUtil.getRequestString(request, "currentLength");
