@@ -3873,7 +3873,7 @@ public class HcsaApplicationDelegator {
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getRoutingServiceId(),
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());
         if (hcsaSvcRoutingStageDtoList != null) {
             if (hcsaSvcRoutingStageDtoList.size() > 0) {
