@@ -128,7 +128,7 @@ public class NewApplicationAjaxController {
     /**
      * @param
      * @description: ajax
-     * @author: zixia
+     * @author: zixian
      */
     @RequestMapping(value = "/premises-html", method = RequestMethod.GET)
     public @ResponseBody
@@ -238,13 +238,13 @@ public class NewApplicationAjaxController {
 
 
         sql = sql.replace("${premVal}", currentLength);
-        sql = sql.replace("(1)", premTypeBuffer.toString());
-        sql = sql.replace("(2)", premOnSiteSelectStr);
-        sql = sql.replace("(3)", premConvSelectStr);
-        sql = sql.replace("(PREMOFFSITESELECT)", premOffSiteSelectStr);
-        sql = sql.replace("(4)", addrTypeSelectStr);
-        sql = sql.replace("(5)", conAddrTypeSelectStr);
-        sql = sql.replace("(OFFSITEADDRTYPESELECT)", offSiteAddrTypeSelectStr);
+        sql = sql.replace("${premTypeInfo}", premTypeBuffer.toString());
+        sql = sql.replace("${onSiteSelectStr}", premOnSiteSelectStr);
+        sql = sql.replace("${conveyanceSelectStr}", premConvSelectStr);
+        sql = sql.replace("${offSiteSelectStr}", premOffSiteSelectStr);
+        sql = sql.replace("${onSiteAddressTypeStr}", addrTypeSelectStr);
+        sql = sql.replace("${conveyanceAddressTypeStr}", conAddrTypeSelectStr);
+        sql = sql.replace("${offSiteAddressTypeStr}", offSiteAddrTypeSelectStr);
         String fireTooltip = MessageUtil.getMessageDesc("NEW_ACK006");
         sql = sql.replace("(fireTooltip)", fireTooltip);
 
@@ -258,9 +258,9 @@ public class NewApplicationAjaxController {
         sql = setOperationHour(sql,weeklyOpList,phOpList,hourList,minList,"conveyance",currentLength);
         sql = setOperationHour(sql,weeklyOpList,phOpList,hourList,minList,"offSite",currentLength);
 
-        //premises header val
-        Integer premHeaderVal = Integer.parseInt(currentLength) + 1;
-        sql = sql.replace("(6)", String.valueOf(premHeaderVal));
+        //premises no. val
+        Integer premNo = Integer.parseInt(currentLength) + 1;
+        sql = sql.replace("${premNo}", String.valueOf(premNo));
 
         log.debug(StringUtil.changeForLog("the add premises html end ...."));
         return sql;
@@ -301,7 +301,7 @@ public class NewApplicationAjaxController {
     /**
      * @param
      * @description: ajax
-     * @author: zixia
+     * @author: zixian
      */
     @RequestMapping(value = "/file-repo", method = RequestMethod.GET)
     public @ResponseBody
@@ -433,7 +433,7 @@ public class NewApplicationAjaxController {
     /**
      * @param
      * @description: ajax
-     * @author: zixia
+     * @author: zixian
      */
     @RequestMapping(value = "/psn-info", method = RequestMethod.GET)
     public @ResponseBody
