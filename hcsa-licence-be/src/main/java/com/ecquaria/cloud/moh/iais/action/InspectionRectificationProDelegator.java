@@ -66,7 +66,7 @@ import java.util.Map;
  **/
 @Delegator("inspectionRectificationProDelegator")
 @Slf4j
-public class InspectionRectificationProDelegator {
+public class InspectionRectificationProDelegator extends InspectionCheckListCommonMethodDelegator{
 
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
@@ -110,6 +110,7 @@ public class InspectionRectificationProDelegator {
      * @throws
      */
     public void inspectorProRectificationStart(BaseProcessClass bpc){
+        clearSessionForStartCheckList(bpc.request);
         log.debug(StringUtil.changeForLog("the inspectorProRectificationStart start ...."));
         String taskId = "";
         try{
@@ -483,12 +484,11 @@ public class InspectionRectificationProDelegator {
      */
     public void InspectorProRectificationChList(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the InspectorProRectificationChList start ...."));
-        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
+        HttpServletRequest request = bpc.request;
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request, "taskDto");
         String appPremCorrId = taskDto.getRefNo();
         String taskId = taskDto.getId();
-        //draft start
-
-        //draft end
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request, "applicationViewDto");
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
         List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
@@ -517,10 +517,11 @@ public class InspectionRectificationProDelegator {
                 }
             }
         }
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,applicationViewDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(request, "taskDto", taskDto);
         //set num
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(bpc.request,SERLISTDTO,serListDto);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+        setRate(request);
     }
 
     /**
