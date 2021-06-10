@@ -425,8 +425,8 @@
                             //
                             $premContent.find('input[name="chooseExistData"]').val('1');
                             //disable allday
-                            $premContent.find('.allDay').attr('disabled',true);
-                            $premContent.find('.date_picker').attr('disabled',true);
+                            $premContent.find('.allDay').prop('disabled',true);
+                            $premContent.find('.date_picker').prop('disabled',true);
                             //add placeHolder disabled style
                             $premContent.find('.date_picker').addClass('disabled-placeHolder');
                             $premContent.find('span.multi-select-button').css('border-color','#ededed');

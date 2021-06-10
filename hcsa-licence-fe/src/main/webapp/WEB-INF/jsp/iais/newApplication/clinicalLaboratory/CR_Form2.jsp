@@ -442,7 +442,7 @@
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <label class="control-label control-set-font control-font-label specialty-label">
-                                                                                    ${currentCgo.speciality}
+                                                                                    <c:out value=" ${currentCgo.speciality}"/>
                                                                                 </label>
                                                                             </div>
                                                                         </div>

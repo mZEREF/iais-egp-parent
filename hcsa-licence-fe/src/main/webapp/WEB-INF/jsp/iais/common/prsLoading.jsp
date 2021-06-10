@@ -16,7 +16,7 @@
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
-    var prdLoading = function ($loadingContent, prgNo, action) {
+    var prdLoading = function ($loadingContent, prgNo, action, funsObj) {
         console.log('loading prs info ...');
         var assignSelectVal = $loadingContent.find('select[name="assignSelect"]').val();
         var appType = $('input[name="applicationType"]').val();
@@ -52,12 +52,15 @@
                     clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
                     return;
                 }
-                loadingData(data,$loadingContent);
-                if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
-                    $loadingContent.find('input[name="name"]').val(data.name);
-                }/*else{
-                    inputCancelReadonly($loadingContent.find('input[name="name"]'));
-                }*/
+                if(funsObj != null && funsObj != undefined){
+                    funsObj.setValue($loadingContent, data);
+                    funsObj.setEdit($loadingContent, 'disabled', false);
+                }else{
+                    loadingData(data,$loadingContent);
+                    if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+                        $loadingContent.find('input[name="name"]').val(data.name);
+                    }
+                }
             },
             'error': function () {
                 //

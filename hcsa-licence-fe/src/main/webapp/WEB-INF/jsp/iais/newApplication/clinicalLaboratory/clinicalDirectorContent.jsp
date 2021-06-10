@@ -225,7 +225,10 @@
                             <label  class="control-label control-set-font control-font-label">Specialty</label>
                             <span class="mandatory">*</span>
                         </div>
-                        <div class="col-md-7 col-xs-12" >
+                        <div class="col-md-7 col-xs-12 specialty-label" >
+                           <%-- <label class="control-label control-set-font control-font-label specialty-label">
+                                <c:out value="${clinicalDirectorDto.specialty}" />
+                            </label>--%>
                             <iais:select cssClass="specialty" name="specialty${cdStat.index}" options="easMtsSpecialtySelectList" needSort="false" value="${clinicalDirectorDto.specialty}"></iais:select>
                         </div>
                     </div>
@@ -439,6 +442,7 @@
         </div>
     </c:if>
 </div>
+<%@include file="../../common/prsLoading.jsp"%>
 
 <script>
     $(document).ready(function () {
@@ -448,7 +452,7 @@
         addClinicalDirectorBtn();
         removeClinicalDirector();
         showOtherSpecialty();
-
+        //profRegNoBlur();
         $('select.specialty').trigger('change');
 
         doEdite();
@@ -611,6 +615,55 @@
             $currContent.find('input[type="radio"]').prop('disabled',false);
             $('#isEditHiddenVal').val('1');
         });
-    }
+    };
+
+    var funsObj ={
+        setValue:function ($prsLoadingEle,data) {
+
+            var subspecialty = data.subspecialty ;
+            if(subspecialty == null || subspecialty == '' || subspecialty == undefined){
+                subspecialty = 'No specialty';
+            }
+            var specialtyGetDate = data.entryDateSpecialist[0];
+            var registration = data.registration[0];
+            var typeOfCurrRegi = registration.registrationType;
+            var currRegiDate = registration.regStartDate;
+            var praCerEndDate = registration.pcEndDate;
+            var typeOfRegister = registration.registerType;
+
+            $prsLoadingEle.find('.specialty-label').html(subspecialty);
+            $prsLoadingEle.find('.name').val(data.name);
+            $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
+            $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
+            $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
+            $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
+            $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
+        },
+        setEdit:function ($prsLoadingEle, propStyle, canEdit) {
+            var nameEle = $prsLoadingEle.find('.name');
+            var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
+            var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
+            var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
+            var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
+            var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
+            controlEdit(nameEle, propStyle, canEdit);
+            controlEdit(specialtyGetDateEle, propStyle, canEdit);
+            controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
+            controlEdit(currRegiDateEle, propStyle, canEdit);
+            controlEdit(praCerEndDateEle, propStyle, canEdit);
+            controlEdit(typeOfRegisterEle, propStyle, canEdit);
+        }
+    };
+
+    var profRegNoBlur = function () {
+        $('input.profRegNo').unbind('blur');
+        $('input.profRegNo').blur(function(event, action){
+            alert('cd loading prs ...');
+            var prgNo = $(this).val();
+            var $prsLoadingContent = $(this).closest('div.clinicalDirectorContent');
+            //prs loading
+            prdLoading($prsLoadingContent, prgNo, action, funsObj);
+        });
+    };
 
 </script>
