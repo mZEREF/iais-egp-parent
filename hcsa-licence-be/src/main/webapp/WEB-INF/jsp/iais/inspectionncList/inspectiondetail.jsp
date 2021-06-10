@@ -25,6 +25,7 @@
                 <div class="col-md-6">
                     <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="--"></iais:select>
                 </div>
+                   <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
                </div>
             </c:when>
                 <c:otherwise>
@@ -38,7 +39,6 @@
                 </div>
                 </c:otherwise>
             </c:choose>
-            <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
         </div>
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label" >Inspection End Time (HH MM)</label>
@@ -50,9 +50,9 @@
                 <div class="col-md-6">
                     <iais:select name="endHourMin" options="ddSelections" value="${serListDto.endMin}" firstOption="--"></iais:select>
                 </div>
+                <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
+                <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
             </div>
-            <span class="error-msg" id="error_eTime" name="iaisErrorMsg"></span>
-            <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
         </c:when>
         <c:otherwise>
         <div class="col-xs-8 col-sm-6 col-md-5">

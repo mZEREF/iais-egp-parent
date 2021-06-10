@@ -744,7 +744,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }*/
     }
 
-    private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
+  /*  private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
         if(StringUtil.isEmpty(orgId)){
             return "";
         }
@@ -777,7 +777,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }
 
         return acc;
-    }
+    }*/
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{
             if(!StringUtil.isEmpty(path)){
