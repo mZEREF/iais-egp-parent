@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -18,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -238,10 +236,10 @@ public class PageDataCopyUtil {
         }
         return list;
     }
-    public static List<AppSvcCgoDto> copyAppSvcCgo(List<AppSvcCgoDto> appSvcCgoDtoList) {
-        List<AppSvcCgoDto> list=IaisCommonUtils.genNewArrayList();
-        for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList) {
-            AppSvcCgoDto cgoDto=new AppSvcCgoDto();
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
+        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
+        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+            AppSvcPrincipalOfficersDto cgoDto=new AppSvcPrincipalOfficersDto();
             cgoDto.setSalutation(appSvcCgoDto.getSalutation());
             cgoDto.setName(appSvcCgoDto.getName());
             cgoDto.setIdNo(appSvcCgoDto.getIdNo());

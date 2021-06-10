@@ -503,7 +503,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(String grpId) {
+    public FeignResponseEntity<List<AppSvcPrincipalOfficersDto>> getAppGrpPersonnelByGrpId(String grpId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

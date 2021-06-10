@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
@@ -438,10 +437,10 @@ public class NewApplicationAjaxController {
      */
     @RequestMapping(value = "/psn-info", method = RequestMethod.GET)
     public @ResponseBody
-    AppSvcCgoDto getPsnInfoByIdNo(HttpServletRequest request) {
+    AppSvcPrincipalOfficersDto getPsnInfoByIdNo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("getPsnInfoByIdNo start ...."));
         String idNo = ParamUtil.getRequestString(request, "idNo");
-        AppSvcCgoDto appSvcCgoDto = null;
+        AppSvcPrincipalOfficersDto appSvcCgoDto = null;
         if (StringUtil.isEmpty(idNo)) {
             return appSvcCgoDto;
         }
@@ -449,7 +448,7 @@ public class NewApplicationAjaxController {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
-                List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                 if (!IaisCommonUtils.isEmpty(appSvcCgoDtoList)) {
                     appSvcCgoDto = isExistIdNo(appSvcCgoDtoList, idNo);
                     if (appSvcCgoDto != null) {
@@ -1378,8 +1377,8 @@ public class NewApplicationAjaxController {
     //=============================================================================
     //private method
     //=============================================================================
-    private AppSvcCgoDto isExistIdNo(List<AppSvcCgoDto> appSvcCgoDtoList, String idNo) {
-        for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList) {
+    private AppSvcPrincipalOfficersDto isExistIdNo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList, String idNo) {
+        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
             if (idNo.equals(appSvcCgoDto.getIdNo())) {
                 log.info(StringUtil.changeForLog("had matching dto"));
                 return appSvcCgoDto;

@@ -232,7 +232,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity <AppPremiseMiscDto>getAppPremisesMisc(@RequestParam("correId") String correId);
 
     @GetMapping(value = "/appeal/application-group-peronnel-by-grp-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
+    FeignResponseEntity<List<AppSvcPrincipalOfficersDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
 
     @GetMapping(value = "/iais-application/apps-by-licId/{licId}")
     FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicId(@PathVariable(name = "licId") String licId);

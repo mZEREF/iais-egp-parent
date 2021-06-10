@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -2101,9 +2100,9 @@ public class RequestForChangeMenuDelegator {
         String licenceNo = appSubmissionDto.getLicenceNo();
         List<String> psnTypes = licPsnTypeDtoMaps.get(licenceNo).getPsnTypes();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
                     if (appSvcCgoDto.getIdNo().equals(personnelListDto.getIdNo())) {
                         appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                         appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
@@ -2158,9 +2157,9 @@ public class RequestForChangeMenuDelegator {
         String idNo = personnelListDto.getIdNo();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             //cgo
-            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
-                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
                     appSvcCgoDto.setIdNo(personnelListDto.getIdNo());
                     appSvcCgoDto.setIdType(personnelListDto.getIdType());
                     appSvcCgoDto.setName(personnelListDto.getPsnName());

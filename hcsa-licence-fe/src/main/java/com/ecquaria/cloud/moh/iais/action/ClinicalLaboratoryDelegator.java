@@ -9,12 +9,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -291,7 +289,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         if (appSvcRelatedInfoDto != null) {
-            List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (appSvcCgoDtoList != null && appSvcCgoDtoList.size() > mandatoryCount) {
                 mandatoryCount = appSvcCgoDtoList.size();
             }
@@ -317,7 +315,7 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         //reload
         if (appSvcRelatedInfoDto != null) {
-            List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcCgoDtoList);
         }
         ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
@@ -360,10 +358,10 @@ public class ClinicalLaboratoryDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "PremisesAndChkLst", (Serializable) newChkLstDtoList);
         List<SelectOption> spList = IaisCommonUtils.genNewArrayList();
-        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         SelectOption sp = null;
         if (appSvcCgoDtoList != null && !appSvcCgoDtoList.isEmpty()) {
-            for (AppSvcCgoDto cgo : appSvcCgoDtoList) {
+            for (AppSvcPrincipalOfficersDto cgo : appSvcCgoDtoList) {
                 sp = new SelectOption(cgo.getIdNo(), cgo.getName());
                 spList.add(sp);
             }
@@ -600,10 +598,10 @@ public class ClinicalLaboratoryDelegator {
             for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
                 switch (hcsaServiceStepSchemeDto.getStepCode()){
                     case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
-                        List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                         if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
-                            List<AppSvcCgoDto> reloadDto = IaisCommonUtils.genNewArrayList();
-                            for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtos){
                                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
                                 boolean isAllFieldNull = NewApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
                                 if(!isAllFieldNull){
@@ -891,13 +889,13 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (isGetDataFromPage) {
-            List<AppSvcCgoDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = genAppSvcCgoDto(bpc.request);
             Map<String, String> errList = IaisCommonUtils.genNewHashMap();
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}",prsFlag);
             if("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcCgoDtoList)){
                 for(int i=0;i<appSvcCgoDtoList.size();i++ ){
-                    AppSvcCgoDto appSvcCgoDto = appSvcCgoDtoList.get(i);
+                    AppSvcPrincipalOfficersDto appSvcCgoDto = appSvcCgoDtoList.get(i);
                     String profRegNo = appSvcCgoDto.getProfRegNo();
                     ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(profRegNo);
                     String specialtyStr = "";
@@ -980,7 +978,6 @@ public class ClinicalLaboratoryDelegator {
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
-                //List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                 Map<String, String> map = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
                 //validate mandatory count
@@ -1063,9 +1060,9 @@ public class ClinicalLaboratoryDelegator {
             }
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
             if(oldAppSubmissionDto!=null){
-                List<AppSvcCgoDto> appSvcCgoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
                 if(appSvcCgoDtoList!=null){
-                    List<AppSvcCgoDto> appSvcCgoDtoList1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcCgoDtoList();
                     if(!appSvcCgoDtoList.equals(appSvcCgoDtoList1)){
                         cgoChange=true;
                     }
@@ -2421,11 +2418,11 @@ public class ClinicalLaboratoryDelegator {
     }
 
 
-    private List<AppSvcCgoDto> genAppSvcCgoDto(HttpServletRequest request) {
+    private List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
         ParamUtil.setSessionAttr(request, ERRORMAP_GOVERNANCEOFFICERS, null);
-        List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
-        AppSvcCgoDto appSvcCgoDto;
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto appSvcCgoDto;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
         int size = 0;
         if (assignSelect != null && assignSelect.length > 0) {
@@ -2473,7 +2470,7 @@ public class ClinicalLaboratoryDelegator {
             AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
             boolean chooseExisting = false;
             boolean getPageData = false;
-            appSvcCgoDto = new AppSvcCgoDto();
+            appSvcCgoDto = new AppSvcPrincipalOfficersDto();
             String cgoIndexNo = cgoIndexNos[i];
             String assign = assignSelect[i];
             String licPsn = licPerson[i];
@@ -2568,7 +2565,7 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isEmailAddr()){
                     emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
                 }
-                appSvcCgoDto = MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto, AppSvcCgoDto.class);
+                appSvcCgoDto = (AppSvcPrincipalOfficersDto) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDto);
                 appSvcCgoDto.setAssignSelect(assignSelect[i]);
                 appSvcCgoDto.setLicPerson(true);
                 appSvcCgoDto.setSelectDropDown(true);
@@ -3375,15 +3372,15 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         if(map.isEmpty()){
-            List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-            List<AppSvcCgoDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
             if (appSvcCgoList != null) {
                 if (daList.size() < appSvcCgoList.size()) {
                     return;
                 }
                 if (appSvcCgoList.size() <= daList.size()) {
                     cgoMap.forEach((k, v) -> {
-                        for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
+                        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
                             String idNo = appSvcCgoDto.getIdNo();
                             if (k.equals(idNo)) {
                                 appSvcCgoDtos.add(appSvcCgoDto);
@@ -3393,7 +3390,7 @@ public class ClinicalLaboratoryDelegator {
                 }
                 appSvcCgoList.removeAll(appSvcCgoDtos);
                 StringBuilder stringBuilder = new StringBuilder();
-                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
                     stringBuilder.append(appSvcCgoDto.getName()).append(',');
                 }
                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
@@ -3470,7 +3467,7 @@ public class ClinicalLaboratoryDelegator {
 
     private void chose(HttpServletRequest request, String type) {
         if ("goveOffice".equals(type)) {
-            List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+            List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
             ParamUtil.setRequestAttr(request, "goveOffice", appSvcCgoList);
         }
         if ("checkBox".equals(type)) {
@@ -3910,18 +3907,18 @@ public class ClinicalLaboratoryDelegator {
         return medAlertPersons;
     }
 
-    private AppSvcCgoDto getAppSvcCgoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
+    private AppSvcPrincipalOfficersDto getAppSvcCgoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo) {
         if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
-            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                for (AppSvcCgoDto appSvcCgoDto1 : appSvcCgoDtos) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto1 : appSvcCgoDtos) {
                     if (indexNo.equals(appSvcCgoDto1.getCgoIndexNo())) {
                         return appSvcCgoDto1;
                     }
                 }
             }
         }
-        return new AppSvcCgoDto();
+        return new AppSvcPrincipalOfficersDto();
     }
 
     private AppSvcPrincipalOfficersDto getPsnByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo, String pageName){
@@ -4090,9 +4087,9 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
-                        for(AppSvcCgoDto psn:appSvcCgoDtos){
+                        for(AppSvcPrincipalOfficersDto psn:appSvcCgoDtos){
                             String assignSel = psn.getAssignSelect();
                             if(!psn.isLicPerson()){
                                 boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());

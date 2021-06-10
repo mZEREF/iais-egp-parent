@@ -78,8 +78,8 @@ public class EqRequestForChangeSubmitResultChange {
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
         boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
 
-        List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
         boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
 
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
@@ -216,10 +216,10 @@ public class EqRequestForChangeSubmitResultChange {
 
         return false;
     }
-    private static boolean eqCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList)  {
+    private static boolean eqCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList)  {
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
-            List<AppSvcCgoDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
-            List<AppSvcCgoDto> o = PageDataCopyUtil.copyAppSvcCgo(oldAppSvcCgoDtoList);
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcCgo(oldAppSvcCgoDtoList);
             if (!n.equals(o)) {
                 return true;
             }
@@ -319,15 +319,15 @@ public class EqRequestForChangeSubmitResultChange {
                 }
             }
         }
-        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (oldAppSvcCgoDtoList != null) {
             if (oldAppSvcCgoDtoList.size() != appSvcCgoDtoList.size()) {
                 return true;
             } else if (oldAppSvcCgoDtoList.size() == appSvcCgoDtoList.size()) {
                 int i = 0;
-                for (AppSvcCgoDto appSvcCgoDto : oldAppSvcCgoDtoList) {
-                    for (AppSvcCgoDto appSvcCgoDto1 : appSvcCgoDtoList) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
+                    for (AppSvcPrincipalOfficersDto appSvcCgoDto1 : appSvcCgoDtoList) {
                         if (appSvcCgoDto.getIdNo().equals(appSvcCgoDto1.getIdNo())) {
                             i++;
                             break;

@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Component
 public class ValidateCgo implements ValidateServiceInfo {
     @Override
-    public void doValidteCGO(Map<String, String> map, AppSvcCgoDto appSvcCgoDto,Integer index, List<String> stringList,StringBuilder stringBuilder,boolean newErr0006) {
+    public void doValidteCGO(Map<String, String> map, AppSvcPrincipalOfficersDto appSvcCgoDto, Integer index, List<String> stringList, StringBuilder stringBuilder, boolean newErr0006) {
         String idTyp = appSvcCgoDto.getIdType();
         String idNo = appSvcCgoDto.getIdNo();
         if("-1".equals(idTyp)|| StringUtil.isEmpty(idTyp)){
