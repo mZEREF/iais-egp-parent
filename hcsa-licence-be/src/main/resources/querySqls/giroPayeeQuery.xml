@@ -18,6 +18,7 @@
             SELECT distinct opv.ID OP_ID, opv.UEN_NO
             from organization opv
             where 1 = 1
+            and opv.UEN_NO is not null and opv.UEN_NO !=""
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
             <#if orgIds??> AND ${orgIds} </#if>
 
