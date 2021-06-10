@@ -109,10 +109,13 @@ public class MohHcsaBeDashboardAjax {
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
         String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         String dashAppStatus = (String)ParamUtil.getSessionAttr(request, "dashAppStatus");
         String groupNo = request.getParameter("groupNo");
+        String switchAction = request.getParameter("switchActionParam");
+        if (StringUtil.isEmpty(switchAction)) {
+            switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
+        }
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
         //set dash support flag
