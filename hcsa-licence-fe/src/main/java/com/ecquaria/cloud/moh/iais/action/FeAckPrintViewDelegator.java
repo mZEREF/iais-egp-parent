@@ -62,11 +62,11 @@ public class FeAckPrintViewDelegator {
             smallTitle.append("</p>");
             title = "Amendment";
         } else if(!StringUtil.isEmpty(menuRfc) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-
+            title = "Amendment";
             bpc.request.setAttribute("menuRfc",menuRfc);
             ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-
+            title = "Licence Renewal";
         } else if("retrigger".equals(action)){
             title = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_TITLE);
             smallTitle = (StringBuilder) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE);
