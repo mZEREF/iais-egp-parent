@@ -1556,6 +1556,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSvcDocDtoList.addAll(appSvcDocDtoLit);
         }
         appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
+        this.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
     }
 
     @Override

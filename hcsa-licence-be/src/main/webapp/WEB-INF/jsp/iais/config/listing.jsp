@@ -32,12 +32,12 @@
     <div  class="col-lg-12 col-xs-10">
       <table border="1px">
         <tr>
-          <td style="width: 25%;text-align: center">Service Name</td>
-          <td style="width: 15%;text-align: center">Usage</td>
-          <td style="width: 20%;text-align: center">Effective Start Date</td>
-          <td style="width: 20%;text-align: center">Effective End Date</td>
-          <td style="width: 5%;text-align: center">Version</td>
-          <td style="width: 30%;text-align: center">Actions</td>
+          <td style="width: 25%;text-align: center"><b>Service Name</b></td>
+          <td style="width: 15%;text-align: center"><b>Usage</b></td>
+          <td style="width: 20%;text-align: center"><b>Effective Start Date</b></td>
+          <td style="width: 20%;text-align: center"><b>Effective End Date</b></td>
+          <td style="width: 5%;text-align: center"><b>Version</b></td>
+          <td style="width: 30%;text-align: center"><b>Actions</b></td>
         </tr>
         <c:forEach items="${hcsaServiceDtos}"  var="hcsaServiceDto">
       <tr>

@@ -275,9 +275,14 @@ public class RequestForChangeMenuDelegator {
         SelectOption offsiet = new SelectOption();
         offsiet.setText("Off-site");
         offsiet.setValue("OFFSITE");
+        SelectOption EASMTSsiet = new SelectOption();
+        EASMTSsiet.setText("Conveyance(in a mobile clinic / ambulance)");
+        EASMTSsiet.setValue("EASMTS");
         list.add(offsiet);
         list.add(conveyance);
         list.add(onsite);
+        list.add(EASMTSsiet);
+        list.sort((s1,s2)->(s1.getText().compareTo(s2.getText())));
     }
 
 

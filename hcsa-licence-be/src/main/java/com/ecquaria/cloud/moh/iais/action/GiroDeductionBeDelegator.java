@@ -349,6 +349,7 @@ public class GiroDeductionBeDelegator {
                     signature2.date(), signature2.authorization()).getEntity();
             //update group status
             applicationClient.updateBeGroupStatus(applicationGroupDtos);
+            updateFeApplicationGroupStatus(applicationGroupDtos);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");

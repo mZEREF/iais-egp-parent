@@ -257,95 +257,19 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         log.error(e.getMessage(),e);
                         continue;
                     }
-                }
-            }
-        }
-       /* File[] files = new File(inFolder).listFiles();
-        for(File fil:files){
-            if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
-                String name = fil.getName();
-                String path = fil.getPath();
-                String relPath = name;
-                HashMap<String,String> map = IaisCommonUtils.genNewHashMap();
-                map.put("fileName",name);
-                map.put("filePath",relPath);
-                ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
-                if(processFileTrackDto!=null){
-                    AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
-                    processFileTrackDto.setAuditTrailDto(intranet);
-                    processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
+                } else {
+                    v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
                     try {
-                        applicationClient.updateProcessFileTrack(processFileTrackDto);
+                        applicationClient.updateProcessFileTrack(v);
                     }catch (Exception e){
                         log.info("error updateProcessFileTrack");
                     }
-
-                    //check file is changed
-                    try (InputStream is=Files.newInputStream(fil.toPath());
-                         ByteArrayOutputStream by=new ByteArrayOutputStream();) {
-                        int count;
-                        byte [] size=new byte[1024];
-                        count=is.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= is.read(size);
-                        }
-
-                        byte[] bytes = by.toByteArray();
-                        String s = FileUtil.genMd5FileChecksum(bytes);
-                        s = s + AppServicesConsts.ZIP_NAME;
-                        if( !s.equals(name)){
-                            continue;
-                        }
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                        continue;
-                    }
-                    *//**************//*
-                    String refId = processFileTrackDto.getRefId();
-                    CheckedInputStream cos=null;
-                    BufferedInputStream bis=null;
-                    BufferedOutputStream bos=null;
-                    OutputStream os=null;
-                    try (ZipFile zipFile=new ZipFile(path);)  {
-                        for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
-                            ZipEntry zipEntry = entries.nextElement();
-                            zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
-                        }
-
-                    } catch (IOException e) {
-                        log.error(e.getMessage(),e);
-                    }
-
-                    try {
-
-                        List<ApplicationDto> listApplicationDto =new ArrayList();
-                        List<ApplicationDto> requestForInfList=new ArrayList();
-                        //need event bus
-                        String submissionId = generateIdClient.getSeqId().getEntity();
-                        download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
-
-                        log.info(StringUtil.changeForLog(listApplicationDto.size()+"******listApplicationDto*********"));
-                        log.info(StringUtil.changeForLog(requestForInfList.toString()+"***requestForInfList***"));
-
-                    *//*    sendTask(listApplicationDto,requestForInfList,submissionId);*//*
-                     *//*   moveFile(fil);*//*
-                        //save success
-                    }catch (Exception e){
-                        //save bad
-                        log.error(e.getMessage(),e);
-                        continue;
-                    }
-
                 }
-
             }
-
-        }*/
-
+        }
         return true;
     }
-    //todo  delete file
+
     @Override
     public List<ApplicationDto> listApplication() {
 
