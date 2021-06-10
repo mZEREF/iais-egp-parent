@@ -19,6 +19,8 @@
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <input type="hidden" name="doSubmitAction" id="doSubmitAction" value="">
+    <input type="hidden" name="InspectorProRectificationType" value="">
+    <input type="hidden" id="actionValue" name="actionValue" value="">
     <div class="main-content">
         <div class="">
             <div class="row">
@@ -35,7 +37,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+                                    <c:if test="${applicationViewDto.applicationDto.status ==  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
+                                        <a class="back" id="Back" onclick="javascript:doInspRecCheckListViewBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                                    </c:if>
+                                    <c:if test="${applicationViewDto.applicationDto.status !=  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
+                                        <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+                                    </c:if>
                                   <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
                                    <div style="float:right">
                                     <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
@@ -103,7 +110,7 @@
     });
 
    function readOnlyAllForCheckList(status) {
-       if (status == 'APST032') {
+       if (status == 'APST032' || status == 'APST022') {
            readOnlyAllForCheckListOnly();
        }
    }
@@ -113,4 +120,16 @@
                $("#checkLsitItemArea input[type='checkbox']").attr("disabled",true);
                $("#checkLsitItemArea  input[type='radio']").attr("disabled",true);
      }
+
+    function doInspRecCheckListViewBack() {
+        showWaiting();
+        $("#actionValue").val('view');
+        inspRecCheckListViewSubmit('view');
+    }
+
+    function inspRecCheckListViewSubmit(action){
+        $("[name='InspectorProRectificationType']").val(action);
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
+    }
 </script>

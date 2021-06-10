@@ -136,10 +136,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             maxSeqNum = (int) ParamUtil.getSessionAttr(httpServletRequest, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         }
         for (WithdrawnDto h : withdrawnDtoList) {
-            String newApplicationId = h.getNewApplicationId();
-            String oldApplicationId = h.getApplicationId();
-            ApplicationDto newApplication = applicationFeClient.getApplicationById(newApplicationId).getEntity();
-            ApplicationDto oldApplication = applicationFeClient.getApplicationById(oldApplicationId).getEntity();
+
             h.setMaxFileIndex(maxSeqNum);
             String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
@@ -148,6 +145,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             appSubmissionDto.setAppGrpNo(grpNo);
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())+"-----appSubmissionDto-------"));
             AppSubmissionDto newAppSubmissionDto = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
+            String oldApplicationId = h.getApplicationId();
+            ApplicationDto oldApplication = applicationFeClient.getApplicationById(oldApplicationId).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
             ) {
@@ -172,6 +171,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             /**
              *
              */
+            String newApplicationId = h.getNewApplicationId();
+            ApplicationDto newApplication = applicationFeClient.getApplicationById(newApplicationId).getEntity();
+
             RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
             List<String> refNoList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = applicationFeClient.listAppPremisesCorrelation(oldApplicationId).getEntity();

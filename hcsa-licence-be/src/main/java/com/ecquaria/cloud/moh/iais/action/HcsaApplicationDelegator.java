@@ -3890,7 +3890,13 @@ public class HcsaApplicationDelegator {
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String serviceId = applicationDto.getServiceId();
+        //get flow service Id
+        String serviceId;
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            serviceId = applicationDto.getBaseServiceId();
+        } else {
+            serviceId = applicationDto.getServiceId();
+        }
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());
