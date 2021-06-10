@@ -433,10 +433,9 @@ public class WithdrawalDelegator {
                                 Long size=length/1024;
                                 files.add(file);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                                SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
                                 String e = str.substring(str.lastIndexOf('e') + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
-                                String fileMd5 = singeFileUtil.getFileMd5(file);
+                                String fileMd5 = SingeFileUtil.getInstance().getFileMd5(file);
                                 premisesSpecialDocDto.setMd5Code(fileMd5);
                                 premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
