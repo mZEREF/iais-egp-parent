@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -105,6 +106,54 @@ public class InspectionCheckListCommonMethodDelegator {
             fillupChklistService.fillInspectionFillCheckListDto(cDto);
         }
         return cDto;
+    }
+
+    public void setCheckDataHaveFinished(HttpServletRequest request,TaskDto taskDto){
+        String appPremCorrId = taskDto.getRefNo();
+        String taskId = taskDto.getId();
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+        InspectionFillCheckListDto commonDto = null;
+        List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
+        if(commonList!=null && !commonList.isEmpty()){
+            commonDto = commonList.get(0);
+            commonDto.setCommonConfig(true);
+            inspectionFillCheckListDtos.add(commonDto);
+        }
+        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
+        AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
+        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
+        appViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(appViewDto.getApplicationDto().getStatus()));
+
+        // change common data;
+        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
+        //  change service checklist data
+        if(serListDto != null){
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            if(fdtoList != null && fdtoList.size() >0){
+                inspectionFillCheckListDtos.addAll(fdtoList);
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
+                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+                }
+            }
+        }
+        //
+        //comparative data for sef and check list nc.
+        fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
+        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,appViewDto);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
+        ParamUtil.setSessionAttr(request, TASKDTO, taskDto);
+        //set num
+        setRate(request);
+    }
+
+    public void setSelectionsForDDMMAndAuditRiskSelect(HttpServletRequest request){
+        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
+        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
+        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
     }
 
 

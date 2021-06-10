@@ -486,42 +486,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         log.debug(StringUtil.changeForLog("the InspectorProRectificationChList start ...."));
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request, "taskDto");
-        String appPremCorrId = taskDto.getRefNo();
-        String taskId = taskDto.getId();
-        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request, "applicationViewDto");
-        InspectionFillCheckListDto commonDto = null;
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-        if(commonList != null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-        }
-        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        if(adchklDto == null){
-            adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
-        }
-
-        ParamUtil.setSessionAttr(bpc.request,TASKDTO,taskDto);
-        ParamUtil.setSessionAttr(bpc.request,ADHOCLDTO,adchklDto);
-
-        // change common data;
-        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
-        ParamUtil.setSessionAttr(bpc.request,COMMONDTO,commonDto);
-
-        //  change service checklist data
-        if(serListDto != null){
-            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
-            if(fdtoList != null && fdtoList.size() > 0){
-                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
-                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
-                }
-            }
-        }
-        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,applicationViewDto);
-        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
-        ParamUtil.setSessionAttr(request, "taskDto", taskDto);
-        //set num
-        setRate(request);
+        setCheckDataHaveFinished(request,taskDto);
     }
 
     /**

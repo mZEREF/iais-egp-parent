@@ -134,11 +134,11 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_CHECKLIST,appViewDto.getApplicationDto().getApplicationNo());
         boolean beforeFinishList =  fillupChklistService.isBeforeFinishCheckList(appPremCorrId);
+        boolean needVehicleSeparation = checklistNeedVehicleSeparation(appViewDto);
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto>   cDtoList ;
         List<InspectionFillCheckListDto>   commonList;
         AdCheckListShowDto adchklDto;
-        boolean needVehicleSeparation = checklistNeedVehicleSeparation(appViewDto);
         if( beforeFinishList){
               cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
               commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
@@ -164,7 +164,6 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(commonDto,orgUserDtoUsers);
         // change common data;
         insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
-        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
         if(commonDto != null){
             commonDto.setCommonConfig(true);
@@ -207,6 +206,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         setSpecServiceCheckListData(request,serListDto,adchklDto,beforeFinishList,orgUserDtoUsers,appViewDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         ParamUtil.setSessionAttr(request,INSPECTION_USERS,(Serializable) orgUserDtoUsers);
@@ -217,9 +217,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         //set num
         setRate(request);
         //get selections dd hh
-        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
-        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
-        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
+        setSelectionsForDDMMAndAuditRiskSelect(request);
     }
 
     public void pre(BaseProcessClass bpc){
