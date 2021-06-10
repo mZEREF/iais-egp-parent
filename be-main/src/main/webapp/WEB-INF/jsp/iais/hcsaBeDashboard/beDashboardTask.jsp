@@ -339,7 +339,7 @@
                         }
                         html += '<tr style = "color : ' + color + ';">';
                         if ("true" == dashSupportFlag) {
-                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].applicationNo + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
