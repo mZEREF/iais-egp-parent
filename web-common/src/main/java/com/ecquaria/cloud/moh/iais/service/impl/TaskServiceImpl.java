@@ -399,7 +399,8 @@ public class TaskServiceImpl implements TaskService {
             AppGrpPremisesEntityDto appGrpPremisesEntityDto = hcsaAppClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getRoutingServiceId());
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setBaseServiceId(applicationDto.getRoutingServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
