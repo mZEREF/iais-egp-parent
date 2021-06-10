@@ -556,10 +556,16 @@ public class MohHcsaBeDashboardAjax {
                 HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getRoutingServiceId());
                 boolean canApprove = checkCanApproveStage(canApproveStageDto);
                 if(!canApprove){
+                    if(!StringUtil.isEmpty(noApprove.toString())) {
+                        noApprove.append(' ');
+                    }
                     noApprove.append(item).append(',');
                     approveCheck = 0;
                 }
             }else{
+                if(!StringUtil.isEmpty(noApprove.toString())) {
+                    noApprove.append(' ');
+                }
                 noApprove.append(item).append(',');
                 approveCheck = 0;
             }
