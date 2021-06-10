@@ -108,7 +108,7 @@ public class InspEmailServiceImpl implements InspEmailService {
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
 
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-            hcsaSvcStageWorkingGroupDto.setBaseServiceId(applicationDto.getRoutingServiceId());
+           // hcsaSvcStageWorkingGroupDto.setBaseServiceId(applicationDto.getRoutingServiceId());
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             if(appGrpPremisesEntityDto != null){
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
