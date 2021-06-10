@@ -14,7 +14,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -34,7 +33,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.config.ConfigUtil;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +61,7 @@ public class NetsSysToSysController {
     @Autowired
     private PaymentClient paymentClient;
     public static final Locale LOCALE = new Locale("en", "SG");
+    static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
 
     @Autowired
     private PaymentRedisHelper redisCacheHelper;
@@ -150,15 +152,16 @@ public class NetsSysToSysController {
     }
 
 
-    @RequestMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, value =
-            "/payNowRefresh", method = RequestMethod.POST)
-    public String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping( value = "/payNowRefresh", method = RequestMethod.GET)
+    public @ResponseBody
+    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response){
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
             try {
+                log.info("payNow SUCCESS");
                 RedirectUtil.redirect(url, request, response);
             } catch (IOException e) {
                 log.info(e.getMessage(),e);
@@ -173,7 +176,7 @@ public class NetsSysToSysController {
         QRGenerator qrGenerator = new QRGeneratorImpl();
 
         //sample
-        QRDimensions qrDetails = qrGenerator.getQRDimensions(500, 500, Color.decode("#7C1A78"), IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT+"img/paymentPayNow.png");
+        QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), "D:\\IntelliJ idea\\workspace\\iais-egp\\payment\\src\\main\\resources\\image\\paymentPayNow.png");
 
         // sample Static QR
         //PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
