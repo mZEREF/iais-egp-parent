@@ -239,7 +239,7 @@
                                     <thead>
                                     <tr>
                                         <th>SN</th>
-                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>VehicleName</th></c:if>
+                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
                                         <th>Checklist Item</th>
                                         <th>Regulation Clause</th>
                                         <th>Findings/NCs</th>
@@ -315,7 +315,7 @@
                                     <thead>
                                     <tr>
                                         <th>SN</th>
-                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>VehicleName</th></c:if>
+                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
                                         <th>Checklist Item</th>
                                         <th>Findings/NCs</th>
                                         <th>Rectified?</th>
