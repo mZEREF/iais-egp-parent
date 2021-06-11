@@ -289,6 +289,10 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
+        //licence expire days
+        if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
+            searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
+        }
         if(!StringUtil.isEmpty(groupNo)){
             searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
             //filter appGroup NO.
@@ -305,10 +309,6 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             //filter appNo
             if(!StringUtil.isEmpty(dashFilterAppNo)){
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
-            }
-            //licence expire days
-            if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(switchAction)) {
-                searchParam.addFilter("lic_renew_exp", systemParamConfig.getDashRenewDate(), true);
             }
             //filter page conditions
             searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
