@@ -1,5 +1,3 @@
-
-
 <c:if test="${AppSubmissionDto.needEditController}">
   <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
     <c:if test="${'APPSPN01' == clickEditPage}">
@@ -35,15 +33,7 @@
 
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-
-
-  <%--  id="<c:out value="control--${levelOne.index}--${levelOne.index}" />"
-    name="<c:out value="${premIndexNo}control--runtime--1" />" class="control-input"
-    value="<c:out value="${checkIndexNo1}" />">
-
-    Generate unique key  --%>
   <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
-
   <fieldset class="fieldset-content" id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
     <legend></legend>
     <p><strong class="cgo-header">Mode of Service Delivery ${status.index+1}</strong></p>
@@ -60,16 +50,13 @@
             <c:out value="Address"/>: <c:out value="${appGrpPremisesDto.address}"/>
           </c:when>
         </c:choose>
-
       </strong>
     </p>
     <span class="error-msg" name="iaisErrorMsg" id="error_checkError"></span>
     <div class="wrapper">
       <div class="form-inner-content editableMode">
         <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-          <%--<form  name="formRender" method="post" target="_parent">--%>
         <div class="canvasContent">
-          <!-- Place holder for tabbed interface. -->
           <input type="hidden" id="testCode" value="HST"/>
           <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
             <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -121,31 +108,31 @@
                               </div>
                             </td>
                             <td >
-                            <c:choose>
-                              <c:when test="${needTextArea}">
-                                <c:set var="otherScope" value=""/>
-                                <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
-                                  <c:choose>
-                                    <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
-                                      <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
-                                        <c:if test="${'Please indicate' == svcChkLst.chkName}">
-                                          <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
-                                        </c:if>
-                                      </c:forEach>
-                                    </c:when>
-                                    <c:otherwise>
-                                    </c:otherwise>
-                                  </c:choose>
-                                </c:forEach>
-                                <input type="hidden" name="needTextArea" value="1"/>
-                                <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
-                                <br/>
-                                <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
-                              </c:when>
-                              <c:otherwise>
-                                <input type="hidden" name="needTextArea" value="0"/>
-                              </c:otherwise>
-                            </c:choose>
+                              <c:choose>
+                                <c:when test="${needTextArea}">
+                                  <c:set var="otherScope" value=""/>
+                                  <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
+                                    <c:choose>
+                                      <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
+                                        <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
+                                          <c:if test="${'Please indicate' == svcChkLst.chkName}">
+                                            <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
+                                          </c:if>
+                                        </c:forEach>
+                                      </c:when>
+                                      <c:otherwise>
+                                      </c:otherwise>
+                                    </c:choose>
+                                  </c:forEach>
+                                  <input type="hidden" name="needTextArea" value="1"/>
+                                  <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                  <br/>
+                                  <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
+                                </c:when>
+                                <c:otherwise>
+                                  <input type="hidden" name="needTextArea" value="0"/>
+                                </c:otherwise>
+                              </c:choose>
                             </td>
                           </tr>
                           <c:if test="${not empty levelOneList.list}">
@@ -256,30 +243,30 @@
                                       </div>
                                     </td>
                                     <td>
-                                    <c:choose>
-                                      <c:when test="${needTextArea}">
-                                        <c:set var="otherScope" value=""/>
-                                        <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
-                                          <c:choose>
-                                            <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
-                                              <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
-                                                <c:if test="${'Please indicate' == svcChkLst.chkName}">
-                                                  <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
-                                                </c:if>
-                                              </c:forEach>
-                                            </c:when>
-                                            <c:otherwise>
-                                            </c:otherwise>
-                                          </c:choose>
-                                        </c:forEach>
-                                        <input type="hidden" name="needTextArea" value="1"/>
-                                        <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
-                                      </c:when>
-                                      <c:otherwise>
-                                        <input type="hidden" name="needTextArea" value="0"/>
-                                      </c:otherwise>
-                                    </c:choose>
+                                      <c:choose>
+                                        <c:when test="${needTextArea}">
+                                          <c:set var="otherScope" value=""/>
+                                          <c:forEach var="svcScope" items="${svcLaboratoryDisciplinesDto}" >
+                                            <c:choose>
+                                              <c:when test="${appGrpPremisesDto.premisesIndexNo == svcScope.premiseVal}">
+                                                <c:forEach var="svcChkLst" items="${svcScope.appSvcChckListDtoList}">
+                                                  <c:if test="${'Please indicate' == svcChkLst.chkName}">
+                                                    <c:set var="otherScope" value="${svcChkLst.otherScopeName}"/>
+                                                  </c:if>
+                                                </c:forEach>
+                                              </c:when>
+                                              <c:otherwise>
+                                              </c:otherwise>
+                                            </c:choose>
+                                          </c:forEach>
+                                          <input type="hidden" name="needTextArea" value="1"/>
+                                          <textarea class="pleaseIndicate" name="pleaseIndicate${status.index}" maxlength="200" cols="45" <c:if test="${!checkStat}">disabled</c:if> >${otherScope}</textarea>
+                                          <span class="error-msg" name="iaisErrorMsg" id="error_pleaseIndicateError${status.index}"></span>
+                                        </c:when>
+                                        <c:otherwise>
+                                          <input type="hidden" name="needTextArea" value="0"/>
+                                        </c:otherwise>
+                                      </c:choose>
                                     </td>
                                   </tr>
                                 </c:forEach>
@@ -293,142 +280,69 @@
                   </div>
                 </div></td></tr></tbody></table>
                 <div id="control--runtime--0--errorMsg_page_bottom" class="error_placements"></div>
-              </div></div><div id="demo" style="display:none;" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide"></div>
+              </div>
+            </div>
+            <div id="demo" style="display:none;" class="ui-tabs-panel ui-widget-content ui-corner-bottom ui-tabs-hide"></div>
           </div>
         </div>
-          <%--</form>--%>
       </div>
     </div>
   </fieldset>
   <br/>
 </c:forEach>
 <script>
-  $(document).ready(function () {
+    $(document).ready(function () {
 
-    $('input[type="checkbox"]:checked').each(function () {
-      var parentID = $(this).closest('.parent-form-check').attr('data-parent');
-      $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
+        $('input[type="checkbox"]:checked').each(function () {
+            var parentID = $(this).closest('.parent-form-check').attr('data-parent');
+            $('.sub-form-check[data-child="'+parentID+'"]').removeClass('disabled');
+        });
+        doEdit();
     });
 
-    doEdit();
-    /*doChangeText();*/
-    /*doChangeOthers();*/
-  });
 
+    var doEdit = function () {
+        $('#edit').click(function () {
+            $('#edit-content').addClass('hidden');
+            $('.fieldset-content').prop('disabled',false);
+            $('#isEditHiddenVal').val('1');
+        });
+    };
 
-  var doEdit = function () {
-    $('#edit').click(function () {
-      $('#edit-content').addClass('hidden');
-      $('.fieldset-content').prop('disabled',false);
-      $('#isEditHiddenVal').val('1');
+    $('input[type="checkbox"]').click(function () {
+        var $chckBox = $(this).closest('tr');
+        var needTextArea = $chckBox.find('input[name="needTextArea"]').val();
+        if(needTextArea == '1'){
+            if($(this).prop('checked')){
+                $chckBox.find('.pleaseIndicate').prop('disabled',false);
+            }else{
+                $chckBox.find('.pleaseIndicate').prop('disabled',true)
+            }
+        }
+        //@override
+        var clickObj = $(this);
+        if(clickObj.prop('checked') != true){
+            clearPleaseIndicate($(this));
+            var parentID = clickObj.closest('div.parent-form-check').attr('data-parent');
+            downTheRecursive(parentID);
+        }
     });
-  };
 
- /* var num=0;
-  var num1=0;
-  var num2=0;
-  var doChangeText = function (str0,str) {
-/!*    var str0=levelTwoListId.split('|')[0];
-    var str=levelTwoListId.split('|')[1];*!/
-    switch (str) {
-      case "0":
-        if(num%2===1){
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate0"]').prop('disabled',false);
-          }
+    var downTheRecursive = function (parentID) {
+        if(isEmpty(parentID)){
+            return;
         }
-        else {
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
-            numOthers=numOthers+1;
-          }
-        }
-        num=num+1;break;
-      case "1":
-        if(num1%2===1){
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate1"]').prop('disabled',false);
-          }
-        }
-        else {
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
-          }
-        }
-        num1=num1+1;break;
-      case "2":
-        if(num2%2===1){
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate2"]').prop('disabled',false);
-          }
-        }
-        else {
-          if(str0==='27D8EB5B-1123-EA11-BE78-000C29D29DB0'){
-            $('textarea[name="pleaseIndicate2"]').prop('disabled',true);
-          }
-        }
-        num2=num2+1;break;
+        $('div[data-child="'+parentID+'"]').each(function () {
+            clearPleaseIndicate($(this));
+            var currParentID = $(this).closest('div.parent-form-check').attr('data-parent');
+            downTheRecursive(currParentID);
+        });
     }
 
-  };
-
-  var numOthers=0;
-  var numOthers1=0;
-  var numOthers2=0;
-  var doChangeOthers = function (levelOneListId) {
-    var str0=levelOneListId.split('|')[0];
-    var str=levelOneListId.split('|')[1];
-    switch (str) {
-      case "0":
-        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
-          if(numOthers%2===1){
-            if($('textarea[name="pleaseIndicate0"]').disabled===false){
-              num=num+1;
-            }
-            $('textarea[name="pleaseIndicate0"]').prop('disabled',true);
-          }else {
-            num=num+1;
-          }
-          numOthers=numOthers+1;
-        }break;
-      case "1":
-        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
-          if(numOthers1%2===1){
-            if($('textarea[name="pleaseIndicate1"]').disabled===false){
-              num1=num1+1;
-            }
-            $('textarea[name="pleaseIndicate1"]').prop('disabled',true);
-          }else {
-            num1=num1+1;
-          }
-          numOthers1=numOthers1+1;
-        }break;
-      case "2":
-        if(str0==='0B38F14D-1123-EA11-BE78-000C29D29DB0'){
-          if(numOthers2%2===1){
-            if($('textarea[name="pleaseIndicate2"]').disabled===false){
-              num2=num2+1;
-            }
-            $('textarea[name="pleaseIndicate2"]').prop('disabled',true);
-          }else {
-            num2=num2+1;
-          }
-          numOthers2=numOthers2+1;
-        }break;
+    var clearPleaseIndicate = function (clickObj) {
+        var currTrObj = clickObj.closest('tr');
+        currTrObj.find('.pleaseIndicate').prop('disabled',true);
+        currTrObj.find('.pleaseIndicate').val('');
     }
-
-  };*/
-
- $('input[type="checkbox"]').click(function () {
-    var $chckBox = $(this).closest('tr');
-    var needTextArea = $chckBox.find('input[name="needTextArea"]').val();
-    if(needTextArea == '1'){
-        if($(this).prop('checked')){
-            $chckBox.find('.pleaseIndicate').prop('disabled',false);
-        }else{
-            $chckBox.find('.pleaseIndicate').prop('disabled',true)
-        }
-    }
- });
 
 </script>
