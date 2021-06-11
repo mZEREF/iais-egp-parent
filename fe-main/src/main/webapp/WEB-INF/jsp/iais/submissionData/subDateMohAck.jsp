@@ -5,12 +5,20 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    String noContainCLB = ParamUtil.getRequestString(request,"noContainCLB");
+    String msg = "Thank you for your submission.";
+    if(!StringUtil.isEmpty(noContainCLB)){
+        msg = noContainCLB;
+    }
+
 %>
 <webui:setLayout name="iais-internet"/>
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
@@ -36,7 +44,7 @@
                 <div class="center-content">
                     <h2>Acknowledgement</h2>
                     <br>
-                    <span style="font-size:2rem;">Thank you for your submission.</span>
+                    <span style="font-size:2rem;"><%=msg%></span>
                 </div>
             </div>
             <div class="col-lg-12 col-xs-12">
