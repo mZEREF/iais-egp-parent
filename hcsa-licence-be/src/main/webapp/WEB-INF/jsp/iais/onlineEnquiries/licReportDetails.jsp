@@ -367,6 +367,7 @@
                                                                                     <thead>
                                                                                     <tr>
                                                                                         <th>SN</th>
+                                                                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
                                                                                         <th>Checklist Item</th>
                                                                                         <th>Regulation Clause</th>
                                                                                         <th>Findings/NCs</th>
@@ -382,6 +383,9 @@
                                                                                                 <p>&nbsp;<c:out
                                                                                                         value="${status.count}"/></p>
                                                                                             </td>
+                                                                                            <c:if test="${specialServiceForChecklistDecide == '1'}">
+                                                                                                <td><c:out value="${ncRegulations.vehicleName}"></c:out></td>
+                                                                                            </c:if>
                                                                                             <td>
                                                                                                 <p>&nbsp;<c:out
                                                                                                         value="${ncRegulations.nc}"/></p>
@@ -447,6 +451,7 @@
                                                                                 <thead>
                                                                                 <tr>
                                                                                     <th>SN</th>
+                                                                                    <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
                                                                                     <th>Checklist Item</th>
                                                                                     <th>Findings/NCs</th>
                                                                                     <th>Rectified?</th>
@@ -462,6 +467,9 @@
                                                                                             <p>&nbsp;<c:out
                                                                                                     value="${status.count}"></c:out></p>
                                                                                         </td>
+                                                                                        <c:if test="${specialServiceForChecklistDecide == '1'}">
+                                                                                            <td><c:out value="${ncRectification.vehicleName}"></c:out></td>
+                                                                                        </c:if>
                                                                                         <td>
                                                                                             <p>&nbsp;<c:out
                                                                                                     value="${ncRectification.nc}"></c:out></p>

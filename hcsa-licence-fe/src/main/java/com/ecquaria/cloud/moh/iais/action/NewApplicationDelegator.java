@@ -2655,12 +2655,12 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         Double totalAmount = appSubmissionDto.getAmount();
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        appSubmissionDto.setPaymentMethod(payMethod);
         String giroAccNum = "";
         if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
             giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
-            appSubmissionDto.setGiroAcctNum(giroAccNum);
         }
-        appSubmissionDto.setPaymentMethod(payMethod);
+        appSubmissionDto.setGiroAcctNum(giroAccNum);
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:"+payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));

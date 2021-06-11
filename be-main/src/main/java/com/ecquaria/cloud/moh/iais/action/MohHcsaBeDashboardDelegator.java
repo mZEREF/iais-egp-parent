@@ -492,6 +492,7 @@ public class MohHcsaBeDashboardDelegator {
                     continue;
                 }
                 TaskDto taskDto = taskService.getTaskById(item);
+                log.info(StringUtil.changeForLog("Dashboard -------- task id "+ item));
                 String correlationId;
                 if(taskDto != null){
                     correlationId = taskDto.getRefNo();

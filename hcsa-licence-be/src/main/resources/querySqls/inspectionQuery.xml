@@ -38,6 +38,7 @@
              <#if commonPoolRoleId??> and T7.ROLE_ID = :commonPoolRoleId </#if>
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
              and T7.USER_ID is NULL
+             and T7.TASK_TYPE in ('TASKTYPE01','TASKTYPE02')
             ) T5
             WHERE 1 = 1
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
@@ -439,6 +440,7 @@
                <#if svcCodes??> and svc_code IN ${svcCodes} </#if>
         ]]>
     </sql>
+
     <sql key="commonPoolAjax"  remarks="get Application By App Group in Common Pool">
         <![CDATA[
             SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE

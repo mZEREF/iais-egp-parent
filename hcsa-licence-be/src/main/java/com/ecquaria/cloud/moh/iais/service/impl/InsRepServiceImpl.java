@@ -227,6 +227,7 @@ public class InsRepServiceImpl implements InsRepService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
+                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");
@@ -254,6 +255,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     reportNcRectifiedDto.setNcs(preInspNc.getNcs());
+                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);

@@ -1241,7 +1241,24 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
         saveLitterFile(serListDto);
+        if(serListDto.isSpecServiceVehicle()){
+            saveSpecServiceVerdict(appPremId);
+        }
     }
+
+    private void saveSpecServiceVerdict(String appPremId){
+        if(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.PROCESS_DECI_IS_SPEC_SERVICE_VEHICLE).getEntity() == null){
+            AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
+            appPreRecommentdationDto.setVersion(1);
+            appPreRecommentdationDto.setId(null);
+            appPreRecommentdationDto.setAppPremCorreId(appPremId);
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPreRecommentdationDto.setRecomType(InspectionConstants.PROCESS_DECI_IS_SPEC_SERVICE_VEHICLE);
+            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        }
+    }
+
 
     @Override
     public void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks) {

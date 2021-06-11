@@ -285,6 +285,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 }
                 boolean flag = insepctionNcCheckListService.isHaveNcOrBestPractice(serListDto,comDto,showDto);
                 String beforeFinishYes = (String) ParamUtil.getSessionAttr(request,BEFORE_FINISH_CHECK_LIST);
+                serListDto.setSpecServiceVehicle(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE)));
                 if(!AppConsts.YES.equalsIgnoreCase(beforeFinishYes)){
                     saveCheckList(request,comDto,showDto,serListDto,taskDto.getRefNo());
                 }else {
@@ -309,10 +310,6 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
        }
 
     }
-
-
-
-
 
     public CheckListVadlidateDto getValueFromPage(HttpServletRequest request) throws IOException {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
