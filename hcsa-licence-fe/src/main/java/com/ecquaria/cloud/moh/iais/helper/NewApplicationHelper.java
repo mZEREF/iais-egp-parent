@@ -2149,6 +2149,17 @@ public class NewApplicationHelper {
             appPsnEditDto.setProfessionType(true);
             appPsnEditDto.setQualification(true);
             appPsnEditDto.setOtherQualification(true);
+            appPsnEditDto.setProfessionBoard(true);
+            appPsnEditDto.setSpecialtyGetDate(true);
+            appPsnEditDto.setTypeOfCurrRegi(true);
+            appPsnEditDto.setCurrRegiDate(true);
+            appPsnEditDto.setPraCerEndDate(true);
+            appPsnEditDto.setTypeOfRegister(true);
+            appPsnEditDto.setRelevantExperience(true);
+            appPsnEditDto.setHoldCerByEMS(true);
+            appPsnEditDto.setAclsExpiryDate(true);
+            appPsnEditDto.setNoRegWithProfBoard(true);
+            appPsnEditDto.setTransportYear(true);
 
             if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
                 appPsnEditDto.setIdType(true);

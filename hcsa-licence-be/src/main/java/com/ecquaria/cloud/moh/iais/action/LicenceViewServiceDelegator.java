@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
@@ -1493,8 +1492,8 @@ public class LicenceViewServiceDelegator {
         dealVehicle(appSvcVehicleDtoList,oldAppSvcVehicleDtoList);
         appSvcRelatedInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcVehicleDtoList(oldAppSvcVehicleDtoList);
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
         if(appSvcClinicalDirectorDtoList==null){
             appSvcClinicalDirectorDtoList=new ArrayList<>();
         }
@@ -2636,7 +2635,7 @@ public class LicenceViewServiceDelegator {
         appSvcVehicleDto.setEngineNum("");
         return appSvcVehicleDto;
     }
-    private void dealClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList){
+    private void dealClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList,List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList){
         int size = appSvcClinicalDirectorDtoList.size();
         int oldSize = oldAppSvcClinicalDirectorDtoList.size();
         if(size < oldSize){
@@ -2645,14 +2644,14 @@ public class LicenceViewServiceDelegator {
             copyDealClinicalDirector(oldAppSvcClinicalDirectorDtoList,appSvcClinicalDirectorDtoList);
         }
     }
-    private void copyDealClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList){
+    private void copyDealClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList,List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList){
         for(int i=0;i<oldAppSvcClinicalDirectorDtoList.size()-appSvcClinicalDirectorDtoList.size();i++){
-            AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = generateAppSvcClinicalDirectorDto();
+            AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = generateAppSvcClinicalDirectorDto();
             appSvcClinicalDirectorDtoList.add(appSvcClinicalDirectorDto);
         }
     }
-    private AppSvcClinicalDirectorDto generateAppSvcClinicalDirectorDto(){
-        AppSvcClinicalDirectorDto appSvcClinicalDirectorDto=new AppSvcClinicalDirectorDto();
+    private AppSvcPrincipalOfficersDto generateAppSvcClinicalDirectorDto(){
+        AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto=new AppSvcPrincipalOfficersDto();
         appSvcClinicalDirectorDto.setProfessionBoard(Strings.EMPTY);
         appSvcClinicalDirectorDto.setSalutation(Strings.EMPTY);
         appSvcClinicalDirectorDto.setName(Strings.EMPTY);
@@ -2660,7 +2659,7 @@ public class LicenceViewServiceDelegator {
         appSvcClinicalDirectorDto.setIdNo(Strings.EMPTY);
         appSvcClinicalDirectorDto.setProfRegNo(Strings.EMPTY);
         appSvcClinicalDirectorDto.setDesignation(Strings.EMPTY);
-        appSvcClinicalDirectorDto.setSpecialty(Strings.EMPTY);
+        appSvcClinicalDirectorDto.setSpeciality(Strings.EMPTY);
         appSvcClinicalDirectorDto.setTypeOfRegister(Strings.EMPTY);
         appSvcClinicalDirectorDto.setTypeOfCurrRegi(Strings.EMPTY);
         appSvcClinicalDirectorDto.setRelevantExperience(Strings.EMPTY);

@@ -405,15 +405,15 @@ public class EqRequestForChangeSubmitResultChange {
         if(compareAppSvcChargesPage){
            return compareAppSvcChargesPage;
         }
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
         if(oldAppSvcClinicalDirectorDtoList!=null){
             if(appSvcClinicalDirectorDtoList.size()!=oldAppSvcClinicalDirectorDtoList.size()){
                 return true;
             }else if(appSvcClinicalDirectorDtoList.size()==oldAppSvcClinicalDirectorDtoList.size()){
                 int i=0;
-                for (AppSvcClinicalDirectorDto v : appSvcClinicalDirectorDtoList) {
-                    for (AppSvcClinicalDirectorDto v1 : oldAppSvcClinicalDirectorDtoList) {
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    for (AppSvcPrincipalOfficersDto v1 : oldAppSvcClinicalDirectorDtoList) {
                         if(v.getIdNo().equals(v1.getIdNo())){
                             i++;
                         }
@@ -530,9 +530,9 @@ public class EqRequestForChangeSubmitResultChange {
         return false;
     }
 
-    public static boolean eqAppSvcClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtos){
-        List<AppSvcClinicalDirectorDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
-        List<AppSvcClinicalDirectorDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
+    public static boolean eqAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtos){
+        List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
+        List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
         if(!n.equals(o)){
             return true;
         }

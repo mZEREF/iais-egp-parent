@@ -1206,6 +1206,13 @@ public class NewApplicationAjaxController {
         AjaxResDto ajaxResDto = new AjaxResDto();
         ajaxResDto.setResCode("200");
         int cdLength = ParamUtil.getInt(request,"cdLength");
+        // Assigned person dropdown list
+        Map<String, String> assignSelAttr = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
+        assignSelAttr.put("class", "assignSel");
+        assignSelAttr.put("name", "assignSel" + cdLength);
+        assignSelAttr.put("style", "display: none;");
+        String personalSelect = NewApplicationHelper.generateDropDownHtml(assignSelAttr, personOptions, null, null);
         //proBoardSel
         List<SelectOption> proBoardSel = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_PROFESSION_BOARD);
         Map<String, String> proBoardAttr = IaisCommonUtils.genNewHashMap();
@@ -1243,8 +1250,8 @@ public class NewApplicationAjaxController {
         //specialty
         List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
         Map<String, String> easMtsSpecialtyAttr = IaisCommonUtils.genNewHashMap();
-        easMtsSpecialtyAttr.put("class", "specialty");
-        easMtsSpecialtyAttr.put("name", "specialty"+cdLength);
+        easMtsSpecialtyAttr.put("class", "speciality");
+        easMtsSpecialtyAttr.put("name", "speciality"+cdLength);
         easMtsSpecialtyAttr.put("style", "display: none;");
         String easMtsSpecialtySelStr = NewApplicationHelper.generateDropDownHtml(easMtsSpecialtyAttr, easMtsSpecialtySelectList, null, null);
 
@@ -1263,7 +1270,8 @@ public class NewApplicationAjaxController {
         paramMap.put("idTypeSel",idTypeSelectStr);
         paramMap.put("designationSel",designationSelectStr);
         paramMap.put("aclsOrBcls",aclsOrBcls);
-        paramMap.put("specialtySel",easMtsSpecialtySelStr);
+        paramMap.put("specialitySel",easMtsSpecialtySelStr);
+        paramMap.put("personalSelect",personalSelect);
 
         String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml",paramMap);
         ajaxResDto.setResultJson(clinicalDirectorHtml);

@@ -783,7 +783,7 @@ public class HcsaChklItemDelegator {
                     int i = 1;
                     for (MasterCodeView view : masterCodes) {
                         values.add(view.getCodeValue());
-                        excelConfigIndex.put(i++, Arrays.asList(3));
+                        excelConfigIndex.put(i++, Collections.singletonList(3));
                     }
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
                             values.toArray(new String[values.size()]), excelConfigIndex);

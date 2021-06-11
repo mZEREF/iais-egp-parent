@@ -337,14 +337,14 @@ public class PageDataCopyUtil {
         return o;
     }
 
-    public static List<AppSvcClinicalDirectorDto> copyAppSvcClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos){
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos){
 
         if(appSvcClinicalDirectorDtos==null || appSvcClinicalDirectorDtos.isEmpty()){
             return new ArrayList<>(1);
         }
-        List<AppSvcClinicalDirectorDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
+        List<AppSvcPrincipalOfficersDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
         appSvcClinicalDirectorDtos.forEach((v)->{
-            AppSvcClinicalDirectorDto o=new AppSvcClinicalDirectorDto();
+            AppSvcPrincipalOfficersDto o=new AppSvcPrincipalOfficersDto();
             o.setProfessionBoard(v.getProfessionBoard());
             o.setProfRegNo(v.getProfRegNo());
             o.setSalutation(v.getSalutation());
@@ -352,7 +352,7 @@ public class PageDataCopyUtil {
             o.setIdType(v.getIdType());
             o.setIdNo(v.getIdNo());
             o.setDesignation(v.getDesignation());
-            o.setSpecialty(v.getSpecialty());
+            o.setSpeciality(v.getSpeciality());
             o.setSpecialtyGetDate(v.getSpecialtyGetDate());
             o.setTypeOfCurrRegi(v.getTypeOfCurrRegi());
             o.setCurrRegiDate(v.getCurrRegiDate());

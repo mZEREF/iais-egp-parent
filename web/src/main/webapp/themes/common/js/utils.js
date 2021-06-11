@@ -397,6 +397,28 @@ $.fn.clearFields = function() {
         }
     });
 };
+
+function clearFields(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    $(targetSelector).find(':input[class!="not-clear"]').each(function() {
+        var type = this.type, tag = this.tagName.toLowerCase();
+        if (!$(this).hasClass('not-clear')) {
+            if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
+                this.value = '';
+            } else if (type == 'checkbox') {
+                this.checked = false;
+            } else if (type == 'radio') {
+                this.checked = false;
+            } else if (tag == 'select') {
+                this.selectedIndex = 0;
+                $(this).niceSelect("update");
+            }
+        }
+    });
+}
+
 function controlEdit($ele, property, canEdit){
     if(canEdit){
         $ele.attr(property, !canEdit);

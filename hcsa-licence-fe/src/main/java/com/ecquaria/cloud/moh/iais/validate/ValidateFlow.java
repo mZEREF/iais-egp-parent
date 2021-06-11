@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ValidateFlow {
 
    default void doValidateVehicles(Map<String,String>map,List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId){};
 
-   default void doValidateClincalDirector(Map<String,String>map,List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,String serviceCode){};
+   default void doValidateClincalDirector(Map<String,String>map,List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,String serviceCode){};
 
    default void doValidateCharges(Map<String,String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto){};
 }

@@ -40,7 +40,7 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 
 
-<c:set var="clinicalDirectorDtoList" value="${clinicalDirectorDtoList}"/>
+<%--<c:set var="clinicalDirectorDtoList" value="${clinicalDirectorDtoList}"/>--%>
 <div class="row cdForm">
     <div class="col-md-12 col-xs-12">
         <div class="row control control-caption-horizontal">
@@ -70,344 +70,9 @@
     </c:choose>
     <input type="hidden" name="cdLength" value="${pageLength}" />
     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="cdStat">
-        <c:set var="clinicalDirectorDto" value="${clinicalDirectorDtoList[cdStat.index]}"/>
-        <div class="clinicalDirectorContent">
-            <input type="hidden" class="isPartEdit" name="isPartEdit${cdStat.index}" value="0"/>
-            <input type="hidden" class="cdIndexNo" name="cdIndexNo${cdStat.index}" value="${clinicalDirectorDto.cdIndexNo}"/>
-            <div class="col-md-12 col-xs-12">
-                <div class="edit-content">
-                    <c:if test="${'true' == canEdit}">
-                        <p>
-                        <div class="text-right app-font-size-16">
-                            <a class="edit cdEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
-                        </div>
-                        </p>
-                    </c:if>
-                </div>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">
-                                <div class="cgo-header">
-                                    <strong>Clinical Director <label class="assign-psn-item">${cdStat.index+1}</label></strong>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="col-md-7 col-xs-7 text-right">
-                            <c:if test="${cdStat.index - clinicalDirectorConfig.mandatoryCount >=0}">
-                                <div class="">
-                                    <h4 class="text-danger">
-                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                    </h4>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Professional Board</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:select cssClass="professionBoard"  name="professionBoard${cdStat.index}" codeCategory="CATE_ID_PROFESSION_BOARD" value="${clinicalDirectorDto.professionBoard}" firstOption="Please Select"></iais:select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Profession Regn No.</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${cdStat.index}" value="${clinicalDirectorDto.profRegNo}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <c:if test="${'MTS' == currentSvcCode}">
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap noRegWithProfBoardDiv">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label  class="control-label control-set-font control-font-label">Not registered with a Professional Board</label>
-                            </div>
-                            <div class="control-label formtext col-md-7 col-xs-7 noRegWithProfBoardDiv">
-                                <label  class="control-label control-set-font control-font-label">
-                                    <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${cdStat.index}" value="${clinicalDirectorDto.noRegWithProfBoard}"/>
-                                    <div class="control-item-container parent-form-check" >
-                                        <input type="checkbox" id="noRegWithProfBoard${cdStat.index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked="checked"</c:if> >
-                                        <label for="noRegWithProfBoard${cdStat.index}" class="noRegWithProfBoard control-label control-set-font control-font-normal">
-                                            <span class="check-square"></span>
-                                        </label>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label  class="control-label control-set-font control-font-label">Years of experience in patient transport</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-md-2 col-xs-12">
-                                <iais:input maxLength="2" type="text" cssClass="transportYear" name="transportYear${cdStat.index}" value="${clinicalDirectorDto.transportYear}"></iais:input>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Name</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-sm-3 col-xs-12">
-                            <iais:select cssClass="salutation"  name="salutation${cdStat.index}" codeCategory="CATE_ID_SALUTATION" value="${clinicalDirectorDto.salutation}" firstOption="Please Select"></iais:select>
-                        </div>
-                        <div class="col-sm-4 col-xs-12">
-                            <iais:input maxLength="66" type="text" cssClass="name" name="name${cdStat.index}" value="${clinicalDirectorDto.name}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">ID No.</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-sm-3 col-xs-12">
-                            <div class="">
-                                <iais:select cssClass="idType"  name="idType${cdStat.index}" needSort="false" value="${clinicalDirectorDto.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
-                            </div>
-                        </div>
-                        <div class="col-sm-4 col-xs-12">
-                            <iais:input cssClass="idNo" maxLength="9" type="text" name="idNo${cdStat.index}" value="${clinicalDirectorDto.idNo}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Designation</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12" id="designation">
-                            <iais:select cssClass="designation" name="designation${cdStat.index}" codeCategory="" value="${clinicalDirectorDto.designation}" options="easMtsDesignationSelectList"></iais:select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Specialty</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12 specialty-label" >
-                           <%-- <label class="control-label control-set-font control-font-label specialty-label">
-                                <c:out value="${clinicalDirectorDto.specialty}" />
-                            </label>--%>
-                            <iais:select cssClass="specialty" name="specialty${cdStat.index}" options="easMtsSpecialtySelectList" needSort="false" value="${clinicalDirectorDto.specialty}"></iais:select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12 otherSpecialtyDiv hidden">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                        </div>
-                        <div class="col-md-7 col-xs-12" >
-                            <iais:input maxLength="100" type="text" cssClass="otherSpecialty" name="otherSpecialty${cdStat.index}" value="${clinicalDirectorDto.otherSpecialty}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Date when specialty was gotten</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-3 col-xs-12">
-                            <iais:datePicker cssClass="specialtyGetDate" name="specialtyGetDate${cdStat.index}" value="${clinicalDirectorDto.specialtyGetDateStr}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${cdStat.index}" value="${clinicalDirectorDto.typeOfCurrRegi}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Current Registration Date</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-3 col-xs-12">
-                            <iais:datePicker cssClass="currRegiDate" name="currRegiDate${cdStat.index}" value="${clinicalDirectorDto.currRegiDateStr}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Practicing Certificate End Date</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-3 col-xs-12">
-                            <iais:datePicker cssClass="praCerEndDate" name="praCerEndDate${cdStat.index}" value="${clinicalDirectorDto.praCerEndDateStr}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Type of Register</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${cdStat.index}" value="${clinicalDirectorDto.typeOfRegister}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Relevant Experience</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="relevantExperience${cdStat.index}" value="${clinicalDirectorDto.relevantExperience}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap holdCerByEMSDiv">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Clinical Director (CD) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop&nbsp;<span class="mandatory">*</span></label>
-                        </div>
-                        <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${cdStat.index}" value="${clinicalDirectorDto.holdCerByEMS}"/>
-                        <div class="form-check col-md-3 col-xs-3">
-                            <input class="form-check-input holdCerByEMS" <c:if test="${'1' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${cdStat.index}" value = "1" aria-invalid="false">
-                            <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-                        </div>
-                        <div class="form-check col-md-3 col-xs-3">
-                            <input class="form-check-input holdCerByEMS" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${cdStat.index}" value = "0" aria-invalid="false">
-                            <label class="form-check-label" ><span class="check-circle"></span>No</label>
-                        </div>
-                        <span class="error-msg col-md-3" name="iaisErrorMsg" id="error_holdCerByEMS${cdStat.index}"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">ACLS Expiry Date</label>
-                            <c:if test="${'EAS' == currentSvcCode}">
-                                <span class="mandatory">*</span>
-                            </c:if>
-                        </div>
-                        <div class="col-md-3 col-xs-12">
-                            <iais:datePicker cssClass="aclsExpiryDate" name="aclsExpiryDate${cdStat.index}" value="${clinicalDirectorDto.aclsExpiryDateStr}" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <c:if test="${'MTS' == currentSvcCode}">
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label  class="control-label control-set-font control-font-label">BCLS and AED Expiry Date</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-md-3 col-xs-12">
-                                <iais:datePicker cssClass="bclsExpiryDate" name="bclsExpiryDate${cdStat.index}" value="${clinicalDirectorDto.bclsExpiryDateStr}" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
-
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Mobile No</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="8" cssClass="mobileNo" type="text" name="mobileNo${cdStat.index}" value="${clinicalDirectorDto.mobileNo}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Email Address</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input maxLength="66" type="text" cssClass="emailAddr" name="emailAddr${cdStat.index}" value="${clinicalDirectorDto.emailAddr}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <hr/>
-            </div>
-        </div>
+        <c:set var="index" value="${cdStat.index}" />
+        <c:set var="clinicalDirectorDto" value="${clinicalDirectorDtoList[index]}"/>
+        <%@include file="clinicalDirectorDetail.jsp" %>
     </c:forEach>
 
     <c:if test="${ requestInformationConfig==null}">
@@ -442,7 +107,6 @@
         </div>
     </c:if>
 </div>
-<%@include file="../../common/prsLoading.jsp"%>
 
 <script>
     $(document).ready(function () {
@@ -452,7 +116,7 @@
         addClinicalDirectorBtn();
         removeClinicalDirector();
         showOtherSpecialty();
-        //profRegNoBlur();
+
         $('select.specialty').trigger('change');
 
         doEdite();
@@ -466,6 +130,22 @@
                 $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
             });
         }
+
+        // init
+        $('div.clinicalDirectorContent').each(function(){
+            var assignSelVal = $(this).find('.assignSel:input').val();
+            console.info("init ---- " + assignSelVal);
+            if (!isEmpty(assignSelVal) && "-1" != assignSelVal && 'newOfficer' != assignSelVal) {
+                var data;
+                try{
+                    data = $.parseJSON($(this).find('.psnEditField:input').val());
+                } catch (e) {
+                    data = {};
+                };
+                disableContent($(this).find('div.person-detail'), data);
+            }
+        });
+        assignSelectBindEvent();
     });
 
     var holdCerByEMS = function() {
@@ -520,6 +200,7 @@
                         removeClinicalDirector();
                         showOtherSpecialty();
                         noRegWithProfBoard();
+                        assignSelectBindEvent();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
@@ -584,12 +265,14 @@
                 $(this).find('input.isPartEdit').prop('name','isPartEdit'+k);
                 $(this).find('input.cdIndexNo').prop('name','cdIndexNo'+k);
 
+                $(this).find('select.assignSel').prop('name','assignSel'+k);
                 $(this).find('select.professionBoard').prop('name','professionBoard'+k);
                 $(this).find('select.salutation').prop('name','salutation'+k);
                 $(this).find('select.idType').prop('name','idType'+k);
                 $(this).find('select.designation').prop('name','designation'+k);
                 $(this).find('select.specialty').prop('name','specialty'+k);
             });
+            $('div.clinicalDirectorContent').find('select').niceSelect('update');
             //display add more
             if (cdLength < '${clinicalDirectorConfig.maximumCount}') {
                 $('.addClinicalDirectorDiv').removeClass('hidden');
@@ -615,55 +298,104 @@
             $currContent.find('input[type="radio"]').prop('disabled',false);
             $('#isEditHiddenVal').val('1');
         });
-    };
+    }
 
-    var funsObj ={
-        setValue:function ($prsLoadingEle,data) {
-
-            var subspecialty = data.subspecialty ;
-            if(subspecialty == null || subspecialty == '' || subspecialty == undefined){
-                subspecialty = 'No specialty';
-            }
-            var specialtyGetDate = data.entryDateSpecialist[0];
-            var registration = data.registration[0];
-            var typeOfCurrRegi = registration.registrationType;
-            var currRegiDate = registration.regStartDate;
-            var praCerEndDate = registration.pcEndDate;
-            var typeOfRegister = registration.registerType;
-
-            $prsLoadingEle.find('.specialty-label').html(subspecialty);
-            $prsLoadingEle.find('.name').val(data.name);
-            $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
-            $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
-            $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
-            $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
-            $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
-        },
-        setEdit:function ($prsLoadingEle, propStyle, canEdit) {
-            var nameEle = $prsLoadingEle.find('.name');
-            var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
-            var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
-            var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
-            var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
-            var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
-            controlEdit(nameEle, propStyle, canEdit);
-            controlEdit(specialtyGetDateEle, propStyle, canEdit);
-            controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
-            controlEdit(currRegiDateEle, propStyle, canEdit);
-            controlEdit(praCerEndDateEle, propStyle, canEdit);
-            controlEdit(typeOfRegisterEle, propStyle, canEdit);
-        }
-    };
-
-    var profRegNoBlur = function () {
-        $('input.profRegNo').unbind('blur');
-        $('input.profRegNo').blur(function(event, action){
-            alert('cd loading prs ...');
-            var prgNo = $(this).val();
-            var $prsLoadingContent = $(this).closest('div.clinicalDirectorContent');
-            //prs loading
-            prdLoading($prsLoadingContent, prgNo, action, funsObj);
+    function assignSelectBindEvent() {
+        $('.assignSel').on('change', function() {
+            clearErrorMsg();
+            assignSel(this, $(this).closest('div.clinicalDirectorContent').find('div.person-detail'));
         });
-    };
+    }
 
+    var assignSel = function (srcSelector, targetSelector) {
+        var assignSelVal = $(srcSelector).val();
+        // console.info(assignSelVal);
+        var $content = $(targetSelector);
+        // init
+        $content.find(':input').css('border-color','');
+        $content.find(':input').css('color','');
+        $content.find(':input').prop('disabled', false);
+        if('-1' == assignSelVal) {
+            $content.addClass('hidden');
+            clearFields($content);
+        } else if('newOfficer' == assignSelVal) {
+            $content.removeClass('hidden');
+            clearFields($content);
+        } else {
+            $content.removeClass('hidden');
+            var arr = assignSelVal.split(',');
+            var idType = arr[0];
+            var idNo = arr[1];
+            loadSelectPsn($content, idType, idNo, 'CD', fillClinicalDirector);
+        }
+    }
+
+    function fillClinicalDirector($current, data, psnType) {
+        if (isEmpty($current)) {
+            return;
+        }
+        if (isEmpty(data)) {
+            $current.addClass('hidden');
+            $current.clearFields();
+        }
+        $.each(data, function(i, val) {
+            if (i == 'psnEditDto') {
+                //console.info(val);
+                disableContent($current, val);
+            } else {
+                var $input = $current.find('.' + i + ':input');
+                if ($input.length == 0) {
+                    return;
+                }
+                var type = $input[0].type, tag = $input[0].tagName.toLowerCase();
+                //console.info("Field - " + i + " : " + val);
+                //console.info("Tag - " + tag + " : " + type);
+                if (type == 'radio') {
+                    $input.filter('[value="' + val + '"]').prop('checked', true);
+                    $input.filter(':not([value="' + val + '"])').prop('checked', false);
+                } else if (type == 'checkbox') {
+                    if ($.isArray(val)) {
+                        $input.prop('checked', false);
+                        for (var v in val) {
+                            if (curVal == v) {
+                                $(this).prop('checked', true);
+                            }
+                        }
+                    } else {
+                        $input.filter('[value="' + val + '"]').prop('checked', true);
+                        $input.filter(':not([value="' + val + '"])').prop('checked', false);
+                    }
+                } else if (tag == 'select') {
+                    var oldVal = $input.val();
+                    $input.val(val);
+                    if (isEmpty($input.val())) {
+                        $input[0].selectedIndex = 0;
+                    }
+                    if ($input.val() != oldVal) {
+                        $input.niceSelect("update");
+                    }
+                } else {
+                    $input.val(val);
+                }
+            }
+        });
+    }
+
+    function disableContent($current, data) {
+        if (isEmpty(data) || isEmpty($current)) {
+            return;
+        }
+        $.each(data, function(i, val) {
+            //console.info(i + " : " + val);
+            var $input = $current.find('.' + i + ':input');
+            if ($input.length > 0 && !val) {
+                $input.prop('disabled', true);
+                $input.css('border-color','#ededed');
+                $input.css('color','#999');
+                if ($input[0].tagName.toLowerCase() == 'select') {
+                    $input.niceSelect("update");
+                }
+            }
+        });
+    }
 </script>

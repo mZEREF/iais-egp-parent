@@ -25,7 +25,28 @@
                         </div>
                     </div>
                 </div>
+
+                <#-- Assigned person dropdown list -->
                 <div class="col-md-12 col-xs-12">
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-6 control-label formtext col-md-5">
+                                    <label  class="control-label control-set-font control-font-label">Assign a Clinical Director Person</label>
+                                    <span class="mandatory">*</span>
+                                </div>
+                                <div class="col-sm-5 col-md-7" id="assignSelect">
+                                    <div class="">
+                                        ${personalSelect}
+                                        <span id="error_assignSelect${cdSuffix}" name="iaisErrorMsg" class="error-msg"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-xs-12 person-detail hidden">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -37,8 +58,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -50,10 +70,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <#if (svcCode =='MTS')>
-                    <div class="col-md-12 col-xs-12">
+                    <#if (svcCode =='MTS')>
                         <div class="row control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap noRegWithProfBoardDiv">
                                 <div class="control-label formtext col-md-5 col-xs-5">
@@ -72,8 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12 col-xs-12">
+
                         <div class="row control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext col-md-5 col-xs-5">
@@ -85,10 +102,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </#if>
+                    </#if>
 
-                <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -103,8 +118,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -121,8 +135,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -134,36 +147,33 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Specialty</label>
+                                <label class="control-label control-set-font control-font-label">Speciality</label>
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-md-7 col-xs-12">
-                                ${specialtySel}
+                                ${specialitySel}
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12 otherSpecialtyDiv hidden">
-                    <div class="row control control-caption-horizontal">
+
+                    <div class="row control control-caption-horizontal otherSpecialtyDiv hidden">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
                             </div>
                             <div class="col-md-7 col-xs-12">
-                                <input type="text" name="otherSpecialty${cdSuffix}" class="otherSpecialty" value="" maxlength="100" autocomplete="off">
+                                <input type="text" name="specialityOther${cdSuffix}" class="specialityOther" value="" maxlength="100" autocomplete="off">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Date when specialty was gotten</label>
+                                <label class="control-label control-set-font control-font-label">Date when speciality was gotten</label>
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-md-7 col-xs-12">
@@ -171,8 +181,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -184,8 +193,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -197,8 +205,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -210,8 +217,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -223,9 +229,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -237,9 +241,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap holdCerByEMSDiv">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -256,9 +258,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -272,9 +272,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <#if (svcCode =='MTS')>
-                    <div class="col-md-12 col-xs-12">
+
+                    <#if (svcCode =='MTS')>
                         <div class="row control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext col-md-5 col-xs-5">
@@ -286,10 +285,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </#if>
+                    </#if>
 
-                <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -301,8 +298,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
@@ -314,9 +310,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
+
                     <hr>
+
                 </div>
             </div>
         ]]>

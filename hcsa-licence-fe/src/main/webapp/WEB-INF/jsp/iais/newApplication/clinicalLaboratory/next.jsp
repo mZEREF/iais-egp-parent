@@ -299,7 +299,7 @@
         }
     };
     <!--cgo,medAlert -->
-    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
+    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType, callback) {
         var spcEle = $CurrentPsnEle.find('.specialty');
         var jsonData = {
             'idType':idType,
@@ -315,7 +315,11 @@
                 if(data == null){
                     return;
                 }
-                fillPsnForm($CurrentPsnEle,data,psnType);
+                if (typeof callback === 'function') {
+                    callback($CurrentPsnEle, data, psnType);
+                } else {
+                    fillPsnForm($CurrentPsnEle, data, psnType);
+                }
             },
             'error':function () {
             }

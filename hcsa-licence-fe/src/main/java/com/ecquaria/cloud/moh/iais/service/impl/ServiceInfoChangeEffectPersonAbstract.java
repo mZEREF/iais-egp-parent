@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -54,12 +53,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
 
         List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
 
         Set<String> set = IaisCommonUtils.genNewHashSet();
         List<String> list = IaisCommonUtils.genNewArrayList();
@@ -147,11 +146,11 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                     appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList2);
                 }
             }
-            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList1 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList1 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList();
             if(!list4.isEmpty()){
                 if(appSvcClinicalDirectorDtoList!=null && appSvcClinicalDirectorDtoList1!=null){
-                    for (AppSvcClinicalDirectorDto var1 : appSvcClinicalDirectorDtoList1) {
-                        for (AppSvcClinicalDirectorDto var2 : appSvcClinicalDirectorDtoList) {
+                    for (AppSvcPrincipalOfficersDto var1 : appSvcClinicalDirectorDtoList1) {
+                        for (AppSvcPrincipalOfficersDto var2 : appSvcClinicalDirectorDtoList) {
                             if(var1.getIdNo().equals(var2.getIdNo())){
                                 appSvcClinicalDirectorDtoList1.set(appSvcClinicalDirectorDtoList1.indexOf(var1),var2);
                             }
@@ -253,16 +252,16 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         return ids;
     }
-    protected List<String> changeClinicalDirector(List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos,List<AppSvcClinicalDirectorDto> oldAppSvcClinicalDirectorDtos){
+    protected List<String> changeClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtos){
         List<String> ids=new ArrayList<>(10);
         if(appSvcClinicalDirectorDtos!=null&&oldAppSvcClinicalDirectorDtos!=null){
-            List<AppSvcClinicalDirectorDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
-            List<AppSvcClinicalDirectorDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
             if(n.equals(o)){
                 return ids;
             }
-            for (AppSvcClinicalDirectorDto v : n) {
-                for (AppSvcClinicalDirectorDto v1 : o) {
+            for (AppSvcPrincipalOfficersDto v : n) {
+                for (AppSvcPrincipalOfficersDto v1 : o) {
                     if(v.getIdNo().equals(v1.getIdNo())){
                         boolean b=    v.getProfessionBoard().equals(v1.getProfessionBoard())
                                 &&v.getProfRegNo().equals(v1.getProfRegNo())
@@ -270,7 +269,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                                 &&v.getName().equals(v1.getName())
                                 &&v.getIdType().equals(v1.getIdType())
                                 &&v.getDesignation().equals(v1.getDesignation())
-                                &&v.getSpecialty().equals(v1.getSpecialty())
+                                &&v.getSpeciality().equals(v1.getSpeciality())
                                 &&v.getSpecialtyGetDate().equals(v1.getSpecialtyGetDate())
                                 &&v.getTypeOfCurrRegi().equals(v1.getTypeOfCurrRegi())
                                 &&v.getCurrRegiDate().equals(v1.getCurrRegiDate())

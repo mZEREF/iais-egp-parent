@@ -2223,7 +2223,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<AppSvcVehicleDto> appSvcVehicleDtoList = dto.getAppSvcVehicleDtoList();
                 validatePersonMandatoryCount(Collections.singletonList(appSvcVehicleDtoList),errorMap,ApplicationConsts.PERSONNEL_VEHICLES,mandatoryCount,serviceId,sB);
             }else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
-                List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
+                List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
                 validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList),errorMap,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,mandatoryCount,serviceId,sB);
             }else if(ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)){
                 AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
