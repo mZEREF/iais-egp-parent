@@ -198,7 +198,7 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
                 if (appInspStatusDto == null || StringUtil.isEmpty(appInspStatusDto.getAppPremCorreId())) {
                     continue;
                 }
-                if (!StringUtil.isEmpty(workGroupId)) {
+                if (!StringUtil.isEmpty(workGroupId) && InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(appInspStatusDto.getStatus())) {
                     //get task application
                     ApplicationDto taskApp = inspectionTaskClient.getApplicationByCorreId(appInspStatusDto.getAppPremCorreId()).getEntity();
                     //get task type
