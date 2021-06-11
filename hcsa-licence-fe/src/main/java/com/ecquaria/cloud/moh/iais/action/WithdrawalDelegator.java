@@ -195,6 +195,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST003"});
         applicationTandS.add(new String[]{"APTY002","APST004"});
         applicationTandS.add(new String[]{"APTY002","APST007"});
+        applicationTandS.add(new String[]{"APTY002","APST010"});
         applicationTandS.add(new String[]{"APTY002","APST011"});
         applicationTandS.add(new String[]{"APTY002","APST012"});
         applicationTandS.add(new String[]{"APTY002","APST019"});
@@ -223,6 +224,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST003"});
         applicationTandS.add(new String[]{"APTY004","APST004"});
         applicationTandS.add(new String[]{"APTY004","APST007"});
+        applicationTandS.add(new String[]{"APTY004","APST010"});
         applicationTandS.add(new String[]{"APTY004","APST011"});
         applicationTandS.add(new String[]{"APTY004","APST012"});
         applicationTandS.add(new String[]{"APTY004","APST019"});
@@ -248,6 +250,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST003"});
         applicationTandS.add(new String[]{"APTY005","APST004"});
         applicationTandS.add(new String[]{"APTY005","APST007"});
+        applicationTandS.add(new String[]{"APTY005","APST010"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
         applicationTandS.add(new String[]{"APTY005","APST012"});
         applicationTandS.add(new String[]{"APTY005","APST019"});
@@ -273,6 +276,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST002"});
         applicationTandS.add(new String[]{"APTY001","APST004"});
         applicationTandS.add(new String[]{"APTY001","APST007"});
+        applicationTandS.add(new String[]{"APTY001","APST010"});
         applicationTandS.add(new String[]{"APTY001","APST011"});
         applicationTandS.add(new String[]{"APTY001","APST012"});
         applicationTandS.add(new String[]{"APTY001","APST023"});
