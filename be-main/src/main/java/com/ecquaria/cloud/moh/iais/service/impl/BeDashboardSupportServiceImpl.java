@@ -418,6 +418,12 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
                 List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                 broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                if(!IaisCommonUtils.isEmpty(taskDtos)) {
+                    log.info(StringUtil.changeForLog("Dashboard -------- doAo1Ao2Approve task size "+ taskDtos.size()));
+                    for(TaskDto dto : taskDtos) {
+                        log.info(StringUtil.changeForLog("Dashboard -------- doAo1Ao2Approve task Id "+ dto.getId()));
+                    }
+                }
                 broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             }
         }
