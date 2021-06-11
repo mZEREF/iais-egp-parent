@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LaboratoryDevelopTestService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
@@ -87,7 +88,7 @@ public class IaisSubmissionDataDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"canSubmit","Y");
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"canSubmit","N");
-                ParamUtil.setRequestAttr(bpc.request,"noContainCLB","You are not able to submit Laboratory Developed Test as you do not have an active Clinical Laboratory licence.");
+                ParamUtil.setRequestAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
             }
         }
 
