@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -22,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgGiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -42,6 +44,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +90,8 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     private EmailHistoryCommonClient emailHistoryCommonClient;
     @Autowired
     HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private MasterCodeClient masterCodeClient;
     @Override
     public SearchResult<GiroAccountInfoQueryDto> searchGiroInfoByParam(SearchParam searchParam) {
         return giroAccountBeClient.searchGiroInfoByParam(searchParam).getEntity();
@@ -230,11 +235,11 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
             emailHistoryCommonClient.sendSMS(mobile, smsDto, giroAccountInfoDto.getOrganizationId());
 
-            EmailParam msgParam = new EmailParam();
-            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG);
-            msgParam.setTemplateContent(templateContent);
-            msgParam.setSubject(messageSubject);
-            msgParam.setQueryCode(giroAccountInfoDto.getOrganizationId());
+//            EmailParam msgParam = new EmailParam();
+//            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG);
+//            msgParam.setTemplateContent(templateContent);
+//            msgParam.setSubject(messageSubject);
+//            msgParam.setQueryCode(giroAccountInfoDto.getOrganizationId());
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
 
 //            if(licenceDtos!=null){
@@ -248,15 +253,36 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 //                    }
 //                }
 //            }else {
-            msgParam.setReqRefNum(licenseeDtos.get(0).getId());
-            msgParam.setRefId(licenseeDtos.get(0).getId());
+//            msgParam.setReqRefNum(licenseeDtos.get(0).getId());
+//            msgParam.setRefId(licenseeDtos.get(0).getId());
 //            }
 
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             svcCodeList.addAll(svcCodeSet);
-            msgParam.setSvcCodeList(svcCodeList);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            notificationHelper.sendNotification(msgParam);
+//            msgParam.setSvcCodeList(svcCodeList);
+//            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            InterMessageDto interMessageDto = new InterMessageDto();
+            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+            interMessageDto.setSubject(messageSubject);
+            interMessageDto.setMessageType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            String mesNO = masterCodeClient.messageID().getEntity();
+            interMessageDto.setRefNo(mesNO);
+            if(IaisCommonUtils.isEmpty(svcCodeList)){
+                interMessageDto.setService_id("");
+            } else {
+                StringBuilder svcCodeShow = new StringBuilder();
+                for(String svcCode : svcCodeList){
+                    svcCodeShow.append(svcCode);
+                    svcCodeShow.append('@');
+                }
+                interMessageDto.setService_id(svcCodeShow.toString());
+            }
+            interMessageDto.setUserId(licenseeDtos.get(0).getId());
+            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+            interMessageDto.setMsgContent(emailContent);
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            interMessageDto.setMaskParams(maskParams);
+            notificationHelper.callEicInterMsg(interMessageDto);
             log.info("end send email sms and msg");
         }catch (Exception e){
             log.error(e.getMessage(),e);
