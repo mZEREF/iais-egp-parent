@@ -172,23 +172,23 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(giroAccountInfoDto.getOrganizationId()).getEntity();
             String applicantName=licenseeDtos.get(0).getName();
-            if(size<5){
-                List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
-                if(applicationGroupDtos!=null){
-//                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
-//                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-                    for (OrgUserDto user:orgUserDtoList
-                    ) {
-                        for (ApplicationGroupDto apg:applicationGroupDtos
-                        ) {
-                            if (apg.getSubmitBy().equals(user.getId())){
-                                applicantName=user.getDisplayName();
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+//            if(size<5){
+//                List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
+//                if(applicationGroupDtos!=null){
+////                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
+////                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+//                    for (OrgUserDto user:orgUserDtoList
+//                    ) {
+//                        for (ApplicationGroupDto apg:applicationGroupDtos
+//                        ) {
+//                            if (apg.getSubmitBy().equals(user.getId())){
+//                                applicantName=user.getDisplayName();
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
             templateContent.put("ApplicantName", applicantName);
             templateContent.put("ApplicationType",  "UEN");
