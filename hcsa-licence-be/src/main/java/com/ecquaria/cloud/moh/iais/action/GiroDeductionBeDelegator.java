@@ -348,8 +348,8 @@ public class GiroDeductionBeDelegator {
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
             //update group status
-            applicationClient.updateBeGroupStatus(applicationGroupDtos);
-            updateFeApplicationGroupStatus(applicationGroupDtos);
+            List<ApplicationGroupDto> applicationGroupDtoList = applicationClient.updateBeGroupStatus(applicationGroupDtos).getEntity();
+            updateFeApplicationGroupStatus(applicationGroupDtoList);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");

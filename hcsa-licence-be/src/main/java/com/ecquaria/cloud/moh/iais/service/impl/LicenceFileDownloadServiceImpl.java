@@ -1332,7 +1332,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         for(ApplicationDto applicationDto : applicationDtos){
             List<ApplicationDto> applicationDtoList=new ArrayList<>(1);
             List<HcsaSvcRoutingStageDto> entity =
-                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getBaseServiceId(), applicationDto.getApplicationType()).getEntity();
+                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getRoutingServiceId(), applicationDto.getApplicationType()).getEntity();
             if(entity.isEmpty()){
                 return list;
             }
