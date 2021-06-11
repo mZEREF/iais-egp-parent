@@ -719,7 +719,12 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        //base flow
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+        } else {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        }
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
@@ -2230,7 +2235,7 @@ public class HcsaApplicationDelegator {
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, HcsaConsts.ROUTING_STAGE_PRE,
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
                 //set inspector leads
@@ -3851,7 +3856,7 @@ public class HcsaApplicationDelegator {
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getRoutingServiceId(),
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());
         if (hcsaSvcRoutingStageDtoList != null) {
             if (hcsaSvcRoutingStageDtoList.size() > 0) {
@@ -3868,7 +3873,13 @@ public class HcsaApplicationDelegator {
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String serviceId = applicationDto.getServiceId();
+        //get flow service Id
+        String serviceId;
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            serviceId = applicationDto.getBaseServiceId();
+        } else {
+            serviceId = applicationDto.getServiceId();
+        }
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());

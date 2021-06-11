@@ -185,8 +185,9 @@
                     and T1.STATUS != 'APST009'
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
                 ) T5
-            LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID and T7.USER_ID is NULL
+            JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID and T7.USER_ID is NULL
             WHERE 1 = 1
+            and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>

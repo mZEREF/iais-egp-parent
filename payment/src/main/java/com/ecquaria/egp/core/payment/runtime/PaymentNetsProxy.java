@@ -157,6 +157,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"timeout", GatewayNetsConfig.timeout);
 		ParamUtil.setSessionAttr(bpc.request,"env_jsp",GatewayConfig.eNetsEnvUrl);
 		ParamUtil.setSessionAttr(bpc.request,"apps_js",GatewayConfig.eNetsAppsUrl);
+		ParamUtil.setSessionAttr(bpc.request,"listenerUrl",GatewayConfig.eNetsTxnReqListenerUrl);
+
 		ParamUtil.setSessionAttr(bpc.request,"txnReq",txnRep);
 		log.info(StringUtil.changeForLog(StringUtil.changeForLog("==========>txnReq message:"+txnRep)));
 		log.debug(StringUtil.changeForLog(StringUtil.changeForLog("==========>txnReq message:"+txnRep)));
@@ -221,7 +223,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
-		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String txnRes= (String) ParamUtil.getSessionAttr(request,"message");
 		String header= (String) ParamUtil.getSessionAttr(request,"header");
 		String generatedHmac= null;

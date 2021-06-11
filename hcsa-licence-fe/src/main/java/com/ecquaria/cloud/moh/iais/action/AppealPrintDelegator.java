@@ -57,9 +57,9 @@ public class AppealPrintDelegator {
     }
 
     private void printWithdrawPage(BaseProcessClass bpc){
-        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
         if (withdrawnDto == null){
-            withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
+            withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
         }
         if (withdrawnDto != null){
             String withdrawnReason = withdrawnDto.getWithdrawnReason();

@@ -105,17 +105,20 @@ public class InspectEmailAo1Delegator {
     InspEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
-
+    @Autowired
+    private TaskService taskService;
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-
+    @Autowired
+    InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
-
+    @Autowired
+    FillupChklistService fillupChklistService;
     @Autowired
     OrganizationClient organizationClient;
     @Autowired
@@ -346,7 +349,7 @@ public class InspectEmailAo1Delegator {
             taskService.createTasks(taskDtos);
 
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT, taskDto, userId,inspectionEmailTemplateDto.getRemarks(),HcsaConsts.ROUTING_STAGE_INP);
-            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,taskDto1, userId,"",HcsaConsts.ROUTING_STAGE_INP);
+            createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER,taskDto, userId,"",HcsaConsts.ROUTING_STAGE_INP);
 
         }
         inspEmailService.updateEmailDraft(inspectionEmailTemplateDto);

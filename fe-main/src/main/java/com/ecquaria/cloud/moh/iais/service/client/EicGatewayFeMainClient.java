@@ -78,6 +78,13 @@ public class EicGatewayFeMainClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
+    /**
+     * @deprecated now we don't need to call this API any more
+     *
+     * @param uen
+     * @return
+     */
+    @Deprecated
     public FeignResponseEntity<GenerateUENDto> getUen(String uen) {
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

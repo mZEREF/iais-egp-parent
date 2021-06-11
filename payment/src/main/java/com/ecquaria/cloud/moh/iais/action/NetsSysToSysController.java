@@ -1,14 +1,22 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.dbs.sgqr.generator.QRGenerator;
+import com.dbs.sgqr.generator.QRGeneratorImpl;
+import com.dbs.sgqr.generator.io.PayNow;
+import com.dbs.sgqr.generator.io.QRDimensions;
+import com.dbs.sgqr.generator.io.QRGeneratorResponse;
+import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
+import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.runtime.Soapi;
@@ -22,17 +30,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.config.ConfigUtil;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSignature;
 
@@ -45,6 +63,8 @@ import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSig
 public class NetsSysToSysController {
     @Autowired
     private PaymentClient paymentClient;
+    public static final Locale LOCALE = new Locale("en", "SG");
+    static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
 
     @Autowired
     private PaymentRedisHelper redisCacheHelper;
@@ -135,4 +155,54 @@ public class NetsSysToSysController {
     }
 
 
+    @RequestMapping( value = "/payNowRefresh", method = RequestMethod.GET)
+    public @ResponseBody
+    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException {
+        String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
+        String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
+        if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+            String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
+            try {
+                log.info("payNow SUCCESS");
+                RedirectUtil.redirect(url, request, response);
+            } catch (IOException e) {
+                log.info(e.getMessage(),e);
+            }
+        }
+        String appGrpNo=reqNo;
+        try {
+            appGrpNo=reqNo.substring(0,'_');
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+reqNo));
+        }
+        QRGenerator qrGenerator = new QRGeneratorImpl();
+
+        File inputFile = ResourceUtils.getFile("classpath:image/paymentPayNow.png");
+        //sample
+        QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), inputFile.getPath());
+
+        // sample Static QR
+        //PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
+
+        //sample Dynamic QR
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        String expiryDate = df.format(cal.getTime());
+
+
+        PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,appGrpNo);
+        payNowObject.setPayloadFormatInd("01");
+
+        // PayNow
+        QRGeneratorResponse qrCodeResponse = qrGenerator.generateSGQR(QRType.PAY_NOW, payNowObject, qrDetails);
+        String sgqrTypeFormattedPayLoad = qrCodeResponse.getSgqrPayload();
+        System.out.println(sgqrTypeFormattedPayLoad);
+        String imageStreamInBase64Format = qrCodeResponse.getImageStream();
+        System.out.println(imageStreamInBase64Format);
+        ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
+        return imageStreamInBase64Format;
+    }
 }

@@ -831,12 +831,7 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String orgId = "";
-        if(loginContext != null){
-            orgId = loginContext.getOrgId();
-        }
-        boolean isGiroAcc = appSubmissionService.checkIsGiroAcc(appSubmissionDto,orgId);
+        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,paymentMethod);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
@@ -1692,8 +1687,8 @@ public class NewApplicationDelegator {
                         appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),
                                 appSubmissionDto.getAppType(), bpc.request);
                     }
+                    premiseView(appSubmissionDto, applicationDto, bpc.request);
                 }
-                premiseView(appSubmissionDto,applicationDto,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
@@ -2203,7 +2198,9 @@ public class NewApplicationDelegator {
         * 2. migrated ->premises -> is 0 all to -> 0 . can 2-> 0. but cannot 0->2
         *
         * */
-        grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+        if (appGrpPremisesDtoList != null) {
+            grpPremiseIsChange = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+        }
         AppSubmissionDto n = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);

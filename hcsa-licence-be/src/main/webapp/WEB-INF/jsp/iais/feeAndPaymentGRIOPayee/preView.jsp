@@ -41,22 +41,22 @@
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">HCI Code(s) :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">
-                                            <c:forEach items="${hciSession.rows}" var="hci">
-                                                ${hci.hciCode}<br>
-                                            </c:forEach>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">HCI Name(s) :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">
-                                            <c:forEach items="${hciSession.rows}" var="hci">
-                                                ${hci.hciName}<br>
-                                            </c:forEach>
-                                        </div>
-                                    </iais:row>
+<%--                                    <iais:row>--%>
+<%--                                        <label class="col-xs-0 col-md-4 ">HCI Code(s) :<span class="mandatory">*</span></label>--%>
+<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
+<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
+<%--                                                ${hci.hciCode}<br>--%>
+<%--                                            </c:forEach>--%>
+<%--                                        </div>--%>
+<%--                                    </iais:row>--%>
+<%--                                    <iais:row>--%>
+<%--                                        <label class="col-xs-0 col-md-4 ">HCI Name(s) :<span class="mandatory">*</span></label>--%>
+<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
+<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
+<%--                                                ${hci.hciName}<br>--%>
+<%--                                            </c:forEach>--%>
+<%--                                        </div>--%>
+<%--                                    </iais:row>--%>
                                     <iais:row>
                                         <label class="col-xs-0 col-md-4 ">Account Name :<span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">

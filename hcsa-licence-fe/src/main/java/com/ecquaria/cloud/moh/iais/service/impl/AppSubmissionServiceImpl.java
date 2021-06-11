@@ -482,6 +482,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public LicenceDto getLicenceDtoById(String licenceId) {
+        return licenceClient.getLicDtoById(licenceId).getEntity();
+    }
+
+    @Override
     public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
         return getDeclarationFiles(appType, request, false);
     }
@@ -1772,7 +1777,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 notEmptyDocList.add(appGrpPrimaryDocDto);
             }
         }
-        log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
+        // log.debug(StringUtil.changeForLog("notEmptyDocList size:" +  notEmptyDocList.size()));
         //add empty doc
         List<HcsaSvcDocConfigDto> docConfigDtos = serviceConfigService.getAllHcsaSvcDocs(null);
         List<AppGrpPrimaryDocDto> newPrimaryDocList = IaisCommonUtils.genNewArrayList();

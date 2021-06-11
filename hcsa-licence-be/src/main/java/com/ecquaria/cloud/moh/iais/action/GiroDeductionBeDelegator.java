@@ -33,13 +33,14 @@ import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -190,7 +191,7 @@ public class GiroDeductionBeDelegator {
     }
 
     private HttpServletRequest determineType(HttpServletRequest request){
-        HttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest)request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         if(multipartHttpServletRequest!=null){
             return multipartHttpServletRequest;
         }
@@ -341,7 +342,8 @@ public class GiroDeductionBeDelegator {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
-            applicationClient.updateBeGroupStatus(applicationGroupDtos);
+            List<ApplicationGroupDto> applicationGroupDtoList = applicationClient.updateBeGroupStatus(applicationGroupDtos).getEntity();
+            updateFeApplicationGroupStatus(applicationGroupDtoList);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
@@ -415,8 +417,10 @@ public class GiroDeductionBeDelegator {
         response.setContentType("application/x-octet-stream");
         response.addHeader("Content-Disposition", "attachment;filename="+l+".csv" );
         File file=new File("classpath:"+l+".csv");
-        try ( OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-              InputStream in = new FileInputStream(file)){
+        String path = file.getPath();
+        log.info(StringUtil.changeForLog("File Path: " + path));
+        try (OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+             InputStream in = Files.newInputStream(Paths.get(path))){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){

@@ -764,7 +764,7 @@ public class RoundRobinCommPoolBatchJob {
                 if (appointmentUserDtoList.isEmpty()) {
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
