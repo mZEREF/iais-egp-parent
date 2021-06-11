@@ -374,6 +374,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
          return appGrp;
     }
 
+    @Override
+    public ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
+        return applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto, giroAccNo).getEntity();
+    }
+
     private String genGiroTranNo(){
        return "GIROTRANS-"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER).replace("_","");
     }

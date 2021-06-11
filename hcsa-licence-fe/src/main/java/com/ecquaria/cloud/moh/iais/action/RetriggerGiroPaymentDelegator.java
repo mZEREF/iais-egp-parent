@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -359,8 +361,14 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,appSubmissionDto.getPaymentMethod());
         }
-
-        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
+        boolean isGiroAcc = false;
+        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            isGiroAcc = true;
+            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
+            ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
+        }
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         log.info(StringUtil.changeForLog("the prePayment end ...."));
     }
 
@@ -370,6 +378,11 @@ public class RetriggerGiroPaymentDelegator {
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         appSubmissionDto.setPaymentMethod(payMethod);
+        String giroAccNum = "";
+        if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+            giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+        }
+        appSubmissionDto.setGiroAcctNum(giroAccNum);
         if(renewDto != null){
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
@@ -383,16 +396,20 @@ public class RetriggerGiroPaymentDelegator {
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if("next".equals(action)){
+            String payMethodErrMsg =  MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
+            String giroAccErrMsg =  MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
             if (StringUtil.isEmpty(payMethod)) {
-                String GENERAL_ERR0006Msg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
-                errorMap.put("payMethod", GENERAL_ERR0006Msg);
-                errorMap.put("pay", GENERAL_ERR0006Msg);
-                NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                errorMap.put("payMethod", payMethodErrMsg);
+                errorMap.put("pay", payMethodErrMsg);
+            }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && StringUtil.isEmpty(giroAccNum)){
+                errorMap.put("payMethod", giroAccErrMsg);
+                errorMap.put("pay",giroAccErrMsg);
             }
         }
         if(!"next".equals(action) || !errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_PRE_PAYMENT);
+            NewApplicationHelper.setAudiErrMap(false,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             return;
         }
 
@@ -427,7 +444,7 @@ public class RetriggerGiroPaymentDelegator {
             String giroTranNo = appSubmissionDto.getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
-            appGrp = serviceConfigService.updateAppGrpPmtStatus(appGrp);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
             //eic
             serviceConfigService.saveAppGroupGiroSysnEic(appGrp);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
@@ -486,7 +503,14 @@ public class RetriggerGiroPaymentDelegator {
             }else{
                 switch2 = SWITCH_VALUE_PRE_PAYMENT;
             }
-            ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",Boolean.TRUE);
+            boolean isGiroAcc = false;
+            List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
+            if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+                isGiroAcc = true;
+                List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
+                ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
+            }
+            ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
 
         }
         ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
