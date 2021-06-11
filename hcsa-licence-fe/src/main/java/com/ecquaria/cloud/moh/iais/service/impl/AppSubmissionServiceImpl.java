@@ -487,6 +487,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public List<OrgGiroAccountInfoDto> getOrgGiroAccDtosByLicenseeId(String licenseeId) {
+        return organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
     public List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request) {
         return getDeclarationFiles(appType, request, false);
     }
@@ -2094,7 +2099,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public boolean isGiroAccount(String licenseeId) {
         boolean result = false;
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);
         if(!StringUtil.isEmpty(orgGiroAccountInfoDto.getOrganizationId())){
             result = true;
         }

@@ -373,6 +373,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
          return appGrp;
     }
 
+    @Override
+    public ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
+        return applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto, giroAccNo).getEntity();
+    }
+
     private String genGiroTranNo(){
        return "GIROTRANS-"+Formatter.formatDateTime(new Date(),Formatter.DATE_REF_NUMBER).replace("_","");
     }
@@ -724,7 +729,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             return "";
         }
         String licenseeId = applicationGroupDto.getLicenseeId();
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);;
         if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
             return orgGiroAccountInfoDto.getAcctNo();
         }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){

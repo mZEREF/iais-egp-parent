@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -1412,7 +1413,13 @@ public class RequestForChangeMenuDelegator {
         }
         AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         if(mainSubmisDto != null){
-            boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
+            boolean isGiroAcc = false;
+            List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
+            if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+                isGiroAcc = true;
+                List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
+                ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
+            }
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,mainSubmisDto.getPaymentMethod());
         }
@@ -1946,20 +1953,36 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         appSubmissionDto.setPaymentMethod(payMethod);
+        String giroAccNum = "";
+        if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+            giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+        }
+        appSubmissionDto.setGiroAcctNum(giroAccNum);
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:" + payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:" + noNeedPayment));
         String action = ParamUtil.getString(bpc.request, "crud_action_additional");
         if ("next".equals(action)) {
-            if (0.0 != appSubmissionDtos.get(0).getAmount() && StringUtil.isEmpty(payMethod)) {
-                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("pay", MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
-                boolean isRfi = false;
-                NewApplicationHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
-                ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
-                return;
+            if (0.0 != appSubmissionDtos.get(0).getAmount()) {
+                Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                if (StringUtil.isEmpty(payMethod)) {
+                    errorMap.put("pay", MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && StringUtil.isEmpty(giroAccNum)){
+                    errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Giro Account", "field"));
+                }
+                if(!errorMap.isEmpty()){
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
+                    NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                }
+                if(!errorMap.isEmpty()){
+                    boolean isRfi = false;
+                    NewApplicationHelper.setAudiErrMap(isRfi, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, errorMap, null, appSubmissionDtos.get(0).getLicenceNo());
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePayment");
+                    ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
+                    return;
+                }
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");

@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -2213,6 +2214,16 @@ public class NewApplicationHelper {
             licenseeId = loginContext.getLicenseeId();
         }
         return licenseeId;
+    }
+
+    public static List<SelectOption> genGiroAccSel(List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos){
+        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            for(OrgGiroAccountInfoDto orgGiroAccountInfoDto:orgGiroAccountInfoDtos){
+                selectOptionList.add(new SelectOption(orgGiroAccountInfoDto.getAcctNo(), orgGiroAccountInfoDto.getAcctNo()));
+            }
+        }
+        return selectOptionList;
     }
 
     public static boolean newAndNotRfi(HttpServletRequest request,String appType){
