@@ -40,7 +40,7 @@ DOCKER_IMAGES = [
     'fe-main|fe-main',
     'hcsa-licence-be|hcsa-licence',
     'hcsa-licence-fe|hcsa-application',
-    'payment|payment-web',
+    'payment|egov-app',
     'systemadmin|systemadmin-web',
     'web|web'
 ]
@@ -900,7 +900,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin, mingde, anantharaj',
+                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
@@ -1158,7 +1158,8 @@ def runAutomatedTests(){
                 docker
                     .image('hub.ecquaria.com/ecq/katalonstudio/katalon:7.8.2-ffmpeg')
                     .inside(dockerArgs.join(" ")){
-                        def browserType = 'Chrome'
+                        // def browserType = 'Chrome'
+                        def browserType = 'Chrome (headless)'
                         sh """
                             mkdir -p ~/.katalon/license/ && \
                                 ln -s "$KATALON_OFFLINE_LICENSE" ~/.katalon/license/offline.lic || \
