@@ -165,10 +165,11 @@ public class RetriggerGiroPaymentDelegator {
                     licenceNo = licenceDto.getLicenceNo();
                 }
                 smallTitle.append("You are renewing the ")
-                .append(hcsaServiceDto.getSvcName())
-                .append(" (Licence No. ")
-                .append(licenceNo)
-                .append(')');
+                        .append("<strong>")
+                        .append(hcsaServiceDto.getSvcName())
+                        .append(" (Licence No. ")
+                        .append(licenceNo)
+                        .append(")</strong>");
 
             }else if(renewCount > 1){
                 smallTitle.append("You are renewing these licences: ");
