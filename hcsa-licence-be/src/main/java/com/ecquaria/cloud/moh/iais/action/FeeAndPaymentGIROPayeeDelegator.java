@@ -179,8 +179,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         giroAccountService.updateGiroAccountInfo(giroAccountInfoDtoList);
 
-        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList);
-
+        try {
+            eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList);
+        }catch (Exception e){
+            log.debug("no found fe org :{}",giroAccountInfoDtoList.get(0).getOrganizationId());
+        }
     }
     public void reSearchPayee(BaseProcessClass bpc) {
 
@@ -540,8 +543,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         List<GiroAccountInfoDto> giroAccountInfoDtoList1= giroAccountService.createGiroAccountInfo(giroAccountInfoDtoList);
 
-
+        try {
         eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        }catch (Exception e){
+            log.debug("no found fe org :{}",giroAccountInfoDtoList1.get(0).getOrganizationId());
+        }
         try {
             for (GiroAccountInfoDto giro:giroAccountInfoDtoList1
             ) {
