@@ -23,10 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InvoiceDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -729,6 +726,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if( applicationGroupDto == null){
             return "";
         }
+
+        AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(applicationGroupDto.getId(),
+                ApplicationConsts.APP_GROUP_MISC_TYPE_GIRO_ACCOUNT_NUMBER, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if(grpMisc != null && StringUtil.isNotEmpty(grpMisc.getMiscValue())){
+            return grpMisc.getMiscValue();
+        }
+
         String licenseeId = applicationGroupDto.getLicenseeId();
         OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);;
         if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
