@@ -5,7 +5,7 @@
     <br>
     <div class="row">
       <div class="form-check col-xs-12">
-        <P>Any person ("<b>Applicant</b>") that wishes to be granted a licence or to renew an existing licence under the Healthcare Services Act 2020 must apply to the Director of Medical Services. If the application is granted, the Applicant will hold the licence or renewed licence, as the case may be, as the licensee.</P>
+        <P>Any person ("<strong>Applicant</strong>") that wishes to be granted a licence or to renew an existing licence under the Healthcare Services Act 2020 must apply to the Director of Medical Services. If the application is granted, the Applicant will hold the licence or renewed licence, as the case may be, as the licensee.</P>
       </div>
       <br>
       <div class="form-check col-xs-12">

@@ -4,6 +4,7 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<!DOCTYPE html>
 <html>
 <head>
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>

@@ -379,12 +379,13 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     public Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
                                                         String switchAction, String dashFilterAppNo, String dashAppStatus) {
         SearchParam searchParam = new SearchParam(DashWaitApproveAjaxQueryDto.class.getName());
-        searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+        int pageSize=SystemParamUtil.getDefaultPageSize();
+        searchParam.setPageSize(pageSize);
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
         List<String> workGroupIds = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(groupNo)){
-            searchParam.setPageSize(SystemParamUtil.getDefaultPageSize());
+            searchParam.setPageSize(pageSize);
             //filter appGroup NO.
             searchParam.addFilter("groupNo", groupNo, true);
             ApplicationGroupDto applicationGroupDto = applicationMainClient.getAppGrpByNo(groupNo).getEntity();
