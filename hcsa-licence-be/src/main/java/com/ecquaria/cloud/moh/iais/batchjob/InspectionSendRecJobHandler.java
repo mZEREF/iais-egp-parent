@@ -337,9 +337,11 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             if(itemId.equals(checklistItemDto.getItemId())){
                 log.info(StringUtil.changeForLog("itemId Id = " + itemId));
                 //get category value
-                String category = getItemCategory(checklistConfigDto);
-                if(StringUtil.isEmpty(category)) {
+                String category;
+                if(!StringUtil.isEmpty(vehicleNo)) {
                     category = vehicleNo;
+                } else {
+                    category = getItemCategory(checklistConfigDto);
                 }
                 containFlag = true;
                 ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
