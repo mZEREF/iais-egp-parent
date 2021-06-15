@@ -691,8 +691,7 @@ a[data-toggle="collapse"] {
     display: block;
     position: absolute;
     right: 20px;
-    font-family: 'Glyphicons Halflings';
-    font-size: 0.6em;
+    font-family: 'Glyphicons Halflings', sans-serif;    font-size: 0.6em;
 }
 a[aria-expanded="true"]::before {
     content: '\e260';

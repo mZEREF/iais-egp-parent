@@ -887,8 +887,7 @@
     }
     .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle:after {
       content: "";
-      font-family: fontawesome;
-      font-weight: 400;
+  font-family: FontAwesome, sans-serif;      font-weight: 400;
       font-size: 3rem;
       color: #333333;
       line-height: 22px;
@@ -1149,8 +1148,7 @@
     }
     .profile-dropdown .profile-btn:after {
       content: "";
-      font-family: fontawesome;
-      font-weight: 400;
+  font-family: FontAwesome, sans-serif;      font-weight: 400;
       font-size: 3rem;
       color: #333333;
       line-height: 22px;
@@ -1719,8 +1717,7 @@
       display: block;
     }
     .panel-group .panel.panel-default > .panel-heading h4 a:before {
-      font-family: FontAwesome;
-      content: "";
+  font-family: FontAwesome, sans-serif;      content: "";
       font-size: 4rem;
       color: #147aab;
       line-height: 20px;
@@ -1757,8 +1754,7 @@
     }
     .panel-group .panel.panel-default > .panel-heading.completed h4 a:after {
       content: "";
-      font-family: fontawesome;
-      width: 22px;
+  font-family: FontAwesome, sans-serif;      width: 22px;
       height: 22px;
       border: 0;
       background-color: #168926;
@@ -1775,8 +1771,7 @@
     }
     .panel-group .panel.panel-default > .panel-heading.incompleted h4 a:after {
       content: "";
-      font-family: fontawesome;
-      width: 22px;
+  font-family: FontAwesome, sans-serif;      width: 22px;
       height: 22px;
       border: 0;
       background-color: #c4322b;
@@ -2111,8 +2106,7 @@
     }
     .form-check .form-check-label .check-square:before {
       content: "";
-      font-family: fontawesome;
-      position: absolute;
+  font-family: FontAwesome, sans-serif;      position: absolute;
       width: 16px;
       height: 16px;
       top: 0;
@@ -2535,8 +2529,7 @@
     }
     .nice-select:after {
       content: "";
-      font-family: fontawesome;
-      font-size: 30px;
+  font-family: FontAwesome, sans-serif;      font-size: 30px;
       color: #6c6c6c;
       -webkit-transform-origin: 0 0;
       -ms-transform-origin: 0 0;
@@ -2750,8 +2743,7 @@
     }
     .tab-gp .tab-content .preview-info.incompleted p:first-child:after {
       content: "";
-      font-family: fontawesome;
-      width: 22px;
+  font-family: FontAwesome, sans-serif;      width: 22px;
       height: 22px;
       border: 0;
       background-color: #DB3D35;
@@ -2881,8 +2873,7 @@
     .tab-gp .tab-nav-mobile .swiper-button-prev:before,
     .tab-gp .tab-nav-mobile .swiper-button-next:before {
       font-size: 3.4rem;
-      font-family: fontawesome;
-      display: block;
+  font-family: FontAwesome, sans-serif;      display: block;
       width: 16px;
       height: 26px;
       line-height: 26px;
@@ -2931,8 +2922,7 @@
     }
     .tab-gp.steps-tab .nav.nav-tabs li.complete a:after {
       content: "";
-      font-family: fontawesome;
-      width: 27px;
+  font-family: FontAwesome, sans-serif;      width: 27px;
       height: 27px;
       border: 2px solid white;
       background-color: #168926;
@@ -2953,8 +2943,7 @@
     }
     .tab-gp.steps-tab .nav.nav-tabs li.incomplete a:after {
       content: "";
-      font-family: fontawesome;
-      width: 27px;
+  font-family: FontAwesome, sans-serif;      width: 27px;
       height: 27px;
       border: 2px solid white;
       background-color: #c4322b;
@@ -3141,7 +3130,6 @@
       color: #333333;
       flex-basis: 100%;
       position: relative;
-      padding-left: 0;
       text-align: center;
       padding: 0 10px;
     }
@@ -3318,8 +3306,7 @@
     }
     .table-gp table.table > thead > tr > th span.sort:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.4rem;
       color: #666;
     }
@@ -3328,8 +3315,7 @@
     }
     .table-gp table.table > thead > tr > th span.desc:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.6rem;
       color: #147aab;
       display: inline-block;
@@ -3340,8 +3326,7 @@
     }
     .table-gp table.table > thead > tr > th span.asc:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.6rem;
       color: #147aab;
       display: inline-block;
@@ -3373,8 +3358,7 @@
     .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after {
       content: "";
       position: absolute;
-      font-family: fontawesome;
-      font-size: 2.4rem;
+  font-family: FontAwesome, sans-serif;      font-size: 2.4rem;
       line-height: 22px;
       right: -25px;
       display: inline-block;
@@ -3558,8 +3542,7 @@
     }
     .table-sm table.table > thead > tr > th span.sort:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.4rem;
       color: #BFBFBF;
     }
@@ -3568,8 +3551,7 @@
     }
     .table-sm table.table > thead > tr > th span.desc:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.6rem;
       color: #147aab;
       display: inline-block;
@@ -3580,8 +3562,7 @@
     }
     .table-sm table.table > thead > tr > th span.asc:after {
       content: "";
-      font-family: fontawesome;
-      margin-left: 10px;
+  font-family: FontAwesome, sans-serif;      margin-left: 10px;
       font-size: 1.6rem;
       color: #147aab;
       display: inline-block;
@@ -4547,8 +4528,7 @@
     }
     .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
-      /*color: #a2d9e7;*/
+  font: normal normal normal 14px/1 FontAwesome, sans-serif;      /*color: #a2d9e7;*/
       font-size: 30px;
       width: 6px;
       height: 6px;
@@ -4631,8 +4611,7 @@
     }
     .cesform-box .license-info p.lic-no:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
-      color: #a2d9e7;
+  font: normal normal normal 14px/1 FontAwesome, sans-serif;      color: #a2d9e7;
       font-size: 30px;
       width: 6px;
       height: 6px;
@@ -4644,8 +4623,7 @@
     }
     .cesform-box .license-info p.serv-name:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
-      color: #a2d9e7;
+  font: normal normal normal 14px/1 FontAwesome, sans-serif;      color: #a2d9e7;
       font-size: 30px;
       width: 6px;
       height: 6px;
@@ -5444,11 +5422,6 @@
       min-height: 22px;
       line-height: 22px !important;
       font-family: "Open Sans", sans-serif;
-      color: #333333;
-      font-size: 1.6rem;
-      font-weight: 400;
-      position: relative;
-      padding-left: 30px;
     }
     @media only screen and (max-width : 767px) {
       .control-item-container input.control-input[type=checkbox] + label.control-label,
@@ -5523,8 +5496,7 @@
     .control-item-container input.control-input[type=checkbox] + label.control-label .check-square:before,
     .control-item-container input.control-input[type=radio] + label.control-label .check-square:before {
       content: "";
-      font-family: fontawesome;
-      position: absolute;
+  font-family: FontAwesome, sans-serif;      position: absolute;
       width: 18px;
       height: 18px;
       top: 0;
@@ -5705,8 +5677,7 @@
     }
     .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
       content: "";
-      font-family: fontawesome;
-      width: 22px;
+  font-family: FontAwesome, sans-serif;      width: 22px;
       height: 22px;
       border: 0;
       background-color: #b01b17;
