@@ -135,7 +135,10 @@
         $('div.clinicalDirectorContent').each(function(){
             var assignSelVal = $(this).find('.assignSel:input').val();
             console.info("init ---- " + assignSelVal);
-            if (!isEmpty(assignSelVal) && "-1" != assignSelVal && 'newOfficer' != assignSelVal) {
+            if (isEmpty(assignSelVal)) {
+                $(this).find('select.assignSel option').eq(0).prop("selected", true);
+                $(this).find('select.assignSel').niceSelect("update");
+            } else if ("-1" != assignSelVal && 'newOfficer' != assignSelVal) {
                 var data;
                 try{
                     data = $.parseJSON($(this).find('.psnEditField:input').val());

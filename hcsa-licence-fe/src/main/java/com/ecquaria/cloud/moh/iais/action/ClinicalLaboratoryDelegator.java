@@ -1978,6 +1978,7 @@ public class ClinicalLaboratoryDelegator {
             //get data from page
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = genAppSvcClinicalDirectorDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
+            syncDropDownAndPsn(appSubmissionDto, appSvcClinicalDirectorDtos, null, bpc.request);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
@@ -2814,7 +2815,6 @@ public class ClinicalLaboratoryDelegator {
                     appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
                 }
 
-                //AppSvcClinicalDirectorDto appSvcClinicalDirectorDto = new AppSvcClinicalDirectorDto();
                 if (canSetValue(appPsnEditDto.isProfessionBoard(), assignSel)) {
                     appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
                 }
@@ -4061,6 +4061,20 @@ public class ClinicalLaboratoryDelegator {
         appPsnEditDto.setDesignation(false);
     }
 
+    private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,
+            String svcCode, HttpServletRequest request){
+        if (StringUtil.isEmpty(svcCode)) {
+            svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+        }
+        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP);
+        Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICPERSONSELECTMAP);
+        personMap = syncDropDownAndPsn(personMap,appSubmissionDto,personList,svcCode);
+        Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
+        ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
+
+        return newPersonMap;
+    }
+
     private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(Map<String,AppSvcPersonAndExtDto> personMap,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
         List<AppSvcPrincipalOfficersDto> newPersonList = IaisCommonUtils.genNewArrayList();
         for(AppSvcPrincipalOfficersDto person:personList){
@@ -4148,20 +4162,18 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    // Clinical director
+                    List<AppSvcPrincipalOfficersDto> appSvCdDtos = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+                    if (!IaisCommonUtils.isEmpty(appSvCdDtos)) {
+                        for (AppSvcPrincipalOfficersDto psn : appSvCdDtos) {
+                            setPsnKeySet(psn, personKeySet);
+                        }
+                    }
+                    // CGO
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                     if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
                         for(AppSvcPrincipalOfficersDto psn:appSvcCgoDtos){
-                            String assignSel = psn.getAssignSelect();
-                            if(!psn.isLicPerson()){
-                                boolean partValidate = NewApplicationHelper.psnDoPartValidate(psn.getIdType(),psn.getIdNo(),psn.getName());
-                                if(partValidate){
-                                    personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
-                                }else if(!StringUtil.isEmpty(assignSel) && !"-1".equals(assignSel)){
-                                    psn.setAssignSelect(NewApplicationConstant.NEW_PSN);
-                                }
-                            }else{
-                                personKeySet.add(NewApplicationHelper.getPersonKey(psn.getIdType(),psn.getIdNo()));
-                            }
+                            setPsnKeySet(psn,personKeySet);
                         }
                     }
                     List<AppSvcPrincipalOfficersDto> appSvcPoDpoDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
@@ -4199,7 +4211,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void setPsnKeySet(AppSvcPrincipalOfficersDto psn,Set<String> personKeySet){
-        if(psn == null || IaisCommonUtils.isEmpty(personKeySet)){
+        if (psn == null || personKeySet == null) {
             return;
         }
         String assignSel = psn.getAssignSelect();

@@ -1717,7 +1717,8 @@ public class NewApplicationHelper {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                syncCgoDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList(), personMap, svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap,svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap,svcCode);
             }
@@ -3289,79 +3290,13 @@ public class NewApplicationHelper {
         return psnDto;
     }
 
-    private static void syncCgoDto(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos, Map<String,AppSvcPersonAndExtDto> personMap, String svcCode){
+    private static void syncPsnDto(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos, Map<String,AppSvcPersonAndExtDto> personMap, String svcCode){
         if(IaisCommonUtils.isEmpty(appSvcCgoDtos) || personMap == null || StringUtil.isEmpty(svcCode)){
             return;
         }
-        for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtos){
-            boolean isLicPsn = appSvcCgoDto.isLicPerson();
-            String personKey = appSvcCgoDto.getIdType()+ "," + appSvcCgoDto.getIdNo();
-            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
-            if(selPerson != null){
-                appSvcCgoDto.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
-                appSvcCgoDto.setSalutation(selPerson.getSalutation());
-                appSvcCgoDto.setName(selPerson.getName());
-                appSvcCgoDto.setIdType(selPerson.getIdType());
-                appSvcCgoDto.setIdNo(selPerson.getIdNo());
-                appSvcCgoDto.setDesignation(selPerson.getDesignation());
-                appSvcCgoDto.setOtherDesignation(selPerson.getOtherDesignation());
-                String professionType = selPerson.getProfessionType();
-                if(!StringUtil.isEmpty(professionType)){
-                    appSvcCgoDto.setProfessionType(professionType);
-                }
-                String profRegNo = selPerson.getProfRegNo();
-                if(!StringUtil.isEmpty(profRegNo)){
-                    appSvcCgoDto.setProfRegNo(profRegNo);
-                }
-                String speciality = selPerson.getSpeciality();
-                if(!StringUtil.isEmpty(speciality)){
-                    appSvcCgoDto.setSpeciality(speciality);
-                }
-                String specialityOther = selPerson.getSpecialityOther();
-                if(!StringUtil.isEmpty(specialityOther)){
-                    appSvcCgoDto.setSpecialityOther(specialityOther);
-                }
-                String subSpeciality = selPerson.getSubSpeciality();
-                if(!StringUtil.isEmpty(subSpeciality)){
-                    appSvcCgoDto.setSubSpeciality(subSpeciality);
-                }
-                String qualification = selPerson.getQualification();
-                if(!StringUtil.isEmpty(qualification)){
-                    appSvcCgoDto.setQualification(qualification);
-                }
-                String otherQualification = selPerson.getOtherQualification();
-                if(!StringUtil.isEmpty(otherQualification)){
-                    appSvcCgoDto.setOtherQualification(otherQualification);
-                }
-                appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
-                appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());
-                //sync other field
-                String officeTelNo = selPerson.getOfficeTelNo();
-                appSvcCgoDto.setOfficeTelNo(officeTelNo);
-
-                //
-                appSvcCgoDto.setNeedSpcOptList(selPerson.isNeedSpcOptList());
-                List<SelectOption> spcOptList = selPerson.getSpcOptList();
-                if(!IaisCommonUtils.isEmpty(spcOptList)){
-                    appSvcCgoDto.setSpcOptList(selPerson.getSpcOptList());
-                }
-                String specHtml = selPerson.getSpecialityHtml();
-                if(!StringUtil.isEmpty(specHtml)){
-                    appSvcCgoDto.setSpecialityHtml(specHtml);
-                }
-                //set lic person info
-                appSvcCgoDto.setLicPerson(isLicPsn);
-            }
-        }
-    }
-
-    private static void syncPsnDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, Map<String,AppSvcPersonAndExtDto> personMap, String svcCode){
-        if(IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos) || personMap == null || StringUtil.isEmpty(svcCode)){
-            return;
-        }
-        for(AppSvcPrincipalOfficersDto person:appSvcPrincipalOfficersDtos){
-            String personKey = person.getIdType()+ "," + person.getIdNo();
+        for (AppSvcPrincipalOfficersDto person : appSvcCgoDtos) {
+            boolean isLicPsn = person.isLicPerson();
+            String personKey = getPersonKey(person.getIdType(), person.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
             AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
             if(selPerson != null){
@@ -3372,43 +3307,25 @@ public class NewApplicationHelper {
                 person.setIdNo(selPerson.getIdNo());
                 person.setMobileNo(selPerson.getMobileNo());
                 person.setEmailAddr(selPerson.getEmailAddr());
-                String officeTelNo = selPerson.getOfficeTelNo();
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(person.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(person.getPsnType()) ){
-                    person.setOfficeTelNo(officeTelNo);
-                }else if(!StringUtil.isEmpty(officeTelNo)){
-                    //cgo column -> cgoC1 , po not have cgoC1 po to sync data shouldnt set null
-                    person.setOfficeTelNo(officeTelNo);
-                }
-               /* String preferredMode = selPerson.getPreferredMode();
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(person.getPsnType())){
-                    person.setPreferredMode(preferredMode);
-                }else if(!StringUtil.isEmpty(preferredMode)){
-                    person.setPreferredMode(preferredMode);
-                }*/
-
-                //sync other field
-                String designation = selPerson.getDesignation();
+                person.setDesignation(selPerson.getDesignation());
+                person.setOtherDesignation(selPerson.getOtherDesignation());
                 String professionType = selPerson.getProfessionType();
-                String profRegNo = selPerson.getProfRegNo();
-                String speciality = selPerson.getSpeciality();
-                String specialityOther = selPerson.getSpecialityOther();
-                String subSpeciality = selPerson.getSubSpeciality();
-                String otherDesignation = selPerson.getOtherDesignation();
-                if(!StringUtil.isEmpty(designation)){
-                    person.setDesignation(designation);
-                }
-                if(!StringUtil.isEmpty(otherDesignation)){
-                    person.setOtherDesignation(otherDesignation);
-                }
                 if(!StringUtil.isEmpty(professionType)){
                     person.setProfessionType(professionType);
                 }
+                String profRegNo = selPerson.getProfRegNo();
                 if(!StringUtil.isEmpty(profRegNo)){
                     person.setProfRegNo(profRegNo);
                 }
+                String speciality = selPerson.getSpeciality();
                 if(!StringUtil.isEmpty(speciality)){
                     person.setSpeciality(speciality);
                 }
+                String specialityOther = selPerson.getSpecialityOther();
+                if(!StringUtil.isEmpty(specialityOther)){
+                    person.setSpecialityOther(specialityOther);
+                }
+                String subSpeciality = selPerson.getSubSpeciality();
                 if(!StringUtil.isEmpty(subSpeciality)){
                     person.setSubSpeciality(subSpeciality);
                 }
@@ -3420,9 +3337,74 @@ public class NewApplicationHelper {
                 if(!StringUtil.isEmpty(otherQualification)){
                     person.setOtherQualification(otherQualification);
                 }
-                //set lic person info
-                person.setLicPerson(selPerson.isLicPerson());
+                String officeTelNo = selPerson.getOfficeTelNo();
+                if (!StringUtil.isEmpty(officeTelNo)) {
+                    person.setOfficeTelNo(officeTelNo);
+                }
 
+                person.setNeedSpcOptList(selPerson.isNeedSpcOptList());
+                List<SelectOption> spcOptList = selPerson.getSpcOptList();
+                if(!IaisCommonUtils.isEmpty(spcOptList)){
+                    person.setSpcOptList(selPerson.getSpcOptList());
+                }
+                String specHtml = selPerson.getSpecialityHtml();
+                if(!StringUtil.isEmpty(specHtml)){
+                    person.setSpecialityHtml(specHtml);
+                }
+                String professionBoard = selPerson.getProfessionBoard();
+                if (!StringUtil.isEmpty(professionBoard)) {
+                    person.setProfessionBoard(professionBoard);
+                }
+                Date specialtyGetDate = selPerson.getSpecialtyGetDate();
+                if (specialtyGetDate != null) {
+                    person.setSpecialtyGetDate(specialtyGetDate);
+                }
+                String specialtyGetDateStr = selPerson.getSpecialtyGetDateStr();
+                if (!StringUtil.isEmpty(specialtyGetDateStr)) {
+                    person.setSpecialtyGetDateStr(specialtyGetDateStr);
+                }
+                String typeOfCurrRegi = selPerson.getTypeOfCurrRegi();
+                if (!StringUtil.isEmpty(typeOfCurrRegi)) {
+                    person.setTypeOfCurrRegi(typeOfCurrRegi);
+                }
+                Date currRegiDate = selPerson.getCurrRegiDate();
+                if (currRegiDate != null) {
+                    person.setCurrRegiDate(currRegiDate);
+                }
+                String currRegiDateStr = selPerson.getCurrRegiDateStr();
+                if (!StringUtil.isEmpty(currRegiDateStr)) {
+                    person.setCurrRegiDateStr(currRegiDateStr);
+                }
+                Date praCerEndDate = selPerson.getPraCerEndDate();
+                if (praCerEndDate != null) {
+                    person.setPraCerEndDate(praCerEndDate);
+                }
+                String praCerEndDateStr = selPerson.getPraCerEndDateStr();
+                if (!StringUtil.isEmpty(praCerEndDateStr)) {
+                    person.setPraCerEndDateStr(praCerEndDateStr);
+                }
+                String typeOfRegister = selPerson.getTypeOfRegister();
+                if (!StringUtil.isEmpty(typeOfRegister)) {
+                    person.setTypeOfRegister(typeOfRegister);
+                }
+                String relevantExperience = selPerson.getRelevantExperience();
+                if (!StringUtil.isEmpty(relevantExperience)) {
+                    person.setRelevantExperience(relevantExperience);
+                }
+                String holdCerByEMS = selPerson.getHoldCerByEMS();
+                if (!StringUtil.isEmpty(holdCerByEMS)) {
+                    person.setHoldCerByEMS(holdCerByEMS);
+                }
+                Date aclsExpiryDate = selPerson.getAclsExpiryDate();
+                if (aclsExpiryDate != null) {
+                    person.setAclsExpiryDate(aclsExpiryDate);
+                }
+                String aclsExpiryDateStr = selPerson.getAclsExpiryDateStr();
+                if (!StringUtil.isEmpty(aclsExpiryDateStr)) {
+                    person.setAclsExpiryDateStr(aclsExpiryDateStr);
+                }
+                //set lic person info
+                person.setLicPerson(isLicPsn);
             }
         }
     }
