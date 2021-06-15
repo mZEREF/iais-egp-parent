@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
-import java.util.Map;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -35,7 +33,4 @@ public interface AuditTrailMainBeClient {
 
 	@PutMapping(path = "/iais-audit-trail/session-duration")
 	FeignResponseEntity<Void> updateSessionDuration(@RequestParam("sessionId") String sessionId, @RequestParam("perioid") int period);
-
-	@GetMapping(value = "/iais-audit-trail/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }

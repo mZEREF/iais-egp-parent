@@ -1,18 +1,19 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "inter-inbox",configuration = FeignConfiguration.class,fallback = InboxFallback.class)
 public interface InboxClient {
@@ -30,7 +31,4 @@ public interface InboxClient {
 
     @GetMapping(value = "/iais-inter-inbox/inbox/mask")
     FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(@RequestParam(name = "msgId")String msgId);
-
-    @GetMapping(value = "/iais-inter-inbox/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
 }
