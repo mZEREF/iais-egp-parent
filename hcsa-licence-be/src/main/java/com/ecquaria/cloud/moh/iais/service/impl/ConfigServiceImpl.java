@@ -131,14 +131,11 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-        Collections.sort(entity, new Comparator<HcsaServiceDto>() {
-            @Override
-            public int compare(HcsaServiceDto o1, HcsaServiceDto o2) {
-                if(o1.getSvcName().equals(o2.getSvcName())){
-                   return (int) (Double.parseDouble(o1.getVersion())-Double.parseDouble(o2.getVersion()));
-                }else {
-                    return o1.getSvcName().compareTo(o2.getSvcName());
-                }
+        Collections.sort(entity, (o1, o2) -> {
+            if(o1.getSvcName().equals(o2.getSvcName())){
+               return (int) (Double.parseDouble(o1.getVersion())-Double.parseDouble(o2.getVersion()));
+            }else {
+                return o1.getSvcName().compareTo(o2.getSvcName());
             }
         });
         return entity;
@@ -1050,12 +1047,17 @@ public class ConfigServiceImpl implements ConfigService {
         return map;
     }
 
-    private synchronized List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if (this.hcsaServiceCatgoryDtos == null) {
-            //this config cannot change,so need init once
-            this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+    private  List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+        if(this.hcsaServiceCatgoryDtos!=null){
+            return this.hcsaServiceCatgoryDtos;
         }
-        return this.hcsaServiceCatgoryDtos;
+        synchronized (this){
+            if (this.hcsaServiceCatgoryDtos == null) {
+                //this config cannot change,so need init once
+                this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+            }
+            return this.hcsaServiceCatgoryDtos;
+        }
     }
 
     @Override

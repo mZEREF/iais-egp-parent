@@ -209,7 +209,7 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-clinical_directorr" maxlength="2" placeholder="minimum count" value="">
+            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount_2"></span>
           </div>
           <div class="col-xs-12 col-md-2">

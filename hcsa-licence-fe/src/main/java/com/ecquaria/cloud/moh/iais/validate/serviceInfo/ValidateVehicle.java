@@ -29,7 +29,7 @@ public class ValidateVehicle implements ValidateFlow {
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Override
-    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId) {
+    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
         if(appSvcVehicleDtos==null){
             return;
         }
@@ -56,9 +56,15 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
                 }else {
                     //validate  vehicle number used
-                    List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
-                    if(!appSvcVehicleDtoList.isEmpty()){
-                        map.put("vehicleName" + i, "NEW_ERR0028");
+                    if(oldAppSvcVehicleDto==null){
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
+                        if(!appSvcVehicleDtoList.isEmpty()){
+                            map.put("vehicleName" + i, "NEW_ERR0028");
+                        }
+                    }else {
+
+
+
                     }
                 }
             }

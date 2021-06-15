@@ -295,13 +295,69 @@ public class ConfigServiceDelegator {
         }
         String manvehicles = request.getParameter("man-vehicles");
         String mixvehicles = request.getParameter("mix-vehicles");
+        HcsaSvcPersonnelDto vehicles=new HcsaSvcPersonnelDto();
+        try {
+            if(!StringUtil.isEmpty(manvehicles)){
+                vehicles.setMandatoryCount(Integer.parseInt(manvehicles));
+                vehicles.setPageMandatoryCount(manvehicles);
+            }
+        }catch (NumberFormatException e){
+            vehicles.setPageMandatoryCount(manvehicles);
+        }
+        try {
+            if(!StringUtil.isEmpty(mixvehicles)){
+                vehicles.setMaximumCount(Integer.parseInt(mixvehicles));
+                vehicles.setPageMaximumCount(mixvehicles);
+            }
+        }catch (NumberFormatException e){
+            vehicles.setPageMaximumCount(mixvehicles);
+        }
+        vehicles.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//01
 
-        String manclinicaldirectorr = request.getParameter("man-clinical_directorr");
+
+        String manclinicaldirectorr = request.getParameter("man-clinical_director");
         String mixclinicaldirector = request.getParameter("mix-clinical_director");
+        HcsaSvcPersonnelDto director=new HcsaSvcPersonnelDto();
+        try {
+            if(!StringUtil.isEmpty(manclinicaldirectorr)){
+                director.setMandatoryCount(Integer.parseInt(manclinicaldirectorr));
+                director.setPageMandatoryCount(manclinicaldirectorr);
+            }
+
+        }catch (NumberFormatException e){
+            director.setPageMandatoryCount(manclinicaldirectorr);
+        }
+        try {
+            if(!StringUtil.isEmpty(mixclinicaldirector)){
+                director.setMandatoryCount(Integer.parseInt(mixclinicaldirector));
+                director.setPageMandatoryCount(mixclinicaldirector);
+            }
+        }catch (NumberFormatException e){
+            director.setPageMandatoryCount(mixclinicaldirector);
+        }
+        director.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//03
 
         String mancharges = request.getParameter("man-charges");
         String mixcharges = request.getParameter("mix-charges");
+        HcsaSvcPersonnelDto charges=new HcsaSvcPersonnelDto();
 
+        try {
+            if(!StringUtil.isEmpty(mancharges)){
+                charges.setMandatoryCount(Integer.parseInt(mancharges));
+                charges.setPageMandatoryCount(mancharges);
+            }
+        }catch (NumberFormatException e){
+            charges.setPageMandatoryCount(mancharges);
+        }
+        try {
+            if(!StringUtil.isEmpty(mixcharges)){
+                charges.setMaximumCount(Integer.parseInt(mixcharges));
+                charges.setPageMaximumCount(mixcharges);
+            }
+        }catch (NumberFormatException e){
+            charges.setPageMaximumCount(mixcharges);
+        }
+        charges.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//04
 
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");

@@ -1906,7 +1906,26 @@ public class ClinicalLaboratoryDelegator {
         if("next".equals(crud_action_type)){
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String licenseeId = loginContext.getLicenseeId();
-            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),licenseeId);
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
+            boolean checkIsRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())&&!checkIsRfi){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                if(oldAppSubmissionDto!=null){
+                    oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
+                }
+            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())&&!checkIsRfi){
+                AppSubmissionDto oldRenewAppSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request, "oldRenewAppSubmissionDto");
+                if(oldRenewAppSubmissionDto!=null){
+                    oldAppSvcVehicleDto=oldRenewAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
+                }
+            }
+            if(checkIsRfi){
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute(NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                if(oldAppSubmissionDto!=null){
+                    oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
+                }
+            }
+            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);

@@ -2303,7 +2303,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList(),licenseeId);
+        List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto oldRenewAppSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request, "oldRenewAppSubmissionDto");
+        validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
 
         return errorMap;
     }
