@@ -684,7 +684,7 @@ public class ServiceMenuDelegator {
                     //get prem type intersection
                     Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(chkBase);
                     int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
-                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
                     SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,alignMinExpiryMonth);
                     //filter pending and existing data
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
@@ -972,8 +972,8 @@ public class ServiceMenuDelegator {
                         Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(allChekSvcIdList);
                         int relMinExpiryMonth = systemParamConfig.getRelMinExpiryMonth();
                         int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
-                        log.debug(StringUtil.changeForLog("relMinExpiryMonth:")+relMinExpiryMonth);
-                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                        log.debug(StringUtil.changeForLog("relMinExpiryMonth:"+relMinExpiryMonth));
+                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
                         int maxExpiryMonth;
                         if(relMinExpiryMonth > alignMinExpiryMonth){
                             maxExpiryMonth = relMinExpiryMonth;
