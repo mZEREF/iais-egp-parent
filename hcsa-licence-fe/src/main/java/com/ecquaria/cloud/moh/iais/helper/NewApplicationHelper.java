@@ -2160,6 +2160,7 @@ public class NewApplicationHelper {
             appPsnEditDto.setRelevantExperience(true);
             appPsnEditDto.setHoldCerByEMS(true);
             appPsnEditDto.setAclsExpiryDate(true);
+            appPsnEditDto.setBclsExpiryDate(true);
             appPsnEditDto.setNoRegWithProfBoard(true);
             appPsnEditDto.setTransportYear(true);
 
