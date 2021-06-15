@@ -2324,9 +2324,9 @@ public class HcsaApplicationDelegator {
                     applicationGroupDtos.add(applicationGroupDto);
                 }
                 //spec
-                ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationDto.getApplicationNo()).getEntity();
-                if(specApp!=null){
-                    String appGrpIdSpec = specApp.getAppGrpId();
+                List<ApplicationDto> specApp = cessationClient.getAppByBaseAppNo(applicationDto.getApplicationNo()).getEntity();
+                if(!IaisCommonUtils.isEmpty(specApp)){
+                    String appGrpIdSpec = specApp.get(0).getAppGrpId();
                     List<ApplicationDto> applicationDtoListSpec = applicationService.getApplicaitonsByAppGroupId(appGrpIdSpec);
                     Set<String> statusListSpec = IaisCommonUtils.genNewHashSet();
                     for(ApplicationDto  applicationDto1 : applicationDtoListSpec){
@@ -3433,23 +3433,25 @@ public class HcsaApplicationDelegator {
                 appCessLicDto.setAppCessHciDtos(appCessHciDtos);
                 //spec
                 String applicationNo = applicationDto.getApplicationNo();
-                ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
+                List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
                 List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-                if (specApp != null) {
-                    String specId = specApp.getOriginLicenceId();
-                    LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specId).getEntity();
-                    if (specLicenceDto != null) {
-                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto baseLic = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                        String specLicenceNo = specLicenceDto.getLicenceNo();
-                        String licenceDtoId = specLicenceDto.getId();
-                        String specSvcName = specLicenceDto.getSvcName();
-                        appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-                        appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-                        appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                        appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                        appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                        appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                if (!IaisCommonUtils.isEmpty(specApps)) {
+                    for(ApplicationDto specApp :specApps ){
+                        String specId = specApp.getOriginLicenceId();
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specId).getEntity();
+                        if (specLicenceDto != null) {
+                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                            LicenceDto baseLic = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String licenceDtoId = specLicenceDto.getId();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                            appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
                     }
                     ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                 }

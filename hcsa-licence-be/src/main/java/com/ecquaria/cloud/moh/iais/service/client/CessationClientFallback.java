@@ -129,7 +129,7 @@ public class CessationClientFallback implements CessationClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getAppByBaseAppNo(String appNo) {
+    public FeignResponseEntity<List<ApplicationDto>> getAppByBaseAppNo(String appNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
