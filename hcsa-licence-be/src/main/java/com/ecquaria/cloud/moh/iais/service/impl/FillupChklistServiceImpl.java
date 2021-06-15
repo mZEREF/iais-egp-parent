@@ -685,7 +685,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public void routingToNcEmail(TaskDto taskDto, String preInspecRemarks,LoginContext loginContext){
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String svcId = applicationDto.getServiceId();
+        String svcId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String appType = applicationDto.getApplicationType();
         String stgId = taskDto.getTaskKey();
        /* List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
@@ -732,7 +732,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT );
         updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         //create createAppPremisesRoutingHistory
-        String svcId = applicationDto.getServiceId();
+        String svcId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
         String stgId = taskDto.getTaskKey();
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
         dto.setType(updateApplicationDto.getApplicationType());
@@ -2038,7 +2038,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
                 cancelCalendarDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
-                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                List<ApptUserCalendarDto> apptUserCalendarDtos=  appointmentClient.getCalenderByApptRefNoAndStatusOrderByTimeSlot(cancelCalendarDto).getEntity();
                 if(!IaisCommonUtils.isEmpty(apptUserCalendarDtos)){
                     Date startDate = apptUserCalendarDtos.get(0).getTimeSlot();
                     Date endDate =  apptUserCalendarDtos.get(apptUserCalendarDtos.size()-1).getTimeSlot();

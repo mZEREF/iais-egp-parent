@@ -109,10 +109,13 @@ public class MohHcsaBeDashboardAjax {
     public @ResponseBody
     Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
         String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         String dashAppStatus = (String)ParamUtil.getSessionAttr(request, "dashAppStatus");
         String groupNo = request.getParameter("groupNo");
+        String switchAction = request.getParameter("switchActionParam");
+        if (StringUtil.isEmpty(switchAction)) {
+            switchAction = (String)ParamUtil.getSessionAttr(request, "dashSwitchActionValue");
+        }
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
         //set dash support flag
@@ -127,7 +130,7 @@ public class MohHcsaBeDashboardAjax {
             //set url and kpi color
             map = setDashAssignMeUrl(map, request, loginContext);
             //set dash support flag
-            if(loginContext != null) {
+            if(loginContext != null && map != null) {
                 String curRole = loginContext.getCurRoleId();
                 if(!StringUtil.isEmpty(curRole)) {
                     if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
@@ -553,13 +556,19 @@ public class MohHcsaBeDashboardAjax {
         ) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationDto.getStatus())){
-                HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getServiceId());
+                HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getRoutingServiceId());
                 boolean canApprove = checkCanApproveStage(canApproveStageDto);
                 if(!canApprove){
+                    if(!StringUtil.isEmpty(noApprove.toString())) {
+                        noApprove.append(' ');
+                    }
                     noApprove.append(item).append(',');
                     approveCheck = 0;
                 }
             }else{
+                if(!StringUtil.isEmpty(noApprove.toString())) {
+                    noApprove.append(' ');
+                }
                 noApprove.append(item).append(',');
                 approveCheck = 0;
             }

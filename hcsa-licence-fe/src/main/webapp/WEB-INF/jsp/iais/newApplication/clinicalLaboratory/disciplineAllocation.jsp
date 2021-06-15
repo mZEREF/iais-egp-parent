@@ -34,7 +34,7 @@
                         <div class="application-service-steps">
                           <div class="discipline-allocation">
                             <h2>${currStepName}</h2>
-                            <p>Please ensure that a clinical governance officer is assigned to each laboratory discipline.</p>
+                            <p>${CURR_STEP_NAME_LABLE}.</p>
                             <div class="table-gp">
                               <c:if test="${AppSubmissionDto.needEditController}">
                                 <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">

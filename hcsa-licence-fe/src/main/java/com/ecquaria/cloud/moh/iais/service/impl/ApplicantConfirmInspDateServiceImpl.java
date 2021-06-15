@@ -493,7 +493,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         List<AppointmentUserDto> appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
         List<String> loginUserIds = null;
         for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
-            if(IaisCommonUtils.isEmpty(loginUserIds)){
+            if (loginUserIds == null) {
                 loginUserIds = IaisCommonUtils.genNewArrayList();
                 appointmentUserDtoList.add(appointmentUserDto);
                 loginUserIds.add(appointmentUserDto.getLoginUserId());

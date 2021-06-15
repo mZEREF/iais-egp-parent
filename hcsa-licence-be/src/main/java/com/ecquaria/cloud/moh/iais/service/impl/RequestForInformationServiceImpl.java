@@ -322,9 +322,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         String path = fil.getPath();
                         HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                         map.put("fileName",name);
-                        map.put("filePath", name);
+                        map.put("filePath", path);
 
-                        try (InputStream is= Files.newInputStream(fil.toPath());
+                        try (InputStream is = Files.newInputStream(Paths.get(path));
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];

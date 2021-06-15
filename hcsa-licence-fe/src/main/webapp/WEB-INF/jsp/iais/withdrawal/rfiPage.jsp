@@ -10,7 +10,14 @@
 <%@include file="./dashboard.jsp" %>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+        <c:if test="${ apply_page_print=='Y'}">
+            <script>
+                window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+            </script>
+        </c:if>
         <input type="hidden" name="app_action_type" value="">
+        <input type="hidden" name="print_action_type" value="">
+
         <input type="hidden" name="withdraw_app_list" value="">
         <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
@@ -24,100 +31,100 @@
                         </div>
                         <div class="row margin-bottom-10 text-right">
                             <div class="col-lg-12 col-xs-12">
-                                    <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Go to <br>Dashboard</a>
+                                <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Go to <br>Dashboard</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </c:when>
             <c:otherwise>
-            <div class="navigation-gp">
-                <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
-                <div class="row">
-                    <div class="col-lg-12 col-xs-12">
-                        <div class="internet-content">
-                            <div class="center-content">
-                                <h2>You are withdrawing for </h2>
-                                <div class="row">
-                                    <div class="col-lg-8 col-xs-12">
-                                        <div class="withdraw-content-box">
-                                            <div class="withdraw-info-gp">
-                                                <div class="withdraw-info-row">
-                                                    <div class="withdraw-info">
-                                                        <p>${rfiWithdrawDto.applicationNo}</p>
-                                                    </div>
-                                                    <div class="withdraw-delete">
-                                                        <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+                <div class="navigation-gp">
+                    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+                    <div class="row">
+                        <div class="col-lg-12 col-xs-12">
+                            <div class="internet-content">
+                                <div class="center-content">
+                                    <h2>You are withdrawing for </h2>
+                                    <div class="row">
+                                        <div class="col-lg-8 col-xs-12">
+                                            <div class="withdraw-content-box">
+                                                <div class="withdraw-info-gp">
+                                                    <div class="withdraw-info-row">
+                                                        <div class="withdraw-info">
+                                                            <p>${rfiWithdrawDto.applicationNo}</p>
+                                                        </div>
+                                                        <div class="withdraw-delete">
+                                                            <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div id="newappModal" class="modal fade" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
-                                        </div>
-                                        <div id="withdrawPagDiv"></div>
-                                        <table class="table">
-                                            <thead>
-                                            <tr>
-                                                <th></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody id="withdrawBodyDiv"></tbody>
-                                        </table>
-                                        <div class="modal-footer">
-                                            <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
+                                <div id="newappModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
+                                            </div>
+                                            <div id="withdrawPagDiv"></div>
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="withdrawBodyDiv"></tbody>
+                                            </table>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="center-content">
-                                <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <iais:select name="withdrawalReason" id="withdrawalReason"
-                                                     options="withdrawalReasonList"
-                                                     onchange="withdrawalReasons(this.value);"
-                                                     value="${rfiWithdrawDto.withdrawnReason}"/>
-                                        <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
+                                <div class="center-content">
+                                    <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <iais:select name="withdrawalReason" id="withdrawalReason"
+                                                         options="withdrawalReasonList"
+                                                         onchange="withdrawalReasons(this.value);"
+                                                         value="${rfiWithdrawDto.withdrawnReason}"/>
+                                            <span id="error_withdrawnReason" name="iaisErrorMsg" class="error-msg"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div id="reason"
-                                 <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
-                                <div class="row">
-                                    <div class="center-content">
-                                        <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
+                                <div id="reason"
+                                     <c:if test="${rfiWithdrawDto.withdrawnReason != 'WDR005' || rfiWithdrawDto.withdrawnReason== null}">hidden</c:if>>
+                                    <div class="row">
+                                        <div class="center-content">
+                                            <label class="col-md-4" style="font-size:2rem">Remarks<span style="color: red"> *</span></label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="center-content">
-                                        <div class="col-md-6">
-                                            <div class="file-upload-gp">
+                                    <div class="row">
+                                        <div class="center-content">
+                                            <div class="col-md-6">
+                                                <div class="file-upload-gp">
                                             <textarea name="withdrawnRemarks" cols="90" rows="15" id="withdrawnRemarks"
                                                       title="content"
                                                       maxlength="500">${rfiWithdrawDto.withdrawnRemarks}</textarea>
+                                                </div>
+                                                <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                             </div>
-                                            <span id="error_withdrawnRemarks" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="center-content">
-                                <div class="">
-                                    <div class="document-upload-gp">
-                                        <div class="document-upload-list">
-                                            <h3>File upload for Withdrawal Reasons</h3>
-                                            <div class="file-upload-gp">
-                                                <span name="selectedFileShowId" id="selectedFileShowId">
+                                <div class="center-content">
+                                    <div class="">
+                                        <div class="document-upload-gp">
+                                            <div class="document-upload-list">
+                                                <h3>File upload for Withdrawal Reasons</h3>
+                                                <div class="file-upload-gp">
+                                                <span name="selectedWdFileShowId" id="selectedWdFileShowId">
                                                 <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
                                                   <div id="${withdrawPageShowFile.fileMapId}">
@@ -131,47 +138,48 @@
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="error_${configIndex}error"></span>
                                                     <button type="button" class="btn btn-secondary btn-sm"
-                                                            onclick="javascript:deleteFileFeAjax('selectedFile',${withdrawPageShowFile.index});">
+                                                            onclick="javascript:deleteFileFeAjax('selectedWdFile',${withdrawPageShowFile.index});">
                                                     Delete</button>  <button type="button"
                                                                              class="btn btn-secondary btn-sm"
-                                                                             onclick="javascript:reUploadFileFeAjax('selectedFile',${withdrawPageShowFile.index},'mainForm');">
+                                                                             onclick="javascript:reUploadFileFeAjax('selectedWdFile',${withdrawPageShowFile.index},'mainForm');">
                                                   ReUpload</button>
                                                   </div>
                                                 </c:forEach>
                                                 </span>
-                                                <input id="selectedFile" name="selectedFile"
-                                                       class="selectedFile commDoc"
-                                                       type="file" style="display: none;"
-                                                       aria-label="selectedFile1"
-                                                       onclick="fileClicked(event)" onchange="doUserRecUploadConfirmFile(event)"/><a
-                                                    class="btn btn-file-upload btn-secondary"
-                                                    onclick="doFileAddEvent()">Upload</a>
+                                                    <input id="selectedFile" name="selectedFile"
+                                                           class="selectedFile commDoc"
+                                                           type="file" style="display: none;"
+                                                           aria-label="selectedFile1"
+                                                           onclick="fileClicked(event)"
+                                                           onchange="doUserRecUploadConfirmFile(event)"/><a
+                                                        class="btn btn-file-upload btn-secondary"
+                                                        onclick="doFileAddEvent()">Upload</a>
+                                                </div>
+                                                <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+                                                <span id="error_selectedWdFileError" name="iaisErrorMsg" class="error-msg"></span>
                                             </div>
-                                            <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
-                                            <span id="error_selectedFileError" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="application-tab-footer">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                            <div class="application-tab-footer">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
                                     <span style="padding-right: 10%" class="components">
                                         <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
                                                 class="fa fa-angle-left"></em> Back</a>
                                     </span>
+                                    </div>
+                                    <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
+                                       href="javascript:void(0);">Submit</a>
+                                    <span style="float:right">&nbsp;</span>
+                                    <a class="btn btn-secondary" style="float:right"
+                                       href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
                                 </div>
-                                <a class="btn btn-primary" style="float:right" onclick="doSubmit()"
-                                   href="javascript:void(0);">Submit</a>
-                                <span style="float:right">&nbsp;</span>
-                                <a class="btn btn-secondary" style="float:right"
-                                   href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp">Cancel</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
             </c:otherwise>
         </c:choose>
         <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -208,24 +216,31 @@
     }
 
     function doUserRecUploadConfirmFile(event) {
-        ajaxCallUploadForMax('mainForm', "selectedFile",true);
+        uploadFileValidate();
+
     }
 
     function uploadFileValidate() {
         var configFileSize = $("#configFileSize").val();
-        console.log(configFileSize)
+        console.log('maxFileSize : '+configFileSize);
+
         var error = validateUploadSizeMaxOrEmpty(configFileSize, 'selectedFile');
+        console.log(error);
+
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
+            $('#error_selectedWdFileError').html("");
             $("#delFile").removeAttr("hidden");
             let fileName = $("#selectedFile").val();
             let pos = fileName.lastIndexOf("\\");
             $("#fileName").html(fileName.substring(pos + 1));
+            ajaxCallUploadForMax('mainForm', "selectedWdFile",true);
         } else if(error == "E"){
             $('#error_litterFile_Show').html("");
-            $('#error_file').html("");
-        }else {
+            $('#error_selectedWdFileError').html("");
+        } else{
             $("#selectedFile").val("");
+            $('#error_selectedWdFileError').html("");
             $('#error_litterFile_Show').html($("#fileMaxMBMessage").val());
             $("#fileName").html("");
         }
@@ -263,7 +278,6 @@
     });
 
     function doSubmit() {
-        uploadFileValidate();
         showWaiting();
         let appNoList = "";
         let withdrawContent$ = $(".withdraw-content-box");
@@ -276,6 +290,14 @@
     }
 
     function printWDPDF(){
-        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=wdPage",'_blank');
+        let appNoList = "";
+        let withdrawContent$ = $(".withdraw-content-box");
+        withdrawContent$.find(".withdraw-info p").each(function (){
+            appNoList = appNoList + $(this).text() + "#";
+        });
+        $("[name='withdraw_app_list']").val(appNoList);
+        $("[name='print_action_type']").val("applyPagePrint");
+
+        submit("withdrawalStep");
     }
 </script>

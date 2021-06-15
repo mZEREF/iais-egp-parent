@@ -84,7 +84,15 @@
         location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request)%>";
     });
     $("#print-ack").click(function () {
-        window.print();
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFeAckPrintView/1/",request)%>';
+
+        var suffix = "appType=APTY004"
+        if(url.indexOf('MohFeAckPrintView/1/?') != -1){
+            url = url + '&' + suffix;
+        }else{
+            url = url + '?' + suffix;
+        }
+        window.open(url,'_blank');
     })
 </script>
 

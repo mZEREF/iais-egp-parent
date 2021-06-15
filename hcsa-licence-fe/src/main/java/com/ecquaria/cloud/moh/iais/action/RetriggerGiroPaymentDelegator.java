@@ -52,6 +52,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +83,8 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the retrigger giro doStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
 
         String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
@@ -125,11 +126,78 @@ public class RetriggerGiroPaymentDelegator {
                 appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
             }
         }
+        String title = "";
+        StringBuilder smallTitle = new StringBuilder();
+        List<String> svcNames = getServiceNameList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
+            String licenceNo = "";
+            String licenceId = appSvcRelatedInfoDtos.get(0).getOriginLicenceId();
+            if(!StringUtil.isEmpty(licenceId)){
+                LicenceDto licenceDto = appSubmissionService.getLicenceDtoById(licenceId);
+                licenceNo = licenceDto.getLicenceNo();
+            }
+            String svcName = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDtos.get(0).getServiceId()).getSvcName();
+            title = "Amendment";
+            smallTitle.append("You are amending the ")
+                    .append("<strong>")
+                    .append(svcName)
+                    .append(" licence (Licence No. ")
+                    .append(licenceNo)
+                    .append("</strong>)");
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             requestForChangeService.svcDocToPrimaryForGiroDeduction(appSubmissionDto);
+            title = "Licence Renewal";
+            int renewCount = 0;
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSvcRelatedInfoDto.getApplicationType())){
+                    renewCount++;
+                }
+            }
+            if(renewCount == 1){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDtos.get(0).getServiceId());
+                String licenceNo = "";
+                String licenceId = appSvcRelatedInfoDtos.get(0).getOriginLicenceId();
+                if(!StringUtil.isEmpty(licenceId)){
+                    LicenceDto licenceDto = appSubmissionService.getLicenceDtoById(licenceId);
+                    licenceNo = licenceDto.getLicenceNo();
+                }
+                smallTitle.append("You are renewing the ")
+                .append(hcsaServiceDto.getSvcName())
+                .append(" (Licence No. ")
+                .append(licenceNo)
+                .append(')');
+
+            }else if(renewCount > 1){
+                smallTitle.append("You are renewing these licences: ");
+                int count = 0;
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getServiceId());
+                    smallTitle.append("<strong>")
+                            .append(hcsaServiceDto.getSvcName())
+                            .append("</strong>");
+                    if(count != appSvcRelatedInfoDtos.size()-1){
+                        smallTitle.append(" | ");
+                    }
+                    count++;
+                }
+            }
+        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            title = "New Licence Application";
+            smallTitle.append("You are applying for ");
+            int count = 0;
+            for(String svcName:svcNames){
+                smallTitle.append("<strong>")
+                        .append(svcName)
+                        .append("</strong>");
+                if(count != svcNames.size()-1){
+                    smallTitle.append(" | ");
+                }
+                count ++;
+            }
         }
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle);
         //set doc name
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -453,7 +521,21 @@ public class RetriggerGiroPaymentDelegator {
             }
             bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",oneSubmsonDtoList);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                List<String> svcNames = IaisCommonUtils.genNewArrayList();
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    String serviceName = appSvcRelatedInfoDto.getServiceName();
+                    String currAppType = appSvcRelatedInfoDto.getApplicationType();
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(currAppType)){
+                        serviceName = serviceName + " (Renewal)" ;
+                    }else {
+                        serviceName = serviceName + " (Amendment)" ;
+                    }
+                    svcNames.add(serviceName);
+                }
+                ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) svcNames);
+            }
         }
 
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
@@ -465,7 +547,9 @@ public class RetriggerGiroPaymentDelegator {
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
-
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            ParamUtil.setRequestAttr(bpc.request,"renewAck", "test");
+        }
         log.info(StringUtil.changeForLog("the preAck end ...."));
     }
 
@@ -480,6 +564,41 @@ public class RetriggerGiroPaymentDelegator {
             }
         }
         return appGrpPremisesDtos;
+    }
+
+    private List<String> getServiceNameList(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+        List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            List<String> baseSvcNames = IaisCommonUtils.genNewArrayList();
+            List<String> specifiedSvcNames = IaisCommonUtils.genNewArrayList();
+            List<String> otherSvcNames = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getServiceId());
+                if(hcsaServiceDto != null){
+                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
+                        baseSvcNames.add(hcsaServiceDto.getSvcName());
+                    }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
+                        specifiedSvcNames.add(hcsaServiceDto.getSvcName());
+                    }else{
+                        otherSvcNames.add(hcsaServiceDto.getSvcName());
+                    }
+                }
+            }
+            baseSvcNames = sortSvcNameList(baseSvcNames);
+            specifiedSvcNames = sortSvcNameList(specifiedSvcNames);
+            otherSvcNames = sortSvcNameList(otherSvcNames);
+            serviceNameList.addAll(baseSvcNames);
+            serviceNameList.addAll(specifiedSvcNames);
+            serviceNameList.addAll(otherSvcNames);
+        }
+        return serviceNameList;
+    }
+
+    private List<String> sortSvcNameList(List<String> svcNames){
+        if(svcNames != null && svcNames.size() > 1){
+            Collections.sort(svcNames,(s1,s2)->s1.compareTo(s2));
+        }
+        return svcNames;
     }
 
 }

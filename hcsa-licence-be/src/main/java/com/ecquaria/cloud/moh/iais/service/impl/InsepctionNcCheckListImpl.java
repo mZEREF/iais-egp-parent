@@ -527,7 +527,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-
     private void saveRecommend(InspectionFDtosDto serListDto,String appPremId) {
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(appPreRecommentdationDto!=null){

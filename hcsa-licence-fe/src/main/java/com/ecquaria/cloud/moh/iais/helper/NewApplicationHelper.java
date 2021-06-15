@@ -2206,6 +2206,15 @@ public class NewApplicationHelper {
         return isCharity;
     }
 
+    public static String getLicenseeId(HttpServletRequest request){
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext != null){
+            licenseeId = loginContext.getLicenseeId();
+        }
+        return licenseeId;
+    }
+
     public static boolean newAndNotRfi(HttpServletRequest request,String appType){
         return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
     }

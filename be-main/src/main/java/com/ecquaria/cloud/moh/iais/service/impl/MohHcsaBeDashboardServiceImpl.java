@@ -108,7 +108,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                                                                         TaskDto taskDto, String userId, String remarks, String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
-        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
+        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         appPremisesRoutingHistoryDto.setProcessDecision(decision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(userId);
@@ -475,7 +475,18 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     }
 
     private SearchParam setRoleAndWrkGrpsInParam(String memberRole, List<String> workGroupIds, SearchParam searchParam) {
-        searchParam.addFilter("dashRoleId", memberRole, true);
+        if(RoleConsts.USER_ROLE_INSPECTIOR.equals(memberRole)) {
+            List<String> dashRoleIdList = IaisCommonUtils.genNewArrayList();
+            dashRoleIdList.add(RoleConsts.USER_ROLE_INSPECTIOR);
+            dashRoleIdList.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+            String dashRoleIdStr = SqlHelper.constructInCondition("T7.ROLE_ID", dashRoleIdList.size());
+            searchParam.addParam("dashRoleIdList", dashRoleIdStr);
+            for (int i = 0; i < dashRoleIdList.size(); i++) {
+                searchParam.addFilter("T7.ROLE_ID" + i, dashRoleIdList.get(i));
+            }
+        } else {
+            searchParam.addFilter("dashRoleId", memberRole, true);
+        }
         int workGroupIdsSize = 0;
         if(!IaisCommonUtils.isEmpty(workGroupIds)) {
             workGroupIdsSize = workGroupIds.size();

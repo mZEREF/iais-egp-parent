@@ -97,60 +97,66 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
 
     private void createTaskByMap(Map<String, List<AppInspectionStatusDto>> map) {
         for(Map.Entry<String, List<AppInspectionStatusDto>> m : map.entrySet()){
-            log.info(StringUtil.changeForLog("Premises Id = " + m.getKey()));
-            JobLogger.log(StringUtil.changeForLog("Premises Id = " + m.getKey()));
-            List<AppInspectionStatusDto> appInspectionStatusDtos = m.getValue();
-            if(!IaisCommonUtils.isEmpty(appInspectionStatusDtos)){
-                int report = 0;
-                int leadTask = 0;
-                for(int i = 0; i < appInspectionStatusDtos.size(); i++){
-                    //in ASO/PSO
-                    if (appInspectionStatusDtos.get(i) == null) {
-                        continue;
-                    }
-                    String status = appInspectionStatusDtos.get(i).getStatus();
-                    String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
-                    //SKIP Inspection or in ASO/PSO and fast tracking
-                    if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)){
-                        if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status) ||
-                                ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
-                            report = report + 1;
-                        }
-                        continue;
+            try {
+                log.info(StringUtil.changeForLog("Premises Id = " + m.getKey()));
+                JobLogger.log(StringUtil.changeForLog("Premises Id = " + m.getKey()));
+                List<AppInspectionStatusDto> appInspectionStatusDtos = m.getValue();
+                if(!IaisCommonUtils.isEmpty(appInspectionStatusDtos)){
+                    int report = 0;
+                    int leadTask = 0;
+                    for(int i = 0; i < appInspectionStatusDtos.size(); i++){
                         //in ASO/PSO
-                    } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
-                        continue;
-                    }
-                    ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-                    //Fast Tracking
-                    if(applicationDto.isFastTracking()) {
-                        List<AppInspectionStatusDto> fastInspectionList = IaisCommonUtils.genNewArrayList();
-                        fastInspectionList.add(appInspectionStatusDtos.get(i));
-                        int allApp = fastInspectionList.size();
-                        createTask(0, 1, allApp, fastInspectionList);
-                        appInspectionStatusDtos.remove(i);
-                        i--;
-                        //Other Application
-                    } else {
-                        if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
-                            leadTask = leadTask + 1;
-                        } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
-                                InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
-                            report = report + 1;
+                        if (appInspectionStatusDtos.get(i) == null) {
+                            continue;
+                        }
+                        String status = appInspectionStatusDtos.get(i).getStatus();
+                        String appPremCorrId = appInspectionStatusDtos.get(i).getAppPremCorreId();
+                        //SKIP Inspection or in ASO/PSO and fast tracking
+                        if(StringUtil.isEmpty(appPremCorrId) && !StringUtil.isEmpty(status)){
+                            if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
+                                    InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
+                                    InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status) ||
+                                    ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status)) {
+                                report = report + 1;
+                            }
+                            continue;
+                            //in ASO/PSO
+                        } else if(StringUtil.isEmpty(appPremCorrId) && StringUtil.isEmpty(status)) {
+                            continue;
+                        }
+                        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                        //Fast Tracking
+                        if(applicationDto.isFastTracking()) {
+                            List<AppInspectionStatusDto> fastInspectionList = IaisCommonUtils.genNewArrayList();
+                            fastInspectionList.add(appInspectionStatusDtos.get(i));
+                            int allApp = fastInspectionList.size();
+                            createTask(0, 1, allApp, fastInspectionList);
+                            appInspectionStatusDtos.remove(i);
+                            i--;
+                            //Other Application
+                        } else {
+                            if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(status)){
+                                leadTask = leadTask + 1;
+                            } else if(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT.equals(status) ||
+                                    InspectionConstants.INSPECTION_STATUS_PENDING_AO1_RESULT.equals(status) ||
+                                    InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(status)) {
+                                report = report + 1;
+                            }
                         }
                     }
+                    int allApp = appInspectionStatusDtos.size();
+                    log.info(StringUtil.changeForLog("report = " + report));
+                    JobLogger.log(StringUtil.changeForLog("report = " + report));
+                    log.info(StringUtil.changeForLog("leadTask = " + leadTask));
+                    JobLogger.log(StringUtil.changeForLog("leadTask = " + leadTask));
+                    log.info(StringUtil.changeForLog("allApp = " + allApp));
+                    JobLogger.log(StringUtil.changeForLog("allApp = " + allApp));
+                    createTask(report, leadTask, allApp, appInspectionStatusDtos);
                 }
-                int allApp = appInspectionStatusDtos.size();
-                log.info(StringUtil.changeForLog("report = " + report));
-                JobLogger.log(StringUtil.changeForLog("report = " + report));
-                log.info(StringUtil.changeForLog("leadTask = " + leadTask));
-                JobLogger.log(StringUtil.changeForLog("leadTask = " + leadTask));
-                log.info(StringUtil.changeForLog("allApp = " + allApp));
-                JobLogger.log(StringUtil.changeForLog("allApp = " + allApp));
-                createTask(report, leadTask, allApp, appInspectionStatusDtos);
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
+                JobLogger.log(e);
+                continue;
             }
         }
     }
@@ -163,7 +169,12 @@ public class InspecTaskToLeaderJobHandler extends IJobHandler {
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appInspectionStatusDtos.get(0).getAppPremCorreId()).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            //base flow
+            if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+            } else {
+                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            }
             hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(3);

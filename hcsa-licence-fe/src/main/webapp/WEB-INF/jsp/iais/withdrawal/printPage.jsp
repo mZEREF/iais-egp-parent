@@ -21,25 +21,27 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p>${withdrawAppNo}</p>
+                                                    <p>${withdrawDtoView.applicationNo}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <c:if test="${!empty addWithdrawnDtoList}">
-                                <c:forEach items="${addWithdrawnDtoList}" var="wdList">
-                                    <div class="withdraw-content-box">
-                                        <div class="withdraw-info-gp">
-                                            <div class="withdraw-info-row">
-                                                <div class="withdraw-info">
-                                                    <p><a class="appNo">${wdList.applicationNo}</a></p>
+                            <c:if test="${empty rfiWithdrawDto}">
+                                <c:if test="${!empty addWithdrawnDtoList}">
+                                    <c:forEach items="${addWithdrawnDtoList}" var="wdList">
+                                        <div class="withdraw-content-box">
+                                            <div class="withdraw-info-gp">
+                                                <div class="withdraw-info-row">
+                                                    <div class="withdraw-info">
+                                                        <p><a class="appNo">${wdList.applicationNo}</a></p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
+                                </c:if>
                             </c:if>
                         </div>
                         <div class="center-content">

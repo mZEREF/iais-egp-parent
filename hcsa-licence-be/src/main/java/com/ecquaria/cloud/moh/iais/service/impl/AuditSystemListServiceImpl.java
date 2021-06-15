@@ -344,7 +344,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             for(ApplicationDto applicationDto : postApps){
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-                hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+                hcsaSvcStageWorkingGroupDto.setServiceId(StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId());
                 hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
                 AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(taskDto.getApplicationNo()).getEntity();
                 hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
@@ -745,7 +745,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         add(roleIds,RoleConsts.USER_ROLE_AUDIT_PLAN,selectOptionArrayList,roles);
-        add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
+        //add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
+        add(roleIds,RoleConsts.USER_ROLE_INSPECTION_LEAD,selectOptionArrayList,roles);
        return selectOptionArrayList;
     }
 

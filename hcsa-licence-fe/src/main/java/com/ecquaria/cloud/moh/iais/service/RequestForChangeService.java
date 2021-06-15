@@ -100,4 +100,7 @@ public interface RequestForChangeService {
     List<AppSvcDocDto> updateSvcDoc(List<AppSvcDocDto> appSvcDocDtos,List<HcsaSvcDocConfigDto> oldSvcDocConfigDtos,List<HcsaSvcDocConfigDto> svcDocConfigDtos) throws Exception;
     void changeDocToNewVersion(AppSubmissionDto appSubmissionDto) throws  Exception;
     void svcDocToPrimaryForGiroDeduction(AppSubmissionDto appSubmissionDto);
+    void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
+    boolean baseSpecLicenceRelation(LicenceDto licenceDto);
+    String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     }

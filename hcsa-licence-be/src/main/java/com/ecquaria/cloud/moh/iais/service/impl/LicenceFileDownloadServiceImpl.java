@@ -83,6 +83,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -163,6 +164,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
+
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -1341,7 +1343,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         for(ApplicationDto applicationDto : applicationDtos){
             List<ApplicationDto> applicationDtoList=new ArrayList<>(1);
             List<HcsaSvcRoutingStageDto> entity =
-                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getServiceId(), applicationDto.getApplicationType()).getEntity();
+                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getBaseServiceId(), applicationDto.getApplicationType()).getEntity();
             if(entity.isEmpty()){
                 return list;
             }

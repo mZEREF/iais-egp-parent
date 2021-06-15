@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-xs-12 col-md-10">
         <div class="navigation">
-            <div class="nav nav-tabs nav-menu">
+            <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li> <%--NOSONAR--%>
                 <menu:load id="inbox-top-menus">
                     <menu:include name="INTER_INBOX"/>
@@ -94,7 +94,7 @@
                         </c:choose>
                         </c:if>
                         </menu:iterate>
-            </div>
+            </ul>
         </div>
     </div>
     <div class="col-xs-10 col-xs-offset-1 col-lg-offset-0 col-lg-2">

@@ -21,10 +21,10 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="prelogin-title" style="padding-left: 90px;">
-                <h1>Withdrawal Form</h1>
+    <div class=" steps-tab container">
+        <div class="tab-content">
+            <div class="tab-pane active" id="previewTab" role="tabpanel">
+                <h1 class="font-weight 0 ">Withdrawal Form</h1>
                 <c:if test="${rfiServiceName!=null }">
                     <p style="font-size: 2.2rem">You are Withdrawing for <strong>${rfiServiceName }</strong></p>
                 </c:if>

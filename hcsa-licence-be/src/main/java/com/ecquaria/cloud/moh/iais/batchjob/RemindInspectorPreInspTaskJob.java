@@ -243,15 +243,11 @@ public class RemindInspectorPreInspTaskJob {
             emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
             //get mesContext
             String mesContext;
-            if (templateMap != null && !templateMap.isEmpty()) {
-                try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
-            } else {
-                mesContext = emailTemplate;
+            try {
+                mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateMap);
+            } catch (IOException | TemplateException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
             }
             if(!IaisCommonUtils.isEmpty(receiptEmail)) {
                 EmailDto emailDto = new EmailDto();

@@ -3,9 +3,6 @@ package com.ecquaria.egp.core.payment.api.config;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.Properties;
-
 @Slf4j
 public class GatewayConfig {
 	
@@ -42,6 +39,9 @@ public class GatewayConfig {
 	public static final String eNetsAppsUrl = ConfigHelper.getString("eNets.apps.js.url");
 
 	public static final String eNetsEnvUrl = ConfigHelper.getString("eNets.env.jsp.url");
+
+	public static final String eNetsTxnReqListenerUrl = ConfigHelper.getString("eNets.Txn.Req.Listener.url");
+
 
 	public static final String eNetsKeyId = ConfigHelper.getString("eNets.key.id");
 

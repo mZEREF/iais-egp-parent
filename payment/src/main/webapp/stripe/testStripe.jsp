@@ -5,13 +5,13 @@
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-    <meta http-equiv="refresh" content="${GatewayConfig.refreshTime};url=${failUrl}">
+<meta http-equiv="refresh" content="${GatewayConfig.refreshTime};url=${failUrl}">
 
-    <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
     <webui:setLayout name="none"/>
 
-    <title><egov-smc:commonLabel>MasterCard Payment Gateway</egov-smc:commonLabel></title>
+<title><egov-smc:commonLabel>MasterCard Payment Gateway</egov-smc:commonLabel></title>
     <script src="https://js.stripe.com/v3/"></script>
 
 </head>

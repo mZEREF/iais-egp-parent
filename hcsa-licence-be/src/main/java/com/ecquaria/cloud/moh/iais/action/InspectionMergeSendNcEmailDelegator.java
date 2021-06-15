@@ -206,7 +206,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
             List<TaskDto> taskScoreDtos = taskService.getTaskDtoScoresByWorkGroupId(taskDto.getWkGrpId());
-            String lead = getLeadWithTheFewestScores(taskScoreDtos, leads);
+            String lead = inspEmailService.getLeadWithTheFewestScores(taskScoreDtos, leads);
             OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(lead).getEntity();
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
@@ -491,6 +491,9 @@ public class InspectionMergeSendNcEmailDelegator {
                     String serviceId=applicationViewDto1.getApplicationDto().getServiceId();
                     HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                     hcsaSvcStageWorkingGroupDto.setType(applicationViewDto1.getApplicationDto().getApplicationType());
+                    if(applicationViewDto1.getApplicationDto().getRoutingServiceId()!=null){
+                        serviceId=applicationViewDto1.getApplicationDto().getRoutingServiceId();
+                    }
                     hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
                     hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                     hcsaSvcStageWorkingGroupDto.setOrder(1);
@@ -583,6 +586,9 @@ public class InspectionMergeSendNcEmailDelegator {
                     String serviceId = applicationViewDto1.getApplicationDto().getServiceId();
                     HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
                     hcsaSvcStageWorkingGroupDto.setType(applicationViewDto1.getApplicationDto().getApplicationType());
+                    if(applicationViewDto1.getApplicationDto().getRoutingServiceId()!=null){
+                        serviceId=applicationViewDto1.getApplicationDto().getRoutingServiceId();
+                    }
                     hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
                     hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                     hcsaSvcStageWorkingGroupDto.setOrder(1);
@@ -687,32 +693,13 @@ public class InspectionMergeSendNcEmailDelegator {
         appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
     }
 
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
-        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos start ...."));
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos stageId -->:"+stageId));
-        for(ApplicationDto applicationDto : applicationDtos){
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            if(appGrpPremisesEntityDto != null){
-                hcsaSvcStageWorkingGroupDto.setPremiseType(appGrpPremisesEntityDto.getPremisesType());
-            }else{
-                log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos this APP do not have the premise :"+applicationDto.getApplicationNo()));
-            }
-            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
-        }
-        log.debug(StringUtil.changeForLog("the do generateHcsaSvcStageWorkingGroupDtos end ...."));
-        return hcsaSvcStageWorkingGroupDtos;
-    }
+
 
     private List<TaskDto> prepareTaskList(TaskDto taskDto, ApplicationDto applicationDto)  {
         List<TaskDto> list = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos= IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = inspEmailService.generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         Integer count = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
         taskDto.setId(null);
@@ -747,48 +734,7 @@ public class InspectionMergeSendNcEmailDelegator {
         }
     }
 
-    private String getLeadWithTheFewestScores(List<TaskDto> taskScoreDtos, List<String> leads) {
-        List<TaskDto> taskUserDtos = IaisCommonUtils.genNewArrayList();
-        if(IaisCommonUtils.isEmpty(taskScoreDtos)){
-            log.info(StringUtil.changeForLog("taskScoreDtos = null"));
-            JobLogger.log(StringUtil.changeForLog("taskScoreDtos = null"));
-            return leads.get(0);
-        } else {
-            for(TaskDto taskDto : taskScoreDtos){
-                String userId = taskDto.getUserId();
-                for(String lead : leads) {
-                    if (!StringUtil.isEmpty(userId)) {
-                        if(userId.equals(lead)){
-                            taskUserDtos.add(taskDto);
-                        }
-                    }
-                }
-            }
-            String lead = getLeadByTaskScore(taskUserDtos, leads);
-            return lead;
-        }
-    }
-    private String getLeadByTaskScore(List<TaskDto> taskUserDtos, List<String> leads) {
-        if(IaisCommonUtils.isEmpty(taskUserDtos)){
-            return leads.get(0);
-        } else {
-            int score1 = 0;
-            String lead = "";
-            for(TaskDto taskDto : taskUserDtos){
-                if(StringUtil.isEmpty(lead)){
-                    lead = taskDto.getUserId();
-                    score1 = taskDto.getScore();
-                } else {
-                    int scoreNow = taskDto.getScore();
-                    if(scoreNow < score1){
-                        lead = taskDto.getUserId();
-                        score1 = taskDto.getScore();
-                    }
-                }
-            }
-            return lead;
-        }
-    }
+
     public void doRecallEmail() {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");
     }

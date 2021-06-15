@@ -871,7 +871,6 @@ a.article, a.article:hover {
   color: #333333;
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown .dropdown-menu {
-  margin-top: 0;
   top: 44px;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -1202,7 +1201,6 @@ a.article, a.article:hover {
   top: auto;
   border-radius: 0 0 14px 14px;
   width: 100%;
-  margin: 0;
   background-color: white;
   -webkit-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
@@ -1688,7 +1686,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   footer.footerlogin .footer-link ul li a {
     position: relative;
     font-size: 11px;
-    position: relative;
   }
   footer.footerlogin .footer-link ul li a:before {
     content: none;
@@ -1793,7 +1790,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   content: "";
   font-size: 4rem;
   color: #2199E8;
-  line-height: 20px;
   font-weight: 400;
   vertical-align: middle;
   position: absolute;
@@ -1909,7 +1905,6 @@ input[type=number] {
   margin-bottom: 15px;
   z-index: 1;
   border-radius: 14px;
-  color: #333333;
   font-family: "Open Sans", sans-serif;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
   background: #efefef;
@@ -2128,7 +2123,6 @@ input[type=number]::-webkit-outer-spin-button {
   position: relative;
 }
 .form-check input.form-check-input {
-  height: auto;
   position: absolute;
   opacity: 0;
   width: 100%;
@@ -2424,7 +2418,6 @@ input[type=number]::-webkit-outer-spin-button {
   border: 1px solid #6c6c6c;
   z-index: 1;
   border-radius: 14px;
-  color: #333333;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
   background: #efefef;
   /* Old browsers */
@@ -2633,7 +2626,8 @@ span.error-msg {
   -ms-transform-origin: 0 0;
   transform-origin: 0 0;
   -webkit-transform: none;
-  -moz-transform: none   -ms-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
   -o-transform: none;
   transform: none;
   background: none;
@@ -3083,7 +3077,6 @@ span.error-msg {
   color: #333333;
   position: absolute;
   display: block;
-  margin-left: auto;
   margin-right: auto;
   font-weight: 600;
   margin-bottom: 0;
@@ -3229,7 +3222,6 @@ span.error-msg {
   color: #333333;
   flex-basis: 100%;
   position: relative;
-  padding-left: 0;
   text-align: center;
   padding: 0 10px;
 }
@@ -4430,7 +4422,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 @media only screen and (min-width : 768px) and (max-width : 992px) {
   .tab-search.license-search .licence-btns {
     flex: 1;
-    width: auto;
     margin-right: 0;
     order: 1;
     margin-top: 0;
@@ -4577,7 +4568,6 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     padding-left: 20px;
     border-left: 1px solid #bababa;
     width: calc(66% - 30px);
-    border-top: 0;
     margin-top: 0;
     padding-top: 0;
     border-top: 0;
@@ -5547,7 +5537,6 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox],
 .control-item-container input.control-input[type=radio] {
-  height: auto;
   position: absolute;
   opacity: 0;
   width: 100%;
@@ -5560,11 +5549,6 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox] + label.control-label,
 .control-item-container input.control-input[type=radio] + label.control-label {
-  color: #333333;
-  font-size: 1.6rem;
-  font-weight: 400;
-  position: relative;
-  padding-left: 30px;
   min-width: 16px;
   min-height: 22px;
   line-height: 22px !important;

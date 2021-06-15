@@ -184,10 +184,10 @@
                             </c:when>
                         </c:choose>
                         <div class="col-xs-12
-                             <c:if test="${'onSite'==className}">col-md-3"</c:if>
-                             <c:if test="${'conveyance'==className}">col-md-4"</c:if>
+                             <c:if test="${'onSite'==className}">col-md-2"</c:if>
+                             <c:if test="${'conveyance'==className}">col-md-3"</c:if>
                              <c:if test="${'offSite'==className}">col-md-3"</c:if>
-                             <c:if test="${'easMts'==className}">col-md-4"</c:if> >
+                             <c:if test="${'easMts'==className}">col-md-3"</c:if> >
                             <c:choose>
                                 <c:when test="${premisesType == 'ONSITE'}">
                                     <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>

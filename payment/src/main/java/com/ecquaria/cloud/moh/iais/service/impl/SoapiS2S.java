@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SoapiS2S {
-    private SoapiS2S.Msg msg;
+    private Msg msg;
     private String ss;
     @Getter
     @Setter

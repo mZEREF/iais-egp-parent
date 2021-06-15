@@ -1,5 +1,5 @@
 <c:choose>
-  <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'}"></c:when>
+  <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}"></c:when>
   <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}"></c:when>
   <c:when test=">${licenceView=='licenceView'}"></c:when>
   <c:otherwise>
@@ -35,7 +35,15 @@
             <c:if test="${viewPrint == 'Y'}">
               <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
             </c:if>
-            <%@include file="../newApplication/declarations/statements.jsp"%>
+              <c:if test="${group_renewal_app_rfc == '1'}">
+                <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
+                <%@include file="../newApplication/declarations/competencies.jsp"%>
+                <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
+                <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
+              </c:if>
+              <c:if test="${group_renewal_app_rfc != '1'}">
+               <%@include file="../newApplication/declarations/statements.jsp"%>
+              </c:if>
           </c:if>
           <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
             <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>

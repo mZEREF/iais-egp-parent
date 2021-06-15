@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -78,6 +80,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1550,6 +1553,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSvcDocDtoList.addAll(appSvcDocDtoLit);
         }
         appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
+        setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
     }
 
     @Override
@@ -1874,7 +1878,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             EmailParam smsParam = new EmailParam();
             smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
             smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-            smsParam.setRefId(applicationGroupDto.getLicenseeId());
+            if (applicationGroupDto != null) {
+                smsParam.setRefId(applicationGroupDto.getLicenseeId());
+            }
             smsParam.setTemplateContent(emailMap);
             smsParam.setSubject(subject);
             smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
@@ -2009,7 +2015,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         EmailParam smsParam = new EmailParam();
         smsParam.setQueryCode(appSubmissionDto.getAppGrpNo());
         smsParam.setReqRefNum(appSubmissionDto.getAppGrpNo());
-        smsParam.setRefId(applicationGroupDto.getLicenseeId());
+        if (applicationGroupDto != null) {
+            smsParam.setRefId(applicationGroupDto.getLicenseeId());
+        }
         smsParam.setTemplateContent(emailMap);
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_009_LICENSEE_SUBMIT_SMS);
@@ -2246,5 +2254,119 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
         appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
         return appGrpPrimaryDocDto;
+    }
+    @Override
+    public void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto) {
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(appSvcRelatedInfoDtoList==null || appSvcRelatedInfoDtoList.isEmpty()){
+            return;
+        }
+        for (AppSvcRelatedInfoDto var1 : appSvcRelatedInfoDtoList) {
+            if(var1.getBaseServiceId()!=null&&var1.getServiceId()!=null){
+                continue;
+            }
+            String serviceName = var1.getServiceName();//cannot null
+            HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(serviceName);
+            String svcType = activeHcsaServiceDtoByName.getSvcType();
+            String id = activeHcsaServiceDtoByName.getId();
+            String baseService="";
+            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
+                var1.setBaseServiceId(activeHcsaServiceDtoByName.getId());
+            }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+                String licenceId = appSubmissionDto.getLicenceId();
+                List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
+                if(serviceCorrelationDtos==null || serviceCorrelationDtos.isEmpty()){
+                    continue;
+                }
+                Iterator<HcsaServiceCorrelationDto> iterator = serviceCorrelationDtos.iterator();
+                while (iterator.hasNext()){
+                    HcsaServiceCorrelationDto next = iterator.next();
+                    String specifiedSvcId = next.getSpecifiedSvcId();
+                    if(id.equals(specifiedSvcId)){
+                        baseService=next.getBaseSvcId();
+                        break;
+                    }
+                }
+                if(!StringUtil.isEmpty(baseService)){
+                    String service_name = appConfigClient.getServiceNameById(baseService).getEntity();
+                    List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licenceId).getEntity();
+                    if(entity!=null && !entity.isEmpty()){
+                        Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
+                        while (iterator1.hasNext()){
+                            LicBaseSpecifiedCorrelationDto next = iterator1.next();
+                            String baseLicId = next.getBaseLicId();
+                            LicenceDto licenceDto = licenceClient.getLicBylicId(baseLicId).getEntity();
+                            if(licenceDto.getSvcName().equals(service_name)){
+                                var1.setBaseServiceId(baseService);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+            var1.setServiceId(activeHcsaServiceDtoByName.getId());
+
+        }
+    }
+
+    @Override
+    public boolean baseSpecLicenceRelation(LicenceDto licenceDto) {
+        return Boolean.parseBoolean(baseSpecLicenceRelation(licenceDto, true));
+    }
+
+    @Override
+    public String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag) {
+        String svcName = licenceDto.getSvcName();
+        HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
+        if(activeHcsaServiceDtoByName!=null){
+            String svcType = activeHcsaServiceDtoByName.getSvcType();
+            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)){
+                return flag==true ? String.valueOf(true): activeHcsaServiceDtoByName.getId();
+            }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(svcType)){
+                List<HcsaServiceCorrelationDto> serviceCorrelationDtos = appConfigClient.getActiveSvcCorrelation().getEntity();
+                if(serviceCorrelationDtos==null ||serviceCorrelationDtos.isEmpty()){
+                    return flag==true ? String.valueOf(false): "";
+                }
+                String baseService="";
+                Iterator<HcsaServiceCorrelationDto> iterator = serviceCorrelationDtos.iterator();
+                while (iterator.hasNext()){
+                    HcsaServiceCorrelationDto next = iterator.next();
+                    if(next.getSpecifiedSvcId().equals(activeHcsaServiceDtoByName.getId())){
+                        baseService=next.getBaseSvcId();
+                        break;
+                    }
+                }
+                if(StringUtil.isEmpty(baseService)){
+                    return flag==true ?String.valueOf(false):"";
+                }
+
+                List<LicBaseSpecifiedCorrelationDto> entity = licenceClient.getLicBaseSpecifiedCorrelationDtos(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED, licenceDto.getId()).getEntity();
+                if(entity==null||entity.isEmpty()){
+                    return flag==true ? String.valueOf(false): "";
+                }
+                Iterator<LicBaseSpecifiedCorrelationDto> iterator1 = entity.iterator();
+                while (iterator1.hasNext()){
+                    LicBaseSpecifiedCorrelationDto next = iterator1.next();
+                    if(next.getSpecLicId().equals(licenceDto.getId())){
+                        String baseLicId = next.getBaseLicId();
+                        LicenceDto licenceDto1 = licenceClient.getLicBylicId(baseLicId).getEntity();
+                        if(licenceDto1==null){
+                            return flag==true ? String.valueOf(false): "";
+                        }
+                        String svcName1 = licenceDto1.getSvcName();
+                        String svc_name = appConfigClient.getServiceNameById(baseService).getEntity();
+                        if(svcName1.equals(svc_name)){
+                            return flag==true ?String.valueOf(true):baseService;
+                        }
+                    }
+                }
+
+            }
+        }
+        return flag==true ? String.valueOf(false): "";
     }
 }

@@ -719,7 +719,12 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        //base flow
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getBaseServiceId());
+        } else {
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+        }
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
@@ -1703,7 +1708,7 @@ public class HcsaApplicationDelegator {
             initRecommendationDto.setRemarks(reportRemarks);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
             if (recomInNumber != null) {
-                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
+                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber, appPremisesRecommendationDto.getChronoUnit());
                 initRecommendationDto.setPeriod(recommendationOnlyShowStr);
             }
             String remarks = appPremisesRecommendationDto.getRemarks();
@@ -2230,7 +2235,7 @@ public class HcsaApplicationDelegator {
                 broadcastApplicationDto.setAppInspectionStatusDto(appInspectionStatusDto);
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto, stageId, roleId, newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
-                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, HcsaConsts.ROUTING_STAGE_PRE,
+                AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null,
                         taskDto.getWkGrpId(), null, null, externalRemarks, taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
                 //set inspector leads
@@ -3238,7 +3243,7 @@ public class HcsaApplicationDelegator {
             if (recomInNumber == null || recomInNumber == 0) {
                 recommendationOnlyShow = "Reject";
             } else {
-                recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
+                recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber, chronoUnit);
             }
             if (isRequestForChange) {
                 if(InspectionReportConstants.RFC_APPROVED.equals(recomDecision)){
@@ -3448,46 +3453,6 @@ public class HcsaApplicationDelegator {
     private List<SelectOption> getPatientsOption() {
         List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCodes(patientsArr);
         return selectOptions;
-    }
-
-    private String getRecommendationOnlyShowStr(Integer recomInNumber) {
-        if (recomInNumber == null) {
-            return "-";
-        }
-        String recommendationOnlyShow = "-";
-        if (recomInNumber >= 12) {
-            if (recomInNumber % 12 == 0) {
-                if (recomInNumber / 12 == 1) {
-                    recommendationOnlyShow = "1 Year";
-                } else {
-                    recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
-                }
-            } else {
-                if (recomInNumber / 12 == 1) {
-                    if (recomInNumber % 12 == 1) {
-                        recommendationOnlyShow = 1 + " Year " + 1 + " Month";
-                    } else {
-                        recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
-                    }
-
-                } else {
-                    if (recomInNumber % 12 == 1) {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
-                    } else {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
-                    }
-                }
-            }
-        } else {
-            if (recomInNumber == 1) {
-                recommendationOnlyShow = recomInNumber + " Month";
-            } else if (recomInNumber == 0) {
-                recommendationOnlyShow = "Reject";
-            } else {
-                recommendationOnlyShow = recomInNumber + " Month(s)";
-            }
-        }
-        return recommendationOnlyShow;
     }
 
     private String getRecommendationOnlyShowStr(Integer recomInNumber, String chronoUnit) {
@@ -3891,7 +3856,7 @@ public class HcsaApplicationDelegator {
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getRoutingServiceId(),
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());
         if (hcsaSvcRoutingStageDtoList != null) {
             if (hcsaSvcRoutingStageDtoList.size() > 0) {
@@ -3908,7 +3873,13 @@ public class HcsaApplicationDelegator {
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String serviceId = applicationDto.getServiceId();
+        //get flow service Id
+        String serviceId;
+        if(!StringUtil.isEmpty(applicationDto.getBaseServiceId())) {
+            serviceId = applicationDto.getBaseServiceId();
+        } else {
+            serviceId = applicationDto.getServiceId();
+        }
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
                 taskDto.getTaskKey(), applicationViewDto.getApplicationDto().getApplicationType(), applicationGroupDto.getIsPreInspection());

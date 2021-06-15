@@ -15,6 +15,15 @@ public class EqRequestForChangeSubmitResultChange {
     public static boolean eqHciNameChange(AppGrpPremisesDto appGrpPremisesDto ,AppGrpPremisesDto oldAppGrpPremisesDto){
         String hciName = appGrpPremisesDto.getHciName();
         String oldHciName = oldAppGrpPremisesDto.getHciName();
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName=appGrpPremisesDto.getOffSiteHciName();
+            oldHciName=oldAppGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            hciName=appGrpPremisesDto.getConveyanceHciName();
+            oldHciName=oldAppGrpPremisesDto.getConveyanceHciName();
+        }
         if(hciName==null&&oldHciName==null){
             return false;
         }else if(hciName==null&&oldHciName!=null){

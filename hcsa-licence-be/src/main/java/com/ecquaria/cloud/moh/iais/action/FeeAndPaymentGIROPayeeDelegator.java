@@ -179,8 +179,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         giroAccountService.updateGiroAccountInfo(giroAccountInfoDtoList);
 
-        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList);
-
+        try {
+            eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList);
+        }catch (Exception e){
+            log.debug("no found fe org :{}",giroAccountInfoDtoList.get(0).getOrganizationId());
+        }
     }
     public void reSearchPayee(BaseProcessClass bpc) {
 
@@ -251,13 +254,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
         if(orgPremResult==null){
             String [] orgPerIds=ParamUtil.getStrings(request,"opIds");
             SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
-            String typeStr = SqlHelper.constructInCondition("opv.OP_ID",orgPerIds.length);
+            String typeStr = SqlHelper.constructInCondition("opv.ID",orgPerIds.length);
             int indx = 0;
             for (String s : orgPerIds){
-                orgPremParam.addFilter("opv.OP_ID"+indx, s);
+                orgPremParam.addFilter("opv.ID"+indx, s);
                 indx++;
             }
-            orgPremParam.addParam("orgPremIds",typeStr);
+            orgPremParam.addParam("orgIds",typeStr);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
@@ -473,6 +476,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setAcctNo(bankAccountNo);
             giroAccountInfoDto.setBranchCode(branchCode);
             giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
+            giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
@@ -539,8 +543,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
         }
         List<GiroAccountInfoDto> giroAccountInfoDtoList1= giroAccountService.createGiroAccountInfo(giroAccountInfoDtoList);
 
-
-        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        try {
+            eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        }catch (Exception e){
+            log.debug("no found fe org :{}",giroAccountInfoDtoList1.get(0).getOrganizationId());
+        }
         try {
             for (GiroAccountInfoDto giro:giroAccountInfoDtoList1
             ) {

@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %><%--
   Created by IntelliJ IDEA.
   User: ZiXian
   Date: 2020/10/27
@@ -40,14 +40,7 @@
             <div class="row margin-bottom-10 text-right">
                 <div class="col-xs-12 col-md-1">
                     <c:if test="${empty AckMessage}">
-                        <c:choose>
-                            <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY002' ==AppSubmissionDto.appType}">
-                                <p class="print"><a href="${pageContext.request.contextPath}/new-app-ack-print?action=noHeader" > <em class="fa fa-print"></em>Print</a></p>
-                            </c:when>
-                            <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
-                                <p class="print"><a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a></p>
-                            </c:when>
-                        </c:choose>
+                        <p class="print"><a href="javascript:void(0);" id="ackPrint"> <em class="fa fa-print"></em>Print</a></p>
                     </c:if>
                 </div>
                 <c:if test="${empty AckMessage}">
@@ -62,9 +55,18 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('.tab-gp').removeClass('tab-gp');
+        $('.dashboard').css('padding-bottom','0px');
 
-        $("#print-ack").click(function () {
-            window.print();
+        $("#ackPrint").click(function () {
+            var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFeAckPrintView/1/",request)%>';
+            var suffix = "action=retrigger";
+            if(url.indexOf('MohFeAckPrintView/1/?') != -1){
+                url = url + '&' + suffix;
+            }else{
+                url = url + '?' + suffix;
+            }
+            window.open(url,'_blank');
         })
     });
 

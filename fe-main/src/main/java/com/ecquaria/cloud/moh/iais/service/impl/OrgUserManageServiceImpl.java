@@ -47,7 +47,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -162,9 +166,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public void refreshLicensee(String uen){
-        eicGatewayFeMainClient.getUen(uen);
-
+    public void refreshLicensee(String uen) {
+        // eicGatewayFeMainClient.getUen(uen);
+        licenseeClient.getEntityByUEN(uen);
     }
 
     @Override
@@ -435,13 +439,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return feUserClient.isNotExistUserAccount(orgId).getEntity();
     }
 
-
-    public static void main(String[] args) {
-        JwtEncoder encoder = new JwtEncoder();
-        Claims claims = Jwts.claims();
-        claims.put("uen", "201800001A");
-        String jwtt = encoder.encode(claims, "");
-    }
+//    public static void main(String[] args) {
+//        JwtEncoder encoder = new JwtEncoder();
+//        Claims claims = Jwts.claims();
+//        claims.put("uen", "201800001A");
+//        String jwtt = encoder.encode(claims, "");
+//    }
 
     @Override
     public List<LicenseeDto> getLicenseeByOrgId(String orgId){
@@ -543,8 +546,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void sendReminderForExpiredSingPass() {
         String objJson = feUserClient.getExpireSingPassList().getEntity();
-        JSONArray uenList = new JSONArray(objJson);
-        if (Optional.ofNullable(uenList).isPresent()){
+        if (objJson != null) {
+            JSONArray uenList = new JSONArray(objJson);
             for (int i = 0; i < uenList.length(); i++){
                 JSONObject object = uenList.getJSONObject(i);
                 if (Optional.ofNullable(object).isPresent()){
