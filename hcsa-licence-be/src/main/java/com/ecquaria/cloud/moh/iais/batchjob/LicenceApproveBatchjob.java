@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
@@ -52,7 +51,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAlloc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -1425,7 +1423,7 @@ public class LicenceApproveBatchjob {
                 premisesGroupDto.setLicSvcChargesDtos(licSvcChargesDtos);
             }
             //set LicSvcClinicalDirectorDto
-            List<LicSvcClinicalDirectorDto> licSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
+            /*List<LicSvcClinicalDirectorDto> licSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = applicationListDto.getAppSvcClinicalDirectorDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)){
                 for(AppSvcClinicalDirectorDto appSvcClinicalDirectorDto : appSvcClinicalDirectorDtos){
@@ -1433,7 +1431,7 @@ public class LicenceApproveBatchjob {
                     licSvcClinicalDirectorDtos.add(licSvcClinicalDirectorDto);
                 }
                 premisesGroupDto.setLicSvcClinicalDirectorDtos(licSvcClinicalDirectorDtos);
-            }
+            }*/
             if (1 == isPostInspNeeded) {
                 //create the LicInspectionGroupDto
                 LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
