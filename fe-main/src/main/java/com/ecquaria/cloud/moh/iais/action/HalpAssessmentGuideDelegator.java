@@ -552,7 +552,7 @@ public class HalpAssessmentGuideDelegator {
                         });
                         Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(allChekSvcIdList);
                         int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
-                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
                         SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,alignMinExpiryMonth);
                         //filter pending and existing data
                         List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
@@ -1167,8 +1167,8 @@ public class HalpAssessmentGuideDelegator {
                     Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkBase);
                     int relMinExpiryMonth = systemParamConfig.getRelMinExpiryMonth();
                     int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
-                    log.debug(StringUtil.changeForLog("relMinExpiryMonth:")+relMinExpiryMonth);
-                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                    log.debug(StringUtil.changeForLog("relMinExpiryMonth:"+relMinExpiryMonth));
+                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
                     int maxExpiryMonth;
                     if(relMinExpiryMonth > alignMinExpiryMonth){
                         maxExpiryMonth = relMinExpiryMonth;
