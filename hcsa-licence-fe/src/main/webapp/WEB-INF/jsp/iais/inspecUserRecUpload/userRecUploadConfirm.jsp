@@ -38,6 +38,7 @@
                       <table class="table">
                         <thead>
                         <tr align="center">
+                          <th>Vehicle Number</th>
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
                           <th>Findings/Non-Compliances</th>
@@ -46,6 +47,7 @@
                         </thead>
                         <tbody>
                         <tr>
+                          <td><c:out value="${inspecUserRecUploadDto.vehicleNo}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.checkClause}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.checkQuestion}"/></td>
                           <td><c:out value="${inspecUserRecUploadDto.appPremisesPreInspectionNcItemDto.ncs}"/></td>
