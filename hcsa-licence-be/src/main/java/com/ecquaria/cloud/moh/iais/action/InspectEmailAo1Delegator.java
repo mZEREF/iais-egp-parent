@@ -475,8 +475,8 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                                 if(ApplicationConsts.VEHICLE_STATUS_REJECT.equals(vehicle.getStatus())){
                                     stringBuilder.append("<tr><td>").append(++i);
                                     stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getVehicleName()));
-                                    stringBuilder.append(TD).append("-");
-                                    stringBuilder.append(TD).append("-");
+                                    stringBuilder.append(TD).append('-');
+                                    stringBuilder.append(TD).append('-');
                                     stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getRemarks()));
                                     stringBuilder.append(TD).append(StringUtil.viewHtml("Reject"));
                                     stringBuilder.append("</td></tr>");
