@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -132,6 +133,8 @@ public class HalpAssessmentGuideDelegator {
     OrgUserManageService orgUserManageService;
     @Autowired
     AssessmentGuideService assessmentGuideService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     private String licenseeId;
 
@@ -548,7 +551,9 @@ public class HalpAssessmentGuideDelegator {
                             }
                         });
                         Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(allChekSvcIdList);
-                        SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
+                        int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
+                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                        SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,alignMinExpiryMonth);
                         //filter pending and existing data
                         List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                         //pagination
@@ -1160,7 +1165,17 @@ public class HalpAssessmentGuideDelegator {
                     allBaseId.removeAll(chkBase);
                     //get prem type intersection
                     Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkBase);
-                    SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
+                    int relMinExpiryMonth = systemParamConfig.getRelMinExpiryMonth();
+                    int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
+                    log.debug(StringUtil.changeForLog("relMinExpiryMonth:")+relMinExpiryMonth);
+                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:")+alignMinExpiryMonth);
+                    int maxExpiryMonth;
+                    if(relMinExpiryMonth > alignMinExpiryMonth){
+                        maxExpiryMonth = relMinExpiryMonth;
+                    }else{
+                        maxExpiryMonth = alignMinExpiryMonth;
+                    }
+                    SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,maxExpiryMonth);
                     //filter pending and existing data
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                     //pagination
@@ -2402,7 +2417,7 @@ public class HalpAssessmentGuideDelegator {
         return paginationHandler;
     }
 
-    private SearchResult<MenuLicenceDto> getLicPremInfo(List<String> excludeChkBase,String licenseeId,Set<String> premisesTypeList){
+    private SearchResult<MenuLicenceDto> getAlignLicPremInfo(List<String> excludeChkBase,String licenseeId,Set<String> premisesTypeList, int alignMinExpiryMonth){
         if(StringUtil.isEmpty(licenseeId)){
             return null;
         }
@@ -2449,6 +2464,9 @@ public class HalpAssessmentGuideDelegator {
             searchParam.addParam("premTypeList", premType);
             log.debug(StringUtil.changeForLog("No intersection data ..."));
         }
+        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:" + alignMinExpiryMonth));
+        searchParam.addFilter("alignMinExpiryMonth", alignMinExpiryMonth,true);
+
         searchParam.addFilter("licenseeId",licenseeId,true);
         QueryHelp.setMainSql("interInboxQuery", "getLicenceBySerName",searchParam);
         return assessmentGuideService.getMenuLicence(searchParam);
