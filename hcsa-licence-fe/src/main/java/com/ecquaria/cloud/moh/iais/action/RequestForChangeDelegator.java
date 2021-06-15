@@ -468,6 +468,9 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setNewLicenseeId(newLicenseeId);
                 appSubmissionDto.setLicenseeId(licenceDto.getLicenseeId());
                 appSubmissionDto.setAutoRfc(false);
+                String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
+                log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
+                appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
                 FeeDto feeDto = getTransferFee();
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
