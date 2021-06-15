@@ -212,8 +212,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
                                                   String nextStage, String appVehicleFlag) {
-        if (VERIFIED.equals(nextStage) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag)) {
-            if (applicationViewDto != null) {
+        if (applicationViewDto != null&&VERIFIED.equals(nextStage) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
+             {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 if(applicationDto != null) {
                     List<AppSvcVehicleDto> appSvcVehicleDtos;

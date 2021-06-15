@@ -7,13 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import java.util.Collection;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 public class SelectTag extends DivTagSupport {
@@ -46,7 +47,7 @@ public class SelectTag extends DivTagSupport {
     @Override
     protected final void init() {
         setId(null);
-        name = null;
+        setName("");
         setCodeCategory("");
         setFilterCode("");
         setFilterValue("");
@@ -190,9 +191,13 @@ public class SelectTag extends DivTagSupport {
         return EVAL_PAGE;
     }
 
-    public void setName(String name) throws JspException {
-        this.name = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("name",
-                name, Object.class, this, pageContext));
+    public void setName(String name)  {
+        try {
+            this.name = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("name",
+                    name, Object.class, this, pageContext));
+        } catch (JspException e) {
+            log.error(e.getMessage());
+        }
     }
     @Override
     public void setId(String id) {

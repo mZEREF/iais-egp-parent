@@ -398,13 +398,12 @@ public class RetriggerGiroPaymentDelegator {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if("next".equals(action)){
             String payMethodErrMsg =  MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
-            String giroAccErrMsg =  MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field");
             if (StringUtil.isEmpty(payMethod)) {
                 errorMap.put("payMethod", payMethodErrMsg);
                 errorMap.put("pay", payMethodErrMsg);
             }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && StringUtil.isEmpty(giroAccNum)){
-                errorMap.put("payMethod", giroAccErrMsg);
-                errorMap.put("pay",giroAccErrMsg);
+                errorMap.put("payMethod", payMethodErrMsg);
+                errorMap.put("pay",payMethodErrMsg);
             }
         }
         if(!"next".equals(action) || !errorMap.isEmpty()){

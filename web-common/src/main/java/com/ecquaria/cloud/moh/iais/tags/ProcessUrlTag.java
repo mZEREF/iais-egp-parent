@@ -33,7 +33,7 @@ public class ProcessUrlTag extends TagSupport {
 
     // resets local state
     private void init() {
-        value = "";
+        setValue("");
         setProject("");
         setProcessName("");
         setPathParams("");
@@ -86,9 +86,13 @@ public class ProcessUrlTag extends TagSupport {
         return EVAL_PAGE;
     }
 
-    public void setValue(String value) throws JspException {
-        this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
-                 value, Object.class, this, pageContext));
+    public void setValue(String value) {
+        try {
+            this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
+                     value, Object.class, this, pageContext));
+        } catch (JspException e) {
+            log.error(e.getMessage());
+        }
     }
     public void setProject(String project) {
         this.project = project;

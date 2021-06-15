@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -67,6 +69,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,6 +126,8 @@ public class InspectionMergeSendNcEmailDelegator {
     ApplicationClient applicationClient;
     @Autowired
     private AppointmentClient appointmentClient;
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String TASK_DTO="taskDto";
     private static final String SUBJECT="subject";
@@ -295,6 +300,29 @@ public class InspectionMergeSendNcEmailDelegator {
                             stringBuilder1.append("</td></tr>");
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
+                    }
+                    //EAS or MTS
+                    if(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
+                        if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null){
+                            StringBuilder stringBuilder=new StringBuilder();
+                            stringBuilder.append("<tr><td colspan=\"6\"><b>").append(applicationViewDto.getServiceType()).append(" Vehicle").append("</b></td></tr>");
+                            int i=0;
+                            for (AppSvcVehicleDto vehicle:applicationViewDto.getAppSvcVehicleDtos()
+                            ) {
+                                if(ApplicationConsts.VEHICLE_STATUS_REJECT.equals(vehicle.getStatus())){
+                                    stringBuilder.append("<tr><td>").append(++i);
+                                    stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getVehicleName()));
+                                    stringBuilder.append(TD).append("-");
+                                    stringBuilder.append(TD).append("-");
+                                    stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getRemarks()));
+                                    stringBuilder.append(TD).append(StringUtil.viewHtml("Reject"));
+                                    stringBuilder.append("</td></tr>");
+                                }
+                            }
+                            if(i!=0){
+                                mapTableTemplate.put("NC_DETAILS",mapTableTemplate.get("NC_DETAILS")+StringUtil.viewHtml(stringBuilder.toString()));
+                            }
+                        }
                     }
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
                         String[] observations=new String[]{};

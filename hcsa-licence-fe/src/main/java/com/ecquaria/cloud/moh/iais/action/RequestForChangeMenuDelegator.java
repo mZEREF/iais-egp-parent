@@ -100,7 +100,7 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
-    private FilterParameter filterParameter = new FilterParameter.Builder()
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(PersonnelQueryDto.class)
             .searchAttr("PersonnelSearchParam")
             .resultAttr("PersonnelSearchResult")

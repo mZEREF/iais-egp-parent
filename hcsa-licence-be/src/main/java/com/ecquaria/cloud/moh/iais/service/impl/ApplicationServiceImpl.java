@@ -1069,7 +1069,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
-        if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag) && vehicleAppTypeFlag) {
+        if( vehicleAppTypeFlag&&InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
             if (taskDto != null) {
                 if(applicationViewDto != null && !IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
                     String stageId = taskDto.getTaskKey();

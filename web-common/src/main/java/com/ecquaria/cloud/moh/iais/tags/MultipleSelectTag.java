@@ -30,7 +30,7 @@ public class MultipleSelectTag extends DivTagSupport {
     @Override
     protected void init() {
         setId(null);
-        name = null;
+        setName("");
         setCssClass("");
         setStyle("");
         setSelectValue("");
@@ -107,9 +107,13 @@ public class MultipleSelectTag extends DivTagSupport {
         return EVAL_PAGE;
     }
 
-    public void setName(String name) throws JspException {
-        this.name = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("name",
-                name, Object.class, this, pageContext));
+    public void setName(String name) {
+        try {
+            this.name = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("name",
+                    name, Object.class, this, pageContext));
+        } catch (JspException e) {
+            log.info(e.getMessage());
+        }
     }
     @Override
     public void setId(String id) {
