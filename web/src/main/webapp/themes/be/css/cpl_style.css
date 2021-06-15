@@ -5244,7 +5244,7 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=checkbox] + label.control-label .check-square:before,
 .control-item-container input.control-input[type=radio] + label.control-label .check-square:before {
   content: "";
-  font-family: fontawesome;
+    font-family: fontawesome, sans-serif;
   position: absolute;
   width: 18px;
   height: 18px;
@@ -5426,7 +5426,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
   content: "";
-  font-family: fontawesome;
+    font-family: fontawesome, sans-serif;
   width: 22px;
   height: 22px;
   border: 0;
