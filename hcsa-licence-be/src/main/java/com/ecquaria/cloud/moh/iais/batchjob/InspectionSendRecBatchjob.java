@@ -287,17 +287,21 @@ public class InspectionSendRecBatchjob {
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
         String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
+        String vehicleNo = appPremisesPreInspectionNcItemDto.getVehicleName();
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
         }
         if(StringUtil.isEmpty(findNcs)){
             findNcs = "";
         }
+        if(StringUtil.isEmpty(vehicleNo)){
+            vehicleNo = "";
+        }
         if(!IaisCommonUtils.isEmpty(checklistConfigDtos)) {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs, vehicleNo);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
@@ -324,17 +328,21 @@ public class InspectionSendRecBatchjob {
             }
         }
         inspEmailFieldDto.setBeNcRemark(beRemark);
-        inspEmailFieldDto.setServiceName("");
+        inspEmailFieldDto.setServiceName(vehicleNo);
         return inspEmailFieldDto;
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark, String findNcs) {
+                                             String itemId, String beRemark, String findNcs, String vehicleNo) {
         boolean containFlag = false;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
             if(itemId.equals(checklistItemDto.getItemId())){
                 log.info(StringUtil.changeForLog("itemId Id = " + itemId));
+                //get category value
                 String category = getItemCategory(checklistConfigDto);
+                if(StringUtil.isEmpty(category)) {
+                    category = vehicleNo;
+                }
                 containFlag = true;
                 ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
                 if(clItemDto == null){
@@ -345,7 +353,6 @@ public class InspectionSendRecBatchjob {
                 }
                 if(inspEmailFieldDto == null){
                     inspEmailFieldDto = new InspEmailFieldDto();
-
                 }
                 //CR Regulation change -> Question
                 inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
