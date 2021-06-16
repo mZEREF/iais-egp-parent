@@ -16,21 +16,27 @@
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
-    var prdLoading = function ($loadingContent, prgNo, action, funsObj) {
+    var prdLoading = function ($loadingContent, prgNo, action, callBackFuns) {
         console.log('loading prs info ...');
-        var assignSelectVal = $loadingContent.find('select[name="assignSelect"]').val();
+        var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
-        var licPerson = $loadingContent.find('input[name="licPerson"]').val();
+        var licPerson = $loadingContent.find('input.licPerson').val();
+        console.log('assignSelectVal:'+assignSelectVal);
+        console.log('licPerson:'+licPerson);
+        var neddControlName = needControlName(assignSelectVal, licPerson, appType);
+        if(typeof callBackFuns.setEdit == 'function'){
+            callBackFuns.setEdit($loadingContent, 'disabled', false, neddControlName);
+        }else if (neddControlName) {
+            inputCancelReadonly($loadingContent.find('input[name="name"]'));
+        }
         if(prgNo == "" || prgNo == null || prgNo == undefined){
-            clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
-            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
+            clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action, callBackFuns);
+            if(typeof callBackFuns.setEdit == 'function'){
+                callBackFuns.setEdit($loadingContent, 'disabled', true, neddControlName);
+            }else if (neddControlName) {
                 inputCancelReadonly($loadingContent.find('input[name="name"]'));
             }
             return;
-        }
-        //prn not empty
-        if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
-            inputReadonly($loadingContent.find('input[name="name"]'));
         }
 
         var jsonData = {
@@ -44,44 +50,52 @@
             'success': function (data) {
                 if(data.regno == null){
                     $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action, callBackFuns);
                     return;
                 }
                 if(data.name == null){
                     //prgNo is incorrect
-                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action, callBackFuns);
                     return;
                 }
-                if(funsObj != null && funsObj != undefined){
-                    funsObj.setValue($loadingContent, data);
-                    funsObj.setEdit($loadingContent, 'disabled', false);
+                if(typeof callBackFuns.fillData == 'function'){
+                    callBackFuns.fillData($loadingContent, data);
                 }else{
-                    loadingData(data,$loadingContent);
-                    if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+                    loadingLabelData(data,$loadingContent);
+                    if(needControlName(assignSelectVal, licPerson, appType)){
                         $loadingContent.find('input[name="name"]').val(data.name);
                     }
                 }
             },
             'error': function () {
                 //
-                clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action, callBackFuns);
             }
         });
     };
 
-    var clearPrsInfo = function ($loadingContent, assignSelectVal, appType, licPerson, action) {
+    var clearPrsInfo = function ($loadingContent, assignSelectVal, appType, licPerson, action, callBackFuns) {
         $loadingContent.find('.specialty-label').html('');
         $loadingContent.find('.sub-specialty-label').html('');
         $loadingContent.find('.qualification-label').html('');
         $loadingContent.find('span.otherQualificationSpan').html('*');
         if('psnSelect' != action){
-            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
+            var neddControlName = needControlName(assignSelectVal, licPerson, appType);
+            if(callBackFuns != null){
+                if(typeof callBackFuns.fillData == 'function'){
+                    var data = {};
+                    callBackFuns.fillData($loadingContent, data);
+                }
+                if(typeof callBackFuns.setEdit == 'function'){
+                    callBackFuns.setEdit($loadingContent, 'disabled', true, neddControlName);
+                }
+            }else if(neddControlName){
                 $loadingContent.find('input[name="name"]').val('');
             }
         }
     };
 
-    var loadingData = function (data,$loadingContent) {
+    var loadingLabelData = function (data,$loadingContent) {
         loading(data.specialty,$loadingContent,'specialty-label');
         loading(data.subspecialty,$loadingContent,'sub-specialty-label');
         loading(data.qualification,$loadingContent,'qualification-label');
@@ -118,5 +132,9 @@
         $content.prop('readonly', false);
         $content.css('border-color', '');
         $content.css('color', '');
+    }
+
+    function needControlName(assignSelectVal, licPerson, appType) {
+        return ('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType);
     }
 </script>

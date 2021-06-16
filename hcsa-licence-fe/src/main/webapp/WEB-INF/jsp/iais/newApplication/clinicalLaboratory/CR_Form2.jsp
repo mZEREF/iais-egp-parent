@@ -108,10 +108,10 @@
                                             <input type="hidden" name="psnEditField" value="${currentCgo.psnEditDto}"/>
                                             <c:choose>
                                                 <c:when test="${currentCgo.licPerson}">
-                                                    <input type="hidden" name="licPerson" value="1"/>
+                                                    <input class="licPerson"  type="hidden" name="licPerson" value="1"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <input type="hidden" name="licPerson" value="0"/>
+                                                    <input class="licPerson"  type="hidden" name="licPerson" value="0"/>
                                                 </c:otherwise>
                                             </c:choose>
                                             <tbody>

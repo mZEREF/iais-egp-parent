@@ -5,6 +5,7 @@
             <div class="clinicalDirectorContent">
                 <input type="hidden" class="isPartEdit" name="isPartEdit${cdSuffix}" value="1"/>
                 <input type="hidden" name="cdIndexNo${cdSuffix}" value=""/>
+                <input class="licPerson" type="hidden" name="licPerson${cdSuffix}" value="0"/>
                 <div class="col-md-12 col-xs-12">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">

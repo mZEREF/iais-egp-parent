@@ -2,6 +2,14 @@
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <input type="hidden" class="psnEditField" name="psnEditField${index}" value="<c:out value="${clinicalDirectorDto.psnEditFieldStr}" />"/>
     <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.cgoIndexNo}"/>
+    <c:choose>
+        <c:when test="${currentCgo.licPerson}">
+            <input class="licPerson" type="hidden" name="licPerson${index}" value="1"/>
+        </c:when>
+        <c:otherwise>
+            <input class="licPerson" type="hidden" name="licPerson${index}" value="0"/>
+        </c:otherwise>
+    </c:choose>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
@@ -176,9 +184,10 @@
                     <label  class="control-label control-set-font control-font-label">Speciality</label>
                     <span class="mandatory">*</span>
                 </div>
-                <div class="col-md-7 col-xs-12" >
-                    <iais:select cssClass="speciality" name="speciality${index}" options="easMtsSpecialtySelectList" needSort="false"
-                                 value="${clinicalDirectorDto.speciality}"></iais:select>
+                <div class="col-md-7 col-xs-12 specialty-label" >
+                     <label class="control-label control-set-font control-font-label specialty-label">
+                         <c:out value="${clinicalDirectorDto.speciality}" />
+                     </label>
                 </div>
             </div>
         </div>

@@ -107,7 +107,7 @@
         </div>
     </c:if>
 </div>
-
+<%@include file="../../common/prsLoading.jsp"%>
 <script>
     $(document).ready(function () {
 
@@ -116,7 +116,7 @@
         addClinicalDirectorBtn();
         removeClinicalDirector();
         showOtherSpecialty();
-
+        profRegNoBlur();
         $('select.specialty').trigger('change');
 
         doEdite();
@@ -267,6 +267,7 @@
                 $(this).find('input.transportYear').prop('name','transportYear'+k);
                 $(this).find('input.isPartEdit').prop('name','isPartEdit'+k);
                 $(this).find('input.cdIndexNo').prop('name','cdIndexNo'+k);
+                $(this).find('input.licPerson').prop('name','licPerson'+k);
 
                 $(this).find('select.assignSel').prop('name','assignSel'+k);
                 $(this).find('select.professionBoard').prop('name','professionBoard'+k);
@@ -401,4 +402,67 @@
             }
         });
     }
+
+    var profRegNoBlur = function () {
+        $('input.profRegNo').unbind('blur');
+        $('input.profRegNo').blur(function(event, action){
+            var prgNo = $(this).val();
+            var $prsLoadingContent = $(this).closest('div.clinicalDirectorContent');
+            //prs loading
+            prdLoading($prsLoadingContent, prgNo, action, prsCallBackFuns);
+        });
+    };
+
+    var prsCallBackFuns ={
+        fillData:function ($prsLoadingEle,data) {
+            var subspecialty = data.subspecialty ;
+            var name = data.name;
+            if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(subspecialty)){
+                subspecialty = 'No specialty';
+            }
+            var specialtyGetDate = '';
+            if(!isEmpty(data.entryDateSpecialist)){
+                specialtyGetDate = data.entryDateSpecialist[0];
+            }
+            var typeOfCurrRegi = '';
+            var currRegiDate = '';
+            var praCerEndDate = '';
+            var typeOfRegister = '';
+            if(!isEmpty(data.registration)){
+                var registration = data.registration[0];
+                typeOfCurrRegi = registration['Registration Type'];
+                currRegiDate = registration['Registration Start Date'];
+                praCerEndDate = registration['PC End Date'];
+                typeOfRegister = registration['Register Type'];
+            }
+
+
+            $prsLoadingEle.find('.specialty-label').html(subspecialty);
+            $prsLoadingEle.find('.name').val(name);
+            $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
+            $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
+            $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
+            $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
+            $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
+        },
+        setEdit:function ($prsLoadingEle, propStyle, canEdit, needControlName) {
+            var nameEle = $prsLoadingEle.find('.name');
+            var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
+            var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
+            var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
+            var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
+            var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
+            if(needControlName){
+                controlEdit(nameEle, propStyle, !needControlName);
+            }else{
+                controlEdit(nameEle, propStyle, canEdit);
+            }
+            controlEdit(specialtyGetDateEle, propStyle, canEdit);
+            controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
+            controlEdit(currRegiDateEle, propStyle, canEdit);
+            controlEdit(praCerEndDateEle, propStyle, canEdit);
+            controlEdit(typeOfRegisterEle, propStyle, canEdit);
+        }
+    };
+
 </script>
