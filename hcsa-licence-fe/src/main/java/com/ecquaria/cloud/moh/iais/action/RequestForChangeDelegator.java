@@ -819,7 +819,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","RFC_ERR021");
                     }
                 }else{
-                    /*error.put("uenError","RFC_ERR007");*/
+                    error.put("uenError","RFC_ERR007");
                 }
             }
         }
