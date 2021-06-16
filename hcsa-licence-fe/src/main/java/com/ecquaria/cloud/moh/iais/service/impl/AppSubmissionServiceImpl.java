@@ -2099,8 +2099,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public boolean isGiroAccount(String licenseeId) {
         boolean result = false;
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);
-        if(!StringUtil.isEmpty(orgGiroAccountInfoDto.getOrganizationId())){
+        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
             result = true;
         }
         return result;
