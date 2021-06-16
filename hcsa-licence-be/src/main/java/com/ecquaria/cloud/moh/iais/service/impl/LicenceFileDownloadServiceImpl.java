@@ -241,6 +241,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     BufferedInputStream bis=null;
                     BufferedOutputStream bos=null;
                     OutputStream os=null;
+                    name=name.substring(0,name.lastIndexOf('.'));
                     try (ZipFile zipFile=new ZipFile(path);)  {
                         for( Enumeration<? extends ZipEntry> entries = zipFile.entries();entries.hasMoreElements();){
                             ZipEntry zipEntry = entries.nextElement();
