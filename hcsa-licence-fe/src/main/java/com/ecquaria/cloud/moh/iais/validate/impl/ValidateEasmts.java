@@ -3,12 +3,16 @@ package com.ecquaria.cloud.moh.iais.validate.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import com.ecquaria.cloud.moh.iais.validate.abstractValidate.AbstractValidate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,8 +28,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Component
 public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
+    @Autowired
+    private LicenceClient licenceClient;
     @Override
-    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo) {
+    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo,String licenseeId) {
         String easMtsHciName = appGrpPremisesDto.getEasMtsHciName();
         if(StringUtil.isEmpty(easMtsHciName)){
             map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
@@ -58,6 +64,10 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                             });
                             map.put("easMtsHciName" + index, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                         }
+                    }
+                    List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(easMtsHciName,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,licenseeId).getEntity();
+                    if(!IaisCommonUtils.isEmpty(premisesDtos)){
+                        map.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                     }
                 }
 
@@ -167,11 +177,6 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
             map.put(errorName.get(2)+index,general_err0041);
         }
-    }
-
-    @Override
-    public Map<String, String> validate(Object o,Integer index) {
-        return super.validate(o,index);
     }
 
     @Override

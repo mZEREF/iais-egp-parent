@@ -481,6 +481,8 @@ public class ConfigServiceDelegator {
         }catch (Exception e){
             mapPersonnelDto.setPageMaximumCount(mixMedalertPerson);
         }
+        mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        hcsaSvcPersonnelDtos.add(mapPersonnelDto);
         String pageName = request.getParameter("pageName");
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
@@ -529,8 +531,6 @@ public class ConfigServiceDelegator {
             count++;
         }
 
-        mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        hcsaSvcPersonnelDtos.add(mapPersonnelDto);
         if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -767,8 +767,6 @@ public class ConfigServiceDelegator {
                         HcsaSvcCateWrkgrpCorrelationDto svcCateWrkgrpCorrelationDto1 = hashMap.get(id + 2);
                         if(svcCateWrkgrpCorrelationDto1!=null){
                             order2.setStageWorkGroupId(svcCateWrkgrpCorrelationDto1.getWrkGrpId());
-                        }else {
-                            order2.setStageWorkGroupId("DD2B0DB9-FA0C-EA11-BE7D-000C29F371DC");
                         }
                         if(svcCateWrkgrpCorrelationDto!=null){
                             order3.setStageWorkGroupId(svcCateWrkgrpCorrelationDto.getWrkGrpId());
