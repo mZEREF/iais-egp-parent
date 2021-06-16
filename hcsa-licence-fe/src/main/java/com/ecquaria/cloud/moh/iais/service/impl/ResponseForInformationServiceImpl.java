@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -244,9 +245,11 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        File file =new File(sharedOutPath+File.separator);
-        File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files");
-        File filePath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath), FilenameUtils.getName(sharedOutPath));
+        String repPath = sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files";
+        File fileRepPath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(repPath), FilenameUtils.getName(repPath));
+        String path = sharedPath + RequestForInformationConstants.FILE_NAME_RFI;
+        File filePath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){
