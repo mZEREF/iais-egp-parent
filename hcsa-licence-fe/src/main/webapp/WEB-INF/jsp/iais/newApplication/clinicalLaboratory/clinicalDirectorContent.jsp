@@ -147,6 +147,8 @@
                 };
                 disableContent($(this).find('div.person-detail'), data);
             }
+            //trigger prs
+            $(this).find('.profRegNo').trigger('blur');
         });
         assignSelectBindEvent();
     });
