@@ -67,7 +67,11 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = new File(FilenameUtils.getPath(file.getOriginalFilename()), FilenameUtils.getName(file.getOriginalFilename()));
+            String path = file.getOriginalFilename();
+            if (path.endsWith("/") || path.endsWith("\\")) {
+                path = path.substring(0, path.length() - 1);
+            }
+            File toFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
@@ -122,7 +126,10 @@ public final class FileUtils {
     }
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
-        File file = new File(FilenameUtils.getPath(src), FilenameUtils.getName(src));
+        if (src.endsWith("/") || src.endsWith("\\")) {
+            src = src.substring(0, src.length() - 1);
+        }
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(src), FilenameUtils.getName(src));
         if (!file.exists()){
             log.info("don't have file");
             return;
@@ -133,7 +140,11 @@ public final class FileUtils {
             log.info("Start to copy ===>");
             for (File f : files){
                 String srcName = f.getName();
-                File dstFile = new File(FilenameUtils.getPath(dst + srcName), FilenameUtils.getName(dst + srcName));
+                String path = dst + srcName;
+                if (path.endsWith("/") || path.endsWith("\\")) {
+                    path = path.substring(0, path.length() - 1);
+                }
+                File dstFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);
