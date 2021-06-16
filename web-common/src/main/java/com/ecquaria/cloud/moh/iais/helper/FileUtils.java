@@ -67,11 +67,8 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            String path = file.getOriginalFilename();
-            if (path.endsWith("/") || path.endsWith("\\")) {
-                path = path.substring(0, path.length() - 1);
-            }
-            File toFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+            String emptyPath = "";
+            File toFile = MiscUtil.generateFile(emptyPath, FilenameUtils.getName(file.getOriginalFilename()));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
