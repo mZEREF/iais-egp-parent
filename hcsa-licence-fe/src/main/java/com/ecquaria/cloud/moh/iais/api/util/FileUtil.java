@@ -16,13 +16,14 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.jcraft.jsch.ChannelSftp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -32,7 +33,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +65,8 @@ public class FileUtil {
 	public static void appendToFile(String string, String fileName) {
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(fileName, true);
+			File file=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
+			writer = new FileWriter(file,true);
 			writer.write(string);
 			writer.flush();
 		} catch (IOException e) {
@@ -140,7 +141,7 @@ public class FileUtil {
 		return result;
 	}
 	public static void generateFolder(String folderPath) {
-		File f = new File(folderPath);
+		File f= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(folderPath),FilenameUtils.getName(folderPath));
 		if (!f.isFile() && !f.exists()) {
 			 if(f.mkdirs()){
 				 log.info(StringUtil.changeForLog("create folder:" + folderPath));
@@ -155,10 +156,10 @@ public class FileUtil {
 	}
 
 	public static String getString(String fileName) throws Exception {
-		File f = new File(fileName);
+		File f= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
 		if (f.exists() && f.isFile()) {
 			String xml;
-			try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
+			try(InputStream is = new FileInputStream(f)) {
 				xml = getString(is);
 				if (!f.delete()) {
 					log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
@@ -228,7 +229,7 @@ public class FileUtil {
 	}
 
 	public static boolean copyFile(String source, String target) {
-		return copyFile(new File(source), new File(target));
+		return copyFile(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(source),FilenameUtils.getName(source)), MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(target),FilenameUtils.getName(target)));
 	}
 
 	public static boolean copyFile(File source, File target) {
@@ -281,7 +282,7 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			try(InputStream fis = Files.newInputStream(Paths.get(fileName))) {
+			try(InputStream fis = new FileInputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName)))) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
@@ -321,7 +322,7 @@ public class FileUtil {
 	}
 
 	public static List<String> getRemoteFileNames(String fileName, String remotePath){
-		File[] files = new File(remotePath).listFiles();
+		File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(remotePath),FilenameUtils.getName(remotePath)).listFiles();
 		if(files == null){
 			return null;
 		}
@@ -350,7 +351,7 @@ public class FileUtil {
 	public static void deleteFilesByFileNames(List<String> fileNames,String downPath){
 		if(!IaisCommonUtils.isEmpty(fileNames)){
 			log.info(StringUtil.changeForLog("------------downpath :" + downPath + "----------------"));
-			File[] files = new File(downPath).listFiles();
+			File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(downPath),FilenameUtils.getName(downPath)).listFiles();
 			if(files != null){
 				for(File file :files){
 					for(String fileName : fileNames){

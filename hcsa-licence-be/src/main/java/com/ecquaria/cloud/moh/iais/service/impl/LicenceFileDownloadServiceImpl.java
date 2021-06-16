@@ -80,6 +80,7 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -89,17 +90,16 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -198,7 +198,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
             log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>" + processFileTrackDtos.size()));
             for (ProcessFileTrackDto v : processFileTrackDtos) {
-                File file = new File(inFolder + File.separator + v.getFileName());
+                File file = MiscUtil.generateFile(inFolder , v.getFileName());
                 if(file.exists()&&file.isFile()){
                     String name = file.getName();
                     String path = file.getPath();
@@ -304,10 +304,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public void initPath() {
 
-        File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
-        File backups=new File(inSharedPath);
-        File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
-        File movePath=new File(sharedPath+File.separator+"move");
+        File compress =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
+        File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
             compressPath.mkdirs();
         }
@@ -328,8 +328,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Boolean flag=Boolean.FALSE;
 
-            File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
-                    File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME+File.separator+groupPath);
+            File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
+                    File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
             log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
             if(!file.exists()){
                 file.mkdirs();
@@ -381,11 +381,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);
+                    File file =MiscUtil.generateFile( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,substring);
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
+                    os=new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -400,7 +400,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
+                    MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -749,7 +749,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     *
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
-        File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
+        File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath,"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -1003,7 +1003,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
             }
-            File file =new File(inFolder+zipFileName);
+            File file =MiscUtil.generateFile(inFolder,zipFileName);
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");
@@ -1017,8 +1017,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void  moveFile(File file){
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
-        File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
-        try (OutputStream fileOutputStream=Files.newOutputStream(Paths.get( moveFile.getPath()));
+        File moveFile=MiscUtil.generateFile(sharedPath+File.separator+"move",name);
+        try (OutputStream fileOutputStream=new FileOutputStream(moveFile);
              InputStream fileInputStream=Files.newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];

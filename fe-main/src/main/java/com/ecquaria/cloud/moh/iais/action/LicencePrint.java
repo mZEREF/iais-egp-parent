@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -58,7 +61,7 @@ public class LicencePrint {
                 map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
-                OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
+                OutputStream outputStream = new FileOutputStream(pdfFile);
                 try {
                     pdfGenerator.generate(outputStream, "licence.ftl", map);
                 }catch (Exception e){

@@ -10,12 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
@@ -23,14 +23,20 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -101,12 +107,12 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 log.debug("Create File fail");
             }
         }
-        File groupPath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+        File groupPath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedOutPath+File.separator+file.getName()));
+        try (OutputStream fileInputStream = new FileOutputStream(MiscUtil.generateFile(sharedOutPath,file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -130,11 +136,11 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        File c= new File(sharedOutPath+File.separator);
+        File c= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=Files.newOutputStream(Paths.get(sharedOutPath+File.separator+ l+ AppServicesConsts.ZIP_NAME));
+        try (OutputStream is=new FileOutputStream(MiscUtil.generateFile(sharedOutPath, l+ AppServicesConsts.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
@@ -180,7 +186,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
-        File zipFile =new File(sharedOutPath);
+        File zipFile =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -203,7 +209,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(sharedOutPath + File.separator + s + RequestForInformationConstants.ZIP_NAME);
+                    File curFile =MiscUtil.generateFile(sharedOutPath , s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
                         log.debug("Rename file fail");
@@ -223,9 +229,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     private void deleteFile(){
-        File file =new File(sharedOutPath+File.separator);
-        File fileRepPath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator+RequestForInformationConstants.FILES);
-        File filePath=new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+        File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
+        File fileRepPath=MiscUtil.generateFile(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT,RequestForInformationConstants.FILES);
+        File filePath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){
