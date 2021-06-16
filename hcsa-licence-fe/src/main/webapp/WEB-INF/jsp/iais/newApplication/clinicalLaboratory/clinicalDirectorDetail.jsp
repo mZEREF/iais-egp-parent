@@ -173,7 +173,7 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12" id="designation">
-                    <iais:select cssClass="designation" name="designation${index}" codeCategory="" value="${clinicalDirectorDto.designation}" options="easMtsDesignationSelectList"></iais:select>
+                    <iais:select cssClass="designation" name="designation${index}" value="${clinicalDirectorDto.designation}" options="designationOpList" firstOption="Please Select"></iais:select>
                 </div>
             </div>
         </div>

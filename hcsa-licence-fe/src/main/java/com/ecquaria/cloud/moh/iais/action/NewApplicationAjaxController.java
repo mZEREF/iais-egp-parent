@@ -1238,13 +1238,12 @@ public class NewApplicationAjaxController {
         String idTypeSelectStr = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
 
         //Designation
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<SelectOption> designationList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
+        List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
         Map<String, String> designationAttr = IaisCommonUtils.genNewHashMap();
         designationAttr.put("class", "designation");
         designationAttr.put("name", "designation"+cdLength);
         designationAttr.put("style", "display: none;");
-        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationList, null, null);
+        String designationSelectStr = NewApplicationHelper.generateDropDownHtml(designationAttr, designationOpList, NewApplicationDelegator.FIRESTOPTION, null);
 
         String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
         //specialty

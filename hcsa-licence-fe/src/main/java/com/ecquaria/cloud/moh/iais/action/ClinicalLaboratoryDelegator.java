@@ -1965,10 +1965,12 @@ public class ClinicalLaboratoryDelegator {
         List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
         ParamUtil.setRequestAttr(bpc.request,EASMTSSPECIALTYSELECTLIST,easMtsSpecialtySelectList);
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
-        ParamUtil.setRequestAttr(bpc.request,EASMTSDESIGNATIONSELECTLIST,easMtsDesignationSelectList);
+        /*List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
+        ParamUtil.setRequestAttr(bpc.request,EASMTSDESIGNATIONSELECTLIST,easMtsDesignationSelectList);*/
         // Assgined person dropdown options
         ParamUtil.setRequestAttr(bpc.request, PERSON_OPTIONS, NewApplicationHelper.genAssignPersonSel(bpc.request, true));
+        List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
+        ParamUtil.setRequestAttr(bpc.request, "designationOpList", designationOpList);
         log.debug(StringUtil.changeForLog("prePareClinicalDirector end ..."));
     }
 
