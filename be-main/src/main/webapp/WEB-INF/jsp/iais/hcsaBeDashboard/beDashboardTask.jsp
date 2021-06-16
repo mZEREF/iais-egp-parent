@@ -549,7 +549,7 @@
             data:{},
             type:"POST",
             dataType: 'json',
-            url: '/main-web/hcsa/intranet/dashboard/closeBanner.do',
+            url: '/main-web/backend/closeBanner.do',
             error:function(data){},
             success:function(data){}
         });
@@ -561,7 +561,7 @@
             data:{},
             type:"POST",
             dataType: 'json',
-            url: '/main-web/hcsa/intranet/dashboard/closeMaintenance.do',
+            url: '/main-web/backend/closeMaintenance.do',
             error:function(data){},
             success:function(data){}
         });
