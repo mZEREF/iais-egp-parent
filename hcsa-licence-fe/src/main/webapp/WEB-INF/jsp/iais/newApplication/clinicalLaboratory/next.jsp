@@ -301,6 +301,7 @@
     };
     <!--cgo,medAlert -->
     var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType, callback) {
+        showWaiting();
         var spcEle = $CurrentPsnEle.find('.specialty');
         var jsonData = {
             'idType':idType,
@@ -321,8 +322,10 @@
                 } else {
                     fillPsnForm($CurrentPsnEle, data, psnType);
                 }
+                dismissWaiting();
             },
             'error':function () {
+                dismissWaiting();
             }
         });
     };

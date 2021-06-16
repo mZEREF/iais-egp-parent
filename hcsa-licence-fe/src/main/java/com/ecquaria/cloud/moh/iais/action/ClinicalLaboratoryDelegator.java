@@ -2876,8 +2876,8 @@ public class ClinicalLaboratoryDelegator {
                 String idType = ParamUtil.getString(request,"idType"+i);
                 String idNo = ParamUtil.getString(request,"idNo"+i);
                 String designation = ParamUtil.getString(request,"designation"+i);
-                String specialty = ParamUtil.getString(request,"speciality"+i);
-                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
+//                String specialty = ParamUtil.getString(request,"speciality"+i);
+//                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
                 String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
                 String typeOfCurrRegi = ParamUtil.getString(request,"typeOfCurrRegi"+i);
                 String currRegiDateStr = ParamUtil.getString(request,"currRegiDate"+i);
@@ -2900,7 +2900,7 @@ public class ClinicalLaboratoryDelegator {
                     appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcClinicalDirectorDto);
                     appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
                 }
-                boolean partEdit = AppConsts.YES.equals(isPartEdit);
+                boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(cdIndexNo);
                 boolean isNewOfficer = "newOfficer".equals(assignSel);
                 if (canSetValue(appPsnEditDto.isProfessionBoard(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
@@ -2923,16 +2923,16 @@ public class ClinicalLaboratoryDelegator {
                 if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setDesignation(designation);
                 }
-                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setSpeciality(specialty);
-                }
-                if (canSetValue(appPsnEditDto.isSpecialityOther(), isNewOfficer, partEdit)) {
-                    if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
-                        appSvcClinicalDirectorDto.setSpecialityOther(specialityOther);
-                    }else{
-                        appSvcClinicalDirectorDto.setSpecialityOther(null);
-                    }
-                }
+//                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
+//                    appSvcClinicalDirectorDto.setSpeciality(specialty);
+//                }
+//                if (canSetValue(appPsnEditDto.isSpecialityOther(), isNewOfficer, partEdit)) {
+//                    if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
+//                        appSvcClinicalDirectorDto.setSpecialityOther(specialityOther);
+//                    }else{
+//                        appSvcClinicalDirectorDto.setSpecialityOther(null);
+//                    }
+//                }
                 if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
                 }

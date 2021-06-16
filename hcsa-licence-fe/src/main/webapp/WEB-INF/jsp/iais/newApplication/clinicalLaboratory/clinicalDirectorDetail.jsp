@@ -58,7 +58,7 @@
 
     <%-- Assigned person dropdown list --%>
     <div class="col-md-12 col-xs-12">
-        <div class="row <c:if test="${'true' == canEdit && '-1' != clinicalDirectorDto.assignSelect}">hidden</c:if>">
+        <div class="row <c:if test="${'true' == canEdit && '-1' != clinicalDirectorDto.assignSelect && not empty clinicalDirectorDto.assignSelect}">hidden</c:if>">
             <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                     <div class="col-sm-6 control-label formtext col-md-5">
@@ -77,8 +77,7 @@
         </div>
     </div>
 
-    <div class="col-md-12 col-xs-12 person-detail <c:if test="${'true' != canEdit && ('-1' == clinicalDirectorDto.assignSelect ||
-                empty clinicalDirectorDto.assignSelect)}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 person-detail <c:if test="${'-1' == clinicalDirectorDto.assignSelect || empty clinicalDirectorDto.assignSelect}">hidden</c:if>">
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">

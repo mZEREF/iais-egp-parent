@@ -101,22 +101,26 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty </p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.specialty}"/> </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                        <c:out value="${cdDto.speciality}"/> </p>
                                 </td>
                             </tr>
-                            <c:if test="${'EAMS006' == cdDto.specialty}">
+                            <c:if test="${'EAMS006' == cdDto.speciality}">
                                 <tr>
                                     <td class="col-xs-6">
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                                     </td>
                                     <td>
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.otherSpecialty}"/> </p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out
+                                                value="${cdDto.specialtyOther}"/> </p>
                                     </td>
                                 </tr>
                             </c:if>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when specialty was gotten </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span class="check-square"></span>Date when speciality was gotten
+                                    </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.specialtyGetDateStr}"/> </p>

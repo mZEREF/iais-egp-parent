@@ -103,12 +103,12 @@ public class ValidateClincalDirector implements ValidateFlow {
                 }else {
 
                 }
-                String specialty = appSvcClinicalDirectorDtos.get(i).getSpeciality();
-                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
-                    map.put("speciality"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "speciality", "field"));
-                }else {
-
-                }
+//                String specialty = appSvcClinicalDirectorDtos.get(i).getSpeciality();
+//                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
+//                    map.put("speciality"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "speciality", "field"));
+//                }else {
+//
+//                }
                 Date specialtyGetDate = appSvcClinicalDirectorDtos.get(i).getSpecialtyGetDate();
                 if(specialtyGetDate==null){
                     map.put("specialtyGetDate"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "specialtyGetDate", "field"));

@@ -125,6 +125,7 @@
         //rfc,renew,rfi
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
             disabledPage();
+            $('select').prop('disabled',true);
             $('.date_picker').addClass('disabled-placeHolder');
             $('input.holdCerByEMS:checked').each(function () {
                 $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
@@ -132,12 +133,11 @@
         }
 
         // init
-        $('div.clinicalDirectorContent').each(function(){
+        $('div.clinicalDirectorContent').each(function () {
             var assignSelVal = $(this).find('.assignSel:input').val();
             console.info("init ---- " + assignSelVal);
             if (isEmpty(assignSelVal)) {
                 $(this).find('select.assignSel option').eq(0).prop("selected", true);
-                $(this).find('select.assignSel').niceSelect("update");
             } else if ("-1" != assignSelVal && 'newOfficer' != assignSelVal) {
                 var data;
                 try{
@@ -147,6 +147,7 @@
                 };
                 disableContent($(this).find('div.person-detail'), data);
             }
+            $(this).find('select').niceSelect("update");
             //trigger prs
             $(this).find('.profRegNo').trigger('blur');
         });
@@ -321,6 +322,9 @@
         $content.find(':input').css('border-color','');
         $content.find(':input').css('color','');
         $content.find(':input').prop('disabled', false);
+        <c:if test="${'true' == canEdit}">
+        $content.find('input.cdIndexNo').val('');
+        </c:if>
         if('-1' == assignSelVal) {
             $content.addClass('hidden');
             clearFields($content);
@@ -342,7 +346,7 @@
         }
         if (isEmpty(data)) {
             $current.addClass('hidden');
-            $current.clearFields();
+            clearFields($content);
         }
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
