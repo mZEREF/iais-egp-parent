@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,7 +67,7 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = new File(file.getOriginalFilename());
+            File toFile = new File(FilenameUtils.getPath(file.getOriginalFilename()), FilenameUtils.getName(file.getOriginalFilename()));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
@@ -121,7 +122,7 @@ public final class FileUtils {
     }
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
-        File file = new File(src);
+        File file = new File(FilenameUtils.getPath(src), FilenameUtils.getName(src));
         if (!file.exists()){
             log.info("don't have file");
             return;
@@ -132,7 +133,7 @@ public final class FileUtils {
             log.info("Start to copy ===>");
             for (File f : files){
                 String srcName = f.getName();
-                File dstFile = new File(dst + srcName);
+                File dstFile = new File(FilenameUtils.getPath(dst + srcName), FilenameUtils.getName(dst + srcName));
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);
