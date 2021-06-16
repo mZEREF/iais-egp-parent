@@ -90,6 +90,7 @@
               </div>
               <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
               <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
+                <br>
                 <div class="row">
                   <div class="col-xs-10 col-md-12">
                     <div class="components">
@@ -128,7 +129,6 @@
                                        cssClass="application_status" firstOption="Please Select"
                                        value="APST029"></iais:select>
                         </c:if>
-
                       </iais:value>
                     </iais:row>
                   </c:if>
@@ -158,6 +158,8 @@
               </c:if>
             </iais:section>
             <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
+              <br>
+              <br>
               <h3>
                 <span>Search Results</span>
               </h3>
