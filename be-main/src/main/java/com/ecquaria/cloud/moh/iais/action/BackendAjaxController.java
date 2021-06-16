@@ -28,20 +28,20 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @Author: guyin
@@ -72,11 +72,10 @@ public class BackendAjaxController {
     private InspEmailService inspEmailService;
 
     @Autowired
-    TaskService taskService;
+    private TaskService taskService;
 
     @RequestMapping(value = "appGroup.do", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody Map<String, Object> appGroup(HttpServletRequest request, HttpServletResponse response) {
         String groupNo = request.getParameter("groupno");
         SearchParam searchParamAjax = (SearchParam) ParamUtil.getSessionAttr(request, "searchParamAjax");
         Map<String, String> appNoUrl = (Map<String, String>) ParamUtil.getSessionAttr(request, "appNoUrl");
@@ -187,26 +186,8 @@ public class BackendAjaxController {
         return map;
     }
 
-    private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
-        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-        if(remThreshold != 0) {
-            if (days < remThreshold) {
-                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
-            }
-            if (kpi != 0) {
-                if (remThreshold <= days && days <= kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
-                } else if (days > kpi) {
-                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
-                }
-            }
-        }
-        return colour;
-    }
-
     @RequestMapping(value = "setCurrentRole.do", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, String> setCurrentRole(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody Map<String, String> setCurrentRole(HttpServletRequest request, HttpServletResponse response) {
         String curRole = request.getParameter("curRole");
         LoginContext loginContext = new LoginContext();
         loginContext.setCurRoleId(curRole);
@@ -216,8 +197,7 @@ public class BackendAjaxController {
     }
 
     @RequestMapping(value = "changeTaskStatus.do", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody Map<String, Object> changeTaskStatus(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
         String taskId = ParamUtil.getMaskedString(request, "taskId");
         String res = inspectionAssignTaskService.taskRead(taskId);
@@ -226,8 +206,7 @@ public class BackendAjaxController {
     }
 
     @PostMapping(value = "aoApprove.do")
-    public @ResponseBody
-    Map<String, Object> aoApproveCheck(HttpServletRequest request) {
+    public @ResponseBody Map<String, Object> aoApproveCheck(HttpServletRequest request) {
         String applicationString =  ParamUtil.getString(request, "applications");
         String[] applications = applicationString.split(",");
         int approveCheck = 1;
@@ -257,8 +236,7 @@ public class BackendAjaxController {
     }
 
     @PostMapping(value = "removeSearchParam.do")
-    public @ResponseBody
-    Map<String, String> removeSearchParam(HttpServletRequest request) {
+    public @ResponseBody Map<String, String> removeSearchParam(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request,"application_status",null);
 
         Map<String, String> result = new HashMap<>();
@@ -266,6 +244,23 @@ public class BackendAjaxController {
         return result;
     }
 
+    @GetMapping(value = "closeBanner.do")
+    public @ResponseBody Map<String, String> closeBanner(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,"bAnner_AlERt_Msg__atTR",null);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("remove","banner");
+        return result;
+    }
+
+    @GetMapping(value = "closeMaintenance.do")
+    public @ResponseBody Map<String, String> closeMaintenance(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,"schEdule_AlERt_Msg__atTR",null);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("remove","maintenance");
+        return result;
+    }
 
     private boolean checkCanApproveStage(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto){
         if(hcsaSvcRoutingStageDto == null){
@@ -278,7 +273,6 @@ public class BackendAjaxController {
         }
         return flag;
     }
-
 
     private HcsaSvcRoutingStageDto getCanApproveStageDto(String appType, String appStatus, String serviceId){
         if(StringUtil.isEmpty(appType) || StringUtil.isEmpty(appStatus) || StringUtil.isEmpty(serviceId)){
@@ -298,7 +292,6 @@ public class BackendAjaxController {
         return result;
     }
 
-
     private String generateProcessUrl(TaskDto dto, HttpServletRequest request,String taskId) {
         StringBuilder sb = new StringBuilder("https://");
         String url = dto.getProcessUrl();
@@ -314,5 +307,22 @@ public class BackendAjaxController {
         }
         sb.append("taskId=").append(taskId);
         return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
+    }
+
+    private String getColorByWorkAndKpiDay(int kpi, int days, int remThreshold) {
+        String colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+        if(remThreshold != 0) {
+            if (days < remThreshold) {
+                colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_BLACK;
+            }
+            if (kpi != 0) {
+                if (remThreshold <= days && days <= kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_AMBER;
+                } else if (days > kpi) {
+                    colour = HcsaConsts.PERFORMANCE_TIME_COLOUR_RED;
+                }
+            }
+        }
+        return colour;
     }
 }
