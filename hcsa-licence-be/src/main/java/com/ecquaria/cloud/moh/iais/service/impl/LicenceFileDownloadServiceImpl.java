@@ -79,12 +79,6 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -95,7 +89,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -109,6 +102,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -309,7 +306,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File backups=MiscUtil.generateFile(inSharedPath);
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
         File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
@@ -386,14 +383,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
-                    File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(s1),
-                            FilenameUtils.getName(s1));
+                    File file =MiscUtil.generateFile(s1);
                     if(!file.exists()){
                         file.mkdirs();
                     }
                     log.info(file.getPath()+"-----zipFile---------");
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+zipEntry.getName();
-                    os=new FileOutputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(s),FilenameUtils.getName(s)));
+                    os=new FileOutputStream(MiscUtil.generateFile(s));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -412,8 +408,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(s.endsWith(File.separator)){
                         s=s.substring(0,s.length()-1);
                     }
-                    File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator( s),
-                            FilenameUtils.getName( s));
+                    File file = MiscUtil.generateFile(s);
                     file.mkdirs();
                     log.info(file.getPath()+"-----else  zipFile-----");
 
@@ -1019,7 +1014,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
             }
-            File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inFolder+zipFileName),FilenameUtils.getName(inFolder+zipFileName));
+            File file =MiscUtil.generateFile(inFolder + zipFileName);
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");

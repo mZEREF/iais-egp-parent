@@ -27,9 +27,6 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -37,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SFTPUtil {
@@ -192,7 +190,7 @@ public class SFTPUtil {
         if (saveFile.endsWith("/") || saveFile.endsWith("\\")) {
             saveFile = saveFile.substring(0, saveFile.length() - 1);
         }
-        try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(saveFile),FilenameUtils.getName(saveFile)))) {
+        try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(saveFile))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {
@@ -207,7 +205,7 @@ public class SFTPUtil {
         }
         try {
         	connect();
-            File f = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
+            File f = MiscUtil.generateFile(fileName);
             if(f.isFile()){
             	log.info(StringUtil.changeForLog("localFile : " + f.getAbsolutePath()));
                 String remoteFile = remotePath + seperator + f.getName();
@@ -247,7 +245,7 @@ public class SFTPUtil {
 	private void createDir(String filepath, ChannelSftp sftp){
         boolean bcreated = false;
         boolean bparent = false;
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(filepath),FilenameUtils.getName(filepath));
+        File file = MiscUtil.generateFile(filepath);
         String ppath = file.getParent();
         try {
             sftp.cd(ppath);

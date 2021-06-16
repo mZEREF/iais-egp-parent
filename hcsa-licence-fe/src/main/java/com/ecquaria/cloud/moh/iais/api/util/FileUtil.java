@@ -16,9 +16,6 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -35,6 +32,7 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FileUtil.java
@@ -68,7 +66,7 @@ public class FileUtil {
 			if (fileName.endsWith("/") || fileName.endsWith("\\")) {
 				fileName = fileName.substring(0, fileName.length() - 1);
 			}
-			File file=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
+			File file=MiscUtil.generateFile(fileName);
 			writer = new FileWriter(file,true);
 			writer.write(string);
 			writer.flush();
@@ -147,7 +145,7 @@ public class FileUtil {
 		if (folderPath.endsWith("/") || folderPath.endsWith("\\")) {
 			folderPath = folderPath.substring(0, folderPath.length() - 1);
 		}
-		File f= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(folderPath),FilenameUtils.getName(folderPath));
+		File f= MiscUtil.generateFile(folderPath);
 		if (!f.isFile() && !f.exists()) {
 			 if(f.mkdirs()){
 				 log.info(StringUtil.changeForLog("create folder:" + folderPath));
@@ -162,7 +160,7 @@ public class FileUtil {
 	}
 
 	public static String getString(String fileName) throws Exception {
-		File f= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
+		File f= MiscUtil.generateFile(fileName);
 		if (f.exists() && f.isFile()) {
 			String xml;
 			try(InputStream is = new FileInputStream(f)) {
@@ -235,7 +233,7 @@ public class FileUtil {
 	}
 
 	public static boolean copyFile(String source, String target) {
-		return copyFile(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(source),FilenameUtils.getName(source)), MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(target),FilenameUtils.getName(target)));
+		return copyFile(MiscUtil.generateFile(source), MiscUtil.generateFile(target));
 	}
 
 	public static boolean copyFile(File source, File target) {
@@ -288,7 +286,7 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			try(InputStream fis = new FileInputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName)))) {
+			try(InputStream fis = new FileInputStream(MiscUtil.generateFile(fileName))) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
@@ -328,7 +326,7 @@ public class FileUtil {
 	}
 
 	public static List<String> getRemoteFileNames(String fileName, String remotePath){
-		File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(remotePath),FilenameUtils.getName(remotePath)).listFiles();
+		File[] files = MiscUtil.generateFile(remotePath).listFiles();
 		if(files == null){
 			return null;
 		}
@@ -357,7 +355,7 @@ public class FileUtil {
 	public static void deleteFilesByFileNames(List<String> fileNames,String downPath){
 		if(!IaisCommonUtils.isEmpty(fileNames)){
 			log.info(StringUtil.changeForLog("------------downpath :" + downPath + "----------------"));
-			File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(downPath),FilenameUtils.getName(downPath)).listFiles();
+			File[] files = MiscUtil.generateFile(downPath).listFiles();
 			if(files != null){
 				for(File file :files){
 					for(String fileName : fileNames){

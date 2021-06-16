@@ -7,18 +7,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator
 @Slf4j
@@ -45,7 +43,7 @@ public class PostCodeDelegator {
         if (streetsPath.endsWith("/") || streetsPath.endsWith("\\")) {
             streetsPath = streetsPath.substring(0, streetsPath.length() - 1);
         }
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(streetsPath), FilenameUtils.getName(streetsPath));
+        File file = MiscUtil.generateFile(streetsPath);
             try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
             String key = null;
@@ -69,7 +67,7 @@ public class PostCodeDelegator {
         if (buildingPath.endsWith("/") || buildingPath.endsWith("\\")) {
             buildingPath = buildingPath.substring(0, buildingPath.length() - 1);
         }
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(buildingPath), FilenameUtils.getName(buildingPath));
+        File file = MiscUtil.generateFile(buildingPath);
         try (BufferedReader  br = new BufferedReader(new FileReader(file)); ){
             String line = null;
             String key = null;
@@ -99,7 +97,7 @@ public class PostCodeDelegator {
         if (postCodePath.endsWith("/") || postCodePath.endsWith("\\")) {
             postCodePath = postCodePath.substring(0, postCodePath.length() - 1);
         }
-        File file =  MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(postCodePath), FilenameUtils.getName(postCodePath));
+        File file =  MiscUtil.generateFile(postCodePath);
         try(BufferedReader br = new BufferedReader(new FileReader(file));){
             String line = null;
             String postalCode = null;

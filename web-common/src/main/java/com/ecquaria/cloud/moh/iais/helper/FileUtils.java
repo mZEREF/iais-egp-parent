@@ -6,13 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.sz.commons.util.Calculator;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +15,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author: yichen
@@ -67,8 +65,8 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            String emptyPath = FilenameUtils.getFullPathNoEndSeparator(file.getOriginalFilename());
-            File toFile = MiscUtil.generateFile(emptyPath, FilenameUtils.getName(file.getOriginalFilename()));
+            String emptyPath = file.getOriginalFilename();
+            File toFile = MiscUtil.generateFile(emptyPath, file.getOriginalFilename());
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
@@ -126,7 +124,7 @@ public final class FileUtils {
         if (src.endsWith("/") || src.endsWith("\\")) {
             src = src.substring(0, src.length() - 1);
         }
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(src), FilenameUtils.getName(src));
+        File file = MiscUtil.generateFile(src);
         if (!file.exists()){
             log.info("don't have file");
             return;
@@ -141,7 +139,7 @@ public final class FileUtils {
                 if (path.endsWith("/") || path.endsWith("\\")) {
                     path = path.substring(0, path.length() - 1);
                 }
-                File dstFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+                File dstFile = MiscUtil.generateFile(path);
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);

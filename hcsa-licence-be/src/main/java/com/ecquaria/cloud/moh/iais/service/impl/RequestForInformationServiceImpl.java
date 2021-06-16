@@ -57,12 +57,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -88,6 +82,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * RequestForInformationServiceImpl
@@ -548,7 +546,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File b=MiscUtil.generateFile(inSharedPath);
         File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();

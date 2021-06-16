@@ -113,12 +113,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void deleteUnZipFile() {
-        File downloadFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(download),FilenameUtils.getName(download));
+        File downloadFile = MiscUtil.generateFile(download);
         if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
             zipFile = zipFile.substring(0, zipFile.length() - 1);
         }
-        File zipFiles = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile));
-        File compressPathFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(compressPath),FilenameUtils.getName(compressPath));
+        File zipFiles = MiscUtil.generateFile(zipFile);
+        File compressPathFile = MiscUtil.generateFile(compressPath);
         //delete old zip and folder
         FileUtils.deleteTempFile(downloadFile);
         FileUtils.deleteTempFile(compressPathFile);
@@ -134,8 +134,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
             zipFile = zipFile.substring(0, zipFile.length() - 1);
         }
-        if(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).isDirectory()){
-            File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).listFiles();
+        if(MiscUtil.generateFile(zipFile).isDirectory()){
+            File[] files = MiscUtil.generateFile(zipFile).listFiles();
             int allSize = processFileTrackDtos.size();
             int nowSize = 0;
             List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -277,7 +277,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(download),FilenameUtils.getName(download));
+        File file = MiscUtil.generateFile(download);
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         String submissionId = generateIdClient.getSeqId().getEntity();
