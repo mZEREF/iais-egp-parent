@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import java.io.BufferedReader;
@@ -40,7 +41,7 @@ public class PostCodeDelegator {
 
     private Map<String,String> initstreetMap() throws IOException {
         Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
-        File file = new File(FilenameUtils.getPath(streetsPath), FilenameUtils.getName(streetsPath));
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(streetsPath), FilenameUtils.getName(streetsPath));
         try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
             String key = null;
@@ -61,7 +62,7 @@ public class PostCodeDelegator {
     }
     private Map<String,String> initbuildingMap() throws IOException {
         Map<String,String> buildingMap = IaisCommonUtils.genNewHashMap();
-        File file = new File(FilenameUtils.getPath(buildingPath), FilenameUtils.getName(buildingPath));
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(buildingPath), FilenameUtils.getName(buildingPath));
         try (BufferedReader  br = new BufferedReader(new FileReader(file)); ){
             String line = null;
             String key = null;
@@ -88,7 +89,7 @@ public class PostCodeDelegator {
      */
     private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
         List<PostCodeDto> list = IaisCommonUtils.genNewArrayList();
-        File file = new File(FilenameUtils.getPath(postCodePath), FilenameUtils.getName(postCodePath));
+        File file =  MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(postCodePath), FilenameUtils.getName(postCodePath));
         try(BufferedReader br = new BufferedReader(new FileReader(file));){
             String line = null;
             String postalCode = null;
