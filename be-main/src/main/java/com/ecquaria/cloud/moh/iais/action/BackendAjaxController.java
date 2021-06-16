@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -244,7 +243,7 @@ public class BackendAjaxController {
         return result;
     }
 
-    @GetMapping(value = "closeBanner.do")
+    @PostMapping(value = "closeBanner.do")
     public @ResponseBody Map<String, String> closeBanner(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request,"bAnner_AlERt_Msg__atTR",null);
 
@@ -253,7 +252,7 @@ public class BackendAjaxController {
         return result;
     }
 
-    @GetMapping(value = "closeMaintenance.do")
+    @PostMapping(value = "closeMaintenance.do")
     public @ResponseBody Map<String, String> closeMaintenance(HttpServletRequest request) {
         ParamUtil.setSessionAttr(request,"schEdule_AlERt_Msg__atTR",null);
 
