@@ -2833,98 +2833,99 @@ public class ClinicalLaboratoryDelegator {
                     appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcClinicalDirectorDto);
                     appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
                 }
-
-                if (canSetValue(appPsnEditDto.isProfessionBoard(), assignSel)) {
+                boolean partEdit = AppConsts.YES.equals(isPartEdit);
+                boolean isNewOfficer = "newOfficer".equals(assignSel);
+                if (canSetValue(appPsnEditDto.isProfessionBoard(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
                 }
-                if (canSetValue(appPsnEditDto.isProfRegNo(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isProfRegNo(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setProfRegNo(profRegNo);
                 }
-                if (canSetValue(appPsnEditDto.isName(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setName(name);
                 }
-                if (canSetValue(appPsnEditDto.isSalutation(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setSalutation(salutation);
                 }
-                if (canSetValue(appPsnEditDto.isIdType(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setIdType(idType);
                 }
-                if (canSetValue(appPsnEditDto.isIdNo(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setIdNo(idNo);
                 }
-                if (canSetValue(appPsnEditDto.isDesignation(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setDesignation(designation);
                 }
-                if (canSetValue(appPsnEditDto.isSpeciality(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setSpeciality(specialty);
                 }
-                if (canSetValue(appPsnEditDto.isSpecialityOther(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isSpecialityOther(), isNewOfficer, partEdit)) {
                     if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
                         appSvcClinicalDirectorDto.setSpecialityOther(specialityOther);
                     }else{
                         appSvcClinicalDirectorDto.setSpecialityOther(null);
                     }
                 }
-                if (canSetValue(appPsnEditDto.isTypeOfRegister(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
                 }
-                if (canSetValue(appPsnEditDto.isHoldCerByEMS(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isHoldCerByEMS(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setHoldCerByEMS(holdCerByEMS);
                 }
-                if (canSetValue(appPsnEditDto.isMobileNo(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isMobileNo(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setMobileNo(mobileNo);
                 }
-                if (canSetValue(appPsnEditDto.isEmailAddr(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isEmailAddr(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setEmailAddr(emailAddr);
                 }
-                if (canSetValue(appPsnEditDto.isTypeOfCurrRegi(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isTypeOfCurrRegi(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfCurrRegi(typeOfCurrRegi);
                 }
-                if (canSetValue(appPsnEditDto.isRelevantExperience(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isRelevantExperience(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setRelevantExperience(relevantExperience);
                 }
-                if(StringUtil.isEmpty(isPartEdit)){
+                if (StringUtil.isEmpty(cdIndexNo)) {
                     appSvcClinicalDirectorDto.setCgoIndexNo(UUID.randomUUID().toString());
-                }else{
-                    appSvcClinicalDirectorDto.setCgoIndexNo(isPartEdit);
+                } else {
+                    appSvcClinicalDirectorDto.setCgoIndexNo(cdIndexNo);
                 }
 
                 //date pick
-                if (canSetValue(appPsnEditDto.isSpecialtyGetDate(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isSpecialtyGetDate(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setSpecialtyGetDateStr(specialtyGetDateStr);
                     Date specialtyGetDate = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
                     appSvcClinicalDirectorDto.setSpecialtyGetDate(specialtyGetDate);
                 }
-                if (canSetValue(appPsnEditDto.isPraCerEndDate(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isPraCerEndDate(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setPraCerEndDateStr(praCerEndDateStr);
                     Date praCerEndDate = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
                     appSvcClinicalDirectorDto.setPraCerEndDate(praCerEndDate);
                 }
-                if (canSetValue(appPsnEditDto.isCurrRegiDate(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isCurrRegiDate(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setCurrRegiDateStr(currRegiDateStr);
                     Date currRegiDate = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
                     appSvcClinicalDirectorDto.setCurrRegiDate(currRegiDate);
                 }
-                if (canSetValue(appPsnEditDto.isAclsExpiryDate(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isAclsExpiryDate(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setAclsExpiryDateStr(aclsExpiryDateStr);
                     Date aclsExpiryDate = DateUtil.parseDate(aclsExpiryDateStr, Formatter.DATE);
                     appSvcClinicalDirectorDto.setAclsExpiryDate(aclsExpiryDate);
                 }
-                if (canSetValue(appPsnEditDto.isBclsExpiryDate(), assignSel)) {
+                if (canSetValue(appPsnEditDto.isBclsExpiryDate(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setBclsExpiryDateStr(bclsExpiryDateStr);
                     Date bclsExpiryDate = DateUtil.parseDate(bclsExpiryDateStr, Formatter.DATE);
                     appSvcClinicalDirectorDto.setBclsExpiryDate(bclsExpiryDate);
                 }
 
                 if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(currSvcCode)){
-                    if (canSetValue(appPsnEditDto.isNoRegWithProfBoard(), assignSel)) {
+                    if (canSetValue(appPsnEditDto.isNoRegWithProfBoard(), isNewOfficer, partEdit)) {
                         if(AppConsts.YES.equals(noRegWithProfBoard)){
                             appSvcClinicalDirectorDto.setNoRegWithProfBoard(noRegWithProfBoard);
                         }else{
                             appSvcClinicalDirectorDto.setNoRegWithProfBoard(null);
                         }
                     }
-                    if (canSetValue(appPsnEditDto.isTransportYear(), assignSel)) {
+                    if (canSetValue(appPsnEditDto.isTransportYear(), isNewOfficer, partEdit)) {
                         appSvcClinicalDirectorDto.setTransportYear(transportYear);
                     }
                 }
@@ -2935,8 +2936,8 @@ public class ClinicalLaboratoryDelegator {
         return appSvcClinicalDirectorDtos;
     }
 
-    private boolean canSetValue(boolean canEdit, String assignSel) {
-        return "newOfficer".equals(assignSel) || canEdit;
+    private boolean canSetValue(boolean canEdit, boolean isNewOfficer, boolean isPartEdit) {
+        return isPartEdit || canEdit || isNewOfficer;
     }
 
     private AppSvcChargesPageDto genAppSvcChargesDto(HttpServletRequest request, String appType){

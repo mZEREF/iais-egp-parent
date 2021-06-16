@@ -34,13 +34,23 @@
                         </div>
                     </c:if>
                 </div>
+
+                <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
+                    <div class="col-sm-10">
+                        <label class="control-font-label">
+                            <c:if test="${!empty clinicalDirectorDto.name && !empty clinicalDirectorDto.idNo && !empty clinicalDirectorDto.idType}">
+                                ${clinicalDirectorDto.name}, ${clinicalDirectorDto.idNo} (<iais:code code="${clinicalDirectorDto.idType}"/>)
+                            </c:if>
+                        </label>
+                    </div>
+                </c:if>
             </div>
         </div>
     </div>
 
     <%-- Assigned person dropdown list --%>
     <div class="col-md-12 col-xs-12">
-        <div class="row <%--<c:if test="${'true' == canEdit && '-1' != clinicalDirectorDto.assignSelect}">hidden</c:if>--%>">
+        <div class="row <c:if test="${'true' == canEdit && '-1' != clinicalDirectorDto.assignSelect}">hidden</c:if>">
             <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                     <div class="col-sm-6 control-label formtext col-md-5">
@@ -59,7 +69,8 @@
         </div>
     </div>
 
-    <div class="col-md-12 col-xs-12 person-detail <c:if test="${'-1' == clinicalDirectorDto.assignSelect}">hidden</c:if>">
+    <div class="col-md-12 col-xs-12 person-detail <c:if test="${'true' != canEdit && ('-1' == clinicalDirectorDto.assignSelect ||
+                empty clinicalDirectorDto.assignSelect)}">hidden</c:if>">
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">

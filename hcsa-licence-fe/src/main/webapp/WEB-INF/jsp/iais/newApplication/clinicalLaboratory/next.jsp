@@ -111,6 +111,7 @@
         $('#RfcSkip').click(function () {
             showWaiting();
             $("[name='nextStep']").val('skip');
+            $('#isEditHiddenVal').val('0');
             nextFun();
         });
 
