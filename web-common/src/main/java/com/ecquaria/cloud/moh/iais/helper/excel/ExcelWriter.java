@@ -78,8 +78,11 @@ public final class ExcelWriter {
 
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
-        File out = new File(FilenameUtils.getPath(fileName), FilenameUtils.getName(fileName));
-        try (OutputStream fileOutputStream = new FileOutputStream(out.getPath())) {
+        if (fileName.endsWith("/") || fileName.endsWith("\\")) {
+            fileName = fileName.substring(0, fileName.length() - 1);
+        }
+        File out = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName), FilenameUtils.getName(fileName));
+        try (OutputStream fileOutputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
             startInternal(workbook);
@@ -103,9 +106,13 @@ public final class ExcelWriter {
 
     private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
-        File out = new File(FilenameUtils.getPath(fileName), FilenameUtils.getName(fileName));
+        String path = fileName;
+        if (path.endsWith("/") || path.endsWith("\\")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        File out = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
 
-        try (InputStream fileInputStream = new FileInputStream(file.getPath()); OutputStream outputStream = new FileOutputStream(out.getPath())) {
+        try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal(workbook);
