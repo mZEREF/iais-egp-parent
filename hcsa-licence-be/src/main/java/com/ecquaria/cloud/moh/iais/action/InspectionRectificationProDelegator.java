@@ -180,6 +180,7 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
                         InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
                         iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
                         iDto.setAppNo(applicationDto.getApplicationNo());
+                        iDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                             iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
