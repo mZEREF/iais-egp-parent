@@ -6,8 +6,6 @@ import com.ecquaria.cloud.moh.iais.api.config.GatewayNetsConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,20 +94,20 @@ public class GatewayNetsCore {
     }
 
     public static void logResult(String sWord) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(GatewayNetsConfig.log_path);
-            writer.write(sWord);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
+//        FileWriter writer = null;
+//        try {
+//            writer = new FileWriter(GatewayNetsConfig.log_path);
+//            writer.write(sWord);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        } finally {
+//            if (writer != null) {
+//                try {
+//                    writer.close();
+//                } catch (IOException e) {
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
+//        }
     }
 }

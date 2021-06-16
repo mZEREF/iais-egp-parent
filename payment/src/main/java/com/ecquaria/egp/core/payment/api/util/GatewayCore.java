@@ -5,8 +5,6 @@ import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -95,20 +93,20 @@ public class GatewayCore {
     }
 
     public static void logResult(String sWord) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(GatewayConfig.log_path);
-            writer.write(sWord);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
+//        FileWriter writer = null;
+//        try {
+//            writer = new FileWriter(GatewayConfig.log_path);
+//            writer.write(sWord);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        } finally {
+//            if (writer != null) {
+//                try {
+//                    writer.close();
+//                } catch (IOException e) {
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
+//        }
     }
 }

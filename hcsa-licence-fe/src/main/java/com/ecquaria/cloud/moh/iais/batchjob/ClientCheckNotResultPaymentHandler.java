@@ -5,11 +5,9 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -39,10 +37,10 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
-            AuditTrailHelper.setupBatchJobAuditTrail(this);
+            //AuditTrailHelper.setupBatchJobAuditTrail(this);
             log.debug(StringUtil.changeForLog("the do job start ...."));
             List<ApplicationGroupDto> applicationGroupDtoList= applicationFeClient.getAppGrpDtoPaying().getEntity();
-            AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+            //AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
                 try {
