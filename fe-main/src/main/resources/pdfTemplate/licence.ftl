@@ -4546,7 +4546,8 @@
     }
     .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
+        font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
       /*color: #a2d9e7;*/
       font-size: 30px;
       width: 6px;
@@ -4630,7 +4631,8 @@
     }
     .cesform-box .license-info p.lic-no:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
+        font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
       color: #a2d9e7;
       font-size: 30px;
       width: 6px;
@@ -4643,7 +4645,8 @@
     }
     .cesform-box .license-info p.serv-name:before {
       content: "";
-      font:normal normal normal 14px/1 FontAwesome;
+        font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
       color: #a2d9e7;
       font-size: 30px;
       width: 6px;
