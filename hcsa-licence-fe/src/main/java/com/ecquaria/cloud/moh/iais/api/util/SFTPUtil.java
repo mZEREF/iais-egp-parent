@@ -19,6 +19,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
  */
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -26,14 +27,12 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import ecq.commons.config.Config;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -190,7 +189,7 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        try(OutputStream os = Files.newOutputStream(Paths.get(saveFile))) {
+        try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(saveFile),FilenameUtils.getName(saveFile)))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {
@@ -205,7 +204,7 @@ public class SFTPUtil {
         }
         try {
         	connect();
-            File f = new File(fileName);
+            File f = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName),FilenameUtils.getName(fileName));
             if(f.isFile()){
             	log.info(StringUtil.changeForLog("localFile : " + f.getAbsolutePath()));
                 String remoteFile = remotePath + seperator + f.getName();
@@ -245,7 +244,7 @@ public class SFTPUtil {
 	private void createDir(String filepath, ChannelSftp sftp){
         boolean bcreated = false;
         boolean bparent = false;
-        File file = new File(filepath);
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(filepath),FilenameUtils.getName(filepath));
         String ppath = file.getParent();
         try {
             sftp.cd(ppath);

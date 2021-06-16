@@ -145,7 +145,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+AppServicesConsts.ZIP_NAME+"--------------------"));
-            File file = new File(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
+            File file = MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
 
             MiscUtil.checkDirs(file);
             zipFile(zos, file);

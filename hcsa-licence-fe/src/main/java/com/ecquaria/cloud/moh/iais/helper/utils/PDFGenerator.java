@@ -13,9 +13,14 @@ import org.apache.commons.lang.StringUtils;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Map;
 
 /**
@@ -57,7 +62,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
@@ -86,7 +91,7 @@ public class PDFGenerator {
 			}
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

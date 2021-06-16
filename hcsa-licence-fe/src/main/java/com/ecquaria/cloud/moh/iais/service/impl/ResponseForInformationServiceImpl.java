@@ -1,6 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -8,12 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -22,12 +29,16 @@ import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -101,12 +112,12 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 log.debug("Create File fail");
             }
         }
-        File groupPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
+        File groupPath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_RFI);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedOutPath+File.separator+file.getName()));
+        try (OutputStream fileInputStream = new FileOutputStream(MiscUtil.generateFile(sharedOutPath,file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -122,7 +133,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         deleteFile();
 
         //if path is not exists create path
-        File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files");
+        File fileRepPath=MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI,"files");
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
@@ -157,15 +168,15 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        File c= new File(sharedOutPath+File.separator);
+        File c= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=Files.newOutputStream(Paths.get(sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME));
+        try (OutputStream is=new FileOutputStream(MiscUtil.generateFile(sharedOutPath, l+RequestForInformationConstants.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
-            File file = new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
+            File file = MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_RFI);
 
             MiscUtil.checkDirs(file);
             zipFile(zos, file);
@@ -204,7 +215,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void rename(String fileNamesss, String rfiId)  {
-        File zipFile =new File(sharedOutPath);
+        File zipFile =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -226,7 +237,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(sharedOutPath + File.separator + s + RequestForInformationConstants.ZIP_NAME);
+                    File curFile =MiscUtil.generateFile(sharedOutPath , s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
                         log.error("Rename file fail");
