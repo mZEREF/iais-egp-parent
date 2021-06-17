@@ -95,6 +95,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -385,7 +386,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()));
+                    log.info(file.getPath()+"-----zipFile---------");
+                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -1355,4 +1357,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         return list;
     }
+
+/*    public static void main(String[] args) {
+        String path="D:"+File.separator+AppServicesConsts.COMPRESS;
+        String fullPathNoEndSeparator = FilenameUtils.getFullPathNoEndSeparator(path);
+        System.out.println(fullPathNoEndSeparator);
+        String name = FilenameUtils.getName(path);
+        System.out.println(name+"-----");
+        File file = new File(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+        file.mkdirs();
+        String name1 = FilenameUtils.getName(AppServicesConsts.COMPRESS);
+        System.out.println(name1+"----name1");
+    }*/
 }
