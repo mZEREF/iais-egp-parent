@@ -33,10 +33,8 @@
             }
         });
     };
-
-    var initChart = function (canvasName, jumpId) {
+    var initChart = function (canvasName, jumpId, isOverAll, overAllTitle) {
         var jsonStr = $('input[name="'+canvasName+'Val"]').val();
-
         var emptyDisplayVal = '-';
         var redSize = 0;
         var blueSize = 0;
@@ -51,8 +49,18 @@
                 stageCount = canvasJsonObj.dashStageCount;
             }
         }
+        var labelsNameArr = new Array();
+        if(isOverAll){
+            labelsNameArr[0] = 'Beyond Target KPI';
+            labelsNameArr[1] = 'Within Target KPI';
+            labelsNameArr[2] = 'Within Reminder threshold';
+        }else{
+            labelsNameArr[0] = 'Red';
+            labelsNameArr[1] = 'Blue';
+            labelsNameArr[2] = 'Yellow';
+        }
         var data = {
-            labels: ["Red", "Blue", "Yellow"],
+            labels: labelsNameArr,
             datasets: [{
                 data: [redSize, blueSize, yellowSize],
                 backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
@@ -61,31 +69,53 @@
         };
 
         var canvasId = canvasName+'Canvas';
-        var promisedDeliveryChart = new Chart(document.getElementById(canvasId), {
-            type: 'doughnut',
-            data: data,
-            options: {
-                elements: {
-                    center: {
-                        text: stageCount
+        if(isOverAll){
+            new Chart(document.getElementById(canvasId), {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    elements: {
+                        center: {
+                            text: stageCount
+                        }
+                    },
+                    tooltips:{
+                        enabled:false
+                    },
+                    title:{
+                        display:true,
+                        text:overAllTitle
+                    },
+                    cutoutPercentage: 75,
+                    legend: {
+                        display: true,
+                        position:'bottom'
                     }
-                },
-                cutoutPercentage: 75,
-                legend: {
-                    display: false
                 }
-            }
-        });
-
+            });
+        }else{
+            new Chart(document.getElementById(canvasId), {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    elements: {
+                        center: {
+                            text: stageCount
+                        }
+                    },
+                    cutoutPercentage: 75,
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
         if(emptyDisplayVal == stageCount && jumpId != null){
             $('#'+jumpId).addClass('empty-chart');
             $('#'+jumpId).unbind('click');
         }
-
-        //reset chart title size
-        /*var chart1Title = $('#'+canvasId).closest('div.dashboard-tile');
-        chart1Title.css('width',$('#'+canvasId).width() * 1.2);
-        chart1Title.css('height',$('#'+canvasId).height() * 1.4);*/
     };
 
     var doClear = function () {

@@ -41,15 +41,15 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="row">
-                        <div class="col-md-4 col-xs-12">
+                        <div class="col-md-6 col-xs-12 col-lg-6">
                             <a data-tab="#" href="javascript:;" style="cursor: default;">
                                 <div id="canvas-holder">
                                     <canvas id="overAllCanvas"></canvas>
                                 </div>
-                                <p class="dashboard-txt main-chart-text font-color-black"> Overall</p>
+                                <%--<p class="dashboard-txt main-chart-text font-color-black"> Overall</p>--%>
                             </a>
                         </div>
-                        <div class="col-md-8 col-xs-12">
+                        <div class="col-md-6 col-xs-12 col-lg-6">
                             <div class="form-horizontal filter-box">
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label">Application type</label>
@@ -214,23 +214,23 @@
         });
 
 
-        initChart('aso', 'sysAsoCanvas');
+        initChart('aso', 'sysAsoCanvas', false, null);
 
-        initChart('pso', 'sysPsoCanvas');
+        initChart('pso', 'sysPsoCanvas', false, null);
 
-        initChart('preInsp', 'sysPreInspCanvas');
+        initChart('preInsp', 'sysPreInspCanvas', false, null);
 
-        initChart('insp', 'sysInspCanvas');
+        initChart('insp', 'sysInspCanvas', false, null);
 
-        initChart('postInsp', 'sysPostInspCanvas');
+        initChart('postInsp', 'sysPostInspCanvas', false, null);
 
-        initChart('ao1', 'sysAo1Canvas');
+        initChart('ao1', 'sysAo1Canvas, false, null');
 
-        initChart('ao2', 'sysAo2Canvas');
+        initChart('ao2', 'sysAo2Canvas', false, null);
 
-        initChart('ao3', 'sysAo3Canvas');
+        initChart('ao3', 'sysAo3Canvas', false, null);
 
-        initChart('overAll', null);
+        initChart('overAll', 'overAllCanvas', true, 'Overall');
 
 
 
