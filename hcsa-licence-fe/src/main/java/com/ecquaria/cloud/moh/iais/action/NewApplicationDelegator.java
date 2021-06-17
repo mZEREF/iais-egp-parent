@@ -3045,7 +3045,8 @@ public class NewApplicationDelegator {
             String giroTranNo = appSubmissionDto.getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
+//            serviceConfigService.updatePaymentStatus(appGrp);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, appSubmissionDto.getGiroAcctNum());
             /*List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrp.getGroupNo()).getEntity();
             if (entity!=null && !entity.isEmpty()) {
                 for(ApplicationDto applicationDto : entity){
