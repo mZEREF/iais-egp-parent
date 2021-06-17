@@ -2003,7 +2003,7 @@ public class ClinicalLaboratoryDelegator {
             syncDropDownAndPsn(appSubmissionDto, appSvcClinicalDirectorDtos, null, bpc.request);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
 
-            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
+            log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info start ..."));
             log.debug("prs server flag {}",prsFlag);
             String appType = appSubmissionDto.getAppType();
             if("Y".equals(prsFlag) && !IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)){
@@ -2066,7 +2066,7 @@ public class ClinicalLaboratoryDelegator {
                 currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
                 setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             }
-            log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
+            log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info end ..."));
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
