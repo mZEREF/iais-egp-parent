@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ public class FePrintViewDelegator {
     private final static  String ATTR_PRINT_VIEW = "printView";
     private final static String LICENCE_VIEW="licenceView";
     private final static String RFC_EQHCINAMECHANGE ="RFC_eqHciNameChange";
+    private final static String GROUP_RENEW_APP_RFC ="group_renewal_app_rfc";
     @Autowired
     AppSubmissionService appSubmissionService;
     @Autowired
@@ -42,69 +44,71 @@ public class FePrintViewDelegator {
 
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("print view doStart start ..."));
+        HttpServletRequest request = bpc.request;
         //remove session
-        ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, null);
+        ParamUtil.setSessionAttr(request,SESSION_VIEW_SUBMISSONS, null);
         // View and Print
-        String viewPrint = (String) ParamUtil.getSessionAttr(bpc.request,"viewPrint");
-        String appType = ParamUtil.getString(bpc.request,"appType");
+        String viewPrint = (String) ParamUtil.getSessionAttr(request,"viewPrint");
+        String appType = ParamUtil.getString(request,"appType");
         log.debug("print view appType is {}",appType);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
-        String licenceView = bpc.request.getParameter(LICENCE_VIEW);
+        String licenceView = request.getParameter(LICENCE_VIEW);
         if(LICENCE_VIEW.equals(licenceView)){
-            bpc.request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
+            request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
         }
         if(StringUtil.isEmpty(appType)){
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-                    String rfc_eqHciNameChange = bpc.request.getParameter(RFC_EQHCINAMECHANGE);
+                    String rfc_eqHciNameChange = request.getParameter(RFC_EQHCINAMECHANGE);
                     if(RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)){
-                        bpc.request.setAttribute(RFC_EQHCINAMECHANGE,RFC_EQHCINAMECHANGE);
+                        request.setAttribute(RFC_EQHCINAMECHANGE,RFC_EQHCINAMECHANGE);
+                        ParamUtil.setRequestAttr(request,GROUP_RENEW_APP_RFC, ParamUtil.getRequestString(request,GROUP_RENEW_APP_RFC));
                         if(StringUtil.isEmpty(viewPrint)){
-                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                             appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request));
                         }
                     }
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
                     RenewDto renewDto=new RenewDto();
                     renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
-                    bpc.request.setAttribute("renewDto",renewDto);
+                    request.setAttribute("renewDto",renewDto);
                 } else {
                     // View and Print
                     if (StringUtil.isEmpty(viewPrint)) {
                         appSubmissionDto.setAppDeclarationMessageDto(
-                                appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+                                appSubmissionService.getAppDeclarationMessageDto(request, appSubmissionDto.getAppType()));
                         appSubmissionDto.setAppDeclarationDocDtos(
-                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request, true));
+                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
                     }
                 }
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+            RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
             if(renewDto != null){
                 List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
                 if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
                     if(appSubmissionDtos.size()==1){
                         if (StringUtil.isEmpty(viewPrint)) {
-                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                             appSubmissionDtos.get(0).setAppDeclarationMessageDto(appDeclarationMessageDto);
-                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request));
-                            appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
+                            appSubmissionDtos.get(0).setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, request));
+                            appSubmissionService.initDeclarationFiles(appSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,request);
                         }
                     }
                     appSubmissionDtoList.addAll(appSubmissionDtos);
                 }
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO);
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, RfcConst.RFCAPPSUBMISSIONDTO);
             if(appSubmissionDto != null){
                 appSubmissionDtoList.add(appSubmissionDto);
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint", "Y");
-        ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
+        ParamUtil.setRequestAttr(request, "viewPrint", "Y");
+        ParamUtil.setSessionAttr(request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         log.debug(StringUtil.changeForLog("print view doStart end ..."));
     }
 

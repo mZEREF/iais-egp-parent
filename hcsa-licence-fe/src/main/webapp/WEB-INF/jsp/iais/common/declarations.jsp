@@ -36,6 +36,7 @@
               <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
             </c:if>
               <c:if test="${group_renewal_app_rfc == '1'}">
+                <input type="hidden" name="group_renewal_app_rfc" id="group_renewal_app_rfc" value="1"/>
                 <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
                 <%@include file="../newApplication/declarations/competencies.jsp"%>
                 <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
