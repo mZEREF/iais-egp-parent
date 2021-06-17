@@ -89,15 +89,14 @@
                             </h2>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 col-xs-12">
+                            <div class="col-md-6 col-xs-12 col-lg-6">
                                 <a data-tab="#" href="javascript:;" style="cursor: default;">
                                     <div id="canvas-holder">
                                         <canvas id="overAllCanvas"></canvas>
                                     </div>
-                                    <p class="dashboard-txt main-chart-text font-color-black"> Overall</p>
                                 </a>
                             </div>
-                            <div class="col-md-8 col-xs-12">
+                            <div class="col-md-6 col-xs-12 col-lg-6">
                                 <div class="form-horizontal filter-box">
                                     <div class="form-group">
                                         <label class="col-xs-12 col-md-4 control-label">Application type</label>
@@ -126,7 +125,7 @@
                                     <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
                                         <div class="dashboard-tile-item">
                                             <div class="dashboard-tile">
-                                                <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                                <a data-tab="#" id="${svcOp.value}Detail" href="javascript:;" style="cursor: default;">
                                                     <div>
                                                         <canvas id="${svcOp.value}Canvas"></canvas>
                                                     </div>
@@ -209,9 +208,9 @@
         });
 
         chartRegister();
-        initChart('overAll');
+        initChart('overAll', 'overAllCanvas', true, 'Overall');
         <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
-            initChart('${svcOp.value}', null);
+            initChart('${svcOp.value}', '${svcOp.value}Detail', false, null);
         </c:forEach>
 
         $('#sysClearBtn').click(function () {
