@@ -18,6 +18,9 @@
 <script>
     var prdLoading = function ($loadingContent, prgNo, action, callBackFuns) {
         console.log('loading prs info ...');
+        if(isEmpty(callBackFuns)){
+            callBackFuns = {};
+        }
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
         var licPerson = $loadingContent.find('input.licPerson').val();

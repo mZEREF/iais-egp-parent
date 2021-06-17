@@ -710,7 +710,7 @@
             var specialty = $prsLoadingContent.find('label.specialty-label').html();
             //prs loading
             if(init == 1){
-                prdLoading($prsLoadingContent, prgNo, action);
+                prdLoading($prsLoadingContent, prgNo, action, null);
             }
             //add Remark For Subspecialty
             if(prgNo.trim().length == 0 || specialty.trim().length == 0){
