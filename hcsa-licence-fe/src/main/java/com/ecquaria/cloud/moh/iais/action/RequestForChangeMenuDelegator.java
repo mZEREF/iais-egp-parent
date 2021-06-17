@@ -1498,7 +1498,6 @@ public class RequestForChangeMenuDelegator {
             serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
             serviceConfigService.updatePaymentStatus(appGrp);
 //            serviceConfigService.updatePaymentStatus(appGrp);
-            AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
