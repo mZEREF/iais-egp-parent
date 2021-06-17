@@ -253,7 +253,7 @@
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
+                        <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}
                         </span>
                       </div>
@@ -278,24 +278,27 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Speciality</p>
                     </td>
                     <td>
                       <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.specialty}">
-                          <iais:code code="${appSvcClinicalDirectorDto.specialty}"></iais:code>
+                        <span class="newVal" attr="${appSvcClinicalDirectorDto.speciality}">
+                          <iais:code code="${appSvcClinicalDirectorDto.speciality}"></iais:code>
                         </span>
                       </div>
                       <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialty}">
-                          <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].specialty}"></iais:code>
+                        <span class="oldVal"  style="display: none"
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].speciality}">
+                          <iais:code
+                                  code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].speciality}"></iais:code>
                         </span>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when specialty was gotten </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when speciality was
+                        gotten </p>
                     </td>
                     <td>
                       <div class="col-xs-6">
