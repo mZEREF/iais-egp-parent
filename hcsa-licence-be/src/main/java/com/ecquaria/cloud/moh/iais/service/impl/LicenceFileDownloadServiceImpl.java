@@ -95,6 +95,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -390,8 +391,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         file.mkdirs();
                     }
                     log.info(file.getPath()+"-----zipFile---------");
-                    os=new FileOutputStream(MiscUtil.generateFile( FilenameUtils.getFullPathNoEndSeparator(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring),
-                            FilenameUtils.getName(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring)));
+                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
