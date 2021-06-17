@@ -143,26 +143,26 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             String type = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.SELF_ASSESSMENT);
             String module = MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
             ChecklistConfigDto serviceConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module).getEntity();
-            if (Optional.ofNullable(serviceConfig).isPresent()){
-                List<AppPremisesCorrelationDto>  correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
-                for (AppPremisesCorrelationDto correlation : correlationList) {
-                    String corrId = correlation.getId();
-                    String appGrpPremId = correlation.getAppGrpPremId();
-                    AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
-                    String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
-                            appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+            List<AppPremisesCorrelationDto> correlationList = applicationFeClient.listAppPremisesCorrelation(appId).getEntity();
+            for (AppPremisesCorrelationDto correlation : correlationList) {
+                String corrId = correlation.getId();
+                String appGrpPremId = correlation.getAppGrpPremId();
+                AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
+                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
+                        appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
 
-                    SelfAssessment selfAssessment = new SelfAssessment();
-                    selfAssessment.setSvcId(svcId);
-                    selfAssessment.setCorrId(corrId);
-                    selfAssessment.setApplicationNumber(appNo);
-                    selfAssessment.setCanEdit(true);
-                    selfAssessment.setSvcName(svcName);
-                    selfAssessment.setPremises(address);
+                SelfAssessment selfAssessment = new SelfAssessment();
+                selfAssessment.setSvcId(svcId);
+                selfAssessment.setCorrId(corrId);
+                selfAssessment.setApplicationNumber(appNo);
+                selfAssessment.setCanEdit(true);
+                selfAssessment.setSvcName(svcName);
+                selfAssessment.setPremises(address);
 
-                    List<SelfAssessmentConfig> configList = IaisCommonUtils.genNewArrayList();
-                    configList.add(commonConfig);
-
+                List<SelfAssessmentConfig> configList = IaisCommonUtils.genNewArrayList();
+                configList.add(commonConfig);
+                // check list
+                if (serviceConfig != null) {
                     SelfAssessmentConfig svcConfig = new SelfAssessmentConfig();
                     svcConfig.setSvcId(svcId);
                     svcConfig.setSvcName(svcName);
@@ -184,12 +184,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
                     svcConfig.setSqMap(serviceQuestion);
                     configList.add(svcConfig);
-                    selfAssessment.setSelfAssessmentConfig(configList);
-                    selfAssessmentList.add(selfAssessment);
                 }
-            }else {
-                //if don't have checklist , cannot do next step.
-                continue;
+                selfAssessment.setSelfAssessmentConfig(configList);
+                selfAssessmentList.add(selfAssessment);
             }
         }
 
