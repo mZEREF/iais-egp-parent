@@ -305,10 +305,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public void initPath() {
 
-        File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
-        File backups=new File(inSharedPath);
-        File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
-        File movePath=new File(sharedPath+File.separator+"move");
+        File compress =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
+        File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
             compressPath.mkdirs();
         }
@@ -382,11 +382,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);                    if(!file.exists()){
+                    File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring),
+                            FilenameUtils.getName(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring));
+                    if(!file.exists()){
                         file.mkdirs();
                     }
                     log.info(file.getPath()+"-----zipFile---------");
-                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
+                    os=new FileOutputStream(MiscUtil.generateFile( FilenameUtils.getFullPathNoEndSeparator(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring),
+                            FilenameUtils.getName(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring)));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -401,7 +404,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    File file = new File(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName());
+                    File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName()),
+                            FilenameUtils.getName(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName()));
                     file.mkdirs();
                     log.info(file.getPath()+"-----else  zipFile-----");
 
@@ -1007,7 +1011,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
             }
-            File file =MiscUtil.generateFile(inFolder,zipFileName);
+            File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inFolder+zipFileName),FilenameUtils.getName(inFolder+zipFileName));
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");
