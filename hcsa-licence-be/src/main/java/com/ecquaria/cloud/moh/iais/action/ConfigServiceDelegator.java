@@ -312,6 +312,7 @@ public class ConfigServiceDelegator {
         }catch (NumberFormatException e){
             vehicles.setPageMaximumCount(mixvehicles);
         }
+        vehicles.setPsnType(ApplicationConsts.PERSONNEL_VEHICLES);
         vehicles.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//01
 
 
@@ -335,6 +336,7 @@ public class ConfigServiceDelegator {
         }catch (NumberFormatException e){
             director.setPageMandatoryCount(mixclinicaldirector);
         }
+        director.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
         director.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//03
 
         String mancharges = request.getParameter("man-charges");
@@ -357,7 +359,31 @@ public class ConfigServiceDelegator {
         }catch (NumberFormatException e){
             charges.setPageMaximumCount(mixcharges);
         }
+        charges.setPsnType(ApplicationConsts.PERSONNEL_CHARGES);
         charges.setStatus(AppConsts.COMMON_STATUS_ACTIVE);//04
+
+        String manOtherCharges = request.getParameter("man-other-charges");
+        String mixOtherCharges = request.getParameter("mix-other-charges");
+        HcsaSvcPersonnelDto otherCharges=new HcsaSvcPersonnelDto();
+        try {
+            if(!StringUtil.isEmpty(manOtherCharges)){
+                otherCharges.setMandatoryCount(Integer.parseInt(manOtherCharges));
+                otherCharges.setPageMandatoryCount(manOtherCharges);
+            }
+        }catch (NumberFormatException e){
+            otherCharges.setPageMandatoryCount(manOtherCharges);
+        }
+        try {
+            if(!StringUtil.isEmpty(mixOtherCharges)){
+                otherCharges.setMaximumCount(Integer.parseInt(mixOtherCharges));
+                otherCharges.setPageMaximumCount(mixOtherCharges);
+            }
+        }catch (NumberFormatException e){
+            otherCharges.setPageMaximumCount(mixOtherCharges);
+        }
+        otherCharges.setPsnType(ApplicationConsts.PERSONNEL_CHARGES_OTHER);
+        otherCharges.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+
 
         String manprincipalOfficer = request.getParameter("man-principalOfficer");
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
@@ -483,6 +509,10 @@ public class ConfigServiceDelegator {
         }
         mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(mapPersonnelDto);
+        hcsaSvcPersonnelDtos.add(director);
+        hcsaSvcPersonnelDtos.add(vehicles);
+        hcsaSvcPersonnelDtos.add(charges);
+        hcsaSvcPersonnelDtos.add(otherCharges);
         String pageName = request.getParameter("pageName");
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();

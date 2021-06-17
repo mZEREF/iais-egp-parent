@@ -193,46 +193,6 @@
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount_1"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount_1"></span>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount_2"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount_2"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount_3"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount_3"></span>
-          </div>
-        </div>
-      </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
@@ -278,6 +238,20 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.pageMandatoryCount}">
@@ -289,6 +263,52 @@
           </div>
         </div>
       </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount6"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount6"></span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount7"></span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount8"></span>
+          </div>
+        </div>
+      </div>
+
+
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>

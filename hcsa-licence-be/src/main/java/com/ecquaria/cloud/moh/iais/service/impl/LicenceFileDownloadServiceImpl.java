@@ -405,9 +405,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
 
                 }else {
-
-                    File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName()),
-                            FilenameUtils.getName(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName()));
+                    log.info(zipEntry.getName()+"------zipEntry.getName()------");
+                    String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
+                    if(s.endsWith(File.separator)){
+                        s=s.substring(0,s.length()-1);
+                    }
+                    File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator( s),
+                            FilenameUtils.getName( s));
                     file.mkdirs();
                     log.info(file.getPath()+"-----else  zipFile-----");
 
