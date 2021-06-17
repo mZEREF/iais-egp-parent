@@ -401,7 +401,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
+                    File file = new File(sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName());
+                    file.mkdirs();
+                    log.info(file.getPath()+"-----else  zipFile-----");
+
                 }
             }catch (IOException e){
 
