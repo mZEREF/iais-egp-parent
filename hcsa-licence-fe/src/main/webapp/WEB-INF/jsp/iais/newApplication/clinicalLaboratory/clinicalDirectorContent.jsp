@@ -451,18 +451,14 @@
             $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
             $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
         },
-        setEdit:function ($prsLoadingEle, propStyle, canEdit, needControlName) {
+        setEdit:function ($prsLoadingEle, propStyle, canEdit) {
             var nameEle = $prsLoadingEle.find('.name');
             var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
             var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
             var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
             var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
             var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
-            if(needControlName){
-                controlEdit(nameEle, propStyle, !needControlName);
-            }else{
-                controlEdit(nameEle, propStyle, canEdit);
-            }
+            controlEdit(nameEle, propStyle, canEdit);
             controlEdit(specialtyGetDateEle, propStyle, canEdit);
             controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
             controlEdit(currRegiDateEle, propStyle, canEdit);

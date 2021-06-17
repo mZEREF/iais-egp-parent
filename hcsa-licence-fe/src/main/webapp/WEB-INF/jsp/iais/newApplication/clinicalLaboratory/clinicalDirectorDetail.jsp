@@ -143,7 +143,7 @@
                     <iais:select cssClass="salutation"  name="salutation${index}" codeCategory="CATE_ID_SALUTATION" value="${clinicalDirectorDto.salutation}" firstOption="Please Select"></iais:select>
                 </div>
                 <div class="col-sm-4 col-xs-12">
-                    <iais:input maxLength="66" type="text" cssClass="name" name="name${index}" value="${clinicalDirectorDto.name}"></iais:input>
+                    <iais:input maxLength="66" type="text" cssClass="name field-name" name="name${index}" value="${clinicalDirectorDto.name}"></iais:input>
                 </div>
             </div>
         </div>
