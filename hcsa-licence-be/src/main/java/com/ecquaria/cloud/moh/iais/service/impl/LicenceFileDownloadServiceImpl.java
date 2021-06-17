@@ -305,10 +305,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public void initPath() {
 
-        File compress =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
-        File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
-        File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
-        File movePath=MiscUtil.generateFile(sharedPath,"move");
+        File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
+        File backups=new File(inSharedPath);
+        File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
+        File movePath=new File(sharedPath+File.separator+"move");
         if(!compressPath.exists()){
             compressPath.mkdirs();
         }
@@ -382,8 +382,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =MiscUtil.generateFile( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,substring);
-                    if(!file.exists()){
+                    File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);                    if(!file.exists()){
                         file.mkdirs();
                     }
                     log.info(file.getPath()+"-----zipFile---------");
@@ -402,7 +401,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 }else {
 
-                    MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()).mkdirs();
+                    new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
                 }
             }catch (IOException e){
 
@@ -1358,15 +1357,4 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return list;
     }
 
-/*    public static void main(String[] args) {
-        String path="D:"+File.separator+AppServicesConsts.COMPRESS;
-        String fullPathNoEndSeparator = FilenameUtils.getFullPathNoEndSeparator(path);
-        System.out.println(fullPathNoEndSeparator);
-        String name = FilenameUtils.getName(path);
-        System.out.println(name+"-----");
-        File file = new File(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
-        file.mkdirs();
-        String name1 = FilenameUtils.getName(AppServicesConsts.COMPRESS);
-        System.out.println(name1+"----name1");
-    }*/
 }

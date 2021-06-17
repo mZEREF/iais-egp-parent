@@ -1483,6 +1483,11 @@ public class RequestForChangeMenuDelegator {
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
+            String giroAccNum = "";
+            if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+                giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+            }
+            appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
             String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
@@ -1490,9 +1495,10 @@ public class RequestForChangeMenuDelegator {
             String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
+            serviceConfigService.updatePaymentStatus(appGrp);
 //            serviceConfigService.updatePaymentStatus(appGrp);
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
-            serviceConfigService.updateAppGrpPmtStatus(appGrp, appSubmissionDto.getGiroAcctNum());
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
