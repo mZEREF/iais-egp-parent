@@ -514,6 +514,15 @@ public class ConfigServiceDelegator {
         hcsaSvcPersonnelDtos.add(charges);
         hcsaSvcPersonnelDtos.add(otherCharges);
         String pageName = request.getParameter("pageName");
+        if(vehicles.getMandatoryCount()>0&&vehicles.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_VEHICLES);//vehicles
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDto.setStepName("Vehicles");
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -523,6 +532,34 @@ public class ConfigServiceDelegator {
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
         }
+        if(director.getMandatoryCount()>0&&director.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_VEHICLES);//vehicles
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDto.setStepName("Clinical Director");
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(director.getMandatoryCount()>0&&director.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_DIRECTOR);//vehicles
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDto.setStepName("Clinical Director");
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(charges.getMandatoryCount()>0&&charges.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CHARGES);//vehicles
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDto.setStepName("Medical Equipment and Other Charges");
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+
         request.setAttribute("pageName",pageName);
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();

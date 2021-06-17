@@ -385,13 +385,15 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring),
-                            FilenameUtils.getName(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring));
+                    String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
+                    File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(s1),
+                            FilenameUtils.getName(s1));
                     if(!file.exists()){
                         file.mkdirs();
                     }
                     log.info(file.getPath()+"-----zipFile---------");
-                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
+                    String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+zipEntry.getName();
+                    os=new FileOutputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(s),FilenameUtils.getName(s)));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
