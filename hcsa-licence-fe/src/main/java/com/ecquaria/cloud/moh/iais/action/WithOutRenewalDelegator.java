@@ -1503,12 +1503,18 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
                 log.error(StringUtil.changeForLog("send email error"));
             }
+            String giroAccNum = "";
+            if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+                giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+            }
+            appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
             String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
             serviceConfigService.updatePaymentStatus(appGrp);
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
