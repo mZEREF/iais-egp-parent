@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -74,7 +73,7 @@ public final class ExcelWriter {
         if (fileName.endsWith("/") || fileName.endsWith("\\")) {
             fileName = fileName.substring(0, fileName.length() - 1);
         }
-        File out = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(fileName), FilenameUtils.getName(fileName));
+        File out = MiscUtil.generateFile(fileName);
         try (OutputStream fileOutputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
@@ -103,7 +102,7 @@ public final class ExcelWriter {
         if (path.endsWith("/") || path.endsWith("\\")) {
             path = path.substring(0, path.length() - 1);
         }
-        File out = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+        File out = MiscUtil.generateFile(path);
 
         try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);

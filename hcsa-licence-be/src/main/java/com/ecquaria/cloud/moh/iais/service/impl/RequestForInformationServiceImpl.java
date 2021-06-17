@@ -548,7 +548,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File b=MiscUtil.generateFile(inSharedPath);
         File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();

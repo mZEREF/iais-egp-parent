@@ -68,7 +68,7 @@ public final class FileUtils {
         } else {
             InputStream ins = file.getInputStream();
             String emptyPath = "";
-            File toFile = MiscUtil.generateFile(emptyPath, FilenameUtils.getName(file.getOriginalFilename()));
+            File toFile = MiscUtil.generateFile(emptyPath, file.getOriginalFilename());
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
@@ -126,7 +126,7 @@ public final class FileUtils {
         if (src.endsWith("/") || src.endsWith("\\")) {
             src = src.substring(0, src.length() - 1);
         }
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(src), FilenameUtils.getName(src));
+        File file = MiscUtil.generateFile(src);
         if (!file.exists()){
             log.info("don't have file");
             return;
@@ -141,7 +141,7 @@ public final class FileUtils {
                 if (path.endsWith("/") || path.endsWith("\\")) {
                     path = path.substring(0, path.length() - 1);
                 }
-                File dstFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+                File dstFile = MiscUtil.generateFile(path);
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);

@@ -22,12 +22,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,6 +39,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * SyncAuditTrailRecordsServiceImpl
@@ -139,7 +137,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
             sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
         }
-        File c= MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
+        File c= MiscUtil.generateFile(sharedOutPath);
         if(!c.exists()){
             c.mkdirs();
         }
@@ -192,7 +190,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
             sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
         }
-        File zipFile =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
+        File zipFile =MiscUtil.generateFile(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -238,7 +236,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
             sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
         }
-        File file =MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(sharedOutPath),FilenameUtils.getName(sharedOutPath));
+        File file =MiscUtil.generateFile(sharedOutPath);
         File fileRepPath=MiscUtil.generateFile(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT,RequestForInformationConstants.FILES);
         File filePath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
         MiscUtil.checkDirs(fileRepPath);

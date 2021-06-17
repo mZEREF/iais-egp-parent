@@ -47,13 +47,6 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,7 +56,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +66,12 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -186,7 +184,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities,String groupId) throws Exception{
         //if path is not exists create path
         String path = sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files";
-        File fileRepPath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+        File fileRepPath = MiscUtil.generateFile(path);
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
@@ -203,7 +201,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     /*--------*/
     private void appDeclarationDocs(List<AppDeclarationDocDto> appDeclarationDocs,String groupId) throws Exception{
         String path = sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files";
-        File fileRepPath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+        File fileRepPath = MiscUtil.generateFile(path);
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
@@ -224,10 +222,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (soPath.endsWith("/") || soPath.endsWith("\\")) {
             soPath = soPath.substring(0, soPath.length() - 1);
         }
-        File zipFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(soPath), FilenameUtils.getName(soPath));
+        File zipFile = MiscUtil.generateFile(soPath);
         MiscUtil.checkDirs(zipFile);
         String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
-        File osFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(osPath), FilenameUtils.getName(osPath));
+        File osFile = MiscUtil.generateFile(osPath);
         try (OutputStream outputStream = new FileOutputStream(osFile);//Destination compressed folder
              CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
@@ -237,7 +235,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             if (path.endsWith("/") || path.endsWith("\\")) {
                 path = path.substring(0, path.length() - 1);
             }
-            File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+            File file = MiscUtil.generateFile(path);
 
             zipFile(zos, file);
             log.info("----------------end zipFile ---------------------");
@@ -288,7 +286,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (soPath.endsWith("/") || soPath.endsWith("\\")) {
             soPath = soPath.substring(0, soPath.length() - 1);
         }
-        File zipFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(soPath), FilenameUtils.getName(soPath));
+        File zipFile = MiscUtil.generateFile(soPath);
         if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
                if (name.endsWith(fileNamesss+".zip")) {
@@ -392,7 +390,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         if (path.endsWith("/") || path.endsWith("\\")) {
             path = path.substring(0, path.length() - 1);
         }
-        File fileRepPath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(path), FilenameUtils.getName(path));
+        File fileRepPath = MiscUtil.generateFile(path);
         MiscUtil.checkDirs(fileRepPath);
         if(fileRepPath.isDirectory()){
             File[] files = fileRepPath.listFiles();

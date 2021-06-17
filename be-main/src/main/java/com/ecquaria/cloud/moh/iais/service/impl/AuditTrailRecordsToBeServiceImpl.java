@@ -17,12 +17,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicMainClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,6 +33,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * AuditTrailRecordsToBeServiceImpl
@@ -69,7 +67,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File b=MiscUtil.generateFile(inSharedPath);
         File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
@@ -89,7 +87,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File basePath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File basePath = MiscUtil.generateFile(inSharedPath);
         if(basePath.isDirectory()){
             List<ProcessFileTrackDto> processFileTrackDtos=systemClient.getFileTypeAndStatus(ApplicationConsts.AUDIT_TYPE_ROUTINE,ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();
             if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){

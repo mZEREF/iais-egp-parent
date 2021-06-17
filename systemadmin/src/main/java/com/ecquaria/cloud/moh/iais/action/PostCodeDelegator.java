@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -41,7 +40,7 @@ public class PostCodeDelegator {
 
     private Map<String,String> initstreetMap() throws IOException {
         Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(streetsPath), FilenameUtils.getName(streetsPath));
+        File file = MiscUtil.generateFile(streetsPath);
         try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
             String key = null;
@@ -62,7 +61,7 @@ public class PostCodeDelegator {
     }
     private Map<String,String> initbuildingMap() throws IOException {
         Map<String,String> buildingMap = IaisCommonUtils.genNewHashMap();
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(buildingPath), FilenameUtils.getName(buildingPath));
+        File file = MiscUtil.generateFile(buildingPath);
         try (BufferedReader  br = new BufferedReader(new FileReader(file)); ){
             String line = null;
             String key = null;
@@ -89,7 +88,7 @@ public class PostCodeDelegator {
      */
     private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
         List<PostCodeDto> list = IaisCommonUtils.genNewArrayList();
-        File file =  MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(postCodePath), FilenameUtils.getName(postCodePath));
+        File file =  MiscUtil.generateFile(postCodePath);
         try(BufferedReader br = new BufferedReader(new FileReader(file));){
             String line = null;
             String postalCode = null;

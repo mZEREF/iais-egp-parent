@@ -79,17 +79,10 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,6 +102,10 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -318,7 +315,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
             inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
         }
-        File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File backups=MiscUtil.generateFile(inSharedPath);
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
         File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
