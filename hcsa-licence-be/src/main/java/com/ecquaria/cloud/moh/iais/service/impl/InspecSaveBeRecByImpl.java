@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -112,9 +113,12 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void deleteUnZipFile() {
-        File downloadFile = new File(download);
-        File zipFiles = new File(zipFile);
-        File compressPathFile = new File(compressPath);
+        File downloadFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(download),FilenameUtils.getName(download));
+        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
+            zipFile = zipFile.substring(0, zipFile.length() - 1);
+        }
+        File zipFiles = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile));
+        File compressPathFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(compressPath),FilenameUtils.getName(compressPath));
         //delete old zip and folder
         FileUtils.deleteTempFile(downloadFile);
         FileUtils.deleteTempFile(compressPathFile);
@@ -127,8 +131,11 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
-        if(new File(zipFile).isDirectory()){
-            File[] files = new File(zipFile).listFiles();
+        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
+            zipFile = zipFile.substring(0, zipFile.length() - 1);
+        }
+        if(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).isDirectory()){
+            File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).listFiles();
             int allSize = processFileTrackDtos.size();
             int nowSize = 0;
             List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -263,14 +270,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
             return reportId;
         } else {
-            new File(compressPath + File.separator + zipEntry.getName()).mkdirs();
+            MiscUtil.generateFile(compressPath ,zipEntry.getName()).mkdirs();
         }
         return null;
     }
 
     @Override
     public void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
-        File file = new File(download);
+        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(download),FilenameUtils.getName(download));
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         String submissionId = generateIdClient.getSeqId().getEntity();

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailRecordsToBeService;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicMainClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -62,9 +65,12 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     public void info() {
 
 
-        File file =new File(sharedPath+File.separator+File.separator+"folder");
-        File b=new File(inSharedPath+File.separator);
-        File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
+        File file = MiscUtil.generateFile(sharedPath,"folder");
+        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
+            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
+        }
+        File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
         }
@@ -80,20 +86,23 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        File basePath = new File(inSharedPath+File.separator);
+        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
+            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
+        }
+        File basePath = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
         if(basePath.isDirectory()){
             List<ProcessFileTrackDto> processFileTrackDtos=systemClient.getFileTypeAndStatus(ApplicationConsts.AUDIT_TYPE_ROUTINE,ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();
             if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
                 log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>"+processFileTrackDtos.size()));
                 for (ProcessFileTrackDto v : processFileTrackDtos) {
-                    File fil = new File(inSharedPath + File.separator + v.getFileName());
+                    File fil = MiscUtil.generateFile(inSharedPath , v.getFileName());
                     if(fil.exists()&&fil.isFile()){
                         String name = fil.getName();
                         String path = fil.getPath();
                         log.info(StringUtil.changeForLog(name));
                         if (name.endsWith(RequestForInformationConstants.ZIP_NAME)) {
                             try {
-                                try (InputStream is = Files.newInputStream(Paths.get(path));
+                                try (InputStream is = new FileInputStream(fil);
                                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                                     int count;
                                     byte [] size=new byte[1024];
@@ -149,11 +158,11 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().length()-1);
-                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
+                File file =MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()));
+                os= new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName()));
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -168,7 +177,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
             }else {
 
-                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+                MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
             log.error(e.getMessage(),e);
@@ -207,7 +216,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void download(ProcessFileTrackDto processFileTrackDto, String fileName, String refId, String submissionId) {
 
-        File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+RequestForInformationConstants.FILE_NAME_AUDIT);
+        File file =MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName,RequestForInformationConstants.FILE_NAME_AUDIT);
         if(!file.exists()){
             file.mkdirs();
         }

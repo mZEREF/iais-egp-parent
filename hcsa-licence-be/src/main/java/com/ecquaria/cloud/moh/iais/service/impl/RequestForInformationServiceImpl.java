@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -57,6 +58,7 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -65,11 +67,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -315,7 +318,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
             log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>"+processFileTrackDtos.size()));
             for (ProcessFileTrackDto v : processFileTrackDtos) {
-                File fil = new File(inSharedPath + File.separator + v.getFileName());
+                File fil = MiscUtil.generateFile(inSharedPath , v.getFileName());
                 if(fil.exists()&&fil.isFile()){
                     if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
                         String name = fil.getName();
@@ -324,7 +327,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         map.put("fileName",name);
                         map.put("filePath", path);
 
-                        try (InputStream is = Files.newInputStream(Paths.get(path));
+                        try (InputStream is = new FileInputStream(fil);
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];
@@ -381,11 +384,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             if(!zipEntry.getName().endsWith(File.separator)){
 
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+substring);
+                File file =MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()));
+                os= new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName()));
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -400,7 +403,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
             }else {
 
-                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()).mkdirs();
+                MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
 
@@ -440,7 +443,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     public boolean download( ProcessFileTrackDto processFileTrackDto,String fileName,String refId,String submissionId) {
 
         boolean flag=false;
-        File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+RequestForInformationConstants.FILE_NAME_RFI);
+        File file =MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,RequestForInformationConstants.FILE_NAME_RFI);
         if(!file.exists()){
             file.mkdirs();
         }
@@ -497,7 +500,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void saveFileRepo(String fileNames,String submissionId,String eventRefNo){
         boolean flag=false;
-        File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileNames+File.separator+eventRefNo+File.separator+RequestForInformationConstants.FILE_NAME_RFI+File.separator+RequestForInformationConstants.FILES);
+        File file =MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileNames+File.separator+eventRefNo+File.separator+RequestForInformationConstants.FILE_NAME_RFI,RequestForInformationConstants.FILES);
         if(!file.exists()){
             file.mkdirs();
         }
@@ -541,9 +544,12 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     @Override
     public void delete() {
-        File file =new File(sharedPath+File.separator+File.separator+"folder");
-        File b=new File(inSharedPath+File.separator);
-        File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
+        File file =MiscUtil.generateFile(sharedPath,"folder");
+        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
+            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
+        }
+        File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
+        File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
         }
