@@ -95,20 +95,20 @@ public class GatewayCore {
     }
 
     public static void logResult(String sWord) {
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(GatewayConfig.log_path);
-            writer.write(sWord);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-        }
+//        FileWriter writer = null;
+//        try {
+//            writer = new FileWriter(GatewayConfig.log_path);
+//            writer.write(sWord);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//        } finally {
+//            if (writer != null) {
+//                try {
+//                    writer.close();
+//                } catch (IOException e) {
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
+//        }
     }
 }
