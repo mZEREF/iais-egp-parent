@@ -42,8 +42,6 @@
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
-                    <h2>Acknowledgement</h2>
-                    <br>
                     <span style="font-size:2rem;"><%=msg%></span>
                 </div>
             </div>

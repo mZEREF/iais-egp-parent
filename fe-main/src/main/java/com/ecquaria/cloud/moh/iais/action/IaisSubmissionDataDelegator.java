@@ -70,7 +70,7 @@ public class IaisSubmissionDataDelegator {
                 if (entity != null) {
                     ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
                             Collectors.collectingAndThen(
-                                    Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getPremisesSelect))), ArrayList::new));
+                                    Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getHciCode))), ArrayList::new));
                     for (AppGrpPremisesDto appGrpPremisesDto : collect
                             ) {
                         String hciName = appGrpPremisesDto.getAddress();
