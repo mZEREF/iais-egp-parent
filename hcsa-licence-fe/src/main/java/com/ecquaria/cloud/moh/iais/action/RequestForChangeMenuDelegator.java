@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -367,6 +368,11 @@ public class RequestForChangeMenuDelegator {
             if (!StringUtil.isEmpty(licenseeId)) {
                 licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             }
+            if(licAppGrpPremisesDtoMap==null){
+                log.error("----licAppGrpPremisesDtoMap is null");
+            }else {
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licAppGrpPremisesDtoMap+"------licAppGrpPremisesDtoMap")));
+            }
             //premise select
             NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
             //addressType
@@ -461,11 +467,14 @@ public class RequestForChangeMenuDelegator {
         PremisesListQueryDto premisesListQueryDto = new PremisesListQueryDto();
         AppSubmissionDto appSubmissionDto = null;
         String status = "";
+        log.info(licId+"-------licId is ---<"+premId+"-----premId is----<");
         if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
             List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(premisesListQueryDtos)+"---->premisesListQueryDtos is---<"));
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
+                    log.info(StringUtil.changeForLog(JsonUtil.parseToJson(premisesListQueryDto+"----->premisesListQueryDto---<")));
                     appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
                     List<String> names = IaisCommonUtils.genNewArrayList();
                     if (appSubmissionDto != null) {
@@ -479,6 +488,9 @@ public class RequestForChangeMenuDelegator {
                                 }
                             }
                         }
+                        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSubmissionDto)+"<-----appSubmissionDto"));
+                    }else {
+                        log.error("---appSubmissionDto is null---");
                     }
                     if (!IaisCommonUtils.isEmpty(names)) {
                         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
@@ -486,7 +498,11 @@ public class RequestForChangeMenuDelegator {
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     }
                     status = premisesListQueryDto.getLicenceStatus();
+                }else {
+                    log.error("----premisesListQueryDto is null----");
                 }
+            }else {
+                log.error("-----premisesListQueryDtos is null----");
             }
         }
 
