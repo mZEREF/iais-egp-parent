@@ -114,6 +114,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public void deleteUnZipFile() {
         File downloadFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(download),FilenameUtils.getName(download));
+        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
+            zipFile = zipFile.substring(0, zipFile.length() - 1);
+        }
         File zipFiles = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile));
         File compressPathFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(compressPath),FilenameUtils.getName(compressPath));
         //delete old zip and folder
@@ -128,6 +131,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
+        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
+            zipFile = zipFile.substring(0, zipFile.length() - 1);
+        }
         if(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).isDirectory()){
             File[] files = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(zipFile),FilenameUtils.getName(zipFile)).listFiles();
             int allSize = processFileTrackDtos.size();

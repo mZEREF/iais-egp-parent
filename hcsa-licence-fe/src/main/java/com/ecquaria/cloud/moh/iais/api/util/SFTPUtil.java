@@ -189,6 +189,9 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
+        if (saveFile.endsWith("/") || saveFile.endsWith("\\")) {
+            saveFile = saveFile.substring(0, saveFile.length() - 1);
+        }
         try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(saveFile),FilenameUtils.getName(saveFile)))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);

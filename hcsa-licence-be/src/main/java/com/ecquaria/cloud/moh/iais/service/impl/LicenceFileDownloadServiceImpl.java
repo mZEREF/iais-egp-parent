@@ -95,7 +95,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -306,6 +305,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     public void initPath() {
 
         File compress =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
+            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
+        }
         File backups=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
         File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
         File movePath=MiscUtil.generateFile(sharedPath,"move");

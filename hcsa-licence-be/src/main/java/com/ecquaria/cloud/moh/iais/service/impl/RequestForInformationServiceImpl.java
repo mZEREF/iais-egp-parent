@@ -545,6 +545,9 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     @Override
     public void delete() {
         File file =MiscUtil.generateFile(sharedPath,"folder");
+        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
+            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
+        }
         File b=MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(inSharedPath),FilenameUtils.getName(inSharedPath));
         File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
