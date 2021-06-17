@@ -183,7 +183,7 @@
                     <label  class="control-label control-set-font control-font-label">Speciality</label>
                     <span class="mandatory">*</span>
                 </div>
-                <div class="col-md-7 col-xs-12 specialty-label" >
+                <div class="control-label formtext col-md-7 col-xs-12" >
                      <label class="control-label control-set-font control-font-label specialty-label">
                          <c:out value="${clinicalDirectorDto.speciality}" />
                      </label>
