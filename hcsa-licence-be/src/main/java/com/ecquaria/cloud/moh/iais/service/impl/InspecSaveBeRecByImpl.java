@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -99,7 +98,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         download = compressPath + File.separator + "backupsRec";
         String inFolder = inSharedPath;
         if (!inFolder.endsWith(File.separator)) {
-           inFolder += File.separator;
+            inFolder += File.separator;
         }
         zipFile = inFolder;
     }
@@ -131,9 +130,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
-        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
-            zipFile = zipFile.substring(0, zipFile.length() - 1);
-        }
         if(MiscUtil.generateFile(zipFile).isDirectory()){
             File[] files = MiscUtil.generateFile(zipFile).listFiles();
             int allSize = processFileTrackDtos.size();
