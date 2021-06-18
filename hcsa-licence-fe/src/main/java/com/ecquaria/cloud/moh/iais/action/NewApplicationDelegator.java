@@ -1653,7 +1653,7 @@ public class NewApplicationDelegator {
                      * preview
                      */
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                        svcRelatedInfoView(appSubmissionDto,bpc.request);
+                        svcRelatedInfoView(appSubmissionDto,bpc.request,applicationDto.getServiceId());
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                                 ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                                 || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appSubmissionDto.getAppType())){
@@ -1779,8 +1779,8 @@ public class NewApplicationDelegator {
         }
     }
 
-    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto,HttpServletRequest request,String serviceId){
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),serviceId);
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
             String svcId = appSvcRelatedInfoDto.getServiceId();
@@ -1797,7 +1797,6 @@ public class NewApplicationDelegator {
                     String premises = appGrpPremisesDto.getPremisesIndexNo();
                     List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                     List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-                    List<String> premiseStr = IaisCommonUtils.genNewArrayList();
                     if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size() >0){
                         appSvcLaboratoryDisciplinesDtoList.removeIf(appSvcLaboratoryDisciplinesDto -> !appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises));
                         for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
@@ -1824,6 +1823,15 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setRequestAttr(request, HCSASERVICEDTO, hcsaServiceDto);
             ParamUtil.setSessionAttr(request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+    }
+
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDtoByServiceId( List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,String serviceId){
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
+            if(serviceId.equalsIgnoreCase(appSvcRelatedInfoDto.getServiceId())){
+                return appSvcRelatedInfoDto;
+            }
+        }
+        return appSvcRelatedInfoDtos.get(0);
     }
 
     /**
