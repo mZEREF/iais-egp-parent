@@ -27,19 +27,19 @@
         <tbody>
         <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
           <tr>
-            <td><c:out value="${varStatus.count}"></c:out></td>
+            <td><c:out value="${status.count}"></c:out></td>
             <td><c:out value="${appVehicleNo.vehicleName}"/></td>
             <td>
-              <input class="form-check-input" type="radio" name="vehicleNoRadio${varStatus.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
+              <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
               <label class="form-check-label"><span class="check-circle"></span>Approve</label>
               &nbsp;
-              <input class="form-check-input" type="radio" name="vehicleNoRadio${varStatus.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
+              <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
               <label class="form-check-label"><span class="check-circle"></span>Reject</label>
-              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${varStatus.index}"></span>
+              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
             </td>
             <td>
-              <input type="text" name="vehicleNoRemarks${varStatus.count}" maxlength="400" value="${appVehicleNo.remarks}" />
-              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${varStatus.index}"></span>
+              <input type="text" name="vehicleNoRemarks${status.count}" maxlength="400" value="${appVehicleNo.remarks}" />
+              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
             </td>
           </tr>
         </c:forEach>
@@ -64,7 +64,7 @@
         <tbody>
         <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
           <tr>
-            <td><c:out value="${varStatus.count}"></c:out></td>
+            <td><c:out value="${status.count}"></c:out></td>
             <td><c:out value="${appVehicleNo.vehicleName}"/></td>
             <td>
               <c:choose>
