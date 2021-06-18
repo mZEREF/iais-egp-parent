@@ -137,16 +137,14 @@ public class IaisSubmissionDataDelegator {
     public void saveDataLDT(BaseProcessClass bpc) throws ParseException {
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = transformPageData(bpc.request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(laboratoryDevelopTestDto,"save");
+        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, laboratoryDevelopTestDto);
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String, String> err = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             return;
         }
-
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
-        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, laboratoryDevelopTestDto);
-
     }
 
     private LaboratoryDevelopTestDto transformPageData(HttpServletRequest request) throws ParseException {
