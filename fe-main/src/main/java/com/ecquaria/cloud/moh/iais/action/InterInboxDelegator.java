@@ -112,28 +112,8 @@ public class InterInboxDelegator {
     public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException, IOException {
         clearSessionAttr(bpc.request);
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
-        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext == null){
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }else{
-            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
-            InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
-            interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
-            interInboxUserDto.setUserId(loginContext.getUserId());
-            interInboxUserDto.setOrgId(loginContext.getOrgId());
-            interInboxUserDto.setFunctionName(auditTrailDto.getFunctionName());
-            interInboxUserDto.setLicenseNo(auditTrailDto.getLicenseNum());
-            interInboxUserDto.setModuleName(auditTrailDto.getModule());
-            interInboxUserDto.setLastLogin(Formatter.parseDateTime(auditTrailDto.getActionTime()));
-            interInboxUserDto.setUserDomain(loginContext.getUserDomain());
-            log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
-            ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
-        }
+        initInboxDto(bpc);
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
     }
 
     public void initToPage(BaseProcessClass bpc){
@@ -370,11 +350,14 @@ public class InterInboxDelegator {
      *
      * >>>>>>>Licence Inbox<<<<<<<
      */
-    public void toLicencePage(BaseProcessClass bpc){
+    public void toLicencePage(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("Step ---> toLicencePage"));
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
+        if (interInboxUserDto == null) {
+            interInboxUserDto = initInboxDto(bpc);   // Walk around. No meaning.
+        }
         SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
@@ -1438,5 +1421,33 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,null);
 
+    }
+
+    private InterInboxUserDto initInboxDto(BaseProcessClass bpc) throws IOException {
+        LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else{
+            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
+            InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
+            interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
+            interInboxUserDto.setUserId(loginContext.getUserId());
+            interInboxUserDto.setOrgId(loginContext.getOrgId());
+            interInboxUserDto.setFunctionName(auditTrailDto.getFunctionName());
+            interInboxUserDto.setLicenseNo(auditTrailDto.getLicenseNum());
+            interInboxUserDto.setModuleName(auditTrailDto.getModule());
+            interInboxUserDto.setLastLogin(Formatter.parseDateTime(auditTrailDto.getActionTime()));
+            interInboxUserDto.setUserDomain(loginContext.getUserDomain());
+            log.debug(StringUtil.changeForLog("Login role information --->> ##User-Id:"+interInboxUserDto.getUserId()+"### Licensee-Id:"+interInboxUserDto.getLicenseeId()));
+            ParamUtil.setSessionAttr(bpc.request,InboxConst.INTER_INBOX_USER_INFO, interInboxUserDto);
+
+            return interInboxUserDto;
+        }
+
+        return null;
     }
 }
