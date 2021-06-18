@@ -3951,7 +3951,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   /* width: calc((100% - 90px) / 4);*/
   float: left;
 }
-.dashboard-chart .dashboard-tile-item .dashboard-tile a {
+.dashboard-chart .dashboard-tile-item .dashboard-tile a.empty-chart {
   cursor: pointer;
   background-image: url('../img/chart-0.png');
   background-size: 35%;
