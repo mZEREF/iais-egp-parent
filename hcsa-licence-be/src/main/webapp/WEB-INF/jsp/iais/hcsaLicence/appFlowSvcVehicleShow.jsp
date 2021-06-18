@@ -45,7 +45,6 @@
         </c:forEach>
         </tbody>
       </table>
-      <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
     </div>
   </iais:value>
 </c:if>
@@ -85,7 +84,6 @@
         </c:forEach>
         </tbody>
       </table>
-      <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
     </div>
   </iais:value>
 </c:if>
