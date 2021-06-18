@@ -143,7 +143,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId).getEntity();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId, "").getEntity();
         Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
