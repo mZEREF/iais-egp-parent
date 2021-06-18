@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -23,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -208,6 +210,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
         //validate vehicle EAS / MTS
         errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, appVehicleFlag);
+        tcuVerification(errMap,applicationViewDto);
         return errMap;
     }
 
@@ -411,6 +414,24 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             flag = true;
         }
         return flag;
+    }
+
+
+    private void tcuVerification(Map<String, String> errMap, ApplicationViewDto applicationViewDto){
+        if(applicationViewDto.isShowTcu() && applicationViewDto.isTcuFlag()){
+            if( StringUtil.isEmpty(applicationViewDto.getTuc())){
+                errMap.put("tcuDate","GENERAL_ERR0006");
+            }else {
+                try {
+                    Date tcuDate = Formatter.parseDate(applicationViewDto.getTuc());
+                    if(tcuDate.getTime()< System.currentTimeMillis()){
+                            errMap.put("tcuDate","UC_INSTA004_ERR002");
+                            }
+                }catch (Exception e){
+                    errMap.put("tcuDate","SYSPAM_ERROR0008");
+                }
+            }
+        }
     }
 
 }

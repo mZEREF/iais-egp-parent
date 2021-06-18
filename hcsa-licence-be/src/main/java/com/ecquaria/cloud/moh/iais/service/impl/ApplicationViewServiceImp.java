@@ -349,8 +349,25 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         log.info(StringUtil.changeForLog("The newAppPremisesRoutingHistoryDtos.size() is -->:"+newAppPremisesRoutingHistoryDtos.size()));
         applicationViewDto.setRollBackHistroyList(newAppPremisesRoutingHistoryDtos);
+
+        setTcuDate(appCorId,applicationViewDto);
+
         return applicationViewDto;
     }
+
+    private void setTcuDate(String appCorId,ApplicationViewDto applicationViewDto){
+        AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        if(dto != null && dto.getRecomInDate() != null){
+            try {
+                applicationViewDto.setTcuFlag(true);
+                applicationViewDto.setTuc(Formatter.formatDate(dto.getRecomInDate()));
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+
+        }
+    }
+
 
     private void setAppealTypeValues(ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

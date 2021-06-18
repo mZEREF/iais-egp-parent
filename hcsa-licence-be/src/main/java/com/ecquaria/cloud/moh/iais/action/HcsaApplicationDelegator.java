@@ -173,7 +173,6 @@ public class HcsaApplicationDelegator {
 
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
-
     /**
      * StartStep: doStart
      *
@@ -314,6 +313,8 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
+        //setTcu data
+        setTcuDate(bpc.request,applicationViewDto);
         //appeal
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
@@ -555,6 +556,20 @@ public class HcsaApplicationDelegator {
             }
             log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
         }
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    private void setTcuDate(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        if(applicationViewDto.isShowTcu()){
+            String tcuflag = ParamUtil.getString(request,"tcuType");
+            if(!StringUtil.isEmpty(tcuflag)){
+                applicationViewDto.setTcuFlag(true);
+                applicationViewDto.setTuc(ParamUtil.getString(request,"tucDate"));
+            }else{
+                applicationViewDto.setTcuFlag(false);
+                applicationViewDto.setTuc(null);
+            }
+        }
     }
 
     private void validateCanApprove(String approveSelect, ApplicationViewDto applicationViewDto, Map<String, String> errMap) {
@@ -599,6 +614,9 @@ public class HcsaApplicationDelegator {
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
+            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc(),applicationViewDto.isShowTcu());
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType());
         boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType());
@@ -3209,6 +3227,8 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        //set can tcu date
+        applicationViewDto.setShowTcu(canShowTcuDate(bpc.request,applicationViewDto));
         //get vehicle flag
         String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
         //get vehicleNoList for edit
@@ -3307,6 +3327,11 @@ public class HcsaApplicationDelegator {
         setChooseInspectionValue(bpc.request, applicationViewDto);
     }
 
+    private boolean canShowTcuDate(HttpServletRequest request,  ApplicationViewDto applicationViewDto){
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+         return (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equalsIgnoreCase(applicationViewDto.getApplicationType())) &&
+                 (RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+    }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
         ParamUtil.setSessionAttr(request, "kpiInfo", kpiInfo);

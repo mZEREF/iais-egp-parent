@@ -580,6 +580,18 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
 
     private void saveRecommend(InspectionFDtosDto serListDto,String appPremId) {
+        AppPremisesRecommendationDto  appPreRecommentdationDto = getTcuRec(appPremId,serListDto.getTuc());
+        appPreRecommentdationDto.setId(null);
+        appPreRecommentdationDto.setAppPremCorreId(appPremId);
+        appPreRecommentdationDto.setBestPractice(serListDto.getBestPractice());
+        appPreRecommentdationDto.setRemarks(serListDto.getTcuRemark());
+        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
+        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+    }
+
+    private  AppPremisesRecommendationDto getTcuRec(String appPremId,String tcu){
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(appPreRecommentdationDto!=null){
             appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -593,25 +605,30 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
         Date tcuDate = null;
         try {
-            tcuDate = Formatter.parseDate(serListDto.getTuc());
+            tcuDate = Formatter.parseDate(tcu);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        if ( !StringUtil.isEmpty(serListDto.getTuc()) && tcuDate != null ) {
+        if ( !StringUtil.isEmpty(tcu) && tcuDate != null ) {
             appPreRecommentdationDto.setRecomInDate(tcuDate);
         }else {
             appPreRecommentdationDto.setRecomInDate(null);
         }
-        appPreRecommentdationDto.setId(null);
-        appPreRecommentdationDto.setAppPremCorreId(appPremId);
-        appPreRecommentdationDto.setBestPractice(serListDto.getBestPractice());
-        appPreRecommentdationDto.setRemarks(serListDto.getTcuRemark());
-        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
-        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        return appPreRecommentdationDto;
     }
 
+    @Override
+    public void saveTcuDate(String appPremId,String tcu,boolean showTcu){
+        if(showTcu){
+            AppPremisesRecommendationDto appPreRecommentdationDto = getTcuRec(appPremId,tcu);
+            appPreRecommentdationDto.setId(null);
+            appPreRecommentdationDto.setAppPremCorreId(appPremId);
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
+            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        }
+    }
     private void saveSerListDto(InspectionFDtosDto serListDto,String appPremId) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
         if(dtoList!=null &&! dtoList.isEmpty()){
