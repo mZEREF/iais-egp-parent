@@ -2002,6 +2002,7 @@ public class HcsaApplicationDelegator {
                             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         }
                     }
+                    ApplicationGroupDto oldAppGrpDto=applicationGroupService.getApplicationGroupDtoById(appGrpId);
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                     if (oldApplication != null) {
                         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
@@ -2021,7 +2022,7 @@ public class HcsaApplicationDelegator {
                         List<ApplicationDto> applicationDtosReturn = IaisCommonUtils.genNewArrayList();
                         oldApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         applicationDtosReturn.add(oldApplication);
-                        if (!StringUtil.isEmpty(oldAppNo)) {
+                        if (!StringUtil.isEmpty(oldAppNo)&&!(oldAppGrpDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)&&oldAppGrpDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO))) {
                             List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtosReturn).getEntity();
                             if (applicationReturnFeeDtos != null) {
                                 Double returnFee = applicationReturnFeeDtos.get(0).getReturnFee();
