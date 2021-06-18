@@ -79,12 +79,10 @@ public class WithdrawalDelegator {
 
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
-    private LoginContext loginContext = null;
 
     private String wdIsValid = IaisEGPConstant.YES;
 
     public void start(BaseProcessClass bpc){
-        loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
@@ -292,6 +290,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST064"});
         applicationTandS.add(new String[]{"APTY001","APST067"});
         applicationTandS.add(new String[]{"APTY001","APST092"});
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
 
@@ -358,6 +357,8 @@ public class WithdrawalDelegator {
         prepareDate(bpc);
         ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo",null);
         WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+
         withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
         ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
         String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
@@ -421,6 +422,8 @@ public class WithdrawalDelegator {
                 }else {
                     withdrawnDto.setHciName("");
                 }
+                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
 
