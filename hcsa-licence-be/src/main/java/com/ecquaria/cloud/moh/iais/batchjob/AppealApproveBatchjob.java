@@ -472,7 +472,7 @@ public class AppealApproveBatchjob {
         if (appealDto == null) {
             throw new IaisRuntimeException("appeal dto is null");
         }
-        ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
+     /*   ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
         String appGrpId = entity.getAppGrpId();
         List<ApplicationDto> applicationDtos = otherChangeHciNameApp(appGrpId,entity);
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
@@ -491,7 +491,7 @@ public class AppealApproveBatchjob {
             appealApplicationGroupDtos.add(a);
         }else {
             //if licence no generate to do
-           /* ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
+           *//* ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
             if(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA.equals(applicationGroupDto.getStatus())){
                 return;
             }
@@ -507,8 +507,8 @@ public class AppealApproveBatchjob {
                     appGrpPremisesEntityDto.setHciName(appealDto.getNewHciName());
 
                 }
-            }*/
-        }
+            }*//*
+        }*/
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is end ..."));
     }
 
