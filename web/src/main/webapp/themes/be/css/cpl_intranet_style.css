@@ -687,7 +687,7 @@ header .container .sg-gov-logo a img {
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
   color: #80ce22;
-  background: transparent !important;
+  background: transparent;
 }
 
 
