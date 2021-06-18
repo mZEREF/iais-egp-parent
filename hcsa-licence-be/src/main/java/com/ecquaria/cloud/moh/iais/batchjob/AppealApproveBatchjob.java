@@ -472,6 +472,10 @@ public class AppealApproveBatchjob {
         if (appealDto == null) {
             throw new IaisRuntimeException("appeal dto is null");
         }
+
+
+
+
      /*   ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
         String appGrpId = entity.getAppGrpId();
         List<ApplicationDto> applicationDtos = otherChangeHciNameApp(appGrpId,entity);
