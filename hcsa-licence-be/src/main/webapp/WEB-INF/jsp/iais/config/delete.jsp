@@ -166,11 +166,26 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
             <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" disabled name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.maximumCount}"  placeholder="maximum count">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
+          <div class="cl-xs-12 col-md-4">
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" disabled <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
+              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+            </div>
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" disabled <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
+              <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            </div>
           </div>
         </div>
       </div>
@@ -180,11 +195,10 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
             <input readonly  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input disabled type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input readonly type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -194,7 +208,6 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" maxlength="2" type="text">
             <input  readonly type="text" name="man-ServicePersonnel" maxlength="2" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">

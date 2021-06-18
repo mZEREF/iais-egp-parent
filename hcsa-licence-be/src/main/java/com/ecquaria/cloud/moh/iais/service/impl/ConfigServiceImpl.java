@@ -605,6 +605,10 @@ public class ConfigServiceImpl implements ConfigService {
         if (hcsaSvcSpePremisesTypeDtos.isEmpty()) {
             errorMap.put("premieseType", MessageUtil.replaceMessage("GENERAL_ERR0006","Premises Type","field"));
         }
+        String businessName = request.getParameter("business-name");
+        if(StringUtil.isEmpty(businessName)){
+            errorMap.put("businessName",MessageUtil.replaceMessage("GENERAL_ERR0006","Business Name","field"));
+        }
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
 
         for (int i = 0; i < hcsaSvcPersonnelDtos.size(); i++) {
@@ -1385,10 +1389,15 @@ public class ConfigServiceImpl implements ConfigService {
         Set<String> premisesType = hcsaConfigClient.getAppGrpPremisesTypeBySvcId(ids).getEntity();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = hcsaConfigClient.getHcsaServiceStepSchemeDtoByServiceId(hcsaServiceDto.getId()).getEntity();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
+        //business Name initialization
+        request.setAttribute("businessName",String.valueOf(0));
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos) {
             String stepCode = hcsaServiceStepSchemeDto.getStepCode();
             if(HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(stepCode)){
                 request.setAttribute("pageName",hcsaServiceStepSchemeDto.getStepName());
+            }
+            if(HcsaConsts.STEP_BUSINESS_NAME.equals(stepCode)){
+                request.setAttribute("businessName",String.valueOf(1));
             }
             stringList.add(stepCode);
         }

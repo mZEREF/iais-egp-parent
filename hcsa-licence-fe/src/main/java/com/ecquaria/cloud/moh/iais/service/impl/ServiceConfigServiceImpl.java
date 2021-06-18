@@ -149,7 +149,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
                 NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                appGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode()+appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
             }
         }
         return appGrpPremisesDtoMap;

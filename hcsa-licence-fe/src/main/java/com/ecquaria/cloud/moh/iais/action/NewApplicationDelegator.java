@@ -312,6 +312,7 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePremises(BaseProcessClass bpc) {
+        Object attribute1 = bpc.request.getAttribute(RfcConst.SWITCH);
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -541,6 +542,7 @@ public class NewApplicationDelegator {
      */
     public void prepareDocuments(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
+        Object attribute1 = bpc.request.getAttribute(RfcConst.SWITCH);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
@@ -623,7 +625,7 @@ public class NewApplicationDelegator {
      */
     public void prepareForms(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareForms start ...."));
-
+        Object attribute = bpc.request.getAttribute(RfcConst.SWITCH);
         log.info(StringUtil.changeForLog("the do prepareForms end ...."));
     }
 

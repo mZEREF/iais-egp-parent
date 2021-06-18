@@ -130,37 +130,18 @@
         </c:if>
         <c:choose>
         <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-        $('#documents').unbind();
-        $('#documentsli').unbind();
-        $('#serviceForms').unbind();
-        $('#serviceFormsli').unbind();
+
         $('#payment').unbind();
         $('#paymentli').unbind();
-        $('#documents').removeAttr("data-toggle");
-        $('#serviceForms').removeAttr("data-toggle");
-        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.docEdit}">
-        $('#premises').unbind();
-        $('#premisesli').unbind();
-        $('#serviceForms').unbind();
-        $('#serviceFormsli').unbind();
+
         $('#payment').unbind();
         $('#paymentli').unbind();
-        $('#premises').removeAttr("data-toggle");
-        $('#serviceForms').removeAttr("data-toggle");
-        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
-        $('#premises').unbind();
-        $('#premisesli').unbind();
-        $('#documents').unbind();
-        $('#documentsli').unbind();
         $('#payment').unbind();
         $('#paymentli').unbind();
-        $('#premises').removeAttr("data-toggle");
-        $('#documents').removeAttr("data-toggle");
-        $('#payment').removeAttr("data-toggle");
         </c:when>
         <c:otherwise>
         $('#premises').unbind();

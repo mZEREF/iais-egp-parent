@@ -55,6 +55,7 @@ public class ConfigServiceDelegator {
     private static final String PRINCIPAL_OFFICERS="Principal Officers";
     private static final String DOCUMENTS    =       "Documents";
     private static final String MEDALERT_PERSON  ="MedAlert Person";
+    private static final String BUSINESS_NAME   ="Business Name";
     public void start(BaseProcessClass bpc){
         log.info("*********start***********");
         removeSession(bpc);
@@ -508,12 +509,15 @@ public class ConfigServiceDelegator {
             mapPersonnelDto.setPageMaximumCount(mixMedalertPerson);
         }
         mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        hcsaSvcPersonnelDtos.add(mapPersonnelDto);
-        hcsaSvcPersonnelDtos.add(director);
-        hcsaSvcPersonnelDtos.add(vehicles);
-        hcsaSvcPersonnelDtos.add(charges);
-        hcsaSvcPersonnelDtos.add(otherCharges);
+        String businessName = request.getParameter("business-name");
+        request.setAttribute("businessName",businessName);
+        hcsaSvcPersonnelDtos.add(mapPersonnelDto);//4
+        hcsaSvcPersonnelDtos.add(director);//5
+        hcsaSvcPersonnelDtos.add(vehicles);//6
+        hcsaSvcPersonnelDtos.add(charges);//7
+        hcsaSvcPersonnelDtos.add(otherCharges);//8
         String pageName = request.getParameter("pageName");
+        request.setAttribute("pageName",pageName);
         if(vehicles.getMandatoryCount()>0&&vehicles.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -544,7 +548,7 @@ public class ConfigServiceDelegator {
         if(director.getMandatoryCount()>0&&director.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_DIRECTOR);//vehicles
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_DIRECTOR);//clinical
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName("Clinical Director");
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
@@ -553,14 +557,22 @@ public class ConfigServiceDelegator {
         if(charges.getMandatoryCount()>0&&charges.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CHARGES);//vehicles
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CHARGES);//charges
             hcsaServiceStepSchemeDto.setSeqNum(count);
             hcsaServiceStepSchemeDto.setStepName("Medical Equipment and Other Charges");
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
         }
+        if(businessName!=null&&String.valueOf(1).equals(businessName)){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_BUSINESS_NAME);//business name
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDto.setStepName(BUSINESS_NAME);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
 
-        request.setAttribute("pageName",pageName);
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

@@ -314,7 +314,29 @@ public class AppealApproveBatchjob {
                 appPremisesRecommendationDto.setRecomInNumber(recomInNumber);
             }
         }
+        if(applicationGroupDto==null){
+            log.error("=======applicationGroupDto is null =====");
+        }else {
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationGroupDto+"-------applicationGroupDto is ")));
+        }
+
+        if(appPremisesRecommendationDto==null){
+            log.error("=======appPremisesRecommendationDto is null =====");
+        }else {
+            log.info("--------- appPremisesRecommendationDto is "+JsonUtil.parseToJson(appPremisesRecommendationDto));
+        }
+
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
+        if(newAppPremisesRecommendationDto==null){
+            log.error("===== newAppPremisesRecommendationDto is null =====");
+        }else {
+            log.info("------ newAppPremisesRecommendationDto is ----"+JsonUtil.parseToJson(newAppPremisesRecommendationDto));
+        }
+        if(appealApplicationDto==null){
+            log.error("======= appealApplicationDto is null =====");
+        }else {
+            log.info("------- appealApplicationDto is---"+JsonUtil.parseToJson(appealApplicationDto));
+        }
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
             if("approve".equals(recomDecision) || InspectionReportConstants.RFC_APPROVED.equals(recomDecision) || InspectionReportConstants.APPROVED.equals(recomDecision)){
