@@ -219,6 +219,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST071"});
         applicationTandS.add(new String[]{"APTY002","APST077"});
         applicationTandS.add(new String[]{"APTY002","APST092"});
+        applicationTandS.add(new String[]{"APTY002","APST014"});
+        applicationTandS.add(new String[]{"APTY002","APST052"});
 
         applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST003"});
@@ -247,6 +249,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST067"});
         applicationTandS.add(new String[]{"APTY004","APST077"});
         applicationTandS.add(new String[]{"APTY004","APST092"});
+        applicationTandS.add(new String[]{"APTY004","APST014"});
+        applicationTandS.add(new String[]{"APTY004","APST052"});
 
         applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST003"});
@@ -275,6 +279,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST067"});
         applicationTandS.add(new String[]{"APTY005","APST077"});
         applicationTandS.add(new String[]{"APTY005","APST092"});
+        applicationTandS.add(new String[]{"APTY005","APST014"});
+        applicationTandS.add(new String[]{"APTY005","APST052"});
 
         applicationTandS.add(new String[]{"APTY001","APST001"});
         applicationTandS.add(new String[]{"APTY001","APST002"});
@@ -294,6 +300,9 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST064"});
         applicationTandS.add(new String[]{"APTY001","APST067"});
         applicationTandS.add(new String[]{"APTY001","APST092"});
+        applicationTandS.add(new String[]{"APTY001","APST014"});
+        applicationTandS.add(new String[]{"APTY001","APST052"});
+
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
