@@ -39,7 +39,7 @@
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
               </td>
               <td>
-                <input type="text" name="vehicleNoRemarks${status.count}" maxlength="400" value="${appVehicleNo.remarks}" />
+                <input type="text" name="vehicleNoRemarks${status.index}" maxlength="400" value="${appVehicleNo.remarks}" />
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
               </td>
             </tr>

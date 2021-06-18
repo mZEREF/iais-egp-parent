@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
@@ -233,7 +234,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 if (StringUtil.isEmpty(vehicleNoRadio)) {
                                     errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
                                 } else {
-                                    appSvcVehicleDtos.get(i).setStatus(vehicleNoRadio);
+                                    String vehicleNoStatusCode;
+                                    if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(vehicleNoRadio)) {
+                                        vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_APPROVE;
+                                    } else {
+                                        vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_REJECT;
+                                    }
+                                    appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
                                 }
                             }
                             if (StringUtil.isEmpty(vehicleNoRemarks)) {
