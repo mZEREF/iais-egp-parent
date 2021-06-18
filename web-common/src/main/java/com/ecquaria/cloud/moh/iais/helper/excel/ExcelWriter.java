@@ -70,9 +70,6 @@ public final class ExcelWriter {
 
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
-        if (fileName.endsWith("/") || fileName.endsWith("\\")) {
-            fileName = fileName.substring(0, fileName.length() - 1);
-        }
         File out = MiscUtil.generateFile(fileName);
         try (OutputStream fileOutputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook();
@@ -99,9 +96,6 @@ public final class ExcelWriter {
     private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
         String path = fileName;
-        if (path.endsWith("/") || path.endsWith("\\")) {
-            path = path.substring(0, path.length() - 1);
-        }
         File out = MiscUtil.generateFile(path);
 
         try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {

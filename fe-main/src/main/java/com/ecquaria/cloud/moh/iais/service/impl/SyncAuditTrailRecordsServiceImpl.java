@@ -134,9 +134,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     private String compress(){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File c= MiscUtil.generateFile(sharedOutPath);
         if(!c.exists()){
             c.mkdirs();
@@ -187,9 +184,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
     private void rename(String fileNamesss)  {
         log.info("--------------rename start ---------------------");
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File zipFile =MiscUtil.generateFile(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -233,9 +227,6 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     private void deleteFile(){
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File file =MiscUtil.generateFile(sharedOutPath);
         File fileRepPath=MiscUtil.generateFile(sharedPath +File.separator+ RequestForInformationConstants.FILE_NAME_AUDIT,RequestForInformationConstants.FILES);
         File filePath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);

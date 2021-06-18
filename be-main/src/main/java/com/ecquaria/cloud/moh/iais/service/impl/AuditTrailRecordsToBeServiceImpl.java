@@ -64,9 +64,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
 
         File file = MiscUtil.generateFile(sharedPath,"folder");
-        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
-            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
-        }
         File b=MiscUtil.generateFile(inSharedPath);
         File c=MiscUtil.generateFile(sharedPath,RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
@@ -84,9 +81,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        if (inSharedPath.endsWith("/") || inSharedPath.endsWith("\\")) {
-            inSharedPath = inSharedPath.substring(0, inSharedPath.length() - 1);
-        }
         File basePath = MiscUtil.generateFile(inSharedPath);
         if(basePath.isDirectory()){
             List<ProcessFileTrackDto> processFileTrackDtos=systemClient.getFileTypeAndStatus(ApplicationConsts.AUDIT_TYPE_ROUTINE,ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS).getEntity();

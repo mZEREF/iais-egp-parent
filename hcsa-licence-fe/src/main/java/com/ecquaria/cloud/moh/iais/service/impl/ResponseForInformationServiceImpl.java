@@ -160,9 +160,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File c= MiscUtil.generateFile(sharedOutPath);
         if(!c.exists()){
             c.mkdirs();
@@ -210,9 +207,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void rename(String fileNamesss, String rfiId)  {
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File zipFile =MiscUtil.generateFile(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -254,9 +248,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File file = MiscUtil.generateFile(sharedOutPath);
         String repPath = sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files";
         File fileRepPath = MiscUtil.generateFile(repPath);

@@ -27,19 +27,14 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import ecq.commons.config.Config;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SFTPUtil {
@@ -192,9 +187,6 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        if (saveFile.endsWith("/") || saveFile.endsWith("\\")) {
-            saveFile = saveFile.substring(0, saveFile.length() - 1);
-        }
         try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(saveFile))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
