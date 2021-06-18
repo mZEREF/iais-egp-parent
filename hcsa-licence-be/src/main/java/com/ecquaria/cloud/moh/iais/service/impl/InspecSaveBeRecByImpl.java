@@ -113,9 +113,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public void deleteUnZipFile() {
         File downloadFile = MiscUtil.generateFile(download);
-        if (zipFile.endsWith("/") || zipFile.endsWith("\\")) {
-            zipFile = zipFile.substring(0, zipFile.length() - 1);
-        }
         File zipFiles = MiscUtil.generateFile(zipFile);
         File compressPathFile = MiscUtil.generateFile(compressPath);
         //delete old zip and folder
