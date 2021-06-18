@@ -3,6 +3,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -16,20 +18,26 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LaboratoryDevelopTestService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Delegator("submissionDataDelegator")
 @Slf4j
@@ -54,33 +62,42 @@ public class IaisSubmissionDataDelegator {
         ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, null);
         if (loginContext != null){
             String licenseeId = loginContext.getLicenseeId();
-            List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId).getEntity();
-            List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-            if (entity != null){
-                ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getPremisesSelect))), ArrayList::new));
-                for (AppGrpPremisesDto appGrpPremisesDto:collect
-                     ) {
-                    String hciName = appGrpPremisesDto.getAddress();
-                    if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())){
-                        hciName = appGrpPremisesDto.getHciName()+","+hciName;
-                    }
-                    String hciCode = appGrpPremisesDto.getHciCode();
-                    if (!StringUtil.isEmpty(hciName)){
-                        SelectOption selectOption = new SelectOption(hciCode,hciName);
-                        selectOptions.add(selectOption);
+            List<LicenceDto> licenceDtos = inboxClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
+            boolean containCLB = containCLB(licenceDtos);
+            if(containCLB) {
+                List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
+                List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+                if (entity != null) {
+                    ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
+                            Collectors.collectingAndThen(
+                                    Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(AppGrpPremisesDto::getHciCode))), ArrayList::new));
+                    for (AppGrpPremisesDto appGrpPremisesDto : collect
+                            ) {
+                        String hciName = appGrpPremisesDto.getAddress();
+                        if (!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
+                            hciName = appGrpPremisesDto.getHciName() + "," + hciName;
+                        }
+                        String hciCode = appGrpPremisesDto.getHciCode();
+                        if (!StringUtil.isEmpty(hciName)) {
+                            SelectOption selectOption = new SelectOption(hciCode, hciName);
+                            selectOptions.add(selectOption);
+                        }
                     }
                 }
+                ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
+                ParamUtil.setRequestAttr(bpc.request,"canSubmit","Y");
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"canSubmit","N");
+                ParamUtil.setRequestAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
             }
-            ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
-            String backUrl = "/main-web";
-            String isSelf = ParamUtil.getString(bpc.request,"selfAssessmentGuide");
-            if("true".equals(isSelf)){
-                backUrl = "/main-web/eservice/INTERNET/MohAccessmentGuide";
-            }
-            ParamUtil.setSessionAttr(bpc.request, "backUrl", backUrl);
         }
+
+        String backUrl = "/main-web";
+        String isSelf = ParamUtil.getString(bpc.request,"selfAssessmentGuide");
+        if("true".equals(isSelf)){
+            backUrl = "/main-web/eservice/INTERNET/MohAccessmentGuide";
+        }
+        ParamUtil.setSessionAttr(bpc.request, "backUrl", backUrl);
         log.info(StringUtil.changeForLog("Step ---> startLDT"));
     }
 
@@ -120,16 +137,14 @@ public class IaisSubmissionDataDelegator {
     public void saveDataLDT(BaseProcessClass bpc) throws ParseException {
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = transformPageData(bpc.request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(laboratoryDevelopTestDto,"save");
+        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, laboratoryDevelopTestDto);
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String, String> err = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
             return;
         }
-
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
-        ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, laboratoryDevelopTestDto);
-
     }
 
     private LaboratoryDevelopTestDto transformPageData(HttpServletRequest request) throws ParseException {
@@ -152,5 +167,22 @@ public class IaisSubmissionDataDelegator {
         laboratoryDevelopTestDto.setLdtDate(ldtDate);
         return laboratoryDevelopTestDto;
     }
-
+    private boolean containCLB(List<LicenceDto> licenceDtos){
+        log.info(StringUtil.changeForLog("The containCLB  start ..."));
+        boolean result = false;
+        if(!IaisCommonUtils.isEmpty(licenceDtos)){
+            for(LicenceDto licenceDto : licenceDtos){
+                if(AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY.equals(licenceDto.getSvcName())
+                        &&ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    result = true;
+                    break;
+                }
+            }
+        }else{
+            log.info(StringUtil.changeForLog("The containCLB  licenceDtos is empty"));
+        }
+        log.info(StringUtil.changeForLog("The containCLB  result is -->:"+result));
+        log.info(StringUtil.changeForLog("The containCLB  end ..."));
+        return result;
+    }
 }

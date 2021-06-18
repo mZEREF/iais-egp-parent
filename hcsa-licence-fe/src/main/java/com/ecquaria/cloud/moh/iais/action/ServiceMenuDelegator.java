@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -114,6 +115,8 @@ public class ServiceMenuDelegator {
     private AppSubmissionService appSubmissionService;
     @Autowired
     private RequestForChangeService requestForChangeService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
         ParamUtil.setSessionAttr(bpc.request, "licence", null);
@@ -680,7 +683,9 @@ public class ServiceMenuDelegator {
                     allBaseId.removeAll(chkBase);
                     //get prem type intersection
                     Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(chkBase);
-                    SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
+                    int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
+                    log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
+                    SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,alignMinExpiryMonth);
                     //filter pending and existing data
                     List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                     //pagination
@@ -965,7 +970,17 @@ public class ServiceMenuDelegator {
                             }
                         });
                         Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(allChekSvcIdList);
-                        SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(allBaseId,licenseeId,premisesTypeList);
+                        int relMinExpiryMonth = systemParamConfig.getRelMinExpiryMonth();
+                        int alignMinExpiryMonth = systemParamConfig.getAlignMinExpiryMonth();
+                        log.debug(StringUtil.changeForLog("relMinExpiryMonth:"+relMinExpiryMonth));
+                        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:"+alignMinExpiryMonth));
+                        int maxExpiryMonth;
+                        if(relMinExpiryMonth > alignMinExpiryMonth){
+                            maxExpiryMonth = relMinExpiryMonth;
+                        }else{
+                            maxExpiryMonth = alignMinExpiryMonth;
+                        }
+                        SearchResult<MenuLicenceDto> searchResult = getAlignLicPremInfo(allBaseId,licenseeId,premisesTypeList,maxExpiryMonth);
                         //filter pending and existing data
                         List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(chkBase,searchResult.getRows(),licenseeId);
                         //pagination
@@ -1653,7 +1668,7 @@ public class ServiceMenuDelegator {
         return paginationHandler;
     }
 
-    private SearchResult<MenuLicenceDto> getLicPremInfo(List<String> excludeChkBase,String licenseeId,Set<String> premisesTypeList){
+    private SearchResult<MenuLicenceDto> getAlignLicPremInfo(List<String> excludeChkBase,String licenseeId,Set<String> premisesTypeList, int alignMinExpiryMonth){
         if(StringUtil.isEmpty(licenseeId)){
             return null;
         }
@@ -1700,6 +1715,8 @@ public class ServiceMenuDelegator {
             searchParam.addParam("premTypeList", premType);
             log.debug(StringUtil.changeForLog("No intersection data ..."));
         }
+        log.debug(StringUtil.changeForLog("alignMinExpiryMonth:" + alignMinExpiryMonth));
+        searchParam.addFilter("alignMinExpiryMonth", alignMinExpiryMonth,true);
 
         searchParam.addFilter("licenseeId",licenseeId,true);
         QueryHelp.setMainSql("applicationQuery", "getLicenceBySerName",searchParam);

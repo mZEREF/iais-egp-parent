@@ -65,10 +65,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1099,12 +1101,15 @@ public class ClinicalLaboratoryDelegator {
                                 }*/
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
-                                appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);
-
+                                Iterator<String> iterator= Arrays.stream(chkAndCgoValue).iterator();
+                                iterator.next();
+                                if(iterator.hasNext()){
+                                    appSvcDisciplineAllocationDto.setIdNo(iterator.next());
+                                }
                                 daList.add(appSvcDisciplineAllocationDto);
-                                if(targetAllocationDto == null && targetChkDto != null
-                                        && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
+                                if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
                                     targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
+
                                 }
                             }
                         }

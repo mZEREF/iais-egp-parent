@@ -1295,14 +1295,22 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setStartTime(startDate);
         serListDto.setEndTime(endDate);
        String [] startDateHHMM = getStringsByHHDD(startDate);
-       if(startDateHHMM != null && startDateHHMM.length == 2){
-           serListDto.setStartHour(startDateHHMM[0]);
-           serListDto.setStartMin(startDateHHMM[1]);
-       }
+        if(startDateHHMM != null && startDateHHMM.length == 2){
+            serListDto.setStartHour(startDateHHMM[0]);
+            Iterator<String> iterator= Arrays.stream(startDateHHMM).iterator();
+            iterator.next();
+            if(iterator.hasNext()){
+                serListDto.setStartMin(iterator.next());
+            }
+        }
         String [] endDateHHMM = getStringsByHHDD(endDate);
         if(endDateHHMM != null && endDateHHMM.length == 2){
             serListDto.setEndHour(endDateHHMM[0]);
-            serListDto.setEndMin(endDateHHMM[1]);
+            Iterator<String> iterator= Arrays.stream(endDateHHMM).iterator();
+            iterator.next();
+            if(iterator.hasNext()){
+                serListDto.setEndMin(iterator.next());
+            }
         }
         if( !StringUtil.isEmpty(appPremCorrId)){
           getTcuInfo(serListDto,appPremCorrId);
@@ -2047,16 +2055,23 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     String [] startDateHHMM = getStringsByHHDD(startDateTime);
                     if(startDateHHMM != null && startDateHHMM.length == 2){
                         serListDto.setStartHour(startDateHHMM[0]);
-                        serListDto.setStartMin(startDateHHMM[1]);
+                        Iterator<String> iterator= Arrays.stream(startDateHHMM).iterator();
+                        iterator.next();
+                        if(iterator.hasNext()){
+                            serListDto.setStartMin(iterator.next());
+                        }
                         serListDto.setStartTime(startDateTime);
                     }
                     String [] endDateHHMM = getStringsByHHDD(endDateDateTime);
                     if(endDateHHMM != null && endDateHHMM.length == 2){
                         String endHour = String.valueOf(Integer.parseInt(endDateHHMM[0]) + 1);
                         serListDto.setEndHour(endHour);
-                        String endMin = endDateHHMM[1];
-                        serListDto.setEndMin(endMin);
-                        serListDto.setEndTime( endHour+" : " + endMin);
+                        Iterator<String> iterator= Arrays.stream(endDateHHMM).iterator();
+                        iterator.next();
+                        if(iterator.hasNext()){
+                            serListDto.setEndMin(iterator.next());
+                        }
+                        serListDto.setEndTime( endHour+" : " + serListDto.getEndMin());
                     }
                 }
             }

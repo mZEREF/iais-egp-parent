@@ -54,13 +54,13 @@
     <div class="col-md-12">
       <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
         <div class="dashalert alert-info dash-announce alertMaintainace">
-          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:closeMaintainace();"><span aria-hidden="true">x</span></button>
           <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
           <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
       </c:if>
       <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
         <div class="dashalert alert-info dash-announce alertBanner">
-          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:closeBanner();"><span aria-hidden="true">x</span></button>
           <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
           <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
         </div>
@@ -90,6 +90,7 @@
               </div>
               <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
               <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
+                <br>
                 <div class="row">
                   <div class="col-xs-10 col-md-12">
                     <div class="components">
@@ -128,7 +129,6 @@
                                        cssClass="application_status" firstOption="Please Select"
                                        value="APST029"></iais:select>
                         </c:if>
-
                       </iais:value>
                     </iais:row>
                   </c:if>
@@ -158,6 +158,8 @@
               </c:if>
             </iais:section>
             <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
+              <br>
+              <br>
               <h3>
                 <span>Search Results</span>
               </h3>
@@ -411,6 +413,7 @@
             var arr = new Array();
             var num = 0;
             $("input:checkbox:checked").each(function(i){
+                console.log($("#"+$(this).val()).html());
                 if($(this).val() != "on" && $("#"+$(this).val()).html() != ""){
                     arr[num] = $("#"+$(this).val()).html();
                     num ++;
@@ -540,6 +543,29 @@
         return false;
     }
 
+    function closeBanner() {
+        $('.alertBanner').hide();
+        $.ajax({
+            data:{},
+            type:"POST",
+            dataType: 'json',
+            url: '/main-web/backend/closeBanner.do',
+            error:function(data){},
+            success:function(data){}
+        });
+    }
+
+    function closeMaintainace() {
+        $('.alertMaintainace').hide();
+        $.ajax({
+            data:{},
+            type:"POST",
+            dataType: 'json',
+            url: '/main-web/backend/closeMaintenance.do',
+            error:function(data){},
+            success:function(data){}
+        });
+    }
 
     $(document).on("click",".applicationNoAHref",function(){
         showWaiting();

@@ -98,7 +98,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         download = compressPath + File.separator + "backupsRec";
         String inFolder = inSharedPath;
         if (!inFolder.endsWith(File.separator)) {
-           inFolder += File.separator;
+            inFolder += File.separator;
         }
         zipFile = inFolder;
     }
@@ -112,9 +112,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void deleteUnZipFile() {
-        File downloadFile = new File(download);
-        File zipFiles = new File(zipFile);
-        File compressPathFile = new File(compressPath);
+        File downloadFile = MiscUtil.generateFile(download);
+        File zipFiles = MiscUtil.generateFile(zipFile);
+        File compressPathFile = MiscUtil.generateFile(compressPath);
         //delete old zip and folder
         FileUtils.deleteTempFile(downloadFile);
         FileUtils.deleteTempFile(compressPathFile);
@@ -127,8 +127,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
-        if(new File(zipFile).isDirectory()){
-            File[] files = new File(zipFile).listFiles();
+        if(MiscUtil.generateFile(zipFile).isDirectory()){
+            File[] files = MiscUtil.generateFile(zipFile).listFiles();
             int allSize = processFileTrackDtos.size();
             int nowSize = 0;
             List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -263,14 +263,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
             return reportId;
         } else {
-            new File(compressPath + File.separator + zipEntry.getName()).mkdirs();
+            MiscUtil.generateFile(compressPath ,zipEntry.getName()).mkdirs();
         }
         return null;
     }
 
     @Override
     public void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
-        File file = new File(download);
+        File file = MiscUtil.generateFile(download);
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         String submissionId = generateIdClient.getSeqId().getEntity();

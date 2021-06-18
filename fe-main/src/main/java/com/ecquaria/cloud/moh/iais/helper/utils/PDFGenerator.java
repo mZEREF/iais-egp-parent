@@ -10,6 +10,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -63,7 +64,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

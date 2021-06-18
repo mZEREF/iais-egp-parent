@@ -31,6 +31,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
+        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printpage('print')"> <em class="fa fa-print"></em>Print</a></div></p>
         <div class="tab-gp steps-tab">
             <div class="tab-content">
                 <div class="tab-pane active" id="premisesTab" role="tabpanel">
@@ -38,6 +39,7 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
+                                    <div id = 'print'>
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
@@ -100,6 +102,7 @@
                                                       maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
                                         </iais:value>
                                     </iais:row>
+                                        </div>
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-2 col-md-2">
@@ -117,11 +120,13 @@
             </div>
         </div>
     </div>
+
     <input hidden name="id" value="${user.id}">
     <input hidden name="action" id="action" value="">
     <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+
 <style>
     .mandatory {
         color: rgb(255, 0, 0);
@@ -130,5 +135,5 @@
     .prelogin-title{
         padding-left: 90px;
     }
-
+    @page { size: portrait; }
 </style>

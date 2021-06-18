@@ -2,14 +2,21 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.sz.commons.util.DateUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,18 +25,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -75,8 +70,8 @@ public final class ExcelWriter {
 
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
-        File out = new File(fileName);
-        try (OutputStream fileOutputStream = Files.newOutputStream(Paths.get(out.getPath()))) {
+        File out = MiscUtil.generateFile(fileName);
+        try (OutputStream fileOutputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
             startInternal(workbook);
@@ -100,9 +95,10 @@ public final class ExcelWriter {
 
     private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
-        File out = new File(fileName);
+        String path = fileName;
+        File out = MiscUtil.generateFile(path);
 
-        try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(Paths.get(out.getPath()))) {
+        try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal(workbook);

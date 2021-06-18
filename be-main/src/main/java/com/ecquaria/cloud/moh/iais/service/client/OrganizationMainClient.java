@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
@@ -11,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * @author Wenkang
@@ -98,12 +96,6 @@ public interface OrganizationMainClient {
 
     @GetMapping(value = "/iais-task/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(@RequestParam("appNo") String appNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
-
-    @GetMapping(value = "/organization/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
-
-    @GetMapping(value = "/organization/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 
     @GetMapping(value = "/iais-licensee-be/licensee-by-user-info/{userAccountString}")
     FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo (@PathVariable("userAccountString") String userAccountString);

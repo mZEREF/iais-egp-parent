@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -420,7 +421,7 @@ public class GiroDeductionBeDelegator {
         String path = file.getPath();
         log.info(StringUtil.changeForLog("File Path: " + path));
         try (OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-             InputStream in = Files.newInputStream(Paths.get(path))){
+             InputStream in = new FileInputStream(file)){
             byte buffer[] = new byte[1024];
             int len ;
             while((len=in.read(buffer))>0){

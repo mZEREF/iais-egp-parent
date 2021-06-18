@@ -29,7 +29,7 @@
         <div id="ajaxResponse"></div>
     </fieldset>
 </div>
-<input type="button" value="checkout" onclick="payLoad()">
+<%--<input type="button" value="checkout" onclick="payLoad()">--%>
 <script>
      window.onload=function () {
          var txnReq = $('#payload').val();

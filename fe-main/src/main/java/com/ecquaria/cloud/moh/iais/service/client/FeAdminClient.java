@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -11,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class,fallback = FeAdminClientFallback.class)
 public interface FeAdminClient {
@@ -55,12 +53,6 @@ public interface FeAdminClient {
 
     @PostMapping(path = "/iais-licensee/refreshLicensee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateLicence(@RequestBody LicenseeDto licenseeDto);
-
-    @GetMapping(value = "/iais-licensee/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
-
-    @GetMapping(value = "/iais-licensee/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 
     @GetMapping(value = "/iais-licensee/licensee-by-user-info/{userAccountString}")
     FeignResponseEntity<LicenseeDto> getLicenseeByUserAccountInfo (@PathVariable("userAccountString") String userAccountString);

@@ -19,6 +19,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
  */
 
 import com.ecquaria.cloud.helper.ConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -26,25 +27,21 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-import ecq.commons.config.Config;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SFTPUtil {
-    
+
 
 	private static final String seperator = ConfigHelper.getString("giro.sftp.linux.seperator");
-    
+
 	private static ChannelSftp sftp = null;
 
 	public static void connect() {
@@ -68,7 +65,7 @@ public class SFTPUtil {
             log.error(e.getMessage(), e);
         }
     }
-    
+
 	public static ChannelSftp connect(String host, String username, String password, int port) {
         try {
             JSch jsch = new JSch();
@@ -82,14 +79,14 @@ public class SFTPUtil {
             Channel channel = sshSession.openChannel("sftp");
             channel.connect();
             log.info(StringUtil.changeForLog("Connected to " + host + "."));
-            
+
             return (ChannelSftp) channel;
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
         return null;
     }
-	
+
     public static void upload(ChannelSftp sftp, File file, String remoteFilePath) {
         try {
             if(file.isFile()){
@@ -98,9 +95,9 @@ public class SFTPUtil {
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
-        
+
     }
-	
+
     public void disconnect(ChannelSftp sftp) {
         if(sftp != null){
             if(sftp.isConnected()){
@@ -111,7 +108,7 @@ public class SFTPUtil {
             sftp = null;
         }
     }
-    
+
 	public static void disconnect() {
 		if (sftp != null) {
 			if (sftp.isConnected()) {
@@ -139,7 +136,7 @@ public class SFTPUtil {
 		disconnect();
 		return false;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static List<String> getRemoteFileNames(String fileName, String remotePath) throws Exception {
 		connect();
@@ -156,7 +153,7 @@ public class SFTPUtil {
 			String[] sftpfullNmaes=sftpName.split("\\.");
 			if(sftpfullNmaes!=null&&sftpfullNmaes.length>0){
 				sftpfullName=sftpfullNmaes[0];
-			}			
+			}
 			if(fileName.equals(sftpfullName)){
 				remoteFileNames.clear();
 				remoteFileNames.add(sftpName);
@@ -167,7 +164,7 @@ public class SFTPUtil {
 		disconnect();
 		return remoteFileNames;
 	}
-	
+
     public static boolean download(String localPath, String fileName, String remotePath) throws Exception {
 	    if(StringUtil.isEmpty(remotePath)){
 	        log.info(StringUtil.changeForLog("down load remotepath is null"));
@@ -190,14 +187,14 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        try(OutputStream os = Files.newOutputStream(Paths.get(saveFile))) {
+        try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(saveFile))) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
-    
+
     public static boolean upload(String fileName, String remotePath) {
     	boolean result = false;
     	if(StringUtil.isEmpty(remotePath)){
@@ -205,7 +202,7 @@ public class SFTPUtil {
         }
         try {
         	connect();
-            File f = new File(fileName);
+            File f = MiscUtil.generateFile(fileName);
             if(f.isFile()){
             	log.info(StringUtil.changeForLog("localFile : " + f.getAbsolutePath()));
                 String remoteFile = remotePath + seperator + f.getName();
@@ -237,7 +234,7 @@ public class SFTPUtil {
         	disconnect();
         }
 
-		
+
 		return result;
     }
 
@@ -245,7 +242,7 @@ public class SFTPUtil {
 	private void createDir(String filepath, ChannelSftp sftp){
         boolean bcreated = false;
         boolean bparent = false;
-        File file = new File(filepath);
+        File file = MiscUtil.generateFile(filepath);
         String ppath = file.getParent();
         try {
             sftp.cd(ppath);
@@ -276,14 +273,14 @@ public class SFTPUtil {
             log.info(StringUtil.changeForLog("mkdir failed :" + filepath));
             log.error(e.getMessage(), e);
         }
-        
+
         try {
             sftp.cd(filepath);
         } catch (SftpException e) {
         	log.error(e.getMessage(), e);
             log.info(StringUtil.changeForLog("can not cd into :" + filepath));
         }
-        
+
     }
 
 }

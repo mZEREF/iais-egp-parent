@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesDoQueryDto;
@@ -15,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDra
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: Hc
@@ -103,12 +101,6 @@ public interface AppInboxClient {
     FeignResponseEntity<String> deleteDraftNUmber(@RequestBody List<String> draftNumbers);
     @GetMapping(value = "/appeal/app-premise-misc-dto-relate-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoRelateId(@RequestParam("relateId") String relateId);
-
-    @GetMapping(value = "/iais-application/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
-
-    @GetMapping(value = "/iais-application/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 
     @GetMapping(value = "/iais-application/app-group-by-licensee-id/{licenseeId}")
     FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpsByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);

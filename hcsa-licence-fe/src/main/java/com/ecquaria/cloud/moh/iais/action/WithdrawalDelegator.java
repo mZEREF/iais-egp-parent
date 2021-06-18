@@ -79,12 +79,10 @@ public class WithdrawalDelegator {
 
     @Autowired
     private HcsaConfigFeClient hcsaConfigFeClient;
-    private LoginContext loginContext = null;
 
     private String wdIsValid = IaisEGPConstant.YES;
 
     public void start(BaseProcessClass bpc){
-        loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",null);
@@ -195,6 +193,7 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST003"});
         applicationTandS.add(new String[]{"APTY002","APST004"});
         applicationTandS.add(new String[]{"APTY002","APST007"});
+        applicationTandS.add(new String[]{"APTY002","APST010"});
         applicationTandS.add(new String[]{"APTY002","APST011"});
         applicationTandS.add(new String[]{"APTY002","APST012"});
         applicationTandS.add(new String[]{"APTY002","APST019"});
@@ -212,17 +211,22 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST037"});
         applicationTandS.add(new String[]{"APTY002","APST039"});
         applicationTandS.add(new String[]{"APTY002","APST040"});
+        applicationTandS.add(new String[]{"APTY002","APST048"});
         applicationTandS.add(new String[]{"APTY002","APST049"});
+        applicationTandS.add(new String[]{"APTY002","APST064"});
         applicationTandS.add(new String[]{"APTY002","APST067"});
         applicationTandS.add(new String[]{"APTY002","APST069"});
         applicationTandS.add(new String[]{"APTY002","APST071"});
         applicationTandS.add(new String[]{"APTY002","APST077"});
         applicationTandS.add(new String[]{"APTY002","APST092"});
+        applicationTandS.add(new String[]{"APTY002","APST014"});
+        applicationTandS.add(new String[]{"APTY002","APST052"});
 
         applicationTandS.add(new String[]{"APTY004","APST001"});
         applicationTandS.add(new String[]{"APTY004","APST003"});
         applicationTandS.add(new String[]{"APTY004","APST004"});
         applicationTandS.add(new String[]{"APTY004","APST007"});
+        applicationTandS.add(new String[]{"APTY004","APST010"});
         applicationTandS.add(new String[]{"APTY004","APST011"});
         applicationTandS.add(new String[]{"APTY004","APST012"});
         applicationTandS.add(new String[]{"APTY004","APST019"});
@@ -239,15 +243,20 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST034"});
         applicationTandS.add(new String[]{"APTY004","APST037"});
         applicationTandS.add(new String[]{"APTY004","APST039"});
+        applicationTandS.add(new String[]{"APTY004","APST048"});
         applicationTandS.add(new String[]{"APTY004","APST049"});
+        applicationTandS.add(new String[]{"APTY004","APST064"});
         applicationTandS.add(new String[]{"APTY004","APST067"});
         applicationTandS.add(new String[]{"APTY004","APST077"});
         applicationTandS.add(new String[]{"APTY004","APST092"});
+        applicationTandS.add(new String[]{"APTY004","APST014"});
+        applicationTandS.add(new String[]{"APTY004","APST052"});
 
         applicationTandS.add(new String[]{"APTY005","APST001"});
         applicationTandS.add(new String[]{"APTY005","APST003"});
         applicationTandS.add(new String[]{"APTY005","APST004"});
         applicationTandS.add(new String[]{"APTY005","APST007"});
+        applicationTandS.add(new String[]{"APTY005","APST010"});
         applicationTandS.add(new String[]{"APTY005","APST011"});
         applicationTandS.add(new String[]{"APTY005","APST012"});
         applicationTandS.add(new String[]{"APTY005","APST019"});
@@ -264,15 +273,20 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST034"});
         applicationTandS.add(new String[]{"APTY005","APST037"});
         applicationTandS.add(new String[]{"APTY005","APST039"});
+        applicationTandS.add(new String[]{"APTY005","APST048"});
         applicationTandS.add(new String[]{"APTY005","APST049"});
+        applicationTandS.add(new String[]{"APTY005","APST064"});
         applicationTandS.add(new String[]{"APTY005","APST067"});
         applicationTandS.add(new String[]{"APTY005","APST077"});
         applicationTandS.add(new String[]{"APTY005","APST092"});
+        applicationTandS.add(new String[]{"APTY005","APST014"});
+        applicationTandS.add(new String[]{"APTY005","APST052"});
 
         applicationTandS.add(new String[]{"APTY001","APST001"});
         applicationTandS.add(new String[]{"APTY001","APST002"});
         applicationTandS.add(new String[]{"APTY001","APST004"});
         applicationTandS.add(new String[]{"APTY001","APST007"});
+        applicationTandS.add(new String[]{"APTY001","APST010"});
         applicationTandS.add(new String[]{"APTY001","APST011"});
         applicationTandS.add(new String[]{"APTY001","APST012"});
         applicationTandS.add(new String[]{"APTY001","APST023"});
@@ -281,9 +295,15 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST034"});
         applicationTandS.add(new String[]{"APTY001","APST038"});
         applicationTandS.add(new String[]{"APTY001","APST039"});
+        applicationTandS.add(new String[]{"APTY001","APST048"});
         applicationTandS.add(new String[]{"APTY001","APST049"});
+        applicationTandS.add(new String[]{"APTY001","APST064"});
         applicationTandS.add(new String[]{"APTY001","APST067"});
         applicationTandS.add(new String[]{"APTY001","APST092"});
+        applicationTandS.add(new String[]{"APTY001","APST014"});
+        applicationTandS.add(new String[]{"APTY001","APST052"});
+
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS,loginContext.getLicenseeId());
 
@@ -350,6 +370,8 @@ public class WithdrawalDelegator {
         prepareDate(bpc);
         ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo",null);
         WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+
         withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
         ParamUtil.setSessionAttr(bpc.request, "rfiWithdrawDto", withdrawnDto);
         String messageId = (String)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
@@ -413,6 +435,8 @@ public class WithdrawalDelegator {
                 }else {
                     withdrawnDto.setHciName("");
                 }
+                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
 
@@ -433,10 +457,9 @@ public class WithdrawalDelegator {
                                 Long size=length/1024;
                                 files.add(file);
                                 AppPremisesSpecialDocDto premisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                                SingeFileUtil singeFileUtil=SingeFileUtil.getInstance();
                                 String e = str.substring(str.lastIndexOf('e') + 1);
                                 premisesSpecialDocDto.setDocName(file.getName());
-                                String fileMd5 = singeFileUtil.getFileMd5(file);
+                                String fileMd5 = SingeFileUtil.getInstance().getFileMd5(file);
                                 premisesSpecialDocDto.setMd5Code(fileMd5);
                                 premisesSpecialDocDto.setIndex(e);
                                 premisesSpecialDocDto.setSubmitBy(loginContext.getUserId());

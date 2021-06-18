@@ -97,7 +97,7 @@
     border-width: 0.4em 0.4em 0 0.4em;
     border-color: #999 transparent transparent transparent;*/
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     font-size: 30px;
     color: #6c6c6c;
     margin-left: 0.4em;

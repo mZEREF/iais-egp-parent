@@ -52,12 +52,12 @@ public class EventbusCallBackDelegate {
         log.info(StringUtil.changeForLog("Submission Id ===========> " + submissionId));
         log.info(StringUtil.changeForLog("service name ===========> " + serviceName));
         boolean isLeagal = IaisEGPHelper.verifyCallBackToken(submissionId, serviceName, token);
-        log.info("event Ref number ===========> {}", eventRefNum);
+        log.info(StringUtil.changeForLog("event Ref number ===========> {}"+ eventRefNum));
         if (!isLeagal) {
             throw new IaisRuntimeException("Visit without Token!!");
         }
 
-        log.info("Event bus operation ===========> {}", operation);
+        log.info(StringUtil.changeForLog("Event bus operation ===========> {}"+ operation));
         Map<String, List<ServiceStatus>> map = submissionClient.getSubmissionStatus(
                 AppConsts.REST_PROTOCOL_TYPE
                         + RestApiUrlConsts.EVENT_BUS, submissionId, operation);

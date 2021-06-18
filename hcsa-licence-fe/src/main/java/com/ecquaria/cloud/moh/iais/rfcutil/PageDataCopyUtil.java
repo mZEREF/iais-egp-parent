@@ -161,6 +161,9 @@ public class PageDataCopyUtil {
         }
         List<AppGrpPrimaryDocDto> list=new ArrayList<>(appGrpPrimaryDocDtos.size());
         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+            if(StringUtil.isEmpty(appGrpPrimaryDocDto.getMd5Code())){
+                continue;
+            }
             AppGrpPrimaryDocDto primaryDocDto=new AppGrpPrimaryDocDto();
             primaryDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
             primaryDocDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
@@ -174,6 +177,9 @@ public class PageDataCopyUtil {
     public static List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
         List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
+            if(StringUtil.isEmpty(appSvcDocDto.getMd5Code())){
+                continue;
+            }
             AppSvcDocDto svcDocDto=new AppSvcDocDto();
             svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
             svcDocDto.setDocName(appSvcDocDto.getDocName());

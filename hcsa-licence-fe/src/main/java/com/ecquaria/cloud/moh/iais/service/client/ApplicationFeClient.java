@@ -357,4 +357,6 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<AppDeclarationMessageDto>> getAppDeclarationMessageDto(@RequestParam("appGrpId")String appGrpId);
     @GetMapping(value = "/iais-application/declaration-doc",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppDeclarationDocDto>> getAppDeclarationDocDto(@RequestParam("appGrpId")String appGrpId);
+    @PutMapping(path="/iais-application/fe-giro-retrigger", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto, @RequestParam(name = "giroAccNo") String giroAccNo);
 }

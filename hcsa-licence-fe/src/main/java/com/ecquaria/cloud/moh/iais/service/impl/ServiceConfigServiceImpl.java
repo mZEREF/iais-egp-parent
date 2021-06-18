@@ -23,13 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InvoiceDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -150,13 +145,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId).getEntity();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId, "").getEntity();
         Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
                 NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                appGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode()+appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
             }
         }
         return appGrpPremisesDtoMap;
@@ -371,6 +366,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
          GiroPaymentXmlDto giroPaymentXmlDto = genGiroPaymentXmlDtoByAppGrp(appGrp);
          appPaymentStatusClient.updateGiroPaymentXmlDto(giroPaymentXmlDto);
          return appGrp;
+    }
+
+    @Override
+    public ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
+        return applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto, giroAccNo).getEntity();
     }
 
     private String genGiroTranNo(){
@@ -723,8 +723,15 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         if( applicationGroupDto == null){
             return "";
         }
+
+        AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(applicationGroupDto.getId(),
+                ApplicationConsts.APP_GROUP_MISC_TYPE_GIRO_ACCOUNT_NUMBER, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if(grpMisc != null && StringUtil.isNotEmpty(grpMisc.getMiscValue())){
+            return grpMisc.getMiscValue();
+        }
+
         String licenseeId = applicationGroupDto.getLicenseeId();
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();;
+        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);;
         if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
             return orgGiroAccountInfoDto.getAcctNo();
         }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){

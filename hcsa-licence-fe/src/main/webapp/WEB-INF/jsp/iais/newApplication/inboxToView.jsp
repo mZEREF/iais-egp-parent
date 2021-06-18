@@ -97,6 +97,10 @@
     function printRLPDF(){
         var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        var group_renewal_app_rfc = $("#group_renewal_app_rfc").val();
+        if(group_renewal_app_rfc == '1'){
+            rfc+= "&group_renewal_app_rfc=1"
+        }
         window.open(url+rfc,'_blank');
        // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
     }
