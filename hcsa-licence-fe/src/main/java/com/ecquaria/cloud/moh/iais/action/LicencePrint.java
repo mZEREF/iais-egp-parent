@@ -10,6 +10,7 @@ import org.springframework.util.ResourceUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -36,7 +37,7 @@ public class LicencePrint {
             File pdfFile = new File("LICENCE.pdf");
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             map.put("licence","LICENCE");
-            OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
+            OutputStream outputStream = new FileOutputStream(pdfFile);
             try {
                 pdfGenerator.generate(outputStream, "licence.ftl", map);
             }catch (Exception e){
