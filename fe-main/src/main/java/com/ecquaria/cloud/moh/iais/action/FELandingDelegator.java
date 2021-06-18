@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
@@ -20,6 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author: yichen
@@ -109,5 +113,56 @@ public class FELandingDelegator {
 			log.error(e.getMessage(), e);
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
 		}
+	}
+
+	/**
+	 * Process: FE_Landing
+	 * Step: InitSso
+	 * @param bpc
+	 */
+	public void initSso(BaseProcessClass bpc) {
+		log.info(StringUtil.changeForLog("-------Init SSO-------"));
+	}
+
+	/**
+	 * Process: FE_Landing
+	 * Step: PrepareSsoData
+	 * @param bpc
+	 */
+	public void prepareSsoData(BaseProcessClass bpc) {
+		log.info(StringUtil.changeForLog("-------Prepare SSO Data-------"));
+
+		bpc.request.setAttribute("nextUri", FeLoginHelper.INBOX_URL);
+	}
+
+	/**
+	 * Process: FE_Landing
+	 * Step: SendRedirect
+	 * @param bpc
+	 */
+	public void sendRedirect(BaseProcessClass bpc) throws IOException {
+		String url = (String) bpc.request.getAttribute("nextUrl");
+		if (StringUtil.isEmpty(url)) {
+			String uri = (String) bpc.request.getAttribute("nextUri");
+			if (!StringUtil.isEmpty(uri)) {
+				url = uri;
+			} else {
+				String currentProcessName = bpc.runtime.getCurrentProcessName();
+				uri = bpc.request.getRequestURI();
+				uri = uri.substring(0, uri.indexOf(currentProcessName));
+				String processName = (String) bpc.request.getAttribute("processName");
+				if (StringUtil.isEmpty(processName)) {
+					processName = currentProcessName;
+				}
+				url = uri + processName;
+			}
+		}
+		String baseUrl = InboxConst.URL_HTTPS + bpc.request.getServerName();
+		if (url != null && !url.toLowerCase(AppConsts.DFT_LOCALE).startsWith("http")) {
+			url = baseUrl + url;
+		}
+		log.info(StringUtil.changeForLog("The next URL: " + url));
+		String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+		bpc.response.sendRedirect(tokenUrl);
 	}
 }
