@@ -65,7 +65,7 @@ public class IaisSubmissionDataDelegator {
             List<LicenceDto> licenceDtos = inboxClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
             boolean containCLB = containCLB(licenceDtos);
             if(containCLB) {
-                List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId).getEntity();
+                List<AppGrpPremisesDto> entity = inboxClient.getDistinctPremisesByLicenseeId(licenseeId, AppServicesConsts.SERVICE_NAME_CLINICAL_LABORATORY).getEntity();
                 List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
                 if (entity != null) {
                     ArrayList<AppGrpPremisesDto> collect = entity.stream().collect(
