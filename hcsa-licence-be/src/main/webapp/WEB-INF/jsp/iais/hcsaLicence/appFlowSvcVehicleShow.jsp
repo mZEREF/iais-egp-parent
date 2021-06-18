@@ -12,78 +12,82 @@
   <c:set var="appFlowSvcVehicleDtos" value="${applicationViewDto.appSvcVehicleDtos}"/>
 </c:if>
 <c:if test="${'edit' eq appVehicleFlag}">
-  <iais:field value="Vehicle Recommendations" required="true"/>
-  <iais:value width="7">
-    <div class="table-gp" id = "processRecRfi">
-      <table class="table">
-        <thead>
-        <tr align="center">
-          <th width="5%">S/N</th>
-          <th width="30%">Vehicle</th>
-          <th width="30%">Recommendation</th>
-          <th width="35%">Remarks</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
-          <tr>
-            <td><c:out value="${status.count}"></c:out></td>
-            <td><c:out value="${appVehicleNo.vehicleName}"/></td>
-            <td>
-              <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
-              <label class="form-check-label"><span class="check-circle"></span>Approve</label>
-              &nbsp;
-              <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
-              <label class="form-check-label"><span class="check-circle"></span>Reject</label>
-              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
-            </td>
-            <td>
-              <input type="text" name="vehicleNoRemarks${status.count}" maxlength="400" value="${appVehicleNo.remarks}" />
-              <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
-            </td>
+  <iais:row>
+    <iais:field value="Vehicle Recommendations" required="true"/>
+    <iais:value width="7">
+      <div class="table-gp" id = "processRecRfi">
+        <table class="table">
+          <thead>
+          <tr align="center">
+            <th width="5%">S/N</th>
+            <th width="30%">Vehicle</th>
+            <th width="30%">Recommendation</th>
+            <th width="35%">Remarks</th>
           </tr>
-        </c:forEach>
-        </tbody>
-      </table>
-    </div>
-  </iais:value>
+          </thead>
+          <tbody>
+          <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
+            <tr>
+              <td><c:out value="${status.count}"></c:out></td>
+              <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+              <td>
+                <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
+                <label class="form-check-label"><span class="check-circle"></span>Approve</label>
+                &nbsp;
+                <input class="form-check-input" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
+                <label class="form-check-label"><span class="check-circle"></span>Reject</label>
+                <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
+              </td>
+              <td>
+                <input type="text" name="vehicleNoRemarks${status.count}" maxlength="400" value="${appVehicleNo.remarks}" />
+                <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
+              </td>
+            </tr>
+          </c:forEach>
+          </tbody>
+        </table>
+      </div>
+    </iais:value>
+  </iais:row>
 </c:if>
 <c:if test="${'view' eq appVehicleFlag}">
-  <iais:field value="Vehicle Recommendations"/>
-  <iais:value width="7">
-    <div class="table-gp" id = "processRecRfi">
-      <table class="table">
-        <thead>
-        <tr align="center">
-          <th width="5%">S/N</th>
-          <th width="30%">Vehicle</th>
-          <th width="30%">Recommendation</th>
-          <th width="35%">Remarks</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
-          <tr>
-            <td><c:out value="${status.count}"></c:out></td>
-            <td><c:out value="${appVehicleNo.vehicleName}"/></td>
-            <td>
-              <c:choose>
-                <c:when test="${'VEST002' eq appVehicleNo.status}">
-                  <c:out value="Approve"/>
-                </c:when>
-                <c:when test="${'VEST003' eq appVehicleNo.status}">
-                  <c:out value="Reject"/>
-                </c:when>
-                <c:otherwise>
-                  <c:out value="N/A"/>
-                </c:otherwise>
-              </c:choose>
-            </td>
-            <td><span style="font-size: 16px"><c:out value="${appVehicleNo.remarks}"/></span></td>
+  <iais:row>
+    <iais:field value="Vehicle Recommendations"/>
+    <iais:value width="7">
+      <div class="table-gp" id = "processRecRfi">
+        <table class="table">
+          <thead>
+          <tr align="center">
+            <th width="5%">S/N</th>
+            <th width="30%">Vehicle</th>
+            <th width="30%">Recommendation</th>
+            <th width="35%">Remarks</th>
           </tr>
-        </c:forEach>
-        </tbody>
-      </table>
-    </div>
-  </iais:value>
+          </thead>
+          <tbody>
+          <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
+            <tr>
+              <td><c:out value="${status.count}"></c:out></td>
+              <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+              <td>
+                <c:choose>
+                  <c:when test="${'VEST002' eq appVehicleNo.status}">
+                    <c:out value="Approve"/>
+                  </c:when>
+                  <c:when test="${'VEST003' eq appVehicleNo.status}">
+                    <c:out value="Reject"/>
+                  </c:when>
+                  <c:otherwise>
+                    <c:out value="N/A"/>
+                  </c:otherwise>
+                </c:choose>
+              </td>
+              <td><span style="font-size: 16px"><c:out value="${appVehicleNo.remarks}"/></span></td>
+            </tr>
+          </c:forEach>
+          </tbody>
+        </table>
+      </div>
+    </iais:value>
+  </iais:row>
 </c:if>
