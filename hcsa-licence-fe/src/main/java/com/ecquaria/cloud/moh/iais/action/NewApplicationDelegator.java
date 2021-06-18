@@ -4110,7 +4110,6 @@ public class NewApplicationDelegator {
                 String easMtsUseOnly = ParamUtil.getString(request, "easMtsUseOnlyVal");
                 String easMtsPubEmail = ParamUtil.getString(request, "easMtsPubEmail");
                 String easMtsPubHotline = ParamUtil.getString(request, "easMtsPubHotline");
-                String easMtsCoLocation = ParamUtil.getString(request, "easMtsCoLocationVal");
                 appGrpPremisesDto.setEasMtsHciName(easMtsHciName);
                 appGrpPremisesDto.setPremisesSelect(easMtsPremisesSelect[i]);
                 appGrpPremisesDto.setEasMtsPostalCode(easMtsPostalCode);
@@ -4123,7 +4122,6 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
                 appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
                 appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
-                appGrpPremisesDto.setEasMtsCoLocation(easMtsCoLocation);
                 if(opLength > 0){
                     for(int j=0;j<opLength;j++){
                         AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();

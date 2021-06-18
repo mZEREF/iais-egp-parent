@@ -604,19 +604,6 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsPubHotline}</span></p>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with another licensee?</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span>
-                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">No</c:if>
-                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">Yes</c:if>
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
                         </c:if>
                         <c:choose>
                             <c:when test="${'EASMTS'==appGrpPremDto.premisesType}"></c:when>

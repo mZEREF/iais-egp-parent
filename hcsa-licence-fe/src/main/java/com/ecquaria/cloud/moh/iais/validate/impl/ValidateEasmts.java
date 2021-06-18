@@ -136,12 +136,6 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                 map.put("easMtsPubHotline"+index,MessageUtil.getMessageDesc("GENERAL_ERR0007"));
             }
         }
-        String easMtsCoLocation = appGrpPremisesDto.getEasMtsCoLocation();
-        if(StringUtil.isEmpty(easMtsCoLocation)){
-            map.put("easMtsCoLocation"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Hotline", "field"));
-        }else {
-
-        }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
         if(flag){
             floorUnitList.add(appGrpPremisesDto.getEasMtsFloorNo()+appGrpPremisesDto.getEasMtsUnitNo());
