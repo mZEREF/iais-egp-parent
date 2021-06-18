@@ -192,7 +192,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if (!inFolder.endsWith(File.separator)) {
             inFolder += File.separator;
         }
-        File[] files = new File(inFolder).listFiles();
+        File[] files = MiscUtil.generateFile(inFolder).listFiles();
         for(File fil:files){
             if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
                 String name = fil.getName();
