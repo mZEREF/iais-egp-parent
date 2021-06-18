@@ -4366,7 +4366,7 @@ public class NewApplicationDelegator {
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())){
                     rfiPremHci = rfiPremises.getHciName()+rfiPremHci;
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())){
-                    rfiPremHci = rfiPremises.getVehicleNo()+rfiPremHci;
+                    rfiPremHci = rfiPremises.getHciName() + rfiPremises.getVehicleNo()+rfiPremHci;
                 }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())){
                     rfiPremHci = rfiPremises.getHciName() + rfiPremHci;
                 }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(rfiPremises.getPremisesType())){
