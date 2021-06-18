@@ -121,9 +121,6 @@ public final class FileUtils {
     }
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
-        if (src.endsWith("/") || src.endsWith("\\")) {
-            src = src.substring(0, src.length() - 1);
-        }
         File file = MiscUtil.generateFile(src);
         if (!file.exists()){
             log.info("don't have file");
@@ -136,9 +133,6 @@ public final class FileUtils {
             for (File f : files){
                 String srcName = f.getName();
                 String path = dst + srcName;
-                if (path.endsWith("/") || path.endsWith("\\")) {
-                    path = path.substring(0, path.length() - 1);
-                }
                 File dstFile = MiscUtil.generateFile(path);
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){

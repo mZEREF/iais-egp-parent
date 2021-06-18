@@ -228,9 +228,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss, String appId)  {
-        if (backups.endsWith("/") || backups.endsWith("\\")) {
-            backups = backups.substring(0, backups.length() - 1);
-        }
         File zipFile = MiscUtil.generateFile(backups);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -282,9 +279,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void deleteFile(){
-        if (backups.endsWith("/") || backups.endsWith("\\")) {
-            backups = backups.substring(0, backups.length() - 1);
-        }
         File file = MiscUtil.generateFile(backups);
         if(file.isDirectory()){
             File[] files = file.listFiles();

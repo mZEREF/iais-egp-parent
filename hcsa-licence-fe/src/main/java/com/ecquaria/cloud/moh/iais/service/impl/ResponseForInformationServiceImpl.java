@@ -162,9 +162,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
-        }
         File c= MiscUtil.generateFile(sharedOutPath);
         if(!c.exists()){
             c.mkdirs();

@@ -71,7 +71,6 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -223,9 +222,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             outFolder += File.separator;
         }
         String soPath = sharedOutPath;
-        if (soPath.endsWith("/") || soPath.endsWith("\\")) {
-            soPath = soPath.substring(0, soPath.length() - 1);
-        }
         File zipFile = MiscUtil.generateFile(soPath);
         MiscUtil.checkDirs(zipFile);
         String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
@@ -236,9 +232,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 
             log.info(StringUtil.changeForLog("------------zip file name is"+ outFolder + l+".zip"+"--------------------"));
             String path = sharedPath + AppServicesConsts.FILE_NAME + File.separator + groupId;
-            if (path.endsWith("/") || path.endsWith("\\")) {
-                path = path.substring(0, path.length() - 1);
-            }
             File file = MiscUtil.generateFile(path);
 
             zipFile(zos, file);
@@ -287,9 +280,6 @@ public class UploadFileServiceImpl implements UploadFileService {
             outFolder += File.separator;
         }
         String soPath = sharedOutPath;
-        if (soPath.endsWith("/") || soPath.endsWith("\\")) {
-            soPath = soPath.substring(0, soPath.length() - 1);
-        }
         File zipFile = MiscUtil.generateFile(soPath);
         if(zipFile.isDirectory()){
            File[] files = zipFile.listFiles((dir, name) -> {
@@ -391,9 +381,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     private void deleteFile(String groupId){
         String path = sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId;
-        if (path.endsWith("/") || path.endsWith("\\")) {
-            path = path.substring(0, path.length() - 1);
-        }
         File fileRepPath = MiscUtil.generateFile(path);
         MiscUtil.checkDirs(fileRepPath);
         if(fileRepPath.isDirectory()){

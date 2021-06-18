@@ -40,9 +40,6 @@ public class PostCodeDelegator {
 
     private Map<String,String> initstreetMap() throws IOException {
         Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
-        if (streetsPath.endsWith("/") || streetsPath.endsWith("\\")) {
-            streetsPath = streetsPath.substring(0, streetsPath.length() - 1);
-        }
         File file = MiscUtil.generateFile(streetsPath);
             try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
@@ -64,9 +61,6 @@ public class PostCodeDelegator {
     }
     private Map<String,String> initbuildingMap() throws IOException {
         Map<String,String> buildingMap = IaisCommonUtils.genNewHashMap();
-        if (buildingPath.endsWith("/") || buildingPath.endsWith("\\")) {
-            buildingPath = buildingPath.substring(0, buildingPath.length() - 1);
-        }
         File file = MiscUtil.generateFile(buildingPath);
         try (BufferedReader  br = new BufferedReader(new FileReader(file)); ){
             String line = null;
@@ -94,9 +88,6 @@ public class PostCodeDelegator {
      */
     private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
         List<PostCodeDto> list = IaisCommonUtils.genNewArrayList();
-        if (postCodePath.endsWith("/") || postCodePath.endsWith("\\")) {
-            postCodePath = postCodePath.substring(0, postCodePath.length() - 1);
-        }
         File file =  MiscUtil.generateFile(postCodePath);
         try(BufferedReader br = new BufferedReader(new FileReader(file));){
             String line = null;

@@ -63,9 +63,6 @@ public class FileUtil {
 	public static void appendToFile(String string, String fileName) {
 		FileWriter writer = null;
 		try {
-			if (fileName.endsWith("/") || fileName.endsWith("\\")) {
-				fileName = fileName.substring(0, fileName.length() - 1);
-			}
 			File file=MiscUtil.generateFile(fileName);
 			writer = new FileWriter(file,true);
 			writer.write(string);
@@ -142,9 +139,6 @@ public class FileUtil {
 		return result;
 	}
 	public static void generateFolder(String folderPath) {
-		if (folderPath.endsWith("/") || folderPath.endsWith("\\")) {
-			folderPath = folderPath.substring(0, folderPath.length() - 1);
-		}
 		File f= MiscUtil.generateFile(folderPath);
 		if (!f.isFile() && !f.exists()) {
 			 if(f.mkdirs()){
