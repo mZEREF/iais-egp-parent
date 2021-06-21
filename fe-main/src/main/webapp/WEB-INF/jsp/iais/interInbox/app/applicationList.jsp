@@ -227,7 +227,8 @@
                                                        || app.status == 'APST071' || app.status == 'APST034' || app.status == 'APST019'
                                                        || app.status == 'APST020' || app.status == 'APST022' || app.status == 'APST032'
                                                        || app.status == 'APST048' || app.status == 'APST049' || app.status == 'APST039'
-                                                       || app.status == 'APST040' || app.status == 'APST011' || app.status == 'APST004'}">
+                                                       || app.status == 'APST040' || app.status == 'APST011' || app.status == 'APST004'
+                                                       || app.status =='APST033'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
