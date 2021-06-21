@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -1027,7 +1028,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        String TaskUrl;
+        if(roleId.contains(RoleConsts.USER_ROLE_AO1)) {
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+        } else {
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        }
         String subStageId = HcsaConsts.ROUTING_STAGE_POT;
         //update inspector status
         updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
