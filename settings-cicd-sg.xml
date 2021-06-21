@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+        xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>moh-iais-nexus</id>
+            <username>${moh.iais.nexus.username}</username>
+            <password>${moh.iais.nexus.password}</password>
+        </server>
+        <server>
+            <id>mirror-of-central</id>
+            <username>${moh.iais.nexus.username}</username>
+            <password>${moh.iais.nexus.password}</password>
+        </server>
+        <server>
+            <id>mirror-of-spring-release</id>
+            <username>${moh.iais.nexus.username}</username>
+            <password>${moh.iais.nexus.password}</password>
+        </server>
+    </servers>
+    <mirrors>
+        <mirror>
+            <id>mirror-of-central</id>
+            <mirrorOf>central</mirrorOf>
+            <name>Mirror of Central</name>
+            <url>${sg.nexus.group.repo}</url>
+        </mirror>
+        <mirror>
+            <id>mirror-of-spring-release</id>
+            <mirrorOf>spring-release</mirrorOf>
+            <name>Mirror of Spring Release</name>
+            <url>${sg.nexus.group.repo}</url>
+        </mirror>
+    </mirrors>
+</settings>

@@ -317,7 +317,7 @@ public class AppealApproveBatchjob {
         if(applicationGroupDto==null){
             log.error("=======applicationGroupDto is null =====");
         }else {
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationGroupDto)+"-------applicationGroupDto is "));
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationGroupDto+"-------applicationGroupDto is ")));
         }
 
         if(appPremisesRecommendationDto==null){

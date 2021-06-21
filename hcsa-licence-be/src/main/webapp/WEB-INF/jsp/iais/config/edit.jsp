@@ -136,39 +136,25 @@
       <div class="form-group">
         <div class="form-check-gp">
           <div class="row">
-            <c:choose>
-              <c:when test="${hcsaServiceDto.svcCode=='EAS' || hcsaServiceDto.svcCode=='MTS'}">
-                <div class="col-xs-12 col-md-3">
-                  <div class="form-check " style="left: 10%">
-                    <c:set var="type" value="${PremisesType}"></c:set>
-                    <input class="form-check-input" name="PremisesType"  id="icon6checkboxSample" <c:if test="${fn:contains(type,'EASMTS')}">checked="checked"</c:if> type="checkbox" value="EASMTS" aria-invalid="false">
-                    <label class="form-check-label"  for="icon6checkboxSample"><span class="check-square"></span> Conveyance(in a mobile clinic / ambulance)</label>
-                  </div>
-                </div>
-              </c:when>
-              <c:otherwise>
-                <div class="col-xs-12 col-md-3">
-                  <div class="form-check " style="left: 10%;">
-                    <c:set var="type" value="${PremisesType}"></c:set>
-                    <input class="form-check-input"  name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
-                    <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
-                  </div>
-                </div>
-                <div class="col-xs-12 col-md-3">
-                  <div class="form-check ">
-                    <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
-                    <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
-                  </div>
-                </div>
-                <div class="col-xs-12 col-md-3">
-                  <div class="form-check ">
-                    <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                    <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
-                  </div>
-                </div>
-              </c:otherwise>
-            </c:choose>
-
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check " style="left: 10%;">
+                <c:set var="type" value="${PremisesType}"></c:set>
+                <input class="form-check-input"  name="PremisesType"<c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> id="icon3checkboxSample" type="checkbox" name="Onsite" value="ONSITE"  aria-invalid="false">
+                <label class="form-check-label" for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check ">
+                <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
+                <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check ">
+                <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+              </div>
+            </div>
           </div>
 
         </div>
