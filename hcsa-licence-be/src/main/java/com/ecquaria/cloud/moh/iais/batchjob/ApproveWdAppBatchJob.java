@@ -135,7 +135,7 @@ public class ApproveWdAppBatchJob {
                         }
                         try {
                             if (!StringUtil.isEmpty(fee)){
-                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
                                 if (withdrawReturnFee){
                                     AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                                     applicationService.saveAppReturnFee(appReturnFeeDto);
