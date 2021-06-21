@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -251,7 +250,12 @@ public class InspecEmailDelegator {
                 for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                 ) {
                     stringBuilder.append("<tr><td>").append(++i);
-                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                    //EAS or MTS
+                    if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
+                        stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                    }else {
+                        stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                    }
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                     stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
@@ -259,29 +263,6 @@ public class InspecEmailDelegator {
                     stringBuilder.append("</td></tr>");
                 }
                 mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-            }
-            //EAS or MTS
-            if(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null){
-                    StringBuilder stringBuilder=new StringBuilder();
-                    stringBuilder.append("<tr><td colspan=\"6\"><b>").append(applicationViewDto.getServiceType()).append(" Vehicle").append("</b></td></tr>");
-                    int i=0;
-                    for (AppSvcVehicleDto vehicle:applicationViewDto.getAppSvcVehicleDtos()
-                    ) {
-                        if(ApplicationConsts.VEHICLE_STATUS_REJECT.equals(vehicle.getStatus())){
-                            stringBuilder.append("<tr><td>").append(++i);
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getVehicleName()));
-                            stringBuilder.append(TD).append('-');
-                            stringBuilder.append(TD).append('-');
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(vehicle.getRemarks()));
-                            stringBuilder.append(TD).append(StringUtil.viewHtml("Reject"));
-                            stringBuilder.append("</td></tr>");
-                        }
-                    }
-                    if(i!=0){
-                        mapTableTemplate.put("NC_DETAILS",mapTableTemplate.get("NC_DETAILS")+StringUtil.viewHtml(stringBuilder.toString()));
-                    }
-                }
             }
 
             //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
