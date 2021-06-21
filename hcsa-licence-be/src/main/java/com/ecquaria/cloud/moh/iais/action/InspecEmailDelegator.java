@@ -251,7 +251,7 @@ public class InspecEmailDelegator {
                 ) {
                     stringBuilder.append("<tr><td>").append(++i);
                     //EAS or MTS
-                    if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
+                    if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
                         stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
                     }else {
                         stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
