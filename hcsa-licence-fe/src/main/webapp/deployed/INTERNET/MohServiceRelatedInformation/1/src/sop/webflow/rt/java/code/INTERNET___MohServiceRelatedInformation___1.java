@@ -153,6 +153,16 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "doCharges", this);
 	}
 
+	public void step1_OnStepProcess_0() throws Exception {
+	// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareBusiness", this);
+	}
+
+	public void doBusiness_OnStepProcess_0() throws Exception {
+	// 		doBusiness->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doBusiness", this);
+	}
+
 	
 
 }
