@@ -161,7 +161,6 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
             return;
         }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
-        String appPremCorrId = taskDto.getRefNo();
         setCheckDataHaveFinished(request,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);;
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);

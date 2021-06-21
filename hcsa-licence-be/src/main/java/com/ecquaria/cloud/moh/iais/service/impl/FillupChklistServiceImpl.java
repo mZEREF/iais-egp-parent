@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.helper.CommonUseHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -2283,8 +2282,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto){
-        if( AppConsts.YES.equalsIgnoreCase(ConfigHelper.getString("checklist.need.vehicle.separation"))){
-            ChecklistConfigDto checklistConfigDto =  hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), CommonUseHelper.compareAppTypeToCheckListType(appViewDto.getApplicationDto().getApplicationType()),CommonUseHelper.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity();
+        if(InspectionConstants.SWITCH_ACTION_YES.equalsIgnoreCase(ConfigHelper.getString("easmts.vehicle.sperate.flag"))){
+            ChecklistConfigDto checklistConfigDto =hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity();
+            //checklistConfigDto = checklistConfigDto == null ? hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), CommonUseHelper.compareAppTypeToCheckListType(appViewDto.getApplicationDto().getApplicationType()),CommonUseHelper.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() : checklistConfigDto;
             return  checklistConfigDto == null ? false : true;
         }
         return false;
