@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -171,6 +172,8 @@ public class HcsaApplicationDelegator {
     @Autowired
     private NotificationHelper notificationHelper;
 
+    @Autowired
+    private FillupChklistService fillupChklistService;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
     /**
@@ -199,7 +202,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", null);
         ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", null);
-
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request, "backSearchParamFromHcsaApplication", searchParamGroup);
 
@@ -1712,6 +1715,9 @@ public class HcsaApplicationDelegator {
                 InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
                 InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
                 insRepDto.setInspectors(inspectorAo.getInspectors());
+                if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
+                    ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+                }
                 ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
                 String appType = applicationViewDto.getApplicationDto().getApplicationType();
                 ParamUtil.setRequestAttr(bpc.request, "appType", appType);
