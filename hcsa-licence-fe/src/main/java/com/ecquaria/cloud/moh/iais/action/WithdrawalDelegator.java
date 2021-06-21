@@ -114,7 +114,9 @@ public class WithdrawalDelegator {
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
                     && ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
                 isDoView="N";
-                rfiWithdrawAppNo= withdrawAppNo;
+                if(!applicationFeClient.isApplicationWithdrawal(entity.getId()).getEntity()){
+                    rfiWithdrawAppNo= withdrawAppNo;
+                }
             }
         }
         // just view, so direct return
