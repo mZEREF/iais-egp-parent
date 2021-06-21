@@ -378,7 +378,7 @@ public class NewApplicationDelegator {
                             if("newPremise".equals(premisesSelect)){
                                 continue;
                             }
-                            newLicAppGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode() + appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                            newLicAppGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
                         }
                     }
                 }

@@ -1810,7 +1810,7 @@ public class NewApplicationHelper {
         List<SelectOption> existingEasOrMtsPrem = IaisCommonUtils.genNewArrayList();
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
-                SelectOption sp= new SelectOption(item.getHciCode() + item.getPremisesSelect(), item.getAddress());
+                SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
                 if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
                     existingOnsitePrem.add(sp);
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())){
