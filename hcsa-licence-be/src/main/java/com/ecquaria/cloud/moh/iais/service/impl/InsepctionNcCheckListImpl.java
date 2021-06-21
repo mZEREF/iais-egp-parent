@@ -1077,14 +1077,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto) {
-        boolean serviceNcFlag = haveServiceNc(serListDto);
-        boolean comNcFlag = haveComNc(comDto);
-        boolean adhocNcFlag = haveAdhocDto(showDto);
         if(serListDto!=null){
             String bestPractice = serListDto.getBestPractice();
-            if(serviceNcFlag||comNcFlag||adhocNcFlag||!StringUtil.isEmpty(bestPractice)){
+            if(!StringUtil.isEmpty(bestPractice)||serListDto.getTotalNcNum()>0){
                 return true;
             }
+        }
+        if(haveServiceNc(serListDto)||haveComNc(comDto)||haveAdhocDto(showDto)){
+            return true;
         }
         return false;
     }
