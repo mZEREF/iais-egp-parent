@@ -132,7 +132,7 @@ public class OrganizationLienceseeClientFallback
     }
 
     @Override
-    public FeignResponseEntity<OrgGiroAccountInfoDto> getGiroAccByLicenseeId(String licenseeId) {
+    public FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -468,6 +468,9 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setNewLicenseeId(newLicenseeId);
                 appSubmissionDto.setLicenseeId(licenceDto.getLicenseeId());
                 appSubmissionDto.setAutoRfc(false);
+                String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
+                log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
+                appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
                 FeeDto feeDto = getTransferFee();
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
@@ -816,7 +819,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","RFC_ERR021");
                     }
                 }else{
-                    /*error.put("uenError","RFC_ERR007");*/
+                    error.put("uenError","RFC_ERR007");
                 }
             }
         }

@@ -57,7 +57,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
@@ -86,7 +86,7 @@ public class PDFGenerator {
 			}
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

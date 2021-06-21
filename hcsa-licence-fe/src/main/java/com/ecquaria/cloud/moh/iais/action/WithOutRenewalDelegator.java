@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
@@ -49,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -724,13 +726,15 @@ public class WithOutRenewalDelegator {
         }
         AppSubmissionDto targetSubmisnDto = new AppSubmissionDto();
         targetSubmisnDto.setAppGrpPremisesDtoList(allPremiseList);
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
-        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
-        if(isGiroAcc){
-            for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
-                appSubmissionDto.setGiroAcctNum(targetSubmisnDto.getGiroAcctNum());
-            }
+        //sor
+        boolean isGiroAcc = false;
+        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            isGiroAcc = true;
+            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
+            ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
         }
+        ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
       /*  String hasSubmit = (String) ParamUtil.getSessionAttr(bpc.request, "hasAppSubmit");
         if ("Y".equals(hasSubmit)) {
             return;
@@ -1499,12 +1503,18 @@ public class WithOutRenewalDelegator {
                 log.error(e.getMessage(), e);
                 log.error(StringUtil.changeForLog("send email error"));
             }
+            String giroAccNum = "";
+            if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+                giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+            }
+            appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
             String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
             serviceConfigService.updatePaymentStatus(appGrp);
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);

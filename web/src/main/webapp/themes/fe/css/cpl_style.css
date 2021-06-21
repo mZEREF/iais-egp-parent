@@ -680,7 +680,7 @@ header .container .sg-gov-logo a img {
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     font-weight: 400;
     font-size: 3rem;
     color: #333333;
@@ -942,7 +942,7 @@ header .container .sg-gov-logo a img {
 }
 .profile-dropdown .profile-btn:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     font-weight: 400;
     font-size: 3rem;
     color: #333333;
@@ -1512,7 +1512,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
     display: block;
 }
 .panel-group .panel.panel-default > .panel-heading h4 a:before {
-    font-family: FontAwesome;
+      font-family: fontawesome, sans-serif;
     content: "";
     font-size: 4rem;
     color: #147aab;
@@ -1549,7 +1549,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
 }
 .panel-group .panel.panel-default > .panel-heading.completed h4 a:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 22px;
     height: 22px;
     border: 0;
@@ -1567,7 +1567,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
 }
 .panel-group .panel.panel-default > .panel-heading.incompleted h4 a:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 22px;
     height: 22px;
     border: 0;
@@ -1902,7 +1902,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check .form-check-label .check-square:before {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     position: absolute;
     width: 16px;
     height: 16px;
@@ -2333,7 +2333,7 @@ span.error-msg {
 }
 .nice-select:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     font-size: 30px;
     color: #6c6c6c;
     -webkit-transform-origin: 0 0;
@@ -2548,7 +2548,7 @@ span.error-msg {
 }
 .tab-gp .tab-content .preview-info.incompleted p:first-child:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 22px;
     height: 22px;
     border: 0;
@@ -2679,7 +2679,7 @@ span.error-msg {
 .tab-gp .tab-nav-mobile .swiper-button-prev:before,
 .tab-gp .tab-nav-mobile .swiper-button-next:before {
     font-size: 3.4rem;
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     display: block;
     width: 16px;
     height: 26px;
@@ -2729,7 +2729,7 @@ span.error-msg {
 }
 .tab-gp.steps-tab .nav.nav-tabs li.complete a:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 27px;
     height: 27px;
     border: 2px solid white;
@@ -2751,7 +2751,7 @@ span.error-msg {
 }
 .tab-gp.steps-tab .nav.nav-tabs li.incomplete a:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 27px;
     height: 27px;
     border: 2px solid white;
@@ -2938,7 +2938,6 @@ span.error-msg {
     color: #333333;
     flex-basis: 100%;
     position: relative;
-    padding-left: 0;
     text-align: center;
     padding: 0 10px;
 }
@@ -3115,7 +3114,7 @@ span.error-msg {
 }
 .table-gp table.table > thead > tr > th span.sort:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.4rem;
     color: #666;
@@ -3125,7 +3124,7 @@ span.error-msg {
 }
 .table-gp table.table > thead > tr > th span.desc:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
@@ -3137,7 +3136,7 @@ span.error-msg {
 }
 .table-gp table.table > thead > tr > th span.asc:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
@@ -3170,7 +3169,7 @@ span.error-msg {
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after {
     content: "";
     position: absolute;
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     font-size: 2.4rem;
     line-height: 22px;
     right: -25px;
@@ -3355,7 +3354,7 @@ span.error-msg {
 }
 .table-sm table.table > thead > tr > th span.sort:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.4rem;
     color: #BFBFBF;
@@ -3365,7 +3364,7 @@ span.error-msg {
 }
 .table-sm table.table > thead > tr > th span.desc:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
@@ -3377,7 +3376,7 @@ span.error-msg {
 }
 .table-sm table.table > thead > tr > th span.asc:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
@@ -4342,7 +4341,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
     content: "";
-    font:normal normal normal 14px/1 FontAwesome;
+      font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
     /*color: #a2d9e7;*/
     font-size: 30px;
     width: 6px;
@@ -4426,7 +4426,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .cesform-box .license-info p.lic-no:before {
     content: "";
-    font:normal normal normal 14px/1 FontAwesome;
+      font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
     color: #a2d9e7;
     font-size: 30px;
     width: 6px;
@@ -4439,7 +4440,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .cesform-box .license-info p.serv-name:before {
     content: "";
-    font:normal normal normal 14px/1 FontAwesome;
+      font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
     color: #a2d9e7;
     font-size: 30px;
     width: 6px;
@@ -5238,11 +5240,6 @@ table select.form-control.control-input {
     min-height: 22px;
     line-height: 22px !important;
     font-family: "Open Sans", sans-serif;
-    color: #333333;
-    font-size: 1.6rem;
-    font-weight: 400;
-    position: relative;
-    padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
     .control-item-container input.control-input[type=checkbox] + label.control-label,
@@ -5317,7 +5314,7 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=checkbox] + label.control-label .check-square:before,
 .control-item-container input.control-input[type=radio] + label.control-label .check-square:before {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     position: absolute;
     width: 18px;
     height: 18px;
@@ -5499,7 +5496,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
     content: "";
-    font-family: fontawesome;
+      font-family: fontawesome, sans-serif;
     width: 22px;
     height: 22px;
     border: 0;

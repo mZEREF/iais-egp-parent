@@ -6,12 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.sz.commons.util.Calculator;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +15,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author: yichen
@@ -66,7 +65,7 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = new File(file.getOriginalFilename());
+            File toFile = MiscUtil.generateFile(file.getOriginalFilename());
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
@@ -121,7 +120,7 @@ public final class FileUtils {
     }
 
     public static void copyFilesToOtherPosition(String src, String dst) throws IOException {
-        File file = new File(src);
+        File file = MiscUtil.generateFile(src);
         if (!file.exists()){
             log.info("don't have file");
             return;
@@ -132,7 +131,8 @@ public final class FileUtils {
             log.info("Start to copy ===>");
             for (File f : files){
                 String srcName = f.getName();
-                File dstFile = new File(dst + srcName);
+                String path = dst + srcName;
+                File dstFile = MiscUtil.generateFile(path);
                 MiscUtil.deleteFile(dstFile);
                 if (dstFile.createNewFile()){
                     org.apache.commons.io.FileUtils.copyFile(f, dstFile);

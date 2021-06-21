@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -831,7 +832,13 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("flag",appSubmissionDto.getTransferFlag());
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
-        boolean isGiroAcc = appSubmissionService.isGiroAccount(NewApplicationHelper.getLicenseeId(bpc.request));
+        boolean isGiroAcc = false;
+        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            isGiroAcc = true;
+            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
+            ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
+        }
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
         ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,paymentMethod);
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
@@ -1607,23 +1614,25 @@ public class NewApplicationDelegator {
                     appCessLicDto.setAppCessHciDtos(appCessHciDtos);
                     //spec
                     String applicationNo = applicationDto.getApplicationNo();
-                    ApplicationDto specApp = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
-                    if(specApp!=null){
+                    List<ApplicationDto> specApps = cessationClient.getAppByBaseAppNo(applicationNo).getEntity();
+                    if(!IaisCommonUtils.isEmpty(specApps)){
                         List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-                        String specId = specApp.getOriginLicenceId();
-                        LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
-                        if (specLicenceDto != null) {
-                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                            LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
-                            String specLicenceNo = specLicenceDto.getLicenceNo();
-                            String licenceDtoId = specLicenceDto.getId();
-                            String specSvcName = specLicenceDto.getSvcName();
-                            appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-                            appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        for(ApplicationDto specApp : specApps){
+                            String specId = specApp.getOriginLicenceId();
+                            LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
+                            if (specLicenceDto != null) {
+                                AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                                LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
+                                String specLicenceNo = specLicenceDto.getLicenceNo();
+                                String licenceDtoId = specLicenceDto.getId();
+                                String specSvcName = specLicenceDto.getSvcName();
+                                appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                                appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                                appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                                appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                                appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                                appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                            }
                         }
                         ParamUtil.setRequestAttr(bpc.request, "specLicInfo", appSpecifiedLicDtos);
                         ParamUtil.setSessionAttr(bpc.request, "specLicInfoPrint", (Serializable) appSpecifiedLicDtos);
@@ -1653,7 +1662,7 @@ public class NewApplicationDelegator {
                      * preview
                      */
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                        svcRelatedInfoView(appSubmissionDto,bpc.request);
+                        svcRelatedInfoView(appSubmissionDto,bpc.request,applicationDto.getServiceId());
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                                 ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                                 || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appSubmissionDto.getAppType())){
@@ -1776,8 +1785,8 @@ public class NewApplicationDelegator {
         }
     }
 
-    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto,HttpServletRequest request,String serviceId){
+            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),serviceId);
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
             String svcId = appSvcRelatedInfoDto.getServiceId();
@@ -1794,7 +1803,6 @@ public class NewApplicationDelegator {
                     String premises = appGrpPremisesDto.getPremisesIndexNo();
                     List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                     List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-                    List<String> premiseStr = IaisCommonUtils.genNewArrayList();
                     if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size() >0){
                         appSvcLaboratoryDisciplinesDtoList.removeIf(appSvcLaboratoryDisciplinesDto -> !appSvcLaboratoryDisciplinesDto.getPremiseVal().equals(premises));
                         for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
@@ -1821,6 +1829,15 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setRequestAttr(request, HCSASERVICEDTO, hcsaServiceDto);
             ParamUtil.setSessionAttr(request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+    }
+
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDtoByServiceId( List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,String serviceId){
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
+            if(serviceId.equalsIgnoreCase(appSvcRelatedInfoDto.getServiceId())){
+                return appSvcRelatedInfoDto;
+            }
+        }
+        return appSvcRelatedInfoDtos.get(0);
     }
 
     /**
@@ -2667,17 +2684,28 @@ public class NewApplicationDelegator {
         Double totalAmount = appSubmissionDto.getAmount();
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         appSubmissionDto.setPaymentMethod(payMethod);
+        String giroAccNum = "";
+        if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+            giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+        }
+        appSubmissionDto.setGiroAcctNum(giroAccNum);
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         log.debug(StringUtil.changeForLog("payMethod:"+payMethod));
         log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if("next".equals(action)){
-            if(0.0 != totalAmount && StringUtil.isEmpty(payMethod) && StringUtil.isEmpty(noNeedPayment)){
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
+            if(0.0 != totalAmount && StringUtil.isEmpty(noNeedPayment)){
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
-                NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                if (StringUtil.isEmpty(payMethod)) {
+                    errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
+                }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && StringUtil.isEmpty(giroAccNum)){
+                    errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Giro Account", "field"));
+                }
+                if(!errorMap.isEmpty()){
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
+                    NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                }
             }
             if(!StringUtil.isEmpty(noNeedPayment)){
                 ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
@@ -3230,6 +3258,7 @@ public class NewApplicationDelegator {
             String giroTranNo = appSubmissionDto.getGiroTranNo();
             appGrp.setPmtRefNo(giroTranNo);
             appGrp.setPayMethod(payMethod);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, appSubmissionDto.getGiroAcctNum());
             serviceConfigService.updatePaymentStatus(appGrp);
             /*List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrp.getGroupNo()).getEntity();
             if (entity!=null && !entity.isEmpty()) {

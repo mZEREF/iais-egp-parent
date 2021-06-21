@@ -83,12 +83,11 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,7 +164,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Autowired
     HcsaApplicationDelegator newApplicationDelegator;
 
-
     @Autowired
     private SystemParamConfig systemParamConfig;
 
@@ -194,7 +192,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if (!inFolder.endsWith(File.separator)) {
             inFolder += File.separator;
         }
-        File[] files = new File(inFolder).listFiles();
+        File[] files = MiscUtil.generateFile(inFolder).listFiles();
         for(File fil:files){
             if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
                 String name = fil.getName();
@@ -250,7 +248,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     } catch (IOException e) {
                         log.error(e.getMessage(),e);
                     }
-
                     try {
 
                         List<ApplicationDto> listApplicationDto =new ArrayList();
@@ -262,8 +259,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         log.info(StringUtil.changeForLog(listApplicationDto.size()+"******listApplicationDto*********"));
                         log.info(StringUtil.changeForLog(requestForInfList.toString()+"***requestForInfList***"));
 
-                    /*    sendTask(listApplicationDto,requestForInfList,submissionId);*/
-                     /*   moveFile(fil);*/
+                        /*    sendTask(listApplicationDto,requestForInfList,submissionId);*/
+                        /*   moveFile(fil);*/
                         //save success
                     }catch (Exception e){
                         //save bad
@@ -279,7 +276,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         return true;
     }
-    //todo  delete file
+
     @Override
     public List<ApplicationDto> listApplication() {
 
@@ -314,10 +311,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     @Override
     public void initPath() {
 
-        File compress =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+AppServicesConsts.FILE_NAME);
-        File backups=new File(inSharedPath);
-        File compressPath=new File(sharedPath+File.separator+AppServicesConsts.COMPRESS);
-        File movePath=new File(sharedPath+File.separator+"move");
+        File compress =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS,AppServicesConsts.FILE_NAME);
+        File backups=MiscUtil.generateFile(inSharedPath);
+        File compressPath=MiscUtil.generateFile(sharedPath,AppServicesConsts.COMPRESS);
+        File movePath=MiscUtil.generateFile(sharedPath,"move");
         if(!compressPath.exists()){
             compressPath.mkdirs();
         }
@@ -338,33 +335,33 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Boolean flag=Boolean.FALSE;
 
-            File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
-                    File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME+File.separator+groupPath);
-            log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
-            if(!file.exists()){
-                file.mkdirs();
-            }
-            if(file.isDirectory()){
-                File[] files = file.listFiles();
-                log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
-                for(File  filzz:files){
-                    if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
-                        InputStream  fileInputStream = null;
-                        try{
-                            fileInputStream=Files.newInputStream(filzz.toPath());
-                            ByteArrayOutputStream by=new ByteArrayOutputStream();
-                            int count;
-                            byte [] size=new byte[1024];
-                            count=fileInputStream.read(size);
-                            while(count!=-1){
-                                by.write(size,0,count);
-                                count= fileInputStream.read(size);
-                            }
-                            Long l = System.currentTimeMillis();
-                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
-                            if(Boolean.TRUE.equals(aBoolean)){
-                                saveFileRepo( fileName,groupPath,submissionId,l);
-                            }
+        File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
+                File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
+        log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        if(file.isDirectory()){
+            File[] files = file.listFiles();
+            log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
+            for(File  filzz:files){
+                if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
+                    InputStream  fileInputStream = null;
+                    try{
+                        fileInputStream=Files.newInputStream(filzz.toPath());
+                        ByteArrayOutputStream by=new ByteArrayOutputStream();
+                        int count;
+                        byte [] size=new byte[1024];
+                        count=fileInputStream.read(size);
+                        while(count!=-1){
+                            by.write(size,0,count);
+                            count= fileInputStream.read(size);
+                        }
+                        Long l = System.currentTimeMillis();
+                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+                        if(Boolean.TRUE.equals(aBoolean)){
+                            saveFileRepo( fileName,groupPath,submissionId,l);
+                        }
 
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
@@ -390,29 +387,29 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                    File file =new File( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring);
-                    if(!file.exists()){
-                        file.mkdirs();
-                    }
-                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
-                    bos=new BufferedOutputStream(os);
-                    InputStream is=zipFile.getInputStream(zipEntry);
-                    bis=new BufferedInputStream(is);
-                    cos=new CheckedInputStream(bis,new CRC32());
-                    byte []b=new byte[1024];
-                    int count ;
+                String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                File file =MiscUtil.generateFile( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,substring);
+                if(!file.exists()){
+                    file.mkdirs();
+                }
+                os=new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()));
+                bos=new BufferedOutputStream(os);
+                InputStream is=zipFile.getInputStream(zipEntry);
+                bis=new BufferedInputStream(is);
+                cos=new CheckedInputStream(bis,new CRC32());
+                byte []b=new byte[1024];
+                int count ;
+                count=cos.read(b);
+                while(count!=-1){
+                    bos.write(b,0,count);
                     count=cos.read(b);
-                    while(count!=-1){
-                        bos.write(b,0,count);
-                        count=cos.read(b);
-                    }
+                }
 
                 }else {
 
-                    new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()).mkdirs();
-                }
-            }catch (IOException e){
+                MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()).mkdirs();
+            }
+        }catch (IOException e){
 
             }finally {
                 if(cos!=null){
@@ -444,7 +441,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-            }
+        }
 
         }
 
@@ -759,7 +756,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     *
     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
-        File file =new File(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath+File.separator+"files");
+        File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath,"files");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -1013,7 +1010,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
             }
-            File file =new File(inFolder+zipFileName);
+            File file =MiscUtil.generateFile(inFolder,zipFileName);
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");
@@ -1026,9 +1023,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     private void  moveFile(File file){
         String name = file.getName();
-        log.info(StringUtil.changeForLog("file name is ===>"+name));
-        File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
-        try (OutputStream fileOutputStream=Files.newOutputStream(Paths.get( moveFile.getPath()));
+        log.info(StringUtil.changeForLog("file name is  {}"+name));
+        File moveFile=MiscUtil.generateFile(sharedPath+File.separator+"move",name);
+        try (OutputStream fileOutputStream=new FileOutputStream(moveFile);
              InputStream fileInputStream=Files.newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];

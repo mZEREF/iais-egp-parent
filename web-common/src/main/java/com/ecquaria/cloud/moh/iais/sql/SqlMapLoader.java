@@ -38,7 +38,7 @@ public class SqlMapLoader {
      * @throws Exception
      */
     public void loadSqlMap() throws IOException, SAXException, ParserConfigurationException {
-        File rootPath = new File(MiscUtil.getClassRootPath(), SQL_DIR);
+        File rootPath = MiscUtil.generateFile(MiscUtil.getClassRootPath(), SQL_DIR);
         FolderFileList ffl = new FolderFileList(rootPath);
         List<String> files = ffl.getFiles();
         List<Sql> sqls = null;

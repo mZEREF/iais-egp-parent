@@ -4274,7 +4274,8 @@ margin-bottom: 10px;
 }
 .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
   content: "";
-  font:normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
   color: #a2d9e7;
   font-size: 30px;
   width: 6px;
@@ -4358,7 +4359,8 @@ border-radius: 18px;
 }
 .cesform-box .license-info p.lic-no:before {
   content: "";
-  font:normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
   color: #a2d9e7;
   font-size: 30px;
   width: 6px;
@@ -4371,7 +4373,8 @@ border-radius: 18px;
 }
 .cesform-box .license-info p.serv-name:before {
   content: "";
-  font:normal normal normal 14px/1 FontAwesome;
+    font: normal normal normal 14px/1 FontAwesome, sans-serif;
+
   color: #a2d9e7;
   font-size: 30px;
   width: 6px;
@@ -5244,7 +5247,7 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=checkbox] + label.control-label .check-square:before,
 .control-item-container input.control-input[type=radio] + label.control-label .check-square:before {
   content: "";
-  font-family: fontawesome;
+    font-family: fontawesome, sans-serif;
   position: absolute;
   width: 18px;
   height: 18px;
@@ -5426,7 +5429,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
   content: "";
-  font-family: fontawesome;
+    font-family: fontawesome, sans-serif;
   width: 22px;
   height: 22px;
   border: 0;

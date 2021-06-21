@@ -4,9 +4,11 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.PostCodeService;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +40,8 @@ public class PostCodeDelegator {
 
     private Map<String,String> initstreetMap() throws IOException {
         Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
-        try(BufferedReader  br = new BufferedReader(new FileReader(streetsPath));){
+        File file = MiscUtil.generateFile(streetsPath);
+        try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
             String key = null;
             String value = null;
@@ -58,7 +61,8 @@ public class PostCodeDelegator {
     }
     private Map<String,String> initbuildingMap() throws IOException {
         Map<String,String> buildingMap = IaisCommonUtils.genNewHashMap();
-        try (BufferedReader  br = new BufferedReader(new FileReader(buildingPath)); ){
+        File file = MiscUtil.generateFile(buildingPath);
+        try (BufferedReader  br = new BufferedReader(new FileReader(file)); ){
             String line = null;
             String key = null;
             String value = null;
@@ -84,7 +88,8 @@ public class PostCodeDelegator {
      */
     private  List<PostCodeDto> convert(Map<String,String> streetMap,Map<String,String> buildingMap) throws IOException {
         List<PostCodeDto> list = IaisCommonUtils.genNewArrayList();
-        try(BufferedReader br = new BufferedReader(new FileReader(postCodePath));){
+        File file =  MiscUtil.generateFile(postCodePath);
+        try(BufferedReader br = new BufferedReader(new FileReader(file));){
             String line = null;
             String postalCode = null;
             String addressType = null;

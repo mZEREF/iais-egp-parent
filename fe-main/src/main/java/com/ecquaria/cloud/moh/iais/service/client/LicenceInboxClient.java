@@ -1,18 +1,35 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -26,7 +43,7 @@ public interface LicenceInboxClient {
     FeignResponseEntity<SearchResult<InboxLicenceQueryDto>> searchResultFromLicence(@RequestBody SearchParam searchParam);
 
     @GetMapping(path= "/hcsa-licence/application-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
+    FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId, @RequestParam(value ="serviceName") String serviceName);
 
     @GetMapping(path= "/hcsa-licence-rfc/licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesListQueryDto>> getPremises(@RequestParam(value = "licenseeId" ) String licenseeId);
@@ -93,12 +110,6 @@ public interface LicenceInboxClient {
     FeignResponseEntity <List<LicenceDto>> isNewApplication(@RequestParam("application") String application);
     @GetMapping(value = "/hcsa-licence/appeal-new-licence",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> isNewLicence(@RequestParam("licenceId") String licenceId);
-
-    @GetMapping(value = "/hcsa-licence/doQuery",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<QueryHelperResultDto> doQuery(@RequestParam("sql") String sql);
-
-    @GetMapping(value = "/hcsa-licence/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 
     @GetMapping(value = "/hcsa-licence/licence-dto-licensee-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtosByLicenseeId(@RequestParam("licenseeId") String licenseeId);

@@ -58,7 +58,7 @@ public class LicencePrint {
                 map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
-                OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
+                OutputStream outputStream = new FileOutputStream(pdfFile);
                 try {
                     pdfGenerator.generate(outputStream, "licence.ftl", map);
                 }catch (Exception e){

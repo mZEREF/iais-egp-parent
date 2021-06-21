@@ -239,7 +239,6 @@
                         }
                         html += '</tbody></table></div></td></tr>';
                         $("#advfilter" + divid).after(html);
-                        dividlist.push(divid);
                     }
                 }
             )

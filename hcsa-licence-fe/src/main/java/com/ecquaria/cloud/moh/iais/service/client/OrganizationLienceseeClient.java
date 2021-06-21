@@ -75,5 +75,5 @@ public interface OrganizationLienceseeClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "id") String user_id);
     @GetMapping(value = "/iais-internet-user/giro-account-info")
-    FeignResponseEntity<OrgGiroAccountInfoDto> getGiroAccByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
+    FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
 }

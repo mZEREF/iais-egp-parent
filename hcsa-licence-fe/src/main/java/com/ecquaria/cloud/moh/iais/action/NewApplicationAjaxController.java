@@ -1291,7 +1291,7 @@ public class NewApplicationAjaxController {
                 }
                 File pdfFile = new File("new application report.pdf");
                 JarFileUtil.copyFileToDir("pdfTemplate", "newAppAck.ftl");
-                File templateDir = new File(JarFileUtil.DEFAULT_TMP_DIR_PATH + "/pdfTemplate");
+                File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH , "pdfTemplate");
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 bytes = pdfGenerator.convertHtmlToPDF("newAppAck.ftl", paramMap);
             }
@@ -1340,7 +1340,7 @@ public class NewApplicationAjaxController {
 
             File pdfFile = new File("renew application report.pdf");
             JarFileUtil.copyFileToDir("pdfTemplate", "renewAck.ftl");
-            File templateDir = new File(JarFileUtil.DEFAULT_TMP_DIR_PATH + "/pdfTemplate");
+            File templateDir = MiscUtil.generateFile(JarFileUtil.DEFAULT_TMP_DIR_PATH , "pdfTemplate");
             PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
             bytes = pdfGenerator.convertHtmlToPDF("renewAck.ftl", paramMap);
         }

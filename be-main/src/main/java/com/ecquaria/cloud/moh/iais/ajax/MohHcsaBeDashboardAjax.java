@@ -709,23 +709,25 @@ public class MohHcsaBeDashboardAjax {
                 appCessLicDto.setAppCessHciDtos(appCessHciDtos);
                 //spec
                 String applicationNo = applicationDto.getApplicationNo();
-                ApplicationDto specApp = cessationMainClient.getAppByBaseAppNo(applicationNo).getEntity();
+                List<ApplicationDto> specApps = cessationMainClient.getAppByBaseAppNo(applicationNo).getEntity();
                 List<AppSpecifiedLicDto> appSpecifiedLicDtos = IaisCommonUtils.genNewArrayList();
-                if (specApp != null) {
-                    String specId = specApp.getOriginLicenceId();
-                    LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
-                    if (specLicenceDto != null) {
-                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
-                        String specLicenceNo = specLicenceDto.getLicenceNo();
-                        String licenceDtoId = specLicenceDto.getId();
-                        String specSvcName = specLicenceDto.getSvcName();
-                        appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
-                        appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
-                        appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                        appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                        appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                        appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                if (!IaisCommonUtils.isEmpty(specApps)) {
+                    for(ApplicationDto specApp : specApps ){
+                        String specId = specApp.getOriginLicenceId();
+                        LicenceDto specLicenceDto = licenceClient.getLicDtoById(specId).getEntity();
+                        if (specLicenceDto != null) {
+                            AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                            LicenceDto baseLic = licenceClient.getLicDtoById(originLicenceId).getEntity();
+                            String specLicenceNo = specLicenceDto.getLicenceNo();
+                            String licenceDtoId = specLicenceDto.getId();
+                            String specSvcName = specLicenceDto.getSvcName();
+                            appSpecifiedLicDto.setBaseLicNo(baseLic.getLicenceNo());
+                            appSpecifiedLicDto.setBaseSvcName(baseLic.getSvcName());
+                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
+                        }
                     }
                     ParamUtil.setSessionAttr(request, "specLicInfo", (Serializable) appSpecifiedLicDtos);
                 }

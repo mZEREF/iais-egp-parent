@@ -69,4 +69,5 @@ public interface ServiceConfigService {
     List<HcsaSvcSubtypeOrSubsumedDto> getSvcSubtypeOrSubsumedByIdList(List<String> idList);
     List<HcsaServiceDto> getActiveHcsaSvcByNames(List<String> names);
     String getGiroAccountByGroupNo(String groupNo);
+    ApplicationGroupDto updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo);
 }

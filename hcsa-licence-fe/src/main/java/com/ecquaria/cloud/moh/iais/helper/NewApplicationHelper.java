@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -67,9 +68,11 @@ import java.lang.reflect.Modifier;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -2215,6 +2218,16 @@ public class NewApplicationHelper {
         return licenseeId;
     }
 
+    public static List<SelectOption> genGiroAccSel(List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos){
+        List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            for(OrgGiroAccountInfoDto orgGiroAccountInfoDto:orgGiroAccountInfoDtos){
+                selectOptionList.add(new SelectOption(orgGiroAccountInfoDto.getAcctNo(), orgGiroAccountInfoDto.getAcctNo()));
+            }
+        }
+        return selectOptionList;
+    }
+
     public static boolean newAndNotRfi(HttpServletRequest request,String appType){
         return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
     }
@@ -2468,24 +2481,43 @@ public class NewApplicationHelper {
             field=field.replace("{maxlength}","100");
             return field;
         }else if(length==2){
-            general_err0041=general_err0041.replace("{field}",ars[0]);
-            general_err0041=general_err0041.replace("{maxlength}",ars[1]);
+            Iterator<String> iterator= Arrays.stream(ars).iterator();
+            if(iterator.hasNext()){
+                general_err0041=general_err0041.replace("{field}",iterator.next());
+            }
+            if(iterator.hasNext()){
+                general_err0041=general_err0041.replace("{maxlength}",iterator.next());
+            }
 
             return general_err0041;
         }else if(length==3){
-            String messageDesc = MessageUtil.getMessageDesc(ars[0]);
-            messageDesc=messageDesc.replace("{field}",ars[0]);
-            messageDesc=messageDesc.replace("{maxlength}",ars[1]);
+            Iterator<String> iterator= Arrays.stream(ars).iterator();
+            String ars0=iterator.hasNext()?iterator.next():"";
+            String ars1=iterator.hasNext()?iterator.next():"";
+            String messageDesc = MessageUtil.getMessageDesc(ars0);
+            messageDesc=messageDesc.replace("{field}",ars0);
+            messageDesc=messageDesc.replace("{maxlength}",ars1);
             return messageDesc;
         }else if(length==4){
-            general_err0041=general_err0041.replace(ars[0],ars[1]);
-            general_err0041=general_err0041.replace(ars[2],ars[3]);
+            Iterator<String> iterator= Arrays.stream(ars).iterator();
+            String ars0=iterator.hasNext()?iterator.next():"";
+            String ars1=iterator.hasNext()?iterator.next():"";
+            String ars2=iterator.hasNext()?iterator.next():"";
+            String ars3=iterator.hasNext()?iterator.next():"";
+            general_err0041=general_err0041.replace(ars0,ars1);
+            general_err0041=general_err0041.replace(ars2,ars3);
             return general_err0041;
         }else if(length==5){
-            String messageDesc = MessageUtil.getMessageDesc(ars[0]);
+            Iterator<String> iterator= Arrays.stream(ars).iterator();
+            String ars0=iterator.hasNext()?iterator.next():"";
+            String messageDesc = MessageUtil.getMessageDesc(ars0);
             if(messageDesc!=null){
-                messageDesc=messageDesc.replace(ars[1],ars[2]);
-                messageDesc=messageDesc.replace(ars[3],ars[4]);
+                String ars1=iterator.hasNext()?iterator.next():"";
+                String ars2=iterator.hasNext()?iterator.next():"";
+                String ars3=iterator.hasNext()?iterator.next():"";
+                String ars4=iterator.hasNext()?iterator.next():"";
+                messageDesc=messageDesc.replace(ars1,ars2);
+                messageDesc=messageDesc.replace(ars3,ars4);
             }
             return messageDesc;
         }else {

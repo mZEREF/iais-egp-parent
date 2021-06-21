@@ -1,15 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.QueryHelperResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @Author: Hc
@@ -52,14 +50,6 @@ public class InboxFallback implements InboxClient {
 
     @Override
     public FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(String msgId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
-    public FeignResponseEntity<QueryHelperResultDto> doQuery(String sql) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

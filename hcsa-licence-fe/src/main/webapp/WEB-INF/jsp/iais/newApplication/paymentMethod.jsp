@@ -18,7 +18,7 @@
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
-        <div class="col-xs-3">
+        <div class="col-md-3 col-xs-12">
             <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
             <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
             <br>
@@ -26,6 +26,14 @@
         </div>
     </c:if>
 </div>
+<c:if test="${empty RetriggerGiro && IsGiroAcc}">
+    <div class="col-xs-12 giro-acct-div hidden">
+        <iais:field value="Giro Account "  mandatory="true" width="12"/>
+        <iais:value cssClass="col-md-5">
+            <iais:select name="giroAccount" options="giroAccSel" firstOption="Please Select" value="${AppSubmissionDto.giroAcctNum}" />
+        </iais:value>
+    </div>
+</c:if>
 <div class="col-xs-12">
     <div class="col-xs-12">
         <c:choose>
@@ -67,13 +75,23 @@
     </div>
 </div>
 
-<%--<p class="visible-xs visible-sm table-row-title">Proceed</p>--%>
 <script type="text/javascript">
     $(document).ready(function () {
         var reloadPaymentMethod = $('input[name="reloadPayMethod"]').val();
         if(reloadPaymentMethod != null || reloadPaymentMethod != ''){
             $('.paymentInput[value="'+reloadPaymentMethod+'"]').prop('checked',true);
+            if('PMDE001' == reloadPaymentMethod){
+                $('.giro-acct-div').removeClass('hidden');
+            }
         }
+        $('.paymentInput').click(function () {
+            var thisVal = $(this).val();
+            if('PMDE001' == thisVal){
+                $('.giro-acct-div').removeClass('hidden');
+            }else{
+                $('.giro-acct-div').addClass('hidden');
+            }
+        });
     });
 </script>
 

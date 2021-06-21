@@ -16,13 +16,11 @@ import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.jcraft.jsch.ChannelSftp;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -32,19 +30,19 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * FileUtil.java
- * 
+ *
  * @author zhuhua
  */
 @Slf4j
 public class FileUtil {
 
-	
+
 	public static File[] listFilesWithPrefix(File file, final String prefix){
 		if(file != null && file.isDirectory()){
 			return file.listFiles(new FilenameFilter() {
@@ -52,7 +50,7 @@ public class FileUtil {
 				public boolean accept(File file, String fileName) {
 					if(fileName.toLowerCase().startsWith(prefix.toLowerCase())){
 						return true;
-					}else{ 
+					}else{
 						return false;
 					}
 				}
@@ -65,7 +63,8 @@ public class FileUtil {
 	public static void appendToFile(String string, String fileName) {
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(fileName, true);
+			File file=MiscUtil.generateFile(fileName);
+			writer = new FileWriter(file,true);
 			writer.write(string);
 			writer.flush();
 		} catch (IOException e) {
@@ -107,7 +106,7 @@ public class FileUtil {
 		log.info(StringUtil.changeForLog("----- file :" +f.toPath() +" ----------"));
 		log.info(StringUtil.changeForLog("----- file.getAbsolutePath() :" +f.getAbsolutePath() +" ----------"));
 		log.info(StringUtil.changeForLog("----- file.getPath() :" +f.getPath() +" ----------"));
-	    return writeToFileFileByData(f,data);
+		return writeToFileFileByData(f,data);
 	}
 
 	public static boolean  writeToFileFileByData( File f,String data){
@@ -140,7 +139,7 @@ public class FileUtil {
 		return result;
 	}
 	public static void generateFolder(String folderPath) {
-		File f = new File(folderPath);
+		File f= MiscUtil.generateFile(folderPath);
 		if (!f.isFile() && !f.exists()) {
 			 if(f.mkdirs()){
 				 log.info(StringUtil.changeForLog("create folder:" + folderPath));
@@ -155,10 +154,10 @@ public class FileUtil {
 	}
 
 	public static String getString(String fileName) throws Exception {
-		File f = new File(fileName);
+		File f= MiscUtil.generateFile(fileName);
 		if (f.exists() && f.isFile()) {
 			String xml;
-			try(InputStream is = Files.newInputStream(Paths.get(fileName))) {
+			try(InputStream is = new FileInputStream(f)) {
 				xml = getString(is);
 				if (!f.delete()) {
 					log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
@@ -189,7 +188,7 @@ public class FileUtil {
 		if (is == null){
 			return null;
 		}
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(is, charsetName));
 		String line = null;
 		StringBuilder sb = new StringBuilder();
@@ -203,7 +202,7 @@ public class FileUtil {
 		if (StringUtil.isEmpty(absolutePath)){
 			return null;
 		}
-		
+
 		int startIndex = absolutePath.lastIndexOf(File.separator) + 1;
 		int endIndex = absolutePath.lastIndexOf('.');
 		return absolutePath.substring(startIndex, endIndex);
@@ -228,7 +227,7 @@ public class FileUtil {
 	}
 
 	public static boolean copyFile(String source, String target) {
-		return copyFile(new File(source), new File(target));
+		return copyFile(MiscUtil.generateFile(source), MiscUtil.generateFile(target));
 	}
 
 	public static boolean copyFile(File source, File target) {
@@ -240,7 +239,7 @@ public class FileUtil {
 			generateFolder(target.getParentFile().getPath());
 		}
 		InputStream inStream = null;
-	    OutputStream fs = null;
+		OutputStream fs = null;
 		try {
 			int byteread = 0;
 			if (source.exists()) {
@@ -271,7 +270,7 @@ public class FileUtil {
 		}
 		return target.exists();
 	}
-	
+
 	/**
 	 * get the byte array from the given file
 	 * @param fileName
@@ -281,7 +280,7 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			try(InputStream fis = Files.newInputStream(Paths.get(fileName))) {
+			try(InputStream fis = new FileInputStream(MiscUtil.generateFile(fileName))) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){
@@ -321,7 +320,7 @@ public class FileUtil {
 	}
 
 	public static List<String> getRemoteFileNames(String fileName, String remotePath){
-		File[] files = new File(remotePath).listFiles();
+		File[] files = MiscUtil.generateFile(remotePath).listFiles();
 		if(files == null){
 			return null;
 		}
@@ -350,7 +349,7 @@ public class FileUtil {
 	public static void deleteFilesByFileNames(List<String> fileNames,String downPath){
 		if(!IaisCommonUtils.isEmpty(fileNames)){
 			log.info(StringUtil.changeForLog("------------downpath :" + downPath + "----------------"));
-			File[] files = new File(downPath).listFiles();
+			File[] files = MiscUtil.generateFile(downPath).listFiles();
 			if(files != null){
 				for(File file :files){
 					for(String fileName : fileNames){
