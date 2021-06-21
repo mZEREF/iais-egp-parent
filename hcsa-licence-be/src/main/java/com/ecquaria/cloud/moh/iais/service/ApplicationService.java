@@ -69,7 +69,7 @@ public interface ApplicationService {
     List<ApplicationDto> getApplicationDtosByApplicationNo(String applicationNo);
     List<AppEditSelectDto>  getAppEditSelectDtosByAppIds( List<String> applicationIds);
 
-    boolean isWithdrawReturnFee(String appNo);
+    boolean isWithdrawReturnFee(String appNo,String appGrpId);
 
     boolean closeTaskWhenWhAppApprove(String appId);
 

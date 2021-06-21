@@ -135,7 +135,7 @@ public class ApproveWdAppBatchJob {
                         }
                         try {
                             if (!StringUtil.isEmpty(fee)){
-                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
                                 if (withdrawReturnFee){
                                     AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                                     applicationService.saveAppReturnFee(appReturnFeeDto);
@@ -203,7 +203,7 @@ public class ApproveWdAppBatchJob {
         appReturnFeeDto.setTriggerCount(0);
         appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
         appReturnFeeDto.setReturnAmount(returnFee);
-        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
         return appReturnFeeDto;
     }
 
