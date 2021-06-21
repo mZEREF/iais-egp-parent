@@ -86,25 +86,38 @@
 
         <div class="form-check-gp">
           <div class="row">
-            <div class="col-xs-12 col-md-3">
-              <div class="form-check " style="left: 10%">
-                <c:set var="type" value="${PremisesType}"></c:set>
-                <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-3">
-              <div class="form-check ">
-                <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-3">
-              <div class="form-check ">
-                <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
-              </div>
-            </div>
+            <c:choose>
+              <c:when test="${hcsaServiceDto.svcCode=='EAS' || hcsaServiceDto.svcCode=='MTS'}">
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check " style="left: 10%">
+                    <c:set var="type" value="${PremisesType}"></c:set>
+                    <input class="form-check-input" disabled  id="icon6checkboxSample" <c:if test="${fn:contains(type,'EASMTS')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
+                    <label class="form-check-label"  for="icon6checkboxSample"><span class="check-square"></span> Conveyance(in a mobile clinic / ambulance)</label>
+                  </div>
+                </div>
+              </c:when>
+              <c:otherwise>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check " style="left: 10%">
+                    <c:set var="type" value="${PremisesType}"></c:set>
+                    <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
+                    <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check ">
+                    <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
+                    <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                  <div class="form-check ">
+                    <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
+                    <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
+                  </div>
+                </div>
+              </c:otherwise>
+            </c:choose>
           </div>
         </div>
       </div>
@@ -127,90 +140,9 @@
         </div>
       </div>
 
-      <div class="form-group" >
-        <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label"></label>
-          <div class="col-xs-12 col-md-4">
-            <label class="col-xs-12 col-md-6 control-label" style="padding-left: 0px;">MINIMUM COUNT</label>
-            <label class="col-xs-12 col-md-6 control-label">MAXIMUM COUNT</label>
-          </div>
-        </div>
-      </div>
+      <%@include file="common/persontTitle.jsp"%>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="${PO.maximumCount}" placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label">Nominee&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
-          <div class="cl-xs-12 col-md-4">
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" disabled <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
-              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-            </div>
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" disabled <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
-              <label class="form-check-label" ><span class="check-circle"></span>No</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input disabled value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
-            <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
+     <%@include file="common/deleteOrView/person.jsp"%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
