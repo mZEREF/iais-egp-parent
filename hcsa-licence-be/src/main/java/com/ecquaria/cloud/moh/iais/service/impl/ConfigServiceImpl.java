@@ -614,6 +614,8 @@ public class ConfigServiceImpl implements ConfigService {
             int maximumCount = hcsaSvcPersonnelDtos.get(i).getMaximumCount();
             String pageMandatoryCount = hcsaSvcPersonnelDtos.get(i).getPageMandatoryCount();
             String pageMaximumCount = hcsaSvcPersonnelDtos.get(i).getPageMaximumCount();
+            boolean pageManFlag=false;
+            boolean pageMaxFlag=false;
             if (StringUtil.isEmpty(psnType)) {
                 errorMap.put("psnType" + i, "CHKLMD001_ERR001");
             }
@@ -621,6 +623,7 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("mandatoryCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Count","field"));
             }  else  {
                 if(pageMandatoryCount.matches("^[0-9]+$")){
+                    pageManFlag=true;
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
                         errorMap.put("mandatoryCount"+i, "GENERAL_ERR0002");
@@ -633,6 +636,7 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("maximumCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Count","field"));
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
+                    pageMaxFlag=true;
                     int i1 = Integer.parseInt(pageMaximumCount);
                     if(i1<0){
                         errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
@@ -641,7 +645,7 @@ public class ConfigServiceImpl implements ConfigService {
                     errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
                 }
             }
-            if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){
+            if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)&&pageManFlag&&pageMaxFlag){
                 if(mandatoryCount>maximumCount){
                     errorMap.put("maximumCount"+i,"SC_ERR006");
                 }
