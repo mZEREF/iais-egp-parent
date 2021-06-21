@@ -214,6 +214,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY002","APST039"});
         applicationTandS.add(new String[]{"APTY002","APST040"});
         applicationTandS.add(new String[]{"APTY002","APST048"});
+        applicationTandS.add(new String[]{"APTY002","APST027"});
+        applicationTandS.add(new String[]{"APTY002","APST041"});
         applicationTandS.add(new String[]{"APTY002","APST049"});
         applicationTandS.add(new String[]{"APTY002","APST064"});
         applicationTandS.add(new String[]{"APTY002","APST067"});
@@ -246,6 +248,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY004","APST037"});
         applicationTandS.add(new String[]{"APTY004","APST039"});
         applicationTandS.add(new String[]{"APTY004","APST048"});
+        applicationTandS.add(new String[]{"APTY004","APST041"});
+        applicationTandS.add(new String[]{"APTY004","APST027"});
         applicationTandS.add(new String[]{"APTY004","APST049"});
         applicationTandS.add(new String[]{"APTY004","APST064"});
         applicationTandS.add(new String[]{"APTY004","APST067"});
@@ -276,6 +280,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY005","APST037"});
         applicationTandS.add(new String[]{"APTY005","APST039"});
         applicationTandS.add(new String[]{"APTY005","APST048"});
+        applicationTandS.add(new String[]{"APTY005","APST027"});
+        applicationTandS.add(new String[]{"APTY005","APST041"});
         applicationTandS.add(new String[]{"APTY005","APST049"});
         applicationTandS.add(new String[]{"APTY005","APST064"});
         applicationTandS.add(new String[]{"APTY005","APST067"});
@@ -297,6 +303,8 @@ public class WithdrawalDelegator {
         applicationTandS.add(new String[]{"APTY001","APST034"});
         applicationTandS.add(new String[]{"APTY001","APST038"});
         applicationTandS.add(new String[]{"APTY001","APST039"});
+        applicationTandS.add(new String[]{"APTY001","APST048"});
+        applicationTandS.add(new String[]{"APTY001","APST048"});
         applicationTandS.add(new String[]{"APTY001","APST048"});
         applicationTandS.add(new String[]{"APTY001","APST049"});
         applicationTandS.add(new String[]{"APTY001","APST064"});
