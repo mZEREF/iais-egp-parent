@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -27,9 +28,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
@@ -226,6 +227,8 @@ public interface ApplicationClient {
     FeignResponseEntity<ProcessFileTrackDto> isFileExistence(@RequestBody Map<String,String> map);
     @PutMapping(value = "/uprocessfiletrack", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ProcessFileTrackDto> updateProcessFileTrack(@RequestBody ProcessFileTrackDto processFileTrackDto);
+    @GetMapping(value = "/all-need-process-file",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ProcessFileTrackDto>> allNeedProcessFile();
 
     @PostMapping(value = "/iais-application-be/submision-post-inspection",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto );
@@ -323,7 +326,7 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>> updateApplicationOfRfi(@RequestBody List<ApplicationDto> rfiApplications);
 
     @GetMapping(value = "/iais-application-be/application-cgo-by-application-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId,@RequestParam("psnType") String psnType);
+    FeignResponseEntity<AppSvcPrincipalOfficersDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId, @RequestParam("psnType") String psnType);
     @PostMapping(value = "/hfsms-case-no",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HfsmsDto>> getHfsmsDtoByIdNo(@RequestBody List<String> idNos);
 
@@ -416,4 +419,8 @@ public interface ApplicationClient {
     FeignResponseEntity<AppPremisesCorrelationDto> getAppPremisesCorrelationDtoById(@RequestParam("id") String id);
     @PutMapping(value = "/iais-application-group-be/update-be-group-status",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>> updateBeGroupStatus(@RequestBody List<ApplicationGroupDto> applicationGroupDtos);
+    @PostMapping(value = "/iais-appeal/other-change-hci-name-app",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesEntityDto>> getOtherChangeHciNameApp(@RequestBody ApplicationDto application);
+    @GetMapping(value = "/iais-appeal/change-hci-name-application" ,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDto(@RequestBody ApplicationDto application);
 }

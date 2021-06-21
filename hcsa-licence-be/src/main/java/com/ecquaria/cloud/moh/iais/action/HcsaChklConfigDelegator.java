@@ -10,6 +10,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -78,8 +80,8 @@ public class HcsaChklConfigDelegator {
     static {
         excelConfigValueIndex.put(1, Collections.singletonList(2));
         excelConfigValueIndex.put(3, Arrays.asList(2, 5));
-        excelConfigValueIndex.put(5, Arrays.asList(2,5));
-        excelConfigValueIndex.put(7, Arrays.asList(2,5,7));
+        excelConfigValueIndex.put(5, Arrays.asList(2, 5, 8));
+        excelConfigValueIndex.put(7, Arrays.asList(2, 5, 8));
         excelHiddenValueIndex.put(1, Arrays.asList(15, 16, 17));
     }
 
@@ -133,6 +135,7 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE, null);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, null);
         ParamUtil.setSessionAttr(request, "configIdAttr", null);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.ACTION_OPERATIONTYPE, null);
@@ -363,6 +366,7 @@ public class HcsaChklConfigDelegator {
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
         String eftStartDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
         String eftEndDate = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
+        String inspectionEntity = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY);
 
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, module);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE, type);
@@ -371,9 +375,11 @@ public class HcsaChklConfigDelegator {
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE, eftStartDate);
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE, eftEndDate);
+        ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, inspectionEntity);
 
         try {
             ChecklistConfigDto conf;
+            // Refer to HcsaChecklistConstants.ACTION_*
             String operationType = (String) ParamUtil.getSessionAttr(request, "operationType");
             if (StringUtils.isNotEmpty(operationType) && HcsaChecklistConstants.ACTION_CLONE.equals(operationType)){
                 conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
@@ -388,6 +394,7 @@ public class HcsaChklConfigDelegator {
                 conf.setVersion(null);
                 conf.setSvcCode(null);
                 conf.setType(null);
+                conf.setInspectionEntity(null);
             }else {
                 conf = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
                 if(conf == null){
@@ -415,7 +422,8 @@ public class HcsaChklConfigDelegator {
             conf.setHciCode(hciCode);
             conf.setEftStartDate(eftStartDate);
             conf.setEftEndDate(eftEndDate);
-            conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            conf.setInspectionEntity(inspectionEntity);
+            //conf.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 
             //field validate
             ValidationResult vResult = WebValidationHelper.validateProperty(conf, common == null ? "save" : "commonSave");
@@ -755,6 +763,10 @@ public class HcsaChklConfigDelegator {
     public void doSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        if (IaisCommonUtils.isEmpty(searchParam.getMcList())) {
+            searchParam.setMasterCode(new MasterCodePair("INSPECTION_ENTITY", "INS_ENT",
+                    MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INSPECTION_ENTITY_TYPE)));
+        }
         CrudHelper.doSorting(searchParam,bpc.request);
     }
 
@@ -878,68 +890,76 @@ public class HcsaChklConfigDelegator {
      * @param bpc
      * @throws IllegalAccessException
      */
-    public void exportConfigTemplate(BaseProcessClass bpc){
+    public void exportConfigTemplate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String confId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
         log.info(StringUtil.changeForLog("exportConfigTemplate ++++++++ config id" + confId));
-        if (StringUtils.isNotEmpty(confId)){
-
+        if (StringUtils.isNotEmpty(confId)) {
             ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(confId);
             try {
-                String[] val = {config.isCommon() ? "Yes" : "No", config.getModule(), config.getType(), config.getSvcName(), config.getSvcSubType(), config.getHciCode(), config.getEftStartDate(), config.getEftEndDate()};
+                String[] val = {config.isCommon() ? "Yes" : "No",
+                        config.getModule(), config.getType(),
+                        config.getSvcName(), config.getSvcSubType(), MasterCodeUtil.getCodeDesc(config.getInspectionEntity()),
+                        config.getHciCode(), config.getEftStartDate(), config.getEftEndDate()};
                 List<ChecklistConfigExcel> configExcelList = IaisCommonUtils.genNewArrayList();
 
                 hcsaChklService.convertToUploadTemplateByConfig(configExcelList, config);
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
                 log.info(StringUtil.changeForLog("before export config template" + inputFile.getPath()));
-                File configInfoTemplate = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
+                File configInfoTemplate = IrregularExcelWriterUtil.writerToExcelByIndex(
+                        inputFile, 1, val, excelConfigValueIndex);
                 log.info(StringUtil.changeForLog("export temp config template " + configInfoTemplate.getPath()));
 
                 String prevConfigId = config.getId();
                 String nextConfigId = hcsaChklService.callProceduresGenUUID();
                 String currentVersion = config.getVersion().toString();
-                String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion};
+                String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion, config.getInspectionEntity()};
 
-                File versionFile = IrregularExcelWriterUtil.writerToExcelByIndex(configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
+                File versionFile = IrregularExcelWriterUtil.writerToExcelByIndex(
+                        configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
                 log.info(StringUtil.changeForLog("after export config template" + versionFile.getPath()));
-                File latest = ExcelWriter.writerToExcel(configExcelList, ChecklistConfigExcel.class, versionFile,  "Checklist_Config_Update_Template", true, false);
+                File latest = ExcelWriter.writerToExcel(
+                        configExcelList, ChecklistConfigExcel.class, versionFile, "Checklist_Config_Update_Template", true, false);
 
                 FileUtils.writeFileResponseProcessContent(request, latest);
                 FileUtils.deleteTempFile(configInfoTemplate);
                 FileUtils.deleteTempFile(versionFile);
                 FileUtils.deleteTempFile(latest);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             }
 
-        }else {
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        } else {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
         }
     }
 
-    private void convertToConfigByTemplate(ChecklistConfigDto config, List<String> data){
+    private void convertToConfigByTemplate(ChecklistConfigDto config, List<String> data) {
         if (config == null || data == null || data.isEmpty()) return;
 
         boolean isCommon = "Yes".equals(data.get(0)) ? true : false;
-        if (isCommon){
+        if (isCommon) {
             config.setCommon(true);
-        }else {
+        } else {
             config.setModule(data.get(1));
             config.setType(data.get(2));
             config.setSvcName(data.get(3));
             config.setSvcSubType(data.get(4));
-            config.setHciCode(data.get(5));
+            config.setHciCode(data.get(6));
             HcsaServiceDto service = HcsaServiceCacheHelper.getServiceByServiceName(data.get(3));
-            if (Optional.ofNullable(service).isPresent()){
+            if (Optional.ofNullable(service).isPresent()) {
                 config.setSvcCode(service.getSvcCode());
             }
+            // Inspection Entity
+            config.setInspectionEntity(MasterCodeUtil.getCodeKeyByCateIdAndCodeVal(
+                    MasterCodeUtil.CATE_ID_INSPECTION_ENTITY_TYPE, data.get(5)));
         }
 
-        config.setEftStartDate(data.get(6));
-        config.setEftEndDate(data.get(7));
+        config.setEftStartDate(data.get(7));
+        config.setEftEndDate(data.get(8));
     }
 
     /**

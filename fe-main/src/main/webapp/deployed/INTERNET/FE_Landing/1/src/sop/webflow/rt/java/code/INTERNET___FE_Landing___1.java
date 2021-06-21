@@ -38,4 +38,19 @@ public class INTERNET___FE_Landing___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "corppassSendRedirect", this);
 	}
 
+    public void initSso_OnStepProcess_0() throws Exception {
+    //      InitSso->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "initSso", this);
+    }
+
+    public void prepareSsoData_OnStepProcess_0() throws Exception {
+    //      PrepareSsoData->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareSsoData", this);
+    }
+   
+    public void sendRedirect_OnStepProcess_0() throws Exception {
+    // 		SendRedirect->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "sendRedirect", this);
+    }
+
 }

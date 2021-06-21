@@ -6,7 +6,7 @@
                 <table class="assignContent control-grid" style="width:100%;">
                     <input type="hidden" name="isPartEdit" value="1"/>
                     <input type="hidden" name="cgoIndexNo" value=""/>
-                    <input type="hidden" name="licPerson" value="0"/>
+                    <input class="licPerson" type="hidden" name="licPerson" value="0"/>
                     <input type="hidden" name="existingPsn" value="0"/>
                     <tbody>
                     <tr height="1">
@@ -58,7 +58,7 @@
                                                     </div>
                                                     <div class="col-xs-12 col-sm-6 col-md-4">
                                                         <div class="">
-                                                            <input type="text" name="name" value="" maxlength="66"
+                                                            <input class="field-name" type="text" name="name" value="" maxlength="66"
                                                                    autocomplete="off">
                                                         </div>
                                                     </div>

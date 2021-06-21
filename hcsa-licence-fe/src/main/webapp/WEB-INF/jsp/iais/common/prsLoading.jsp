@@ -16,21 +16,20 @@
 </div>
 <input type="hidden" value="${PRS_SERVICE_DOWN}" id="PRS_SERVICE_DOWN_INPUT" >
 <script>
-    var prdLoading = function ($loadingContent, prgNo, action) {
+    var prdLoading = function ($loadingContent, prgNo, action, callBackFuns) {
         console.log('loading prs info ...');
-        var assignSelectVal = $loadingContent.find('select[name="assignSelect"]').val();
+        var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
-        var licPerson = $loadingContent.find('input[name="licPerson"]').val();
+        var licPerson = $loadingContent.find('input.licPerson').val();
+
+        var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+        var emptyData = {};
         if(prgNo == "" || prgNo == null || prgNo == undefined){
-            clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
-            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
-                inputCancelReadonly($loadingContent.find('input[name="name"]'));
+            clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
+            if(needControlName){
+                inputCancelReadonly($loadingContent.find('.field-name'));
             }
             return;
-        }
-        //prn not empty
-        if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
-            inputReadonly($loadingContent.find('input[name="name"]'));
         }
 
         var jsonData = {
@@ -44,37 +43,47 @@
             'success': function (data) {
                 if(data.regno == null){
                     $('#PRS_SERVICE_DOWN').modal('show');
-                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                    clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
+                    inputCancelReadonly($loadingContent.find('.field-name'));
                     return;
                 }
                 if(data.name == null){
                     //prgNo is incorrect
-                    clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                    clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
+                    if(needControlName){
+                        inputReadonly($loadingContent.find('.field-name'));
+                    }
                     return;
                 }
-                loadingData(data,$loadingContent);
-                if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
-                    $loadingContent.find('input[name="name"]').val(data.name);
-                }/*else{
-                    inputCancelReadonly($loadingContent.find('input[name="name"]'));
-                }*/
+                if(!isEmpty(callBackFuns)){
+                    if(typeof callBackFuns.fillData == 'function'){
+                        callBackFuns.fillData($loadingContent, data);
+                    }
+                    if(typeof callBackFuns.setEdit == 'function'){
+                        callBackFuns.setEdit($loadingContent, 'disabled', false);
+                    }
+                }else{
+                    loadingData(data,$loadingContent);
+                }
+                if(needControlName){
+                    inputReadonly($loadingContent.find('.field-name'));
+                }
             },
             'error': function () {
                 //
-                clearPrsInfo($loadingContent, assignSelectVal, appType, licPerson, action);
+                clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
+                inputCancelReadonly($loadingContent.find('.field-name'));
             }
         });
     };
 
-    var clearPrsInfo = function ($loadingContent, assignSelectVal, appType, licPerson, action) {
+    var clearCgoPrsInfo = function ($loadingContent, needControlName, action) {
         $loadingContent.find('.specialty-label').html('');
         $loadingContent.find('.sub-specialty-label').html('');
         $loadingContent.find('.qualification-label').html('');
         $loadingContent.find('span.otherQualificationSpan').html('*');
-        if('psnSelect' != action){
-            if(('newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType) || ('APTY005' == appType || 'APTY004' == appType)){
-                $loadingContent.find('input[name="name"]').val('');
-            }
+        if('psnSelect' != action && needControlName){
+            $loadingContent.find('input[name="name"]').val('');
         }
     };
 
@@ -82,8 +91,8 @@
         loading(data.specialty,$loadingContent,'specialty-label');
         loading(data.subspecialty,$loadingContent,'sub-specialty-label');
         loading(data.qualification,$loadingContent,'qualification-label');
-
         addMandatoryForOtherQua(data.specialty,$loadingContent);
+        $loadingContent.find('input[name="name"]').val(data.name);
     };
 
     var addMandatoryForOtherQua = function (data,$loadingContent) {
@@ -115,5 +124,21 @@
         $content.prop('readonly', false);
         $content.css('border-color', '');
         $content.css('color', '');
+    }
+    function isNeedControlName(assignSelectVal, licPerson, appType) {
+        return ('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType);
+    }
+
+    function clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action) {
+        if(!isEmpty(callBackFuns)){
+            if(typeof callBackFuns.fillData == 'function'){
+                callBackFuns.fillData($loadingContent, emptyData);
+            }
+            if(typeof callBackFuns.setEdit == 'function'){
+                callBackFuns.setEdit($loadingContent, 'disabled', true);
+            }
+        }else{
+            clearCgoPrsInfo($loadingContent, needControlName, action);
+        }
     }
 </script>

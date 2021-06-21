@@ -503,7 +503,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(String grpId) {
+    public FeignResponseEntity<List<AppSvcPrincipalOfficersDto>> getAppGrpPersonnelByGrpId(String grpId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -948,6 +948,15 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoByVehicleNumber(String vehicleNumber, String licenseeId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(ApplicationGroupDto applicationGroupDto, String giroAccNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

@@ -60,7 +60,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Autowired
     private FeAdminClient feAdminClient;
 
-
     @Autowired
     private FeUserClient feUserClient;
 
@@ -491,7 +490,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public void receiveEntityFormEDH(FeUserDto user) {
         log.info("receiveEntityFormEDH START");
         try {
-            String entityJson = licenseeClient.getEntityInfoByUEN("T18LP0001A").getEntity();
+            String entityJson = licenseeClient.getEntityInfoByUEN(user.getUenNo()).getEntity();
             if (StringUtil.isNotEmpty(entityJson)){
                 log.info("receiveEntityFormEDH entityJson {}", entityJson);
                 user.setAcraGetEntityJsonStr(entityJson);

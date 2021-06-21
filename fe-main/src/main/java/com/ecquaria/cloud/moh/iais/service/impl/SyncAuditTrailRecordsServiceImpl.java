@@ -246,9 +246,11 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
             }
             return false;
         });
-        for(File f:files){
-            if(f.exists()&&f.isFile()){
-                MiscUtil.deleteFile(f);
+        if (files != null && files.length > 0) {
+            for (File f : files) {
+                if (f.exists() && f.isFile()) {
+                    MiscUtil.deleteFile(f);
+                }
             }
         }
         files = file.listFiles((dir, name) -> {
@@ -257,9 +259,11 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
             }
             return false;
         });
-        for(File f:files){
-            if(f.exists()&&f.isFile()){
-                MiscUtil.deleteFile(f);
+        if (files != null && files.length > 0) {
+            for (File f : files) {
+                if (f.exists() && f.isFile()) {
+                    MiscUtil.deleteFile(f);
+                }
             }
         }
     }

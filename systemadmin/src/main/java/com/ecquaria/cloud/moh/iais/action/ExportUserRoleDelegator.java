@@ -85,7 +85,7 @@ public class ExportUserRoleDelegator {
                 List<OrgUserRoleDto> orgUserRoleDtoList= intranetUserService.retrieveRolesByuserAccId (orgUserDto.getId());
                 if(!orgUserRoleDtoList.isEmpty()){
                     for (OrgUserRoleDto orgUserRoleDto:orgUserRoleDtoList
-                    ) {
+                         ) {
                         if(notWorkGrp.contains(orgUserRoleDto.getRoleName())){
                             Element userGroup = userGroups.addElement("user-group");
                             Element userId = userGroup.addElement("userId");

@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 

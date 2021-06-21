@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -124,13 +125,15 @@ public class RequestForChangeDelegator {
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
         request.getSession().removeAttribute("rfc_eqHciCode");
+        request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
+        request.getSession().removeAttribute("pageShowFileDtos");
         request.getSession().removeAttribute("selectedRFCFileDocShowPageDto");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedRFCFile_MaxIndex");
         request.getSession().removeAttribute("DraftNumber");
         request.getSession().removeAttribute("renewDto");
         request.getSession().removeAttribute("declaration_page_is");
-        ParamUtil.setSessionAttr(request, "viewPrint",null);
+        request.getSession().removeAttribute("viewPrint");
     }
     /**
      *
@@ -159,7 +162,6 @@ public class RequestForChangeDelegator {
         String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
         removeSession(bpc.request);
         loadingDraft(bpc,draftNo);
-
         log.debug(StringUtil.changeForLog("the do prepareDraft end ...."));
     }
 
@@ -337,6 +339,7 @@ public class RequestForChangeDelegator {
                 appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_SERVICE);
             }
+            appEditSelectDto.setDoEdit(switchVal);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setClickEditPage(null);
             ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTORFCATTR,appSubmissionDto);
@@ -471,7 +474,8 @@ public class RequestForChangeDelegator {
                 String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
                 log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
-                FeeDto feeDto = getTransferFee();
+                boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+                FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
                     appSubmissionDto.setAmount(amount);
@@ -702,6 +706,22 @@ public class RequestForChangeDelegator {
                 appSubmissionService.initDeclarationFiles(appSubmissionDto.getAppDeclarationDocDtos(),appSubmissionDto.getAppType(),bpc.request);
             }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
+                List<AppDeclarationDocDto> appDeclarationDocDtos = appSubmissionDto.getAppDeclarationDocDtos();
+                if(appDeclarationDocDtos!=null){
+                    List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
+                    for (AppDeclarationDocDto v : appDeclarationDocDtos) {
+                        PageShowFileDto pageShowFileDto=new PageShowFileDto();
+                        pageShowFileDto.setSize(v.getDocSize());
+                        pageShowFileDto.setFileName(v.getDocName());
+                        pageShowFileDto.setVersion(v.getVersion());
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+v.getSeqNum());
+                        pageShowFileDto.setMd5Code(v.getMd5Code());
+                        pageShowFileDto.setFileUploadUrl(v.getFileRepoId());
+                        pageShowFileDto.setIndex(String.valueOf(v.getSeqNum()));
+                        pageShowFileDtos.add(pageShowFileDto);
+                    }
+                    bpc.request.getSession().setAttribute("pageShowFileDtos",pageShowFileDtos);
+                }
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
             }else{
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, null);
@@ -760,11 +780,12 @@ public class RequestForChangeDelegator {
 
     }
 
-    private FeeDto getTransferFee(){
+    private FeeDto getTransferFee(boolean isCharity){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
         amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
         amendmentFeeDto.setChangeInLocation(Boolean.FALSE);
+        amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         return feeDto;
     }

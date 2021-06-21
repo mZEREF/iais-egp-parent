@@ -56,6 +56,8 @@
                                     </div>
                                    <%-- <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
+                                    <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
+                                    <a class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</a>
                                     <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                                 </div>
@@ -72,3 +74,15 @@
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<script type="text/javascript">
+    function reLoadMyInfoTodo() {
+        if(verifyTaken()){
+            $("#refreshMyInfoData").val("1");
+            Utils.submit('mainForm', 'doSubmit');
+        }else {
+            // To obtain authorization
+            showWaiting();
+            callAuthoriseApi();
+        }
+    }
+</script>

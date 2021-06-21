@@ -91,7 +91,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-
                                 <c:choose>
                                     <c:when test="${dAmount=='$0'}">
                                         <input type="hidden" value="false" name="noNeedPayment">

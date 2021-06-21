@@ -19,9 +19,11 @@ import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -29,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -39,7 +42,7 @@ import java.util.List;
  */
 @Delegator(value = "insReportAo")
 @Slf4j
-public class InsReportAoDelegator {
+public class InsReportAoDelegator  {
 
     @Autowired
     private InsRepService insRepService;
@@ -47,6 +50,8 @@ public class InsReportAoDelegator {
     private TaskService taskService;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    private FillupChklistService fillupChklistService;
 
     private final static String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
     private final static String OTHERS="Others";
@@ -61,23 +66,31 @@ public class InsReportAoDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
     }
 
+    public void clearSession( HttpServletRequest request ){
+        ParamUtil.setSessionAttr(request, INSREPDTO, null);
+        ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
+        ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+    }
     public void AoInit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
-        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        HttpServletRequest request = bpc.request;
+        clearSession(request);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String taskId = null;
         try{
-            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+            taskId = ParamUtil.getMaskedString(request,"taskId");
         }catch(MaskAttackException e){
             log.error(e.getMessage(),e);
-            bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            bpc.response.sendRedirect("https://"+request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+        }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT,
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
@@ -89,19 +102,19 @@ public class InsReportAoDelegator {
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
-        ParamUtil.setSessionAttr(bpc.request, "kpiInfo", kpiInfo);
-        ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
-        ParamUtil.setSessionAttr(bpc.request,"appType",null);
-        ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
-        ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
-        ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
+        ParamUtil.setSessionAttr(request, "kpiInfo", kpiInfo);
+        ParamUtil.setSessionAttr(request, "infoClassTop", infoClassTop);
+        ParamUtil.setSessionAttr(request,"appType",null);
+        ParamUtil.setSessionAttr(request, "reportClassTop", null);
+        ParamUtil.setSessionAttr(request, "infoClassBelow", infoClassBelow);
+        ParamUtil.setSessionAttr(request, "reportClassBelow", reportClassBelow);
         List<SelectOption> processingDe = getProcessingDecision(applicationViewDto.getApplicationDto().getStatus());
-        ParamUtil.setSessionAttr(bpc.request, "processingDe", (Serializable) processingDe);
-        ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
-        ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, TASKDTO, taskDto);
-        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
-        ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        ParamUtil.setSessionAttr(request, "processingDe", (Serializable) processingDe);
+        ParamUtil.setSessionAttr(request, INSREPDTO, insRepDto);
+        ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, applicationViewDto);
+        ParamUtil.setSessionAttr(request, TASKDTO, taskDto);
+        SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
+        ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
 
     public void AoReportPre(BaseProcessClass bpc) {
@@ -225,38 +238,19 @@ public class InsReportAoDelegator {
         return riskLevelResult;
     }
     private String getRecommendationOnlyShowStr (Integer recomInNumber){
-        String recommendationOnlyShow = "-";
         if(recomInNumber >= 12){
             if( recomInNumber % 12 == 0){
-                if(recomInNumber / 12 == 1){
-                    recommendationOnlyShow = "1 Year";
-                }else {
-                    recommendationOnlyShow = recomInNumber / 12 + " Year(s)";
-                }
+                return  recomInNumber / 12 == 1 ? "1 Year":  (recomInNumber / 12 + " Year(s)");
             }else {
                 if(recomInNumber / 12 == 1) {
-                    if(recomInNumber % 12 == 1){
-                        recommendationOnlyShow = 1 + " Year " + 1 + " Month";
-                    }else {
-                        recommendationOnlyShow = 1 + " Year " + recomInNumber % 12 + " Month(s)";
-                    }
-
+                    return  recomInNumber % 12 == 1 ? (1 + " Year " + 1 + " Month"):  (1 + " Year " + recomInNumber % 12 + " Month(s)");
                 }else {
-                    if(recomInNumber % 12 == 1){
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + 1 + " Month";
-                    }else {
-                        recommendationOnlyShow = recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)";
-                    }
+                    return  recomInNumber % 12 == 1 ? (recomInNumber / 12 + " Year(s) " + 1 + " Month"):  (recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)");
                 }
             }
         }else {
-            if( recomInNumber == 1){
-                recommendationOnlyShow = recomInNumber + " Month";
-            }else {
-                recommendationOnlyShow = recomInNumber + " Month(s)";
-            }
+            return  recomInNumber == 1 ? (recomInNumber + " Month") : (recomInNumber + " Month(s)");
         }
-        return recommendationOnlyShow;
     }
 
 }

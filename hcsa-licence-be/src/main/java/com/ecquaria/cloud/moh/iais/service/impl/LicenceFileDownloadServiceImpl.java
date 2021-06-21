@@ -83,6 +83,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,7 +94,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -192,28 +192,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if (!inFolder.endsWith(File.separator)) {
             inFolder += File.separator;
         }
-        File[] files = MiscUtil.generateFile(inFolder).listFiles();
-        for(File fil:files){
-            if(fil.getName().endsWith(AppServicesConsts.ZIP_NAME)){
-                String name = fil.getName();
-                String path = fil.getPath();
-                String relPath = name;
-                HashMap<String,String> map = IaisCommonUtils.genNewHashMap();
-                map.put("fileName",name);
-                map.put("filePath",relPath);
-                ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
-                if(processFileTrackDto!=null){
-                    AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
-                    processFileTrackDto.setAuditTrailDto(intranet);
-                    processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
-                    try {
-                        applicationClient.updateProcessFileTrack(processFileTrackDto);
-                    }catch (Exception e){
-                        log.info("error updateProcessFileTrack");
-                    }
-
-                    //check file is changed
-                    try (InputStream is=Files.newInputStream(fil.toPath());
+        List<ProcessFileTrackDto> processFileTrackDtos = applicationClient.allNeedProcessFile().getEntity();
+        if(processFileTrackDtos!=null&&!processFileTrackDtos.isEmpty()){
+            log.info(StringUtil.changeForLog("-----start process file-----, process file size ==>" + processFileTrackDtos.size()));
+            for (ProcessFileTrackDto v : processFileTrackDtos) {
+                File file = MiscUtil.generateFile(inFolder , v.getFileName());
+                if(file.exists()&&file.isFile()){
+                    String name = file.getName();
+                    String path = file.getPath();
+                    log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
+                    try (InputStream is = new FileInputStream(file);
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];
@@ -234,7 +222,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         continue;
                     }
                     /**************/
-                    String refId = processFileTrackDto.getRefId();
+                    String refId = v.getRefId();
                     CheckedInputStream cos=null;
                     BufferedInputStream bis=null;
                     BufferedOutputStream bos=null;
@@ -254,7 +242,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         List<ApplicationDto> requestForInfList=new ArrayList();
                         //need event bus
                         String submissionId = generateIdClient.getSeqId().getEntity();
-                        download(processFileTrackDto,listApplicationDto, requestForInfList,name,refId,submissionId);
+                        download(v,listApplicationDto, requestForInfList,name,refId,submissionId);
 
                         log.info(StringUtil.changeForLog(listApplicationDto.size()+"******listApplicationDto*********"));
                         log.info(StringUtil.changeForLog(requestForInfList.toString()+"***requestForInfList***"));
@@ -267,13 +255,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         log.error(e.getMessage(),e);
                         continue;
                     }
-
+                } else {
+                    v.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+                    try {
+                        applicationClient.updateProcessFileTrack(v);
+                    }catch (Exception e){
+                        log.info("error updateProcessFileTrack");
+                    }
                 }
-
             }
-
         }
-
         return true;
     }
 
@@ -335,33 +326,33 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         Boolean flag=Boolean.FALSE;
 
-        File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
-                File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
-        log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
-        if(!file.exists()){
-            file.mkdirs();
-        }
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-            log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
-            for(File  filzz:files){
-                if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
-                    InputStream  fileInputStream = null;
-                    try{
-                        fileInputStream=Files.newInputStream(filzz.toPath());
-                        ByteArrayOutputStream by=new ByteArrayOutputStream();
-                        int count;
-                        byte [] size=new byte[1024];
-                        count=fileInputStream.read(size);
-                        while(count!=-1){
-                            by.write(size,0,count);
-                            count= fileInputStream.read(size);
-                        }
-                        Long l = System.currentTimeMillis();
-                        Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
-                        if(Boolean.TRUE.equals(aBoolean)){
-                            saveFileRepo( fileName,groupPath,submissionId,l);
-                        }
+            File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+
+                    File.separator+groupPath+File.separator+AppServicesConsts.FILE_NAME,groupPath);
+            log.info(StringUtil.changeForLog(file.getPath()+"**********************"));
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            if(file.isDirectory()){
+                File[] files = file.listFiles();
+                log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
+                for(File  filzz:files){
+                    if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
+                        InputStream  fileInputStream = null;
+                        try{
+                            fileInputStream=Files.newInputStream(filzz.toPath());
+                            ByteArrayOutputStream by=new ByteArrayOutputStream();
+                            int count;
+                            byte [] size=new byte[1024];
+                            count=fileInputStream.read(size);
+                            while(count!=-1){
+                                by.write(size,0,count);
+                                count= fileInputStream.read(size);
+                            }
+                            Long l = System.currentTimeMillis();
+                            Boolean aBoolean = fileToDto(by.toString(), listApplicationDto, requestForInfList, processFileTrackDto, submissionId, l);
+                            if(Boolean.TRUE.equals(aBoolean)){
+                                saveFileRepo( fileName,groupPath,submissionId,l);
+                            }
 
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
@@ -387,29 +378,39 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             try {
                 if(!zipEntry.getName().endsWith(File.separator)){
 
-                String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =MiscUtil.generateFile( sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,substring);
-                if(!file.exists()){
-                    file.mkdirs();
-                }
-                os=new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()));
-                bos=new BufferedOutputStream(os);
-                InputStream is=zipFile.getInputStream(zipEntry);
-                bis=new BufferedInputStream(is);
-                cos=new CheckedInputStream(bis,new CRC32());
-                byte []b=new byte[1024];
-                int count ;
-                count=cos.read(b);
-                while(count!=-1){
-                    bos.write(b,0,count);
+                    String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
+                    String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
+                    File file =MiscUtil.generateFile(s1);
+                    if(!file.exists()){
+                        file.mkdirs();
+                    }
+                    log.info(file.getPath()+"-----zipFile---------");
+                    String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
+                    os=new FileOutputStream(MiscUtil.generateFile(s));
+                    bos=new BufferedOutputStream(os);
+                    InputStream is=zipFile.getInputStream(zipEntry);
+                    bis=new BufferedInputStream(is);
+                    cos=new CheckedInputStream(bis,new CRC32());
+                    byte []b=new byte[1024];
+                    int count ;
                     count=cos.read(b);
-                }
+                    while(count!=-1){
+                        bos.write(b,0,count);
+                        count=cos.read(b);
+                    }
 
                 }else {
+                    log.info(zipEntry.getName()+"------zipEntry.getName()------");
+                    String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
+                    if(s.endsWith(File.separator)){
+                        s=s.substring(0,s.length()-1);
+                    }
+                    File file = MiscUtil.generateFile(s);
+                    file.mkdirs();
+                    log.info(file.getPath()+"-----else  zipFile-----");
 
-                MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath,zipEntry.getName()).mkdirs();
-            }
-        }catch (IOException e){
+                }
+            }catch (IOException e){
 
             }finally {
                 if(cos!=null){
@@ -441,7 +442,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-        }
+            }
 
         }
 
@@ -606,7 +607,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         Map<String,String> appIdAndAppCorrIds=IaisCommonUtils.genNewHashMap();
         for (AppPremisesCorrelationDto appCorr:appPremisesCorrelation
-             ) {
+        ) {
             appIdAndAppCorrIds.put(appCorr.getApplicationId(),appCorr.getId());
         }
         Map<String,String> appPremiseMiscMap=IaisCommonUtils.genNewHashMap();
@@ -713,7 +714,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }
 
-        });
+                });
         log.info("withdrow email function end");
 
     }
@@ -1010,7 +1011,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if (!inFolder.endsWith(File.separator)) {
                 inFolder += File.separator;
             }
-            File file =MiscUtil.generateFile(inFolder,zipFileName);
+            File file =MiscUtil.generateFile(inFolder + zipFileName);
             log.info("start remove file start");
             moveFile(file);
             log.info("update file track start");
@@ -1075,7 +1076,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         });
         updateTaskList.removeAll(requestForInforList);
     }
-
     private String getEmailContent(String templateId, Map<String, Object> subMap){
         String mesContext = "-";
         if(!StringUtil.isEmpty(templateId)){
@@ -1175,7 +1175,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -1283,8 +1283,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 
@@ -1340,7 +1340,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         for(ApplicationDto applicationDto : applicationDtos){
             List<ApplicationDto> applicationDtoList=new ArrayList<>(1);
             List<HcsaSvcRoutingStageDto> entity =
-                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getBaseServiceId(), applicationDto.getApplicationType()).getEntity();
+                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getRoutingServiceId(), applicationDto.getApplicationType()).getEntity();
             if(entity.isEmpty()){
                 return list;
             }
@@ -1350,7 +1350,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 list.add(taskDto);
             }
             applicationDtoList.add(applicationDto);
-            TaskHistoryDto routingTaskOneUserForSubmisison = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList, entity.get(0).getStageId(), entity.get(0).getStageCode(), auditTrailDto,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null,true);
+            TaskHistoryDto routingTaskOneUserForSubmisison = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList, entity.get(0).getStageId(), entity.get(0).getStageCode(), auditTrailDto,RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN,null, true);
             log.info(StringUtil.changeForLog("----"+routingTaskOneUserForSubmisison));
             if(routingTaskOneUserForSubmisison!=null&&routingTaskOneUserForSubmisison.getAppPremisesRoutingHistoryDtos()!=null){
                 log.info(StringUtil.changeForLog("----"+JsonUtil.parseToJson(routingTaskOneUserForSubmisison)));
@@ -1363,4 +1363,5 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         return list;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -6,12 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMes
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -24,7 +22,7 @@ public class Statements implements Declarations {
 
     private final static  SystemParamConfig systemParamConfig;
     static {
-        systemParamConfig= SpringContextHelper.getContext().getBean(SystemParamConfig.class);
+        systemParamConfig=SpringContextHelper.getContext().getBean(SystemParamConfig.class);
     }
     @Override
     public void validateDeclarations(Map<String, String> map, AppDeclarationMessageDto appDeclarationMessageDto) {

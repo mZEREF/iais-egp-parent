@@ -89,7 +89,7 @@ public class ProcessUrlTag extends TagSupport {
     public void setValue(String value) {
         try {
             this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
-                    value, Object.class, this, pageContext));
+                     value, Object.class, this, pageContext));
         } catch (JspException e) {
             log.error(e.getMessage());
         }

@@ -20,11 +20,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
@@ -48,7 +50,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -66,7 +70,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
@@ -934,7 +937,7 @@ public class LicenceApproveBatchjob {
                     List<AppGrpPersonnelDto> appGrpPersonnelDtosE = applicationListDto.getAppGrpPersonnelDtos();
                     List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtosE = applicationListDto.getAppSvcKeyPersonnelDtos();
 
-                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
+                    List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
                             appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
                     if (!IaisCommonUtils.isEmpty(premisesGroupDtos1)) {
                         premisesGroupDtos.addAll(premisesGroupDtos1);
@@ -1116,7 +1119,8 @@ public class LicenceApproveBatchjob {
                 List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                 List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
 
-                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
+
+                List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationListDto,applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
                         appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
                 //String licenceNo = null;
                 //get the yearLenth.
@@ -1277,7 +1281,8 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private List<PremisesGroupDto> getPremisesGroupDto(ApplicationLicenceDto applicationLicenceDto,
+    private List<PremisesGroupDto> getPremisesGroupDto(ApplicationListDto applicationListDto,
+                                                       ApplicationLicenceDto applicationLicenceDto,
                                                        List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
                                                        List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,
@@ -1396,7 +1401,37 @@ public class LicenceApproveBatchjob {
             LicAppPremCorrelationDto licAppPremCorrelationDto = new LicAppPremCorrelationDto();
             licAppPremCorrelationDto.setAppCorrId(appPremCorrecId);
             premisesGroupDto.setLicAppPremCorrelationDto(licAppPremCorrelationDto);
-
+            //set LicSvcVehicleDto
+            List<LicSvcVehicleDto> licSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcVehicleDto> appSvcVehicleDtos = applicationListDto.getAppSvcVehicleDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)){
+              for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
+                  //todo:filter the reject Vehicle
+                  LicSvcVehicleDto licSvcVehicleDto = MiscUtil.transferEntityDto(appSvcVehicleDto,LicSvcVehicleDto.class);
+                  licSvcVehicleDtos.add(licSvcVehicleDto);
+              }
+                premisesGroupDto.setLicSvcVehicleDtos(licSvcVehicleDtos);
+            }
+            //set LicSvcChargesDto
+            List<LicSvcChargesDto> licSvcChargesDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcChargesDto> appSvcChargesDtos = applicationListDto.getAppSvcChargesDtos();
+            if(!IaisCommonUtils.isEmpty(appSvcChargesDtos)){
+                for(AppSvcChargesDto appSvcChargesDto: appSvcChargesDtos){
+                    LicSvcChargesDto licSvcChargesDto = MiscUtil.transferEntityDto(appSvcChargesDto,LicSvcChargesDto.class);
+                    licSvcChargesDtos.add(licSvcChargesDto);
+                }
+                premisesGroupDto.setLicSvcChargesDtos(licSvcChargesDtos);
+            }
+            //set LicSvcClinicalDirectorDto
+            /*List<LicSvcClinicalDirectorDto> licSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtos = applicationListDto.getAppSvcClinicalDirectorDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos)){
+                for(AppSvcClinicalDirectorDto appSvcClinicalDirectorDto : appSvcClinicalDirectorDtos){
+                    LicSvcClinicalDirectorDto licSvcClinicalDirectorDto = MiscUtil.transferEntityDto(appSvcClinicalDirectorDto,LicSvcClinicalDirectorDto.class);
+                    licSvcClinicalDirectorDtos.add(licSvcClinicalDirectorDto);
+                }
+                premisesGroupDto.setLicSvcClinicalDirectorDtos(licSvcClinicalDirectorDtos);
+            }*/
             if (1 == isPostInspNeeded) {
                 //create the LicInspectionGroupDto
                 LicInspectionGroupDto licInspectionGroupDto = new LicInspectionGroupDto();
@@ -1429,10 +1464,12 @@ public class LicenceApproveBatchjob {
                                 licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
                                 licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
                             }else{
-                                log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:" + appSvcKeyPersonnelDto.getAppGrpPsnId()));
+                                log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:"
+                                        + appSvcKeyPersonnelDto.getAppGrpPsnId()));
                             }
                         }else{
-                            log.debug(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:" + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
+                            log.debug(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:"
+                                    + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
                         }
                     } else {
                         log.debug(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));

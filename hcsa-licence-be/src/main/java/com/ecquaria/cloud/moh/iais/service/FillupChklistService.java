@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
@@ -93,4 +94,12 @@ public interface FillupChklistService {
     String setRemarksAndStartTimeAndEndTimeForCheckList(InspectionFDtosDto serListDto,InspectionFillCheckListDto commonDto,String refNo);
 
     boolean isBeforeFinishCheckList(String refNo);
+
+    void getRateOfSpecCheckList( List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto);
+
+    AdCheckListShowDto getSpecAhocData(AdCheckListShowDto adCheckListShowDto,String identify,boolean beforeFinishList,List<OrgUserDto>  orgUserDtos);
+
+    AppPremisesPreInspectChklDto getAppPremChklDtoByCorrIdAndVehicleName(String CorrId, String configId, String vehicleName);
+
+    boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto);
 }

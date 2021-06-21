@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -97,7 +98,28 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_AUDIT_TRAIL_OPERATION_TYPE       = "6BB07B6A-F168-EA11-BE82-000C29F371DC";
     public static final String CATE_ID_MOH_RELATED_URLS                 = "B61C07F8-ACED-EA11-8B79-000C293F0C99";
     public static final String CATE_ID_DAY_NAMES                        = "D50DAB67-347A-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_PROFESSION_BOARD                 = "ED29FF07-7FA1-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_EAS_MTS_SPECIALTY                = "6DC1ED79-08A4-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_BANK_NAME                        = "137A214B-8611-EA11-BE78-874C29D29DB0";
+
+
+    //charges
+    public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY     = "E6C7DED1-D5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_AIRWAY_AND_VENTILATION_EQUIPMENT_CHARGES_TYPE    = "1E1A2D13-DAA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_INTRAVENOUS_EQUIPMENT_CHARGES_TYPE               = "89706AEC-DBA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_CARDIAC_EQUIPMENT_CHARGES_TYPE                   = "1F7D8F70-DCA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_IMMOBILISATION_DEVICE_CHARGES_TYPE               = "24777D7F-DDA3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_TRAUMA_SUPPLIES_OR_EQUIPMENT_CHARGES_TYPE        = "1AFA016A-F4A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE         = "BC3A0435-F5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MEDICATIONS_CHARGES_TYPE                         = "A721D57E-F5A3-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_MISCELLANEOUS_CHARGES_TYPE                       = "5ADA2A9A-F6A3-EB11-8B7F-000C29FD17F9";
+
+    // Inspection entity
+    public static final String CATE_ID_INSPECTION_ENTITY_TYPE                           = "796E6112-36B1-EB11-8B7D-000C293F0C99";
+
+    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
+
 
     /**
      * @description: refresh the master codes into cache
@@ -178,8 +200,29 @@ public final class MasterCodeUtil {
         return codeKey;
     }
 
-    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
-
+    /**
+     * Get code key via category id and code value
+     *
+     * @param cateId
+     * @param codeValue
+     * @return
+     */
+    public static String getCodeKeyByCateIdAndCodeVal(String cateId, String codeValue) {
+        String codeKey = null;
+        if (StringUtil.isEmpty(cateId)) {
+            return codeKey;
+        }
+        List<MasterCodeView> masterCodes = retrieveByCategory(cateId);
+        if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+            Optional<String> code = masterCodes.stream()
+                    .filter(i -> StringUtil.isEmpty(codeValue) ? StringUtil.isEmpty(i.getCodeValue()) :
+                            codeValue.equalsIgnoreCase(i.getCodeValue()))
+                    .findAny()
+                    .map(MasterCodeView::getCode);
+            codeKey = code.orElse(null);
+        }
+        return codeKey;
+    }
 
     /**
      * @description: The method to get master code value by code

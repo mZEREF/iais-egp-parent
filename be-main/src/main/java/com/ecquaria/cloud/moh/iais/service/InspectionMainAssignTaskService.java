@@ -37,39 +37,39 @@ public interface InspectionMainAssignTaskService {
     String getAddress(AppGrpPremisesDto appGrpPremisesDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/20
-     * @Param: inspecTaskCreAndAssDto, applicationDto
-     * @return: InspecTaskCreAndAssDto
-     * @Descripation: setFastTrackFlag
-     */
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: inspecTaskCreAndAssDto, applicationDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: setFastTrackFlag
+      */
     InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/20
-     * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto
-     * @return: InspecTaskCreAndAssDto
-     * @Descripation: getInspecTaskCreAndAssDto
-     */
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: getInspecTaskCreAndAssDto
+      */
     InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(ApplicationDto applicationDto, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/20
-     * @Param: inspecTaskCreAndAssDto, applicationDto
-     * @return: InspecTaskCreAndAssDto
-     * @Descripation: setEditHoursFlagByAppAndUser
-     */
+      * @author: shicheng
+      * @Date 2021/4/20
+      * @Param: inspecTaskCreAndAssDto, applicationDto
+      * @return: InspecTaskCreAndAssDto
+      * @Descripation: setEditHoursFlagByAppAndUser
+      */
     InspecTaskCreAndAssDto setEditHoursFlagByAppAndUser(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/21
-     * @Param: inspecTaskCreAndAssDto, internalRemarks, loginContext
-     * @return: save flag
-     * @Descripation: routingTaskByCommonPool
-     */
+      * @author: shicheng
+      * @Date 2021/4/21
+      * @Param: inspecTaskCreAndAssDto, internalRemarks, loginContext
+      * @return: save flag
+      * @Descripation: routingTaskByCommonPool
+      */
     String routingTaskByCommonPool(ApplicationViewDto applicationViewDto, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String internalRemarks, LoginContext loginContext);
 
     /**

@@ -22,6 +22,7 @@
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
     <input type="hidden" name="crud_action_additional" value="" id="crud_action_additional">
+    <iais:input type="hidden" name="viewPrint" value="${viewPrint}" />
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -52,7 +53,7 @@
                                         <div class="tab-gp steps-tab">
                                             <div class="tab-content" style="padding-top: 0px;">
                                                 <c:if test="${isSingle == 'Y'}">
-                                                    <p>Please review your licence details and click edit to make necessary changes before renewal.</p>
+                                                    <p>Please review your licence Information and click edit to make necessary changes before renewal.</p>
                                                 </c:if>
                                                 <input hidden id="DtoSize" value="${renewDto.appSubmissionDtos.size() - 1}"/>
                                             <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}" varStatus="status">
@@ -134,7 +135,6 @@
                                                     </div>
                                                 </div>
                                             </c:forEach>
-
                                         </div>
                                         </div>
                                         <%--main content--%>

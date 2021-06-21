@@ -574,7 +574,7 @@ public class BeDashboardSupportServiceImpl implements BeDashboardSupportService 
     }
 
     private void rfcLicenseeSendRejectNotification(String applicationTypeShow, String applicationNo, String appDate, String MohName, ApplicationDto applicationDto,
-                                                   List<String> svcCodeList){
+                                          List<String> svcCodeList){
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         String applicantName = "";
         OrgUserDto orgUserDto = organizationMainClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();

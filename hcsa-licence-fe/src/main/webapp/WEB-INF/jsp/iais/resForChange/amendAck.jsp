@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
@@ -40,7 +40,7 @@
                         <p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p>
                         <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
                         <c:if test="${dAmount!='$0.0'}">
-                            <p class="ack-font-14">Transactional details:</p>
+                            <p class="ack-font-14">Transactional Information:</p>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -102,18 +102,18 @@
 
 
 <script>
-    $('#Acknowledgement').click(function () {
+$('#Acknowledgement').click(function () {
 
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFeAckPrintView/1/",request)%>';
-        var appType = $('input[name="appType"]').val();
-        var suffix = "appType=APTY005&menuRfc=rfc";
-        if(url.indexOf('MohFeAckPrintView/1/?') != -1){
-            url = url + '&' + suffix;
-        }else{
-            url = url + '?' + suffix;
-        }
-        window.open(url,'_blank');
-    });
+    var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFeAckPrintView/1/",request)%>';
+    var appType = $('input[name="appType"]').val();
+    var suffix = "appType=APTY005&menuRfc=rfc";
+    if(url.indexOf('MohFeAckPrintView/1/?') != -1){
+        url = url + '&' + suffix;
+    }else{
+        url = url + '?' + suffix;
+    }
+    window.open(url,'_blank');
+});
 $('#GotoDashboard').click(function () {
     Utils.submit('menuListForm','dashboard','','','');
 });

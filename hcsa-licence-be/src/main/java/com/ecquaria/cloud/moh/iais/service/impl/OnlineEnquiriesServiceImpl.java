@@ -22,16 +22,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -170,6 +169,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         ParamUtil.setSessionAttr(request, "registeredWithACRA", "No");
+        ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", null);
+        ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", null);
+        ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", null);
+
+        try {
+            AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(licenceId).getEntity();
+            ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcChargesPageDto());
+            ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList());
+            ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList());
+        }catch (Exception e){
+            log.error("not currentPreviewSvcInfo");
+        }
         if(organizationLicDto!=null){
             try {
                 if (StringUtil.isEmpty(organizationLicDto.getUenNo())) {
@@ -555,7 +566,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             if(!StringUtil.isEmpty(ncBestPractice)){
                 bestPractice = new StringBuilder();
                 for (String bp:recommendations
-                     ) {
+                ) {
                     bestPractice.append(bp).append("<br>");
                 }
             }
@@ -785,9 +796,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     }
                 }
                 //set selCgoName
-                List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
                 if(appSvcCgoDtoList != null && appSvcCgoDtoList.size()>0){
-                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
+                    for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtoList){
                         if(idNo.equals(appSvcCgoDto.getIdNo())){
                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
                         }

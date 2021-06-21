@@ -3,11 +3,16 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -42,6 +48,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String internalRemarks = ParamUtil.getRequestString(request, "internalRemarks");
         String date = ParamUtil.getDate(request, "tuc");
         String recommendationStr = ParamUtil.getString(request,"recommendation");
+        String appVehicleFlag = (String)ParamUtil.getSessionAttr(request, "appVehicleFlag");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
@@ -201,10 +208,64 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
             }
         }
+        //validate vehicle EAS / MTS
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, appVehicleFlag);
+        tcuVerification(errMap,applicationViewDto);
         return errMap;
     }
 
-
+    private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
+                                                  String nextStage, String appVehicleFlag) {
+        if (applicationViewDto != null&&VERIFIED.equals(nextStage) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
+             {
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    List<AppSvcVehicleDto> appSvcVehicleDtos;
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                        appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
+                    } else {
+                        appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+                    }
+                    if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                        for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+                            String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
+                            String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
+                            if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
+                                errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                            } else {
+                                String vehicleNoRadio = vehicleNoRadios[0];
+                                if (StringUtil.isEmpty(vehicleNoRadio)) {
+                                    errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                                } else {
+                                    String vehicleNoStatusCode;
+                                    if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(vehicleNoRadio)) {
+                                        vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_APPROVE;
+                                    } else {
+                                        vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_REJECT;
+                                    }
+                                    appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
+                                }
+                            }
+                            if (StringUtil.isEmpty(vehicleNoRemarks)) {
+                                appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
+                            } else {
+                                if (vehicleNoRemarks.length() <= 400) {
+                                    appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
+                                } else {
+                                    Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                                    repMap.put("number", "400");
+                                    repMap.put("fieldNo", "Remarks");
+                                    errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                                }
+                            }
+                        }
+                        applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    }
+                }
+            }
+        }
+        return errMap;
+    }
 
 
     /**
@@ -353,6 +414,24 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             flag = true;
         }
         return flag;
+    }
+
+
+    private void tcuVerification(Map<String, String> errMap, ApplicationViewDto applicationViewDto){
+        if(applicationViewDto.isShowTcu() && applicationViewDto.isTcuFlag()){
+            if( StringUtil.isEmpty(applicationViewDto.getTuc())){
+                errMap.put("tcuDate","GENERAL_ERR0006");
+            }else {
+                try {
+                    Date tcuDate = Formatter.parseDate(applicationViewDto.getTuc());
+                    if(tcuDate.getTime()< System.currentTimeMillis()){
+                            errMap.put("tcuDate","UC_INSTA004_ERR002");
+                            }
+                }catch (Exception e){
+                    errMap.put("tcuDate","SYSPAM_ERROR0008");
+                }
+            }
+        }
     }
 
 }

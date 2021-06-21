@@ -108,6 +108,13 @@
                     cutoutPercentage: 75,
                     legend: {
                         display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return ' '+data.datasets[0].data[tooltipItem.index];
+                            }
+                        }
                     }
                 }
             });

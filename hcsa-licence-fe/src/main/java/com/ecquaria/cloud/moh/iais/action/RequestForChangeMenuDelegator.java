@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -44,7 +43,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -102,7 +100,7 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
-    private FilterParameter filterParameter = new FilterParameter.Builder()
+    private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(PersonnelQueryDto.class)
             .searchAttr("PersonnelSearchParam")
             .resultAttr("PersonnelSearchResult")
@@ -143,7 +141,7 @@ public class RequestForChangeMenuDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
+
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
@@ -278,9 +276,14 @@ public class RequestForChangeMenuDelegator {
         SelectOption offsiet = new SelectOption();
         offsiet.setText("Off-site");
         offsiet.setValue("OFFSITE");
+        SelectOption EASMTSsiet = new SelectOption();
+        EASMTSsiet.setText("Conveyance(in a mobile clinic / ambulance)");
+        EASMTSsiet.setValue("EASMTS");
         list.add(offsiet);
         list.add(conveyance);
         list.add(onsite);
+        list.add(EASMTSsiet);
+        list.sort((s1,s2)->(s1.getText().compareTo(s2.getText())));
     }
 
 
@@ -368,11 +371,6 @@ public class RequestForChangeMenuDelegator {
             if (!StringUtil.isEmpty(licenseeId)) {
                 licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             }
-            if(licAppGrpPremisesDtoMap==null){
-                log.error("----licAppGrpPremisesDtoMap is null");
-            }else {
-                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licAppGrpPremisesDtoMap+"------licAppGrpPremisesDtoMap")));
-            }
             //premise select
             NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
             //addressType
@@ -384,13 +382,13 @@ public class RequestForChangeMenuDelegator {
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
-
-                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                    NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                if(appSubmissionDto.getAppGrpPremisesDtoList()!=null){
+                    for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                        NewApplicationHelper.setWrkTime(appGrpPremisesDto1);
+                    }
                 }
             }
         }
-
         AppSubmissionDto oldAppSubmissionDto ;
         oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         AppSubmissionDto appSubmissionDto1 = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
@@ -467,14 +465,11 @@ public class RequestForChangeMenuDelegator {
         PremisesListQueryDto premisesListQueryDto = new PremisesListQueryDto();
         AppSubmissionDto appSubmissionDto = null;
         String status = "";
-        log.info(licId+"-------licId is ---<"+premId+"-----premId is----<");
         if (!StringUtil.isEmpty(licId) && !StringUtil.isEmpty(premId)) {
             List<PremisesListQueryDto> premisesListQueryDtos = (List<PremisesListQueryDto>) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS);
             if (!IaisCommonUtils.isEmpty(premisesListQueryDtos)) {
-                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(premisesListQueryDtos)+"---->premisesListQueryDtos is---<"));
                 premisesListQueryDto = getPremisesListQueryDto(premisesListQueryDtos, licId, premId);
                 if (premisesListQueryDto != null) {
-                    log.info(StringUtil.changeForLog(JsonUtil.parseToJson(premisesListQueryDto+"----->premisesListQueryDto---<")));
                     appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
                     List<String> names = IaisCommonUtils.genNewArrayList();
                     if (appSubmissionDto != null) {
@@ -488,9 +483,6 @@ public class RequestForChangeMenuDelegator {
                                 }
                             }
                         }
-                        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appSubmissionDto)+"<-----appSubmissionDto"));
-                    }else {
-                        log.error("---appSubmissionDto is null---");
                     }
                     if (!IaisCommonUtils.isEmpty(names)) {
                         List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
@@ -498,11 +490,7 @@ public class RequestForChangeMenuDelegator {
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     }
                     status = premisesListQueryDto.getLicenceStatus();
-                }else {
-                    log.error("----premisesListQueryDto is null----");
                 }
-            }else {
-                log.error("-----premisesListQueryDtos is null----");
             }
         }
 
@@ -552,26 +540,6 @@ public class RequestForChangeMenuDelegator {
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
 
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        if(isRfi){
-           for(AppGrpPremisesDto v : appGrpPremisesDtoList) {
-               String hciCode = v.getHciCode();
-               String oldHciCode = v.getOldHciCode();
-               if(hciCode!=null&&oldHciCode!=null){
-                   boolean equals = hciCode.equals(oldHciCode);
-
-                   v.setExistingData(AppConsts.YES);
-
-                   bpc.request.getSession().setAttribute("eqHciCode",String.valueOf(equals));
-               }else if(hciCode==null){
-                   v.setExistingData(AppConsts.NO);
-                   bpc.request.getSession().setAttribute("eqHciCode","true");
-               }
-           }
-        }else {
-            boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
-            appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
-            bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
-        }
 
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
@@ -900,8 +868,8 @@ public class RequestForChangeMenuDelegator {
             compareNewDto.setIdType(idType1);
             compareNewDto.setPsnName(psnName1);
             compareNewDto.setSalutation(salutation1);
-            compareNewDto.setOtherDesignation(otherDesignation1);
             compareNewDto.setDesignation(designation1);
+            compareNewDto.setOtherDesignation(otherDesignation1);
             compareNewDto.setOfficeTelNo(officeTelNo1);
             compareNewDto.setMobileNo(mobileNo1);
             compareNewDto.setEmailAddr(emailAddr1);
@@ -1139,9 +1107,9 @@ public class RequestForChangeMenuDelegator {
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
                 }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(newPerson.getDesignation())){
-                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
-                        errMap.put("otherDesignation2", designationMsg);
-                    }
+                   if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
+                       errMap.put("otherDesignation2", designationMsg);
+                   }
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
@@ -1177,10 +1145,10 @@ public class RequestForChangeMenuDelegator {
         String salutation = personnelListDto.getSalutation();
         String psnName = personnelListDto.getPsnName();
         String designation = personnelListDto.getDesignation();
-        String otherDesignation = personnelListDto.getOtherDesignation();
         String mobileNo = personnelListDto.getMobileNo();
         String officeTelNo = personnelListDto.getOfficeTelNo();
         String emailAddr = personnelListDto.getEmailAddr();
+        String otherDesignation = personnelListDto.getOtherDesignation();
         oldDto.setIdNo(idNo);
         oldDto.setIdType(idType);
         oldDto.setPsnName(psnName);
@@ -1457,89 +1425,88 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
-        if(appSubmissionDtos!=null){
-            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-                appSubmissionDto.setPaymentMethod(payMethod);
-            }
-            bpc.request.getSession().setAttribute("payMethod", payMethod);
-            if (0.0 == appSubmissionDtos.get(0).getAmount()) {
-                StringBuilder url = new StringBuilder();
-                url.append("https://")
-                        .append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
-                return;
-            }
-            double a = 0.0;
-            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-                a = a + appSubmissionDto.getAmount();
-            }
-            bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
-            if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                    || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                    || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-                Map<String, String> fieldMap = new HashMap<String, String>();
-                fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
-                fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-                fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
-                try {
-                    String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
-                    String html = "";
-                    switch (payMethod) {
-                        case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
-                            html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                            break;
-                        case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
-                            html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                            break;
-                        case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                            break;
-                        default:
-                            html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
-                            break;
-                    }
-                    bpc.response.sendRedirect(html);
-                } catch (Exception e) {
-                    log.info(e.getMessage(), e);
+        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            appSubmissionDto.setPaymentMethod(payMethod);
+        }
+        bpc.request.getSession().setAttribute("payMethod", payMethod);
+        if (0.0 == appSubmissionDtos.get(0).getAmount()) {
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }
+        double a = 0.0;
+        for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            a = a + appSubmissionDto.getAmount();
+        }
+        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
+        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+            Map<String, String> fieldMap = new HashMap<String, String>();
+            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
+            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo() + "_" + System.currentTimeMillis());
+            try {
+                String url = "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
+                String html = "";
+                switch (payMethod) {
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT:
+                        html = GatewayStripeAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
+                        html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        break;
+                    case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        break;
+                    default:
+                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        break;
                 }
-                return;
-            } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-                if(appSubmissionDtos.size() > 1){
-                    appSubmissionDtos.get(0).setTotalAmountGroup(a);
-                }
-                try {
-                    if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
-                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
-                    }
-                } catch (Exception e) {
-                    log.info(e.getMessage(), e);
-                }
-                String giroAccNum = "";
-                if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
-                    giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
-                }
-                appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
-                String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
-                String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
-                appGrp.setPmtRefNo(giroTranNo);
-                appGrp.setPayMethod(payMethod);
-                serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
-                serviceConfigService.updatePaymentStatus(appGrp);
-                ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-                ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
-                //todo change
-                StringBuilder url = new StringBuilder();
-                url.append("https://").append(bpc.request.getServerName())
-                        .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
-                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                bpc.response.sendRedirect(html);
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
             }
+            return;
+        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+            if(appSubmissionDtos.size() > 1){
+                appSubmissionDtos.get(0).setTotalAmountGroup(a);
+            }
+            try {
+                if ( appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                    requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
+                }
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
+            String giroAccNum = "";
+            if(!StringUtil.isEmpty(payMethod) && ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
+                giroAccNum = ParamUtil.getString(bpc.request, "giroAccount");
+            }
+            appSubmissionDtos.get(0).setGiroAcctNum(giroAccNum);
+            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDtos.get(0)).getPmtStatus());
+            String giroTranNo = appSubmissionDtos.get(0).getGiroTranNo();
+            appGrp.setPmtRefNo(giroTranNo);
+            appGrp.setPayMethod(payMethod);
+            serviceConfigService.updateAppGrpPmtStatus(appGrp, giroAccNum);
+            serviceConfigService.updatePaymentStatus(appGrp);
+//            serviceConfigService.updatePaymentStatus(appGrp);
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
+            //todo change
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
         }
 
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
@@ -1677,6 +1644,13 @@ public class RequestForChangeMenuDelegator {
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
                 }
+                boolean b = requestForChangeService.baseSpecLicenceRelation(string);
+                if(!b){
+                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+                    bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+                    return;
+                }
             }
         }
 
@@ -1730,6 +1704,8 @@ public class RequestForChangeMenuDelegator {
         if (eqAddFloorNo) {
             amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
         }
+        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
         //
@@ -1740,15 +1716,6 @@ public class RequestForChangeMenuDelegator {
                 boolean grpLic = licenceDto.isGrpLic();
                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
                 requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
-                String baseServiceId = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
-                if(StringUtil.isEmpty(baseServiceId)){
-                    String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
-                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceDto.getSvcName());
-                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
-                    bpc.request.setAttribute("RFC_ERROR_NO_CHANGE", rfc_err020);
-                    return;
-                }
                 String premisesIndexNo = "";
                 List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
                 if (grpLic) {
@@ -2143,6 +2110,8 @@ public class RequestForChangeMenuDelegator {
             oldVehicleNo=premisesListQueryDto.getVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
             oldHciName = premisesListQueryDto.getHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            oldHciName=premisesListQueryDto.getHciName();
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
@@ -2151,6 +2120,8 @@ public class RequestForChangeMenuDelegator {
             newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesListQueryDto.getPremisesType())){
             newHciName=appGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getEasMtsHciName();
         }
         if (!newHciName.equals(oldHciName)||!newVehicleNo.equals(oldVehicleNo)) {
             return false;
@@ -2158,16 +2129,15 @@ public class RequestForChangeMenuDelegator {
 
         return true;
     }
-
     private AppSubmissionDto setPersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelListDto.getLicPsnTypeDtoMaps();
         String licenceNo = appSubmissionDto.getLicenceNo();
         List<String> psnTypes = licPsnTypeDtoMaps.get(licenceNo).getPsnTypes();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
                     if (appSvcCgoDto.getIdNo().equals(personnelListDto.getIdNo())) {
                         appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                         appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
@@ -2222,9 +2192,9 @@ public class RequestForChangeMenuDelegator {
         String idNo = personnelListDto.getIdNo();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             //cgo
-            List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
-                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
                     appSvcCgoDto.setIdNo(personnelListDto.getIdNo());
                     appSvcCgoDto.setIdType(personnelListDto.getIdType());
                     appSvcCgoDto.setName(personnelListDto.getPsnName());

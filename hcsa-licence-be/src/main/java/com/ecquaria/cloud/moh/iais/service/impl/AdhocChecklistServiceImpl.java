@@ -94,7 +94,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         return t.apply(appType);
     }
 
-    private static String compareType(String appType){
+    public static String compareType(String appType){
         if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.AUDIT_INSPECTION);
         } else {
@@ -102,7 +102,8 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }
     }
 
-    private static String compareModule(String appType){
+
+    public static String compareModule(String appType){
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             return MasterCodeUtil.getCodeDesc(HcsaChecklistConstants.NEW);
         }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){

@@ -180,7 +180,7 @@ public class LicenceViewDelegator {
                         }
                         if(!StringUtil.isEmpty(licAlignAppSvcId)){
                             appSvcRelatedInfoDto.setServiceId(licAlignAppSvcId);
-                            //69290
+                            //692590
                             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                         }
                         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,licAlignAppSvcId);

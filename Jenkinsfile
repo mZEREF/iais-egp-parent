@@ -154,11 +154,11 @@ SFTP_CREDENTIALS = [
                 usernameVariable: 'SFTP_USER_ID')
 ]
 
-SFTP_CREDENTIALS_GDC = [    
+SFTP_CREDENTIALS_GDC = [
     sshUserPrivateKey(
-        credentialsId: '1b0cdbea-954c-4b77-9a68-94ce6dc03dd7', 
-        keyFileVariable: 'SFTP_PRIVATE_KEY', 
-        passphraseVariable: '', 
+        credentialsId: '1b0cdbea-954c-4b77-9a68-94ce6dc03dd7',
+        keyFileVariable: 'SFTP_PRIVATE_KEY',
+        passphraseVariable: '',
                 usernameVariable: 'SFTP_USER_ID')
 ]
 
@@ -179,8 +179,8 @@ configurePipeline()
 
 try{
     node{
-        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container 
-        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment 
+        // need root to clear the ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING} directory -- container
+        // keeps creating files with root owner, even after specifying KATALON_USER_ID environment
         // variable.
         def dockerArgs = [
             "--entrypoint=''",
@@ -278,9 +278,9 @@ def configurePipeline(){
                 string(
                     defaultValue: '',
                     description: '''\
-                    Since we will need to transport commits over to the other side, this tag 
-                    provides some sort of a baseline (or a hint) that would be given to Git in 
-                    order for it to decide which commits to include (in an attempt to save the 
+                    Since we will need to transport commits over to the other side, this tag
+                    provides some sort of a baseline (or a hint) that would be given to Git in
+                    order for it to decide which commits to include (in an attempt to save the
                     payload size).
 
                     Please note that this field is optional.
@@ -665,7 +665,7 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-intranet.zip \\
                             /scripts/deploy-to-eds.sh
-                            
+
                         fi
                     """
 
@@ -677,9 +677,9 @@ def deploySIT() {
                             EDS_URL="$EDS_URL" \\
                             FILE_TO_UPLOAD=/tmp/archive-iais-internet.zip \\
                             /scripts/deploy-to-eds.sh
-                            
+
                         fi
-                        
+
                     """
                 }
             }
@@ -748,7 +748,7 @@ def createVerificationPackage(){
                 (
                 cd ${CHECKOUT_DIRECTORY}
 
-                if [[ -z ${BASELINE_TAG} ]]; then 
+                if [[ -z ${BASELINE_TAG} ]]; then
                     git bundle create iais-egp.bundle ${TAG_TO_BUILD}
                 else
                     git bundle create iais-egp.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
@@ -761,7 +761,7 @@ def createVerificationPackage(){
                     cd ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING}
 
                     if [[ -z ${BASELINE_TAG} ]]; then
-                        git bundle create iais-qa.bundle ${TAG_TO_BUILD}                    
+                        git bundle create iais-qa.bundle ${TAG_TO_BUILD}
                     else
                         git bundle create iais-qa.bundle ${BASELINE_TAG}..${TAG_TO_BUILD}
                     fi
@@ -1003,7 +1003,7 @@ def createTransferPackage(){
                 sh """
                     tar -cf "$ARCHIVE_2" -C "\$(dirname "$ARCHIVE_1")" "\$(basename "$ARCHIVE_1")"
                     tar -rf "$ARCHIVE_2" -C "\$(dirname "$SIGNATURE_FROM_VERIFIER")" "\$(basename "$SIGNATURE_FROM_VERIFIER")"
-    
+
                     (
                         cd "/slift/" || exit
                         ./run.sh \
@@ -1067,9 +1067,9 @@ def uploadTransferPackageToSFTP(){
             .inside(dockerArgs.join(" ")){
                 sh """
                     echo \"$BATCH_FILE_CONTENTS\" > \"$BATCH_FILE\"
-    
+
                     cat $BATCH_FILE
-    
+
                     cat \"$BATCH_FILE\" | sshpass -e sftp -o StrictHostKeyChecking=no -i \"$SFTP_PRIVATE_KEY\" -P $SFTP_PORT ${SFTP_USER_ID}@${SFTP_ADDRESS}
                 """
             }

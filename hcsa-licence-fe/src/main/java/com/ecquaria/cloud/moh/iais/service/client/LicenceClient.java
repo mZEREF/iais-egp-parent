@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -166,6 +167,11 @@ public interface LicenceClient {
 
     @PostMapping(value = "/hcsa-licence/bundle-licence-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> getBundleLicence(@RequestParam("hciCode")String hciCode, @RequestParam("licenseeId") String licenseeId, @RequestBody List<String> svcNameList);
+    @PostMapping(value = "/get-svc-clincal-director",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicSvcClinicalDirectorDto>> getLicSvcClinicalDirectorDtoByIdNos(@RequestBody List<String> ids);
+
+    @PostMapping(value = "/hcsa-licence/get-licence-by-prem-corre-id",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByPremCorreIds(@RequestBody List<String> premCorreIds);
     @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
                                                                                                  @PathVariable("originLicenceId") String originLicenceId);

@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Autowired
@@ -163,17 +165,36 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
         return configInboxClient.getAppGrpPremisesTypeBySvcId(svcIds).getEntity();
     }
 
-    private static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto, List<String> premisesHci){
-        String premisesKey = IaisCommonUtils.genPremisesKey(premisesDto.getPostalCode(),premisesDto.getBlkNo(),premisesDto.getFloorNo(),premisesDto.getUnitNo());
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getHciName()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesDto.getVehicleNo()+premisesKey);
-        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
-            premisesHci.add(premisesKey);
+    @Override
+    public boolean canApplyEasOrMts(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos) {
+        log.debug(StringUtil.changeForLog("check can create eas or mts service start ..."));
+        boolean canCreateEasOrMts = false;
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            List<String> svcNames = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                svcNames.add(hcsaServiceDto.getSvcName());
+            }
+            AppPremisesDoQueryDto appPremisesDoQueryDto = new AppPremisesDoQueryDto();
+            List<HcsaServiceDto>  HcsaServiceDtoList= hcsaConfigClient.getHcsaServiceByNames(svcNames).getEntity();
+            List<String> svcIds = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:HcsaServiceDtoList){
+                svcIds.add(hcsaServiceDto.getId());
+            }
+            appPremisesDoQueryDto.setLicenseeId(licenseeId);
+            appPremisesDoQueryDto.setSvcIdList(svcIds);
+            String svcNameStr = JsonUtil.parseToJson(svcNames);
+            List<PremisesDto> premisesDtos = licenceClient.getPremisesByLicseeIdAndSvcName(licenseeId,svcNameStr).getEntity();
+            List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos = appInboxClient.getPendAppPremises(appPremisesDoQueryDto).getEntity();
+            log.debug("licence record size {}",premisesDtos.size());
+            log.debug("pending application record size {}",appGrpPremisesEntityDtos.size());
+            if(IaisCommonUtils.isEmpty(premisesDtos) && IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)){
+                canCreateEasOrMts = true;
+            }
         }
-        return premisesHci;
+        log.debug(StringUtil.changeForLog("check can create eas or mts service end ..."));
+        return canCreateEasOrMts;
     }
+
 
     private static List<String> genPremisesHciList(PremisesDto premisesDto){
         List<String> premisesHciList = IaisCommonUtils.genNewArrayList();
@@ -184,6 +205,8 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());

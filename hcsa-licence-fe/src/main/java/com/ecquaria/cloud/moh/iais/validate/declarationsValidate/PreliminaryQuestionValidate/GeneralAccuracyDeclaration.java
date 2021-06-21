@@ -1,10 +1,9 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
-
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 
 import java.util.Map;
 

@@ -24,8 +24,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -33,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -59,17 +56,18 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * ServiceConfigServiceImpl
@@ -151,7 +149,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
             if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
                 NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode()+appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
             }
         }
         return appGrpPremisesDtoMap;
@@ -205,11 +203,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         return  appConfigClient.getServiceType(serviceId,psnType).getEntity();
     }
 
-    @Override
-    public AppSvcCgoDto loadGovernanceOfficerByCgoId(String cgoId) {
-        //to do
-        return null;
-    }
+
 
     @Override
     public byte[] downloadFile(String fileRepoId) {
@@ -263,7 +257,16 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
                 }else if(HcsaConsts.STEP_MEDALERT_PERSON.equals(stepCode)){
                     psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                }else if(HcsaConsts.STEP_VEHICLES.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_VEHICLES);
+                }else if(HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
+                }else if(HcsaConsts.STEP_CHARGES.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES);
+                }else if(HcsaConsts.STEP_CHARGES_OTHER.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES_OTHER);
                 }
+
             }
         }
         specicalPersonDto.setServiceId(svcId);

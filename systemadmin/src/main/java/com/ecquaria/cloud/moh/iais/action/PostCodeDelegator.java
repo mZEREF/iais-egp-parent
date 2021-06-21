@@ -41,7 +41,7 @@ public class PostCodeDelegator {
     private Map<String,String> initstreetMap() throws IOException {
         Map<String,String> streetMap = IaisCommonUtils.genNewHashMap();
         File file = MiscUtil.generateFile(streetsPath);
-        try(BufferedReader  br = new BufferedReader(new FileReader(file));){
+            try(BufferedReader  br = new BufferedReader(new FileReader(file));){
             String line = null;
             String key = null;
             String value = null;

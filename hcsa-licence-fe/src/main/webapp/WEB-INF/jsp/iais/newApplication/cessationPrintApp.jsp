@@ -17,8 +17,7 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-          font-family: fontawesome, sans-serif;
-        position: absolute;
+    font-family: FontAwesome, sans-serif;        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;
@@ -254,7 +253,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group" id="transferredWhere" hidden>
-                                                    <label class="col-xs-12 col-md-6">Please state where the patient's  records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
+                                                    <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                     </div>

@@ -264,7 +264,6 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings', sans-serif;
-
   src: url('../fonts/glyphicons-halflings-regular.eot');
   src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
@@ -272,8 +271,7 @@ th {
   position: relative;
   top: 1px;
   display: inline-block;
-  font-family: 'Glyphicons Halflings', sans-serif;
-  font-style: normal;
+  font-family: 'Glyphicons Halflings', sans-serif;  font-style: normal;
   font-weight: normal;
   line-height: 1;
 
@@ -6534,8 +6532,7 @@ button.close {
   visibility: hidden;
 }
 .text-hide {
-    font: 0/0 a, sans-serif;
-  color: transparent;
+  font: 0/0 a, sans-serif;  color: transparent;
   text-shadow: none;
   background-color: transparent;
   border: 0;

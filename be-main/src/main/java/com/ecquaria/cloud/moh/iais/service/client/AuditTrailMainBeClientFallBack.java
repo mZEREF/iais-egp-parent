@@ -39,5 +39,4 @@ public class AuditTrailMainBeClientFallBack implements AuditTrailMainBeClient {
 		entity.setHeaders(headers);
 		return entity;
 	}
-
 }

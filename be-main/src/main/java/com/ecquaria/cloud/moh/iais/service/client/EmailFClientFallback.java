@@ -16,4 +16,5 @@ public class EmailFClientFallback implements EmailClient {
         entity.setHeaders(headers);
         return entity;
     }
+
 }

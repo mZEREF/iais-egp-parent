@@ -1,14 +1,13 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnBankruptcy;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnCompetencies;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnCriminalRecords;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.GeneralAccuracyDeclaration;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.PreliminaryQuestion;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate.Statements;
-
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnBankruptcy;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnCompetencies;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.DeclarationOnCriminalRecords;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.GeneralAccuracyDeclaration;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.PreliminaryQuestion;
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate.Statements;
 
 import java.util.ArrayList;
 import java.util.Collection;

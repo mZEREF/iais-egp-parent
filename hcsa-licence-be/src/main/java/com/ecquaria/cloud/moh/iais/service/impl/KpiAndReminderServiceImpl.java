@@ -89,7 +89,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             parameter.setAuditTrailDto(currentAuditTrailDto);
             hcsaConfigClient.saveKpiAndReminder(parameter);
         }
-        request.setAttribute("message","You have successfully created required KPI");
+        request.setAttribute("message","PM_ACK001");
         request.setAttribute("crud_action_type","submit");
     }
     static String[] code={ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,ApplicationConsts.APPLICATION_TYPE_CESSATION};
@@ -165,7 +165,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         if(StringUtil.isEmpty(reminderThreshold)){
             errorMap.put("reminderThreshold",MessageUtil.replaceMessage("GENERAL_ERR0006","Reminder Threshold","field"));
         }else {
-            if(!reminderThreshold.matches("^[0-9]{0,5}$")){
+            if(!reminderThreshold.matches("^[1-9]{0,5}$")){
                 errorMap.put("reminderThreshold","GENERAL_ERR0002");
             }else {
                 flag=true;
@@ -197,7 +197,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
                 }
 
             }else {
-                if(!stageCode1.matches("^[0-9]{0,5}$")){
+                if(!stageCode1.matches("^[1-9]{0,5}$")){
                     errorMap.put(stageCode,"GENERAL_ERR0002");
                 }else {
                     if(flag){

@@ -1,11 +1,10 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
-
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class DeclarationOnCompetencies implements Declarations {
         String competenciesRemark = appDeclarationMessageDto.getCompetenciesRemark();
         if(StringUtil.isEmpty(competenciesRemark)&&flag){
             map.put("competenciesRemark", err06);
-        }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>1000){
+        }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>=1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("competenciesRemark",general_err0041);
         }

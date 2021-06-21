@@ -149,7 +149,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-workgroup/group-role-user/{workGroupId}/{roleId}")
     FeignResponseEntity<List<OrgUserDto>> activeUsersByWorkGroupAndRole(@PathVariable(name = "workGroupId") String workGroupId,
-                                                                        @PathVariable(name = "roleId") String roleId);
+                                                                          @PathVariable(name = "roleId") String roleId);
 
     @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);

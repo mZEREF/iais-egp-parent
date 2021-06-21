@@ -1,11 +1,10 @@
-package com.ecquaria.cloud.moh.iais.validation.declarationsValidate.PreliminaryQuestionValidate;
+package com.ecquaria.cloud.moh.iais.validate.declarationsValidate.PreliminaryQuestionValidate;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.validation.declarationsValidate.Declarations;
-
+import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.Declarations;
 
 import java.util.Map;
 
@@ -24,6 +23,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         String err06 = MessageUtil.replaceMessage("GENERAL_ERR0006","this","field");
         if(StringUtil.isEmpty(criminalRecordsItem1)){
             map.put("criminalRecordsItem1", err06);
+        }else {
             if("1".equals(criminalRecordsItem1)){
                 flag=true;
             }
@@ -58,7 +58,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         String criminalRecordsRemark = appDeclarationMessageDto.getCriminalRecordsRemark();
         if(StringUtil.isEmpty(criminalRecordsRemark)&&flag){
             map.put("criminalRecordsRemark", err06);
-        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>1000){
+        }else if(!StringUtil.isEmpty(criminalRecordsRemark)&&criminalRecordsRemark.length()>=1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
             map.put("criminalRecordsRemark",general_err0041);
         }

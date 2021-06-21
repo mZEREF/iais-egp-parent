@@ -65,7 +65,7 @@
                 <div class="row">
                   <div class="col-xs-12" id="addPremBody" hidden>
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly}">
+                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly && isMultiPremService}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Mode of Service Delivery</button>
                     </c:if>
                   </div>
@@ -158,6 +158,7 @@
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');
+        $("select[name='easMtsAddrType']").trigger('change');
         <!-- init start-->
         init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){
@@ -187,7 +188,7 @@
 
         doEdit();
 
-        otherLic();
+        coLocation();
 
         addPubHolDayHtml();
 
@@ -208,6 +209,8 @@
         removeEvent();
 
         clickAllDay();
+
+        useType();
 
         //Binding method
         $('#Back').click(function(){
@@ -257,6 +260,7 @@
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
         if($("#errorMapIs").val()=='error'){
             $('.premisesEdit').trigger('click');
+            $('.premisesEdit').addClass('hidden');
         }
         </c:if>
     });
@@ -330,6 +334,7 @@
       $Ele.find('span.multi-select-button').css('border-color','#ededed');
       $Ele.find('span.multi-select-button').css('color','#999');
       $Ele.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
+      $Ele.find('input.useType:checked').closest('div').find('label span.check-circle').addClass('radio-disabled');;
   }
 </script>
 

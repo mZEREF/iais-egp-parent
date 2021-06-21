@@ -246,51 +246,51 @@
         $("#searchCondition .current").text("Please Select");
     }
 
-    function dashboardAssignMe() {
-        showWaiting();
-        $('#switchAction').val('assignme');
-        intraDashboardSubmit('assignme');
-    }
+  function dashboardAssignMe() {
+      showWaiting();
+      $('#switchAction').val('assignme');
+      intraDashboardSubmit('assignme');
+  }
 
-    function dashboardApplicantReply() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('reply');
-        intraDashboardSubmit('reply');
-    }
+  function dashboardApplicantReply() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('reply');
+      intraDashboardSubmit('reply');
+  }
 
-    function dashboardKpiTask() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('kpi');
-        intraDashboardSubmit('kpi');
-    }
+  function dashboardKpiTask() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('kpi');
+      intraDashboardSubmit('kpi');
+  }
 
-    function dashboardRenewalExpiry() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('renew');
-        intraDashboardSubmit('renew');
-    }
+  function dashboardRenewalExpiry() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('renew');
+      intraDashboardSubmit('renew');
+  }
 
-    function dashboardWaitApproval() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('wait');
-        intraDashboardSubmit('wait');
-    }
+  function dashboardWaitApproval() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('wait');
+      intraDashboardSubmit('wait');
+  }
 
-    function dashboardCommonPool() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('common');
-        intraDashboardSubmit('common');
-    }
+  function dashboardCommonPool() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('common');
+      intraDashboardSubmit('common');
+  }
 
-    function dashboardSupervisorPool() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('group');
-        intraDashboardSubmit('group');
-    }
+  function dashboardSupervisorPool() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('group');
+      intraDashboardSubmit('group');
+  }
 </script>

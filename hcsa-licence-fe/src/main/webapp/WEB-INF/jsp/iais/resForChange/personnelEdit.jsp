@@ -168,7 +168,7 @@
                                             <iais:row>
                                                 <iais:field value="" width="12" />
                                                 <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                    <iais:input cssClass="otherDesignationShow needDisableI" name="otherDesignationShow"
+                                                    <iais:input cssClass=" needDisableI" name="otherDesignationShow"
                                                                 maxLength="100" type="text"
                                                                 value="${personnelEditDto.otherDesignation}" needDisabled="true"></iais:input>
                                                 </iais:value>
@@ -402,14 +402,14 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                         </iais:row>
-                                        <iais:row>
-                                            <iais:field value="" width="12" />
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
-                                                <iais:input cssClass="otherDesignation2 needDisableI hidden" name="otherDesignation2"
-                                                            maxLength="100" type="text"
-                                                            value="${newPerson.otherDesignation}" ></iais:input>
-                                            </iais:value>
-                                        </iais:row>
+                                            <iais:row>
+                                                <iais:field value="" width="12" />
+                                                <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 ">
+                                                    <iais:input cssClass="otherDesignation2 needDisableI hidden" name="otherDesignation2"
+                                                                maxLength="100" type="text"
+                                                                value="${newPerson.otherDesignation}" ></iais:input>
+                                                </iais:value>
+                                            </iais:row>
 
                                     </c:if>
                                     <iais:row>
@@ -486,8 +486,8 @@
         }else {
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation').addClass('hidden');
             $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation1').addClass('hidden');
-            $('.designationSel').closest('.form-group').next('.form-group').find('.otherDesignation2').addClass('hidden');
         }
+
         if($('#ackMessage').val()=='personnelAck'){
             $('#ackMessageConfim').modal('show');
         }
@@ -678,7 +678,6 @@
         }
         var otherDesignation = data.otherDesignation;
         $CurrentPsnEle.find('input[name="otherDesignation2"]').val(otherDesignation);
-
         <!-- professionType-->
         var professionType = data.professionType;
         if (professionType == null || professionType == 'undefined' || professionType == '') {

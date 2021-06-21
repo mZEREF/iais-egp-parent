@@ -66,6 +66,7 @@
                   <c:if test="${prem.premisesType=='ONSITE'}"><c:out value="Premises"/></c:if>
                   <c:if test="${prem.premisesType=='CONVEYANCE'}"><c:out value="Conveyance"/></c:if>
                   <c:if test="${prem.premisesType=='OFFSITE'}"><c:out value="Off-site"/></c:if>
+                  <c:if test="${prem.premisesType=='EASMTS'}"><c:out value="Conveyance(in a mobile clinic / ambulance)"></c:out></c:if>
                 </td>
                 <td><c:out value="${prem.svcId}"/></td>
               </tr>
@@ -93,7 +94,6 @@
 </div>
 <script>
   $(document).ready(function () {
-  
       
   
   });

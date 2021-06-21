@@ -53,39 +53,39 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Application No</td>
-                                                                    <td class="col-xs-6">&nbsp;${applicationViewDto.applicationDto.applicationNo}</td>
+                                                                    <td class="col-xs-6" style="padding-left: 15px;">${applicationViewDto.applicationDto.applicationNo}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Application Type</td>
-                                                                    <td>&nbsp;${applicationViewDto.applicationDto.applicationType}</td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.applicationDto.applicationType}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Service Name</td>
-                                                                    <td>&nbsp;<iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
+                                                                    <td style="padding-left: 15px;"><iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
                                                                 </tr>
                                                                 <c:choose>
                                                                     <c:when test="${empty serviceStep}">
                                                                         <tr>
                                                                             <td align="right">Service Discipline/Modality</td>
-                                                                            <td>-</td>
+                                                                            <td style="padding-left: 15px;">-</td>
                                                                         </tr>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:forEach var="pool" items="${serviceStep}" >
                                                                             <tr>
                                                                                 <td align="right">Service Discipline/Modality</td>
-                                                                                <td class="row_no">&nbsp;<c:out value="${pool.scopeName}"/></td>
+                                                                                <td class="row_no" style="padding-left: 15px;"><c:out value="${pool.scopeName}"/></td>
                                                                             </tr>
                                                                         </c:forEach>
                                                                     </c:otherwise>
                                                                 </c:choose>
                                                                 <tr>
                                                                     <td align="right">Submission Date</td>
-                                                                    <td>&nbsp;${applicationViewDto.submissionDate}<c:if test="${empty applicationViewDto.submissionDate}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.submissionDate}<c:if test="${empty applicationViewDto.submissionDate}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Current Status</td>
-                                                                    <td>&nbsp;${applicationViewDto.currentStatus}<c:if test="${empty applicationViewDto.currentStatus}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.currentStatus}<c:if test="${empty applicationViewDto.currentStatus}">-</c:if></td>
                                                                 </tr>
 
                                                                 </tbody>
@@ -105,23 +105,23 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">HCI Code</td>
-                                                                    <td class="col-xs-6">&nbsp;${applicationViewDto.hciCode}<c:if test="${empty applicationViewDto.hciCode}">-</c:if></td>
+                                                                    <td class="col-xs-6" style="padding-left: 15px;">${applicationViewDto.hciCode}<c:if test="${empty applicationViewDto.hciCode}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">HCI Name</td>
-                                                                    <td>&nbsp;${applicationViewDto.hciName}<c:if test="${empty applicationViewDto.hciName}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.hciName}<c:if test="${empty applicationViewDto.hciName}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">HCI Address</td>
-                                                                    <td>&nbsp;${applicationViewDto.hciAddress}<c:if test="${empty applicationViewDto.hciAddress}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.hciAddress}<c:if test="${empty applicationViewDto.hciAddress}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Telephone</td>
-                                                                    <td>&nbsp;${applicationViewDto.telephone}<c:if test="${empty applicationViewDto.telephone}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.telephone}<c:if test="${empty applicationViewDto.telephone}">-</c:if></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Email</td>
-                                                                    <td>&nbsp;${licenseeDto.emilAddr}<c:if test="${empty licenseeDto.emilAddr}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${licenseeDto.emilAddr}<c:if test="${empty licenseeDto.emilAddr}">-</c:if></td>
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
@@ -143,47 +143,47 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Licensee Name (Company)</td>
-                                                                    <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>
+                                                                    <td class="col-xs-6" style="padding-left: 15px;">${licenseeDto.name}</td>
                                                                 </tr>
 
                                                                 <c:if test="${empty authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
-                                                                        <td>&nbsp;-</td>
+                                                                        <td style="padding-left: 15px;">-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Authorised Person ID</td>
-                                                                        <td>&nbsp;-</td>
+                                                                        <td style="padding-left: 15px;">-</td>
                                                                     </tr>
                                                                 </c:if>
                                                                 <c:forEach var="person" items="${authorisedUsers}">
                                                                     <tr>
                                                                         <td align="right">Authorised Person Name</td>
-                                                                        <td>&nbsp;${person.displayName}</td>
+                                                                        <td style="padding-left: 15px;">${person.displayName}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">Authorised Person ID</td>
-                                                                        <td>&nbsp;${person.identityNo} (<iais:code code="${person.idType}"/>)</td>
+                                                                        <td style="padding-left: 15px;">${person.identityNo} (<iais:code code="${person.idType}"/>)</td>
                                                                     </tr>
                                                                 </c:forEach>
                                                                 <c:if test="${empty appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person</td>
-                                                                        <td>&nbsp;-</td>
+                                                                        <td style="padding-left: 15px;">-</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person ID</td>
-                                                                        <td>&nbsp;-</td>
+                                                                        <td style="padding-left: 15px;">-</td>
                                                                     </tr>
                                                                 </c:if>
                                                                 <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person</td>
-                                                                        <td> ${personMap.name}</td>
+                                                                        <td style="padding-left: 15px;">${personMap.name}</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="right">MedAlert Contact Person ID</td>
-                                                                        <td> ${personMap.idNo} (<iais:code code="${personMap.idType}"/>)</td>
+                                                                        <td style="padding-left: 15px;">${personMap.idNo} (<iais:code code="${personMap.idType}"/>)</td>
                                                                     </tr>
 
                                                                 </c:forEach>
@@ -206,20 +206,20 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Service Name</td>
-                                                                    <td>&nbsp;<iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
+                                                                    <td style="padding-left: 15px;"><iais:service value="${applicationViewDto.applicationDto.serviceId}"></iais:service></td>
                                                                 </tr>
                                                                 <c:choose>
                                                                     <c:when test="${empty serviceStep}">
                                                                         <tr>
                                                                             <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
-                                                                            <td>-</td>
+                                                                            <td style="padding-left: 15px;">-</td>
                                                                         </tr>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:forEach var="pool" items="${serviceStep}" >
                                                                             <tr>
                                                                                 <td align="right">Service (Lab Discipline, Modality, Subsumed and etc)</td>
-                                                                                <td class="row_no">&nbsp;<c:out value="${pool.scopeName}"/><c:if test="${empty pool.scopeName}">-</c:if></td>
+                                                                                <td class="row_no" style="padding-left: 15px;"><c:out value="${pool.scopeName}"/><c:if test="${empty pool.scopeName}">-</c:if></td>
                                                                             </tr>
                                                                         </c:forEach>
                                                                     </c:otherwise>
@@ -253,15 +253,15 @@
                                                                     <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
                                                                         <tr>
                                                                             <td style="text-align: center" >
-                                                                                <p>&nbsp;${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
+                                                                                <p style="padding-left: 15px;">${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
                                                                             </td>
 
                                                                             <td style="text-align: center">
-                                                                                <p>&nbsp;${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
+                                                                                <p style="padding-left: 15px;">${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
 
                                                                             </td>
                                                                             <td style="text-align: center">
-                                                                                <p>&nbsp;${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
+                                                                                <p style="padding-left: 15px;">${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
                                                                             </td>
                                                                         </tr>
                                                                     </c:forEach>

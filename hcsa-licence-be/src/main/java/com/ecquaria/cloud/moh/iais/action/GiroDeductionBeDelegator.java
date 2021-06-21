@@ -31,26 +31,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -64,6 +44,25 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -81,9 +80,14 @@ public class GiroDeductionBeDelegator {
             .sortField("APP_GROUP_NO").build();
     @Autowired
     private GiroDeductionBeService giroDeductionBeService;
+    @Autowired
+    private ApplicationClient applicationClient;
     private final static String CSV="csv";
-    //PMT12 PMT13 PMT11
-    private static final String [] STATUS={"PDNG","CMSTAT001","FAIL"};
+
+    protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
+/*
+    protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
+*/
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -106,8 +110,7 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
-    @Autowired
-    private ApplicationClient applicationClient;
+
     private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
      * StartStep: beGiroDeductionStart
@@ -297,7 +300,7 @@ public class GiroDeductionBeDelegator {
         Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         List<String> list=new ArrayList<>(HEADERS.length);
-        String errMsg=MessageUtil.getMessageDesc("GENERAL_ACK020");
+        String GENERAL_ACK020 =MessageUtil.getMessageDesc("GENERAL_ACK020");
         try {
             for(CSVRecord record:parse){
                 for(String v : HEADERS){
@@ -310,20 +313,21 @@ public class GiroDeductionBeDelegator {
                 if(Arrays.asList(HEADERS).contains(s)){
                     continue;
                 }
-                String status=record.get("Payment Status");
-                String payment_status = encryptionPayment(status);
-                if(payment_status.equals(status)){
-                    bpc.request.setAttribute("message",errMsg);
+                String payment_status_code = record.get("Payment Status");
+                String payment_status = payment_status_code;
+                payment_status = encryptionPayment(payment_status);
+                if(payment_status.equals(payment_status_code)){
+                    bpc.request.setAttribute("message",GENERAL_ACK020);
                     return;
                 }
                 map.put(s,payment_status);
             }
         }catch (Exception e){
-            bpc.request.setAttribute("message",errMsg);
+            bpc.request.setAttribute("message",GENERAL_ACK020);
         }
 
         if(!list.equals(Arrays.asList(HEADERS))){
-            bpc.request.setAttribute("message",errMsg);
+            bpc.request.setAttribute("message",GENERAL_ACK020);
             return;
         }
         List<GiroDeductionDto> giroDeductionDtoList= IaisCommonUtils.genNewArrayList();
@@ -343,6 +347,7 @@ public class GiroDeductionBeDelegator {
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             List<GiroDeductionDto> entity = beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            //update group status
             List<ApplicationGroupDto> applicationGroupDtoList = applicationClient.updateBeGroupStatus(applicationGroupDtos).getEntity();
             updateFeApplicationGroupStatus(applicationGroupDtoList);
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
@@ -390,7 +395,6 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-
         ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 

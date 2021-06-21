@@ -24,6 +24,7 @@ public class EqRequestForChangeSubmitResultChange {
             hciName=appGrpPremisesDto.getConveyanceHciName();
             oldHciName=oldAppGrpPremisesDto.getConveyanceHciName();
         }
+
         if(hciName==null&&oldHciName==null){
             return false;
         }else if(hciName==null&&oldHciName!=null){
@@ -61,40 +62,44 @@ public class EqRequestForChangeSubmitResultChange {
         List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList);
         List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = o.get(0).getAppSvcDisciplineAllocationDtoList();
+        List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = o.get(0).getAppSvcDisciplineAllocationDtoList();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = n.get(0).getHcsaServiceStepSchemeDtos();
         String deputyPoFlag = n.get(0).getDeputyPoFlag();
         o.get(0).setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
         o.get(0).setDeputyPoFlag(deputyPoFlag);
-        boolean flag=false;
-        boolean flag1=false;
-        if (appSvcDisciplineAllocationDtoList != null && appSvcDisciplineAllocationDtoList1 != null) {
-            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
-                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
-                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
-                for (AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList1) {
-                    String idNo1 = allocationDto.getIdNo();
-                    String premiseVal1 = allocationDto.getPremiseVal();
-                    String chkLstConfId1 = allocationDto.getChkLstConfId();
-                    try {
-                        if (idNo.equals(idNo1) && premiseVal.equals(premiseVal1) && chkLstConfId.equals(chkLstConfId1)) {
-                            allocationDto.setCgoSelName(cgoSelName);
-                            allocationDto.setChkLstName(chkLstName);
-                        }
-                    } catch (NullPointerException e) {
-
-                    }
-                }
-            }
-            flag = appSvcDisciplineAllocationDtoList.equals(appSvcDisciplineAllocationDtoList1);
-        }else {
-            flag=true;
-        }
+        boolean flag=eqAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = n.get(0).getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = o.get(0).getAppSvcLaboratoryDisciplinesDtoList();
+        boolean flag1= eqAppSvcLaboratoryDisciplines(appSvcLaboratoryDisciplinesDtoList,oldAppSvcLaboratoryDisciplinesDtoList);
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
+        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
+        boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
+        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
+
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
+        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
+
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
+        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
+        List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
+        List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
+        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
+        boolean eqAppSvcVehicle = eqAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
+        boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(n.get(0).getAppSvcClinicalDirectorDtoList(), o.get(0).getAppSvcClinicalDirectorDtoList());
+        boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(n.get(0).getAppSvcChargesPageDto(), o.get(0).getAppSvcChargesPageDto());
+        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc || eqAppSvcVehicle || eqAppSvcClinicalDirector ||eqAppSvcChargesPageDto) {
+            return true;
+
+        }
+        return false;
+    }
+
+    private static boolean eqAppSvcLaboratoryDisciplines(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList,List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList){
+        boolean flag1;
         if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
             List<AppSvcChckListDto> list= IaisCommonUtils.genNewArrayList();
             List<AppSvcChckListDto> list1=IaisCommonUtils.genNewArrayList();
@@ -127,28 +132,36 @@ public class EqRequestForChangeSubmitResultChange {
         }else {
             flag1=true;
         }
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
-        List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
-        boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
-        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
+        return flag1;
+    }
+    private static boolean eqAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList , List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
+        boolean flag;
+        if (appSvcDisciplineAllocationDtoList != null && oldAppSvcDisciplineAllocationDtoList != null) {
+            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
+                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
+                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
+                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
+                for (AppSvcDisciplineAllocationDto allocationDto : oldAppSvcDisciplineAllocationDtoList) {
+                    String idNo1 = allocationDto.getIdNo();
+                    String premiseVal1 = allocationDto.getPremiseVal();
+                    String chkLstConfId1 = allocationDto.getChkLstConfId();
+                    try {
+                        if (idNo.equals(idNo1) && premiseVal.equals(premiseVal1) && chkLstConfId.equals(chkLstConfId1)) {
+                            allocationDto.setCgoSelName(cgoSelName);
+                            allocationDto.setChkLstName(chkLstName);
+                        }
+                    } catch (NullPointerException e) {
 
-        List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
-        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
-
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
-        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
-        List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
-        List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
-        boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
-        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc) {
-            return true;
-
+                    }
+                }
+            }
+            flag = appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList);
+        }else {
+            flag=true;
         }
-        return false;
+        return flag;
     }
     private static boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList , List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList){
         if(appSvcPersonnelDtoList==null){
@@ -203,10 +216,10 @@ public class EqRequestForChangeSubmitResultChange {
 
         return false;
     }
-    private static boolean eqCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList)  {
+    private static boolean eqCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList)  {
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
-            List<AppSvcCgoDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
-            List<AppSvcCgoDto> o = PageDataCopyUtil.copyAppSvcCgo(oldAppSvcCgoDtoList);
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcCgo(appSvcCgoDtoList);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcCgo(oldAppSvcCgoDtoList);
             if (!n.equals(o)) {
                 return true;
             }
@@ -242,6 +255,18 @@ public class EqRequestForChangeSubmitResultChange {
         return false;
     }
 
+    public static boolean eqAddFloorNo( List<AppGrpPremisesDto> appGrpPremisesDtoList , List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos=new ArrayList<>(10);
+        appGrpPremisesDtoList.forEach((v)->{
+            appPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
+        });
+        List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos=new ArrayList<>(10);
+        oldAppGrpPremisesDtoList.forEach((v)->{
+            oldAppPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
+        });
+        return eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
+
+    }
     public static boolean eqAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
         List<AppSvcDisciplineAllocationDto> list = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList);
         List<AppSvcDisciplineAllocationDto> list1 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(oldAppSvcDisciplineAllocationDtoList);
@@ -294,15 +319,15 @@ public class EqRequestForChangeSubmitResultChange {
                 }
             }
         }
-        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (oldAppSvcCgoDtoList != null) {
             if (oldAppSvcCgoDtoList.size() != appSvcCgoDtoList.size()) {
                 return true;
             } else if (oldAppSvcCgoDtoList.size() == appSvcCgoDtoList.size()) {
                 int i = 0;
-                for (AppSvcCgoDto appSvcCgoDto : oldAppSvcCgoDtoList) {
-                    for (AppSvcCgoDto appSvcCgoDto1 : appSvcCgoDtoList) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
+                    for (AppSvcPrincipalOfficersDto appSvcCgoDto1 : appSvcCgoDtoList) {
                         if (appSvcCgoDto.getIdNo().equals(appSvcCgoDto1.getIdNo())) {
                             i++;
                             break;
@@ -354,33 +379,163 @@ public class EqRequestForChangeSubmitResultChange {
                 }
             }
         }
-
+        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        List<AppSvcVehicleDto> oldAppSvcVehicleDtoList = oldAppSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+        if(oldAppSvcVehicleDtoList!=null){
+            if(oldAppSvcVehicleDtoList.size()!=appSvcVehicleDtoList.size()){
+                return true;
+            }else if(appSvcVehicleDtoList.size() == oldAppSvcVehicleDtoList .size()){
+                int i=0;
+                for (AppSvcVehicleDto v : appSvcVehicleDtoList) {
+                    for (AppSvcVehicleDto v1 : oldAppSvcVehicleDtoList) {
+                        if(v.getVehicleName().equals(v1.getVehicleName())){
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                if(i != oldAppSvcVehicleDtoList.size()){
+                    return true;
+                }
+            }
+        }
+        AppSvcChargesPageDto appSvcChargesPageDto = appSvcRelatedInfoDto.getAppSvcChargesPageDto();
+        AppSvcChargesPageDto oldAppSvcChargesPageDto = oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto();
+        boolean compareAppSvcChargesPage = compareAppSvcChargesPage(appSvcChargesPageDto, oldAppSvcChargesPageDto);
+        if(compareAppSvcChargesPage){
+           return compareAppSvcChargesPage;
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        if(oldAppSvcClinicalDirectorDtoList!=null){
+            if(appSvcClinicalDirectorDtoList.size()!=oldAppSvcClinicalDirectorDtoList.size()){
+                return true;
+            }else if(appSvcClinicalDirectorDtoList.size()==oldAppSvcClinicalDirectorDtoList.size()){
+                int i=0;
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    for (AppSvcPrincipalOfficersDto v1 : oldAppSvcClinicalDirectorDtoList) {
+                        if(v.getIdNo().equals(v1.getIdNo())){
+                            i++;
+                        }
+                    }
+                }
+                if(i!=oldAppSvcClinicalDirectorDtoList.size()){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
+    private static boolean compareAppSvcChargesPage(AppSvcChargesPageDto appSvcChargesPageDto ,AppSvcChargesPageDto oldAppSvcChargesPageDto){
+        if(oldAppSvcChargesPageDto!=null){
+            List<AppSvcChargesDto> oldGeneralChargesDtos = oldAppSvcChargesPageDto.getGeneralChargesDtos();
+            List<AppSvcChargesDto> oldOtherChargesDtos = oldAppSvcChargesPageDto.getOtherChargesDtos();
+            List<AppSvcChargesDto> generalChargesDtos = appSvcChargesPageDto.getGeneralChargesDtos();
+            List<AppSvcChargesDto> otherChargesDtos = appSvcChargesPageDto.getOtherChargesDtos();
+            if(oldGeneralChargesDtos ==null && generalChargesDtos!=null){
+                return true;
+            }else if(oldGeneralChargesDtos!=null && generalChargesDtos==null){
+                return true;
+            }else if(oldGeneralChargesDtos!=null && generalChargesDtos!= null){
+                if(oldGeneralChargesDtos.size()!=generalChargesDtos.size()){
+                    return true;
+                }else if(oldGeneralChargesDtos.size()== generalChargesDtos.size()){
+                    int i=0;
+                    for (AppSvcChargesDto v : generalChargesDtos) {
+                        for (AppSvcChargesDto v1 : oldGeneralChargesDtos) {
+                            if(v.getMaxAmount().equals(v1.getMaxAmount())&&v.getMinAmount().equals(v1.getMinAmount())){
+                                i++;
+                            }
+                        }
+                    }
+                    if(i!=oldGeneralChargesDtos.size()){
+                        return true;
+                    }
+                }
+            }
+            if(oldOtherChargesDtos==null&&otherChargesDtos!=null){
+                return true;
+            }else if(oldOtherChargesDtos!=null&&otherChargesDtos==null){
+                return true;
+            }else if(oldOtherChargesDtos!=null && otherChargesDtos!=null){
+                if(oldOtherChargesDtos.size()!=otherChargesDtos.size()){
+                    return true;
+                }else if(oldOtherChargesDtos.size()== otherChargesDtos.size()){
+                    int i=0;
+                    for (AppSvcChargesDto v : otherChargesDtos) {
+                        for (AppSvcChargesDto v1 : oldOtherChargesDtos) {
+                            if(v.getMinAmount().equals(v1.getMinAmount())&&v.getMaxAmount().equals(v1.getMaxAmount())){
+                                i++;
+                            }
+                        }
+                    }
+                    if(i!=oldOtherChargesDtos.size()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
 
         String newHciName = "";
         String oldHciName = "";
+        String newVehicleNo="";
+        String oldVehicleNo="";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
             oldHciName = premisesListQueryDto.getConveyanceHciName();
+            oldVehicleNo=premisesListQueryDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             oldHciName = premisesListQueryDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            oldHciName=premisesListQueryDto.getEasMtsHciName();
+
         }
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getHciName();
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             newHciName = appGrpPremisesDto.getConveyanceHciName();
+            newVehicleNo=appGrpPremisesDto.getConveyanceVehicleNo();
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             newHciName = appGrpPremisesDto.getOffSiteHciName();
+        }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            newHciName=appGrpPremisesDto.getEasMtsHciName();
         }
 
-        if (!newHciName.equals(oldHciName)) {
+        if (!newHciName.equals(oldHciName) || !newVehicleNo.equals(oldVehicleNo)) {
             return false;
         }
 
         return true;
+    }
+
+    public static boolean eqAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList ,List<AppSvcVehicleDto> oldAppSvcVehicleDtoList){
+        List<AppSvcVehicleDto> n = PageDataCopyUtil.copyAppSvcVehicleDto(appSvcVehicleDtoList);
+        List<AppSvcVehicleDto> o = PageDataCopyUtil.copyAppSvcVehicleDto(oldAppSvcVehicleDtoList);
+        if(!n.equals(o)){
+        return true;
+        }
+        return false;
+    }
+    public static boolean eqAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
+        AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
+        AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);
+        if(!n.equals(o)){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean eqAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtos){
+        List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcClinicalDirectorDtos);
+        List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcClinicalDirectorDtos);
+        if(!n.equals(o)){
+            return true;
+        }
+        return false;
     }
 }

@@ -138,9 +138,9 @@ public class MultipleSelectTag extends DivTagSupport {
     @Override
 
     public void setStyle(String style) {
-        this.style = style;
-    }
-    public void setNeedMask(boolean needMask) {
+		this.style = style;
+	}
+	public void setNeedMask(boolean needMask) {
         this.needMask = needMask;
     }
     public void setSelectValue(String selectValue) {

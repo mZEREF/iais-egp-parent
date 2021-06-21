@@ -152,7 +152,7 @@
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
           </div>
@@ -193,6 +193,7 @@
         </div>
       </div>
 
+
       <div class="form-group" >
         <div class="col-xs-12 col-md-9" >
           <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
@@ -224,6 +225,22 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
+          <div class="cl-xs-12 col-md-4">
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
+              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+            </div>
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
+              <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            </div>
+            <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
+          </div>
+        </div>
+      </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
@@ -240,6 +257,20 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
+          </div>
+        </div>
+      </div>
+
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
@@ -252,6 +283,48 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Vehicles&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-vehicles" maxlength="2" placeholder="minimum count" value="${VEH.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount6"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-vehicles" maxlength="2" placeholder="maximum count" value="${VEH.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount6"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-charges" maxlength="2" placeholder="maximum count" value="${CHA.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount7"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-other-charges" maxlength="2" placeholder="maximum count" value="${CHAO.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount8"></span>
           </div>
         </div>
       </div>

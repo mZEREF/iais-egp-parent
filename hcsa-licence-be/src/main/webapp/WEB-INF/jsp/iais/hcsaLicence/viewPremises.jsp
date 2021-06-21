@@ -74,14 +74,17 @@
                                       <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
                                           <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
-                                          Off-site
+                                             Off-site
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
                                             Premises
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
-                                            Conveyance
+                                             Conveyance
                                          </c:if>
+                                          <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
+                                             Conveyance(in a mobile clinic / ambulance)
+                                          </c:if>
                                       </div>
                                       <div class="col-md-6">
                                         <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none">
@@ -93,6 +96,9 @@
                                          </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">
                                             Conveyance
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='EASMTS'}">
+                                            Conveyance(in a mobile clinic / ambulance)
                                           </c:if>
                                         </span>
                                       </div>
@@ -404,43 +410,43 @@
                                       </div>
                                     </div>
                                   </c:if>
-
-                                  <div class="row">
-                                    <div class="col-md-6">
-                                      Operating Hours
+                                  <c:if test="${appGrpPremDto.premisesType=='OFFSITE' || appGrpPremDto.premisesType=='ONSITE' || appGrpPremDto.premisesType=='CONVEYANCE'}">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Operating Hours
+                                      </div>
+                                      <div class="col-md-6">
+                                        <span></span>
+                                      </div>
                                     </div>
-                                    <div class="col-md-6">
-                                     <span></span>
-                                    </div>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-md-6">Weekly</div>
-                                    <div class="col-md-6">
+                                    <div class="row">
+                                      <div class="col-md-6">Weekly</div>
+                                      <div class="col-md-6">
                                         <div class="col-md-4"><span>Start</span></div>
                                         <div class="col-md-4"><span>End</span></div>
                                         <div class="col-md-4"><span>24 Hours</span></div>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <div class="col-md-12" style="padding: 0px">
+                                    <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <div class="col-md-12" style="padding: 0px">
                                           <span class="newVal" attr="${weeklyDto.selectValList}">
                                              <c:forEach items="${weeklyDto.selectValList}" var="selectVal" varStatus="in">
                                                <iais:code code="${selectVal}"/><c:if test="${!in.last}">,</c:if>
                                              </c:forEach>
                                           </span>
-                                          <br>
-                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
+                                            <br>
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
                                             <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList" varStatus="in">
                                               <iais:code code="${oldSelectValList}"/><c:if test="${!in.last}">,</c:if>
                                             </c:forEach>
                                           </span>
-                                        </div>
+                                          </div>
 
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-4" style="padding-right: 0px">
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-4" style="padding-right: 0px">
                                             <span class="newVal" attr="${weeklyDto.startFrom}">
                                               <c:if test="${weeklyDto.selectAllDay}">
                                               </c:if>
@@ -455,8 +461,9 @@
                                                 <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}" pattern="HH : mm"/>
                                               </c:if>
                                             </span>
-                                        </div>
-                                        <div class="col-md-4" style="padding-right: 0px">
+
+                                          </div>
+                                          <div class="col-md-4" style="padding-right: 0px">
 
                                             <span class="newVal" attr="${weeklyDto.endTo}">
                                               <c:if test="${weeklyDto.selectAllDay}">
@@ -474,10 +481,9 @@
                                                  <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}" pattern="HH : mm"/>
                                                </c:if>
                                             </span>
-
-                                        </div>
-                                        <div class="col-md-4" style="padding-right: 0px">
-                                          <div class="col-md-6" style="padding: 0px">
+                                          </div>
+                                          <div class="col-md-4" style="padding-right: 0px">
+                                            <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${weeklyDto.selectAllDay}">
                                               <c:if test="${weeklyDto.selectAllDay}">
                                                 <div class="form-check active">
@@ -485,8 +491,8 @@
                                                 </div>
                                               </c:if>
                                             </span>
-                                          </div>
-                                          <div class="col-md-6" style="padding: 0px">
+                                            </div>
+                                            <div class="col-md-6" style="padding: 0px">
                                             <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                               <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
                                                 <div class="form-check active">
@@ -494,39 +500,39 @@
                                                 </div>
                                               </c:if>
                                             </span>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </c:forEach>
-                                  <div class="row">
-                                    <div class="col-md-6">Public Holiday</div>
-                                    <div class="col-md-6">
-                                      <div class="col-md-4"></div>
-                                      <div class="col-md-4"></div>
-                                      <div class="col-md-4"></div>
-                                    </div>
-                                  </div>
-                                  <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
+                                    </c:forEach>
                                     <div class="row">
+                                      <div class="col-md-6">Public Holiday</div>
                                       <div class="col-md-6">
-                                        <div class="col-md-12" style="padding: 0px">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4"></div>
+                                      </div>
+                                    </div>
+                                    <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                          <div class="col-md-12" style="padding: 0px">
                                           <span class="newVal" attr="${op.selectValList}">
                                                <c:forEach items="${op.selectValList}" var="phDto" varStatus="in">
                                                  <iais:code code="${phDto}"></iais:code><c:if test="${!in.last}">,</c:if>
                                                </c:forEach>
                                           </span>
-                                          <br>
-                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
+                                            <br>
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
                                               <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList" varStatus="in">
                                                 <iais:code code="${oldPhDtoList}"/><c:if test="${!in.last}">,</c:if>
                                               </c:forEach>
                                           </span>
-                                        </div>
+                                          </div>
 
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-4" style="padding-right: 0px">
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-4" style="padding-right: 0px">
                                             <span class="newVal" attr="${op.startFrom}">
                                               <c:if test="${op.selectAllDay}">
                                               </c:if>
@@ -542,9 +548,9 @@
                                               </c:if>
                                             </span>
 
-                                        </div>
+                                          </div>
 
-                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-4" style="padding-right: 0px">
                                             <span class="newVal" attr="${op.endTo}">
                                               <c:if test="${op.selectAllDay}">
 
@@ -563,9 +569,9 @@
                                               </c:if>
                                             </span>
 
-                                        </div>
+                                          </div>
 
-                                        <div class="col-md-4" style="padding-right: 0px">
+                                          <div class="col-md-4" style="padding-right: 0px">
                                             <div class="col-md-6" style="padding: 0px" >
                                               <span class="newVal" attr="${op.selectAllDay}">
                                                 <c:if test="${op.selectAllDay}">
@@ -584,58 +590,139 @@
                                                  </c:if>
                                               </span>
                                             </div>
+                                          </div>
                                         </div>
-                                      </div>
 
-                                    </div>
-                                  </c:forEach>
-                                  <div class="row">
-                                    <div class="col-md-6">Event</div>
-                                    <div class="col-md-6">
-                                      <div class="col-md-4"></div>
-                                      <div class="col-md-4"></div>
-                                      <div class="col-md-4"></div>
-                                    </div>
-                                  </div>
-                                  <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
+                                      </div>
+                                    </c:forEach>
                                     <div class="row">
+                                      <div class="col-md-6">Event</div>
                                       <div class="col-md-6">
-                                        <div class="col-md-12" style="padding: 0px">
-                                          <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
-                                          <br>
-                                          <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
-                                              ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
-                                          </span>
-                                        </div>
-
-
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4"></div>
                                       </div>
-                                      <div class="col-md-6">
+                                    </div>
+                                    <c:forEach var="eventDto" items="${appGrpPremDto.eventDtoList}" varStatus="eventSta">
+                                      <div class="row">
                                         <div class="col-md-6">
-                                          <div class="col-md-6" style="padding: 0px">
+                                          <div class="col-md-12" style="padding: 0px">
+                                            <span class="newVal" attr="${eventDto.eventName}">${eventDto.eventName}</span>
+                                            <br>
+                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}">
+                                                ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].eventName}
+                                            </span>
+                                          </div>
+
+
+                                        </div>
+                                        <div class="col-md-6">
+                                          <div class="col-md-6">
+                                            <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${eventDto.startDate}">
                                               <fmt:formatDate value="${eventDto.startDate}" pattern="dd/MM/yyyy"/>
                                             </span>
-                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
+                                              <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].startDate}" pattern="dd/MM/yyyy"/>
                                             </span>
-                                          </div>
+                                            </div>
 
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6" style="padding: 0px">
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6" style="padding: 0px">
                                             <span class="newVal" attr="${eventDto.endDate}">
                                                 <fmt:formatDate value="${eventDto.endDate}"  pattern="dd/MM/yyyy"/>
                                             </span>
-                                            <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
+                                              <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].eventDtoList[eventSta.index].endDate}" pattern="dd/MM/yyyy"/>
                                             </span>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
+                                    </c:forEach>
+                                  </c:if>
+                                  <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        For public/in-house use only?
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="col-md-6">
+                                            <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
+                                              <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">
+                                                No
+                                              </c:if>
+                                                <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">
+                                                  Yes
+                                                </c:if>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
+                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">
+                                                  No
+                                                </c:if>
+                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">
+                                                  Yes
+                                                 </c:if>
+                                            </span>
+                                          </div>
+                                      </div>
                                     </div>
-                                  </c:forEach>
-
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Public email
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="col-md-12">
+                                            <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">
+                                              <c:out value="${appGrpPremDto.easMtsPubEmail}"></c:out>
+                                            </span>
+                                            <br>
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}">
+                                                 <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}"></c:out>
+                                            </span>
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Public Hotline
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-6">
+                                          <span class="newVal " attr="${appGrpPremDto.easMtsPubHotline}">
+                                            <c:out value="${appGrpPremDto.easMtsPubHotline}"></c:out>
+                                          </span>
+                                        </div>
+                                        <div class="col-md-6">
+                                          <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}">
+                                            <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}"></c:out>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        Are you co-locating with another licensee?
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="col-md-6">
+                                          <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
+                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">No</c:if>
+                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">Yes</c:if>
+                                          </span>
+                                        </div>
+                                        <div class="col-md-6">
+                                          <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">No</c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">Yes</c:if>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </c:if>
                                 </div>
                               </div>
                             </c:forEach>
@@ -723,7 +810,7 @@
                                           </div>
                                           <div class="col-xs-6 col-md-6">
                                             <c:if test="${oldAppGrpPrimaryDocDto[inx.index].docSize!=null}">
-                                                 <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none">
+                                                 <span class="oldVal " attr="${oldAppGrpPrimaryDocDto[inx.index].md5Code}${oldAppGrpPrimaryDocDto[inx.index].docName}"  style="display: none"
                                                    <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldAppGrpPrimaryDocDto[inx.index].fileRepoId}" docName="${oldAppGrpPrimaryDocDto[inx.index].docName}"/>
                                                    <c:out value="(${oldAppGrpPrimaryDocDto[inx.index].docSize} KB)"/>
                                                  </span>
@@ -790,11 +877,22 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span>${newLicenceDto.uenNo}
+                                            <span class="newVal " attr="${newLicenceDto.uenNo}">${newLicenceDto.uenNo}
                                               <c:if test="${empty hashMap[newLicenceDto.uenNo]}">
                                                 <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                               </c:if>
                                               <c:if test="${not empty hashMap[newLicenceDto.uenNo]}">
+                                                <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                              </c:if>
+                                            </span>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <span class="oldVal " style="display: none" attr="${oldLicenceDto.uenNo}">
+                                              ${oldLicenceDto.uenNo}
+                                                   <c:if test="${empty hashMap[oldLicenceDto.uenNo]}">
+                                                     <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                                   </c:if>
+                                              <c:if test="${not empty hashMap[oldLicenceDto.uenNo]}">
                                                 <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
                                               </c:if>
                                             </span>
@@ -819,6 +917,43 @@
                                                 <td>Update Date</td>
                                               </tr>
                                               <c:forEach items="${hashMap[newLicenceDto.uenNo]}" var="map">
+                                                <tr>
+                                                  <td>${map.identificationNo}</td>
+                                                  <td>${map.caseNo}</td>
+                                                  <td>${map.caseType}</td>
+                                                  <td>Case Status Description</td>
+                                                  <td>${map.offenceDesc}</td>
+                                                  <td>${map.outcome}</td>
+                                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td>${map.prosecutionOutcome}</td>
+                                                  <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                  <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                </tr>
+                                              </c:forEach>
+                                              <tr></tr>
+
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </c:if>
+                                      <c:if test="${not empty hashMap[oldLicenceDto.uenNo]}">
+                                        <div class="row old-img-show" >
+                                          <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                            <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                              <tr>
+                                                <td>Indentification No.</td>
+                                                <td>Case No.</td>
+                                                <td>Case Type Description</td>
+                                                <td>Case Status Description</td>
+                                                <td>Offence Description</td>
+                                                <td>Outcome Description</td>
+                                                <td>Outcome Issue Date</td>
+                                                <td>Prosecution Outcome Description</td>
+                                                <td>Created Date</td>
+                                                <td>Update Date</td>
+                                              </tr>
+                                              <c:forEach items="${hashMap[oldLicenceDto.uenNo]}" var="map">
                                                 <tr>
                                                   <td>${map.identificationNo}</td>
                                                   <td>${map.caseNo}</td>

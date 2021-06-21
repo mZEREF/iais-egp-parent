@@ -19,8 +19,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -131,7 +131,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 List<ApplicationDto> value = entry.getValue();
                 boolean isExistFlag = false;
                 for (String appNo:appNos
-                ) {
+                     ) {
                     log.debug(StringUtil.changeForLog(" appNo is" + appNo));
                     log.debug(StringUtil.changeForLog(" key is" + key));
                     log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
@@ -330,8 +330,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             if(appSvcDocDtoLit!=null){
                 appSvcDocDtoLit.forEach((v)->{
                     String appGrpPersonId = v.getAppGrpPersonId();
-                    String appSvcPersonId = v.getAppSvcPersonId();
-                    if(appGrpPersonId!=null || appSvcPersonId!=null){
+                    if(appGrpPersonId!=null){
                         Integer integer = map.get(appGrpPersonId);
                         if(integer==null){
                             map.put(appGrpPersonId,i.get());
@@ -498,9 +497,9 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    AppSvcCgoDto appSvcCgoDto = inspectionTaskMainClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    AppSvcPrincipalOfficersDto appSvcCgoDto = inspectionTaskMainClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     appSvcCgoDto.setAssignSelect("newOfficer");
-                    List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");
                     List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
@@ -649,7 +648,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         for (String item:roleIds
-        ) {
+             ) {
             add(roleIds, item,selectOptionArrayList,roles);
         }
         return selectOptionArrayList;

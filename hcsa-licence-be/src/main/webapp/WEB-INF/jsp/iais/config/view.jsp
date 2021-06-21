@@ -90,19 +90,19 @@
               <div class="form-check " style="left: 10%">
                 <c:set var="type" value="${PremisesType}"></c:set>
                 <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span> Premises</label>
+                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Premises</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
-                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span> Off-site</label>
+                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Off-site</label>
               </div>
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
               </div>
             </div>
           </div>
@@ -157,6 +157,21 @@
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
+          <div class="cl-xs-12 col-md-4">
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" disabled <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
+              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+            </div>
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" disabled <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
+              <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            </div>
           </div>
         </div>
       </div>

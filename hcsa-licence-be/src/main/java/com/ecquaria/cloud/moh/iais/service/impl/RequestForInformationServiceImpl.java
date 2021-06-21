@@ -622,7 +622,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 }
             }
             for (Map.Entry<Integer,List<LicPremisesReqForInfoDocDto>> multiFileDto:licPremisesReqForInfoMultiFileDto.entrySet()
-            ) {
+                 ) {
                 stringBuilder.append("<p>   ").append(' ').append("Documentations : ").append(multiFileDto.getValue().get(0).getTitle()).append("</p>");
             }
         }
