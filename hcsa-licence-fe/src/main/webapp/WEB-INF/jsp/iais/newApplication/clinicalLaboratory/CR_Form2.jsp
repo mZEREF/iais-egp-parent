@@ -856,9 +856,10 @@
             var appType = $('input[name="applicationType"]').val();
             var assignSelectVal = $contentEle.find('select[name="assignSelect"]').val();
             var licPerson = $contentEle.find('input[name="licPerson"]').val();
-            if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            if(needControlName){
                 var prgNo = $contentEle.find('input[name="professionRegoNo"]').val();
-                if(prgNo != null && prgNo != '' && prgNo != undefined){
+                if(!isEmpty(prgNo)){
                     inputReadonly($contentEle.find('input[name="name"]'));
                 }
             }

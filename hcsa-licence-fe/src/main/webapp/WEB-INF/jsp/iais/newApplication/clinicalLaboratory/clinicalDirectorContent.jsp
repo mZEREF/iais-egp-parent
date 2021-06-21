@@ -207,6 +207,7 @@
                         showOtherSpecialty();
                         noRegWithProfBoard();
                         assignSelectBindEvent();
+                        profRegNoBlur();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
@@ -304,6 +305,17 @@
             $currContent.find('input[type="checkbox"]').prop('disabled',false);
             $currContent.find('input[type="radio"]').prop('disabled',false);
             $('#isEditHiddenVal').val('1');
+
+            var appType = $('input[name="applicationType"]').val();
+            var assignSelectVal = $currContent.find('select.assignSel').val();
+            var licPerson = $currContent.find('input.licPerson').val();
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            if(needControlName){
+                var prgNo = $currContent.find('input.profRegNo').val();
+                if(!isEmpty(prgNo)){
+                    controlEdit($currContent.find('input.field-name'), 'disabled', false);
+                }
+            }
         });
     }
 
