@@ -304,6 +304,7 @@
             });
             $currContent.find('input[type="checkbox"]').prop('disabled',false);
             $currContent.find('input[type="radio"]').prop('disabled',false);
+            $currContent.find('.assignSel').prop('disabled',false);
             $('#isEditHiddenVal').val('1');
 
             var appType = $('input[name="applicationType"]').val();
