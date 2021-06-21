@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -140,6 +141,7 @@ public class ClinicalLaboratoryDelegator {
     public static final String GENERALCHARGESCONFIG = "generalChargesConfig";
     public static final String OTHERCHARGESDTOLIST = "otherChargesDtoList";
     public static final String OTHERCHARGESCONFIG = "otherChargesConfig";
+    public static final String PREMALIGNBUSINESSMAP = "premAlignBusinessMap";
 
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
@@ -2098,7 +2100,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, GENERALCHARGESCONFIG, generalChargesDto);
         }
         //other charges config
-        List<HcsaSvcPersonnelDto> otherChargesDtos = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_CHARGES);
+        List<HcsaSvcPersonnelDto> otherChargesDtos = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_CHARGES_OTHER);
         if (otherChargesDtos != null && otherChargesDtos.size() > 0) {
             HcsaSvcPersonnelDto otherChargesDto = otherChargesDtos.get(0);
             ParamUtil.setRequestAttr(bpc.request, OTHERCHARGESCONFIG, otherChargesDto);
@@ -2150,6 +2152,60 @@ public class ClinicalLaboratoryDelegator {
         }
         log.debug(StringUtil.changeForLog("doCharges end ..."));
     }
+
+    /**
+     * StartStep: prepareBusiness
+     *
+     * @param bpc
+     * @throws
+     */
+    public void prepareBusiness(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("prepare business start ..."));
+
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        Map<String, AppSvcBusinessDto> premAlignBusinessMap = IaisCommonUtils.genNewHashMap();
+        List<AppSvcBusinessDto> appSvcBusinessDtos = currSvcInfoDto.getAppSvcBusinessDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
+            for(AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos){
+                premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,PREMALIGNBUSINESSMAP, premAlignBusinessMap);
+
+        log.debug(StringUtil.changeForLog("prepare business end ..."));
+    }
+
+    /**
+     * StartStep: doBusiness
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doBusiness(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("do Business start ..."));
+
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = false;
+        if (requestInformationConfig != null) {
+            isRfi = true;
+        }
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            //get data from page
+            List<AppSvcBusinessDto> appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
+            currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        }
+
+        log.debug(StringUtil.changeForLog("do Business end ..."));
+    }
+
     //=============================================================================
     //private method
     //=============================================================================
@@ -4671,5 +4727,67 @@ public class ClinicalLaboratoryDelegator {
         appSvcPsnDto.setPraCerEndDateStr(praCerEndDateStr);
 
         return appSvcPsnDto;
+    }
+    private List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request, List<AppGrpPremisesDto> appGrpPremisesDtos, String appType){
+        List<AppSvcBusinessDto> appSvcBusinessDtos = IaisCommonUtils.genNewArrayList();
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            int i = 0;
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                AppSvcBusinessDto appSvcBusinessDto = null;
+                boolean getDataByIndexNo = false;
+                boolean getPageData = false;
+                String isPartEdit = ParamUtil.getString(request,"isPartEdit" + i);
+                String businessIndexNo = ParamUtil.getString(request,"businessIndexNo" + i);
+                if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                    getPageData = true;
+                }else if(AppConsts.YES.equals(isPartEdit)){
+                    getPageData = true;
+                }else if(!StringUtil.isEmpty(businessIndexNo)){
+                    getDataByIndexNo = true;
+                }
+                log.debug("get data by index no. is {}",getDataByIndexNo);
+                log.debug("get page data is {}",getPageData);
+                if(getDataByIndexNo){
+                    appSvcBusinessDto = getAppSvcBusinessDtoByIndexNo(appSvcRelatedInfoDto, businessIndexNo);
+                }else if(getPageData){
+                    String businessName = ParamUtil.getString(request,"businessName" + i);
+                    appSvcBusinessDto = new AppSvcBusinessDto();
+                    appSvcBusinessDto.setBusinessName(businessName);
+                    if(StringUtil.isEmpty(businessIndexNo)){
+                        appSvcBusinessDto.setBusinessIndexNo(UUID.randomUUID().toString());
+                    }else{
+                        appSvcBusinessDto.setBusinessIndexNo(businessIndexNo);
+                    }
+                }
+                if(appSvcBusinessDto != null){
+                    appSvcBusinessDto.setPremIndexNo(appGrpPremisesDto.getPremisesIndexNo());
+                    appSvcBusinessDto.setPremType(appGrpPremisesDto.getPremisesType());
+                    appSvcBusinessDto.setPremAddress(appGrpPremisesDto.getAddress());
+                    appSvcBusinessDtos.add(appSvcBusinessDto);
+                }
+                i++;
+            }
+        }
+
+        return appSvcBusinessDtos;
+    }
+
+    private AppSvcBusinessDto getAppSvcBusinessDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String businessIndexNo){
+        AppSvcBusinessDto result = null;
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(businessIndexNo)){
+            List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
+                for(AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos){
+                    if(businessIndexNo.equals(appSvcBusinessDto.getBusinessIndexNo())){
+                        result = appSvcBusinessDto;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -2420,7 +2421,11 @@ public class NewApplicationHelper {
 
 
     public static void removePremiseEmptyAlignInfo(AppSubmissionDto appSubmissionDto){
+        log.debug(StringUtil.changeForLog("remove Premise Empty Align Info start ..."));
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+            log.debug(StringUtil.changeForLog("appGrpPremisesDtoList is empty ..."));
+        }
         //remove empty align primary doc
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = NewApplicationHelper.removeEmptyAlignPrimaryDoc(appGrpPremisesDtoList,appSubmissionDto.getAppGrpPrimaryDocDtos());
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
@@ -2436,10 +2441,46 @@ public class NewApplicationHelper {
                 //remove empty align svc spec doc
                 List<AppSvcDocDto> appSvcDocDtos = NewApplicationHelper.removeEmptyAlignSvcDoc(appGrpPremisesDtoList,appSvcRelatedInfoDto);
                 appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                //remove empty align business info
+                List<AppSvcBusinessDto> appSvcBusinessDtos = NewApplicationHelper.removeEmptyAlignBusiness(appGrpPremisesDtoList,appSvcRelatedInfoDto);
+                appSvcRelatedInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
             }
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
+        log.debug(StringUtil.changeForLog("remove Premise Empty Align Info end ..."));
     }
+
+
+    public static void updatePremisesAddress(AppSubmissionDto appSubmissionDto){
+        log.debug(StringUtil.changeForLog("update Premise Address start ..."));
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos)){
+                    for(AppSvcLaboratoryDisciplinesDto laboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos){
+                        AppGrpPremisesDto appGrpPremisesDto = NewApplicationHelper.getAppGrpPremisesDto(appGrpPremisesDtoList,laboratoryDisciplinesDto.getPremiseVal(),laboratoryDisciplinesDto.getPremiseType());
+                        if(appGrpPremisesDto != null){
+                            laboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                        }
+                    }
+                }
+                List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
+                    for(AppSvcBusinessDto appSvcBusinessDto:appSvcBusinessDtos){
+                        AppGrpPremisesDto appGrpPremisesDto = NewApplicationHelper.getAppGrpPremisesDto(appGrpPremisesDtoList, appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto.getPremType());
+                        if(appGrpPremisesDto != null){
+                            appSvcBusinessDto.setPremAddress(appGrpPremisesDto.getAddress());
+                        }
+                    }
+                }
+            }
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        }
+        log.debug(StringUtil.changeForLog("update Premise Address end ..."));
+    }
+
 
     public static void svcDocMandatoryValidate(List<HcsaSvcDocConfigDto> svcDocConfigDtos, List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos, AppSvcRelatedInfoDto appSvcRelatedInfoDto,Map<String, String> errorMap) {
 
@@ -3193,6 +3234,22 @@ public class NewApplicationHelper {
             appSvcDocDtos = newAppSvcDocDtos;
         }
         return appSvcDocDtos;
+    }
+
+    private static List<AppSvcBusinessDto> removeEmptyAlignBusiness(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+        List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
+            List<AppSvcBusinessDto> newBusinessDtos = IaisCommonUtils.genNewArrayList();
+            for(AppSvcBusinessDto appSvcBusinessDto:newBusinessDtos){
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    if (appGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDto.getPremisesIndexNo())) {
+                        newBusinessDtos.add(appSvcBusinessDto);
+                        break;
+                    }
+                }
+            }
+        }
+        return appSvcBusinessDtos;
     }
 
     private static List<SelectOption> getPremisesSel(String appType){
