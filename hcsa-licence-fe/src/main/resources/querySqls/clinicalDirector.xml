@@ -92,17 +92,6 @@
                             </div>
                         </div>
 
-                        <div class="row control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap">
-                                <div class="control-label formtext col-md-5 col-xs-5">
-                                    <label class="control-label control-set-font control-font-label">Years of experience in patient transport</label>
-                                    <span class="mandatory">*</span>
-                                </div>
-                                <div class="col-md-2 col-xs-12">
-                                    <input type="text" name="transportYear${cdSuffix}" class="transportYear" value="" maxlength="2" autocomplete="off">
-                                </div>
-                            </div>
-                        </div>
                     </#if>
 
                     <div class="row control control-caption-horizontal">
