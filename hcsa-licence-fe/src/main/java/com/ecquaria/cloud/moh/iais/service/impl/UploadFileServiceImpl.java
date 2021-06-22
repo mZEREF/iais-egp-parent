@@ -421,7 +421,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremOpenPeriodDto> appPremOpenPeriods = applicationListDto.getAppPremOpenPeriods();
         List<AppSvcVehicleDto> appSvcVehicles = applicationListDto.getAppSvcVehicles();
         List<AppSvcChargesDto> appSvcChargesPages = applicationListDto.getAppSvcChargesPages();
-        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectors = applicationListDto.getAppSvcClinicalDirectors();
         List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
@@ -598,12 +597,6 @@ public class UploadFileServiceImpl implements UploadFileService {
                                 String appPremCorreId = appSvcChargesDto.getAppPremCorreId();
                                 if(premisesCorrelationDtoId.equals(appPremCorreId)){
                                     appSvcChargesDtoList.add(appSvcChargesDto);
-                                }
-                            }
-                            for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto : appSvcClinicalDirectors){
-                                String appPremCorreId = appSvcClinicalDirectorDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcClinicalDirectorDtoList.add(appSvcClinicalDirectorDto);
                                 }
                             }
                         }
