@@ -92,7 +92,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Profession Regn No.</label>
+                    <label  class="control-label control-set-font control-font-label">Professional Regn. No.</label>
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
@@ -169,7 +169,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Speciality</label>
+                    <label  class="control-label control-set-font control-font-label">Specialty</label>
                     <span class="mandatory">*</span>
                 </div>
                 <div class="control-label formtext col-md-7 col-xs-12" >
@@ -180,16 +180,6 @@
             </div>
         </div>
 
-        <div class="row control control-caption-horizontal otherSpecialtyDiv hidden">
-            <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
-                </div>
-                <div class="col-md-7 col-xs-12" >
-                    <iais:input maxLength="100" type="text" cssClass="specialityOther" name="specialityOther${index}"
-                                value="${clinicalDirectorDto.specialityOther}" />
-                </div>
-            </div>
-        </div>
 
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
@@ -206,7 +196,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Type of Current Registration</label>
+                    <label  class="control-label control-set-font control-font-label">Type of Registration Date</label>
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
@@ -284,7 +274,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">ACLS Expiry Date</label>
+                    <label  class="control-label control-set-font control-font-label">Expiry Date (ACLS)</label>
                     <c:if test="${'EAS' == currentSvcCode}">
                         <span class="mandatory">*</span>
                     </c:if>
@@ -299,7 +289,7 @@
             <div class="row control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                     <div class="control-label formtext col-md-5 col-xs-5">
-                        <label  class="control-label control-set-font control-font-label">BCLS and AED Expiry Date</label>
+                        <label  class="control-label control-set-font control-font-label">Expiry Date (BCLS and AED)</label>
                         <span class="mandatory">*</span>
                     </div>
                     <div class="col-md-3 col-xs-12">
@@ -312,7 +302,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Mobile No</label>
+                    <label  class="control-label control-set-font control-font-label">Mobile No.</label>
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">

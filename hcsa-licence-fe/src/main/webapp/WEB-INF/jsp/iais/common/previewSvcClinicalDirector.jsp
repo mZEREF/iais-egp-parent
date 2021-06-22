@@ -31,7 +31,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn No.</p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No.</p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.profRegNo}"/></p>
@@ -97,17 +97,6 @@
                                         <c:out value="${cdDto.speciality}"/> </p>
                                 </td>
                             </tr>
-                            <c:if test="${'EAMS006' == cdDto.speciality}">
-                                <tr>
-                                    <td class="col-xs-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
-                                    </td>
-                                    <td>
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out
-                                                value="${cdDto.specialtyOther}"/> </p>
-                                    </td>
-                                </tr>
-                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
@@ -120,7 +109,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Current Registration </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Registration Date </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.typeOfCurrRegi}"/> </p>
@@ -177,7 +166,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ACLS Expiry Date </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (ACLS) </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.aclsExpiryDateStr}"/> </p>
@@ -186,7 +175,7 @@
                             <c:if test="${'MTS' == currentPreviewSvcInfo.serviceCode}">
                                 <tr>
                                     <td class="col-xs-6">
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>BCLS and AED Expiry Date </p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (BCLS and AED) </p>
                                     </td>
                                     <td>
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.bclsExpiryDateStr}"/> </p>
@@ -195,7 +184,7 @@
                             </c:if>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No. </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.mobileNo}"/> </p>
