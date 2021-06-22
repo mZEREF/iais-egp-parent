@@ -392,14 +392,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
           licenseeDto.setBuildingName(myInfoDto.getBuildingName());
           licenseeDto.setStreetName(myInfoDto.getStreetName());
       }
-      //fe user
-       FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
-       feUserDto.setId(feUserDtoCreate.getId());
-      //egpcloud
-       updateEgpUser(feUserDto);
+        //fe user
+        FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
+        feUserDto.setId(feUserDtoCreate.getId());
+        //egpcloud
+        updateEgpUser(feUserDto);
 
         //update be user
-
         OrganizationDto organizationById = getOrganizationById(feUserDto.getOrgId());
         OrganizationDto organizationDto = new OrganizationDto();
         organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
@@ -407,8 +406,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         organizationDto.setOrgType(organizationById.getOrgType());
         organizationDto.setStatus(organizationById.getStatus());
         organizationDto.setUenNo(organizationById.getUenNo());
-        if (amendLicensee){
-            organizationById.setLicenseeDto(licenseeDto);
+        if (amendLicensee) {
+            organizationDto.setLicenseeDto(licenseeDto);
         }
         organizationDto.setId(organizationById.getId());
         updateUserBe(organizationDto);
