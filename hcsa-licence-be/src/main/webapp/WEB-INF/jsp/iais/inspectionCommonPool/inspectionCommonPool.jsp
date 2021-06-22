@@ -137,6 +137,9 @@
                     </c:choose>
                     </tbody>
                   </table>
+                  <iais:action style="text-align:right;">
+                    <button name="assignComBtn" class="btn btn-secondary" type="button" onclick="javascript:comPoolBatchAssignment()">Assign</button>
+                  </iais:action>
                 </div>
               </iais:body>
             </div>
@@ -144,6 +147,7 @@
         </div>
       </div>
     </div>
+    <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="comPoolCancel()" popupOrder="comPoolAssign" ></iais:confirm>
   </form>
 </div>
 <script type="text/javascript">
@@ -163,6 +167,19 @@
         $('input[name="hci_address"]').val("");
         $('input[name="service_name"]').val("");
         $('input[name="sub_date"]').val("");
+    }
+
+    function comPoolBatchAssignment() {
+        if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
+            inspectionCommonPoolSubmit('mulassign');
+        } else {
+            $('#comPoolAssign').modal('show');
+        }
+    }
+
+    function comPoolCancel() {
+        $('#comPoolAssign').modal('hide');
     }
 
     function inspectionCommonPoolSubmit(action){
@@ -217,7 +234,7 @@
                             '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
-
+                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="commonPoolAllCheckBox(' + divid + ')" </th>';
                         html += '<th width="15%">Application No.</th>' +
                             '<th width="15%">Service</th>' +
                             '<th width="15%">Licence Expiry Date</th>' +
@@ -229,6 +246,7 @@
                             '<tbody>';
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
+                            html += '<td><input type="checkbox" name="comPoolMulCheck" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].appStatus + '" value="' + res.rows[i].maskId + '" onclick="commonPoolCheckBox(' + divid + ')"></td>'
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
@@ -249,6 +267,31 @@
             } else {
                 $('#advfilterson' + divid).hide();
             }
+        }
+    }
+
+    function commonPoolAllCheckBox(id) {
+        if ($('#checkbox' + id).prop('checked')) {
+            $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked", true)
+        } else {
+            $('#advfilterson' + id + ' input[type="checkbox"]').prop("checked", false)
+        }
+    }
+
+    function commonPoolCheckBox(id) {
+        var divid = 'checkbox' + id;
+        var flag = true;
+        $('#advfilterson' + id + ' input[type="checkbox"]').each(function () {
+            if ($(this).attr('id') != divid) {
+                if (!$(this).is(':checked')) {
+                    flag = false;
+                }
+            }
+        });
+        if (flag) {
+            $('#checkbox' + id).prop("checked", true)
+        } else {
+            $('#checkbox' + id).prop("checked", false)
         }
     }
 </script>
