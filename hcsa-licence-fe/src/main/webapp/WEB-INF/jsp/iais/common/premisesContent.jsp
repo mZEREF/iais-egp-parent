@@ -233,7 +233,7 @@
                                     <c:if test="${premType == easMts}">
                                         <c:out value="Conveyance" />
                                         <br/>
-                                        <span>(registered vehicle, aircraft, vessel or train)</span>
+                                        <span>(in a mobile clinic / ambulance)</span>
                                     </c:if>
                                 </label>
                             </div>
@@ -2063,7 +2063,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Public email " mandatory="true" width="12"/>
+                            <iais:field value="Public Email " mandatory="true" width="12"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubEmail${status.index}"></span>
