@@ -74,7 +74,13 @@ public class ConfigServiceImpl implements ConfigService {
     private static final String VERSION = "version";
     private static final String DATE_PARSE = "yyyy-MM-dd HH:mm:ss";
     private static final String ILLEGAL_OPERATION = "Illegal operation";
-
+    private static final String NEW_APPLICATION="New Application";
+    private static final String  APPEAL="Appeal";
+    private static final String REQUEST_FOR_CHANGE="Request For Change";
+    private static final String RENEW="Renew";
+    private static final String CESSATION ="Cessation";
+    private static final String SUSPENSION="Suspension";
+    private static final String WITHDRAWAL="Withdrawal";
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
@@ -1274,21 +1280,21 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
             List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-                appeal= getWorkGrop(type,"Appeal");
+                appeal= getWorkGrop(type,APPEAL);
             }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-                appeal=  getWorkGrop(type,"New Application");
+                appeal=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
-               appeal = getWorkGrop(type, "Request For Change");
+               appeal = getWorkGrop(type, REQUEST_FOR_CHANGE);
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-                appeal=  getWorkGrop(type,"Renew");
+                appeal=  getWorkGrop(type,RENEW);
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-                appeal= getWorkGrop(type,"Cessation");
+                appeal= getWorkGrop(type,CESSATION);
             }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-                appeal= getWorkGrop(type,"Suspension");
+                appeal= getWorkGrop(type,SUSPENSION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-                appeal= getWorkGrop(type,"Withdrawal");
+                appeal= getWorkGrop(type,WITHDRAWAL);
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);
@@ -1481,19 +1487,19 @@ public class ConfigServiceImpl implements ConfigService {
     private void sendHcsaConfigPageDtoTypeName(HcsaConfigPageDto hcsaConfigPageDto,String type){
         hcsaConfigPageDto.setAppType(type);
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("New Application");
+            hcsaConfigPageDto.setAppTypeName(NEW_APPLICATION);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Appeal");
+            hcsaConfigPageDto.setAppTypeName(APPEAL);
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
-            hcsaConfigPageDto.setAppTypeName("Request For Change");
+            hcsaConfigPageDto.setAppTypeName(REQUEST_FOR_CHANGE);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Renew");
+            hcsaConfigPageDto.setAppTypeName(RENEW);
         }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Cessation");
+            hcsaConfigPageDto.setAppTypeName(CESSATION);
         }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Suspension");
+            hcsaConfigPageDto.setAppTypeName(SUSPENSION);
         }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Withdrawal");
+            hcsaConfigPageDto.setAppTypeName(WITHDRAWAL);
         }
     }
 

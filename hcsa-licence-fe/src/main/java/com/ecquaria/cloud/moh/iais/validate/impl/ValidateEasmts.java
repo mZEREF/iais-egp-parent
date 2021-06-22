@@ -116,23 +116,32 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
 
         }
         String easMtsUseOnly = appGrpPremisesDto.getEasMtsUseOnly();
+        String easMtsPubEmail = appGrpPremisesDto.getEasMtsPubEmail();
+        String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
         if(StringUtil.isEmpty(easMtsUseOnly)){
             map.put("easMtsUseOnly"+index,errStreet);
+        }else {
+            if("UOT001".equals(easMtsUseOnly)){
+                if(StringUtil.isEmpty(easMtsPubEmail)){
+                    map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public email", "field"));
+                }
+                if(StringUtil.isEmpty(easMtsPubHotline)){
+                    map.put("easMtsPubHotline"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Hotline", "field"));
+                }
+            }
         }
-        String easMtsPubEmail = appGrpPremisesDto.getEasMtsPubEmail();
+
         if(StringUtil.isEmpty(easMtsPubEmail)){
-            map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public email", "field"));
         }else {
             boolean email = ValidationUtils.isEmail(easMtsPubEmail);
             if(!email){
                 map.put("easMtsPubEmail"+index,MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
         }
-        String easMtsPubHotline = appGrpPremisesDto.getEasMtsPubHotline();
+
         if(StringUtil.isEmpty(easMtsPubHotline)){
-            map.put("easMtsPubHotline"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Hotline", "field"));
         }else {
-            if(!easMtsPubHotline.matches("^[0-9]{8}$")){
+            if(!easMtsPubHotline.matches("^[6|8|9][0-9]{7}$")){
                 map.put("easMtsPubHotline"+index,MessageUtil.getMessageDesc("GENERAL_ERR0007"));
             }
         }

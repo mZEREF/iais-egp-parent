@@ -56,16 +56,17 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
                 }else {
                     //validate  vehicle number used
-       /*             if(oldAppSvcVehicleDto==null){
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
+                    if(oldAppSvcVehicleDto==null){
+                     /*   List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
                         if(!appSvcVehicleDtoList.isEmpty()){
                             map.put("vehicleName" + i, "NEW_ERR0028");
-                        }
+                        }*/
                     }else {
+                        if(oldAppSvcVehicleDto.contains(vehicleName)){
 
+                        }
+                    }
 
-
-                    }*/
                 }
             }
 
