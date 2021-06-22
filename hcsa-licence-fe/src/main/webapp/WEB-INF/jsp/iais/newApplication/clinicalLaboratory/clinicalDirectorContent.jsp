@@ -118,7 +118,7 @@
         showOtherSpecialty();
         profRegNoBlur();
         $('select.specialty').trigger('change');
-
+        $("input[name='noRegWithProfBoard']").trigger('change');
         doEdite();
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
@@ -482,5 +482,16 @@
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
         }
     };
+    $("input[name='noRegWithProfBoard']").change(function (){
 
+        if($(this).parent().prev().val()==1){
+            if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
+                $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+                $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+            }
+        }else {
+            $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').remove();
+            $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
+        }
+    });
 </script>
