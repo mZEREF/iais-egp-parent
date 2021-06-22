@@ -193,12 +193,12 @@ public class ValidateClincalDirector implements ValidateFlow {
     }
     //Medical Transport Service
     protected void doValidateForMTS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
-        String transportYear = appSvcClinicalDirectorDto.getTransportYear();
+        /*String transportYear = appSvcClinicalDirectorDto.getTransportYear();
         if(StringUtil.isEmpty(transportYear)){
             map.put("transportYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Years of experience in patient transport", "field"));
         }else {
 
-        }
+        }*/
         Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
         if(bclsExpiryDate==null){
             map.put("bclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "BCLS and AED Expiry Date", "field"));

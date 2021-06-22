@@ -120,17 +120,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap">
-                    <div class="control-label formtext col-md-5 col-xs-5">
-                        <label  class="control-label control-set-font control-font-label">Years of experience in patient transport</label>
-                        <span class="mandatory">*</span>
-                    </div>
-                    <div class="col-md-2 col-xs-12">
-                        <iais:input maxLength="2" type="text" cssClass="transportYear" name="transportYear${index}" value="${clinicalDirectorDto.transportYear}"></iais:input>
-                    </div>
-                </div>
-            </div>
         </c:if>
 
         <div class="row control control-caption-horizontal">
@@ -205,7 +194,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Date when speciality was gotten</label>
+                    <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
