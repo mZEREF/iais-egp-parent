@@ -120,7 +120,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
 
     @Override
-    public List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application) {
+    public List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application, boolean needVehicle) {
         String appId = application.getId();
 
         List<AppPremisesCorrelationDto> correlation = taskApplicationClient.getAppPremisesCorrelationsByAppId(appId).getEntity();
@@ -174,6 +174,14 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
 
                 if (svcConfig != null){
                     inspChecklist.add(svcConfig);
+                }
+
+                if (needVehicle) {
+                    ChecklistConfigDto vehicleConfig = hcsaChklClient.getMaxVersionInspectionEntityConfig(svcCode, type, chklModule,
+                            HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE).getEntity();
+                    if (vehicleConfig != null){
+                        inspChecklist.add(vehicleConfig);
+                    }
                 }
 
                 oneTime = true;

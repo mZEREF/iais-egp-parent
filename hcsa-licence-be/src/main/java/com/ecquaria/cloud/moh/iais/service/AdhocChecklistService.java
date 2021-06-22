@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface AdhocChecklistService {
 
-    List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application);
+    List<ChecklistConfigDto> getInspectionChecklist(ApplicationDto application, boolean needVehicle);
 
     void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig);
 
