@@ -189,142 +189,21 @@ public class LicenceViewServiceDelegator {
         }
         log.info(StringUtil.changeForLog(appEditSelectDto+"appEditSelectDto"));
         bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);
-        AppSubmissionDto appSubmissionDto;
-        String newCorrelationId = "";
-        String oldCorrelationId = "";
+
+        // Get AppSubmissionDto
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
-
-        if (appPremisesCorrelationDto != null) {
-            String applicationId = appPremisesCorrelationDto.getApplicationId();
-            newCorrelationId = appPremisesCorrelationDto.getId();
-            oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
-            appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
-            ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
-            if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType())){
-                List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
-                String appGrpId = applicationDto.getAppGrpId();
-                String appId = applicationDto.getId();
-                AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-                List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-                if (applicationDtoList != null && premiseMiscDto != null){
-                    applicationDtoList.forEach(h -> {
-                        ApplicationDto oldApplicationDto = applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
-                        WithdrawnDto withdrawnDto = new WithdrawnDto();
-                        withdrawnDto.setApplicationNo(oldApplicationDto.getApplicationNo());
-
-                        withdrawnDto.setWithdrawnReason(premiseMiscDto.getReason());
-                        withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
-//                        withdrawnDto.setAppPremisesSpecialDocDto();
-                        List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
-                        List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
-                        HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
-                        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
-                                if(appealSpecialDocDto!=null&&!appealSpecialDocDto.isEmpty()){
-                                    for(int i=0;i<appealSpecialDocDto.size();i++){
-                                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
-                                        pageShowFileDto.setFileUploadUrl(appealSpecialDocDto.get(i).getFileRepoId());
-                                        pageShowFileDto.setFileName(appealSpecialDocDto.get(i).getDocName());
-                                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
-                                        pageShowFileDto.setSize(appealSpecialDocDto.get(i).getDocSize());
-                                        pageShowFileDto.setMd5Code(appealSpecialDocDto.get(i).getMd5Code());
-                                        pageShowFileDto.setIndex(String.valueOf(i));
-                                        pageShowFileDtos.add(pageShowFileDto);
-                                        map.put("selectedFile"+i,null);
-                                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
-                                    }
-                                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
-                                    bpc.request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
-                                    bpc.request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appealSpecialDocDto.size());
-                                }
-                                bpc.request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
-//                            bpc.request.getSession().setAttribute("appealSpecialDocDto",appealSpecialDocDto);
-                        withdrawnDtoList.add(withdrawnDto);
-                    });
-                }
-                if(withdrawnDtoList.size() > 0){
-                    ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTO, withdrawnDtoList.get(0));
-                    ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTOLIST, withdrawnDtoList);
-                }
-            }
-            if (applicationDto.getOriginLicenceId() != null) {
-                LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(applicationDto.getOriginLicenceId()).getEntity();
-                if (licenceDto != null) {
-                    LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
-                    bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
-                }
-
-                AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(applicationDto.getOriginLicenceId()).getEntity();
-                if (entity!=null) {
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
-                    if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
-                        String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
-                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
-                        appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
-                        premiseTrans(entity);
-                        appSubmissionDto.setOldAppSubmissionDto(entity);
-                    }
-
-                }
-            }
-
-            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            String licenseeId = applicationGroupDto.getLicenseeId();
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-            bpc.request.setAttribute("newLicenceDto", licenseeDto);
-        } else {
+        if (appPremisesCorrelationDto == null) {
+            // the appPremisesCorrelationDto should not be null, not used any more
             String appId = ParamUtil.getString(bpc.request, "appId");
-            appSubmissionDto = licenceViewService.getAppSubmissionByAppId(appId);
+            appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         }
-        if (appSubmissionDto != null) {
-                //new
-            if (appPremisesCorrelationDto != null) {
-                ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
-                if(entity.getVersion()>1){
-                    String newGrpId = entity.getAppGrpId();
-                    ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
-                    String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
-                    LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
-                    bpc.request.setAttribute("newLicenceDto", newLicenceDto);
-                    //last
-                    ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
-                    if (applicationDto != null) {
-                        String oldGrpId = applicationDto.getAppGrpId();
-                        ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
-                        String licenseeId = oldApplicationGroupDto.getLicenseeId();
-                        LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                        bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
-                        AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(applicationDto.getId()).getEntity();
+        AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
 
-                        if (appSubmissionDto != null) {
-                            appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
-                        }
-                    }
-                }else if (!StringUtil.isEmpty(newCorrelationId) && !StringUtil.isEmpty(oldCorrelationId) && !newCorrelationId.equals(oldCorrelationId)) {
-                    //new
-                    String newGrpId = entity.getAppGrpId();
-                    ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
-                    String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
-                    LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
-                    bpc.request.setAttribute("newLicenceDto", newLicenceDto);
-                    //last
-                    ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
-                    if (applicationDto != null) {
-                        String oldGrpId = applicationDto.getAppGrpId();
-                        ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
-                        String licenseeId = oldApplicationGroupDto.getLicenseeId();
-                        LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                        bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
-                        AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
-                        if (appSubmissionDto != null) {
-                            appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
-                        }
-                    }
-                } else {
-                    ParamUtil.setSessionAttr(bpc.request, NOT_VIEW, NOT_VIEW);
-                }
-
-            }
+        if (appPremisesCorrelationDto != null && appSubmissionDto != null) {
+            handleWithDrawalDoc(appSubmissionDto.getAppType(), appSubmissionDto.getAppGrpId(), appPremisesCorrelationDto.getApplicationId(),
+                    bpc.request);
         }
+
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(appSubmissionDto != null){
             appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -476,6 +355,97 @@ public class LicenceViewServiceDelegator {
         prepareViewServiceForm(bpc);
         if("Y".equals(prsFlag)){
             disciplinaryRecord(appSubmissionDto,bpc.request);
+        }
+    }
+
+    private AppSubmissionDto getAppSubmissionAndHandLicence(AppPremisesCorrelationDto appPremisesCorrelationDto, HttpServletRequest request) {
+        if (appPremisesCorrelationDto == null) {
+            return null;
+        }
+        AppSubmissionDto appSubmissionDto;
+        String applicationId = appPremisesCorrelationDto.getApplicationId();
+        appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
+
+        // new
+        ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+        String newGrpId = entity.getAppGrpId();
+        ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
+        String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
+        LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
+        request.setAttribute("newLicenceDto", newLicenceDto);
+        // last - previous version record
+        if (entity.getVersion() > 1) {
+            ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
+            if (applicationDto != null) {
+                String oldGrpId = applicationDto.getAppGrpId();
+                ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
+                String licenseeId = oldApplicationGroupDto.getLicenseeId();
+                LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                request.setAttribute("oldLicenceDto", oldLicenceDto);
+                AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(applicationDto.getId()).getEntity();
+                if (appSubmissionDto != null) {
+                    appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
+                }
+            }
+        } else if (entity.getOriginLicenceId() != null) {
+            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(entity.getOriginLicenceId()).getEntity();
+            if (licenceDto != null) {
+                LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+                request.setAttribute("oldLicenceDto", oldLicenceDto);
+            }
+            AppSubmissionDto appSubmission = hcsaLicenceClient.getAppSubmissionDto(entity.getOriginLicenceId()).getEntity();
+            if (appSubmission != null) {
+                appSubmissionDto.setOldAppSubmissionDto(appSubmission);
+            }
+        } else {
+            ParamUtil.setSessionAttr(request, NOT_VIEW, NOT_VIEW);
+        }
+        return appSubmissionDto;
+    }
+
+    private void handleWithDrawalDoc(String appType, String appGrpId, String appId, HttpServletRequest request) {
+        if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType)) {
+            return;
+        }
+        List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
+        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+        List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+        if (applicationDtoList != null && premiseMiscDto != null){
+            applicationDtoList.forEach(h -> {
+                ApplicationDto oldApplicationDto = applicationClient.getApplicationById(premiseMiscDto.getRelateRecId()).getEntity();
+                WithdrawnDto withdrawnDto = new WithdrawnDto();
+                withdrawnDto.setApplicationNo(oldApplicationDto.getApplicationNo());
+
+                withdrawnDto.setWithdrawnReason(premiseMiscDto.getReason());
+                withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
+                List<AppPremisesSpecialDocDto> appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                List<PageShowFileDto> pageShowFileDtos = IaisCommonUtils.genNewArrayList();
+                HashMap<String,File> map= IaisCommonUtils.genNewHashMap();
+                HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+                if(appealSpecialDocDto!=null&&!appealSpecialDocDto.isEmpty()){
+                    for(int i=0;i<appealSpecialDocDto.size();i++){
+                        PageShowFileDto pageShowFileDto =new PageShowFileDto();
+                        pageShowFileDto.setFileUploadUrl(appealSpecialDocDto.get(i).getFileRepoId());
+                        pageShowFileDto.setFileName(appealSpecialDocDto.get(i).getDocName());
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+i);
+                        pageShowFileDto.setSize(appealSpecialDocDto.get(i).getDocSize());
+                        pageShowFileDto.setMd5Code(appealSpecialDocDto.get(i).getMd5Code());
+                        pageShowFileDto.setIndex(String.valueOf(i));
+                        pageShowFileDtos.add(pageShowFileDto);
+                        map.put("selectedFile"+i,null);
+                        pageShowFileHashMap.put("selectedFile"+i, pageShowFileDto);
+                    }
+                    request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
+                    request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
+                    request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile_MaxIndex",appealSpecialDocDto.size());
+                }
+                request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
+                withdrawnDtoList.add(withdrawnDto);
+            });
+        }
+        if(withdrawnDtoList.size() > 0){
+            ParamUtil.setRequestAttr(request, WITHDRAWDTO, withdrawnDtoList.get(0));
+            ParamUtil.setRequestAttr(request, WITHDRAWDTOLIST, withdrawnDtoList);
         }
     }
 
@@ -2206,36 +2176,36 @@ public class LicenceViewServiceDelegator {
         oldAppSvcDocDtos.addAll(o);
     }
 
-    private void premiseTrans(AppSubmissionDto appSubmissionDto){
-        if(appSubmissionDto==null){
-            return;
-        }
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
-            return;
-        }
-        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            String premisesType = appGrpPremisesDto.getPremisesType();
-            if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)){
-                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getOffSiteStreetName());
-                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getOffSitePostalCode());
-                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getOffSiteAddressType());
-                appGrpPremisesDto.setBlkNo(appGrpPremisesDto.getOffSiteBlockNo());
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
-                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getConveyanceStreetName());
-                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getConveyancePostalCode());
-                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getConveyanceAddressType());
-                appGrpPremisesDto.setBlkNo(appGrpPremisesDto.getConveyanceBlockNo());
-            }
-        }
-
-    }
+//    private void premiseTrans(AppSubmissionDto appSubmissionDto){
+//        if(appSubmissionDto==null){
+//            return;
+//        }
+//        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+//        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
+//            return;
+//        }
+//        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+//            String premisesType = appGrpPremisesDto.getPremisesType();
+//            if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)){
+//                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getOffSiteStreetName());
+//                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getOffSitePostalCode());
+//                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+//                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
+//                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
+//                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getOffSiteAddressType());
+//                appGrpPremisesDto.setBlkNo(appGrpPremisesDto.getOffSiteBlockNo());
+//            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+//                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getConveyanceStreetName());
+//                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getConveyancePostalCode());
+//                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+//                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
+//                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
+//                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getConveyanceAddressType());
+//                appGrpPremisesDto.setBlkNo(appGrpPremisesDto.getConveyanceBlockNo());
+//            }
+//        }
+//
+//    }
 
     private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto,HttpServletRequest request,ApplicationGroupDto groupDto){
         if(appSubmissionDto==null||oldAppSubmissionDto==null){
