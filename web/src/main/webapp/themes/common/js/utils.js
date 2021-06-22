@@ -418,3 +418,47 @@ function clearFields(targetSelector) {
         }
     });
 }
+
+function disableContent(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[type!="hidden"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function(i, ele) {
+        var tag = this.tagName.toLowerCase(), $input = $(this);
+        $input.prop('disabled', true);
+        $input.css('border-color','#ededed');
+        $input.css('color','#999');
+        if (tag == 'select') {
+            $input.niceSelect("update");
+        }
+    });
+}
+
+function unDisableContent(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[type!="hidden"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function() {
+        var tag = this.tagName.toLowerCase(), $input = $(this);
+        $input.prop('disabled', false);
+        $input.css('border-color','');
+        $input.css('color','');
+        if (tag == 'select') {
+            $input.niceSelect("update");
+        }
+    });
+}
