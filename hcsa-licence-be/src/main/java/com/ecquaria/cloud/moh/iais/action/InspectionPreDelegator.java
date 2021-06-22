@@ -174,7 +174,8 @@ public class InspectionPreDelegator {
             inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
         }
         //adhocChecklist
-        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto);
+        boolean needVehicle = IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos());
+        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto, needVehicle);
         //Self-Checklist
         List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
         setPreInspSelfChecklistInfo(selfAssessments, bpc);
@@ -370,8 +371,11 @@ public class InspectionPreDelegator {
             fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
         //set Checklist
-        if(inspectionChecklist == null){
-            inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto));
+        if (inspectionChecklist == null) {
+            ApplicationViewDto appView = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
+                    ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+            boolean needVehicle = appView != null && IaisCommonUtils.isNotEmpty(appView.getAppSvcVehicleDtos());
+            inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto), needVehicle);
         }
         //generate self report
         if(taskDto != null) {
