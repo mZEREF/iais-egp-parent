@@ -99,7 +99,7 @@ public class MassEmailDelegator {
         searchRole(bpc);
         setModeSelection(bpc);
         for (DistributionListDto item:searchResult.getRows()
-             ) {
+        ) {
             item.setRole(roleName(item.getRole()));
         }
         setSearchparam(bpc,searchParam);
@@ -368,7 +368,7 @@ public class MassEmailDelegator {
     private boolean repeatList(List<String> list){
         Map<String,String> repeatMap = IaisCommonUtils.genNewHashMap();
         for (String item:list
-             ) {
+        ) {
             if(StringUtil.isEmpty(repeatMap.get(item))){
                 repeatMap.put(item,item);
                 continue;
@@ -554,6 +554,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+            selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
         }
         doSortSelOption(selectOptions);
         ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
@@ -585,10 +586,11 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,"Service Personnel"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
 
         }
         doSortSelOption(selectOptions);
-       ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
 
 
@@ -613,9 +615,12 @@ public class MassEmailDelegator {
             case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
                 roleName = "Licensee";
                 break;
-                default:
-                    roleName = roleAbbreviation;
-                    break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                roleName = "Clinical Director";
+                break;
+            default:
+                roleName = roleAbbreviation;
+                break;
         }
         return roleName;
     }
