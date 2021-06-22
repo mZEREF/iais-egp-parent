@@ -554,6 +554,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+            selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
         }
         doSortSelOption(selectOptions);
         ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
@@ -585,6 +586,7 @@ public class MassEmailDelegator {
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"Clinical Governance Officer"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,"Service Personnel"));
             selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,"Clinical Director"));
 
         }
         doSortSelOption(selectOptions);
@@ -612,6 +614,9 @@ public class MassEmailDelegator {
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
                 roleName = "Licensee";
+                break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                roleName = "Clinical Director";
                 break;
                 default:
                     roleName = roleAbbreviation;
