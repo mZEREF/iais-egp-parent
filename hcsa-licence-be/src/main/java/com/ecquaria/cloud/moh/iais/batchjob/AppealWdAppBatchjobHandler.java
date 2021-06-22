@@ -268,7 +268,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         appReturnFeeDto.setTriggerCount(0);
         appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
         appReturnFeeDto.setReturnAmount(returnFee);
-        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
         return appReturnFeeDto;
     }
 

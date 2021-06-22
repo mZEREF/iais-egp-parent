@@ -617,6 +617,8 @@ public class ConfigServiceImpl implements ConfigService {
             int maximumCount = hcsaSvcPersonnelDtos.get(i).getMaximumCount();
             String pageMandatoryCount = hcsaSvcPersonnelDtos.get(i).getPageMandatoryCount();
             String pageMaximumCount = hcsaSvcPersonnelDtos.get(i).getPageMaximumCount();
+            boolean pageManFlag=false;
+            boolean pageMaxFlag=false;
             if (StringUtil.isEmpty(psnType)) {
                 errorMap.put("psnType" + i, "CHKLMD001_ERR001");
             }
@@ -624,27 +626,29 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("mandatoryCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Count","field"));
             }  else  {
                 if(pageMandatoryCount.matches("^[0-9]+$")){
+                    pageManFlag=true;
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
-                        errorMap.put("mandatoryCount"+i, "GENERAL_ERR0002");
+                        errorMap.put("mandatoryCount"+i, MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                     }
                 }else {
-                    errorMap.put("mandatoryCount"+i,"GENERAL_ERR0002");
+                    errorMap.put("mandatoryCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                 }
             }
             if (StringUtil.isEmpty(pageMaximumCount)) {
                 errorMap.put("maximumCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Count","field"));
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
+                    pageMaxFlag=true;
                     int i1 = Integer.parseInt(pageMaximumCount);
                     if(i1<0){
-                        errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
+                        errorMap.put("maximumCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                     }
                 }else {
-                    errorMap.put("maximumCount"+i,"GENERAL_ERR0002");
+                    errorMap.put("maximumCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
                 }
             }
-            if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){
+            if(pageManFlag&&pageMaxFlag){
                 if(mandatoryCount>maximumCount){
                     errorMap.put("maximumCount"+i,"SC_ERR006");
                 }
@@ -685,6 +689,9 @@ public class ConfigServiceImpl implements ConfigService {
         String general_err0041 = MessageUtil.getMessageDesc("GENERAL_ERR0041");
         String service_routing_scheme = general_err0041.replace("{field}", "Service Routing Scheme max length");
         String replace = service_routing_scheme.replace("{maxlength}", "2");
+        String message = MessageUtil.replaceMessage("GENERAL_ERR0006", "Service Routing Scheme", "field");
+        String message_this = MessageUtil.replaceMessage("GENERAL_ERR0006", "This", "field");
+        String messageWorload = MessageUtil.replaceMessage("GENERAL_ERR0006", "Service Workload Manhours", "field");
         map.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
                 String isMandatory = v.get(i).getIsMandatory();
@@ -697,14 +704,14 @@ public class ConfigServiceImpl implements ConfigService {
                         !ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(k)&&
                                 !ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(k)){
                             if (StringUtil.isEmpty(stringManhourCount)) {
-                                errorMap.put("manhourCount"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                                errorMap.put("manhourCount"+k+ i, message);
                                 errorMap.put(k,"error");
                             }else if(stringManhourCount.length()>2){
                                 errorMap.put("manhourCount"+k+i,replace);
                                 errorMap.put(k,"error");
                             }
                             if(StringUtil.isEmpty(isMandatory)){
-                                errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                                errorMap.put("isMandatory"+k+i,message_this);
                                 errorMap.put(k,"error");
                             }else if("false".equals(isMandatory)){
                                 errorMap.put("isMandatory"+k+i,"This option must be mandatory");
@@ -718,11 +725,11 @@ public class ConfigServiceImpl implements ConfigService {
                 if("false".equals(isMandatory)){
                     continue;
                 }else if("".equals(isMandatory)){
-                    errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                    errorMap.put("isMandatory"+k+i,message_this);
                     errorMap.put(k,"error");
                 }
                 if(StringUtil.isEmpty(stringManhourCount)){
-                    errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
+                    errorMap.put("manhourCount"+k+i,messageWorload);
                     errorMap.put(k,"error");
                 }else if(stringManhourCount.length()>2){
                     errorMap.put("manhourCount"+k+i,replace);
@@ -867,7 +874,7 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos1 = hcsaSvcStageWorkingGroupDtoMap.get(type);
             List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos1 = map.get(type);
             List<HcsaConfigPageDto> hcsaConfigPageDtos =
-                    ProcessingData(type,hcsaSvcRoutingStageDtos, hcsaSvcStageWorkloadDtos1, hcsaSvcStageWorkingGroupDtos1, hcsa);
+                    processingData(type,hcsaSvcRoutingStageDtos, hcsaSvcStageWorkloadDtos1, hcsaSvcStageWorkingGroupDtos1, hcsa);
             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1 = hcsaSvcSpeRoutingSchemeDtoMap.get(type);
             for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:hcsaSvcSpeRoutingSchemeDtos1){
                 String stageWrkGrpID = hcsaSvcSpeRoutingSchemeDto.getStageWrkGrpID();
@@ -914,7 +921,7 @@ public class ConfigServiceImpl implements ConfigService {
         return hcsaConfigPageDtoMap;
     }
 
-    private  List<HcsaConfigPageDto> ProcessingData(String type,List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos,List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos,List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,  List<WorkingGroupDto> hcsa  ){
+    private  List<HcsaConfigPageDto> processingData(String type,List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos,List<HcsaSvcStageWorkloadDto> hcsaSvcStageWorkloadDtos,List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,  List<WorkingGroupDto> hcsa  ){
         List<HcsaConfigPageDto> hcsaConfigPageDtos = IaisCommonUtils.genNewArrayList();
         for (HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos) {
             HcsaConfigPageDto hcsaConfigPageDto = new HcsaConfigPageDto();
@@ -1073,6 +1080,27 @@ public class ConfigServiceImpl implements ConfigService {
         }
         return hashMap;
     }
+
+    @Override
+    public HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String man, String mix, String psnType) {
+        HcsaSvcPersonnelDto personnelDto=new HcsaSvcPersonnelDto();
+        personnelDto.setPageMandatoryCount(man);
+        personnelDto.setPageMaximumCount(mix);
+        try {
+            if(!StringUtil.isEmpty(man)){
+                personnelDto.setMandatoryCount(Integer.parseInt(man));
+            }
+        }catch (NumberFormatException e){}
+        try {
+            if(!StringUtil.isEmpty(mix)){
+                personnelDto.setMaximumCount(Integer.parseInt(mix));
+            }
+        }catch (NumberFormatException e){}
+        personnelDto.setPsnType(psnType);
+        personnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        return personnelDto;
+    }
+
     static String[] codeSvc ={ApplicationConsts.SERVICE_CONFIG_TYPE_BASE,ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED,ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED};
 
 

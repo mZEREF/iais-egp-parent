@@ -216,6 +216,7 @@
         </div>
       </div>
 
+      <%@include file="common/deleteOrView/person.jsp"%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">

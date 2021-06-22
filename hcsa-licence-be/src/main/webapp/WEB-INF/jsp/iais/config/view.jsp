@@ -188,29 +188,7 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input disabled value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
-            <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
+     <%@include file="common/deleteOrView/person.jsp"%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">

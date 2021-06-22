@@ -390,103 +390,30 @@ public class ConfigServiceDelegator {
         String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
-        HcsaSvcPersonnelDto poDto = new HcsaSvcPersonnelDto();
-        poDto.setPsnType("PO");
-        try {
-            if (!StringUtil.isEmpty(manprincipalOfficer)) {
-                poDto.setMandatoryCount(Integer.parseInt(manprincipalOfficer));
-                poDto.setPageMandatoryCount(manprincipalOfficer);
-            }
-        }catch (NumberFormatException e){
-            poDto.setPageMandatoryCount(manprincipalOfficer);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixprincipalOfficer)) {
-                poDto.setMaximumCount(Integer.parseInt(mixprincipalOfficer));
-                poDto.setPageMaximumCount(mixprincipalOfficer);
-            }
-        }catch (NumberFormatException e){
-            poDto.setPageMaximumCount(mixprincipalOfficer);
-        }
+        HcsaSvcPersonnelDto poDto =
+                configService.getHcsaSvcPersonnelDto(manprincipalOfficer,mixprincipalOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
 
-        poDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(poDto);
 
         String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
         String mixdeputyPrincipalOfficer = request.getParameter("mix-DeputyPrincipalOfficer");
-        HcsaSvcPersonnelDto dpoDto = new HcsaSvcPersonnelDto();
+        HcsaSvcPersonnelDto dpoDto =
+                configService.getHcsaSvcPersonnelDto(mandeputyPrincipalOfficer,mixdeputyPrincipalOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
 
-        dpoDto.setPsnType("DPO");
-        try {
-            if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
-                dpoDto.setMandatoryCount(Integer.parseInt(mandeputyPrincipalOfficer));
-                dpoDto.setPageMandatoryCount(mandeputyPrincipalOfficer);
-            }
-        }catch (NumberFormatException e){
-            dpoDto.setPageMandatoryCount(mandeputyPrincipalOfficer);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
-                dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
-                dpoDto.setPageMaximumCount(mixdeputyPrincipalOfficer);
-            }
-        }catch (NumberFormatException e){
-            dpoDto.setPageMaximumCount(mixdeputyPrincipalOfficer);
-        }
-
-
-
-        dpoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(dpoDto);
         String manclinicalGovernanceOfficer = request.getParameter("man-ClinicalGovernanceOfficer");
         String mixclinicalGovernanceOfficer = request.getParameter("mix-ClinicalGovernanceOfficer");
-        HcsaSvcPersonnelDto cgoDto = new HcsaSvcPersonnelDto();
-
-        cgoDto.setPsnType("CGO");
-        try {
-            if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
-                cgoDto.setMandatoryCount(Integer.parseInt(manclinicalGovernanceOfficer));
-                cgoDto.setPageMandatoryCount(manclinicalGovernanceOfficer);
-            }
-        }catch (NumberFormatException e){
-            cgoDto.setPageMandatoryCount(manclinicalGovernanceOfficer);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
-                cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
-                cgoDto.setPageMaximumCount(mixclinicalGovernanceOfficer);
-            }
-        }catch (NumberFormatException e){
-            cgoDto.setPageMaximumCount(mixclinicalGovernanceOfficer);
-        }
+        HcsaSvcPersonnelDto cgoDto =
+                configService.getHcsaSvcPersonnelDto(manclinicalGovernanceOfficer,mixclinicalGovernanceOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
 
         //todo is mandatory ,cannot
         int count=1;
-        cgoDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(cgoDto);
         String manservicePersonnel = request.getParameter("man-ServicePersonnel");
         String mixservicePersonnel = request.getParameter("mix-ServicePersonnel");
-        HcsaSvcPersonnelDto svcPersonnelDto = new HcsaSvcPersonnelDto();
-        svcPersonnelDto.setPsnType("SVCPSN");
-        try {
-            if (!StringUtil.isEmpty(manservicePersonnel)) {
-                svcPersonnelDto.setMandatoryCount(Integer.parseInt(manservicePersonnel));
-                svcPersonnelDto.setPageMandatoryCount(manservicePersonnel);
-            }
-        } catch (Exception e) {
+        HcsaSvcPersonnelDto svcPersonnelDto =
+                configService.getHcsaSvcPersonnelDto(manservicePersonnel,mixservicePersonnel,ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
 
-            svcPersonnelDto.setPageMandatoryCount(manservicePersonnel);
-        }
-        try {
-            if (!StringUtil.isEmpty(mixservicePersonnel)) {
-                svcPersonnelDto.setMaximumCount(Integer.parseInt(mixservicePersonnel));
-                svcPersonnelDto.setPageMaximumCount(mixservicePersonnel);
-            }
-        }catch (NumberFormatException e){
-            svcPersonnelDto.setPageMaximumCount(mixservicePersonnel);
-        }
-
-        svcPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
         String manMedalertPerson = request.getParameter("man-MedalertPerson");
         String mixMedalertPerson = request.getParameter("mix-MedalertPerson");
@@ -791,10 +718,10 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpeRoutingSchemeDto2.setInsOder(String.valueOf(1));
                 }
                 if ("optional".equals(isMandatory)||ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED.equals(serviceType)) {
-                    hcsaConfigPageDto.setIsMandatory("false");
-                    hcsaSvcSpecificStageWorkloadDto.setIsMandatory("false");
-                    hcsaSvcStageWorkingGroupDto.setIsMandatory("false");
-                    hcsaSvcSpeRoutingSchemeDto.setIsMandatory("false");
+                    hcsaConfigPageDto.setIsMandatory(String.valueOf(false));
+                    hcsaSvcSpecificStageWorkloadDto.setIsMandatory(String.valueOf(false));
+                    hcsaSvcStageWorkingGroupDto.setIsMandatory(String.valueOf(false));
+                    hcsaSvcSpeRoutingSchemeDto.setIsMandatory(String.valueOf(false));
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcSpeRoutingSchemeDto.setStageId(id);
                     hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
@@ -803,20 +730,20 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     workloadDtos.add(hcsaSvcSpecificStageWorkloadDto);
                     if("INS".equals(stageCode)){
-                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory("false");
-                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory("false");
+                        hcsaSvcSpeRoutingSchemeDto1.setIsMandatory(String.valueOf(false));
+                        hcsaSvcSpeRoutingSchemeDto2.setIsMandatory(String.valueOf(false));
                         svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
                         svcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
                         hcsaConfigPageDto.setHcsaSvcSpeRoutingSchemeDtos(svcSpeRoutingSchemeDtoList);
                     }
                 }else if("mandatory".equals(isMandatory)){
-                    hcsaSvcStageWorkingGroupDto.setIsMandatory("true");
+                    hcsaSvcStageWorkingGroupDto.setIsMandatory(String.valueOf(true));
                     workingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
                     hcsaSvcSpeRoutingSchemeDto.setAppType(every);
                     hcsaSvcSpeRoutingSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    hcsaSvcSpeRoutingSchemeDto.setIsMandatory("true");
+                    hcsaSvcSpeRoutingSchemeDto.setIsMandatory(String.valueOf(true));
                     hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     hcsaSvcSpecificStageWorkloadDto.setAppType(every);
                     hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -900,7 +827,7 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setSvcName(serviceName);
         hcsaServiceDto.setSvcCode(serviceCode);
         hcsaServiceDto.setMaxVersionEffectiveDate(maxVersionEffectiveDate);
-        hcsaServiceDto.setSelectAsNewVersion("true".equals(selectAsNewVersion));
+        hcsaServiceDto.setSelectAsNewVersion(String.valueOf(true).equals(selectAsNewVersion));
         if(!StringUtil.isEmpty(maxVersionEndDate)){
             try {
                 Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(maxVersionEndDate);
@@ -942,11 +869,11 @@ public class ConfigServiceDelegator {
         hcsaServiceDto.setSvcDesc(description);
         hcsaServiceDto.setSvcType(serviceType);
         if (StringUtil.isEmpty(version)) {
-            hcsaServiceDto.setVersion("1");
+            hcsaServiceDto.setVersion(String.valueOf(1));
         } else {
             hcsaServiceDto.setVersion(version);
         }
-        hcsaServiceDto.setServiceIsUsed("true".equals(serviceIsUse));
+        hcsaServiceDto.setServiceIsUsed(String.valueOf(true).equals(serviceIsUse));
         hcsaServiceConfigDto.setHcsaSvcSubtypeOrSubsumedDtos(hcsaSvcSubtypeOrSubsumedDtos);
         hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(hcsaSvcSpePremisesTypeDtos);
         hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfig);
@@ -966,7 +893,6 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setServiceDocSize(numberfields);
         return hcsaServiceConfigDto;
     }
-
 
 
 }

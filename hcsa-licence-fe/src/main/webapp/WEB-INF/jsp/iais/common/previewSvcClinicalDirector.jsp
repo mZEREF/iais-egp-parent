@@ -111,7 +111,7 @@
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology">
-                                        <span class="check-square"></span>Date when speciality was gotten
+                                        <span class="check-square"></span>Date when specialty was obtained
                                     </p>
                                 </td>
                                 <td>
