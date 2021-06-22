@@ -478,6 +478,104 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return appTypeOption;
     }
 
+
+    @Override
+    public String assignMultTaskByAppNos(String[] appNoChecks, LoginContext loginContext, List<TaskDto> commPools) {
+        List<String> appNoCheckList = filterAppNoChecks(appNoChecks);
+        String userId = loginContext.getUserId();
+        if(!IaisCommonUtils.isEmpty(appNoCheckList) && !IaisCommonUtils.isEmpty(commPools)) {
+            for(String appNoCheck : appNoCheckList) {
+                try {
+                    for(TaskDto taskDto : commPools) {
+                        if(taskDto != null && appNoCheck.equals(taskDto.getApplicationNo())) {
+                            //set inspector lead
+                            setInspLeadForMultAssign(taskDto);
+                            //get applicationViewDto
+                            ApplicationViewDto applicationViewDto = searchByAppCorrId(taskDto.getRefNo());
+                            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                            List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                            applicationDtos.add(applicationDto);
+                            //get Create task
+                            TaskDto createTask = getComCreateTask(taskDto, applicationDtos, userId);
+                            List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
+                            createTasks.add(createTask);
+                            //set status in current Task
+                            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                            //create and update task
+                            taskService.createTasks(createTasks);
+                            taskService.updateTask(taskDto);
+                            //create history and update app status
+                            updateHistoryAppStatusForMult(applicationDto, taskDto);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    log.info(StringUtil.changeForLog("Common Pool Fail Application No = " + appNoCheck));
+                    continue;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void updateHistoryAppStatusForMult(ApplicationDto applicationDto, TaskDto taskDto) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null,
+                InspectionConstants.PROCESS_DECI_COMMON_POOL_ASSIGN, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
+            ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+            applicationService.updateFEApplicaiton(applicationDto1);
+            createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(), applicationDto1.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), null, taskDto.getWkGrpId());
+        } else {
+            createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
+        }
+    }
+
+    private TaskDto getComCreateTask(TaskDto taskDto, List<ApplicationDto> applicationDtos, String userId) {
+        //get score
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, taskDto.getTaskKey());
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        TaskDto createTask = new TaskDto();
+        createTask.setId(null);
+        createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        createTask.setPriority(taskDto.getPriority());
+        createTask.setRefNo(taskDto.getRefNo());
+        createTask.setSlaAlertInDays(taskDto.getSlaAlertInDays());
+        createTask.setSlaDateCompleted(null);
+        createTask.setSlaInDays(taskDto.getSlaInDays());
+        createTask.setTaskKey(taskDto.getTaskKey());
+        createTask.setTaskType(taskDto.getTaskType());
+        createTask.setWkGrpId(taskDto.getWkGrpId());
+        createTask.setUserId(userId);
+        createTask.setDateAssigned(new Date());
+        createTask.setRoleId(taskDto.getRoleId());
+        createTask.setApplicationNo(taskDto.getApplicationNo());
+        createTask.setProcessUrl(taskDto.getProcessUrl());
+        createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+        return createTask;
+    }
+
+    private void setInspLeadForMultAssign(TaskDto taskDto) {
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(taskDto.getWkGrpId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        InspecTaskCreAndAssDto inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
+        setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, taskDto.getWkGrpId());
+        setInspectorLeadRecom(inspecTaskCreAndAssDto, taskDto.getRefNo(), taskDto.getWkGrpId());
+    }
+
+    private List<String> filterAppNoChecks(String[] appNoChecks) {
+        List<String> appNoCheckList = IaisCommonUtils.genNewArrayList();
+        if(appNoChecks != null || appNoChecks.length > 0) {
+            for(int i = 0; i < appNoChecks.length; i++) {
+                if(!StringUtil.isEmpty(appNoChecks[i])) {
+                    appNoCheckList.add(appNoChecks[i]);
+                }
+            }
+            Set<String> appNoCheckSet = new HashSet<>(appNoCheckList);
+            appNoCheckList = new ArrayList<>(appNoCheckSet);
+        }
+        return appNoCheckList;
+    }
+
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
                                         String internalRemarks, TaskDto taskDto, LoginContext loginContext) {

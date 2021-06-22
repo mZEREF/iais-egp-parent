@@ -118,7 +118,7 @@
         showOtherSpecialty();
         profRegNoBlur();
         $('select.specialty').trigger('change');
-
+        $("input[name='noRegWithProfBoard']").trigger('change');
         doEdite();
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
@@ -434,11 +434,14 @@
 
     var prsCallBackFuns ={
         fillData:function ($prsLoadingEle,data) {
-            var subspecialty = data.subspecialty ;
-            var name = data.name;
-            if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(subspecialty)){
-                subspecialty = 'No specialty';
+            var specialty = data.specialty ;
+            if(isEmpty(specialty)){
+                specialty = '';
             }
+            var name = data.name;
+            /*if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(specialty)){
+                specialty = 'No specialty';
+            }*/
             var specialtyGetDate = '';
             if(!isEmpty(data.entryDateSpecialist)){
                 specialtyGetDate = data.entryDateSpecialist[0];
@@ -456,7 +459,7 @@
             }
 
 
-            $prsLoadingEle.find('.specialty-label').html(subspecialty);
+            $prsLoadingEle.find('.specialty-label').html(specialty);
             $prsLoadingEle.find('.name').val(name);
             $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
             $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
@@ -479,5 +482,16 @@
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
         }
     };
+    $("input[name='noRegWithProfBoard']").change(function (){
 
+        if($(this).parent().prev().val()==1){
+            if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
+                $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+                $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+            }
+        }else {
+            $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').remove();
+            $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
+        }
+    });
 </script>

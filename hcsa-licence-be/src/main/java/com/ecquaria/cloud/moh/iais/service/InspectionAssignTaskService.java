@@ -200,4 +200,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: applicantIsSubmit
       */
     boolean applicantIsSubmit(String refNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/6/22
+      * @Param:
+      * @return:
+      * @Descripation: assign Multiple Task By AppNos
+      */
+    String assignMultTaskByAppNos(String[] appNoChecks, LoginContext loginContext, List<TaskDto> commPools);
 }

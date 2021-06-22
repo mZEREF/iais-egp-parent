@@ -72,6 +72,7 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
             selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
             selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+            selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
         }
         doSortSelOption(selectOptions);
         Map<String, String> result = new HashMap<>();
@@ -108,7 +109,8 @@ public class EmailAjaxController {
         selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
         selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
         selectOptions.add(new SelectOption("MedAlert","MedAlert"));
-    }
+        selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
+        }
         doSortSelOption(selectOptions);
         Map<String, String> result = new HashMap<>();
         Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
@@ -249,6 +251,9 @@ public class EmailAjaxController {
                 break;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE:
                 roleName = "Licensee";
+                break;
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
+                roleName = "Clinical Director";
                 break;
             default:
                 roleName = roleAbbreviation;

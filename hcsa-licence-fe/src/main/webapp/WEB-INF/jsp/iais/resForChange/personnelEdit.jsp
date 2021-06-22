@@ -70,6 +70,9 @@
                                                     <c:when test="${'MAP'==psnType}">
                                                         <p>&nbsp;</p>
                                                     </c:when>
+                                                    <c:when test="${'CD'==psnType}">
+                                                        <p> </p>
+                                                    </c:when>
                                                 </c:choose>
                                             </c:forEach>
                                         </td>
@@ -91,6 +94,9 @@
                                                     </c:when>
                                                     <c:when test="${'MAP'==psnType}">
                                                         <p>MedAlert</p>
+                                                    </c:when>
+                                                    <c:when test="${'CD'==psnType}">
+                                                        <p>Clinical Director</p>
                                                     </c:when>
                                                 </c:choose>
                                             </c:forEach>
@@ -154,7 +160,7 @@
                                                         name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -236,7 +242,7 @@
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -320,7 +326,7 @@
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') || psnTypes.contains('CD')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
@@ -391,7 +397,7 @@
                                                         name="idNo2" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO')}">
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO') || psnTypes.contains('DPO') ||psnTypes.contains('CD')}">
                                         <iais:row>
                                             <iais:field value="Designation " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">

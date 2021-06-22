@@ -1221,10 +1221,12 @@ public class RequestForChangeMenuDelegator {
         SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
         SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Nominee");
         SelectOption sp4 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert");
+        SelectOption sp5 = new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "Clinical Director");
         personelRoles.add(sp1);
         personelRoles.add(sp2);
         personelRoles.add(sp3);
         personelRoles.add(sp4);
+        personelRoles.add(sp5);
         return personelRoles;
     }
 

@@ -154,6 +154,7 @@
     $(document).ready(function() {
         $('#postalCodePop').modal('hide');
         cl();
+        $("input[name='easMtsUseOnly0']").trigger('change');
         preperChange();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
