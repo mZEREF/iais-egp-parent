@@ -58,6 +58,14 @@
                             </c:if>
                             <tr>
                                 <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cdDto.salutation }"/></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                                 </td>
                                 <td>
@@ -66,18 +74,18 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
-                                </td>
-                                <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.idNo }"/></p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cdDto.idType}"></iais:code></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
+                                </td>
+                                <td>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.idNo }"/></p>
                                 </td>
                             </tr>
                             <tr>

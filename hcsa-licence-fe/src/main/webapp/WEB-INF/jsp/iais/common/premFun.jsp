@@ -74,7 +74,7 @@
             /*remove hidden*/
             $premContent.find('a.retrieveAddr').removeClass('hidden');
             $premContent.find('button.addPubHolDay').removeClass('hidden');
-            $premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
+            $premContent.find('span.radio-disabled').removeClass('radio-disabled');
             $premContent.find('.removePhBtn').removeClass('hidden');
             $premContent.find('.addOperational').removeClass('hidden');
             $premContent.find('.opDel').removeClass('hidden');

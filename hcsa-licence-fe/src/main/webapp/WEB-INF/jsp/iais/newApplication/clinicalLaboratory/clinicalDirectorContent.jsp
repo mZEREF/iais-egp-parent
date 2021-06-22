@@ -434,11 +434,14 @@
 
     var prsCallBackFuns ={
         fillData:function ($prsLoadingEle,data) {
-            var subspecialty = data.subspecialty ;
-            var name = data.name;
-            if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(subspecialty)){
-                subspecialty = 'No specialty';
+            var specialty = data.specialty ;
+            if(isEmpty(specialty)){
+                specialty = '';
             }
+            var name = data.name;
+            /*if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(specialty)){
+                specialty = 'No specialty';
+            }*/
             var specialtyGetDate = '';
             if(!isEmpty(data.entryDateSpecialist)){
                 specialtyGetDate = data.entryDateSpecialist[0];
@@ -456,7 +459,7 @@
             }
 
 
-            $prsLoadingEle.find('.specialty-label').html(subspecialty);
+            $prsLoadingEle.find('.specialty-label').html(specialty);
             $prsLoadingEle.find('.name').val(name);
             $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
             $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
