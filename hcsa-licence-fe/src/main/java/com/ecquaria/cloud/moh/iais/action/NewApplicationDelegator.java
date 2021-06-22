@@ -1678,7 +1678,7 @@ public class NewApplicationDelegator {
                     }
                     premiseView(appSubmissionDto, applicationDto, bpc.request);
                 }
-                ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Information");
+                ParamUtil.setRequestAttr(bpc.request, "cessationForm", "Application Details");
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             }
         }
