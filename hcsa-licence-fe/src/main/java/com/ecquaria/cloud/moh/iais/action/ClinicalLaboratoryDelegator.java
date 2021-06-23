@@ -2029,7 +2029,7 @@ public class ClinicalLaboratoryDelegator {
                         String name = professionalResponseDto.getName();
                         if(StringUtil.isEmpty(name)){
                             log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
-                            map.put("professionRegoNo"+i,"GENERAL_ERR0042");
+                            map.put("profRegNo"+i,"GENERAL_ERR0042");
                             setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
                             continue;
                         }
