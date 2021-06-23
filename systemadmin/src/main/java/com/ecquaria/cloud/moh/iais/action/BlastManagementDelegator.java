@@ -618,6 +618,9 @@ public class BlastManagementDelegator {
         String mode = (String) ParamUtil.getSessionAttr(request, "mode");
         String createby = (String) ParamUtil.getSessionAttr(request, "createby");
         String createDt = (String) ParamUtil.getSessionAttr(request, "createDt");
+        String modifiedBy= (String) ParamUtil.getSessionAttr(request, "modifiedBy");
+        String modifiedDt= (String) ParamUtil.getSessionAttr(request, "modifiedDt");
+
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
         auditSearchParam.addFilter("REQUEST_REF_NO", msgid,true);
@@ -629,7 +632,7 @@ public class BlastManagementDelegator {
             if("SMS".equals(mode)){
                 List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
                 for (EmailAuditTrailDto item:searchResult.getRows()
-                     ) {
+                ) {
                     EmailAuditTrailSMSDto emailAuditTrailSMSDto = new EmailAuditTrailSMSDto();
                     emailAuditTrailSMSDto.setRecipient(item.getRecipient());
                     emailAuditTrailSMSDto.setSubject(item.getSubject());
@@ -638,6 +641,8 @@ public class BlastManagementDelegator {
                     emailAuditTrailSMSDto.setLogMsg(item.getLogMsg());
                     emailAuditTrailSMSDto.setCreateBy(createby);
                     emailAuditTrailSMSDto.setCreateDt(createDt);
+                    emailAuditTrailSMSDto.setModifiedBy(modifiedBy);
+                    emailAuditTrailSMSDto.setModifiedDt(modifiedDt);
                     String date = Formatter.formatDateTime(item.getSentTime());
                     emailAuditTrailSMSDto.setSentTime(date);
                     smsDtos.add(emailAuditTrailSMSDto);
@@ -669,6 +674,8 @@ public class BlastManagementDelegator {
                     emailAuditTrailEmailDto.setLogMsg(item.getLogMsg());
                     emailAuditTrailEmailDto.setCreateBy(createby);
                     emailAuditTrailEmailDto.setCreateDt(createDt);
+                    emailAuditTrailEmailDto.setModifiedBy(modifiedBy);
+                    emailAuditTrailEmailDto.setModifiedDt(modifiedDt);
                     String date = Formatter.formatDateTime(item.getSentTime());
                     emailAuditTrailEmailDto.setSentTime(date);
                     emailDtos.add(emailAuditTrailEmailDto);
