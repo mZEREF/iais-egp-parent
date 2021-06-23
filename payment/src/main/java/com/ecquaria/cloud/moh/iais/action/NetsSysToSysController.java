@@ -68,25 +68,17 @@ public class NetsSysToSysController {
                                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
         StringBuilder bud = new StringBuilder();
         String header =  request.getParameter("hmac");
-        System.out.println("MerchantApp:s2sTxnEndUrl : txnRes: " + txnRes);
-        String macFromGW = request.getHeader("hmac");
-        System.out.println("MerchantApp:s2sTxnEndUrl :  hmac received: " + macFromGW);
 
-        System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
         String message =  request.getParameter("message");//contains TxnRes message
-        System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
 
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
         String url=  ConfigUtil.getString( "rvl.baiduri.return.url");
-        System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace('\n',' ');
-        //System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
 
-        System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
-        System.out.println("====>  new Session ID : " + request.getSession().getId());
+
         redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),request);
 
         String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
@@ -99,7 +91,6 @@ public class NetsSysToSysController {
                 tinyKey = sessionIdStr.substring(sepIndex + 1);
             }
         }
-        //System.out.println("====>  payment Session ID : " + sessionId);
         String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
 
         //String sessionId = URLEncoder.encode(request.getSession().getId(), "UTF-8");
@@ -173,9 +164,7 @@ public class NetsSysToSysController {
         // PayNow
         QRGeneratorResponse qrCodeResponse = qrGenerator.generateSGQR(QRType.PAY_NOW, payNowObject, qrDetails);
         String sgqrTypeFormattedPayLoad = qrCodeResponse.getSgqrPayload();
-        System.out.println(sgqrTypeFormattedPayLoad);
         String imageStreamInBase64Format = qrCodeResponse.getImageStream();
-        System.out.println(imageStreamInBase64Format);
         ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
         return imageStreamInBase64Format;
     }
