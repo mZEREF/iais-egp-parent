@@ -62,7 +62,7 @@
                 <br/>
             </div>
             <div class="col-xs-12">
-                Transactional Information:
+                Transactional details:
             </div>
             <c:choose>
                 <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
