@@ -135,12 +135,7 @@ public class ValidateClincalDirector implements ValidateFlow {
                 }else {
 
                 }
-                Date aclsExpiryDate = appSvcClinicalDirectorDtos.get(i).getAclsExpiryDate();
-                if(aclsExpiryDate==null){
-                    map.put("aclsExpiryDate"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
-                }else {
 
-                }
                 String mobileNo = appSvcClinicalDirectorDtos.get(i).getMobileNo();
                 if(StringUtil.isEmpty(mobileNo)){
                     map.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "mobileNo", "field"));
@@ -173,30 +168,6 @@ public class ValidateClincalDirector implements ValidateFlow {
     }
     //Medical Transport Service
     protected void doValidateForMTS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
-        /*String transportYear = appSvcClinicalDirectorDto.getTransportYear();
-        if(StringUtil.isEmpty(transportYear)){
-            map.put("transportYear"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Years of experience in patient transport", "field"));
-        }else {
-
-        }*/
-    /*    Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
-        if(bclsExpiryDate==null){
-            map.put("bclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "BCLS and AED Expiry Date", "field"));
-        }else {
-
-        }*/
-        String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
-        if(StringUtil.isEmpty(relevantExperience)){
-            map.put("relevantExperience"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "relevantExperience", "field"));
-        }else {
-            if(relevantExperience.length()>180){
-                String general_err0041=NewApplicationHelper.repLength("relevantExperience","50");
-                map.put("relevantExperience"+index,general_err0041);
-            }
-        }
-    }
-    //Emergency Ambulance Service
-    protected void doValidateForESA(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
         String noRegWithProfBoard = appSvcClinicalDirectorDto.getNoRegWithProfBoard();
         if(String.valueOf(1).equals(noRegWithProfBoard)){
             String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
@@ -212,17 +183,37 @@ public class ValidateClincalDirector implements ValidateFlow {
 
             }
         }
+        validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
+        if(StringUtil.isEmpty(bclsExpiryDate)){
+            map.put("bclsExpiryDate"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
+        }
+    }
+
+    protected void validateRelevantExperience(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto, Map<String, String> map, int index) {
+        String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
+        if(StringUtil.isEmpty(relevantExperience)){
+            map.put("relevantExperience"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "relevantExperience", "field"));
+        }else {
+            if(relevantExperience.length()>180){
+                String general_err0041= NewApplicationHelper.repLength("relevantExperience","50");
+                map.put("relevantExperience"+index,general_err0041);
+            }
+        }
+    }
+
+    //Emergency Ambulance Service
+    protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
+
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
         if(!"No speciality".equalsIgnoreCase(speciality)){
-            String relevantExperience = appSvcClinicalDirectorDto.getRelevantExperience();
-            if(StringUtil.isEmpty(relevantExperience)){
-                map.put("relevantExperience"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "relevantExperience", "field"));
-            }else {
-                if(relevantExperience.length()>180){
-                    String general_err0041=NewApplicationHelper.repLength("relevantExperience","50");
-                    map.put("relevantExperience"+index,general_err0041);
-                }
-            }
+            validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        }
+        Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
+        if(aclsExpiryDate==null){
+            map.put("aclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
+        }else {
+
         }
     }
 
@@ -233,7 +224,7 @@ public class ValidateClincalDirector implements ValidateFlow {
         if("MTS".equals(code)){
             doValidateForMTS(appSvcClinicalDirectorDto,map,index);
         }else if("EAS".equals(code)){
-            doValidateForESA(appSvcClinicalDirectorDto,map,index);
+            doValidateForEAS(appSvcClinicalDirectorDto,map,index);
         }
     }
 }
