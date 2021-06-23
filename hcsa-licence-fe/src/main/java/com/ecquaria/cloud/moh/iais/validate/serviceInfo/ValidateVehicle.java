@@ -62,9 +62,7 @@ public class ValidateVehicle implements ValidateFlow {
                             map.put("vehicleName" + i, "NEW_ERR0028");
                         }*/
                     }else {
-                        if(oldAppSvcVehicleDto.contains(vehicleName)){
 
-                        }
                     }
 
                 }
