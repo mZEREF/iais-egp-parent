@@ -1000,7 +1000,7 @@ public class InsRepServiceImpl implements InsRepService {
             if(RoleConsts.USER_ROLE_AO3.equals(roleId)){
                 subStage = null;
             }
-            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), StringUtil.isNotEmpty(stageId) ? stageId : taskKey, null, null, roleId, groupId1, subStage);
 
         }
 
