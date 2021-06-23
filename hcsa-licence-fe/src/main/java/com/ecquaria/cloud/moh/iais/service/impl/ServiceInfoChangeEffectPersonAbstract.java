@@ -36,8 +36,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
     private AppSubmissionService appSubmissionService;
     @Autowired
     private RequestForChangeService requestForChangeService;
-    @Autowired
-    private LicenceClient licenceClient;
     @Override
     public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
@@ -78,23 +76,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             List<LicKeyPersonnelDto> licKeyPersonnelDtoByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personnelDtoByIdNo);
             licKeyPersonnelDtos.addAll(licKeyPersonnelDtoByPerId);
         }
-        List<LicSvcClinicalDirectorDto> licSvcClinicalDirectorDtos = licenceClient.getLicSvcClinicalDirectorDtoByIdNos(new ArrayList<>(set1)).getEntity();
-        List<String> stringList=new ArrayList<>(licSvcClinicalDirectorDtos.size());
-        for (LicSvcClinicalDirectorDto v : licSvcClinicalDirectorDtos) {
-            stringList.add(v.getAppPremCorreId());
-        }
-        List<LicenceDto> licenceDtoList = licenceClient.getLicenceDtoByPremCorreIds(stringList).getEntity();
         Set<String> licenceId = IaisCommonUtils.genNewHashSet();
         List<String> licenceIdList = IaisCommonUtils.genNewArrayList();
 
         for (LicKeyPersonnelDto licKeyPersonnelDto : licKeyPersonnelDtos) {
             if (licenseeId.equals(licKeyPersonnelDto.getLicenseeId())) {
                 licenceId.add(licKeyPersonnelDto.getLicenceId());
-            }
-        }
-        for(LicenceDto v : licenceDtoList){
-            if(licenseeId.equals(v.getLicenseeId())){
-                licenceId.add(v.getId());
             }
         }
         licenceIdList.addAll(licenceId);
