@@ -148,7 +148,7 @@ public class NetsSysToSysController {
 
         }
         String appGrpNo=reqNo;
-        appGrpNo=reqNo.substring(0,'_');
+        appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
 
         QRGenerator qrGenerator = new QRGeneratorImpl();
 
