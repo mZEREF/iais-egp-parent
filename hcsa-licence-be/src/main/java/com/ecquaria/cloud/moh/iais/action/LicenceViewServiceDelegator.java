@@ -893,6 +893,9 @@ public class LicenceViewServiceDelegator {
         if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
             return;
         }
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appSubmissionDto.getAppType())){
+            return;
+        }
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
 
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = null;
