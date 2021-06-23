@@ -3951,7 +3951,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   /* width: calc((100% - 90px) / 4);*/
   float: left;
 }
-.dashboard-chart .dashboard-tile-item .dashboard-tile a.empty-chart {
+.dashboard-chart .dashboard-tile-item .dashboard-tile a {
   cursor: pointer;
   background-image: url('../img/chart-0.png');
   background-size: 35%;
@@ -3992,7 +3992,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   vertical-align: middle;
   color: #333333;
 }
-.dashboard-chart .dashboard-tile-item .dashboard-tile .dashboard-txt {
+.dashboard-txt {
   font-size: 1.3rem;
   color: #333333;
   margin-bottom: 0;
@@ -4052,7 +4052,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 /****************************************************/
 
 .dashboard-multiple .dashboard-tile-item {
-  width: calc((100% - 90px) / 4);
+  /*width: calc((100% - 90px) / 4);*/
   float: left;
 }
 .dashboard-multiple .dashboard-tile-item .dashboard-tile {
