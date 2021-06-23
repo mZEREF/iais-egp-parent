@@ -338,6 +338,7 @@
         <c:if test="${'true' == canEdit}">
         $content.find('input.cdIndexNo').val('');
         </c:if>
+        $content.find('.specialty-label').html('');
         if('-1' == assignSelVal) {
             $content.addClass('hidden');
             clearFields($content);
@@ -365,6 +366,22 @@
             if (i == 'psnEditDto') {
                 //console.info(val);
                 disableContent($current, val);
+            } else if(i == 'licPerson'){
+                var licPerson = data.licPerson;
+                // alert(licPerson);
+                if ('1' == licPerson){
+                    $current.find('input.licPerson').val('1');
+                }else{
+                    $current.find('input.licPerson').val('0');
+                }
+            } else if(i == 'speciality'){
+                var speciality = data.speciality;
+                if(isEmpty(speciality)){
+                    $content.find('.specialty-label').html('');
+                }else{
+                    $content.find('.specialty-label').html(speciality);
+                }
+
             } else {
                 var $input = $current.find('.' + i + ':input');
                 if ($input.length == 0) {
@@ -402,13 +419,6 @@
                 }
             }
         });
-        var licPerson = data.licPerson;
-        // alert(licPerson);
-        if ('1' == licPerson){
-            $current.find('input.licPerson').val('1');
-        }else{
-            $current.find('input.licPerson').val('0');
-        }
     }
 
     function disableContent($current, data) {
