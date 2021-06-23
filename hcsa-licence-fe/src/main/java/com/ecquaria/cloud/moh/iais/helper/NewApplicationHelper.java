@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -1978,6 +1979,10 @@ public class NewApplicationHelper {
             personKey = idType+ "," + idNo;
         }
         return personKey;
+    }
+
+    public static String getPersonView(String idType, String idNo, String name) {
+        return name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")";
     }
 
     public static String getPhName(List<SelectOption> phDtos, String dateStr){
@@ -3930,4 +3935,24 @@ public class NewApplicationHelper {
         riskLevelResult.add(so3);
         return riskLevelResult;
     }
+
+    public static List<SelectOption> genSubLicessOption(List<SubLicenseeDto> subLicenseeDtoList) {
+        List<SelectOption> options = IaisCommonUtils.genNewArrayList();
+        options.add(new SelectOption("-1", "Please Select"));
+        options.add(new SelectOption("newOfficer", "I'd like to add a new licensee"));
+        if (subLicenseeDtoList != null) {
+            subLicenseeDtoList.stream().forEach(dto -> options.add(new SelectOption(getPersonKey(dto.getIdType(), dto.getIdNumber()),
+                    getPersonView(dto.getIdType(), dto.getIdNumber(), dto.getLicenseeName()))));
+        }
+        return options;
+    }
+
+    public static Map<String, SubLicenseeDto> genSubLicessMap(List<SubLicenseeDto> subLicenseeDtoList) {
+        Map<String, SubLicenseeDto> map = IaisCommonUtils.genNewLinkedHashMap();
+        if (subLicenseeDtoList != null) {
+            subLicenseeDtoList.stream().forEach(dto -> map.put(getPersonKey(dto.getIdType(), dto.getIdNumber()), dto));
+        }
+        return map;
+    }
+
 }

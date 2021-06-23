@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -65,6 +67,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -829,8 +832,7 @@ public class NewApplicationAjaxController {
      * @Designation
      */
     @GetMapping(value = "/person-info/svc-code")
-    public @ResponseBody
-    AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
+    public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
@@ -897,6 +899,23 @@ public class NewApplicationAjaxController {
         return person;
     }
 
+    @GetMapping(value = "/person-info/licesee-detail")
+    public @ResponseBody SubLicenseeDto getLiceseeDetail(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the getLiceseeDetail start ...."));
+        String idType = ParamUtil.getString(request, "idType");
+        String idNo = ParamUtil.getString(request, "idNo");
+        // String svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
+        if (StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType) /*|| StringUtil.isEmpty(svcCode)*/) {
+            return null;
+        }
+        Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.LICENSEE_MAP);
+        SubLicenseeDto person = Optional.ofNullable(psnMap)
+                .map(map -> map.get(NewApplicationHelper.getPersonKey(idType, idNo)))
+                .orElseGet(SubLicenseeDto::new);
+        log.info(StringUtil.changeForLog("the getLiceseeDetail end .... " + JsonUtil.parseToJson(person)));
+        return person;
+    }
 
     @PostMapping(value = "/med-alert-person-html")
     public @ResponseBody

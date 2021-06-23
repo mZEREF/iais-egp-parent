@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -68,6 +69,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -192,6 +194,9 @@ public class NewApplicationDelegator {
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
+    public static final String LICENSEE_MAP = "LICENSEE_MAP";
+    public static final String LICENSEE_OPTIONS = "LICENSEE_OPTIONS";
+
     public static final String CURR_ORG_USER_ACCOUNT = "currOrgUserAccount";
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -298,11 +303,157 @@ public class NewApplicationDelegator {
             action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
             if (StringUtil.isEmpty(action) || "validation".equals(action)) {
                 //first
-                action = "premises";
+                action = "licensee";
             }
         }
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("the do prepare end ...."));
+    }
+
+    /**
+     * Process: MohNewApplication
+     * Step: PrepareSubLicensee
+     *
+     *  Prepare licensee detail
+     *
+     * @param bpc
+     */
+    public void prepareSubLicensee(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("..... Prepare Sub Licensee...."));
+        List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getAllSubLicensees().getEntity();
+        bpc.request.getSession().setAttribute(LICENSEE_MAP, NewApplicationHelper.genSubLicessMap(subLicenseeDtoList));
+        bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(subLicenseeDtoList));
+    }
+
+    /**
+     * Process: MohNewApplication
+     * Step: PrepareSubLicensee
+     *
+     *  Do licensee detail
+     *
+     * @param bpc
+     */
+    public void doSubLicensee(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("------doSubLicensee-------"));
+        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if ("back".equals(action) || RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+            return;
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
+        log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (isGetDataFromPage) {
+            SubLicenseeDto subLicenseeDto = getSubLicenseeDtoFromPage(bpc.request);
+            appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+            if (appSubmissionDto.isNeedEditController()) {
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+            }
+            errorMap = validateSubLicenseeDto(subLicenseeDto, bpc.request);
+        }
+
+        String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
+//        if (!"saveDraft".equals(action)) {
+//
+//        }
+        //errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keywords, isRfi);
+//        String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
+//        String crud_action_type = bpc.request.getParameter("crud_action_type");
+//        bpc.request.setAttribute("continueStep", crud_action_type);
+//        bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
+//        if ("continue".equals(crud_action_type_continue)) {
+//            errorMap.remove("hciNameUsed");
+//        }
+//        String string = errorMap.get("hciNameUsed");
+//        if (string != null) {
+//            bpc.request.setAttribute("hciNameUsed", "hciNameUsed");
+//        }
+        if (errorMap.size() > 0) {
+            //set audit
+            NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
+                    appSubmissionDto.getLicenceNo());
+//            String hciNameUsed = errorMap.get("hciNameUsed");
+//            if (!StringUtil.isEmpty(hciNameUsed)) {
+//                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
+//            }
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
+            bpc.request.setAttribute("errormapIs", "error");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            coMap.put("licensee", "");
+            //coMap.put("serviceConfig", sB.toString());
+            bpc.request.getSession().setAttribute("coMap", coMap);
+        } else {
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            coMap.put("licensee", "licensee");
+            //coMap.put("serviceConfig", sB.toString());
+            bpc.request.getSession().setAttribute("coMap", coMap);
+            if ("rfcSaveDraft".equals(actionAdditional)) {
+                try {
+                    doSaveDraft(bpc);
+                } catch (IOException e) {
+                    log.error("error", e);
+                }
+            }
+        }
+    }
+
+    private Map<String, String> validateSubLicenseeDto(SubLicenseeDto subLicenseeDto, HttpServletRequest request) {
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (result != null) {
+            errorMap = result.retrieveAll();
+        }
+        if (errorMap.isEmpty() && "newOfficer".equals(subLicenseeDto.getAssignSelect())) {
+            // validate the current licensee whether he / she been registered or not
+            Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
+                    NewApplicationDelegator.LICENSEE_MAP);
+            String idType = subLicenseeDto.getIdType();
+            String idNo = subLicenseeDto.getIdNumber();
+            if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo)) != null) {
+                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
+                errMsg = errMsg.replace("{ID No.}",idNo);
+                errorMap.put("idNumber",errMsg);
+            }
+        }
+        return errorMap;
+    }
+
+    private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
+        SubLicenseeDto dto = new SubLicenseeDto();
+        String assignSelect = ParamUtil.getString(request, "assignSelect");
+        String licenseeType = ParamUtil.getString(request, "licenseeType");
+        String idType = ParamUtil.getString(request, "idType");
+        String idNumber = ParamUtil.getString(request, "idNumber");
+        String licenseeName = ParamUtil.getString(request, "licenseeName");
+        String postalCode = ParamUtil.getString(request, "postalCode");
+        String addrType = ParamUtil.getString(request, "addrType");
+        String blkNo = ParamUtil.getString(request, "blkNo");
+        String floorNo = ParamUtil.getString(request, "floorNo");
+        String unitNo = ParamUtil.getString(request, "unitNo");
+        String streetName = ParamUtil.getString(request, "streetName");
+        String buildingName = ParamUtil.getString(request, "buildingName");
+        String telephoneNo = ParamUtil.getString(request, "telephoneNo");
+        String emilAddr = ParamUtil.getString(request, "emilAddr");
+
+        dto.setAssignSelect(assignSelect);
+        dto.setLicenseeType(licenseeType);
+        dto.setIdType(idType);
+        dto.setIdNumber(idNumber);
+        dto.setLicenseeName(licenseeName);
+        dto.setPostalCode(postalCode);
+        dto.setAddrType(addrType);
+        dto.setBlkNo(blkNo);
+        dto.setFloorNo(floorNo);
+        dto.setUnitNo(unitNo);
+        dto.setStreetName(streetName);
+        dto.setBuildingName(buildingName);
+        dto.setTelephoneNo(telephoneNo);
+        dto.setEmilAddr(emilAddr);
+        return dto;
     }
 
     /**
@@ -853,12 +1004,12 @@ public class NewApplicationDelegator {
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
-        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+//        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
-        if ("back".equals(action) || RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
-            return;
-        }
+//        if ("back".equals(action) || RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
+//            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
+//            return;
+//        }
 
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
@@ -2098,7 +2249,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
-            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
             return;
         }
         String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
@@ -4462,10 +4613,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
         return true;
     }
-
-
-
-
 
     private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, APPSUBMISSIONDTO);

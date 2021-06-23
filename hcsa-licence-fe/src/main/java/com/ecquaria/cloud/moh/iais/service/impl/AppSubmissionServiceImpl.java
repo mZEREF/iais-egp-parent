@@ -2136,7 +2136,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             coMap.put("premises", "premises");
         }
         //
-        Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        // Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,
+        // NewApplicationDelegator.LICPERSONSELECTMAP);
         //
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -3476,6 +3477,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.SVC_DOC_CONFIG);
         session.removeAttribute("app-rfc-tranfer");
         HashMap<String, String> coMap = new HashMap<>(4);
+        coMap.put("licensee", "");
         coMap.put("premises", "");
         coMap.put("document", "");
         coMap.put("information", "");
@@ -3484,5 +3486,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //request For Information Loading
         session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
+        // CR: Licensee Details
+        session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
     }
 }

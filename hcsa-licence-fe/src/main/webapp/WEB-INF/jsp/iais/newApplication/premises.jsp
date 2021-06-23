@@ -216,7 +216,7 @@
         //Binding method
         $('#Back').click(function(){
             showWaiting();
-            submit(null,'back',null);
+            submit('licensee', null,null);
         });
         $('#Next').click(function(){
             showWaiting();

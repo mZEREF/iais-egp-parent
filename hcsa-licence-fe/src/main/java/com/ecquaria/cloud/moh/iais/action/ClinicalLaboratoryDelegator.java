@@ -1625,13 +1625,12 @@ public class ClinicalLaboratoryDelegator {
         String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
         if (isGetDataFromPage) {
             String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
+            List<AppSvcPersonnelDto> appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
 
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}",prsFlag);
