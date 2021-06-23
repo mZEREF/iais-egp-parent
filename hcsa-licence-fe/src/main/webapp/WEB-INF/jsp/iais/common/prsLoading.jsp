@@ -21,7 +21,6 @@
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
         var licPerson = $loadingContent.find('input.licPerson').val();
-
         var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
         var emptyData = {};
         if(prgNo == "" || prgNo == null || prgNo == undefined){
@@ -57,13 +56,16 @@
                 }
                 if(!isEmpty(callBackFuns)){
                     if(typeof callBackFuns.fillData == 'function'){
-                        callBackFuns.fillData($loadingContent, data);
+                        callBackFuns.fillData($loadingContent, data, needControlName);
                     }
                     if(typeof callBackFuns.setEdit == 'function'){
-                        callBackFuns.setEdit($loadingContent, 'disabled', false);
+                        callBackFuns.setEdit($loadingContent, 'disabled', false, needControlName);
                     }
                 }else{
                     loadingData(data,$loadingContent);
+                    if(needControlName){
+                        $loadingContent.find('input[name="name"]').val(data.name);
+                    }
                 }
                 if(needControlName){
                     inputReadonly($loadingContent.find('.field-name'));
@@ -92,7 +94,6 @@
         loading(data.subspecialty,$loadingContent,'sub-specialty-label');
         loading(data.qualification,$loadingContent,'qualification-label');
         addMandatoryForOtherQua(data.specialty,$loadingContent);
-        $loadingContent.find('input[name="name"]').val(data.name);
     };
 
     var addMandatoryForOtherQua = function (data,$loadingContent) {
@@ -132,10 +133,10 @@
     function clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action) {
         if(!isEmpty(callBackFuns)){
             if(typeof callBackFuns.fillData == 'function'){
-                callBackFuns.fillData($loadingContent, emptyData);
+                callBackFuns.fillData($loadingContent, emptyData, needControlName);
             }
             if(typeof callBackFuns.setEdit == 'function'){
-                callBackFuns.setEdit($loadingContent, 'disabled', true);
+                callBackFuns.setEdit($loadingContent, 'disabled', true, needControlName);
             }
         }else{
             clearCgoPrsInfo($loadingContent, needControlName, action);

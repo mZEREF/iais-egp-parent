@@ -402,6 +402,13 @@
                 }
             }
         });
+        var licPerson = data.licPerson;
+        // alert(licPerson);
+        if ('1' == licPerson){
+            $current.find('input.licPerson').val('1');
+        }else{
+            $current.find('input.licPerson').val('0');
+        }
     }
 
     function disableContent($current, data) {
@@ -433,7 +440,7 @@
     };
 
     var prsCallBackFuns ={
-        fillData:function ($prsLoadingEle,data) {
+        fillData:function ($prsLoadingEle, data, needControlName) {
             var specialty = data.specialty ;
             if(isEmpty(specialty)){
                 specialty = '';
@@ -460,21 +467,25 @@
 
 
             $prsLoadingEle.find('.specialty-label').html(specialty);
-            $prsLoadingEle.find('.name').val(name);
+            if(needControlName){
+                $prsLoadingEle.find('.name').val(name);
+            }
             $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
             $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
             $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
             $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
             $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
         },
-        setEdit:function ($prsLoadingEle, propStyle, canEdit) {
+        setEdit:function ($prsLoadingEle, propStyle, canEdit, needControlName) {
             var nameEle = $prsLoadingEle.find('.name');
             var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
             var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
             var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
             var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
             var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
-            controlEdit(nameEle, propStyle, canEdit);
+            if(needControlName){
+                controlEdit(nameEle, propStyle, canEdit);
+            }
             controlEdit(specialtyGetDateEle, propStyle, canEdit);
             controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
             controlEdit(currRegiDateEle, propStyle, canEdit);
