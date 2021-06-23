@@ -74,7 +74,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getAdThershold());
-                if(thold<0 || thold>999){
+                if(thold<0 || thold>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                     fdto.setAdThersholderr(true);
                 }
@@ -89,7 +89,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getDpThershold());
-                if(thold<0 || thold>999){
+                if(thold<0 || thold>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"prThershold","GENERAL_ERR0027");
                     fdto.setDpThersholderr(true);
                 }
@@ -124,7 +124,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<= 0||inLeftModNum>999){
+                if(inLeftModNum<= 0||inLeftModNum>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth",minCaseMes);
                         fdto.setAdLeftModCaseCountherr(true);
@@ -148,7 +148,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<=0 || inRightModNum >999){
+                if(inRightModNum<=0 || inRightModNum >HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth",maxCaseMes);
                         fdto.setAdRightModCaseCountherr(true);
@@ -191,7 +191,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.valueOf(inLeftHigh);
-                if (inLeftHighNum > 999 || inLeftHighNum < 0) {
+                if (inLeftHighNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
                         errMap.put(serviceCode + "inLeftHighCaseCounth", minCaseMes);
@@ -241,7 +241,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
-                if (inRightLowNum > 999 || inRightLowNum < 0) {
+                if (inRightLowNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", maxCaseMes);

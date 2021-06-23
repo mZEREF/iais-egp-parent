@@ -161,7 +161,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getDoThershold());
-                if(thold<0 || thold>999){
+                if(thold<0 || thold> HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                 }
             }catch (Exception e){
@@ -189,7 +189,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.valueOf(inLeftHigh);
-                if (inLeftHighNum > 999 || inLeftHighNum < 0) {
+                if (inLeftHighNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
                     errMap.put(serviceCode + "inLeftHighCaseCounth", GENERAL_ERR0027Min);
                     fdto.setDoLeftHighCaseCountherr(true);
@@ -222,7 +222,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
-                if (inRightLowNum > 999 || inRightLowNum < 0) {
+                if (inRightLowNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inRightLowNum < 0) {
                     inrightflag = false;
                     errMap.put(serviceCode + "inRightLowCaseCounth", GENERAL_ERR0027Max);
                     fdto.setDoRightModCaseCountherr(true);
@@ -258,7 +258,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<= 0||inLeftModNum>999){
+                if(inLeftModNum<= 0||inLeftModNum>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                         errMap.put(serviceCode+"inLeftModCaseCounth",GENERAL_ERR0027Min);
                         fdto.setDoLeftModCaseCountherr(true);
                 }
@@ -272,7 +272,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<=0 || inRightModNum >999){
+                if(inRightModNum<=0 || inRightModNum >HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"inRightModCaseCounth",GENERAL_ERR0027Max);
                     fdto.setDoRightModCaseCountherr(true);
                 }

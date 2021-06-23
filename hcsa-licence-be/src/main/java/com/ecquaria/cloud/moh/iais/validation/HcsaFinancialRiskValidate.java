@@ -90,7 +90,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getInThershold());
-                if(thold<0 || thold>999){
+                if(thold<0 || thold>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                     fdto.setInThersholderr(true);
                 }
@@ -105,7 +105,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getPrThershold());
-                if(thold<0 || thold>999){
+                if(thold<0 || thold>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     errMap.put(serviceCode+"prThershold","GENERAL_ERR0027");
                     fdto.setPrThersholderr(true);
                 }
@@ -139,7 +139,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<=0||inLeftModNum>999){
+                if(inLeftModNum<=0||inLeftModNum>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth", minMes);
                         fdto.setInLeftModCaseCountherr(true);
@@ -163,7 +163,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<=0 || inRightModNum >99){
+                if(inRightModNum<=0 || inRightModNum >HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth",maxMes);
                         fdto.setInRightModCaseCountherr(true);
@@ -208,7 +208,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.valueOf(inLeftHigh);
-                if (inLeftHighNum > 999 || inLeftHighNum < 0) {
+                if (inLeftHighNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
                         errMap.put(serviceCode + "inLeftHighCaseCounth", minMes);
@@ -258,7 +258,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
-                if (inRightLowNum > 999 || inRightLowNum < 0) {
+                if (inRightLowNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
                         errMap.put(serviceCode + "inRightLowCaseCounth", maxMes);

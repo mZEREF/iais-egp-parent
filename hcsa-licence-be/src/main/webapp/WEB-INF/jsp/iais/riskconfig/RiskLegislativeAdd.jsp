@@ -37,8 +37,8 @@
                                         <th width="10%">Threshold  (X Years)</th>
                                         <th>Effective Start Date</th>
                                         <th>Effective End Date</th>
-                                        <th  width="9%">Minimum Number of Cases</th>
-                                        <th  width="9%">Maximum Number of Cases</th>
+                                        <th  width="8%">Minimum Number of Cases</th>
+                                        <th  width="8%">Maximum Number of Cases</th>
                                         <th>Risk Rating</th>
                                     </tr>
                                     </thead>
@@ -67,16 +67,16 @@
                                             </td>
                                             <td>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" disabled readonly maxlength="2" value="0"  style="border-color: white;">
+                                                    <input type="text" disabled readonly maxlength="3" value="0"  style="border-color: white;">
                                                 </div></div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="2"value="${leg.doLeftModCaseCounth == null ? "" : leg.doLeftModCaseCounth}"
+                                                    <input type="text" id="<c:out value="${leg.svcCode}"/>inleftmod" name = "<c:out value="${leg.svcCode}"/>inleftmod" maxlength="3"value="${leg.doLeftModCaseCounth == null ? "" : leg.doLeftModCaseCounth}"
                                                            onchange="doChangeMc('${leg.svcCode}',true)">
                                                 </div>
 
                                                 </div>
                                                 <div><div style="width: 80px;"></div><div style="width: 80px;float: left">
-                                                    <input type="text" style="border-color: white;" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="2"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
+                                                    <input type="text" style="border-color: white;" id="<c:out value="${leg.svcCode}"/>inlefthigh" readonly name = "<c:out value="${leg.svcCode}"/>inlefthigh" maxlength="3"value="${leg.doLeftHighCaseCounth == null ? 1 : leg.doLeftHighCaseCounth}">
                                                 </div>
 
                                                 </div>
