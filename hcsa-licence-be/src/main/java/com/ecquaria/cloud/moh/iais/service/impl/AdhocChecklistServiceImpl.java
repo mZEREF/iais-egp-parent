@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubT
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
@@ -133,9 +134,17 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         String chklModule = acquireParameter(application.getApplicationType(), AdhocChecklistServiceImpl::compareModule);
         String type = acquireParameter(application.getApplicationType(), AdhocChecklistServiceImpl::compareType);
 
+        log.info(StringUtil.changeForLog("inspection pick up service config service code ====>>>>" + svcCode));
         log.info(StringUtil.changeForLog("get checklist for pre , module " + chklModule));
         log.info(StringUtil.changeForLog("get checklist for pre , type " + type));
 
+        ChecklistConfigDto baseSvcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule,
+                "", "").getEntity();
+        ChecklistConfigDto vehicleConfig = null;
+        if (needVehicle) {
+            vehicleConfig = hcsaChklClient.getMaxVersionInspectionEntityConfig(svcCode, type, chklModule,
+                    HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE).getEntity();
+        }
         List<ChecklistConfigDto> inspChecklist = IaisCommonUtils.genNewArrayList();
         boolean oneTime = false;
         for (AppPremisesCorrelationDto corr : correlation){
@@ -155,20 +164,15 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                     inspChecklist.add(commonConfig);
                 }
 
-                ChecklistConfigDto svcConfig;
+                ChecklistConfigDto svcConfig = null;
                 // issue 65522
-                if (StringUtil.isEmpty(hciCode)){
-                    svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", "").getEntity();
-                }else {
+                if (!StringUtil.isEmpty(hciCode)) {
                     svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", hciCode).getEntity();
-                    if (svcConfig == null){
-                        svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", "").getEntity();
-                    }
+                }
+                if (svcConfig == null) {
+                    svcConfig = MiscUtil.transferEntityDto(baseSvcConfig, ChecklistConfigDto.class);
                 }
 
-                log.info(StringUtil.changeForLog("inspection pick up service config service code ====>>>>" + svcCode));
-                log.info(StringUtil.changeForLog("inspection pick up service config module ====>>>>" + chklModule));
-                log.info(StringUtil.changeForLog("inspection pick up service config type ====>>>>" + type));
                 log.info(StringUtil.changeForLog("inspection pick up service config hci code ====>>>>" + hciCode));
                 log.info(StringUtil.changeForLog("inspection pick up service config ====>>>>" + svcConfig));
 
@@ -176,12 +180,9 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                     inspChecklist.add(svcConfig);
                 }
 
-                if (needVehicle) {
-                    ChecklistConfigDto vehicleConfig = hcsaChklClient.getMaxVersionInspectionEntityConfig(svcCode, type, chklModule,
-                            HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE).getEntity();
-                    if (vehicleConfig != null){
-                        inspChecklist.add(vehicleConfig);
-                    }
+                log.info(StringUtil.changeForLog("inspection pick up vehicle service config ====>>>>" + vehicleConfig));
+                if (vehicleConfig != null) {
+                    inspChecklist.add(MiscUtil.transferEntityDto(vehicleConfig, ChecklistConfigDto.class));
                 }
 
                 oneTime = true;
