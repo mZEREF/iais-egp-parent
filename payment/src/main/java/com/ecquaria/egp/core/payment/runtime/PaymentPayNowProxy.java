@@ -110,7 +110,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		ParamUtil.setSessionAttr(bpc.request,"payNowCallBackUrl",fields.get("vpc_ReturnURL"));
 		String appGrpNo=reqNo;
 		try {
-			appGrpNo=reqNo.substring(0,'_');
+			appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+reqNo));
 		}

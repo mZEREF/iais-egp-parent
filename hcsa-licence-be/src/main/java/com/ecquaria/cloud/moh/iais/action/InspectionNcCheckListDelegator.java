@@ -109,26 +109,21 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     public void init(BaseProcessClass bpc){
         log.info("======inspectionNcCheckListDelegator initRequest======");
         HttpServletRequest request = bpc.request;
-        String taskId = "";
-        try{
-            taskId = ParamUtil.getMaskedString(request,"taskId");
-        }catch (MaskAttackException e){
-            log.error(e.getMessage(),e);
-            try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-            } catch (IOException ioe){
-                log.error(ioe.getMessage(),ioe);
-                return;
-            }
-
+        String taskId = verifyTaskId(bpc);
+        if(StringUtil.isEmpty(taskId)){
+            return;
         }
-
 
         TaskDto taskDto = taskService.getTaskById(taskId);
         if(setCsrf(bpc,taskDto)){
             return;
         }
+        setCheckListUnFinishedTask(request,taskDto);
+    }
+
+    private void setCheckListUnFinishedTask(HttpServletRequest request,TaskDto taskDto){
         String appPremCorrId = taskDto.getRefNo();
+        String taskId = taskDto.getId();
         List<TaskDto> taskDtos = fillupChklistService.getCurrTaskByRefNo(taskDto);
         ParamUtil.setSessionAttr(request,TASKDTOLIST ,(Serializable) taskDtos);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
@@ -139,27 +134,34 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
         List<InspectionFillCheckListDto>   cDtoList ;
         List<InspectionFillCheckListDto>   commonList;
         AdCheckListShowDto adchklDto;
+        List<InspectionFillCheckListDto> inspectionFillCheckListDtoSpec = null;
         if( beforeFinishList){
-              cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-              commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-              adchklDto =  insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
+            cDtoList =  fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service",false);
+            commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common",false);
+            adchklDto =  insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
+            if(needVehicleSeparation){
+                inspectionFillCheckListDtoSpec = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service",true);
+            }
         }else {
-            cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service");
-            commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common");
+            cDtoList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service",false);
+            commonList = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"common",false);
             adchklDto = fillupChklistService.getAdhocDraftByappCorrId(appPremCorrId);
             if(adchklDto==null){
                 adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
             }
+            if(needVehicleSeparation){
+                inspectionFillCheckListDtoSpec = fillupChklistService.getInspectionFillCheckListDtoList(taskId,"service",true);
+            }
         }
         if(IaisCommonUtils.isNotEmpty(commonList)){
-                commonDto = commonList.get(0);
+            commonDto = commonList.get(0);
         }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         List<OrgUserDto> orgUserDtoUsers = fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos);
-         if( !needVehicleSeparation){
-             // get ah draft
-             adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtoUsers);
-         }
+        if( !needVehicleSeparation){
+            // get ah draft
+            adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtoUsers);
+        }
         //get  commonDto draft
         fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(commonDto,orgUserDtoUsers);
         // change common data;
@@ -170,20 +172,20 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
             inspectionFillCheckListDtos.add(commonDto);
         }
         //  change service checklist data
-       if(serListDto != null){
-           List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+        if(serListDto != null){
+            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
                 inspectionFillCheckListDtos.addAll(fdtoList);
-               for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
-                   if(!needVehicleSeparation){
-                       //get Service draft
-                       fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtoUsers);
-                   }
-                  insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
-              }
+                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                    if(!needVehicleSeparation){
+                        //get Service draft
+                        fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtoUsers);
+                    }
+                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+                }
             }
-           serListDto.setOtherinspectionofficer(fillupChklistService.getOtherOffGropByInspectionFillCheckListDtos(inspectionFillCheckListDtos));
-       }
+            serListDto.setOtherinspectionofficer(fillupChklistService.getOtherOffGropByInspectionFillCheckListDtos(inspectionFillCheckListDtos));
+        }
         //comparative data for sef and check list nc
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
         boolean remarksIsNull = (serListDto != null && StringUtil.isEmpty(serListDto.getTcuRemark()));

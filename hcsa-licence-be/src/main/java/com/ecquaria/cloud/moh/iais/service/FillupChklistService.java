@@ -42,9 +42,9 @@ public interface FillupChklistService {
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
     void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag);
-    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType);
+    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType,boolean needVehicleSeparation);
 
-    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service);
+    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service,boolean needVehicleSeparation);
 
     void getTcuInfo(InspectionFDtosDto serListDto, String appPremCorrId);
 

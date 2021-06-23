@@ -45,4 +45,6 @@ public class HcsaLicenceBeConstant {
     public static final String CHECK_LIST_ERROR_SPEC_TAB_NAME  = "errorSpecTab";
 
     public static final String CHECK_LIST_COM_TAB_NAME  = "nowComTabIn";
+
+    public static final int RISK_Validate_HIGH_MAX = 999;
 }

@@ -861,7 +861,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String conifgType) {
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String conifgType,boolean needVehicleSeparation) {
         List<InspectionFillCheckListDto> fillChkDtoList = null;
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = null;
@@ -871,13 +871,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(appPremCorrId!=null){
             List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
             if(chkList!=null && !chkList.isEmpty()){
-                fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,conifgType);
+                fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,conifgType,needVehicleSeparation);
             }
         }
         return fillChkDtoList;
     }
 
-    private List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId,String conifgType) {
+    private List<InspectionFillCheckListDto> getServiceChkDtoListByAppPremId(List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId,String conifgType,boolean needVehicleSeparation) {
         List<InspectionFillCheckListDto> chkDtoList = IaisCommonUtils.genNewArrayList();
         for(AppPremisesPreInspectChklDto temp:chkList){
             String configId  = temp.getChkLstConfId();
@@ -889,6 +889,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 fDto.setPreCheckId(temp.getId());
                 chkDtoList.add(fDto);
             }else if("service".equals(conifgType)&&!dto.isCommon()){
+                if(!((!needVehicleSeparation && StringUtil.isEmpty(dto.getInspectionEntity()))||(needVehicleSeparation && HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE.equalsIgnoreCase(dto.getInspectionEntity())))){
+                    continue;
+                }
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
                 if(StringUtil.isNotEmpty(temp.getAnswer())){
                     List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(temp.getAnswer(), InspectionCheckListAnswerDto.class);
@@ -921,8 +924,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service) {
-        List<InspectionFillCheckListDto> fillCheckDtoList = getInspectionFillCheckListDtoList(taskId,service);
+    public List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service,boolean needVehicleSeparation) {
+        List<InspectionFillCheckListDto> fillCheckDtoList = getInspectionFillCheckListDtoList(taskId,service,needVehicleSeparation);
         if(fillCheckDtoList!=null&&!fillCheckDtoList.isEmpty()){
             for(InspectionFillCheckListDto temp:fillCheckDtoList){
                 AppPremisesPreInspectChklDto appPremPreCklDto =  getAppPremChklDtoByTaskIdAndVehicleName(taskId,temp.getConfigId(),temp.getVehicleName());
@@ -1289,109 +1292,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
         return comDtoList;
-    }
-
-    private List<InspectionFillCheckListDto> getAllVersionDraftList(String configId, List<AppPremisesPreInspectChklDto> chkList) {
-        InspectionFillCheckListDto comDto = null;
-        AppPremInsDraftDto draftDto = null;
-        List<InspectionFillCheckListDto> comDtoList = IaisCommonUtils.genNewArrayList();
-        for(AppPremisesPreInspectChklDto temp: chkList){
-            if(temp.getChkLstConfId().equals(configId)){
-                draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
-                if(draftDto!=null){
-                    comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
-                    comDtoList.add(comDto);
-                }
-            }
-        }
-        return comDtoList;
-    }
-
-    public InspectionFillCheckListDto getComAppChklDraft(String appPremCorrId){
-        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        if(chkList!=null && !chkList.isEmpty()){
-            List<InspectionFillCheckListDto> fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
-            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
-               return  fillChkDtoList.get(0);
-            }
-        }
-        return null;
-    }
-
-    public InspectionFDtosDto getMaxVersionServiceList(String appPremCorrId){
-        InspectionFDtosDto fdto = null;
-        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        List<InspectionFillCheckListDto> fillChkDtoList = null;
-        if(chkList!=null && !chkList.isEmpty()){
-            fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"service");
-            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
-                fdto = getFdtoDraft(fillChkDtoList,appPremCorrId);
-            }
-        }
-        return fdto;
-    }
-
-    private InspectionFDtosDto getFdtoDraft(List<InspectionFillCheckListDto> fillChkDtoList,String appPremCorrId) {
-        InspectionFDtosDto fdto = new InspectionFDtosDto();
-        InspectionFillCheckListDto comDto = null;
-        List<InspectionFillCheckListDto> comDtoList = IaisCommonUtils.genNewArrayList();
-        AppPremInsDraftDto draftDto = null;
-        for(InspectionFillCheckListDto temp:fillChkDtoList){
-            AppPremisesPreInspectChklDto appchklDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(temp.getConfigId(),appPremCorrId).getEntity();
-            draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(appchklDto.getId()).getEntity();
-            if(draftDto!=null){
-                comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
-                comDtoList.add(comDto);
-            }
-        }
-        fdto.setFdtoList(comDtoList);
-        return fdto;
-    }
-
-
-
-    private List<InspectionFDtosDto> getAllVersionfdtoList( List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId) {
-        String version = chkList.get(0).getVersion();
-        List<InspectionFDtosDto> fdtoList = IaisCommonUtils.genNewArrayList();
-        InspectionFDtosDto fdto= null;
-        List<InspectionFillCheckListDto> comList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
-        String comfigId = null;
-        if(!IaisCommonUtils.isEmpty(comList)){
-            comfigId = comList.get(0).getConfigId();
-        }
-        try {
-            int versionNum = Integer.parseInt(version);
-            if(versionNum>0){
-                for(int i=versionNum;i>0;i--){
-                    List<AppPremisesPreInspectChklDto> versionCkList =  fillUpCheckListGetAppClient.getPremInsChklListByPremIdAndVersion(appPremCorrId,versionNum+"").getEntity();
-                    fdto = getadhocByVersionCkList(versionCkList,comfigId);
-                    fdtoList.add(fdto);
-                }
-            }
-        }catch (Exception e){
-            log.debug(e.toString());
-        }
-        return fdtoList;
-    }
-
-    private InspectionFDtosDto getadhocByVersionCkList(List<AppPremisesPreInspectChklDto> versionCkList,String comConfigId) {
-        InspectionFDtosDto fDtosDto = new InspectionFDtosDto();
-        InspectionFillCheckListDto comDto = null;
-        AppPremInsDraftDto draftDto = null;
-        List<InspectionFillCheckListDto> comDtoList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(versionCkList)){
-            for(AppPremisesPreInspectChklDto temp:versionCkList){
-                if(!temp.getChkLstConfId().equals(comConfigId)){
-                    draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
-                    if(draftDto!=null){
-                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
-                        comDtoList.add(comDto);
-                    }
-                }
-            }
-        }
-        fDtosDto.setFdtoList(comDtoList);
-        return fDtosDto;
     }
 
     @Override
@@ -2282,12 +2182,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto){
-        if(InspectionConstants.SWITCH_ACTION_YES.equalsIgnoreCase(ConfigHelper.getString("easmts.vehicle.sperate.flag"))){
-            ChecklistConfigDto checklistConfigDto =hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity();
-            //checklistConfigDto = checklistConfigDto == null ? hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), CommonUseHelper.compareAppTypeToCheckListType(appViewDto.getApplicationDto().getApplicationType()),CommonUseHelper.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() : checklistConfigDto;
-            return  checklistConfigDto == null ? false : true;
-        }
-        return false;
+            return (IaisCommonUtils.isEmpty(appViewDto.getAppSvcVehicleDtos()) || hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() == null) ? false : true;
     }
 
 }

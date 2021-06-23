@@ -2070,7 +2070,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Public Hotline " mandatory="false" width="12"/>
+                            <iais:field value="Public Hotline " mandatory="true" width="12"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubHotline${status.index}"></span>
@@ -2226,9 +2226,11 @@
         if($("input[name='easMtsUseOnlyVal']").val()=='UOT001'){
             if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().length<1){
                 $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').append("<span class=\"mandatory\">*</span>");
+            }
+            if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().length<1){
                 $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').append("<span class=\"mandatory\">*</span>");
             }
-        }else {
+        }else if($("input[name='easMtsUseOnlyVal']").val()=='UOT002'){
             $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().remove();
             $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().remove();
         }

@@ -2,14 +2,6 @@
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <input type="hidden" class="psnEditField" name="psnEditField${index}" value="<c:out value="${clinicalDirectorDto.psnEditFieldStr}" />"/>
     <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.cgoIndexNo}"/>
-    <c:choose>
-        <c:when test="${currentCgo.licPerson}">
-            <input class="licPerson" type="hidden" name="licPerson${index}" value="1"/>
-        </c:when>
-        <c:otherwise>
-            <input class="licPerson" type="hidden" name="licPerson${index}" value="0"/>
-        </c:otherwise>
-    </c:choose>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
@@ -78,6 +70,14 @@
     </div>
 
     <div class="col-md-12 col-xs-12 person-detail <c:if test="${'-1' == clinicalDirectorDto.assignSelect || empty clinicalDirectorDto.assignSelect}">hidden</c:if>">
+        <c:choose>
+            <c:when test="${clinicalDirectorDto.licPerson}">
+                <input class="licPerson" type="hidden" name="licPerson${index}" value="1"/>
+            </c:when>
+            <c:otherwise>
+                <input class="licPerson" type="hidden" name="licPerson${index}" value="0"/>
+            </c:otherwise>
+        </c:choose>
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
