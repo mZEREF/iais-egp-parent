@@ -295,6 +295,7 @@
             $currContent.find('input.isPartEdit').val('1');
             $currContent.find('.edit-content').addClass('hidden');
             $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('select').prop('disabled', false);
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');

@@ -146,13 +146,13 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST009')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST009']}</label>
+      <label style="font-size: 2.2rem">Key Clinical Personnel</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
               <c:forEach var="appSvcClinicalDirectorDto" items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" varStatus="status">
-                <p><strong class="col-xs-6">Clinical Director <c:if
+                <p><strong class="col-xs-6">Key Clinical Personnel <c:if
                         test="${fn:length(currentPreviewSvcInfo.appSvcClinicalDirectorDtoList)>1}">${status.index+1}</c:if>:</strong><span
                         class="col-xs-4 col-md-4"></span>
                 </p>
@@ -177,7 +177,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn No.</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn. No.</p>
                     </td>
                     <td>
                       <div class="col-xs-6">
@@ -314,7 +314,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Current Registration </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Registration Date</p>
                     </td>
                     <td>
                       <div class="col-xs-12">
@@ -435,7 +435,7 @@
 
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No  </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.  </p>
                     </td>
                     <td>
                       <div  class="col-xs-6">
@@ -481,7 +481,7 @@
       <label style="font-size: 2.2rem">${stepNameMap['SVST010']}</label>
       <div class="amend-preview-info">
         <c:set value="${currentPreviewSvcInfo.appSvcChargesPageDto}" var="appSvcChargesPageDto"></c:set>
-        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="index">
+        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="status">
           <p><strong class="col-xs-6">General Conveyance Charges <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
@@ -557,8 +557,8 @@
             </tr>
           </table>
         </c:forEach>
-        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="index">
-          <p><strong class="col-xs-6">General Conveyance Charges <c:if
+        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="status">
+          <p><strong class="col-xs-6">Medical Equipment and other Charges <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
           </p>

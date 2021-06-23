@@ -555,23 +555,27 @@ public class LicenceViewServiceDelegator {
         professionalParameterDto.setTimestamp(format);
         professionalParameterDto.setSignature("2222");
         List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
-        try {
-            disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
-        }catch (Throwable e){
-            log.error(e.getMessage(),e);
-            request.setAttribute("beEicGatewayClient","PRS mock server down !");
+        if(!list.isEmpty()){
+            try {
+                disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
+                request.setAttribute("beEicGatewayClient","PRS mock server down !");
+            }
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<ProfessionalResponseDto> professionalResponseDtos = null;
         HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
-        try {
-             professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        }catch (Throwable e){
-            log.error(e.getMessage(),e);
-            request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
-            log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+        if(!list.isEmpty()){
+            try {
+                professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
+                request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+                log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+            }
         }
         if(professionalResponseDtos!=null){
             for (ProfessionalResponseDto v : professionalResponseDtos) {
@@ -788,36 +792,38 @@ public class LicenceViewServiceDelegator {
     }
 
     private void formatDate(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<PublicHolidayDto> publicHolidayDtos)  {
-        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-            if(appPremPhOpenPeriodList!=null){
-                for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
-                    Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
-                    Time endTo = appPremPhOpenPeriodDto.getEndTo();
-                    String phDate = appPremPhOpenPeriodDto.getPhDate();
-                    if(phDate==null){
-                        continue;
-                    }
-                    appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
-                    if (startFrom != null && endTo != null) {
-                        String string = startFrom.toString();
-                        String string1 = endTo.toString();
-                        appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
-                        appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
-                        appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
-                        appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+        if(appGrpPremisesDtoList!=null){
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                if(appPremPhOpenPeriodList!=null){
+                    for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
+                        Time startFrom = appPremPhOpenPeriodDto.getStartFrom();
+                        Time endTo = appPremPhOpenPeriodDto.getEndTo();
+                        String phDate = appPremPhOpenPeriodDto.getPhDate();
+                        if(phDate==null){
+                            continue;
+                        }
+                        appPremPhOpenPeriodDto.setDayName(MasterCodeUtil.getCodeDesc(appPremPhOpenPeriodDto.getPhDate()));
+                        if (startFrom != null && endTo != null) {
+                            String string = startFrom.toString();
+                            String string1 = endTo.toString();
+                            appPremPhOpenPeriodDto.setConvEndToMM(string1.split(":")[1]);
+                            appPremPhOpenPeriodDto.setConvStartFromMM(string.split(":")[1]);
+                            appPremPhOpenPeriodDto.setConvStartFromHH(string.split(":")[0]);
+                            appPremPhOpenPeriodDto.setConvEndToHH(string1.split(":")[0]);
+                        }
                     }
                 }
-            }
-            Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
-            Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
-            if (wrkTimeFrom != null && wrkTimeTo != null) {
-                String s = wrkTimeFrom.toString();
-                String s1 = wrkTimeTo.toString();
-                appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
-                appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
-                appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
-                appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+                Time wrkTimeFrom = appGrpPremisesDto.getWrkTimeFrom();
+                Time wrkTimeTo = appGrpPremisesDto.getWrkTimeTo();
+                if (wrkTimeFrom != null && wrkTimeTo != null) {
+                    String s = wrkTimeFrom.toString();
+                    String s1 = wrkTimeTo.toString();
+                    appGrpPremisesDto.setOnsiteEndMM(s1.split(":")[1]);
+                    appGrpPremisesDto.setOnsiteStartMM(s.split(":")[1]);
+                    appGrpPremisesDto.setOnsiteStartHH(s.split(":")[0]);
+                    appGrpPremisesDto.setOnsiteEndHH(s1.split(":")[0]);
+                }
             }
         }
     }
@@ -886,6 +892,9 @@ public class LicenceViewServiceDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if (IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+            return;
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appSubmissionDto.getAppType())){
             return;
         }
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
