@@ -138,7 +138,7 @@
                     </tbody>
                   </table>
                   <iais:action style="text-align:right;">
-                    <button name="assignComBtn" class="btn btn-secondary" type="button" onclick="javascript:comPoolBatchAssignment()">Assign</button>
+                    <button name="assignComBtn" class="btn btn-primary" type="button" onclick="javascript:comPoolBatchAssignment()">Assign</button>
                   </iais:action>
                 </div>
               </iais:body>
