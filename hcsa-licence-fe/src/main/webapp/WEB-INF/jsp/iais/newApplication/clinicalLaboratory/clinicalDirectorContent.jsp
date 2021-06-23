@@ -402,6 +402,13 @@
                 }
             }
         });
+        var licPerson = data.licPerson;
+        // alert(licPerson);
+        if ('1' == licPerson){
+            $current.find('input.licPerson').val('1');
+        }else{
+            $current.find('input.licPerson').val('0');
+        }
     }
 
     function disableContent($current, data) {
