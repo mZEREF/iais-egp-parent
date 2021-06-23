@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -12,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.client.DistributionListClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,7 +83,9 @@ public class DistributionListServiceImpl implements DistributionListService {
 
     @Override
     public List<HcsaSvcPersonnelDto> roleByServiceId(String serviceId,String status){
-        return hcsaConfigClient.getServiceType(serviceId,status).getEntity();
+        List<HcsaSvcPersonnelDto> list=hcsaConfigClient.getServiceType(serviceId,status).getEntity();
+        list.removeIf(personnelDto -> personnelDto.getPsnType().equals(ApplicationConsts.PERSONNEL_VEHICLES) || personnelDto.getPsnType().equals(ApplicationConsts.PERSONNEL_CHARGES) || personnelDto.getPsnType().equals(ApplicationConsts.PERSONNEL_CHARGES_OTHER));
+        return list;
     }
 
 }
