@@ -143,18 +143,9 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         clearSessionForStartCheckList(request);
-        String taskId = "";
-        try{
-            taskId = ParamUtil.getMaskedString(request,"taskId");
-        }catch (MaskAttackException e){
-            log.error(e.getMessage(),e);
-            try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-            } catch (IOException ioe){
-                log.error(ioe.getMessage(),ioe);
-                return;
-            }
-
+        String taskId = verifyTaskId(bpc);
+        if(StringUtil.isEmpty(taskId)){
+            return;
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) {

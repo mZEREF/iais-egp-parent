@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
@@ -90,8 +92,8 @@ public class InspectionCheckListCommonMethodDelegator {
     public void setCheckDataHaveFinished(HttpServletRequest request,TaskDto taskDto){
         String appPremCorrId = taskDto.getRefNo();
         String taskId = taskDto.getId();
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
+        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service",false);
+        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common",false);
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
         if(commonList!=null && !commonList.isEmpty()){
@@ -128,6 +130,24 @@ public class InspectionCheckListCommonMethodDelegator {
         //set num
         setRate(request);
     }
+
+    public  String verifyTaskId( BaseProcessClass bpc){
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(),e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(),ioe);
+            }
+
+        }
+        return taskId;
+    }
+
+
 
     public void setSelectionsForDDMMAndAuditRiskSelect(HttpServletRequest request){
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
