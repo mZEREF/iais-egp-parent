@@ -2226,6 +2226,8 @@
         if($("input[name='easMtsUseOnlyVal']").val()=='UOT001'){
             if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().length<1){
                 $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').append("<span class=\"mandatory\">*</span>");
+            }
+            if($("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().length<1){
                 $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').append("<span class=\"mandatory\">*</span>");
             }
         }else {
