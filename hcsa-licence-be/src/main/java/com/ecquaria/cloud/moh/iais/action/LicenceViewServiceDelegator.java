@@ -555,24 +555,27 @@ public class LicenceViewServiceDelegator {
         professionalParameterDto.setTimestamp(format);
         professionalParameterDto.setSignature("2222");
         List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
-        try {
-            disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
-        }catch (Throwable e){
-            log.error(e.getMessage(),e);
-            request.setAttribute("beEicGatewayClient","PRS mock server down !");
-        }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<ProfessionalResponseDto> professionalResponseDtos = null;
         HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
-        try {
-             professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization()).getEntity();
-        }catch (Throwable e){
-            log.error(e.getMessage(),e);
-            request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
-            log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+        if(!list.isEmpty()){
+            try {
+                disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
+                request.setAttribute("beEicGatewayClient","PRS mock server down !");
+            }
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            try {
+                professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
+                request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+                log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+            }
         }
+
         if(professionalResponseDtos!=null){
             for (ProfessionalResponseDto v : professionalResponseDtos) {
                 proHashMap.put(v.getRegno(),v);
