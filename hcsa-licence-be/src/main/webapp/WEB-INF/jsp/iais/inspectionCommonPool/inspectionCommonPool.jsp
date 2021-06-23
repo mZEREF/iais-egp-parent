@@ -246,7 +246,7 @@
                             '<tbody>';
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
-                            html += '<td><input type="checkbox" name="comPoolMulCheck" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].appStatus + '" value="' + res.rows[i].maskId + '" onclick="commonPoolCheckBox(' + divid + ')"></td>'
+                            html += '<td><input type="checkbox" name="comPoolMulCheck" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].appStatus + '" value="' + res.rows[i].applicationNo + '" onclick="commonPoolCheckBox(' + divid + ')"></td>'
                             html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
