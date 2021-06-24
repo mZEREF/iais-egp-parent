@@ -102,4 +102,6 @@ public interface FillupChklistService {
     AppPremisesPreInspectChklDto getAppPremChklDtoByCorrIdAndVehicleName(String CorrId, String configId, String vehicleName);
 
     boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto);
+
+    InspectionSpecServiceDto getOriginalInspectionSpecServiceDtoByTaskId(boolean needVehicleSeparation,boolean beforeFinishList,String taskId);
 }
