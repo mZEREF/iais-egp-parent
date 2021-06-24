@@ -61,7 +61,6 @@ public class InspectionCheckListCommonMethodDelegator {
     private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
     private static final String INSPECTION_USERS = "inspectorsParticipant";
     private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
-    private static final String ACTION_ADHOC_OWN = "action_adhoc_own";
     private static final String BEFORE_FINISH_CHECK_LIST = "inspectionNcCheckListDelegator_before_finish_check_list";
     private static final String MOBILE_REMARK_GROUP = "mobile_remark_group";
 
@@ -71,11 +70,12 @@ public class InspectionCheckListCommonMethodDelegator {
         if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
             for(InspectionCheckQuestionDto temp:checkListDtoList){
-                String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
+                String prefix = StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId();
+                String answer = ParamUtil.getString(request,prefix+"comrad");
                 temp.setChkanswer(answer);
-                String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
-                String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
-                String ncs  = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comFindNcs");
+                String remark = ParamUtil.getString(request,prefix+"comremark");
+                String rectified = ParamUtil.getString(request,prefix+"comrec");
+                String ncs  = ParamUtil.getString(request,prefix+"comFindNcs");
                 temp.setNcs(ncs);
                 if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
                     temp.setRectified(true);
@@ -283,10 +283,11 @@ public class InspectionCheckListCommonMethodDelegator {
 
 
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
-        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
-        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
-        String ncs = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"FindNcs");
+        String  prefix = fdto.getSubName()+ StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId();
+        String answer = ParamUtil.getString(request,prefix+"rad");
+        String remark = ParamUtil.getString(request,prefix+"remark");
+        String rectified = ParamUtil.getString(request,prefix+"rec");
+        String ncs = ParamUtil.getString(request,prefix+"FindNcs");
         temp.setNcs(ncs);
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
             temp.setRectified(true);
@@ -566,7 +567,8 @@ public class InspectionCheckListCommonMethodDelegator {
         InspectionFillCheckListDto commonDto =  (InspectionFillCheckListDto) ParamUtil.getSessionAttr(request,COMMONDTO);
         List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
         InspectionFDtosDto serListDto = (InspectionFDtosDto) ParamUtil.getSessionAttr(request,SERLISTDTO);
-        fillupChklistService.getRateOfSpecCheckList(fDtosDtos,commonDto, serListDto);
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto) ParamUtil.getSessionAttr(request,ADHOCLDTO);
+        fillupChklistService.getRateOfSpecCheckList(fDtosDtos,commonDto, serListDto,adchklDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
@@ -585,14 +587,13 @@ public class InspectionCheckListCommonMethodDelegator {
     // one person
     public void setCheckListData(HttpServletRequest request){
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
+        InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
+        AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
+        ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
+        ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
+        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
             getSpecServiceCheckListDataFormViewPage(request);
-        }else {
-            InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
-            AdCheckListShowDto adchklDto = getAdhocDtoFromPage(request);
-            ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
-            ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         }
-        ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
     }
 }

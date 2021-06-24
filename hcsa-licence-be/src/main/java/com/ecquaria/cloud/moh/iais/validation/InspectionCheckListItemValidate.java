@@ -49,13 +49,12 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
-            if(!(specServiceFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
+            if(!specServiceFillUpVad(request, errMap)){
                 errMap.put("fillchkl","UC_INSTA004_ERR009");
             }
-        }else {
-            if(!( serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
-                errMap.put("fillchkl","UC_INSTA004_ERR009");
-            }
+        }
+        if(!( serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
+            errMap.put("fillchkl","UC_INSTA004_ERR009");
         }
     }
 
@@ -147,30 +146,31 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                 for(InspectionCheckQuestionDto temp:cqDtoList){
                     temp = getTempByMap(request,temp);
                     String draftTag =  getErrorMessageDraftStringTag(request);
+                    String prefix = StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag;
                     if( !(StringUtil.isEmpty(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark()) && StringUtil.isEmpty(temp.getNcs()))){
                         if(StringUtil.isEmpty(temp.getChkanswer())){
                             if( !StringUtil.isEmpty(temp.getRemark()) || !StringUtil.isEmpty(temp.getNcs())){
-                                errMap.put(temp.getSectionNameShow()+temp.getItemId()+draftTag+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                                errMap.put( prefix+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                                 if(isError){
                                     isError = false;
                                 }
                             }
                         }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer())){
                             if(StringUtil.isEmpty(temp.getRemark())){
-                                errMap.put(temp.getSectionNameShow()+temp.getItemId()+draftTag+"comRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                                errMap.put( prefix+draftTag+"comRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                                 if(isError){
                                     isError = false;
                                 }
                             }
                             if(StringUtil.isEmpty(temp.getNcs())){
-                                errMap.put(temp.getSectionNameShow()+temp.getItemId()+draftTag+"comFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
+                                errMap.put( prefix+draftTag+"comFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                                 if(isError){
                                     isError = false;
                                 }
                             }
                         }
                     }else if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+draftTag+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                        errMap.put( prefix+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                         if(isError){
                             isError = false;
                         }
@@ -192,31 +192,32 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
             String draftTag =  getErrorMessageDraftStringTag(request);
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 temp = getTempByMap(request,temp);
+                String prefix = fDto.getSubName() + StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+draftTag;
                 if( !(StringUtil.isEmpty(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark()) && StringUtil.isEmpty(temp.getNcs()))){
                     if(StringUtil.isEmpty(temp.getChkanswer())){
                         if( !StringUtil.isEmpty(temp.getRemark()) || !StringUtil.isEmpty(temp.getNcs())) {
-                            errMap.put(fDto.getSubName() + temp.getSectionNameShow() + temp.getItemId()+draftTag, MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "field"));
+                            errMap.put(prefix, MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "field"));
                             if (isError){
                                 isError = false;
                             }
                         }
                     }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer())){
                         if(StringUtil.isEmpty(temp.getRemark())){
-                            errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+draftTag+"Remark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                            errMap.put(prefix+"Remark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                             if(isError){
                                 isError = false;
                             }
                         }
 
                         if(StringUtil.isEmpty(temp.getNcs())){
-                            errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+draftTag+"FindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
+                            errMap.put(prefix+"FindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                             if(isError){
                                 isError = false;
                             }
                         }
                     }
                 }else if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(fDto.getSubName() + temp.getSectionNameShow() + temp.getItemId()+draftTag, MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "field"));
+                    errMap.put(prefix+draftTag, MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "field"));
                     if (isError){
                         isError = false;
                     }
@@ -262,6 +263,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                 String draftTag =  getErrorMessageDraftStringTag(request);
                 for(AdhocNcCheckItemDto temp:itemDtoList){
                  String submitUser = (String) ParamUtil.getSessionAttr(request,SUBMIT_CHECK_LIST);
+                 String prefix = temp.getId()+draftTag;
                  if( !StringUtil.isEmpty(submitUser)){
                      Map<String, AnswerForDifDto> answerForDifDtoMaps = temp.getAnswerForDifDtoMaps();
                      if(!IaisCommonUtils.isEmpty(answerForDifDtoMaps)){
@@ -277,7 +279,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                     if(!(StringUtil.isEmpty(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark()) && StringUtil.isEmpty(temp.getNcs()))){
                         if(StringUtil.isEmpty(temp.getAdAnswer())){
                             if( !StringUtil.isEmpty(temp.getRemark()) || !StringUtil.isEmpty(temp.getNcs())){
-                                errMap.put(temp.getId()+draftTag+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                                errMap.put(prefix+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                                 if(isError){
                                     isError = false;
                                 }
@@ -285,20 +287,20 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
 
                         } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer())){
                             if(StringUtil.isEmpty(temp.getRemark())){
-                                errMap.put(temp.getId()+draftTag+"adhocRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
+                                errMap.put(prefix+"adhocRemark",MessageUtil.replaceMessage(ERR0010,"Remarks","field"));
                                 if(isError){
                                     isError = false;
                                 }
                             }
                             if(StringUtil.isEmpty(temp.getNcs())){
-                                errMap.put(temp.getId()+draftTag+"adhocFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
+                                errMap.put(prefix+"adhocFindNcs",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
                                 if(isError){
                                     isError = false;
                                 }
                             }
                         }
                     }else if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(temp.getId()+draftTag+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
+                        errMap.put(prefix+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                         if(isError){
                             isError = false;
                         }

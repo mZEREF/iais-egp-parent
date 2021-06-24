@@ -1129,11 +1129,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    public void getRateOfSpecCheckList(List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto) {
+    public void getRateOfSpecCheckList(List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto) {
+        getRateOfCheckList(serListDto,adchklDto,commonDto);
         if(serListDto == null) return;
-        if(commonDto!=null){
-            getGeneralTotalAndNc(commonDto,serListDto);
-        }
         int totalNcNum = serListDto.getGeneralNc();
        if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){

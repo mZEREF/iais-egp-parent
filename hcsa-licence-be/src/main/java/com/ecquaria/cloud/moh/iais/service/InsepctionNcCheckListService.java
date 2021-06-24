@@ -43,7 +43,7 @@ public interface InsepctionNcCheckListService {
 
     void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto infillDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId);
 
-    void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos);
+    void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos,AdCheckListShowDto showDto, InspectionFDtosDto serListDto);
 
     void saveTcuDate(String appPremId,String tcu,boolean showTcu);
 }

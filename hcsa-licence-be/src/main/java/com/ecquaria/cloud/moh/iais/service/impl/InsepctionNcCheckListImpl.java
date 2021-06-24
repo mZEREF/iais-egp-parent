@@ -1199,11 +1199,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos) {
+    public void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos,AdCheckListShowDto showDto, InspectionFDtosDto serListDto) {
         CheckListDraftAllDto checkListDraftAllDto = new CheckListDraftAllDto();
         checkListDraftAllDto.setCommonDto(infillDto);
         List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
-        AdCheckListShowDto adchklDto =null;
+        if(IaisCommonUtils.isNotEmpty(serListDto.getFdtoList())){
+            fdtoList.addAll(serListDto.getFdtoList());
+        }
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(showDto);
         if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
                 if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
@@ -1227,6 +1230,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         checkListDraftAllDto.setAdCheckListShowDto(adchklDto);
         checkListDraftAllDto.setRefNo(appPremId);
         checkListDraftAllDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        checkListDraftAllDto.setVehicleService(true);
         fillUpCheckListGetAppClient.saveDraftAnswerForCheckList(checkListDraftAllDto);
     }
 
