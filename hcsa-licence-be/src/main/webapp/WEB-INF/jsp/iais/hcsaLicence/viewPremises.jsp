@@ -649,13 +649,13 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
-                                              <iais:code code="${appGrpPremDto.easMtsCoLocation}"></iais:code>
+                                            <span class="newVal " attr="${appGrpPremDto.easMtsUseOnly}">
+                                              <iais:code code="${appGrpPremDto.easMtsUseOnly}"></iais:code>
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
-                                               <iais:code code="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}"></iais:code>
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsUseOnly}">
+                                               <iais:code code="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsUseOnly}"></iais:code>
                                             </span>
                                           </div>
                                       </div>

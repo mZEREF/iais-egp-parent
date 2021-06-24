@@ -2157,6 +2157,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }
+        validateVehicle.doValidateVehicles(previewAndSubmitMap,appSubmissionDto);
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request, documentMap,false);
         doCommomDocument(bpc.request, documentMap);
@@ -2307,7 +2308,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
 
         validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
-
         return errorMap;
     }
 

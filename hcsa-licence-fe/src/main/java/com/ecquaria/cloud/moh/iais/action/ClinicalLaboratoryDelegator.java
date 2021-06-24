@@ -859,7 +859,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
             map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
         }
-
+        validateVehicle.doValidateVehicles(map,appSubmissionDto);
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
         }
@@ -1927,6 +1927,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
             validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
+            validateVehicle.doValidateVehicles(map,appSubmissionDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);

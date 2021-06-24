@@ -221,7 +221,8 @@ public interface HcsaConfigClient {
 
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}", method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId") String serviceId);
-
+    @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-name",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoByName(@RequestParam("svcName") String svcName);
 
     @RequestMapping(value = "/kpi-reminder/module-name-service-code", method = RequestMethod.GET)
     FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);

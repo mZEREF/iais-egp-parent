@@ -207,7 +207,7 @@ public class ValidateClincalDirector implements ValidateFlow {
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
 
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
-        if(!"No speciality".equalsIgnoreCase(speciality)){
+        if("No speciality".equalsIgnoreCase(speciality)){
             validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();

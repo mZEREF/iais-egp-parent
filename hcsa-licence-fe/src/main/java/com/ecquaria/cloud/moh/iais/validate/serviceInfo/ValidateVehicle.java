@@ -57,7 +57,9 @@ public class ValidateVehicle implements ValidateFlow {
                 } else if(! VehNoValidator.validateNumber(vehicleName)){
                     map.put("vehicleName" + i, "GENERAL_ERR0017");
                 }else {
-                    //validate  vehicle number used
+                    //validate  vehicle number used. how to do ? RFC Renew Rfi how to do ?I haven't come up with a solution yet
+                    //1. licence used ,rfc renew use some vehicle no.--ok
+                    //2. rfc renew change vehicle A-->B ，rfi use A ---> ok。
                     if(oldAppSvcVehicleDto==null){
                      /*   List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
                         if(!appSvcVehicleDtoList.isEmpty()){
@@ -130,7 +132,7 @@ public class ValidateVehicle implements ValidateFlow {
                 String engineNum = appSvcVehicleDtoList.get(i1).getEngineNum();
                 String v = vehicleNameMap.get(vehicleName);
                 if(v==null){
-                    vehicleNameMap.put(chassisNum,chassisNum);
+                    vehicleNameMap.put(vehicleName,vehicleName);
                 }else {
                     map.put("vehicleName"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }

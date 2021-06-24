@@ -2188,6 +2188,20 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
             }
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(appSvcClinicalDirectorDtoList!=null){
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    if(v.getIdNo().equals(personnelListDto.getIdNo())){
+                     v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                     v.setEmailAddr(personnelListDto.getEmailAddr());
+                     v.setMobileNo(personnelListDto.getMobileNo());
+                     v.setDesignation(personnelListDto.getDesignation());
+                     v.setOtherDesignation(personnelListDto.getOtherDesignation());
+                     v.setName(personnelListDto.getPsnName());
+                     v.setSalutation(personnelListDto.getSalutation());
+                    }
+                }
+            }
         }
         return appSubmissionDto;
     }
@@ -2245,7 +2259,20 @@ public class RequestForChangeMenuDelegator {
                     appSvcMedAlertPerson.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
-
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(appSvcClinicalDirectorDtoList!=null){
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    v.setIdNo(personnelListDto.getIdNo());
+                    v.setIdType(personnelListDto.getIdType());
+                    v.setName(personnelListDto.getPsnName());
+                    v.setSalutation(personnelListDto.getSalutation());
+                    v.setMobileNo(personnelListDto.getMobileNo());
+                    v.setEmailAddr(personnelListDto.getEmailAddr());
+                    v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                    v.setDesignation(personnelListDto.getDesignation());
+                    v.setOtherDesignation(personnelListDto.getOtherDesignation());
+                }
+            }
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtoList)) {
                 for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
