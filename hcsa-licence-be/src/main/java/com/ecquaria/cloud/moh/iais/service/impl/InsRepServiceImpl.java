@@ -999,8 +999,9 @@ public class InsRepServiceImpl implements InsRepService {
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
             if(RoleConsts.USER_ROLE_AO3.equals(roleId)){
                 subStage = null;
+                stageId = HcsaConsts.ROUTING_STAGE_AO3;
             }
-            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), StringUtil.isNotEmpty(stageId) ? stageId : taskKey, null, null, roleId, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(),stageId, null, null, roleId, groupId1, subStage);
 
         }
 
