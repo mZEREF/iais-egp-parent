@@ -67,6 +67,7 @@ public class FESingpassLandingDelegator {
      */
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        String ssoLoginFlag = (String) request.getAttribute("ssoLoginFlag");
         myInfoAjax.noTakenCallMyInfo(bpc,"FE_Singpass_Landing/receiveUserInfo");
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(request,"FE_Singpass_Landing/receiveUserInfo");
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] START ...."));
@@ -76,7 +77,9 @@ public class FESingpassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
+        if (AppConsts.YES.equals(ssoLoginFlag)) {
+            identityNo = (String) request.getAttribute("ssoNric");
+        } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
             if (oLoginInfo == null){
