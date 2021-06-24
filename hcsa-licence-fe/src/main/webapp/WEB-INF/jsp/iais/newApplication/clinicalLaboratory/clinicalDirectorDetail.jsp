@@ -20,7 +20,7 @@
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
                         <div class="cgo-header">
-                            <strong>Clinical Director <label class="assign-psn-item">${index+1}</label></strong>
+                            <strong>Clinical Director <label class="assign-psn-item"><c:if test="${clinicalDirectorDtoList.size() > 1}">${index+1}</c:if></label></strong>
                         </div>
                     </label>
                 </div>
