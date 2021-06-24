@@ -1892,8 +1892,6 @@ public class LicenceApproveBatchjob {
                         log.debug(StringUtil.changeForLog("The getLicenceDto new alignLicenceNo is -->:" + alignLicenceNo));
                         String baseApplicationNo = applicationDto.getBaseApplicationNo();
                         log.debug(StringUtil.changeForLog("The getLicenceDto new baseApplicationNo is -->:" + baseApplicationNo));
-                        String alignFlag = applicationDto.getAlignFlag();
-                        log.debug(StringUtil.changeForLog("The getLicenceDto new alignFlag is -->:" + alignFlag));
                         if (!StringUtil.isEmpty(relLicenceNo)) {
                             LicenceDto relLicenceDto = licenceService.getLicenceDtoByLicNo(relLicenceNo);
                             if (relLicenceDto != null) {
@@ -1924,14 +1922,18 @@ public class LicenceApproveBatchjob {
                         else if (!StringUtil.isEmpty(baseApplicationNo)) {
                             licenceDto.setBaseApplicationNo(baseApplicationNo);
                         }
-                        //alignFlag
-                        if (!StringUtil.isEmpty(alignFlag)) {
-                            licenceDto.setAlignFlag(alignFlag);
-                        }
+
                     }else{
                         log.debug(StringUtil.changeForLog("Tha application is null ..."));
                     }
-
+                }
+                if(applicationDto != null){
+                    String alignFlag = applicationDto.getAlignFlag();
+                    log.debug(StringUtil.changeForLog("The getLicenceDto new alignFlag is -->:" + alignFlag));
+                    //alignFlag
+                    if (!StringUtil.isEmpty(alignFlag)) {
+                        licenceDto.setAlignFlag(alignFlag);
+                    }
                 }
                 log.info(StringUtil.changeForLog("The expiryDate is -->:" + expiryDate));
 
