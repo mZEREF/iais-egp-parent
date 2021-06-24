@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import com.ecquaria.egp.core.payment.runtime.Soapi;
 import ecq.commons.helper.StringHelper;
 import net.sf.json.JSONObject;
@@ -158,8 +159,13 @@ public class NetsSysToSysController {
         String expiryDate = df.format(cal.getTime());
 
 
-        PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,appGrpNo);
-        payNowObject.setPayloadFormatInd("01");
+        PayNow payNowObject = qrGenerator.getPayNowObject(GatewayPayNowConfig.merchantCategoryCode,
+                GatewayPayNowConfig.txnCurrency, GatewayPayNowConfig.countryCode,
+                GatewayPayNowConfig.merchantName, GatewayPayNowConfig.merchantCity,
+                GatewayPayNowConfig.globalUniqueID, GatewayPayNowConfig.proxyType,
+                GatewayPayNowConfig.proxyValue, GatewayPayNowConfig.editableAmountInd,
+                expiryDate,GatewayPayNowConfig.pointOfIntiation, amoStr,appGrpNo);
+        payNowObject.setPayloadFormatInd(GatewayPayNowConfig.payloadFormatInd);
 
         // PayNow
         QRGeneratorResponse qrCodeResponse = qrGenerator.generateSGQR(QRType.PAY_NOW, payNowObject, qrDetails);
