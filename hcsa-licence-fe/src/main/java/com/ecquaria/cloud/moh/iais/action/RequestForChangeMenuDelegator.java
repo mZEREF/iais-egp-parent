@@ -146,6 +146,8 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
+        ParamUtil.setSessionAttr(bpc.request, "createDate", null);
+        ParamUtil.setSessionAttr(bpc.request,"personListAmend", null);
         removeSession(bpc);
         requestForInformation(bpc, appNo);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
@@ -172,6 +174,10 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
         ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
+        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
+        ParamUtil.setSessionAttr(bpc.request, "createDate", null);
+        ParamUtil.setSessionAttr(bpc.request,"personListAmend", "test");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PERSONAL_LIST);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         log.debug(StringUtil.changeForLog("the do personnleListStart end ...."));
@@ -1331,13 +1337,13 @@ public class RequestForChangeMenuDelegator {
      */
     public void PrepareAckPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
-        Date createDate = (Date) ParamUtil.getRequestAttr(bpc.request, "createDate");
+        Date createDate = (Date) ParamUtil.getSessionAttr(bpc.request, "createDate");
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         if (appSubmissionDtos != null) {
             updateGroupStatus(appSubmissionDtos);
         }
         if (createDate == null) {
-            ParamUtil.setRequestAttr(bpc.request, "createDate", new Date());
+            ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         }
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request, "INTER_INBOX_USER_INFO");
         String licenseeId = null;
@@ -1348,7 +1354,7 @@ public class RequestForChangeMenuDelegator {
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
@@ -1369,7 +1375,7 @@ public class RequestForChangeMenuDelegator {
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
     }
 
 
@@ -1568,7 +1574,7 @@ public class RequestForChangeMenuDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 appGrp.setPayMethod(pmtMethod);
                 serviceConfigService.updatePaymentStatus(appGrp);
-                bpc.request.setAttribute("createDate", new Date());
+                ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
                 try {
                     if (appSubmissionDtos != null && appSubmissionDtos.get(0).getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                         requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, appSubmissionDtos.get(0).getPaymentMethod());
