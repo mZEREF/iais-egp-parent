@@ -278,31 +278,29 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table  class="table table-bordered">
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                                                                              <span class="newVal " attr="${appSvcClinicalDirectorDto.professionBoard}">
-                                                                                <iais:code code="${appSvcClinicalDirectorDto.professionBoard}"></iais:code>
-                                                                              </span>
+                          <span class="newVal " attr="${appSvcClinicalDirectorDto.professionBoard}">
+                            <iais:code code="${appSvcClinicalDirectorDto.professionBoard}"></iais:code>
+                          </span>
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn No.</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn. No.</p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
-                                                                                        ${appSvcClinicalDirectorDto.profRegNo}
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
+                                ${appSvcClinicalDirectorDto.profRegNo}
+                        </span>
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
@@ -311,13 +309,10 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.salutation}">
-                                        <c:if test="${not empty appSvcClinicalDirectorDto.salutation}">
-                                            <iais:code code="${appSvcClinicalDirectorDto.salutation}"></iais:code>
-                                        </c:if>
-                                    </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.salutation}">
+                          <iais:code code="${appSvcClinicalDirectorDto.salutation}"></iais:code>
+                        </span>
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
@@ -326,9 +321,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                  <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
-                                          ${appSvcClinicalDirectorDto.name}
-                                  </span>
+                          <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
+                                  ${appSvcClinicalDirectorDto.name}
+                          </span>
                                 </div>
                             </td>
                         </tr>
@@ -338,14 +333,10 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.idType}">
-                                        <c:if test="${not empty appSvcClinicalDirectorDto.idType}">
-                                            <iais:code code="${appSvcClinicalDirectorDto.idType}"></iais:code>
-
-                                        </c:if>
-                                    </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.idType}">
+                            <iais:code code="${appSvcClinicalDirectorDto.idType}"></iais:code>
+                        </span>
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
@@ -354,11 +345,10 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
-                                            ${appSvcClinicalDirectorDto.idNo}
-                                    </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
+                                ${appSvcClinicalDirectorDto.idNo}
+                        </span>
                                 </div>
-
                             </td>
                         </tr>
                         <tr>
@@ -367,52 +357,48 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
-                                        <c:if test="${not empty appSvcClinicalDirectorDto.designation}">
-                                            <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
-                                        </c:if>
-                                    </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
+                            <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
+                        </span>
                                 </div>
 
                             </td>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Speciality</p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.specialty}">
-                                        <c:if test="${not empty appSvcClinicalDirectorDto.specialty}">
-                                            <iais:code code="${appSvcClinicalDirectorDto.specialty}"></iais:code>
-                                        </c:if>
-                                    </span>
+                        <span class="newVal" attr="${appSvcClinicalDirectorDto.speciality}">
+                          <iais:code code="${appSvcClinicalDirectorDto.speciality}"></iais:code>
+                        </span>
                                 </div>
 
                             </td>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when specialty was obtained </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Date when specialty was obtained</p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.specialtyGetDate}">
-                                                                                    <fmt:formatDate value="${appSvcClinicalDirectorDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.specialtyGetDate}">
+                            <fmt:formatDate value="${appSvcClinicalDirectorDto.specialtyGetDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                        </span>
                                 </div>
 
                             </td>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Current Registration </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Registration Date</p>
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfCurrRegi}">
-                                                                                        ${appSvcClinicalDirectorDto.typeOfCurrRegi}
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfCurrRegi}">
+                                ${appSvcClinicalDirectorDto.typeOfCurrRegi}
+                        </span>
                                 </div>
                             </td>
                         </tr>
@@ -422,9 +408,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.currRegiDate}">
-                                                                                  <fmt:formatDate value="${appSvcClinicalDirectorDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.currRegiDate}">
+                          <fmt:formatDate value="${appSvcClinicalDirectorDto.currRegiDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                        </span>
                                 </div>
 
                             </td>
@@ -435,9 +421,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.praCerEndDate}">
-                                                                                  <fmt:formatDate value="${appSvcClinicalDirectorDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.praCerEndDate}">
+                          <fmt:formatDate value="${appSvcClinicalDirectorDto.praCerEndDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                        </span>
                                 </div>
 
                             </td>
@@ -448,9 +434,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                                              <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfRegister}">
-                                                                                      ${appSvcClinicalDirectorDto.typeOfRegister}
-                                                                              </span>
+                          <span class="newVal " attr="${appSvcClinicalDirectorDto.typeOfRegister}">
+                                  ${appSvcClinicalDirectorDto.typeOfRegister}
+                          </span>
                                 </div>
 
                             </td>
@@ -461,9 +447,10 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.relevantExperience}">
-                                                                                        ${appSvcClinicalDirectorDto.relevantExperience}
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.relevantExperience}">
+                                ${appSvcClinicalDirectorDto.relevantExperience}
+                        </span>
+
                                 </div>
                             </td>
                         </tr>
@@ -473,10 +460,10 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal" attr="${appSvcClinicalDirectorDto.holdCerByEMS}">
-                                                                                  <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='1'}">Yes</c:if>
-                                                                                  <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='0'}">No</c:if>
-                                                                                </span>
+                        <span class="newVal" attr="${appSvcClinicalDirectorDto.holdCerByEMS}">
+                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='1'}">Yes</c:if>
+                          <c:if test="${appSvcClinicalDirectorDto.holdCerByEMS=='0'}">No</c:if>
+                        </span>
                                 </div>
                             </td>
                         </tr>
@@ -487,9 +474,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.aclsExpiryDate}">
-                                                                                    <fmt:formatDate value="${appSvcClinicalDirectorDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.aclsExpiryDate}">
+                            <fmt:formatDate value="${appSvcClinicalDirectorDto.aclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                        </span>
                                 </div>
 
                             </td>
@@ -497,13 +484,13 @@
 
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No  </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.  </p>
                             </td>
                             <td>
                                 <div  class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.mobileNo}">
-                                                                                        ${appSvcClinicalDirectorDto.mobileNo}
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.mobileNo}">
+                                ${appSvcClinicalDirectorDto.mobileNo}
+                        </span>
                                 </div>
 
                             </td>
@@ -515,9 +502,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.emailAddr}">
-                                                                                        ${appSvcClinicalDirectorDto.emailAddr}
-                                                                                </span>
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.emailAddr}">
+                                ${appSvcClinicalDirectorDto.emailAddr}
+                        </span>
                                 </div>
                             </td>
                         </tr>
