@@ -152,7 +152,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                     return false;
                 }
                 Double num = Double.valueOf(numStr);
-                if(num<=0||num>=1){
+                if(num<0||num>=1){
                     errMap.put(temp.getServiceCode()+mapkey,mapv);
                 }else{
                     return true;
