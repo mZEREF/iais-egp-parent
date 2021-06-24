@@ -863,6 +863,7 @@ public class ClinicalLaboratoryDelegator {
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
         }
+        validateVehicle.doValidateVehicles(map,appSubmissionDto);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(map)+"---map----"));
         bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
         return map;
@@ -1928,6 +1929,7 @@ public class ClinicalLaboratoryDelegator {
                 }
             }
             validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
+            validateVehicle.doValidateVehicles(map,appSubmissionDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);

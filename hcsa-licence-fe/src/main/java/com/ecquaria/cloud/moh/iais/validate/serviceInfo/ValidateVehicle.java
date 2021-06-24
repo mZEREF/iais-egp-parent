@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -104,5 +106,48 @@ public class ValidateVehicle implements ValidateFlow {
             //need to do check application premises vehicle name;
         }
         log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
+    }
+
+    @Override
+    public void doValidateVehicles(Map<String, String> map, AppSubmissionDto appSubmissionDto) {
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(appSvcRelatedInfoDtoList==null){
+            return;
+        }
+        Map<String,String> vehicleNameMap=new HashMap<>(10);
+        Map<String,String> chassisNumMap=new HashMap<>(10);
+        Map<String,String> engineNumMap=new HashMap<>(10);
+        for (int i = 0; i < appSvcRelatedInfoDtoList.size(); i++) {
+            List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDtoList.get(i).getAppSvcVehicleDtoList();
+            if(appSvcVehicleDtoList==null){
+                continue;
+            }
+            for (int i1 = 0; i1 < appSvcVehicleDtoList.size(); i1++) {
+                String vehicleName = appSvcVehicleDtoList.get(i1).getVehicleName();
+                String chassisNum = appSvcVehicleDtoList.get(i1).getChassisNum();
+                String engineNum = appSvcVehicleDtoList.get(i1).getEngineNum();
+                String v = vehicleNameMap.get(vehicleName);
+                if(v==null){
+                    vehicleNameMap.put(vehicleName,vehicleName);
+                }else {
+                    map.put("vehicleName"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                }
+                String v1 = chassisNumMap.get(chassisNum);
+                if(v1==null){
+                    chassisNumMap.put(chassisNum,chassisNum);
+                }else {
+                    map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                }
+                String v2 = engineNumMap.get(engineNum);
+                if(v2==null){
+                    engineNumMap.put(engineNum,engineNum);
+                }else {
+                    map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                }
+            }
+        }
     }
 }
