@@ -459,6 +459,7 @@ public class LicenceViewServiceDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
 
         Set<String> redNo=new HashSet<>();
         Set<String> idNoSet=new HashSet<>();
@@ -499,6 +500,15 @@ public class LicenceViewServiceDelegator {
             for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
                 String idNo = appSvcPrincipalOfficersDto.getIdNo();
                 idNoSet.add(idNo);
+            }
+        }
+        if(appSvcClinicalDirectorDtoList!=null){
+            for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                if(!StringUtil.isEmpty(v.getProfRegNo())){
+                    String regNo = v.getProfRegNo();
+                    redNo.add(regNo);
+                }
+                idNoSet.add(v.getIdNo());
             }
         }
 
@@ -543,6 +553,15 @@ public class LicenceViewServiceDelegator {
                     if(!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())){
                         redNo.add(appSvcPersonnelDto.getProfRegNo());
                     }
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(oldAppSvcClinicalDirectorDtoList!=null){
+                for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
+                    if(!StringUtil.isEmpty(v.getProfRegNo())){
+                        redNo.add(v.getProfRegNo());
+                    }
+                    idNoSet.add(v.getIdNo());
                 }
             }
         }
@@ -1983,7 +2002,7 @@ public class LicenceViewServiceDelegator {
         int oldSize = oldAppGrpPremisesDtoList.size();
         for (int i = 0; i <oldSize - size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i).getPremisesType());
+            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(size+i).getPremisesType());
             appGrpPremisesDto.setPostalCode("");
             appGrpPremisesDto.setOffTelNo("");
             appGrpPremisesDto.setScdfRefNo("");

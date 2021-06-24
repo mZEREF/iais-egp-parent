@@ -146,13 +146,13 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST009')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST009']}</label>
+      <label style="font-size: 2.2rem">Key Clinical Personnel</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
               <c:forEach var="appSvcClinicalDirectorDto" items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" varStatus="status">
-                <p><strong class="col-xs-6">Clinical Director <c:if
+                <p><strong class="col-xs-6">Key Clinical Personnel <c:if
                         test="${fn:length(currentPreviewSvcInfo.appSvcClinicalDirectorDtoList)>1}">${status.index+1}</c:if>:</strong><span
                         class="col-xs-4 col-md-4"></span>
                 </p>
@@ -177,21 +177,162 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn No.</p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn. No.</p>
                     </td>
                     <td>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img=show">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
                             ${appSvcClinicalDirectorDto.profRegNo}
+                              <c:if test="${empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
+                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              </c:if>
+                              <c:if test="${not empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
+                                <img src="/hcsa-licence-web/img/2020109171436.png"
+                                     onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                              </c:if>
                         </span>
                       </div>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img-show">
                         <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}
+                              <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
+                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                              </c:if>
+                              <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
+                                <img src="/hcsa-licence-web/img/2020109171436.png"
+                                     onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
+                              </c:if>
                         </span>
                       </div>
+                      <c:if test="${not empty listHashMap[appSvcClinicalDirectorDtoList.profRegNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              PRS</label><span style="position: absolute;right: 0px;color: black"
+                                               onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Professional Regn. No.</td>
+                                <td>Complaints</td>
+                                <td>Final Outcome</td>
+                                <td>Fine Amounts</td>
+                                <td>Restrictive Practice Start Date</td>
+                                <td>Restrictive Practice End Date</td>
+                                <td>Suspension Start Date</td>
+                                <td>Suspension End Date</td>
+                                <td>Other disciplinary action Start Date</td>
+                                <td>Other Disciplinary action End Date</td>
+                              </tr>
+                              <c:forEach items="${listHashMap[appSvcClinicalDirectorDtoList.profRegNo]}" var="list">
+                                <tr>
+                                  <td>${appSvcClinicalDirectorDtoList.profRegNo}</td>
+                                  <td style="text-align: left">
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
+                                  </td>
+                                  <td>${list.finaloutcome}</td>
+                                  <td>${list.fineamount}</td>
+                                  <td>${list.restrictstartdate}</td>
+                                  <td>${list.restrictenddate}</td>
+                                  <td>${list.suspendstartdate}</td>
+                                  <td>${list.suspendenddate}</td>
+                                  <td>${list.otherstartdate}</td>
+                                  <td>${list.otherenddate}</td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                      <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              PRS</label><span style="position: absolute;right: 0px;color: black"
+                                               onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Professional Regn. No.</td>
+                                <td width="10%">Complaints</td>
+                                <td>Final Outcome</td>
+                                <td>Fine Amounts</td>
+                                <td>Restrictive Practice Start Date</td>
+                                <td>Restrictive Practice End Date</td>
+                                <td>Suspension Start Date</td>
+                                <td>Suspension End Date</td>
+                                <td>Other disciplinary action Start Date</td>
+                                <td>Other Disciplinary action End Date</td>
+                              </tr>
+                              <c:forEach
+                                      items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}"
+                                      var="list">
+                                <tr>
+                                  <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}</td>
+                                  <td style="text-align: left">
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
+                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
+                                  </td>
+                                  <td>${list.finaloutcome}</td>
+                                  <td>${list.fineamount}</td>
+                                  <td>${list.restrictstartdate}</td>
+                                  <td>${list.restrictenddate}</td>
+                                  <td>${list.suspendstartdate}</td>
+                                  <td>${list.suspendenddate}</td>
+                                  <td>${list.otherstartdate}</td>
+                                  <td>${list.otherenddate}</td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
                     </td>
                   </tr>
+                  <c:if test="${'MTS'==currentPreviewSvcInfo.serviceCode}">
+                    <tr>
+                      <td class="col-xs-6">
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Not registered with a Professional Board</p>
+                      </td>
+                      <td>
+                        <div class="col-xs-6">
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.noRegWithProfBoard}">
+                          <c:choose>
+                            <c:when test="${appSvcClinicalDirectorDto.noRegWithProfBoard=='1'}">
+                              <div class="form-check active">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                            </c:when>
+                            <c:otherwise>
+                              <div class="form-check ">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                            </c:otherwise>
+                          </c:choose>
+                        </span>
+                        </div>
+                        <div class="col-xs-6">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].noRegWithProfBoard}">
+                           <c:choose>
+                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].noRegWithProfBoard=='1'}">
+                               <div class="form-check active">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                             </c:when>
+                             <c:otherwise>
+                               <div class="form-check ">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                             </c:otherwise>
+                           </c:choose>
+                        </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </c:if>
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -314,7 +455,7 @@
                   </tr>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Current Registration </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Registration Date</p>
                     </td>
                     <td>
                       <div class="col-xs-12">
@@ -417,7 +558,7 @@
 
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ACLS Expiry Date </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (ACLS) </p>
                     </td>
                     <td>
                       <div class="col-xs-6">
@@ -432,10 +573,29 @@
                       </div>
                     </td>
                   </tr>
+                  <c:if test="${'MTS'==currentPreviewSvcInfo.serviceCode}">
 
+                    <tr>
+                      <td class="col-xs-6">
+                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (BCLS and AED) </p>
+                      </td>
+                      <td>
+                        <div class="col-xs-6">
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDateStr}">
+                            <fmt:formatDate value="${appSvcClinicalDirectorDto.bclsExpiryDateStr}" pattern="dd/MM/yyyy"/>
+                        </span>
+                        </div>
+                        <div class="col-xs-6">
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDateStr}">
+                           <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDateStr}" pattern="dd/MM/yyyy"/>
+                        </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </c:if>
                   <tr>
                     <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No  </p>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.  </p>
                     </td>
                     <td>
                       <div  class="col-xs-6">
@@ -481,7 +641,7 @@
       <label style="font-size: 2.2rem">${stepNameMap['SVST010']}</label>
       <div class="amend-preview-info">
         <c:set value="${currentPreviewSvcInfo.appSvcChargesPageDto}" var="appSvcChargesPageDto"></c:set>
-        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="index">
+        <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="status">
           <p><strong class="col-xs-6">General Conveyance Charges <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
@@ -557,8 +717,8 @@
             </tr>
           </table>
         </c:forEach>
-        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="index">
-          <p><strong class="col-xs-6">General Conveyance Charges <c:if
+        <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="status">
+          <p><strong class="col-xs-6">Medical Equipment and other Charges <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
           </p>
@@ -642,6 +802,39 @@
                   <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}">
                       ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}
                   </span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+      </div>
+
+    </div>
+  </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST012')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST012']}</label>
+      <div class="amend-preview-info">
+        <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
+          <div class="col-xs-12">
+            <strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}
+          </div>
+          <span class="col-xs-6"></span>
+          <table  class="col-xs-12">
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>
+              </td>
+              <td >
+                <div class="col-xs-6">
+                    <span class="newVal " attr="${businessDto.businessName}">
+                        <c:out value="${businessDto.businessName}"></c:out>
+                    </span>
+                </div>
+                <div class="col-xs-6">
+                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}">
+                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}"></c:out>
+                    </span>
                 </div>
               </td>
             </tr>

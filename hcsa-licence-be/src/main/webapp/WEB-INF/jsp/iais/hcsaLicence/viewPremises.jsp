@@ -83,7 +83,7 @@
                                              Conveyance
                                          </c:if>
                                           <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
-                                             Conveyance(in a mobile clinic / ambulance)
+                                             Conveyance (in a mobile clinic / ambulance)
                                           </c:if>
                                       </div>
                                       <div class="col-md-6">
@@ -649,30 +649,20 @@
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
-                                              <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">
-                                                No
-                                              </c:if>
-                                                <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">
-                                                  Yes
-                                                </c:if>
+                                            <span class="newVal " attr="${appGrpPremDto.easMtsUseOnly}">
+                                              <iais:code code="${appGrpPremDto.easMtsUseOnly}"></iais:code>
                                             </span>
                                           </div>
                                           <div class="col-md-6">
-                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
-                                                <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">
-                                                  No
-                                                </c:if>
-                                                 <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">
-                                                  Yes
-                                                 </c:if>
+                                            <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsUseOnly}">
+                                               <iais:code code="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsUseOnly}"></iais:code>
                                             </span>
                                           </div>
                                       </div>
                                     </div>
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Public email
+                                        Public Email
                                       </div>
                                       <div class="col-md-6">
                                           <div class="col-md-12">
@@ -699,25 +689,6 @@
                                         <div class="col-md-6">
                                           <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}">
                                             <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubHotline}"></c:out>
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        Are you co-locating with another licensee?
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="col-md-6">
-                                          <span class="newVal " attr="${appGrpPremDto.easMtsCoLocation}">
-                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='0'}">No</c:if>
-                                            <c:if test="${appGrpPremDto.easMtsCoLocation=='1'}">Yes</c:if>
-                                          </span>
-                                        </div>
-                                        <div class="col-md-6">
-                                          <span class="oldVal " style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation}">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='0'}">No</c:if>
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsCoLocation=='1'}">Yes</c:if>
                                           </span>
                                         </div>
                                       </div>
