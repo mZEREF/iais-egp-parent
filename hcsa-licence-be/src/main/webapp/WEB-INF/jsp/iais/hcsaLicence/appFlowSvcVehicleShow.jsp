@@ -20,8 +20,8 @@
           <thead>
           <tr align="center">
             <th width="5%">S/N</th>
-            <th width="30%">Vehicle</th>
-            <th width="30%">Recommendation</th>
+            <th width="25%">Vehicle</th>
+            <th width="35%">Recommendation</th>
             <th width="35%">Remarks</th>
           </tr>
           </thead>
@@ -39,7 +39,7 @@
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
               </td>
               <td>
-                <input type="text" name="vehicleNoRemarks${status.index}" maxlength="400" value="${appVehicleNo.remarks}" />
+                <textarea maxlength="400" id="preInspecRemarks" name="vehicleNoRemarks${status.index}" cols="20" rows="2" style="font-size:16px"><c:out value="${appVehicleNo.remarks}"></c:out></textarea>
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
               </td>
             </tr>
