@@ -384,9 +384,9 @@
             } else if(i == 'speciality'){
                 var speciality = data.speciality;
                 if(isEmpty(speciality)){
-                    $content.find('.specialty-label').html('');
+                    $current.find('.specialty-label').html('');
                 }else{
-                    $content.find('.specialty-label').html(speciality);
+                    $current.find('.specialty-label').html(speciality);
                 }
 
             } else {
