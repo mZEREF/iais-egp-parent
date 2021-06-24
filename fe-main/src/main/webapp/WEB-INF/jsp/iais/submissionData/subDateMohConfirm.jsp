@@ -28,10 +28,11 @@
         </div>
     </div>
 </div>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printpage('print')"> <em class="fa fa-print"></em>Print</a></div></p>
+        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printLDT('print')"> <em class="fa fa-print"></em>Print</a></div></p>
         <div class="tab-gp steps-tab">
             <div class="tab-content">
                 <div class="tab-pane active" id="premisesTab" role="tabpanel">
@@ -79,7 +80,7 @@
                                     </iais:row>
                                     <iais:row>
                                         <label class="col-xs-11 col-md-4 control-label">Status of Test <span style="color: red"> *</span>
-                                            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                            <a id = "tooltip" class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                                                title='Active - Clinical laboratory continues to offer this LDT in their laboratory.
                                                   Inactive - Clinical laboratory has ceased to make available this LDT in their laboratory.'
                                                style="z-index: 10"
@@ -137,3 +138,10 @@
     }
     @page { size: portrait; }
 </style>
+<script type="text/javascript">
+    function printLDT(id){
+        $('#tooltip').hide();
+        printpage(id);
+        $('#tooltip').show();
+    }
+</script>
