@@ -24,6 +24,7 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
+import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import ecq.commons.helper.StringHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -134,8 +135,13 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String amoStr=Double.toString(amount);
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,"1234567890123456789012345");
 
-		PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,appGrpNo);
-		payNowObject.setPayloadFormatInd("01");
+		PayNow payNowObject = qrGenerator.getPayNowObject(GatewayPayNowConfig.merchantCategoryCode,
+				GatewayPayNowConfig.txnCurrency, GatewayPayNowConfig.countryCode,
+				GatewayPayNowConfig.merchantName, GatewayPayNowConfig.merchantCity,
+				GatewayPayNowConfig.globalUniqueID, GatewayPayNowConfig.proxyType,
+				GatewayPayNowConfig.proxyValue, GatewayPayNowConfig.editableAmountInd,
+				expiryDate,GatewayPayNowConfig.pointOfIntiation, amoStr,appGrpNo);
+		payNowObject.setPayloadFormatInd(GatewayPayNowConfig.payloadFormatInd);
 
 		// PayNow
 		QRGeneratorResponse qrCodeResponse = qrGenerator.generateSGQR(QRType.PAY_NOW, payNowObject, qrDetails);

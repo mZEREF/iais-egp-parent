@@ -226,6 +226,9 @@
                             //remove del btn for mandatory count
 
                         }
+                        $('.clinicalDirectorContent').each(function (k,v) {
+                            $(this).find('.assign-psn-item').html(k+1);
+                        });
                         $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
@@ -284,6 +287,9 @@
             //display add more
             if (cdLength < '${clinicalDirectorConfig.maximumCount}') {
                 $('.addClinicalDirectorDiv').removeClass('hidden');
+            }
+            if(cdLength <= 1){
+                $('.clinicalDirectorContent:eq(0) .assign-psn-item').html('');
             }
             $('#isEditHiddenVal').val('1');
         });
@@ -378,9 +384,9 @@
             } else if(i == 'speciality'){
                 var speciality = data.speciality;
                 if(isEmpty(speciality)){
-                    $content.find('.specialty-label').html('');
+                    $current.find('.specialty-label').html('');
                 }else{
-                    $content.find('.specialty-label').html(speciality);
+                    $current.find('.specialty-label').html(speciality);
                 }
 
             } else {

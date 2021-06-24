@@ -386,7 +386,7 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    <c:if test="${applicationViewDto.showTcu}">
+                                                                    <c:if test="${applicationViewDto.showTcu && applicationViewDto.editTcu}">
                                                                         <div class="form-group">
                                                                             <label class="col-xs-12 col-md-4 control-label">TCU</label>
                                                                             <div class="col-xs-8 col-sm-6 col-md-5">
@@ -404,7 +404,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </c:if>
-                                                                        <c:if test="${!applicationViewDto.showTcu && applicationViewDto.applicationDto.applicationType!= ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL}">
+                                                                        <c:if test="${applicationViewDto.showTcu && !applicationViewDto.editTcu}">
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-12 col-md-4 control-label">TCU</label>
                                                                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -952,7 +952,7 @@
     }
 
     function loadTcuFunction() {
-        if(${applicationViewDto.showTcu}){
+        if(${applicationViewDto.showTcu && applicationViewDto.editTcu}){
             if($("#tcuType").is(":checked")){
                 $("#tcuLabel").show()
             }else{

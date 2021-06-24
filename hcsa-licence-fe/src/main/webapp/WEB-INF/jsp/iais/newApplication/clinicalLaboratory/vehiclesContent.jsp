@@ -57,7 +57,7 @@
                         <div class="control-label formtext col-md-5 col-xs-5">
                             <label  class="control-label control-set-font control-font-label">
                                 <div class="cgo-header">
-                                    <strong>Vehicle <label class="assign-psn-item">${vehicleStat.index+1}</label></strong>
+                                    <strong>Vehicle <label class="assign-psn-item"><c:if test="${vehicleDtoList.size() > 1}">${vehicleStat.index+1}</c:if></label></strong>
                                 </div>
                             </label>
                         </div>
@@ -201,6 +201,10 @@
                             //remove del btn for mandatory count
 
                         }
+                        $('.vehicleContent').each(function (k,v) {
+                            $(this).find('.assign-psn-item').html(k+1);
+                        });
+
                         $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
@@ -233,6 +237,9 @@
             //display add more
             if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
                 $('.addVehicleDiv').removeClass('hidden');
+            }
+            if(vehicleLength <= 1){
+                $('.vehicleContent:eq(0) .assign-psn-item').html('');
             }
             $('#isEditHiddenVal').val('1');
         });

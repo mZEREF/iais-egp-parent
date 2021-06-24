@@ -1664,8 +1664,20 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     private  List<AdhocDraftDto> getAdhocDraftDtosByIdentify(String identify, List<String> itemList){
         List<AdhocDraftDto>  adhocDraftDtos = fillUpCheckListGetAppClient.getAdhocChecklistDraftsByAdhocItemIdIn(itemList).getEntity();
-        if(StringUtil.isEmpty(identify) || IaisCommonUtils.isEmpty(adhocDraftDtos)){
+        if(IaisCommonUtils.isEmpty(adhocDraftDtos)){
             return adhocDraftDtos;
+        }
+        if(StringUtil.isEmpty(identify)){
+            List<AdhocDraftDto> serviceAdhocDraftDtos = IaisCommonUtils.genNewArrayList();
+            for(AdhocDraftDto adhocDraftDto : adhocDraftDtos){
+                if(!StringUtil.isEmpty(adhocDraftDto.getAnswer())){
+                    AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
+                    if(StringUtil.isEmpty(adhocAnswerDto.getIdentify())){
+                        serviceAdhocDraftDtos.add(adhocDraftDto);
+                    }
+                }
+            }
+            return serviceAdhocDraftDtos;
         }
         List<AdhocDraftDto> identifyAdhocDraftDtos = IaisCommonUtils.genNewArrayList();
         for(AdhocDraftDto adhocDraftDto : adhocDraftDtos){
@@ -2185,4 +2197,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return (IaisCommonUtils.isEmpty(appViewDto.getAppSvcVehicleDtos()) || hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() == null) ? false : true;
     }
 
+    @Override
+    public InspectionSpecServiceDto getOriginalInspectionSpecServiceDtoByTaskId(boolean needVehicleSeparation, boolean beforeFinishList, String taskId) {
+       if(needVehicleSeparation){
+           InspectionSpecServiceDto inspectionSpecServiceDto = new InspectionSpecServiceDto();
+           inspectionSpecServiceDto.setFdtoList(beforeFinishList ? getInspectionFillCheckListDtoListForReview(taskId,"service",true) : getInspectionFillCheckListDtoList(taskId,"service",true));
+           return inspectionSpecServiceDto;
+       }
+       return null;
+    }
 }

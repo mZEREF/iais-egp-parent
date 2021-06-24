@@ -105,7 +105,6 @@ public class InspectionCheckListCommonMethodDelegator {
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         appViewDto.setCurrentStatus(MasterCodeUtil.getCodeDesc(appViewDto.getApplicationDto().getStatus()));
-
         // change common data;
         insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
         //  change service checklist data
@@ -121,7 +120,7 @@ public class InspectionCheckListCommonMethodDelegator {
         //
         //comparative data for sef and check list nc.
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
-        setSpecServiceCheckListData(request,serListDto,adchklDto,true,null,appViewDto);
+        setSpecServiceCheckListData(request,fillupChklistService.getOriginalInspectionSpecServiceDtoByTaskId(checklistNeedVehicleSeparation(appViewDto),true,taskId),adchklDto,true,null,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -501,21 +500,21 @@ public class InspectionCheckListCommonMethodDelegator {
     }
 
 
-    public void setSpecServiceCheckListData(HttpServletRequest request,InspectionFDtosDto serListDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers,ApplicationViewDto applicationViewDto){
+    public void setSpecServiceCheckListData(HttpServletRequest request,InspectionSpecServiceDto originalInspectionSpecServiceDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers,ApplicationViewDto applicationViewDto){
          if(checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
              List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
              if(IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
                  List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
                  for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
-                         InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(serListDto,InspectionSpecServiceDto.class);
+                         InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(originalInspectionSpecServiceDto,InspectionSpecServiceDto.class);
                          inspectionSpecServiceDto.setIdentify(appSvcVehicleDto.getVehicleName());
                          inspectionSpecServiceDto.setServiceTab(appSvcVehicleDto.getVehicleName());
                          List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
-                         if(serListDto.getFdtoList() == null){
-                             serListDto.setFdtoList(IaisCommonUtils.genNewArrayList());
+                         if(originalInspectionSpecServiceDto.getFdtoList() == null){
+                             originalInspectionSpecServiceDto.setFdtoList(IaisCommonUtils.genNewArrayList());
                          }
-                         for(InspectionFillCheckListDto inspectionFillCheckListDto : serListDto.getFdtoList()){
+                         for(InspectionFillCheckListDto inspectionFillCheckListDto :originalInspectionSpecServiceDto.getFdtoList()){
                              try{
                                  if(!beforeFinishList){
                                   InspectionFillCheckListDto inspectionFillCheckListDtoCopy = (InspectionFillCheckListDto )com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject( inspectionFillCheckListDto);

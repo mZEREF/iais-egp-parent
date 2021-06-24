@@ -35,6 +35,26 @@ public class GatewayPayNowConfig {
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = ConfigHelper.getString("payNow.payment.gateway.service.url");
 
+	public static final String merchantCategoryCode = ConfigHelper.getString("payNow.qr.merchant.category.code");
+
+	public static final String txnCurrency = ConfigHelper.getString("payNow.qr.txn.currency");
+
+	public static final String countryCode = ConfigHelper.getString("payNow.qr.country.code");
+
+	public static final String merchantName = ConfigHelper.getString("payNow.qr.merchant.name");
+
+	public static final String merchantCity = ConfigHelper.getString("payNow.qr.merchant.city");
+	public static final String globalUniqueID = ConfigHelper.getString("payNow.qr.global.uniqueID");
+
+	public static final String proxyType = ConfigHelper.getString("payNow.qr.proxy.type");
+	public static final String proxyValue = ConfigHelper.getString("payNow.qr.proxy.value");
+	public static final String editableAmountInd = ConfigHelper.getString("payNow.qr.editable.amountInd");
+
+	public static final String pointOfIntiation = ConfigHelper.getString("payNow.qr.pointOf.intiation");
+	public static final String payloadFormatInd = ConfigHelper.getString("payNow.qr.payload.format.ind");
+
+
+
 
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = ConfigHelper.getString("payNow.payment.log.path");

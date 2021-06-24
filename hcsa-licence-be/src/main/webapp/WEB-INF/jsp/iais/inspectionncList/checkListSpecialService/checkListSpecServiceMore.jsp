@@ -41,6 +41,17 @@
                                             <%@ include file="combinedSpec.jsp" %>
                                             <%@ include file="inspChecklistSpec.jsp" %>
                                         </div>
+                                        <div class="tab-pane  ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
+                                            <c:if test="${not empty serListDto.fdtoList ||  adchklDto.adItemList != null}">
+                                                <c:if test="${not empty serListDto.fdtoList}">
+                                                    <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
+                                                    <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
+                                                </c:if>
+                                                <%@ include file="../TabsForMoreIns.jsp" %>
+                                                <%@ include file="../combinedService.jsp" %>
+                                                <%@ include file="../inspChecklistService.jsp" %>
+                                            </c:if>
+                                        </div>
                                   <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
                                    <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
                                      <div class="tab-pane ${nowComTabIn == errorTabName ? 'active' : ''}" id="ServiceInfo${service.identify}" role="tabpanel">
