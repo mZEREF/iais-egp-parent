@@ -3234,7 +3234,7 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
-        applicationViewDto.setShowTcu(canShowTcuDate(bpc.request,applicationViewDto));
+        setShowAndEditTcuDate(bpc.request,applicationViewDto);
         //get vehicle flag
         String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
         //get vehicleNoList for edit
@@ -3333,10 +3333,14 @@ public class HcsaApplicationDelegator {
         setChooseInspectionValue(bpc.request, applicationViewDto);
     }
 
-    private boolean canShowTcuDate(HttpServletRequest request,  ApplicationViewDto applicationViewDto){
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-         return (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equalsIgnoreCase(applicationViewDto.getApplicationType())) &&
-                 (RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationViewDto.getApplicationType())){
+             applicationViewDto.setShowTcu(true);
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+        }
     }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
