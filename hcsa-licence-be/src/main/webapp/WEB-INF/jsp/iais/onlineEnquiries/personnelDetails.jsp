@@ -311,9 +311,11 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.salutation}">
-                                                                                  <iais:code code="${appSvcClinicalDirectorDto.salutation}"></iais:code>
-                                                                                </span>
+                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.salutation}">
+                                        <c:if test="${not empty appSvcClinicalDirectorDto.salutation}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.salutation}"></iais:code>
+                                        </c:if>
+                                    </span>
                                 </div>
 
                             </td>
@@ -324,9 +326,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-12">
-                                                                              <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
-                                                                                      ${appSvcClinicalDirectorDto.name}
-                                                                              </span>
+                                  <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
+                                          ${appSvcClinicalDirectorDto.name}
+                                  </span>
                                 </div>
                             </td>
                         </tr>
@@ -336,9 +338,12 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.idType}">
-                                                                                    <iais:code code="${appSvcClinicalDirectorDto.idType}"></iais:code>
-                                                                                </span>
+                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.idType}">
+                                        <c:if test="${not empty appSvcClinicalDirectorDto.idType}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.idType}"></iais:code>
+
+                                        </c:if>
+                                    </span>
                                 </div>
 
                             </td>
@@ -349,9 +354,9 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
-                                                                                        ${appSvcClinicalDirectorDto.idNo}
-                                                                                </span>
+                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
+                                            ${appSvcClinicalDirectorDto.idNo}
+                                    </span>
                                 </div>
 
                             </td>
@@ -362,9 +367,11 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
-                                                                                    <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
-                                                                                </span>
+                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.designation}">
+                                        <c:if test="${not empty appSvcClinicalDirectorDto.designation}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.designation}"></iais:code>
+                                        </c:if>
+                                    </span>
                                 </div>
 
                             </td>
@@ -375,9 +382,11 @@
                             </td>
                             <td>
                                 <div class="col-xs-6">
-                                                                                <span class="newVal " attr="${appSvcClinicalDirectorDto.specialty}">
-                                                                                  <iais:code code="${appSvcClinicalDirectorDto.specialty}"></iais:code>
-                                                                                </span>
+                                    <span class="newVal " attr="${appSvcClinicalDirectorDto.specialty}">
+                                        <c:if test="${not empty appSvcClinicalDirectorDto.specialty}">
+                                            <iais:code code="${appSvcClinicalDirectorDto.specialty}"></iais:code>
+                                        </c:if>
+                                    </span>
                                 </div>
 
                             </td>
