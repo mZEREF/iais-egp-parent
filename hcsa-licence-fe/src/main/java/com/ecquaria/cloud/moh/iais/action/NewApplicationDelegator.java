@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -180,6 +181,7 @@ public class NewApplicationDelegator {
     private static final String ASSESSMENTCONFIG = "AssessMentConfig";
 
     //page name
+    public static final String APPLICATION_PAGE_NAME_LICENSEE = "APPPN00";
     public static final String APPLICATION_PAGE_NAME_PREMISES = "APPPN01";
     public static final String APPLICATION_PAGE_NAME_PRIMARY = "APPPN02";
     public static final String APPLICATION_SVC_PAGE_NAME_LABORATORY = "APPSPN01";
@@ -323,6 +325,15 @@ public class NewApplicationDelegator {
         List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getAllSubLicensees().getEntity();
         bpc.request.getSession().setAttribute(LICENSEE_MAP, NewApplicationHelper.genSubLicessMap(subLicenseeDtoList));
         bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(subLicenseeDtoList));
+
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+        if (subLicenseeDto == null) {
+            subLicenseeDto = new SubLicenseeDto();
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            subLicenseeDto.setUenNo(loginContext.getUenNo());
+            appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+        }
     }
 
     /**
@@ -350,7 +361,11 @@ public class NewApplicationDelegator {
             SubLicenseeDto subLicenseeDto = getSubLicenseeDtoFromPage(bpc.request);
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
             if (appSubmissionDto.isNeedEditController()) {
-                AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                clickEditPages.add(APPLICATION_PAGE_NAME_LICENSEE);
+                appSubmissionDto.setClickEditPage(clickEditPages);
+                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+                appEditSelectDto.setLicenseeEdit(true);
             }
             errorMap = validateSubLicenseeDto(subLicenseeDto, bpc.request);
         }
@@ -437,12 +452,17 @@ public class NewApplicationDelegator {
         String streetName = ParamUtil.getString(request, "streetName");
         String buildingName = ParamUtil.getString(request, "buildingName");
         String telephoneNo = ParamUtil.getString(request, "telephoneNo");
-        String emilAddr = ParamUtil.getString(request, "emilAddr");
+        String emailAddr = ParamUtil.getString(request, "emailAddr");
 
         dto.setAssignSelect(assignSelect);
         dto.setLicenseeType(licenseeType);
-        dto.setIdType(idType);
-        dto.setIdNumber(idNumber);
+        if (OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeType)) {
+            dto.setIdType(StringUtil.getNonNull(idType));
+            dto.setIdNumber(StringUtil.getNonNull(idNumber));
+        } else {
+            dto.setIdType(null);
+            dto.setIdNumber(null);
+        }
         dto.setLicenseeName(licenseeName);
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
@@ -452,7 +472,7 @@ public class NewApplicationDelegator {
         dto.setStreetName(streetName);
         dto.setBuildingName(buildingName);
         dto.setTelephoneNo(telephoneNo);
-        dto.setEmilAddr(emilAddr);
+        dto.setEmailAddr(emailAddr);
         return dto;
     }
 
@@ -1044,7 +1064,7 @@ public class NewApplicationDelegator {
             NewApplicationHelper.updatePremisesAddress(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
-        String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
+        String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if (!"saveDraft".equals(crud_action_value)) {
             String keywords = MasterCodeUtil.getCodeDesc("MS001");
@@ -1067,10 +1087,14 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
 
-            Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keywords, isRfi);
+            String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            // not click back button
+            if (!"licensee".equals(actionType)) {
+                errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keywords, isRfi);
+            }
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
-            String crud_action_type = bpc.request.getParameter("crud_action_type");
-            bpc.request.setAttribute("continueStep", crud_action_type);
+            bpc.request.setAttribute("continueStep", actionType);
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
@@ -4619,6 +4643,7 @@ public class NewApplicationDelegator {
         if (appSubmissionDto == null) {
             log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
             appSubmissionDto = new AppSubmissionDto();
+            ParamUtil.setSessionAttr(request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         return appSubmissionDto;
     }

@@ -10,16 +10,9 @@
     String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
-<input type="hidden" name="crud_action_type" value="">
-<input type="hidden" name="crud_action_value" value="">
-<input type="hidden" name="crud_action_additional" value="">
+<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type_form_page" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
-<%--<input type="hidden" value="${coMap.licensee}" id="coMaplicensee" name="coMaplicensee">
-<input type="hidden" value="${coMap.premises}" id="coMappremises" name="coMappremises">
-<input type="hidden" value="${coMap.document}" id="coMapdocument" name="coMapdocument">
-<input type="hidden" value="${coMap.information}" id="coMapinformation" name="coMapinformation">
-<input type="hidden" value="${coMap.previewli}" id="coMappreviewli" name="coMappreviewli">--%>
 
     <%if(!StringUtil.isEmpty(flag)&&"transfer".equals(flag)){
 
@@ -50,7 +43,7 @@
         <div class="swiper-slide " >
             <a href="#licenseeTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Licensee Details</a>
         </div>
-        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
+        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="licenseeTab"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
         <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
         <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
         <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>

@@ -1,9 +1,24 @@
 <div class="row form-horizontal licenseeContent">
     <iais:row>
+        <iais:value width="4">
+            <strong class="app-font-size-22 premHeader">Licensee Details</strong>
+        </iais:value>
+        <iais:value width="8" cssClass="text-right">
+            <c:choose>
+                <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
+                    <c:set var="canEdit" value="false"/>
+                    <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
+                        <a class="app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                    </c:if>
+                </c:when>
+            </c:choose>
+        </iais:value>
+    </iais:row>
+
+    <iais:row>
         <iais:field width="5" mandatory="true" value="Add/Assign a licensee"/>
         <iais:value width="7">
             <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
-            <%--<span name="iaisErrorMsg" class="error-msg" id="error_assignSelect"></span>--%>
         </iais:value>
     </iais:row>
 
@@ -16,7 +31,14 @@
             </iais:value>
         </iais:row>
 
-        <iais:row>
+        <iais:row cssClass="company-no ${dto.licenseeType == 'LICT001' ? '' : 'hidden'}">
+            <iais:field width="5" value="UEN No."/>
+            <iais:value width="7">
+                <iais:code code="${dto.uenNo}" />
+            </iais:value>
+        </iais:row>
+
+        <iais:row cssClass="solo-no ${subLicenseeDto.licenseeType == 'LICT002' ? '' : 'hidden'}">
             <iais:field width="5" mandatory="true" value="ID No."/>
             <iais:value width="3">
                 <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${dto.idType}" />
@@ -40,9 +62,7 @@
                 <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode" value="${dto.postalCode}" />
             </iais:value>
             <iais:value width="2">
-            <%--<div class="col-xs-7 col-sm-6 col-md-3">--%>
                 <p><a class="retrieveAddr <%--<c:if test="${!canEdit || readOnly}">hidden</c:if>--%>">Retrieve your address</a></p>
-            <%--</div>--%>
             </iais:value>
         </iais:row>
         <iais:row>
@@ -93,7 +113,7 @@
         <iais:row>
             <iais:field value="Email Address" mandatory="true" width="5"/>
             <iais:value width="7">
-                <iais:input type="text" name="emilAddr" maxLength="66" value="${dto.emilAddr}"/>
+                <iais:input type="text" name="emailAddr" maxLength="66" value="${dto.emailAddr}"/>
             </iais:value>
         </iais:row>
     </div>
@@ -109,6 +129,27 @@
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
             var postalCode = $postalCodeEle.find('.postalCode').val();
             retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
+        });
+
+        <c:if test="${empty dto.uenNo}">
+        $('#licenseeType').find('option[value="LICT001"]').remove();
+        $('#licenseeType').niceSelect('update');
+        </c:if>
+
+        $('#licenseeType').change(function() {
+            var type = $('#licenseeType').val();
+            if (type == 'LICT001') {
+                $('.company-no').removeClass('hidden');
+                $('.solo-no').addClass('hidden');
+                clearFields('.solo-no');
+            } else if (type == 'LICT002') {
+                $('.company-no').addClass('hidden');
+                $('.solo-no').removeClass('hidden');
+            } else {
+                $('.company-no').addClass('hidden');
+                $('.solo-no').addClass('hidden');
+                clearFields('.solo-no');
+            }
         });
 
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">

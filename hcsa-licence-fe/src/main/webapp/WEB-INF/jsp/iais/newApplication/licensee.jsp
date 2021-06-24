@@ -13,7 +13,6 @@
 <c:set var="dto" value="${AppSubmissionDto.subLicenseeDto}"/>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-    <%--<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -21,7 +20,7 @@
                     <div class="tab-gp steps-tab">
                         <%@ include file="/WEB-INF/jsp/iais/newApplication/navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane fade in active" id="home">
+                            <div class="tab-pane fade in active">
                                 <%@ include file="/WEB-INF/jsp/iais/common/licenseeDetail.jsp" %>
                                 <div class="application-tab-footer">
                                     <c:choose>
@@ -33,10 +32,10 @@
                                                 <div class="col-xs-12 col-sm-6 ">
                                                     <c:choose>
                                                         <c:when test="${DraftConfig != null || requestInformationConfig != null}">
-                                                            <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
+                                                            <a class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
                                                         </c:when>
                                                         <c:when test="${AssessMentConfig != null}">
-                                                            <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohAccessmentGuide/jumpInstructionPage"><em class="fa fa-angle-left"></em> Back</a>
+                                                            <a class="back" href="/main-web/eservice/INTERNET/MohAccessmentGuide/jumpInstructionPage"><em class="fa fa-angle-left"></em> Back</a>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>

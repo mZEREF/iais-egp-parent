@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -19,8 +18,6 @@
   }
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-  <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
   <%--Validation fields Start--%>
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
@@ -78,17 +75,7 @@
                         <c:otherwise>
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 ">
-                                  <c:choose>
-                                    <c:when test="${DraftConfig != null || requestInformationConfig != null}">
-                                      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
-                                    </c:when>
-                                    <c:when test="${AssessMentConfig != null}">
-                                      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohAccessmentGuide/jumpInstructionPage"><em class="fa fa-angle-left"></em> Back</a>
-                                    </c:when>
-                                    <c:otherwise>
-                                      <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                    </c:otherwise>
-                                  </c:choose>
+                                  <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="button-group">

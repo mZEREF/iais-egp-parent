@@ -452,6 +452,7 @@
 
     var prsCallBackFuns ={
         fillData:function ($prsLoadingEle, data, needControlName) {
+            console.info(data);
             var specialty = data.specialty ;
             if(isEmpty(specialty)){
                 specialty = '';
