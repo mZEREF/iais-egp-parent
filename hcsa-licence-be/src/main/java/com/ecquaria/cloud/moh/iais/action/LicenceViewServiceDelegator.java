@@ -1101,6 +1101,11 @@ public class LicenceViewServiceDelegator {
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
             if (appSvcRelatedInfoDto != null) {
                 String serviceId = appSvcRelatedInfoDto.getServiceId();
+                if(StringUtil.isEmpty(serviceId)){
+                    String serviceName = appSvcRelatedInfoDto.getServiceName();
+                    HcsaServiceDto entity = hcsaConfigClient.getActiveHcsaServiceDtoByName(serviceName).getEntity();
+                    serviceId=entity.getId();
+                }
                 hcsaSvcSubtypeOrSubsumedDtos = applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
                 allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
             }
