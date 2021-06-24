@@ -2404,7 +2404,6 @@ public class HcsaApplicationDelegator {
         }
         //set appSvcVehicleDto
         broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
-        broadcastApplicationDto.setAppSvcVehicleDtos(applicationViewDto.getAppSvcVehicleDtos());
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
@@ -2887,6 +2886,7 @@ public class HcsaApplicationDelegator {
     private void rollBack(BaseProcessClass bpc, String stageId, String appStatus, String roleId, String wrkGpId, String userId) throws CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
@@ -2976,6 +2976,8 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
+        //set vehicle No
+        broadcastApplicationDto = broadcastService.replySetVehicleByRole(loginContext, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
