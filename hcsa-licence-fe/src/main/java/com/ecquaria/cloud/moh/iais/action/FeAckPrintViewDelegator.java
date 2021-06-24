@@ -65,6 +65,14 @@ public class FeAckPrintViewDelegator {
             bpc.request.setAttribute("menuRfc",menuRfc);
             ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
             title = "Amendment";
+            Object personListAmend = ParamUtil.getSessionAttr(bpc.request,"personListAmend");
+            if(personListAmend == null){
+                smallTitle.append("You are amending the")
+                        .append("<strong>")
+                        .append(" licence (Licence No. ")
+                        .append(appSubmissionDto.getLicenceNo())
+                        .append("</strong>)");
+            }
         } else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             title = "Licence Renewal";
         } else if("retrigger".equals(action)){
