@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
@@ -79,17 +81,15 @@ public class BroadcastServiceImpl implements BroadcastService {
                 List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
                 //vehicle details show
                 if(InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
-
-                        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-                            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
-                                appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
-                            }
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                        for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
                         }
-                        broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
-                        //set db data for roll back
-                        broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
-
-                //vehicle details don't show
+                    }
+                    broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+                    //vehicle details don't show
                 } else {
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
@@ -98,6 +98,30 @@ public class BroadcastServiceImpl implements BroadcastService {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
                         }
                     }
+                    broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    //set db data for roll back
+                    broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
+                }
+            }
+        }
+        return broadcastApplicationDto;
+    }
+
+    @Override
+    public BroadcastApplicationDto replySetVehicleByRole(LoginContext loginContext, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(loginContext != null && applicationViewDto != null) {
+            String curRoleId = loginContext.getCurRoleId();
+            List<AppSvcVehicleDto> appSvcVehicleDtos;
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
+                appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
+            } else {
+                appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+            }
+            if(RoleConsts.USER_ROLE_ASO.equals(curRoleId) || RoleConsts.USER_ROLE_PSO.equals(curRoleId)) {
+                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                    //get db data
+                    List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();
+                    //vehicle details show
                     broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
                     //set db data for roll back
                     broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);

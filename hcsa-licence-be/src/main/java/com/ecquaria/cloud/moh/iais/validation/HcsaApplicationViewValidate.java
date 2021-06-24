@@ -53,6 +53,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String nextStage = ParamUtil.getRequestString(request, "nextStage");
+        String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAudit = ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType);
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
@@ -125,7 +126,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         }
         //special status
         if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
-            String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
             if (StringUtil.isEmpty(nextStageReplys)) {
                 errMap.put("nextStageReplys", generalErrSix);
             } else {
@@ -209,15 +209,15 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
         //validate vehicle EAS / MTS
-        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, appVehicleFlag);
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag);
         tcuVerification(errMap,applicationViewDto);
         return errMap;
     }
 
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
-                                                  String nextStage, String appVehicleFlag) {
-        if (applicationViewDto != null&&VERIFIED.equals(nextStage) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
-             {
+                                                  String nextStage, String nextStageReplys, String appVehicleFlag) {
+        if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
+            {
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                 if(applicationDto != null) {
                     List<AppSvcVehicleDto> appSvcVehicleDtos;
@@ -292,11 +292,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
     private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
-            if(applicationViewDto != null){
-                if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
-                    errMap.put("document","GENERAL_ERR0025");
-                }
+        if(applicationViewDto != null){
+            if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
+                errMap.put("document","GENERAL_ERR0025");
             }
+        }
     }
 
     private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId, String taskKey){
@@ -425,8 +425,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 try {
                     Date tcuDate = Formatter.parseDate(applicationViewDto.getTuc());
                     if(tcuDate.getTime()< System.currentTimeMillis()){
-                            errMap.put("tcuDate","UC_INSTA004_ERR002");
-                            }
+                        errMap.put("tcuDate","UC_INSTA004_ERR002");
+                    }
                 }catch (Exception e){
                     errMap.put("tcuDate","SYSPAM_ERROR0008");
                 }
