@@ -1191,9 +1191,9 @@ public class LicenceApproveBatchjob {
                 superLicDtos.add(superLicDto);
 
                 //if PostInspNeeded send email
-                if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
+//                if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
 //                    sendEmailInspection(licenceDto);
-                }
+//                }
 //                sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId,applicationListDto.getAppPremisesRecommendationDto());
             }
             licenceGroupDto.setSuperLicDtos(superLicDtos);
