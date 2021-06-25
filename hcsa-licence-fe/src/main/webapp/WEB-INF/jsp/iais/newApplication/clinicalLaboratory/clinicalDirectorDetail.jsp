@@ -166,6 +166,16 @@
             </div>
         </div>
 
+        <div class="row control control-caption-horizontal hidden other-designation">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                </div>
+                <div class="col-md-7 col-xs-12">
+                    <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}" value="${clinicalDirectorDto.otherDesignation}"/>
+                </div>
+            </div>
+        </div>
+
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
@@ -267,7 +277,7 @@
                     <input class="form-check-input holdCerByEMS" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
                     <label class="form-check-label" ><span class="check-circle"></span>No</label>
                 </div>
-                <span class="error-msg col-md-3" name="iaisErrorMsg" id="error_holdCerByEMS${index}"></span>
+                <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_holdCerByEMS${index}"></span>
             </div>
         </div>
 
@@ -282,6 +292,11 @@
                 <div class="col-md-3 col-xs-12">
                     <iais:datePicker cssClass="aclsExpiryDate" name="aclsExpiryDate${index}" value="${clinicalDirectorDto.aclsExpiryDateStr}" />
                 </div>
+                <div class="col-md-5">
+                </div>
+                <div class="col-md-7">
+                    <span class="error-msg" name="iaisErrorMsg" id="error_expiryDateAcls${index}"></span>
+                </div>
             </div>
         </div>
 
@@ -294,6 +309,11 @@
                     </div>
                     <div class="col-md-3 col-xs-12">
                         <iais:datePicker cssClass="bclsExpiryDate" name="bclsExpiryDate${index}" value="${clinicalDirectorDto.bclsExpiryDateStr}" />
+                    </div>
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-7">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_expiryDateBcls${index}"></span>
                     </div>
                 </div>
             </div>
