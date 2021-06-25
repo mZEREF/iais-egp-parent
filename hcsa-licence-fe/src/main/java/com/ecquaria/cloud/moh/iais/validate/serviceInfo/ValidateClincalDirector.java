@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -140,8 +142,8 @@ public class ValidateClincalDirector implements ValidateFlow {
                 String holdCerByEMS = appSvcClinicalDirectorDtos.get(i).getHoldCerByEMS();
                 if(StringUtil.isEmpty(holdCerByEMS)){
                     map.put("holdCerByEMS"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
-                }else {
-
+                }else if(AppConsts.NO.equals(holdCerByEMS)){
+                    map.put("holdCerByEMS"+i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                 }
 
                 String mobileNo = appSvcClinicalDirectorDtos.get(i).getMobileNo();
@@ -192,9 +194,17 @@ public class ValidateClincalDirector implements ValidateFlow {
             }
         }
         validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        Date now = new Date();
+        String err032 = MessageUtil.getMessageDesc("NEW_ERR0032");
+        Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
+        if(!StringUtil.isEmpty(aclsExpiryDate) && now.after(aclsExpiryDate)){
+            map.put("expiryDateAcls"+index, err032);
+        }
         Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
         if(StringUtil.isEmpty(bclsExpiryDate)){
-            map.put("bclsExpiryDate"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
+            map.put("expiryDateBcls"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
+        } else if (now.after(bclsExpiryDate)){
+            map.put("expiryDateBcls"+index, err032);
         }
     }
 
@@ -218,10 +228,11 @@ public class ValidateClincalDirector implements ValidateFlow {
             validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
+        Date now = new Date();
         if(aclsExpiryDate==null){
-            map.put("aclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
-        }else {
-
+            map.put("expiryDateAcls"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
+        }else if(now.after(aclsExpiryDate)){
+            map.put("expiryDateAcls"+index, MessageUtil.getMessageDesc("NEW_ERR0032"));
         }
     }
 
