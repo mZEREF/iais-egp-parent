@@ -117,6 +117,7 @@
         removeClinicalDirector();
         showOtherSpecialty();
         profRegNoBlur();
+        designationBindEvent();
         $('select.specialty').trigger('change');
         $("input[name='noRegWithProfBoard']").trigger('change');
         doEdite();
@@ -150,6 +151,7 @@
             $(this).find('select').niceSelect("update");
             //trigger prs
             $(this).find('.profRegNo').trigger('blur');
+            $(this).find('.designation').trigger('change');
         });
         assignSelectBindEvent();
     });
@@ -207,6 +209,7 @@
                         showOtherSpecialty();
                         noRegWithProfBoard();
                         assignSelectBindEvent();
+                        designationBindEvent();
                         profRegNoBlur();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
@@ -346,6 +349,7 @@
         $content.find('input.cdIndexNo').val('');
         </c:if>
         $content.find('.specialty-label').html('');
+        $content.find('div.other-designation').addClass('hidden');
         if('-1' == assignSelVal) {
             $content.addClass('hidden');
             clearFields($content);
@@ -420,6 +424,9 @@
                     }
                     if ($input.val() != oldVal) {
                         $input.niceSelect("update");
+                    }
+                    if(i == 'designation'){
+                        designationChange($current, val);
                     }
                 } else {
                     $input.val(val);
@@ -523,4 +530,21 @@
             $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
         }
     });
+
+    function designationBindEvent() {
+        $('.designation').unbind('change');
+        $('.designation').on('change', function() {
+            var thisVal = $(this).val();
+            var currContEle = $(this).closest('div.clinicalDirectorContent');
+            designationChange(currContEle, thisVal);
+        });
+    }
+    function designationChange(currContEle, designationVal) {
+        console.log(designationVal);
+        if('DES999' == designationVal){
+            currContEle.find('div.other-designation').removeClass('hidden');
+        } else{
+            currContEle.find('div.other-designation').addClass('hidden');
+        }
+    }
 </script>

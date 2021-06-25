@@ -2932,6 +2932,7 @@ public class ClinicalLaboratoryDelegator {
                 String idType = ParamUtil.getString(request,"idType"+i);
                 String idNo = ParamUtil.getString(request,"idNo"+i);
                 String designation = ParamUtil.getString(request,"designation"+i);
+                String otherDesignation = ParamUtil.getString(request, "otherDesignation"+i);
 //                String specialty = ParamUtil.getString(request,"speciality"+i);
 //                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
                 String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
@@ -2978,6 +2979,14 @@ public class ClinicalLaboratoryDelegator {
                 }
                 if (canSetValue(appPsnEditDto.isDesignation(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setDesignation(designation);
+                }
+
+                if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(appSvcClinicalDirectorDto.getDesignation())){
+                    if (canSetValue(appPsnEditDto.isOtherDesignation(), isNewOfficer, partEdit)) {
+                        appSvcClinicalDirectorDto.setOtherDesignation(otherDesignation);
+                    }
+                }else{
+                    appSvcClinicalDirectorDto.setOtherDesignation(null);
                 }
 //                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
 //                    appSvcClinicalDirectorDto.setSpeciality(specialty);

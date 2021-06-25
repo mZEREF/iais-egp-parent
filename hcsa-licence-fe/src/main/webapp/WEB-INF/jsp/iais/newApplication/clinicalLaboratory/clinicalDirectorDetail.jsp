@@ -166,6 +166,16 @@
             </div>
         </div>
 
+        <div class="row control control-caption-horizontal hidden other-designation">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                </div>
+                <div class="col-md-7 col-xs-12">
+                    <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}" value="${clinicalDirectorDto.otherDesignation}"/>
+                </div>
+            </div>
+        </div>
+
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">

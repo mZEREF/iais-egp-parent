@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
@@ -89,8 +90,14 @@ public class ValidateClincalDirector implements ValidateFlow {
                 String designation = appSvcClinicalDirectorDtos.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
                     map.put("designation"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "designation", "field"));
-                }else {
-
+                }else if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                    String otherDesignation = appSvcClinicalDirectorDtos.get(i).getOtherDesignation();
+                    if(StringUtil.isEmpty(otherDesignation)){
+                        map.put("otherDesignation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field"));
+                    }else if(otherDesignation.length() > 100){
+                        String general_err0041=NewApplicationHelper.repLength("Others Designation","100");
+                        map.put("otherDesignation" + i, general_err0041);
+                    }
                 }
 //                String specialty = appSvcClinicalDirectorDtos.get(i).getSpeciality();
 //                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
