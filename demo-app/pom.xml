@@ -28,12 +28,6 @@
             <version>${biz.paluch.maven.configurator.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ecquaria.egp.console</groupId>
-            <artifactId>sop</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

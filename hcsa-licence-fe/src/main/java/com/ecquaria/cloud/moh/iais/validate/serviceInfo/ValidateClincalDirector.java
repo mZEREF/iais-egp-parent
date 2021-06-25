@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -7,12 +8,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,8 +92,14 @@ public class ValidateClincalDirector implements ValidateFlow {
                 String designation = appSvcClinicalDirectorDtos.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
                     map.put("designation"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "designation", "field"));
-                }else {
-
+                }else if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                    String otherDesignation = appSvcClinicalDirectorDtos.get(i).getOtherDesignation();
+                    if(StringUtil.isEmpty(otherDesignation)){
+                        map.put("otherDesignation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Others Designation","field"));
+                    }else if(otherDesignation.length() > 100){
+                        String general_err0041=NewApplicationHelper.repLength("Others Designation","100");
+                        map.put("otherDesignation" + i, general_err0041);
+                    }
                 }
 //                String specialty = appSvcClinicalDirectorDtos.get(i).getSpeciality();
 //                if(StringUtil.isEmpty(specialty)||"-1".equals(specialty)){
@@ -133,8 +142,8 @@ public class ValidateClincalDirector implements ValidateFlow {
                 String holdCerByEMS = appSvcClinicalDirectorDtos.get(i).getHoldCerByEMS();
                 if(StringUtil.isEmpty(holdCerByEMS)){
                     map.put("holdCerByEMS"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "holdCerByEMS", "field"));
-                }else {
-
+                }else if(AppConsts.NO.equals(holdCerByEMS)){
+                    map.put("holdCerByEMS"+i, MessageUtil.getMessageDesc("NEW_ERR0031"));
                 }
 
                 String mobileNo = appSvcClinicalDirectorDtos.get(i).getMobileNo();
@@ -171,6 +180,8 @@ public class ValidateClincalDirector implements ValidateFlow {
     protected void doValidateForMTS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
         String noRegWithProfBoard = appSvcClinicalDirectorDto.getNoRegWithProfBoard();
         if(String.valueOf(1).equals(noRegWithProfBoard)){
+
+        }else {
             String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
             if(StringUtil.isEmpty(professionBoard)||"-1".equals(professionBoard)){
                 map.put("professionBoard"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "professionBoard", "field"));
@@ -185,9 +196,17 @@ public class ValidateClincalDirector implements ValidateFlow {
             }
         }
         validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
+        Date now = new Date();
+        String err032 = MessageUtil.getMessageDesc("NEW_ERR0032");
+        Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
+        if(!StringUtil.isEmpty(aclsExpiryDate) && now.after(aclsExpiryDate)){
+            map.put("expiryDateAcls"+index, err032);
+        }
         Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
         if(StringUtil.isEmpty(bclsExpiryDate)){
-            map.put("bclsExpiryDate"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
+            map.put("expiryDateBcls"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
+        } else if (now.after(bclsExpiryDate)){
+            map.put("expiryDateBcls"+index, err032);
         }
     }
 
@@ -207,14 +226,16 @@ public class ValidateClincalDirector implements ValidateFlow {
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
 
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
-        if("No speciality".equalsIgnoreCase(speciality)){
+        String regNo = appSvcClinicalDirectorDto.getProfRegNo();
+        if(!StringUtil.isEmpty(regNo)&&StringUtil.isEmpty(speciality)){
             validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
+        Date now = new Date();
         if(aclsExpiryDate==null){
-            map.put("aclsExpiryDate"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
-        }else {
-
+            map.put("expiryDateAcls"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
+        }else if(now.after(aclsExpiryDate)){
+            map.put("expiryDateAcls"+index, MessageUtil.getMessageDesc("NEW_ERR0032"));
         }
     }
 
