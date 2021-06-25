@@ -208,7 +208,7 @@
 	               as address,p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
-                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE') and
+                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS') and
                    li.STATUS ='LICEST001' and p.ID in (
                            SELECT  MAX(li.PREMISES_ID) FROM
                    lic_premises as li WHERE li.LICENCE_ID in
