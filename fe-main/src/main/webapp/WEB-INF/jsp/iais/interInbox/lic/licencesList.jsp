@@ -250,10 +250,12 @@
         </div>
     </div>
     <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
+    <input type="hidden" value="" id="bundle" name="bundle">
     <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRfcDraft()"></iais:confirm>
     <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftRenewByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRenewDraft()"></iais:confirm>
     <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealDraft()"></iais:confirm>
     <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftCeaseByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteCeaseDraft()"></iais:confirm>
+    <iais:confirm msg="${draftByLicAppId}" callBack="bundleNo()" popupOrder="bundleShow" yesBtnDesc="no" cancelBtnDesc="yes" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="bundleYes()"></iais:confirm>
 </form>
 <script>
     $(document).ready(function () {
@@ -272,6 +274,9 @@
         $('#draftCeaseByLicAppId').modal('hide');
         if('1' == '${isCeaseShow}'){
             $('#draftCeaseByLicAppId').modal('show');
+        }
+        if('1'=='${isBundleShow}'){
+            $('#bundleShow').modal('show');
         }
     });
     function cancel() {
@@ -297,6 +302,14 @@
     }
     function deleteRenewDraft(){
         $('#isNeedDelete').val('delete');
+        doLicRenew();
+    }
+    function bundleYes(){
+        $('#bundle').val('yes');
+        doLicRenew();
+    }
+    function bundleNo(){
+        $('#bundle').val('no');
         doLicRenew();
     }
     $('#lic-renew').click(function () {
