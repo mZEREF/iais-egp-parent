@@ -170,6 +170,8 @@ public class ValidateClincalDirector implements ValidateFlow {
     protected void doValidateForMTS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
         String noRegWithProfBoard = appSvcClinicalDirectorDto.getNoRegWithProfBoard();
         if(String.valueOf(1).equals(noRegWithProfBoard)){
+
+        }else {
             String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
             if(StringUtil.isEmpty(professionBoard)||"-1".equals(professionBoard)){
                 map.put("professionBoard"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "professionBoard", "field"));
@@ -206,7 +208,8 @@ public class ValidateClincalDirector implements ValidateFlow {
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
 
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
-        if("No speciality".equalsIgnoreCase(speciality)){
+        String regNo = appSvcClinicalDirectorDto.getProfRegNo();
+        if(!StringUtil.isEmpty(regNo)&&StringUtil.isEmpty(speciality)){
             validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
