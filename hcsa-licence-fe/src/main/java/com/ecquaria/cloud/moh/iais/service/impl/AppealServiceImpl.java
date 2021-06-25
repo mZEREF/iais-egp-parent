@@ -25,8 +25,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -86,6 +86,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -290,7 +291,7 @@ public class AppealServiceImpl implements AppealService {
             req.getSession().removeAttribute("appPremisesSpecialDocDto");
             req.getSession().removeAttribute("filename");
         }
-        List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
         String groupId = (String) request.getAttribute("groupId");
@@ -401,8 +402,8 @@ public class AppealServiceImpl implements AppealService {
                 }
                 List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = appealPageDto.getAppPremisesSpecialDocDtos();
                 List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
-                HashMap<String,File> map = IaisCommonUtils.genNewHashMap();;
-                HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
+                HashMap<String,File> map = IaisCommonUtils.genNewHashMap();
+                HashMap<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
                 int indexMax = -1;
                 if(appPremisesSpecialDocDtos!=null&&!appPremisesSpecialDocDtos.isEmpty()){
                     for(int i=0;i<appPremisesSpecialDocDtos.size();i++){
@@ -436,7 +437,7 @@ public class AppealServiceImpl implements AppealService {
                 Collections.sort(pageShowFileDtos,(s1,s2)->s1.getFileMapId().compareTo(s2.getFileMapId()));
                 request.getSession().setAttribute("pageShowFiles", pageShowFileDtos);
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
-                    List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
                     request.getSession().setAttribute("CgoMandatoryCount", appSvcCgoDto.size());
                     request.getSession().setAttribute("GovernanceOfficersList", appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");
@@ -480,7 +481,6 @@ public class AppealServiceImpl implements AppealService {
         typeApplicationOrLicence(request, type, appealingFor);
         request.getSession().setAttribute(APPEALING_FOR, appealingFor);
         request.getSession().setAttribute(TYPE, type);
-
     }
 
     private AppPremiseMiscDto initRfi(HttpServletRequest request, String appealingFor) {
@@ -542,6 +542,9 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("appealNo", licenceDto.getLicenceNo());
         } else if (APPLICATION.equals(type)) {
             ApplicationDto applicationDto = applicationFeClient.getApplicationById(appealingFor).getEntity();
+            Map<String,String> map=new HashMap<>();
+            validateCgoIdNo(applicationDto,map);
+            request.getSession().setAttribute("map",map);
             Calendar calendar=Calendar.getInstance();
             Date createAt = applicationDto.getCreateAt();
             calendar.setTime(createAt);
@@ -773,7 +776,6 @@ public class AppealServiceImpl implements AppealService {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId = (String) req.getSession().getAttribute("saveDraftNo");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
-        String isDelete = request.getParameter("isDelete");
         String reasonSelect = request.getParameter("reasonSelect");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
@@ -863,7 +865,7 @@ public class AppealServiceImpl implements AppealService {
                 }
             }
         }
-        List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
 
@@ -884,10 +886,10 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private List<AppSvcCgoDto> reAppSvcCgo(HttpServletRequest req) {
+    private List<AppSvcPrincipalOfficersDto> reAppSvcCgo(HttpServletRequest req) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
-        AppSvcCgoDto appSvcCgoDto ;
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto appSvcCgoDto ;
         String[] assignSelect = ParamUtil.getStrings(request, "assignSelect");
         int size = 0;
         if (assignSelect != null && assignSelect.length > 0) {
@@ -905,7 +907,7 @@ public class AppealServiceImpl implements AppealService {
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         for (int i = 0; i < size; i++) {
-            appSvcCgoDto = new AppSvcCgoDto();
+            appSvcCgoDto = new AppSvcPrincipalOfficersDto();
             //cgoIndexNo
             String cgoIndexNo = new StringBuffer().append("cgo-").append(i).append("-").toString();
             appSvcCgoDto.setAssignSelect(assignSelect[i]);
@@ -929,7 +931,7 @@ public class AppealServiceImpl implements AppealService {
                 }
                 List<String> specialty = professionalResponseDto.getSpecialty();
                 if(specialty!=null&&!specialty.isEmpty()){
-                    appSvcCgoDto.setSpeciality(specialty.get(0));
+                  appSvcCgoDto.setSpeciality(specialty.get(0));
                 }
                 List<String> subspecialty = professionalResponseDto.getSubspecialty();
                 if(subspecialty!=null&&!subspecialty.isEmpty()){
@@ -945,11 +947,7 @@ public class AppealServiceImpl implements AppealService {
 
     public void validae(HttpServletRequest req, Map<String, String> map) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        //CGO mix can add
-        String serviceId = (String) request.getSession().getAttribute("serviceId");
-        if (serviceId != null) {
-            appConfigClient.getServiceType(serviceId, "CGO");
-        }
+
         String isDelete = request.getParameter("isDelete");
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
@@ -1049,7 +1047,7 @@ public class AppealServiceImpl implements AppealService {
             map.put("reason", MessageUtil.replaceMessage("GENERAL_ERR0006","Reason For Appeal","field"));
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
-                List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
                 if(IaisCommonUtils.isEmpty(appSvcCgoList)){
                     //todo
                     map.put("addCgo",  MessageUtil.replaceMessage("GENERAL_ERR0006","Add Another Clinical Governance Officer ","field"));
@@ -1087,11 +1085,11 @@ public class AppealServiceImpl implements AppealService {
                                 map.put("otherDesignation" + i, designationMsg);
                             }
                         }
+                        String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                         if(StringUtil.isEmpty(otherQualification)){
                             map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
                         }
-                        String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {
 /*
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
@@ -1136,14 +1134,28 @@ public class AppealServiceImpl implements AppealService {
                                     map.put("idNo" + i, "RFC_ERR0012");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
-
+                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
+                                if(map1!=null){
+                                    map1.forEach((k,v)->{
+                                        if(v.equals(idNo)){
+                                            map.put("idNo", "NEW_ERR0012");
+                                        }
+                                    });
+                                }
                             } else if (OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)) {
                                 boolean b1 = SgNoValidator.validateNric(idNo);
                                 if (!b1) {
                                     map.put("idNo" + i, "RFC_ERR0012");
                                 }
                                 stringBuilder1.append(idTyp).append(idNo);
-
+                                Map<String,String> map1 =(Map<String, String>) req.getSession().getAttribute("map");
+                                if(map1!=null){
+                                    map1.forEach((k,v)->{
+                                        if(v.equals(idNo)){
+                                            map.put("idNo", "NEW_ERR0012");
+                                        }
+                                    });
+                                }
                             }
 
                         }
@@ -1184,7 +1196,6 @@ public class AppealServiceImpl implements AppealService {
                                 stringBuilder.append(str);
                             }
                         }
-
                     }
 
                 }
@@ -1211,7 +1222,7 @@ public class AppealServiceImpl implements AppealService {
         String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
 
         String type = (String) request.getSession().getAttribute(TYPE);
-        List<AppSvcCgoDto> appSvcCgoDtos = reAppSvcCgo(request);
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = reAppSvcCgo(request);
         String reasonSelect = request.getParameter("reasonSelect");
         String proposedHciName = request.getParameter("proposedHciName");
         String remarks = request.getParameter("remarks");
@@ -1252,9 +1263,9 @@ public class AppealServiceImpl implements AppealService {
         }
         //appealPageDto
         AppealPageDto appealDto = getAppealPageDto(request);
-        List<AppSvcCgoDto> list = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto every : premisesDtos) {
-            AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);
+            AppSvcPrincipalOfficersDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcPrincipalOfficersDto.class);
             list.add(appSvcCgoDto);
             ApplicationDto applicationDto = new ApplicationDto();
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
@@ -1337,7 +1348,7 @@ public class AppealServiceImpl implements AppealService {
         }
         String reasonSelect = appealDto.getAppealReason();
 
-        List<AppSvcCgoDto> appSvcCgoDtos = null;
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
             appSvcCgoDtos = reAppSvcCgo(request);
         }
@@ -1441,7 +1452,7 @@ public class AppealServiceImpl implements AppealService {
         String reasonSelect = appealDto.getAppealReason();
 
 
-        List<AppSvcCgoDto> appSvcCgoDtos = null;
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = null;
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reasonSelect)) {
             appSvcCgoDtos = reAppSvcCgo(request);
         }
@@ -1567,7 +1578,7 @@ public class AppealServiceImpl implements AppealService {
         List<AppliSpecialDocDto> appliSpecialDocDto = applicationFeClient.getAppliSpecialDocDtoByCorrId(appPremCorreId).getEntity();
         List<PageShowFileDto> pageShowFileDtos =new ArrayList<>(5);
         HashMap<String,File> map = IaisCommonUtils.genNewHashMap();
-        HashMap<String, PageShowFileDto> pageShowFileHashMap= IaisCommonUtils.genNewHashMap();
+        HashMap<String, PageShowFileDto> pageShowFileHashMap = IaisCommonUtils.genNewHashMap();
         if (appliSpecialDocDto != null) {
             int indexMax = -1;
             for(int i=0;i<appliSpecialDocDto.size();i++){
@@ -1609,9 +1620,9 @@ public class AppealServiceImpl implements AppealService {
             }
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                 String appGrpId = entity.getAppGrpId();
-                List<AppSvcCgoDto> appSvcCgoDtos = applicationFeClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = applicationFeClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
                 if(appSvcCgoDtos!=null){
-                    for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos){
+                    for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos){
                         appSvcCgoDto.setAssignSelect("newOfficer");
                     }
                     ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
@@ -1868,7 +1879,7 @@ public class AppealServiceImpl implements AppealService {
             if(list!=null){
                 Optional<HcsaServiceStepSchemeDto> any = list.stream().filter(v -> HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(v.getStepCode())).findAny();
                 if(!any.isPresent()){
-                    return false;
+                   return false;
                 }
             }
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = appConfigClient.getHcsaSvcPersonnelDtoByServiceId(activeHcsaServiceDtoById.getId()).getEntity();
@@ -1921,5 +1932,23 @@ public class AppealServiceImpl implements AppealService {
         if(pageShowFileDto.getFileName().length()>100){
             map.put("file"+i,MessageUtil.getMessageDesc("GENERAL_ERR0022"));
         }
+    }
+
+    private void validateCgoIdNo(ApplicationDto applicationDto,Map<String,String> map){
+        AppSubmissionDto entity = applicationFeClient.getAppSubmissionDtoByAppNo(applicationDto.getApplicationNo()).getEntity();
+        if(entity!=null){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
+            if(appSvcRelatedInfoDtoList!=null&&!appSvcRelatedInfoDtoList.isEmpty()){
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDtoList.get(0).getAppSvcCgoDtoList();
+                if(appSvcCgoDtoList!=null){
+                    Iterator<AppSvcPrincipalOfficersDto> iterator = appSvcCgoDtoList.iterator();
+                    while (iterator.hasNext()){
+                        AppSvcPrincipalOfficersDto next = iterator.next();
+                        map.put(next.getIdNo(),next.getIdNo());
+                    }
+                }
+            }
+        }
+
     }
 }

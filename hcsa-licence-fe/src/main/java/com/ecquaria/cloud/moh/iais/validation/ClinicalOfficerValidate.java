@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -21,7 +21,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String ,String> map= IaisCommonUtils.genNewHashMap();
-        List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getRequestAttr(request, "goveOffice");
+        List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getRequestAttr(request, "goveOffice");
         appSvcCgoList(map,appSvcCgoList);
         List<HcsaSvcSubtypeOrSubsumedDto> HcsaSvcSubtypeOrSubsumedDto = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getRequestAttr(request, "hcsaSvcSubtypeOrSubsumedDtos");
 
@@ -29,7 +29,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
     }
 
 
-    private void appSvcCgoList(Map<String,String> map,List<AppSvcCgoDto> appSvcCgoList){
+    private void appSvcCgoList(Map<String,String> map,List<AppSvcPrincipalOfficersDto> appSvcCgoList){
         if(appSvcCgoList!=null){
             for(int i=0;i<appSvcCgoList.size();i++){
 

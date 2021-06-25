@@ -47,6 +47,7 @@ public class SqlXmlParser extends DefaultHandler {
         spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
         spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
         SAXParser sp = spf.newSAXParser();
 //        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 //        sp.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");

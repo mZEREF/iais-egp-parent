@@ -108,10 +108,10 @@
                                             <input type="hidden" name="psnEditField" value="${currentCgo.psnEditDto}"/>
                                             <c:choose>
                                                 <c:when test="${currentCgo.licPerson}">
-                                                    <input type="hidden" name="licPerson" value="1"/>
+                                                    <input class="licPerson"  type="hidden" name="licPerson" value="1"/>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <input type="hidden" name="licPerson" value="0"/>
+                                                    <input class="licPerson"  type="hidden" name="licPerson" value="0"/>
                                                 </c:otherwise>
                                             </c:choose>
                                             <tbody>
@@ -258,7 +258,7 @@
                                                                             <div class="col-sm-3 col-md-4 col-xs-12"
                                                                                  id="name${suffix}">
                                                                                 <div class="">
-                                                                                    <iais:input maxLength="66"
+                                                                                    <iais:input cssClass="field-name" maxLength="66"
                                                                                                 type="text" name="name"
                                                                                                 value="${currentCgo.name}"></iais:input>
                                                                                     <span class="error-msg"
@@ -442,7 +442,7 @@
                                                                             </div>
                                                                             <div class="col-sm-5 col-md-7">
                                                                                 <label class="control-label control-set-font control-font-label specialty-label">
-                                                                                    ${currentCgo.speciality}
+                                                                                    <c:out value=" ${currentCgo.speciality}"/>
                                                                                 </label>
                                                                             </div>
                                                                         </div>
@@ -710,7 +710,7 @@
             var specialty = $prsLoadingContent.find('label.specialty-label').html();
             //prs loading
             if(init == 1){
-                prdLoading($prsLoadingContent, prgNo, action);
+                prdLoading($prsLoadingContent, prgNo, action, null);
             }
             //add Remark For Subspecialty
             if(prgNo.trim().length == 0 || specialty.trim().length == 0){
@@ -856,9 +856,10 @@
             var appType = $('input[name="applicationType"]').val();
             var assignSelectVal = $contentEle.find('select[name="assignSelect"]').val();
             var licPerson = $contentEle.find('input[name="licPerson"]').val();
-            if(('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType)){
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            if(needControlName){
                 var prgNo = $contentEle.find('input[name="professionRegoNo"]').val();
-                if(prgNo != null && prgNo != '' && prgNo != undefined){
+                if(!isEmpty(prgNo)){
                     inputReadonly($contentEle.find('input[name="name"]'));
                 }
             }

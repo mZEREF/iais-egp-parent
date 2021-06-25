@@ -44,7 +44,7 @@ public class LaboratoryDevelopTestServiceImpl implements LaboratoryDevelopTestSe
         sendNotification(applicantName,LDTId,licenceId);
         sendEmail(applicantName,LDTId,licenceId);
     }
-
+  
 
     private void sendNotification(String applicantName,String LDTId,String licenceId) throws IOException, TemplateException {
         MsgTemplateDto msgTemplateDto = feMainMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_LDT_MSG).getEntity();

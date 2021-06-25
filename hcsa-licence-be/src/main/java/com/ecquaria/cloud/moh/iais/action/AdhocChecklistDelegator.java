@@ -95,7 +95,9 @@ public class AdhocChecklistDelegator {
                 ApplicationDto applicationDto = appView.getApplicationDto();
                 AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION,
                         AuditTrailConsts.FUNCTION_ADHOC_CHECKLIST, applicationDto.getApplicationNo());
-                inspectionChecklist = Optional.ofNullable(inspectionChecklist).orElseGet(() -> adhocChecklistService.getInspectionChecklist(applicationDto));
+                boolean needVehicle = IaisCommonUtils.isNotEmpty(appView.getAppSvcVehicleDtos());
+                inspectionChecklist = Optional.ofNullable(inspectionChecklist).orElseGet(() -> adhocChecklistService.getInspectionChecklist(applicationDto,
+                        needVehicle));
             }
         }
         ParamUtil.setSessionAttr(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM_SEARCH, null);

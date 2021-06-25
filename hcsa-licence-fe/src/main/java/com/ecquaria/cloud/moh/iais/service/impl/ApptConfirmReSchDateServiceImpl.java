@@ -507,7 +507,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ProcessReSchedulingDto processReSchedulingDto;
             Map<String,List<String>> map=IaisCommonUtils.genNewHashMap();
             for (ApptViewDto appt:apptViewDtos
-            ) {
+                 ) {
                 if(appt.getAppCorrId().equals(appPremisesCorrelationDto.getId())){
                     map.put(applicationDto.getApplicationNo(),appt.getUserIds());
                 }
@@ -530,7 +530,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             ) {
                 if(appt.getAppGrpId().equals(appPremisesCorrelationDto.getAppGrpPremId())){
                     for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
-                    ) {
+                         ) {
                         insAppt.setReason(appt.getReason());
                         insAppt.setEndDate(appt.getSpecificEndDate());
                         insAppt.setStartDate(appt.getSpecificStartDate());

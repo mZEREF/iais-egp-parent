@@ -37,7 +37,7 @@
                 <iais:field value="Common" id="commonField"></iais:field>
                 <div class="col-md-3">
                     <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false"
-                           value="${common}"> General Regulation
+                        value="${common}"> <label for="common">General Regulation</label>
                 </div>
             </div>
 
@@ -72,6 +72,14 @@
                     <div class="col-md-3">
                         <iais:select name="type" id="type" codeCategory="CATE_ID_CHECKLIST_TYPE"
                                      firstOption="Please Select" value="${type}"></iais:select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <iais:field value="Inspection Entity" id="inspectionEntityField"></iais:field>
+                    <div class="col-md-3">
+                        <iais:select name="inspectionEntity" id="inspectionEntity" codeCategory="CATE_ID_INSPECTION_ENTITY_TYPE"
+                            firstOption="Please Select" value="${inspectionEntity}"></iais:select>
                     </div>
                 </div>
 
@@ -117,8 +125,7 @@
                 </div>
             </div>
         </div>
-    </
-    >
+    </form>
 </div>
 
 
@@ -149,6 +156,7 @@
 
     function clearInput(){
         $('#commonField span').hide();
+        $('#common').prop('checked', false);
         $('#common').attr('disabled', null);
         Utils.clearClickStatus('form-horizontal');
         $('#common').attr('disabled', null)

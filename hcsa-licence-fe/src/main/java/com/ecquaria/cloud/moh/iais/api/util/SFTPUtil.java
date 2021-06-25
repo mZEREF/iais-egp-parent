@@ -38,10 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SFTPUtil {
-
+    
 
 	private static final String seperator = ConfigHelper.getString("giro.sftp.linux.seperator");
-
+    
 	private static ChannelSftp sftp = null;
 
 	public static void connect() {
@@ -65,7 +65,7 @@ public class SFTPUtil {
             log.error(e.getMessage(), e);
         }
     }
-
+    
 	public static ChannelSftp connect(String host, String username, String password, int port) {
         try {
             JSch jsch = new JSch();
@@ -79,14 +79,14 @@ public class SFTPUtil {
             Channel channel = sshSession.openChannel("sftp");
             channel.connect();
             log.info(StringUtil.changeForLog("Connected to " + host + "."));
-
+            
             return (ChannelSftp) channel;
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
         return null;
     }
-
+	
     public static void upload(ChannelSftp sftp, File file, String remoteFilePath) {
         try {
             if(file.isFile()){
@@ -95,9 +95,9 @@ public class SFTPUtil {
         } catch (Exception e) {
         	log.error(e.getMessage(), e);
         }
-
+        
     }
-
+	
     public void disconnect(ChannelSftp sftp) {
         if(sftp != null){
             if(sftp.isConnected()){
@@ -108,7 +108,7 @@ public class SFTPUtil {
             sftp = null;
         }
     }
-
+    
 	public static void disconnect() {
 		if (sftp != null) {
 			if (sftp.isConnected()) {
@@ -136,7 +136,7 @@ public class SFTPUtil {
 		disconnect();
 		return false;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public static List<String> getRemoteFileNames(String fileName, String remotePath) throws Exception {
 		connect();
@@ -153,7 +153,7 @@ public class SFTPUtil {
 			String[] sftpfullNmaes=sftpName.split("\\.");
 			if(sftpfullNmaes!=null&&sftpfullNmaes.length>0){
 				sftpfullName=sftpfullNmaes[0];
-			}
+			}			
 			if(fileName.equals(sftpfullName)){
 				remoteFileNames.clear();
 				remoteFileNames.add(sftpName);
@@ -164,7 +164,7 @@ public class SFTPUtil {
 		disconnect();
 		return remoteFileNames;
 	}
-
+	
     public static boolean download(String localPath, String fileName, String remotePath) throws Exception {
 	    if(StringUtil.isEmpty(remotePath)){
 	        log.info(StringUtil.changeForLog("down load remotepath is null"));
@@ -194,7 +194,7 @@ public class SFTPUtil {
             log.error(e.getMessage(), e);
         }
     }
-
+    
     public static boolean upload(String fileName, String remotePath) {
     	boolean result = false;
     	if(StringUtil.isEmpty(remotePath)){
@@ -234,7 +234,7 @@ public class SFTPUtil {
         	disconnect();
         }
 
-
+		
 		return result;
     }
 
@@ -273,14 +273,14 @@ public class SFTPUtil {
             log.info(StringUtil.changeForLog("mkdir failed :" + filepath));
             log.error(e.getMessage(), e);
         }
-
+        
         try {
             sftp.cd(filepath);
         } catch (SftpException e) {
         	log.error(e.getMessage(), e);
             log.info(StringUtil.changeForLog("can not cd into :" + filepath));
         }
-
+        
     }
 
 }

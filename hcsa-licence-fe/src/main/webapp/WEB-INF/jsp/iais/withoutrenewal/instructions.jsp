@@ -62,6 +62,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                             </div>
                             <c:if test="${isSingle == 'Y'}">
                                 <p>Click proceed to view your licence information and if necessary make amendment, before renewal.</p>

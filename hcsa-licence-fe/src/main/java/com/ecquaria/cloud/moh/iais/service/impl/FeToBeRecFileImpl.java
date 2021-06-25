@@ -24,13 +24,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,6 +39,11 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -231,10 +228,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss, String appId)  {
-        if (backups.endsWith("/") || backups.endsWith("\\")) {
-            backups = backups.substring(0, backups.length() - 1);
-        }
-        File zipFile = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(backups),FilenameUtils.getName(backups));
+        File zipFile = MiscUtil.generateFile(backups);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
                 if (name.endsWith(fileNamesss + ".zip")) {
@@ -285,10 +279,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void deleteFile(){
-        if (backups.endsWith("/") || backups.endsWith("\\")) {
-            backups = backups.substring(0, backups.length() - 1);
-        }
-        File file = MiscUtil.generateFile(FilenameUtils.getFullPathNoEndSeparator(backups),FilenameUtils.getName(backups));
+        File file = MiscUtil.generateFile(backups);
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(File f:files){

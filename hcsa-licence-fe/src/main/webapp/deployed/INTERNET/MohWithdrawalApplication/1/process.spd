@@ -9,7 +9,7 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="260" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareDate" x="250" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -44,6 +44,13 @@
     <JavaCode defClass="" executor="" methodName="prepareRfiDate_OnStepProcess_0" name="prepareRfiDate_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="printStep" x="360" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="printStep_OnStepProcess_0" name="printStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="withdrawalPage" stageIndicator="" x="250" y="230">
@@ -64,6 +71,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="printPage" stageIndicator="" x="540" y="540">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -71,7 +84,7 @@
    <position>{(20,120)(150,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/withdrawalPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDate" style="oblique">
-   <position>{(280,120)(270,250)}</position>
+   <position>{(270,120)(270,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/withdrawalStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/withdrawalPage" style="oblique">
    <position>{(270,250)(420,250)}</position>
@@ -80,7 +93,7 @@
    <position>{(420,250)(610,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(610,250)(280,120)}</position>
+   <position>{(610,250)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveDate" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(610,250)(780,250)}</position>
@@ -89,7 +102,7 @@
    <position>{(780,250)(1000,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(150,120)(280,120)}</position>
+   <position>{(150,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareRfiDate" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(150,120)(140,450)}</position>
@@ -108,6 +121,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/withdrawDoRfi" style="oblique">
    <position>{(440,370)(790,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/printPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/printStep" style="rectanular">
+   <position>{(380,560)(560,560)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

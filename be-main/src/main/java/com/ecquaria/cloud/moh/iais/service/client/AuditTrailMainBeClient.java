@@ -33,5 +33,4 @@ public interface AuditTrailMainBeClient {
 
 	@PutMapping(path = "/iais-audit-trail/session-duration")
 	FeignResponseEntity<Void> updateSessionDuration(@RequestParam("sessionId") String sessionId, @RequestParam("perioid") int period);
-
 }

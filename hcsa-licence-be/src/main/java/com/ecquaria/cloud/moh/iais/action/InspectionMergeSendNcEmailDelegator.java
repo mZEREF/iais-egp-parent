@@ -1,12 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -69,6 +68,7 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -125,6 +125,8 @@ public class InspectionMergeSendNcEmailDelegator {
     ApplicationClient applicationClient;
     @Autowired
     private AppointmentClient appointmentClient;
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String TASK_DTO="taskDto";
     private static final String SUBJECT="subject";
@@ -289,7 +291,12 @@ public class InspectionMergeSendNcEmailDelegator {
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {
                             stringBuilder1.append("<tr><td>").append(++i);
-                            stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            //EAS or MTS
+                            if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
+                                stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                            }else {
+                                stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            }
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                             stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
@@ -733,7 +740,6 @@ public class InspectionMergeSendNcEmailDelegator {
             }
         }
     }
-
 
     public void doRecallEmail() {
         log.info("=======>>>>>doRecallEmail>>>>>>>>>>>>>>>>emailRequest");

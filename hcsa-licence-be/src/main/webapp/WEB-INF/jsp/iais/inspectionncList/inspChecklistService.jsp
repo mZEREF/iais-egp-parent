@@ -95,7 +95,7 @@
         </c:forEach>
     </div>
 </c:forEach>
-<c:if test="${adchklDto.adItemList != null}">
+<c:if test="${not empty adchklDto.adItemList}">
     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
     <div class="table-gp">

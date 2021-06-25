@@ -33,6 +33,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
+import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -126,14 +128,16 @@ public interface AppSubmissionService {
     void updateDraftStatus(String draftNo,String status);
     ProfessionalResponseDto retrievePrsInfo(String profRegNo);
     List<ApplicationSubDraftDto> getDraftListBySvcCodeAndStatus(List<String> svcCodeList,String status,String licenseeId,String appType);
+    boolean canApplyEasOrMts(String licenseeId, List<HcsaServiceDto> hcsaServiceDtos);
 
-    void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
-
-    String getFileAppendId(String appType);
-
+    AppDeclarationDocShowPageDto getFileAppDecInfo(List<AppDeclarationDocDto> appDeclarationDocDtoList);
+    AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String type);
+    List<AppDeclarationDocDto> getAppDeclarationDocDto(HttpServletRequest request);
+    void validateFile(PageShowFileDto pageShowFileDto, Map<String,String> map, int i);
     List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request);
     List<AppDeclarationDocDto> getDeclarationFiles(String appType, HttpServletRequest request, boolean forPrint);
-    AppDeclarationMessageDto getAppDeclarationMessageDto(HttpServletRequest request, String applicationTypeRequestForChange);
+    String getFileAppendId(String appType);
+    void initDeclarationFiles(List<AppDeclarationDocDto> appDeclarationDocDtos, String appType, HttpServletRequest request);
     boolean validateDeclarationDoc(Map<String, String> errorMap, String fileAppendId, boolean isMandatory, HttpServletRequest request);
     void clearSession(HttpServletRequest request);
     LicenceDto getLicenceDtoById(String licenceId);

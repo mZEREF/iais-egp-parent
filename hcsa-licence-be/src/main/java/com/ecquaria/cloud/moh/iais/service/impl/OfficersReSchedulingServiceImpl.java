@@ -213,7 +213,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         List<UserGroupCorrelationDto> userGroupCorrelationDtos=organizationClient.getUserGroupCorreByUserId(userId).getEntity();
         boolean isLead=false;
         for (UserGroupCorrelationDto ugd:userGroupCorrelationDtos
-        ) {
+             ) {
             if(ugd.getGroupId().equals(workGroupId)&&ugd.getIsLeadForGroup().equals(1)){
                 isLead=true;
             }
@@ -497,7 +497,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(applicationNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                         saveNewInspectorReScheduling(appPremInspCorrelationDtoList, userIds, auditTrailDto, applicationNo);
                         for (String userId:userIds
-                        ) {
+                             ) {
                             try {
                                 sendReschedulingEmailToInspector(applicationNo,userId);
                             } catch (Exception e) {
@@ -670,7 +670,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public List<ApptAppInfoShowDto> setInfoByDateAndUserIdToSave(List<ApptAppInfoShowDto> apptAppInfoShowDtos,
-                                                                 ReschedulingOfficerDto reschedulingOfficerDto) {
+                                                                  ReschedulingOfficerDto reschedulingOfficerDto) {
         try {
             AppointmentDto appointmentDto = reschedulingOfficerDto.getAppointmentDto();
             if (appointmentDto != null) {
@@ -696,7 +696,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
             }
         } catch(Exception e){
-            log.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
         }
         return apptAppInfoShowDtos;
     }
@@ -917,7 +917,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         createOrUpdateRecommendation(appPremisesRecommendationDto, appPremisesCorrelationDto.getId(), apptAppInfoShowDto.getInspDate());
                         try {
                             for (String userId:apptAppInfoShowDto.getUserIdList()
-                            ) {
+                                 ) {
                                 sendReschedulingEmailToInspector(appNo,userId);
                             }
                         }catch (Exception e){
@@ -1332,7 +1332,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     if(!StringUtil.isEmpty(appNo)) {
                         List<String> userLoginId = appNoUserLoginId.get(appNo);
                         if(IaisCommonUtils.isEmpty(userLoginId)){
-                            userLoginId = IaisCommonUtils.genNewArrayList();
+                           userLoginId = IaisCommonUtils.genNewArrayList();
                         }
                         userLoginId.add(apptUserCalendarDto.getLoginUserId());
                         appNoUserLoginId.put(appNo, userLoginId);

@@ -12,8 +12,7 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-          font-family: fontawesome, sans-serif;
-        position: absolute;
+    font-family: FontAwesome, sans-serif;        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;

@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -160,6 +161,10 @@ public class HcsaApplicationDelegator {
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
+
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
+
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
@@ -167,9 +172,10 @@ public class HcsaApplicationDelegator {
     @Autowired
     private NotificationHelper notificationHelper;
 
+    @Autowired
+    private FillupChklistService fillupChklistService;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
-
     /**
      * StartStep: doStart
      *
@@ -194,7 +200,9 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
-
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", null);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request, "backSearchParamFromHcsaApplication", searchParamGroup);
 
@@ -213,7 +221,7 @@ public class HcsaApplicationDelegator {
         log.debug(StringUtil.changeForLog("the do prepareData start ..."));
 
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-        String correlationId = "";
+        String correlationId;
         if (taskDto != null) {
             correlationId = taskDto.getRefNo();
         } else {
@@ -308,6 +316,8 @@ public class HcsaApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "doDocument", "Y");
             return;
         }
+        //setTcu data
+        setTcuDate(bpc.request,applicationViewDto);
         //appeal
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
@@ -549,6 +559,20 @@ public class HcsaApplicationDelegator {
             }
             log.debug(StringUtil.changeForLog("the do chooseStage end ...."));
         }
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+    }
+
+    private void setTcuDate(HttpServletRequest request, ApplicationViewDto applicationViewDto){
+        if(applicationViewDto.isShowTcu()){
+            String tcuflag = ParamUtil.getString(request,"tcuType");
+            if(!StringUtil.isEmpty(tcuflag)){
+                applicationViewDto.setTcuFlag(true);
+                applicationViewDto.setTuc(ParamUtil.getString(request,"tucDate"));
+            }else{
+                applicationViewDto.setTcuFlag(false);
+                applicationViewDto.setTuc(null);
+            }
+        }
     }
 
     private void validateCanApprove(String approveSelect, ApplicationViewDto applicationViewDto, Map<String, String> errMap) {
@@ -593,6 +617,9 @@ public class HcsaApplicationDelegator {
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
+            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc(),applicationViewDto.isShowTcu());
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType());
         boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType());
@@ -1688,6 +1715,9 @@ public class HcsaApplicationDelegator {
                 InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto, applicationViewDto, loginContext);
                 InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
                 insRepDto.setInspectors(inspectorAo.getInspectors());
+                if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
+                    ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+                }
                 ParamUtil.setRequestAttr(bpc.request, "insRepDto", insRepDto);
                 String appType = applicationViewDto.getApplicationDto().getApplicationType();
                 ParamUtil.setRequestAttr(bpc.request, "appType", appType);
@@ -1873,7 +1903,7 @@ public class HcsaApplicationDelegator {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 //String recommTime = count + " " + codeDesc;
                 recommendationSelectOption.add(new SelectOption(count + " " + dateType, riskResultDto.getLictureText()));
-                if (riskResultDto.isDafLicture() && !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)) {
+                if ("24".equals(count) && RiskConsts.MONTH.equals(dateType)) {
                     //recommendationStr
                     ParamUtil.setRequestAttr(request, "recommendationStr", count + " " + dateType);
                 }
@@ -2120,6 +2150,7 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+
         if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus) && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
         }
@@ -2371,6 +2402,9 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+        //set appSvcVehicleDto
+        broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
+        broadcastApplicationDto.setAppSvcVehicleDtos(applicationViewDto.getAppSvcVehicleDtos());
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
@@ -2485,7 +2519,6 @@ public class HcsaApplicationDelegator {
                             }catch (Exception e){
                                 log.error(e.getMessage(),e);
                             }
-
                             Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                             msgInfoMap.put("ApplicationNumber", applicationNo);
                             msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
@@ -2854,6 +2887,7 @@ public class HcsaApplicationDelegator {
     private void rollBack(BaseProcessClass bpc, String stageId, String appStatus, String roleId, String wrkGpId, String userId) throws CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String internalRemarks = ParamUtil.getString(bpc.request, "internalRemarks");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
@@ -2943,6 +2977,8 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
+        //set vehicle No
+        broadcastApplicationDto = broadcastService.replySetVehicleByRole(loginContext, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
@@ -3200,6 +3236,16 @@ public class HcsaApplicationDelegator {
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        //set can tcu date
+        setShowAndEditTcuDate(bpc.request,applicationViewDto);
+        //get vehicle flag
+        String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
+        //get vehicleNoList for edit
+        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
+        //sort AppSvcVehicleDto List
+        applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
+        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request, applicationViewDto);
@@ -3290,6 +3336,15 @@ public class HcsaApplicationDelegator {
         setChooseInspectionValue(bpc.request, applicationViewDto);
     }
 
+    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationViewDto.getApplicationType())){
+             applicationViewDto.setShowTcu(true);
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+        }
+    }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
         String kpiInfo = MessageUtil.getMessageDesc("LOLEV_ACK051");
         ParamUtil.setSessionAttr(request, "kpiInfo", kpiInfo);
@@ -3561,9 +3616,9 @@ public class HcsaApplicationDelegator {
                 } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    AppSvcPrincipalOfficersDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     appSvcCgoDto.setAssignSelect("newOfficer");
-                    List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");
                     List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();

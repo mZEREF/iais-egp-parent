@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="charges">
+    <sql key="generalChargesHtml" cached="no" remarks="">
+        <![CDATA[
+            <div class="general-charges-content charges-content">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${suffix}" value="1"/>
+                <input type="hidden" name="chargesIndexNo${suffix}" value=""/>
+                <div class="col-md-12 col-xs-12 ">
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                ${chargesType}
+                            </div>
+                            <div class="control-label formtext col-md-4 col-xs-4">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <input type="text" name="minAmount${suffix}" class="minAmount" maxlength="4" autocomplete="off">
+                                    </div>
+                                    <div class="col-xs-2 col-md-2 text-center">
+                                        <label class="control-label control-set-font control-font-label">To</label>
+                                    </div>
+                                    <div class="col-xs-5 col-md-5">
+                                        <input type="text" name="maxAmount${suffix}" class="maxAmount" maxlength="4" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-label formtext col-md-2 col-xs-2">
+                                <input type="text" name="remarks${suffix}" class="remarks" maxlength="150" autocomplete="off">
+                            </div>
+                            <div class="control-label formtext col-md-1 col-xs-1">
+                                <h4 class="text-danger">
+                                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ]]>
+    </sql>
+
+    <sql key="otherChargesHtml" cached="no" remarks="">
+        <![CDATA[
+            <div class="other-charges-content charges-content">
+                <div class="col-md-12 col-xs-12 other-charges-div">
+                    <input type="hidden" class="currChargesSuffix" name="currChargesSuffix" value="${suffix}">
+                    <input type="hidden" class="isPartEdit" name="otherChargesIsPartEdit${suffix}" value="1"/>
+                    <input type="hidden" name="otherChargesIndexNo${suffix}" value=""/>
+                    <div class="row control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="control-label formtext col-md-5 col-xs-5">
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-6">
+                                        ${chargesCategory}
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 other-charges-type-div">
+                                        ${chargesType}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-label formtext col-md-4 col-xs-4">
+                                <div class="row">
+                                    <div class="col-xs-5 col-md-5">
+                                        <input type="text" name="otherAmountMin${suffix}" class="otherAmountMin" maxlength="4" autocomplete="off">
+                                    </div>
+                                    <div class="col-xs-2 col-md-2 text-center">
+                                        <label class="control-label control-set-font control-font-label">To</label>
+                                    </div>
+                                    <div class="col-xs-5 col-md-5">
+                                        <input type="text" name="otherAmountMax${suffix}" class="otherAmountMax" maxlength="4" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="control-label formtext col-md-2 col-xs-2">
+                                <input type="text" name="otherRemarks${suffix}" class="otherRemarks" maxlength="150" autocomplete="off">
+                            </div>
+                            <div class="control-label formtext col-md-1 col-xs-1">
+                                <h4 class="text-danger">
+                                    <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ]]>
+    </sql>
+</sqls>
+
+

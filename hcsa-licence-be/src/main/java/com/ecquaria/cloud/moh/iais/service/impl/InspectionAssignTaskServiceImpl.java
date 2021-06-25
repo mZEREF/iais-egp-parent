@@ -480,7 +480,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
-                                          String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -575,7 +575,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                         ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
+                                       ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
@@ -1335,7 +1335,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         String result = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
-                ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+                ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
+                ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
                     appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
         }

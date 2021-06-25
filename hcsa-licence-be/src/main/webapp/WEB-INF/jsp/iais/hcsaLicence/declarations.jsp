@@ -29,11 +29,6 @@
     <%@include file="declarations/crimAndPassApp.jsp"%>
     <%@include file="declarations/generalAccuracy.jsp"%>
   </c:if>
-  <c:if test="${declaration_page_is == 'cessation' }">
-      <%@include file="declarations/preliminaryQuestion.jsp"%>
-      <%@include file="declarations/proofOfAuthorisationDocument.jsp"%>
-      <%@include file="declarations/cessationQuestion.jsp"%>
-  </c:if>
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -46,7 +41,7 @@
   });
 </script>
 <style>
-    span ,p {
-        font-size: 16px;
-    }
+  span ,p {
+      font-size: 16px;
+  }
 </style>

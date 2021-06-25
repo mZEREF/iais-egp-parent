@@ -132,7 +132,7 @@ public class ResponseForInformationDelegator {
                                 file.setDocName(licDoc.getDocName());
                                 file.setDocSize(String.valueOf(licDoc.getDocSize()));
                                 file.setData(serviceConfigService.downloadFile(licDoc.getFileRepoId()));
-                                // licDoc.setPassDocValidate(true);
+                               // licDoc.setPassDocValidate(true);
                                 attachmentDtos.add(file);
                             }
                         }
@@ -188,7 +188,7 @@ public class ResponseForInformationDelegator {
                     BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(bpc.request,"rfiFileDto"+docs.getKey());
                     List<LicPremisesReqForInfoDocDto> list=IaisCommonUtils.genNewArrayList();
                     for (AttachmentDto file:blastManagementDto.getAttachmentDtos()
-                    ) {
+                         ) {
                         LicPremisesReqForInfoDocDto docDto=new LicPremisesReqForInfoDocDto();
                         docDto.setDocName(file.getDocName());
                         docDto.setSeqNum(docs.getKey());

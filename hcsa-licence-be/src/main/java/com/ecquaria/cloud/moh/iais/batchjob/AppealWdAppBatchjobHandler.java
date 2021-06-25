@@ -42,13 +42,11 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +134,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                     fee = applicationDtoList2.get(0).getReturnFee();
                                 }
                                 try {
-                                    boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                    boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
                                     if (withdrawReturnFee){
                                         AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                                         applicationService.saveAppReturnFee(appReturnFeeDto);
@@ -270,7 +268,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         appReturnFeeDto.setTriggerCount(0);
         appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
         appReturnFeeDto.setReturnAmount(returnFee);
-        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
         return appReturnFeeDto;
     }
 

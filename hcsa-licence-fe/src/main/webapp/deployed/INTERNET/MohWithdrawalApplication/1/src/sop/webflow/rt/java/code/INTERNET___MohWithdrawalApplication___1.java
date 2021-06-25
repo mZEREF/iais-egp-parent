@@ -42,4 +42,8 @@ public class INTERNET___MohWithdrawalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareRfiDate", this);
 	}
 
+	public void printStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "printStep", this);
+	}
+
 }

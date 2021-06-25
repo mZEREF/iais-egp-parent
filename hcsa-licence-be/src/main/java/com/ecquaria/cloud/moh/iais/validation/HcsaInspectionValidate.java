@@ -263,7 +263,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftHigh)){
                 inLeftHighNum = Integer.valueOf(inLeftHigh);
-                if (inLeftHighNum > 999 || inLeftHighNum < 0) {
+                if (inLeftHighNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inLeftHighNum < 0) {
                     if("C".equals(level)){
                         caLeftHighNumFlag = false;
                         errMap.put(serviceCode + "caRightLowCaseCounth",maxMesMes);
@@ -324,7 +324,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
-                if (inRightLowNum > 999 || inRightLowNum < 0) {
+                if (inRightLowNum > HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX || inRightLowNum < 0) {
                     if("C".equals(level)){
                         caRightLowNumFlag = false;
                         errMap.put(serviceCode + "caRightLowCaseCounth",  maxMesMes);
@@ -393,7 +393,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<=0||inLeftModNum>999){
+                if(inLeftModNum<=0||inLeftModNum>HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caLeftModCaseCounth", minMesMes);
                         fdto.setDoCaLeftModCountherr(true);
@@ -423,7 +423,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<=0 || inRightModNum >999){
+                if(inRightModNum<=0 || inRightModNum >HcsaLicenceBeConstant.RISK_Validate_HIGH_MAX){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caRightModCaseCounth", maxMesMes);
                         fdto.setDoCaRightModCountherr(true);

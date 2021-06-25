@@ -6,11 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -68,6 +71,22 @@ public class PageDataCopyUtil {
         copy.setConStartMM(appGrpPremisesDto.getConStartMM());
         copy.setConEndHH(appGrpPremisesDto.getConEndHH());
         copy.setConEndMM(appGrpPremisesDto.getConEndMM());
+        //EASMTS
+        copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
+        copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
+        copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
+        copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
+        copy.setEasMtsUnitNo(appGrpPremisesDto.getUnitNo());
+        copy.setEasMtsStreetName(appGrpPremisesDto.getStreetName());
+        copy.setEasMtsFloorNo(appGrpPremisesDto.getFloorNo());
+        copy.setEasMtsStreetName(appGrpPremisesDto.getStreetName());
+        copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
+        copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
+        copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
+        copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
+        copy.setEasMtsCoLocation(appGrpPremisesDto.getEasMtsCoLocation());
+
+
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
             copy.setHciName(appGrpPremisesDto.getHciName());
             copy.setOffTelNo(appGrpPremisesDto.getOffTelNo());
@@ -169,6 +188,7 @@ public class PageDataCopyUtil {
             primaryDocDto.setDocSize(appGrpPrimaryDocDto.getDocSize());
             primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
             primaryDocDto.setMd5Code(appGrpPrimaryDocDto.getMd5Code());
+
             list.add(primaryDocDto);
         }
         Collections.sort(list,(s1,s2)->(s1.getMd5Code().compareTo(s2.getMd5Code())));
@@ -223,10 +243,10 @@ public class PageDataCopyUtil {
         }
         return list;
     }
-    public static List<AppSvcCgoDto> copyAppSvcCgo(List<AppSvcCgoDto> appSvcCgoDtoList) {
-        List<AppSvcCgoDto> list=IaisCommonUtils.genNewArrayList();
-        for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList) {
-            AppSvcCgoDto cgoDto=new AppSvcCgoDto();
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
+        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
+        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+            AppSvcPrincipalOfficersDto cgoDto=new AppSvcPrincipalOfficersDto();
             cgoDto.setSalutation(appSvcCgoDto.getSalutation());
             cgoDto.setName(appSvcCgoDto.getName());
             cgoDto.setIdNo(appSvcCgoDto.getIdNo());
@@ -237,6 +257,8 @@ public class PageDataCopyUtil {
             cgoDto.setSpeciality(appSvcCgoDto.getSpeciality());
             cgoDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
             cgoDto.setMobileNo(appSvcCgoDto.getMobileNo());
+            cgoDto.setOtherQualification(appSvcCgoDto.getOtherQualification());
+            cgoDto.setQualification(appSvcCgoDto.getQualification());
             cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
             list.add(cgoDto);
         }
@@ -268,4 +290,89 @@ public class PageDataCopyUtil {
         }
         return list;
     };
+    public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList){
+        if(appSvcVehicleDtoList==null||appSvcVehicleDtoList.isEmpty()){
+            return new ArrayList<>(1);
+        }
+        List<AppSvcVehicleDto> list=new ArrayList<>(appSvcVehicleDtoList.size());
+        appSvcVehicleDtoList.forEach((v)->{
+            AppSvcVehicleDto o=new AppSvcVehicleDto();
+            o.setVehicleName(v.getVehicleName());
+            o.setChassisNum(v.getChassisNum());
+            o.setEngineNum(v.getEngineNum());
+            list.add(o);
+        });
+        return list;
+    }
+
+    public static AppSvcChargesPageDto copyAppSvcClinicalDirector(AppSvcChargesPageDto appSvcChargesPageDto){
+        if(appSvcChargesPageDto==null){
+            return new AppSvcChargesPageDto();
+        }
+        AppSvcChargesPageDto o=new AppSvcChargesPageDto();
+        List<AppSvcChargesDto> generalChargesDtos = appSvcChargesPageDto.getGeneralChargesDtos();
+        List<AppSvcChargesDto> otherChargesDtos = appSvcChargesPageDto.getOtherChargesDtos();
+        if(generalChargesDtos==null||generalChargesDtos.isEmpty()){
+            o.setGeneralChargesDtos(new ArrayList<>(1));
+        }else {
+            List<AppSvcChargesDto> list=new ArrayList<>(generalChargesDtos.size());
+            generalChargesDtos.forEach((v)->{
+                AppSvcChargesDto appSvcChargesDto=new AppSvcChargesDto();
+                appSvcChargesDto.setChargesType(v.getChargesType());
+                appSvcChargesDto.setMaxAmount(v.getMaxAmount());
+                appSvcChargesDto.setMinAmount(v.getMinAmount());
+                appSvcChargesDto.setRemarks(v.getRemarks());
+                list.add(appSvcChargesDto);
+            });
+            o.setGeneralChargesDtos(list);
+        }
+        if(otherChargesDtos==null||otherChargesDtos.isEmpty()){
+            o.setOtherChargesDtos(new ArrayList<>(1));
+        }else {
+            List<AppSvcChargesDto> list=new ArrayList<>(otherChargesDtos.size());
+            otherChargesDtos.forEach((v)->{
+                AppSvcChargesDto appSvcChargesDto=new AppSvcChargesDto();
+                appSvcChargesDto.setChargesType(v.getChargesType());
+                appSvcChargesDto.setRemarks(v.getRemarks());
+                appSvcChargesDto.setMinAmount(v.getMinAmount());
+                appSvcChargesDto.setMaxAmount(v.getMaxAmount());
+                list.add(appSvcChargesDto);
+            });
+            o.setGeneralChargesDtos(list);
+        }
+
+        return o;
+    }
+
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcClinicalDirector(List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos){
+
+        if(appSvcClinicalDirectorDtos==null || appSvcClinicalDirectorDtos.isEmpty()){
+            return new ArrayList<>(1);
+        }
+        List<AppSvcPrincipalOfficersDto> list=new ArrayList<>(appSvcClinicalDirectorDtos.size());
+        appSvcClinicalDirectorDtos.forEach((v)->{
+            AppSvcPrincipalOfficersDto o=new AppSvcPrincipalOfficersDto();
+            o.setProfessionBoard(v.getProfessionBoard());
+            o.setProfRegNo(v.getProfRegNo());
+            o.setSalutation(v.getSalutation());
+            o.setName(v.getName());
+            o.setIdType(v.getIdType());
+            o.setIdNo(v.getIdNo());
+            o.setDesignation(v.getDesignation());
+            o.setSpeciality(v.getSpeciality());
+            o.setSpecialtyGetDate(v.getSpecialtyGetDate());
+            o.setTypeOfCurrRegi(v.getTypeOfCurrRegi());
+            o.setCurrRegiDate(v.getCurrRegiDate());
+            o.setPraCerEndDate(v.getPraCerEndDate());
+            o.setTypeOfRegister(v.getTypeOfRegister());
+            o.setRelevantExperience(v.getRelevantExperience());
+            o.setHoldCerByEMS(v.getHoldCerByEMS());
+            o.setAclsExpiryDate(v.getAclsExpiryDate());
+            o.setMobileNo(v.getMobileNo());
+            o.setEmailAddr(v.getEmailAddr());
+            list.add(o);
+        });
+        return list;
+    }
+
 }

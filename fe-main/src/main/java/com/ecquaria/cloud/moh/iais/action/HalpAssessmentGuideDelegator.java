@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -1015,7 +1016,43 @@ public class HalpAssessmentGuideDelegator {
                 onlyBaseSvc = true;
                 ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
             }
-
+            if(!currentPage.equals(nextstep)){
+                List<String> chkSvcIdList = IaisCommonUtils.genNewArrayList();
+                chkSvcIdList.addAll(basecheckedlist);
+                chkSvcIdList.addAll(sepcifiedcheckedlist);
+                //validate premises type intersection
+                Set<String> premisesTypeList = assessmentGuideService.getAppGrpPremisesTypeBySvcId(chkSvcIdList);
+                if(IaisCommonUtils.isEmpty(premisesTypeList)){
+                    nextstep = currentPage;
+                    err = MessageUtil.getMessageDesc("NEW_ERR0026");
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    //set audit
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put(ERROR_ATTR,err);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                }else{
+                    //EAS and MTS licence only one active/approve licence
+                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                    for(String baseId:basecheckedlist){
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseId);
+                        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                            hcsaServiceDtos.add(hcsaServiceDto);
+                        }
+                    }
+                    if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                        boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(licenseeId,hcsaServiceDtos);
+                        if(!canCreateEasOrMts){
+                            nextstep = currentPage;
+                            err = MessageUtil.getMessageDesc("NEW_ERR0029");
+                            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                            //set audit
+                            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                            errorMap.put(ERROR_ATTR,err);
+                            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        }
+                    }
+                }
+            }
         }
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -2328,9 +2365,11 @@ public class HalpAssessmentGuideDelegator {
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
             premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            premisesHci = item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName() + item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
-            premisesHci = IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
         }
         return premisesHci;
     }
@@ -2472,6 +2511,8 @@ public class HalpAssessmentGuideDelegator {
             }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getVehicleNo() + premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesDto.getPremisesType())){
+                premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
+            }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesDto.getPremisesType())){
                 premisesHciPre = premisesDto.getHciName()+premisesDto.getPostalCode() + premisesDto.getBlkNo();
             }
             premisesHciList.add(premisesHciPre + premisesDto.getFloorNo() + premisesDto.getUnitNo());

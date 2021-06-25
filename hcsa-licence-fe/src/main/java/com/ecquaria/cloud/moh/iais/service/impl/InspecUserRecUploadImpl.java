@@ -276,6 +276,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
                         inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
+                        inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
@@ -304,6 +305,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
                         inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
+                        inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);

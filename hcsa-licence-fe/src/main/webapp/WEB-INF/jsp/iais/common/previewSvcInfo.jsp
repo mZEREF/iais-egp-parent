@@ -20,4 +20,13 @@
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST007'}">
         <%@include file="previewMedAlert.jsp"%>
     </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST008'}">
+        <%@include file="previewSvcVehicle.jsp"%>
+    </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST009'}">
+        <%@include file="previewSvcClinicalDirector.jsp"%>
+    </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST010'}">
+        <%@include file="previewSvcCharges.jsp"%>
+    </c:if>
 </c:forEach>

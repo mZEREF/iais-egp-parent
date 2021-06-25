@@ -127,7 +127,7 @@
                             <td><iais:code code="${pool.acctNo}"/></td>
                             <td>
                                 ${pool.pmtStatus == 'PMT03' ? "Pending" : (pool.pmtStatus == 'PMT09' ? "Failed" : (pool.pmtStatus == 'PMT01' ? "Success" : ""))}</td>
-                            <td><iais:code code="$${pool.amount}"/></td>
+                            <td><iais:code code="${pool.amount}"/></td>
                           </tr>
                         </c:forEach>
                       </c:otherwise>

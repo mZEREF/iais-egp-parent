@@ -15,92 +15,92 @@ import java.util.Map;
 public interface BeDashboardAjaxService {
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/28
-     * @Param: taskDto
-     * @return: String
-     * @Descripation: search kpi color
-     */
+      * @author: shicheng
+      * @Date 2021/4/28
+      * @Param: taskDto
+      * @return: String
+      * @Descripation: search kpi color
+      */
     String getKpiColorByTask(TaskDto taskDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/19
-     * @Param: groupNo, loginContext, map, actionValue, dashFilterAppNo
-     * @return: map
-     * @Descripation: Common Pool Dropdown
-     */
+      * @author: shicheng
+      * @Date 2021/4/19
+      * @Param: groupNo, loginContext, map, actionValue, dashFilterAppNo
+      * @return: map
+      * @Descripation: Common Pool Dropdown
+      */
     Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String actionValue, String dashFilterAppNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/28
-     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
-     * @return: map
-     * @Descripation: Kpi Pool Dropdown
-     */
+      * @author: shicheng
+      * @Date 2021/4/28
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: map
+      * @Descripation: Kpi Pool Dropdown
+      */
     Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/4/30
-     * @Param: groupNo, loginContext, map, searchParam, dashFilterAppNo
-     * @return: Map<String, Object>
-     * @Descripation: Task Assign To Me Drop down Result
-     */
+      * @author: shicheng
+      * @Date 2021/4/30
+      * @Param: groupNo, loginContext, map, searchParam, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: Task Assign To Me Drop down Result
+      */
     Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo, String dashAppStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/6
-     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
-     * @return: Map<String, Object>
-     * @Descripation: getWorkTeamDropdownResult
-     */
+      * @author: shicheng
+      * @Date 2021/5/6
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: getWorkTeamDropdownResult
+      */
     Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/7
-     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
-     * @return: Map<String, Object>
-     * @Descripation: getRenewDropdownResult
-     */
+      * @author: shicheng
+      * @Date 2021/5/7
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: getRenewDropdownResult
+      */
     Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/8
-     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
-     * @return: Map<String, Object>
-     * @Descripation: getReplyDropdownResult
-     */
+      * @author: shicheng
+      * @Date 2021/5/8
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: getReplyDropdownResult
+      */
     Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/8
-     * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
-     * @return: Map<String, Object>
-     * @Descripation: getWaitApproveDropResult
-     */
+      * @author: shicheng
+      * @Date 2021/5/8
+      * @Param: groupNo, loginContext, map, switchAction, dashFilterAppNo
+      * @return: Map<String, Object>
+      * @Descripation: getWaitApproveDropResult
+      */
     Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/27
-     * @Param: searchParam
-     * @return: SearchResult<DashAllActionAppQueryDto>
-     * @Descripation: getDashAllActionResult
-     */
+      * @author: shicheng
+      * @Date 2021/5/27
+      * @Param: searchParam
+      * @return: SearchResult<DashAllActionAppQueryDto>
+      * @Descripation: getDashAllActionResult
+      */
     SearchResult<DashAppDetailsQueryDto> getDashAllActionResult(SearchParam searchParam);
 
     /**
-     * @author: shicheng
-     * @Date 2021/5/27
-     * @Param: searchResult
-     * @return: SearchResult<DashAppDetailsQueryDto>
-     * @Descripation: setDashSysDetailsDropOtherData
-     */
+      * @author: shicheng
+      * @Date 2021/5/27
+      * @Param: searchResult
+      * @return: SearchResult<DashAppDetailsQueryDto>
+      * @Descripation: setDashSysDetailsDropOtherData
+      */
     SearchResult<DashAppDetailsQueryDto> setDashSysDetailsDropOtherData(SearchResult<DashAppDetailsQueryDto> searchResult);
 }

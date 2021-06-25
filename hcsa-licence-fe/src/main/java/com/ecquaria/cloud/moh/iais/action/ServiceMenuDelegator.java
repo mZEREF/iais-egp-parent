@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -459,6 +460,11 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getActiveSvcCorrelation();
         log.info(StringUtil.changeForLog("hcsaServiceCorrelationDtoList size:"+hcsaServiceCorrelationDtoList.size()));
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = "";
+        if(loginContext!=null){
+            licenseeId  = loginContext.getLicenseeId();
+        }
         if(basechks == null){
             log.info(StringUtil.changeForLog("basechks is null ..."));
             //no base service
@@ -570,12 +576,43 @@ public class ServiceMenuDelegator {
                 onlyBaseSvc = true;
                 ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
             }
-
-        }
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = "";
-        if(loginContext!=null){
-            licenseeId  = loginContext.getLicenseeId();
+            if(!currentPage.equals(nextstep)){
+                List<String> chkSvcIdList = IaisCommonUtils.genNewArrayList();
+                chkSvcIdList.addAll(basecheckedlist);
+                chkSvcIdList.addAll(sepcifiedcheckedlist);
+                //validate premises type intersection
+                Set<String> premisesTypeList = serviceConfigService.getAppGrpPremisesTypeBySvcId(chkSvcIdList);
+                if(IaisCommonUtils.isEmpty(premisesTypeList)){
+                    nextstep = currentPage;
+                    err = MessageUtil.getMessageDesc("NEW_ERR0026");
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    //set audit
+                    Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put(ERROR_ATTR,err);
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                }else{
+                    //EAS and MTS licence only one active/approve licence
+                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                    for(String baseId:basecheckedlist){
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseId);
+                        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                            hcsaServiceDtos.add(hcsaServiceDto);
+                        }
+                    }
+                    if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeId,hcsaServiceDtos);
+                        if(!canCreateEasOrMts){
+                            nextstep = currentPage;
+                            err = MessageUtil.getMessageDesc("NEW_ERR0029");
+                            ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                            //set audit
+                            Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+                            errorMap.put(ERROR_ATTR,err);
+                            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                        }
+                    }
+                }
+            }
         }
         //
         if(!currentPage.equals(nextstep)){

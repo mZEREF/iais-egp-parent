@@ -65,7 +65,7 @@ public class FECorppassLandingDelegator {
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info(StringUtil.changeForLog("Corppass Login service [corppassCallBack] START ...."));
-
+        String ssoLoginFlag = (String) request.getAttribute("ssoLoginFlag");
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
 
@@ -76,7 +76,10 @@ public class FECorppassLandingDelegator {
         String identityNo;
         String scp = null;
 
-        if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
+        if (AppConsts.YES.equals(ssoLoginFlag)) {
+            identityNo = (String) request.getAttribute("ssoNric");
+            uen = (String) request.getAttribute("ssoUen");
+        } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
 

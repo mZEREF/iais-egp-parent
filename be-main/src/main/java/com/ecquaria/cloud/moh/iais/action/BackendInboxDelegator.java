@@ -222,7 +222,7 @@ public class BackendInboxDelegator {
                 Map<String, Object> fileters = searchParamGroupFromHsca.getFilters();
                 if(fileters != null){
                     for (Map.Entry<String, Object> entry:fileters.entrySet()
-                    ) {
+                         ) {
                         if(entry.getKey().indexOf("item") <= 0){
                             ParamUtil.setSessionAttr(request,entry.getKey(),entry.getValue().toString());
                         }
@@ -778,7 +778,7 @@ public class BackendInboxDelegator {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
-
+                
                 if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
                     updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
                 }
@@ -889,7 +889,7 @@ public class BackendInboxDelegator {
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
 
                     for (ApplicationDto viewitem:saveApplicationDtoList
-                    ) {
+                         ) {
                         log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
                     }
                     if(needUpdateGroup){
@@ -997,7 +997,7 @@ public class BackendInboxDelegator {
         for(ApplicationDto applicationDto : applicationDtoList){
             int needChange = 1;
             for (String item:applist
-            ) {
+                 ) {
                 if(item.equals(applicationDto.getApplicationNo())){
                     needChange = 0;
                     break;
@@ -1049,25 +1049,25 @@ public class BackendInboxDelegator {
         } else {
             boolean flag = taskService.checkCompleteTaskByApplicationNo(applicationDtoList,newCorrelationId);
             if(flag) {
-                String stageId = HcsaConsts.ROUTING_STAGE_AO3;
-                String roleId = RoleConsts.USER_ROLE_AO3;
-                updateCurrentApplicationStatus(applicationDtoList, appId, status);
-                List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-                List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
-                List<ApplicationDto> creatTaskApplicationList = ao2AppList;
-                if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
-                    creatTaskApplicationList = ao3AppList;
-                } else {
-                    stageId = HcsaConsts.ROUTING_STAGE_AO2;
-                    roleId = RoleConsts.USER_ROLE_AO2;
-                }
-                // send the task to Ao2  or Ao3
-                TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
-                        stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
-                List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-                List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-                broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
-                broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
+                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                    String roleId = RoleConsts.USER_ROLE_AO3;
+                    updateCurrentApplicationStatus(applicationDtoList, appId, status);
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
+                        creatTaskApplicationList = ao3AppList;
+                    } else {
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
+                    // send the task to Ao2  or Ao3
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),taskDto.getRoleId(), taskDto.getWkGrpId());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
+                    broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             }
         }
     }

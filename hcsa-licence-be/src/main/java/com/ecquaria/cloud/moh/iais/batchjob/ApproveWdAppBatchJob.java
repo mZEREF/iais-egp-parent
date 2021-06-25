@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -136,7 +135,7 @@ public class ApproveWdAppBatchJob {
                         }
                         try {
                             if (!StringUtil.isEmpty(fee)){
-                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo());
+                                boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
                                 if (withdrawReturnFee){
                                     AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                                     applicationService.saveAppReturnFee(appReturnFeeDto);
@@ -204,7 +203,7 @@ public class ApproveWdAppBatchJob {
         appReturnFeeDto.setTriggerCount(0);
         appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
         appReturnFeeDto.setReturnAmount(returnFee);
-        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
         return appReturnFeeDto;
     }
 

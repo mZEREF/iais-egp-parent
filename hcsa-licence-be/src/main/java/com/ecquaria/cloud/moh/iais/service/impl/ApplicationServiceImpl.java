@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
@@ -80,6 +82,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -849,10 +852,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public boolean isWithdrawReturnFee(String appNo) {
+    public boolean isWithdrawReturnFee(String appNo,String appGrpId) {
         boolean result = false;
         AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo,ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
-        if (appReturnFeeDto == null){
+        ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(appGrpId).getEntity();
+        if (appReturnFeeDto == null&&!(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)&&applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO))){
             result = true;
         }
         return result;
@@ -1025,7 +1029,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setApplicationDto(applicationDto);
         String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        String TaskUrl;
+        if(roleId.contains(RoleConsts.USER_ROLE_AO1)) {
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+        } else {
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        }
         String subStageId = HcsaConsts.ROUTING_STAGE_POT;
         //update inspector status
         updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
@@ -1061,6 +1070,107 @@ public class ApplicationServiceImpl implements ApplicationService {
                 updateInspectionStatus(appPremisesCorrelationDto.getId(), inspectionStatus);
             }
         }
+    }
+
+    @Override
+    public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
+        String vehicleFlag = AppConsts.FALSE;
+        boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
+        if( vehicleAppTypeFlag&&taskDto != null&&InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+            {
+                if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
+                    String stageId = taskDto.getTaskKey();
+                    if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                    } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                            HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                    ) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                    }
+                } else {
+                    log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
+                }
+            }
+        }
+        return vehicleFlag;
+    }
+
+    private boolean getVehicleAppTypeFlag(ApplicationViewDto applicationViewDto) {
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if(applicationDto != null) {
+            String applicationType = applicationDto.getApplicationType();
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
+                    ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                    ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto) {
+        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlag) || InspectionConstants.SWITCH_ACTION_VIEW.equals(vehicleFlag)) {
+            if(applicationViewDto != null) {
+                List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                        List<String> vehicleNoList = IaisCommonUtils.genNewArrayList();
+                        for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                            if (appSvcVehicleDto != null) {
+                                vehicleNoList = addVehicleNameByAppType(applicationDto, appSvcVehicleDto, vehicleNoList);
+                            }
+                        }
+                        Collections.sort(vehicleNoList);
+                        return vehicleNoList;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+            if(ApplicationConsts.VEHICLE_STATUS_SUBMIT.equals(appSvcVehicleDto.getStatus())
+                    && ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
+                vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+            }
+        } else {
+            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+        }
+        return vehicleNoList;
+    }
+
+    @Override
+    public ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto) {
+        if(!IaisCommonUtils.isEmpty(vehicleNoList) && applicationViewDto != null) {
+            List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+            if(!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = IaisCommonUtils.genNewArrayList();
+                for (String appSvcVehicle : vehicleNoList) {
+                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                        if(!StringUtil.isEmpty(appSvcVehicle) && appSvcVehicleDto != null) {
+                            if(appSvcVehicle.equals(appSvcVehicleDto.getVehicleName())) {
+                                appSvcVehicleDtoList.add(appSvcVehicleDto);
+                            }
+                        }
+                    }
+                }
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                if(applicationDto != null) {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                        applicationViewDto.setVehicleRfcShowDtos(appSvcVehicleDtoList);
+                    } else {
+                        applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtoList);
+                    }
+                }
+            }
+        }
+        return applicationViewDto;
     }
 
     private TaskDto completedTask(TaskDto taskDto) {

@@ -2,7 +2,9 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
@@ -11,12 +13,16 @@ import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
-import lombok.extern.slf4j.Slf4j;
-import sop.webflow.process5.ProcessCacheHelper;
-import sop.webflow.rt.api.BaseProcessClass;
-
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.process5.ProcessCacheHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author: yichen
@@ -30,7 +36,8 @@ public class FELandingDelegator {
 	public static final String LOGIN_MODE_REAL 					= "Prod";
 	public static final String LOGIN_MODE_DUMMY_NOPASS 			= "Dummy.NoPass";
 	public static final String LOGIN_MODE_DUMMY_WITHPASS 	    = "Dummy.WithPass";
-
+	@Value("${jwt.interlogin.base64encodedpub}")
+	private String base64encodedPub;
 
 	/**
 	 * StartStep: startStep
@@ -107,4 +114,29 @@ public class FELandingDelegator {
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, FeLoginHelper.MAIN_WEB_URL);
 		}
 	}
+
+	/**
+	 * Process: FE_Landing
+	 * Step: InitSso
+	 * @param bpc
+	 */
+	public void initSso(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
+		log.info(StringUtil.changeForLog("-------Init SSO-------"));
+		HttpServletRequest request = bpc.request;
+		JwtVerify verifier = new JwtVerify();
+		String jwtt = (String) request.getAttribute("encryptJwtt");
+		Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
+		Claims claims = claimsFromToken.getBody();
+		String uenId = (String) claims.get("uen");
+		String nric = (String) claims.get("nric");
+		if (!StringUtil.isEmpty(uenId)) {
+			bpc.request.setAttribute("ssoLoginType", "corpass");
+			bpc.request.setAttribute("ssoUen", uenId);
+		} else {
+			bpc.request.setAttribute("ssoLoginType", "singpass");
+		}
+		bpc.request.setAttribute("ssoNric", nric);
+		bpc.request.setAttribute("ssoLoginFlag", AppConsts.YES);
+	}
+
 }
