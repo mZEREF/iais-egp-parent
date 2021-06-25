@@ -1382,14 +1382,16 @@ public class LicenceApproveBatchjob {
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
             String premisesId = appGrpPremisesEntityDto.getId();
-            String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
-            if (StringUtil.isEmpty(appPremCorrecId)) {
+            AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
+            if (appPremisesCorrelationDto == null) {
                 continue;
             }
-            AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremCorrecId);
+            AppPremisesRecommendationDto appPremisesRecommendationDto = licenceService.getTcu(appPremisesCorrelationDto.getId());
             LicPremisesDto licPremisesDto = new LicPremisesDto();
             licPremisesDto.setPremisesId(premisesId);
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
+            log.info(StringUtil.changeForLog("The BusinessName is-->："+appPremisesCorrelationDto.getBusinessName()));
+            licPremisesDto.setBusinessName(appPremisesCorrelationDto.getBusinessName());
             if (appPremisesRecommendationDto == null) {
                 licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.NO));
             } else {
@@ -1399,7 +1401,7 @@ public class LicenceApproveBatchjob {
             premisesGroupDto.setLicPremisesDto(licPremisesDto);
             //set LicAppPremCorrelationDto
             LicAppPremCorrelationDto licAppPremCorrelationDto = new LicAppPremCorrelationDto();
-            licAppPremCorrelationDto.setAppCorrId(appPremCorrecId);
+            licAppPremCorrelationDto.setAppCorrId(appPremisesCorrelationDto.getId());
             premisesGroupDto.setLicAppPremCorrelationDto(licAppPremCorrelationDto);
             //set LicSvcVehicleDto
             List<LicSvcVehicleDto> licSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
@@ -1444,7 +1446,7 @@ public class LicenceApproveBatchjob {
             }
 
             //create LicPremisesScopeDto
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremCorrecId);
+            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremisesCorrelationDto.getId());
             if (!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)) {
                 List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtoList) {
@@ -1478,7 +1480,7 @@ public class LicenceApproveBatchjob {
                 }
                 premisesGroupDto.setLicPremisesScopeGroupDtoList(licPremisesScopeGroupDtoList);
             } else {
-                log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:" + appPremCorrecId));
+                log.info(StringUtil.changeForLog("This appPremCorrecId can not get the AppSvcPremisesScopeDto -->:" + appPremisesCorrelationDto.getId()));
             }
             reuslt.add(premisesGroupDto);
         }
@@ -1727,14 +1729,15 @@ public class LicenceApproveBatchjob {
 
     }
 
-    private String getAppPremCorrecId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, String premisesId) {
-        String result = null;
+    private AppPremisesCorrelationDto getAppPremCorrecId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, String premisesId) {
+        AppPremisesCorrelationDto result = null;
         if (appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0 || StringUtil.isEmpty(premisesId)) {
             return result;
         }
         for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
             if (premisesId.equals(appPremisesCorrelationDto.getAppGrpPremId())) {
-                result = appPremisesCorrelationDto.getId();
+                result = appPremisesCorrelationDto;
+                break;
             }
         }
         return result;
