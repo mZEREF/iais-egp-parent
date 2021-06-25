@@ -1155,6 +1155,7 @@
                     $premCountEle.find('span.multi-select-button').css('color','#999');
                     $premCountEle.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                     $premCountEle.find('input.useType:checked').closest('div').find('label span.check-circle').addClass('radio-disabled');
+                    $premCountEle.find('.useType').prop('disabled', true);
                 }
 
             }
