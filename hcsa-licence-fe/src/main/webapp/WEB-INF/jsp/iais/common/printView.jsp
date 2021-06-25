@@ -44,6 +44,7 @@
                                             <div class="col-xs-12">
                                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                                                     <c:set var="documentIndex" value="${submisonStat.index}"/>
+                                                    <%@include file="../common/previewLicensee.jsp"%>
                                                     <%@include file="../common/previewPremises.jsp"%>
                                                     <%@include file="../common/previewPrimary.jsp"%>
 
@@ -112,13 +113,13 @@
 
         // disabled <a>
         $('a').prop('disabled',true);
-        if(isChrome){
+        /*if(isChrome){
             addPrintListener();
             window.print();
         }else{
             window.print();
             window.close();
-        }
+        }*/
 
     });
 

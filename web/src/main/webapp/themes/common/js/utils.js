@@ -431,7 +431,10 @@ function disableContent(targetSelector) {
         return;
     }
     $selector.each(function(i, ele) {
-        var tag = this.tagName.toLowerCase(), $input = $(this);
+        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        if (type == 'hidden') {
+            return;
+        }
         $input.prop('disabled', true);
         $input.css('border-color','#ededed');
         $input.css('color','#999');
@@ -453,7 +456,10 @@ function unDisableContent(targetSelector) {
         return;
     }
     $selector.each(function() {
-        var tag = this.tagName.toLowerCase(), $input = $(this);
+        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        if (type == 'hidden') {
+            return;
+        }
         $input.prop('disabled', false);
         $input.css('border-color','');
         $input.css('color','');

@@ -179,6 +179,8 @@ public class FECorppassLandingDelegator {
     /**
      * StartStep: loginUser
      *
+     * Init login info
+     *
      * @param bpc
      * @throws
      */
@@ -208,6 +210,8 @@ public class FECorppassLandingDelegator {
 
     /**
      * StartStep: initCorppassUserInfo
+     *
+     * Create Corppass User
      *
      * @param bpc
      * @throws

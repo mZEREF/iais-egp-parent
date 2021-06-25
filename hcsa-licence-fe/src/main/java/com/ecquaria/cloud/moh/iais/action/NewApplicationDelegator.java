@@ -330,9 +330,13 @@ public class NewApplicationDelegator {
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (subLicenseeDto == null) {
             subLicenseeDto = new SubLicenseeDto();
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            subLicenseeDto.setUenNo(loginContext.getUenNo());
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+        }
+        if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext != null) {
+                subLicenseeDto.setUenNo(loginContext.getUenNo());
+            }
         }
     }
 
@@ -367,7 +371,7 @@ public class NewApplicationDelegator {
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                 appEditSelectDto.setLicenseeEdit(true);
             }
-            errorMap = validateSubLicenseeDto(subLicenseeDto, bpc.request);
+            appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
         }
 
         String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
@@ -416,27 +420,6 @@ public class NewApplicationDelegator {
         }
     }
 
-    private Map<String, String> validateSubLicenseeDto(SubLicenseeDto subLicenseeDto, HttpServletRequest request) {
-        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (result != null) {
-            errorMap = result.retrieveAll();
-        }
-        if (errorMap.isEmpty() && "newOfficer".equals(subLicenseeDto.getAssignSelect())) {
-            // validate the current licensee whether he / she been registered or not
-            Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
-                    NewApplicationDelegator.LICENSEE_MAP);
-            String idType = subLicenseeDto.getIdType();
-            String idNo = subLicenseeDto.getIdNumber();
-            if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo)) != null) {
-                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("{ID No.}",idNo);
-                errorMap.put("idNumber",errMsg);
-            }
-        }
-        return errorMap;
-    }
-
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
         SubLicenseeDto dto = new SubLicenseeDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
@@ -456,13 +439,8 @@ public class NewApplicationDelegator {
 
         dto.setAssignSelect(assignSelect);
         dto.setLicenseeType(licenseeType);
-        if (OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeType)) {
-            dto.setIdType(StringUtil.getNonNull(idType));
-            dto.setIdNumber(StringUtil.getNonNull(idNumber));
-        } else {
-            dto.setIdType(null);
-            dto.setIdNumber(null);
-        }
+        dto.setIdType(idType);
+        dto.setIdNumber(idNumber);
         dto.setLicenseeName(licenseeName);
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
@@ -473,6 +451,11 @@ public class NewApplicationDelegator {
         dto.setBuildingName(buildingName);
         dto.setTelephoneNo(telephoneNo);
         dto.setEmailAddr(emailAddr);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext != null) {
+            dto.setOrgId(loginContext.getOrgId());
+            dto.setUenNo(loginContext.getUenNo());
+        }
         return dto;
     }
 

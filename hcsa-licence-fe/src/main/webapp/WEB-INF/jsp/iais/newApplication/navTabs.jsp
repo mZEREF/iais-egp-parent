@@ -84,6 +84,7 @@
                 mainForm.submit();
             } else {
                 showWaiting();
+                $('#mainForm').find(':input').prop('disabled',false);
                 submit(currId,null,null);
             }
         });

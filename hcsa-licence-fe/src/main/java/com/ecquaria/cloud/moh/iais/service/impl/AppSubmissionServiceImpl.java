@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -76,6 +77,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -94,6 +96,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -201,6 +204,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     private LicenseeService licenseeService;
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -740,6 +744,88 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<OrgGiroAccountInfoDto> getOrgGiroAccDtosByLicenseeId(String licenseeId) {
         return organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public SubLicenseeDto getLicenseeById(String licenseeId, String uenNo) {
+        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+        Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+        fieldMap.put("name", "licenseeName");
+        fieldMap.put("organizationId", "orgId");
+        fieldMap.put("officeTelNo", "telephoneNo");
+        fieldMap.put("emilAddr", "emailAddr");
+        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class,fieldMap);
+        if (subLicenseeDto != null) {
+            subLicenseeDto.setUenNo(uenNo);
+            if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
+                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
+            } else {
+                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
+            }
+        }
+        return subLicenseeDto;
+    }
+
+    @Override
+    public boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request) {
+        if (subLicenseeDto == null) {
+            return true;
+        }
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        if (result != null) {
+            map = result.retrieveAll();
+        }
+
+        if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
+            String assignSelect = subLicenseeDto.getAssignSelect();
+            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
+                errorMap.put("assignSelect", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+        }
+
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
+            String idType = subLicenseeDto.getIdType();
+            String idNumber = subLicenseeDto.getIdNumber();
+            if (StringUtil.isEmpty(idType)) {
+                errorMap.put("idType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+            if (StringUtil.isEmpty(idNumber)) {
+                errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+        }
+
+        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(subLicenseeDto.getAddrType())) {
+            String blkNo = subLicenseeDto.getBlkNo();
+            String floorNo = subLicenseeDto.getFloorNo();
+            String unitNo = subLicenseeDto.getUnitNo();
+            if (StringUtil.isEmpty(blkNo)) {
+                errorMap.put("blkNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+            if (StringUtil.isEmpty(floorNo)) {
+                errorMap.put("floorNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+            if (StringUtil.isEmpty(unitNo)) {
+                errorMap.put("unitNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+        }
+
+        if (map.isEmpty() && "newOfficer".equals(subLicenseeDto.getAssignSelect())) {
+            // validate the current licensee whether he / she been registered or not
+            Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
+                    NewApplicationDelegator.LICENSEE_MAP);
+            String idType = subLicenseeDto.getIdType();
+            String idNo = subLicenseeDto.getIdNumber();
+            if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo)) != null) {
+                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
+                errMsg = errMsg.replace("{ID No.}",idNo);
+                map.put("idNumber",errMsg);
+            }
+        }
+        if (errorMap != null) {
+            errorMap.putAll(map);
+        }
+        return map.isEmpty();
     }
 
     @Override

@@ -899,6 +899,15 @@ public class NewApplicationAjaxController {
         return person;
     }
 
+    @GetMapping(value = "/person-info/company-licesee")
+    public @ResponseBody SubLicenseeDto getCompanyLicesee(HttpServletRequest request) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext == null) {
+            return null;
+        }
+        return appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo());
+    }
+
     @GetMapping(value = "/person-info/licesee-detail")
     public @ResponseBody SubLicenseeDto getLiceseeDetail(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the getLiceseeDetail start ...."));

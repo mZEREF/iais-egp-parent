@@ -10,7 +10,7 @@
             <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
         </c:when>
         <c:when test="${needShowErr}">
-            <c:set var="headingSign" value="${not empty svcSecMap.premiss ? 'incompleted' : 'completed'}" />
+            <c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}" />
         </c:when>
     </c:choose>
 </c:if>
@@ -22,7 +22,7 @@
             </a>
         </h4>
     </div>
-    <div id="previewLicensee" class="panel-collapse collapse">
+    <div id="previewLicensee" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
             <c:if test="${(AppSubmissionDto.appEditSelectDto==null || AppSubmissionDto.appEditSelectDto.licenseeEdit) && empty
             printView}">
@@ -30,7 +30,7 @@
             </c:if>
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <iais:value width="4">
+                    <iais:value width="10">
                         <strong class="app-font-size-22 premHeader">Licensee Details</strong>
                     </iais:value>
                 </iais:row>
@@ -41,20 +41,20 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row cssClass="company-no ${subLicenseeDto.licenseeType == 'LICT001' ? '' : 'hidden'}">
+                <iais:row cssClass="company-no ${subLicenseeDto.licenseeType == 'LICTSUB001' ? '' : 'hidden'}">
                     <iais:field width="5" value="UEN No."/>
                     <iais:value width="7">
                         <iais:code code="${subLicenseeDto.uenNo}" />
                     </iais:value>
                 </iais:row>
 
-                <iais:row cssClass="solo-no ${subLicenseeDto.licenseeType == 'LICT002' ? '' : 'hidden'}">
+                <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == 'LICTSUB002' ? '' : 'hidden'}">
                     <iais:field width="5" value="ID Type"/>
                     <iais:value width="7">
                         <iais:code code="${subLicenseeDto.idType}" />
                     </iais:value>
                 </iais:row>
-                <iais:row cssClass="solo-no ${subLicenseeDto.licenseeType == 'LICT002' ? '' : 'hidden'}">
+                <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == 'LICTSUB002' ? '' : 'hidden'}">
                     <iais:field width="5" value="ID No."/>
                     <iais:value width="7">
                         <c:out value="${subLicenseeDto.idNumber}" />
