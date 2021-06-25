@@ -155,7 +155,7 @@ public class InspectionTaskMainClientFallback implements InspectionTaskMainClien
     }
 
     @Override
-    public FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(String applicationId, String psnType) {
+    public FeignResponseEntity<AppSvcPrincipalOfficersDto> getApplicationCgoByAppId(String applicationId, String psnType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

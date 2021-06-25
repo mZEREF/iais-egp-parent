@@ -88,5 +88,4 @@ public class AppointmentBeMainClientFallback implements AppointmentBeMainClient 
         entity.setHeaders(headers);
         return entity;
     }
-
 }

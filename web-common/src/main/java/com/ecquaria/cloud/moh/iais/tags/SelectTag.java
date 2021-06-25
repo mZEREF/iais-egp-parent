@@ -82,7 +82,7 @@ public class SelectTag extends DivTagSupport {
                 setCodeCategory( MasterCodeUtil.getCategoryId(codeCategory));
             }
             if (StringUtil.isEmpty(cssClass) && StringUtil.isEmpty(style)) {
-                setCssClass("input-large");
+               setCssClass("input-large");
             }
             StringBuilder html = new StringBuilder();
 
@@ -90,8 +90,8 @@ public class SelectTag extends DivTagSupport {
 
             html.append("<select name=\"").append(name).append('\"');
             if (!StringUtil.isEmpty(id)) {
-                setId( StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
-                        id, Object.class, this, pageContext)));
+                 setId( StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
+                         id, Object.class, this, pageContext)));
                 html.append(" id=\"").append(id).append('\"');
             } else {
                 html.append(" id=\"").append(name).append('\"');
@@ -228,15 +228,15 @@ public class SelectTag extends DivTagSupport {
     }
     @Override
     public void setStyle(String style) {
-        this.style = style;
-    }
-    public void setNeedErrorSpan(boolean needErrorSpan) {
+		this.style = style;
+	}
+	public void setNeedErrorSpan(boolean needErrorSpan) {
         this.needErrorSpan = needErrorSpan;
     }
     public void setFilterCode(String filterCode) {
         this.filterCode = filterCode;
     }
-    public void setNeedMask(boolean needMask) {
+	public void setNeedMask(boolean needMask) {
         this.needMask = needMask;
     }
 

@@ -13,16 +13,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
-import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
+import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import com.ecquaria.egp.core.payment.runtime.Soapi;
-import ecq.commons.exception.BaseException;
 import ecq.commons.helper.StringHelper;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +55,6 @@ import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSig
  * @date 2021/03/11
  */
 @Controller
-@Slf4j
 public class NetsSysToSysController {
     @Autowired
     private PaymentClient paymentClient;
@@ -71,34 +66,22 @@ public class NetsSysToSysController {
     @RequestMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, value =
             "/s2sTxnEnd", method = RequestMethod.POST)
     public ResponseEntity<Void> receiveS2STxnEnd(@RequestBody String txnRes,
-                                                 HttpServletRequest request, HttpServletResponse response) throws IOException, FeignException, BaseException {
+                                                 HttpServletRequest request, HttpServletResponse response) throws Exception {
         StringBuilder bud = new StringBuilder();
         String header =  request.getParameter("hmac");
-        System.out.println("MerchantApp:s2sTxnEndUrl : txnRes: " + txnRes);
-        String macFromGW = request.getHeader("hmac");
-        System.out.println("MerchantApp:s2sTxnEndUrl :  hmac received: " + macFromGW);
 
-        System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
         String message =  request.getParameter("message");//contains TxnRes message
-        System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
 
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
         PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
         String url=  ConfigUtil.getString( "rvl.baiduri.return.url");
-        System.out.println("MerchantApp:b2sTxnEndUrl : hmac: " + header);
 //        message=message.replace("https://egp.sit.inter.iais.com/payment-web/eservice/INTERNET/Payment","");
         message=message.replace('\n',' ');
-        //System.out.println("MerchantApp:b2sTxnEndUrl : data, message: " + message);
-        log.info(StringUtil.changeForLog(StringUtil.changeForLog("==========>MerchantApp:b2sTxnEndUrl : data, message:"+message)));
-        log.debug(StringUtil.changeForLog(StringUtil.changeForLog("==========>MerchantApp:b2sTxnEndUrl : data, message:"+message)));
-        System.out.println("====>  old Session ID : " + paymentRequestDto.getQueryCode());
-        System.out.println("====>  new Session ID : " + request.getSession().getId());
-        try {
-            redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),request);
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-        }
+
+
+        redisCacheHelper.copySessionAttr(paymentRequestDto.getQueryCode(),request);
+
         String sessionIdStr= (String) ParamUtil.getSessionAttr(request,"sessionNetsId");
         sessionIdStr = new String(Base64.decodeBase64(sessionIdStr.getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
         String tinyKey = null;
@@ -109,7 +92,6 @@ public class NetsSysToSysController {
                 tinyKey = sessionIdStr.substring(sepIndex + 1);
             }
         }
-        //System.out.println("====>  payment Session ID : " + sessionId);
         String sessionId = new String(Base64.encodeBase64((request.getSession().getId()+"_"+tinyKey).getBytes(StandardCharsets.UTF_8)),StandardCharsets.UTF_8);
 
         //String sessionId = URLEncoder.encode(request.getSession().getId(), "UTF-8");
@@ -121,21 +103,15 @@ public class NetsSysToSysController {
         JSONObject jsonObject = JSONObject.fromObject(message);
         Soapi txnResObj = (Soapi) JSONObject.toBean(jsonObject, Soapi.class);
         String generatedHmac= null;
-        try {
-            generatedHmac = generateSignature(message, GatewayConfig.eNetsSecretKey);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
+        generatedHmac = generateSignature(message, GatewayConfig.eNetsSecretKey);
+
         String eNetsStatus="1";
         if(txnResObj!=null&&txnResObj.getMsg()!=null&&header.equals(generatedHmac)){
             eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
         }
         String appGrpNo= reqNo;
-        try {
-            appGrpNo= reqNo.substring(0,'_');
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+ reqNo));
-        }
+        appGrpNo= reqNo.substring(0,'_');
+
         ApplicationGroupDto applicationGroupDto= PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(applicationGroupDto!=null){
             if ("0".equals(eNetsStatus)){
@@ -146,36 +122,26 @@ public class NetsSysToSysController {
                 PaymentBaiduriProxyUtil.getPaymentAppGrpClient().doPaymentUpDate(applicationGroupDto);
             }
         }
-        try {
-            RedirectUtil.redirect(bud.toString(), request, response);
-        } catch (IOException e) {
-            log.info(e.getMessage(),e);
-        }
+        RedirectUtil.redirect(bud.toString(), request, response);
+
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
 
     @RequestMapping( value = "/payNowRefresh", method = RequestMethod.GET)
     public @ResponseBody
-    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws FileNotFoundException {
+    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
-            try {
-                log.info("payNow SUCCESS");
-                RedirectUtil.redirect(url, request, response);
-            } catch (IOException e) {
-                log.info(e.getMessage(),e);
-            }
+            RedirectUtil.redirect(url, request, response);
+
         }
         String appGrpNo=reqNo;
-        try {
-            appGrpNo=reqNo.substring(0,'_');
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+reqNo));
-        }
+        appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+
         QRGenerator qrGenerator = new QRGeneratorImpl();
 
         File inputFile = ResourceUtils.getFile("classpath:image/paymentPayNow.png");
@@ -193,15 +159,18 @@ public class NetsSysToSysController {
         String expiryDate = df.format(cal.getTime());
 
 
-        PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,appGrpNo);
-        payNowObject.setPayloadFormatInd("01");
+        PayNow payNowObject = qrGenerator.getPayNowObject(GatewayPayNowConfig.merchantCategoryCode,
+                GatewayPayNowConfig.txnCurrency, GatewayPayNowConfig.countryCode,
+                GatewayPayNowConfig.merchantName, GatewayPayNowConfig.merchantCity,
+                GatewayPayNowConfig.globalUniqueID, GatewayPayNowConfig.proxyType,
+                GatewayPayNowConfig.proxyValue, GatewayPayNowConfig.editableAmountInd,
+                expiryDate,GatewayPayNowConfig.pointOfIntiation, amoStr,appGrpNo);
+        payNowObject.setPayloadFormatInd(GatewayPayNowConfig.payloadFormatInd);
 
         // PayNow
         QRGeneratorResponse qrCodeResponse = qrGenerator.generateSGQR(QRType.PAY_NOW, payNowObject, qrDetails);
         String sgqrTypeFormattedPayLoad = qrCodeResponse.getSgqrPayload();
-        System.out.println(sgqrTypeFormattedPayLoad);
         String imageStreamInBase64Format = qrCodeResponse.getImageStream();
-        System.out.println(imageStreamInBase64Format);
         ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
         return imageStreamInBase64Format;
     }

@@ -8,6 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-blank"/>
 <br/>
 <%--<div class="navigation-gp">
@@ -39,7 +40,9 @@
             <c:when test="${menuRfc=='rfc'}">
 
                 <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
-                    <p>-<strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
+                    <div class="col-xs-12">
+                        <p>- <strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
+                    </div>
                 </c:forEach>
             </c:when>
             <c:otherwise>
@@ -51,21 +54,21 @@
             </c:otherwise>
         </c:choose>
         <div class="ack-font-16">
-            <div class="col-xs-12">
-                A confirmation email will be sent to ${emailAddress}.
-                <br/>
-                <br/>
-            </div>
-            <div class="col-xs-12">
-                <iais:message key="NEW_ACK005" escape="false"></iais:message>
-                <br/>
-                <br/>
-            </div>
-            <div class="col-xs-12">
-                Transactional Information:
-            </div>
             <c:choose>
                 <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+                    <div class="col-xs-12">
+                        A confirmation email will be sent to ${emailAddress}.
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <iais:message key="NEW_ACK005" escape="false"></iais:message>
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        Transactional details:
+                    </div>
                     <div class="col-xs-12">
                         <div class="table-responsive">
                             <table class="table">
@@ -128,11 +131,11 @@
                     </div>
                 </c:when>
                 <c:when test="${menuRfc=='rfc'}">
-                    <p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p>
-                    <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
+                    <div class="col-xs-12"><p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p></div>
+                    <div class="col-xs-12"> <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p></div>
                     <c:if test="${dAmount!='$0.0'}">
-                        <p class="ack-font-14">Transactional Information:</p>
-                        <div class="table-responsive">
+                        <div class="col-xs-12"><p class="ack-font-14">Transactional details:</p></div>
+                        <div class="col-xs-12"><div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
@@ -173,10 +176,23 @@
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </div></div>
                     </c:if>
                 </c:when>
                 <c:otherwise>
+                    <div class="col-xs-12">
+                        A confirmation email will be sent to ${emailAddress}.
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <iais:message key="NEW_ACK005" escape="false"></iais:message>
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        Transactional details:
+                    </div>
                     <div class="col-xs-12">
                         <div class="table-responsive">
                             <table class="table">

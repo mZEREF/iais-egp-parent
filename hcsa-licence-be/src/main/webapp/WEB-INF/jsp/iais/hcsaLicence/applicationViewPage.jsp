@@ -344,7 +344,7 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-
+                                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
                                                                         <%--application type != appeal --%>
                                                                         <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
                                                                             <div class="fastTrack">
@@ -386,6 +386,42 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
+                                                                    <c:if test="${applicationViewDto.showTcu && applicationViewDto.editTcu}">
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-12 col-md-4 control-label">TCU</label>
+                                                                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                                                                <p><input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${applicationViewDto.tcuFlag}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);">
+                                                                                    <label class="form-check-label" for="tcuType" ><span class="check-square"></span></label>
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="form-group" id="tcuLabel" >
+                                                                            <label class="col-xs-12 col-md-4 control-label">TCU Date<span style="color: red"> *</span></label>
+                                                                            <div class="col-xs-8 col-sm-6 col-md-5">
+                                                                                <iais:datePicker id = "tucDate" name = "tucDate" value="${applicationViewDto.tuc}"></iais:datePicker>
+                                                                                <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </c:if>
+                                                                        <c:if test="${applicationViewDto.showTcu && !applicationViewDto.editTcu}">
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-12 col-md-4 control-label">TCU</label>
+                                                                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                                                                    <p><input type="checkbox" id="tcuTypeShow"  value="tcuTypeShow"  <c:if test="${applicationViewDto.tcuFlag}">checked</c:if>  name="tcuTypeShow"  disabled>
+                                                                                        <label class="form-check-label" for="tcuTypeShow" ><span class="check-square"></span></label>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                           <c:if test="${applicationViewDto.tcuFlag}">
+                                                                            <div class="form-group" id="tcuLabel" >
+                                                                                <label class="col-xs-12 col-md-4 control-label">TCU Date</label>
+                                                                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                                                                    <p>${applicationViewDto.tuc}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                          </c:if>
+                                                                        </c:if>
                                                                         <%--</table>--%>
                                                                     </iais:section>
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
@@ -476,6 +512,8 @@
         appealAoFillBack();
         checkDms();
         recommendationRemoveRequired();
+
+        loadTcuFunction();
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
@@ -894,23 +932,46 @@
         showWaiting();
         var data = {"repoId":verify};
         $.post(
-                "${pageContext.request.contextPath}/verifyFileExist",
-                data,
-                function (data) {
-                    if(data != null ){
-                        if(data.verify == 'N'){
-                            $('#supportReport').modal('show');
-                        }else {
-                            $("#"+verify+"Down").click();
-                        }
-                        dismissWaiting();
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                    if(data.verify == 'N'){
+                        $('#supportReport').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
                     }
+                    dismissWaiting();
                 }
+            }
         )
     }
 
     function tagConfirmCallbacksupportReport(){
         $('#supportReport').modal('hide');
+    }
+
+    function loadTcuFunction() {
+        if(${applicationViewDto.showTcu && applicationViewDto.editTcu}){
+            if($("#tcuType").is(":checked")){
+                $("#tcuLabel").show()
+            }else{
+                $("#tcuLabel").hide();
+                $("#tucDate").val("");
+            }
+            if(${applicationViewDto.tuc!= null && applicationViewDto.tuc != ""}){
+                $("#tcuType").attr('checked',true)
+                $("#tcuLabel").show();
+            }
+        }
+    }
+    function showTcuLabel(checkbox){
+        if(checkbox.checked == true){
+            $("#tcuLabel").show()
+        }else{
+            $("#tcuLabel").hide();
+            $("#tucDate").val("");
+        }
     }
 </script>
 

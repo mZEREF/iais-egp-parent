@@ -82,7 +82,7 @@
                         }
                     },
                     tooltips:{
-                        enabled:false
+                        enabled:true
                     },
                     title:{
                         display:true,
@@ -92,6 +92,13 @@
                     legend: {
                         display: true,
                         position:'bottom'
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return ' '+data.datasets[0].data[tooltipItem.index];
+                            }
+                        }
                     }
                 }
             });
@@ -108,6 +115,13 @@
                     cutoutPercentage: 75,
                     legend: {
                         display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem, data) {
+                                return ' '+data.datasets[0].data[tooltipItem.index];
+                            }
+                        }
                     }
                 }
             });

@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExce
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
+import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -60,12 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Delegator(value = "hcsaChklItemDelegator")
@@ -777,6 +774,21 @@ public class HcsaChklItemDelegator {
             }
 
             if (inputFile.exists() && inputFile.isFile()) {
+                // write Inspection Entity
+                List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(
+                        MasterCodeUtil.CATE_ID_INSPECTION_ENTITY_TYPE);
+                if (IaisCommonUtils.isNotEmpty(masterCodes)) {
+                    List<String> values = IaisCommonUtils.genNewArrayList(masterCodes.size());
+                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(masterCodes.size());
+                    int i = 1;
+                    for (MasterCodeView view : masterCodes) {
+                        values.add(view.getCodeValue());
+                        excelConfigIndex.put(i++, Collections.singletonList(3));
+                    }
+                    inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
+                            values.toArray(new String[values.size()]), excelConfigIndex);
+                }
+
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checked));
                 List<ChecklistConfigExcel> uploadTemplate = IaisCommonUtils.genNewArrayList();
 

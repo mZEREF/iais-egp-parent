@@ -84,4 +84,6 @@ public interface BelicationClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<AdhocChecklistItemDto>> saveAdhocItems(@RequestBody List<AdhocChecklistItemDto> itemDtoList);
 
+    @GetMapping(value = "/iais-application-be/doDelete",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doDeleteBySql(@RequestParam("sql") String sql);
 }

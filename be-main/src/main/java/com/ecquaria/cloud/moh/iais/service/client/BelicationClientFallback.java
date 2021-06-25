@@ -12,8 +12,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 /**
  * BelicationClientFallback
@@ -175,4 +176,11 @@ public class BelicationClientFallback implements BelicationClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<Void> doDeleteBySql(String sql) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

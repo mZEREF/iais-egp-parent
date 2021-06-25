@@ -315,7 +315,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 
 		String appGrpNo=refNo;
 		try {
-			appGrpNo=refNo.substring(0,'_');
+			appGrpNo=refNo.substring(0,refNo.indexOf('_'));
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
 		}
@@ -563,9 +563,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 	public static String generateSignature(String txnReq,String secretKey) throws Exception{
 		String concatPayloadAndSecretKey = txnReq + secretKey;
 		String concatPayloadAndSecretKey1 = new String(concatPayloadAndSecretKey.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-		String hmac = encodeBase64(hashSHA256ToBytes(concatPayloadAndSecretKey1.getBytes(StandardCharsets.UTF_8)));
-		System.out.println("hmac" + hmac);
-		return hmac;
+		return encodeBase64(hashSHA256ToBytes(concatPayloadAndSecretKey1.getBytes(StandardCharsets.UTF_8)));
 
 	}
 

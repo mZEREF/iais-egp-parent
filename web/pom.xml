@@ -102,35 +102,5 @@
                 </snapshotRepository>
             </distributionManagement>
         </profile>
-        <profile>
-            <id>cicd-sg-nexus</id>
-            <activation>
-              <activeByDefault>false</activeByDefault>
-            </activation>
-            <repositories>
-              <repository>
-                <id>moh-iais-nexus</id>
-                <url>${sg.nexus.group.repo}</url>
-                <snapshots>
-                  <enabled>true</enabled>
-                </snapshots>
-                <releases>
-                  <enabled>true</enabled>
-                </releases>
-              </repository>
-            </repositories>
-            <distributionManagement>
-              <repository>
-                <id>moh-iais-nexus</id>
-                <name>Nexus Releases</name>
-                <url>${sg.nexus.release.repo}</url>
-              </repository>
-              <snapshotRepository>
-                <id>moh-iais-nexus</id>
-                <name>Nexus Snapshot</name>
-                <url>${sg.nexus.snapshot.repo}</url>
-              </snapshotRepository>
-            </distributionManagement>
-          </profile>
     </profiles>
 </project>

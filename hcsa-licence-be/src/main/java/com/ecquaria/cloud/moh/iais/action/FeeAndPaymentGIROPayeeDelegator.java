@@ -544,7 +544,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList1= giroAccountService.createGiroAccountInfo(giroAccountInfoDtoList);
 
         try {
-            eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
         }catch (Exception e){
             log.debug("no found fe org :{}",giroAccountInfoDtoList1.get(0).getOrganizationId());
         }

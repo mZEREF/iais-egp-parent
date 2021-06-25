@@ -111,7 +111,7 @@
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
                 <input class="form-check-input" disabled="disabled" name="PremisesType"<c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> id="icon5checkboxSample" type="checkbox" value="CONVEYANCE" name="Conveyance" aria-invalid="false">
-                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance </label>
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
           </div>
@@ -137,72 +137,9 @@
         </div>
       </div>
 
-      <div class="form-group" >
-        <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-7 control-label"></label>
-          <div class="col-xs-12 col-md-4">
-            <label class="col-xs-12 col-md-6 control-label" style="padding-left: 0px;">MINIMUM COUNT</label>
-            <label class="col-xs-12 col-md-6 control-label">MAXIMUM COUNT</label>
-          </div>
-        </div>
-      </div>
+     <%@include file="common/persontTitle.jsp"%>
 
-      <div class="form-group" >
-        <div class="col-xs-12 col-md-9" >
-          <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2" >
-            <input type="text"  disabled name="man-principalOfficer" maxlength="2" value="${PO.mandatoryCount}" placeholder="mandatory count">
-            <input type="text" disabled name="poId" style="display: none" maxlength="2" value="${PO.id}">
-          </div>
-          <div class="col-xs-12 col-md-2" >
-            <input type="text" disabled name="mix-principalOfficer" maxlength="2" value="${PO.maximumCount}" placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Nominee&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
-            <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" disabled name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
-            <input readonly  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input disabled type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" maxlength="2" type="text">
-            <input  readonly type="text" name="man-ServicePersonnel" maxlength="2" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2" disabled value="${SVCPSN.maximumCount}"  placeholder="maximum count">
-          </div>
-        </div>
-      </div>
-
+      <%@include file="common/deleteOrView/person.jsp"%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">

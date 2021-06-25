@@ -98,3 +98,4 @@
         // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
     }
 </script>
+

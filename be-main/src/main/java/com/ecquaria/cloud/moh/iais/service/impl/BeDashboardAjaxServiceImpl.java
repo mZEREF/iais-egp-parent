@@ -310,6 +310,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             if(!StringUtil.isEmpty(dashFilterAppNo)){
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
+
             //filter page conditions
             searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
             //filter work groups

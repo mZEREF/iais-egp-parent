@@ -1,11 +1,7 @@
 package com.ecquaria.cloud.moh.iais.api.config;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
-import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.Properties;
 
 @Slf4j
 public class GatewayNetsConfig {

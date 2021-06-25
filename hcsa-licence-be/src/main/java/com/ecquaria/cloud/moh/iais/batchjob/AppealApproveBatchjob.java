@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -67,6 +68,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -312,7 +314,29 @@ public class AppealApproveBatchjob {
                 appPremisesRecommendationDto.setRecomInNumber(recomInNumber);
             }
         }
+        if(applicationGroupDto==null){
+            log.error("=======applicationGroupDto is null =====");
+        }else {
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationGroupDto+"-------applicationGroupDto is ")));
+        }
+
+        if(appPremisesRecommendationDto==null){
+            log.error("=======appPremisesRecommendationDto is null =====");
+        }else {
+            log.info("--------- appPremisesRecommendationDto is "+JsonUtil.parseToJson(appPremisesRecommendationDto));
+        }
+
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
+        if(newAppPremisesRecommendationDto==null){
+            log.error("===== newAppPremisesRecommendationDto is null =====");
+        }else {
+            log.info("------ newAppPremisesRecommendationDto is ----"+JsonUtil.parseToJson(newAppPremisesRecommendationDto));
+        }
+        if(appealApplicationDto==null){
+            log.error("======= appealApplicationDto is null =====");
+        }else {
+            log.info("------- appealApplicationDto is---"+JsonUtil.parseToJson(appealApplicationDto));
+        }
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
             if("approve".equals(recomDecision) || InspectionReportConstants.RFC_APPROVED.equals(recomDecision) || InspectionReportConstants.APPROVED.equals(recomDecision)){
@@ -435,9 +459,10 @@ public class AppealApproveBatchjob {
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
         List<AppGrpPremisesEntityDto> otherAppGrpPremises = appealApproveDto.getOtherAppGrpPremises();
+        String hciName;
         if(appealDto!=null&&appGrpPremisesDto!=null){
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
-            String hciName = appealDto.getNewHciName();
+             hciName = appealDto.getNewHciName();
             if(!StringUtil.isEmpty(hciName)){
                 AppGrpPremisesEntityDto appGrpPremisesDto1 = (AppGrpPremisesEntityDto)
                        CopyUtil.copyMutableObject(appGrpPremisesDto);
@@ -445,12 +470,15 @@ public class AppealApproveBatchjob {
                 appGrpPremisesDto1.setAuditTrailDto(intranet);
                 appealAppGrpPremisesDto.add(appGrpPremisesDto1);
                 if(!otherAppGrpPremises.isEmpty()){
-                    otherAppGrpPremises.stream().forEach((v)->{
+                    for (AppGrpPremisesEntityDto v : otherAppGrpPremises) {
                         v.setHciName(hciName);
                         v.setAuditTrailDto(intranet);
                         appealAppGrpPremisesDto.add(v);
-                    });
+                    }
                 }
+                ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
+                List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
+                appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                 //save eic record
@@ -473,12 +501,11 @@ public class AppealApproveBatchjob {
             throw new IaisRuntimeException("appeal dto is null");
         }
         ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
-        String appGrpId = entity.getAppGrpId();
-        List<ApplicationDto> applicationDtos = otherChangeHciNameApp(appGrpId,entity);
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
         o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
         String appId = o.getId();
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
+        List<ApplicationDto> applicationDtos = applicationClient.getApplicationDto(entity).getEntity();
         if(licAppCorrelationDto!=null){
             String oldLicenceId = licAppCorrelationDto.getLicenceId();
             o.setNeedNewLicNo(false);
@@ -536,37 +563,16 @@ public class AppealApproveBatchjob {
 
         });
     }
-    private List<ApplicationDto> otherChangeHciNameApp(String appGrpId,ApplicationDto applicationDto){
-        List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-        ListIterator<ApplicationDto> iterator = applicationDtoList.listIterator();
-        while (iterator.hasNext()){
-            ApplicationDto next = iterator.next();
-            if(ApplicationConsts.APPLICATION_STATUS_DELETED.equals(next.getStatus())||applicationDto.getApplicationNo().equals(next.getApplicationNo())){
-                iterator.remove();
+    private List<AppGrpPremisesEntityDto> otherChangeHciNameApp(String hciName,ApplicationDto applicationDto){
+        List<AppGrpPremisesEntityDto> entity = applicationClient.getOtherChangeHciNameApp(applicationDto).getEntity();
+        if(entity!=null&&!entity.isEmpty()){
+            Iterator<AppGrpPremisesEntityDto> iterator = entity.iterator();
+            while (iterator.hasNext()){
+                AppGrpPremisesEntityDto next = iterator.next();
+                next.setHciName(hciName);
             }
         }
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
-            while (iterator.hasNext()){
-                ApplicationDto next = iterator.next();
-                if(applicationDto.getServiceId().equals(next.getServiceId())){
-                    iterator.remove();
-                }
-            }
-        }else {
-            AppGrpPremisesEntityDto appGrpPremisesEntityDto = applicationClient.getPremisesByAppNo(applicationDto.getApplicationNo()).getEntity();
-            String hciCode1 = appGrpPremisesEntityDto.getHciCode();
-
-            while (iterator.hasNext()){
-                ApplicationDto next = iterator.next();
-                AppGrpPremisesEntityDto entity = applicationClient.getPremisesByAppNo(next.getApplicationNo()).getEntity();
-                String hciCode = entity.getHciCode();
-                if(!hciCode.equals(hciCode1)){
-                    iterator.remove();
-                }
-            }
-        }
-
-        return applicationDtoList;
+        return entity;
     }
     private void appealLicence(List<AppPremiseMiscDto>appPremiseMiscDtoList,AppPremiseMiscDto appPremiseMiscDto,List<LicenceDto> appealLicence,
                                List<LicenceDto> rollBackLicence,

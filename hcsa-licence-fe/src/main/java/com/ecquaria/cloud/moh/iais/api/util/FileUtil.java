@@ -36,13 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * FileUtil.java
- *
+ * 
  * @author zhuhua
  */
 @Slf4j
 public class FileUtil {
 
-
+	
 	public static File[] listFilesWithPrefix(File file, final String prefix){
 		if(file != null && file.isDirectory()){
 			return file.listFiles(new FilenameFilter() {
@@ -50,7 +50,7 @@ public class FileUtil {
 				public boolean accept(File file, String fileName) {
 					if(fileName.toLowerCase().startsWith(prefix.toLowerCase())){
 						return true;
-					}else{
+					}else{ 
 						return false;
 					}
 				}
@@ -106,7 +106,7 @@ public class FileUtil {
 		log.info(StringUtil.changeForLog("----- file :" +f.toPath() +" ----------"));
 		log.info(StringUtil.changeForLog("----- file.getAbsolutePath() :" +f.getAbsolutePath() +" ----------"));
 		log.info(StringUtil.changeForLog("----- file.getPath() :" +f.getPath() +" ----------"));
-		return writeToFileFileByData(f,data);
+	    return writeToFileFileByData(f,data);
 	}
 
 	public static boolean  writeToFileFileByData( File f,String data){
@@ -188,7 +188,7 @@ public class FileUtil {
 		if (is == null){
 			return null;
 		}
-
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(is, charsetName));
 		String line = null;
 		StringBuilder sb = new StringBuilder();
@@ -202,7 +202,7 @@ public class FileUtil {
 		if (StringUtil.isEmpty(absolutePath)){
 			return null;
 		}
-
+		
 		int startIndex = absolutePath.lastIndexOf(File.separator) + 1;
 		int endIndex = absolutePath.lastIndexOf('.');
 		return absolutePath.substring(startIndex, endIndex);
@@ -239,7 +239,7 @@ public class FileUtil {
 			generateFolder(target.getParentFile().getPath());
 		}
 		InputStream inStream = null;
-		OutputStream fs = null;
+	    OutputStream fs = null;
 		try {
 			int byteread = 0;
 			if (source.exists()) {
@@ -270,7 +270,7 @@ public class FileUtil {
 		}
 		return target.exists();
 	}
-
+	
 	/**
 	 * get the byte array from the given file
 	 * @param fileName

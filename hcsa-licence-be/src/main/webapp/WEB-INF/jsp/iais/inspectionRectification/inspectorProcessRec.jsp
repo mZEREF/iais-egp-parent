@@ -88,6 +88,7 @@
                                 <table class="table">
                                   <thead>
                                   <tr align="center">
+                                    <th>Vehicle Number</th>
                                     <th>NC Clause</th>
                                     <th>Checklist Question</th>
                                     <th>Remarks</th>
@@ -106,6 +107,7 @@
                                     <c:otherwise>
                                       <c:forEach var="proRec" items="${inspectionPreTaskDto.inspecUserRecUploadDtos}" varStatus="status">
                                         <tr>
+                                          <td><c:out value="${proRec.vehicleNo}"/></td>
                                           <td><c:out value="${proRec.checkClause}"/></td>
                                           <td><iais:code code="${proRec.checkQuestion}"/></td>
                                           <td><c:out value="${proRec.uploadRemarks}"/></td>
@@ -134,6 +136,7 @@
                                   <tr align="center">
                                     <th><input type="checkbox" name="allNcItemCheck" id="allNcItemCheck" <c:if test="${'check' eq allNcItemCheck}">checked</c:if>
                                                onchange="javascript:doInspectorProRecCheckAll()" value="<c:out value="${allNcItemCheck}"/>"/></th>
+                                    <th>Vehicle Number</th>
                                     <th>NC Clause</th>
                                     <th>Checklist Question</th>
                                     <th>Remarks</th>
@@ -161,6 +164,7 @@
                                                     </c:if>
                                                    onchange="javascript:doInspectorProRecCheck()" value="<c:out value="${proRec.appPremisesPreInspectionNcItemDto.id}"/>"/>
                                           </td>
+                                          <td><c:out value="${proRec.vehicleNo}"/></td>
                                           <td><c:out value="${proRec.checkClause}"/></td>
                                           <td><iais:code code="${proRec.checkQuestion}"/></td>
                                           <td><c:out value="${proRec.uploadRemarks}"/></td>

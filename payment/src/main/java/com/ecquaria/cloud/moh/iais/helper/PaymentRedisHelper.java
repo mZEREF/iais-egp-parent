@@ -45,6 +45,8 @@ public class PaymentRedisHelper {
                 String key = (String) ent.getKey();
                 if (key.startsWith("sessionAttr:")) {
                     String sessionKey = key.replaceFirst("sessionAttr:", "");
+                    log.info("session key ==> {}", sessionKey);
+                    log.info("session value ==> {}", ent.getValue());
                     ObjectMapper mapper = new ObjectMapper();
                     String jsonString = null;
                     try {

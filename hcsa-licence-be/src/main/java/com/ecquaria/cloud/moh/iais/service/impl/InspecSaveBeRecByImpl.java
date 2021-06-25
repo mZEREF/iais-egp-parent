@@ -98,7 +98,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         download = compressPath + File.separator + "backupsRec";
         String inFolder = inSharedPath;
         if (!inFolder.endsWith(File.separator)) {
-            inFolder += File.separator;
+           inFolder += File.separator;
         }
         zipFile = inFolder;
     }

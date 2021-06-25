@@ -111,6 +111,7 @@
         $('#RfcSkip').click(function () {
             showWaiting();
             $("[name='nextStep']").val('skip');
+            $('#isEditHiddenVal').val('0');
             nextFun();
         });
 
@@ -299,7 +300,8 @@
         }
     };
     <!--cgo,medAlert -->
-    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType) {
+    var loadSelectPsn = function ($CurrentPsnEle, idType, idNo, psnType, callback) {
+        showWaiting();
         var spcEle = $CurrentPsnEle.find('.specialty');
         var jsonData = {
             'idType':idType,
@@ -315,9 +317,15 @@
                 if(data == null){
                     return;
                 }
-                fillPsnForm($CurrentPsnEle,data,psnType);
+                if (typeof callback === 'function') {
+                    callback($CurrentPsnEle, data, psnType);
+                } else {
+                    fillPsnForm($CurrentPsnEle, data, psnType);
+                }
+                dismissWaiting();
             },
             'error':function () {
+                dismissWaiting();
             }
         });
     };
@@ -389,6 +397,17 @@
             }
         });
         console.log("setPsnDisabled end...");
+    }
+    var controlEdit = function($ele, property, canEdit){
+        if(canEdit){
+            $ele.attr(property, !canEdit);
+            $ele.css('border-color', '');
+            $ele.css('color', '');
+        }else{
+            $ele.prop(property, !canEdit);
+            $ele.css('border-color', '#ededed');
+            $ele.css('color', '#999');
+        }
     }
 
 </script>

@@ -14,24 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.RimRiskCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -276,7 +262,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return infillCheckListDto;
     }
 
-
     @Override
     public AppPremisesPreInspectChklDto getAppPremChklDtoByTaskId(String taskId, String configId) {
         if (StringUtil.isEmpty(taskId)) {
@@ -314,6 +299,72 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveBeforeSubmitCheckList(commDto, showDto, serListDto, appPremId);
     }
 
+    @Override
+    public void submitSpecService(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId) {
+        //save other data
+        saveOtherDataForPengingIns(serListDto,appPremId);
+        //save spec checklist data
+        saveBeforeSubmitSpecCheckList(commDto, inspectionSpecServiceDtos, serListDto,appPremId);
+    }
+
+    @Override
+    public void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId) {
+        if(commDto!=null){
+            saveInspectionCheckListDto(commDto,appPremId);
+        }
+
+        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
+        if(commDto!=null&& IaisCommonUtils.isNotEmpty(commDto.getCheckList())){
+            fillcheckDtoList.add(commDto);
+        }
+
+        if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
+            AdCheckListShowDto adchklDto =null;
+            for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
+
+                if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
+                    saveSerListDto(getInspectionFDtosDtoByInspectionSpecServiceDto(inspectionSpecServiceDto),appPremId);
+                    fillcheckDtoList.addAll(inspectionSpecServiceDto.getFdtoList());
+                }
+
+                if(inspectionSpecServiceDto.getAdchklDto() != null && IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getAdchklDto().getAdItemList())){
+                    if(adchklDto  == null){
+                        List<AdhocNcCheckItemDto> adItemList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
+                        setIdentifyForAdItemList(adItemList,inspectionSpecServiceDto.getIdentify());
+                        adchklDto = (AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(inspectionSpecServiceDto.getAdchklDto());
+                    }else {
+                        List<AdhocNcCheckItemDto> adItemList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
+                        setIdentifyForAdItemList(adItemList,inspectionSpecServiceDto.getIdentify());
+                        List<AdhocNcCheckItemDto> adItemListAll =  adchklDto.getAdItemList();
+                        adItemListAll.addAll(((AdCheckListShowDto) com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(inspectionSpecServiceDto.getAdchklDto())).getAdItemList());
+                    }
+                }
+            }
+            if (adchklDto != null) {
+                saveAdhocDto(adchklDto, appPremId);
+            }
+
+            if (IaisCommonUtils.isNotEmpty(fillcheckDtoList) || (adchklDto != null && !IaisCommonUtils.isEmpty(adchklDto.getAdItemList()))) {
+                saveNcItem(fillcheckDtoList, appPremId, adchklDto);
+            }
+
+        }
+
+
+    }
+
+    private void setIdentifyForAdItemList( List<AdhocNcCheckItemDto> adItemList,String identify){
+        for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList){
+            adhocNcCheckItemDto.setIdentify(identify);
+        }
+    }
+
+
+    private InspectionFDtosDto getInspectionFDtosDtoByInspectionSpecServiceDto(InspectionSpecServiceDto inspectionSpecServiceDto){
+        InspectionFDtosDto inspectionFDtosDto = MiscUtil.transferEntityDto(inspectionSpecServiceDto,InspectionFDtosDto.class);
+        inspectionFDtosDto.setFdtoList(inspectionSpecServiceDto.getFdtoList());
+        return inspectionFDtosDto;
+    }
     public void saveLitterFile(InspectionFDtosDto serListDto){
         if(serListDto.getAppPremisesSpecialDocDto() != null ){
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
@@ -527,7 +578,20 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
+
     private void saveRecommend(InspectionFDtosDto serListDto,String appPremId) {
+        AppPremisesRecommendationDto  appPreRecommentdationDto = getTcuRec(appPremId,serListDto.getTuc());
+        appPreRecommentdationDto.setId(null);
+        appPreRecommentdationDto.setAppPremCorreId(appPremId);
+        appPreRecommentdationDto.setBestPractice(serListDto.getBestPractice());
+        appPreRecommentdationDto.setRemarks(serListDto.getTcuRemark());
+        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
+        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+    }
+
+    private  AppPremisesRecommendationDto getTcuRec(String appPremId,String tcu){
         AppPremisesRecommendationDto appPreRecommentdationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
         if(appPreRecommentdationDto!=null){
             appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -541,25 +605,30 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
         Date tcuDate = null;
         try {
-            tcuDate = Formatter.parseDate(serListDto.getTuc());
+            tcuDate = Formatter.parseDate(tcu);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        if ( !StringUtil.isEmpty(serListDto.getTuc()) && tcuDate != null ) {
+        if ( !StringUtil.isEmpty(tcu) && tcuDate != null ) {
             appPreRecommentdationDto.setRecomInDate(tcuDate);
         }else {
             appPreRecommentdationDto.setRecomInDate(null);
         }
-        appPreRecommentdationDto.setId(null);
-        appPreRecommentdationDto.setAppPremCorreId(appPremId);
-        appPreRecommentdationDto.setBestPractice(serListDto.getBestPractice());
-        appPreRecommentdationDto.setRemarks(serListDto.getTcuRemark());
-        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
-        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        return appPreRecommentdationDto;
     }
 
+    @Override
+    public void saveTcuDate(String appPremId,String tcu,boolean showTcu){
+        if(showTcu){
+            AppPremisesRecommendationDto appPreRecommentdationDto = getTcuRec(appPremId,tcu);
+            appPreRecommentdationDto.setId(null);
+            appPreRecommentdationDto.setAppPremCorreId(appPremId);
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
+            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        }
+    }
     private void saveSerListDto(InspectionFDtosDto serListDto,String appPremId) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
         if(dtoList!=null &&! dtoList.isEmpty()){
@@ -592,6 +661,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     adhocAnswerDto.setAnswer(temp.getAdAnswer());
                     adhocAnswerDto.setIsRec((temp.getRectified() != null && temp.getRectified()) ? "1" :"0");
                     adhocAnswerDto.setNcs(temp.getNcs());
+                    adhocAnswerDto.setIdentify(temp.getIdentify());
                     String saveAnswer = JsonUtil.parseToJson(adhocAnswerDto);
                     temp.setAnswer(saveAnswer);
                     saveItemDtoList.add(temp);
@@ -647,14 +717,16 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
             String appPremCorrId = appPremId;
             String configId = icqDtoList.get(0).getConfigId();
-            AppPremisesPreInspectChklDto appDto = fillUpCheckListGetAppClient.getAppPremInspeChlkByAppCorrIdAndConfigId(appPremCorrId,configId).getEntity();
-            if(appDto!=null ){
-                appDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                fillUpCheckListGetAppClient.updateAppPreInspChkl(appDto);
-                appDto.setVersion(1 + Integer.parseInt(appDto.getVersion())+"");
+            AppPremisesPreInspectChklDto appDto = fillupChklistService.getAppPremChklDtoByCorrIdAndVehicleName(appPremCorrId,configId,dto.getVehicleName());
+            if(appDto!=null){
+                if(StringUtil.isNotEmpty(appDto.getId())){
+                    appDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    fillUpCheckListGetAppClient.updateAppPreInspChkl(appDto);
+                }
+                appDto.setVersion(String.valueOf((1 + Integer.parseInt(appDto.getVersion()))));
             }else{
                 appDto= new AppPremisesPreInspectChklDto();
-                appDto.setVersion(1+"");
+                appDto.setVersion(String.valueOf(1));
             }
             //update
             appDto.setId(null);
@@ -672,6 +744,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     answerDto.setItemId(inspectionCheckQuestionDto.getItemId());
                     answerDto.setSectionId(inspectionCheckQuestionDto.getSectionId());
                     answerDto.setNcs(inspectionCheckQuestionDto.getNcs());
+                    answerDto.setIdentify(dto.getVehicleName());
                     if ( ncflag && inspectionCheckQuestionDto.isRectified() &&"No".equals(inspectionCheckQuestionDto.getChkanswer())  ) {
                         answerDto.setIsRec("1");
                     } else {
@@ -690,13 +763,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    public List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(List<InspectionFillCheckListDto> fillcheckDtoList, AppPremPreInspectionNcDto ncDto,AdCheckListShowDto showDto) {
+    private List<AppPremisesPreInspectionNcItemDto> getAppPremisesPreInspectionNcItemDto(List<InspectionFillCheckListDto> fillcheckDtoList, AppPremPreInspectionNcDto ncDto,AdCheckListShowDto showDto) {
         List<AppPremisesPreInspectionNcItemDto> ncItemDtoList =  IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(fillcheckDtoList)){
             for(InspectionFillCheckListDto dto:fillcheckDtoList){
                 List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
                 for (InspectionCheckQuestionDto temp : insqDtoList) {
-                    getAppNcByTemp(temp,ncDto,ncItemDtoList);
+                    getAppNcByTemp(temp,ncDto,ncItemDtoList, dto.getVehicleName());
                 }
             }
         }
@@ -717,6 +790,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                         ncItemDto.setIsRecitfied(0);
                     }
                     ncItemDto.setNcs(adhocNcCheckItemDto.getNcs());
+                    ncItemDto.setVehicleName(adhocNcCheckItemDto.getIdentify());
                     ncItemDtoList.add(ncItemDto);
                 }
             }
@@ -724,7 +798,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return ncItemDtoList;
     }
 
-    public void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList){
+    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList,String vehicleName){
         if("No".equals(temp.getChkanswer())){
             AppPremisesPreInspectionNcItemDto ncItemDto = new AppPremisesPreInspectionNcItemDto();
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -739,11 +813,12 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncItemDto.setIsRecitfied(0);
             }
             ncItemDto.setNcs(temp.getNcs());
+            ncItemDto.setVehicleName(vehicleName);
             ncItemDtoList.add(ncItemDto);
         }
     }
 
-    public AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(String appPremCorrId) {
+    private AppPremPreInspectionNcDto getAppPremPreInspectionNcDto(String appPremCorrId) {
         AppPremPreInspectionNcDto ncDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         if(ncDto!=null){
             ncDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -822,6 +897,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncAnswerDto.setRef("1".equalsIgnoreCase(temp.getIsRec()) ? "1" :"0");
                 ncAnswerDto.setType(temp.getSectionName());
                 ncAnswerDto.setNcs(temp.getNcs());
+                ncAnswerDto.setVehicleName(temp.getIdentify());
                 ncAnswerDtoList.add(ncAnswerDto);
             }
         }
@@ -879,6 +955,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncAnswerDto.setRef("1".equalsIgnoreCase(temp.getIsRec()) ? "1" :"0");
                 ncAnswerDto.setType(temp.getSectionName());
                 ncAnswerDto.setNcs(temp.getNcs());
+                ncAnswerDto.setVehicleName(temp.getIdentify());
                 ncAnswerDtoList.add(ncAnswerDto);
             }
         }
@@ -901,6 +978,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     ncDto.setRemark(temp.getRemark());
                     ncDto.setRef((temp.getRectified()!= null && temp.getRectified())? "1" : "0");
                     ncDto.setNcs(temp.getNcs());
+                    ncDto.setVehicleName(temp.getIdentify());
                     ncDto.setType("Adhoc");
                     ncAnswerDtoList.add(ncDto);
                 }
@@ -976,6 +1054,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                             temp.setAdAnswer(answerDto.getAnswer());
                             temp.setRemark(answerDto.getRemark());
                             temp.setNcs(answerDto.getNcs());
+                            temp.setIdentify(answerDto.getIdentify());
                         }
                     }
 
@@ -1001,14 +1080,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public boolean isHaveNcOrBestPractice(InspectionFDtosDto serListDto, InspectionFillCheckListDto comDto, AdCheckListShowDto showDto) {
-        boolean serviceNcFlag = haveServiceNc(serListDto);
-        boolean comNcFlag = haveComNc(comDto);
-        boolean adhocNcFlag = haveAdhocDto(showDto);
         if(serListDto!=null){
             String bestPractice = serListDto.getBestPractice();
-            if(serviceNcFlag||comNcFlag||adhocNcFlag||!StringUtil.isEmpty(bestPractice)){
+            if(!StringUtil.isEmpty(bestPractice)||serListDto.getTotalNcNum()>0){
                 return true;
             }
+        }
+        if(haveServiceNc(serListDto)||haveComNc(comDto)||haveAdhocDto(showDto)){
+            return true;
         }
         return false;
     }
@@ -1120,6 +1199,38 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
+    public void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos) {
+        CheckListDraftAllDto checkListDraftAllDto = new CheckListDraftAllDto();
+        checkListDraftAllDto.setCommonDto(infillDto);
+        List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
+        AdCheckListShowDto adchklDto =null;
+        if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
+            for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
+                if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
+                    fdtoList .addAll(inspectionSpecServiceDto.getFdtoList());
+                }
+                if(inspectionSpecServiceDto.getAdchklDto() != null && IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getAdchklDto().getAdItemList())){
+                    if(adchklDto  == null){
+                        adchklDto = inspectionSpecServiceDto.getAdchklDto();
+                        List<AdhocNcCheckItemDto> adItemList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
+                        setIdentifyForAdItemList(adItemList,inspectionSpecServiceDto.getIdentify());
+                    }else {
+                        List<AdhocNcCheckItemDto> adItemList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
+                        setIdentifyForAdItemList(adItemList,inspectionSpecServiceDto.getIdentify());
+                        List<AdhocNcCheckItemDto> adItemListAll =  adchklDto.getAdItemList();
+                        adItemListAll.addAll(adItemList);
+                    }
+                }
+            }
+        }
+        checkListDraftAllDto.setFdtoList(fdtoList);
+        checkListDraftAllDto.setAdCheckListShowDto(adchklDto);
+        checkListDraftAllDto.setRefNo(appPremId);
+        checkListDraftAllDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveDraftAnswerForCheckList(checkListDraftAllDto);
+    }
+
+    @Override
     public void saveBeforeSubmitCheckList(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto, String appPremId) {
         if(commDto!=null){
             saveInspectionCheckListDto(commDto,appPremId);
@@ -1150,7 +1261,24 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
         saveLitterFile(serListDto);
+        if(serListDto.isSpecServiceVehicle()){
+            saveSpecServiceVerdict(appPremId);
+        }
     }
+
+    private void saveSpecServiceVerdict(String appPremId){
+        if(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremId,InspectionConstants.PROCESS_DECI_IS_SPEC_SERVICE_VEHICLE).getEntity() == null){
+            AppPremisesRecommendationDto appPreRecommentdationDto = new AppPremisesRecommendationDto();
+            appPreRecommentdationDto.setVersion(1);
+            appPreRecommentdationDto.setId(null);
+            appPreRecommentdationDto.setAppPremCorreId(appPremId);
+            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPreRecommentdationDto.setRecomType(InspectionConstants.PROCESS_DECI_IS_SPEC_SERVICE_VEHICLE);
+            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        }
+    }
+
 
     @Override
     public void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks) {

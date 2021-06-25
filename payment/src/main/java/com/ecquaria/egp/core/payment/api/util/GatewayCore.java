@@ -5,8 +5,6 @@ import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

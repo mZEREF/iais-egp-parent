@@ -12,6 +12,7 @@
 <div class="container">
 <div id="Main" class="clearfix">
 
+
   <div class="heading">
     <h1>Terms of Use</h1>
   </div>

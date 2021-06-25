@@ -8,6 +8,9 @@
             </c:if>
             <c:if test="${item.common eq false}">
                 <c:choose>
+                    <c:when test="${not empty item.inspectionEntity}">
+                        <h2>${item.svcName} (<iais:code code="${item.inspectionEntity}"/>)</h2>
+                    </c:when>
                     <c:when test="${empty item.svcSubType}">
                         <h2>${item.svcName}</h2>
                     </c:when>

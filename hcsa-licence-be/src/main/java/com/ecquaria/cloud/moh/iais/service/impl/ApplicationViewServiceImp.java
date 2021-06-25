@@ -17,8 +17,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -254,16 +254,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         String applicationType= MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationType());
         applicationViewDto.setApplicationType(applicationType);
-        String serviceType = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getServiceId());
-        applicationViewDto.setServiceType(serviceType);
         String status = MasterCodeUtil.getCodeDesc(applicationViewDto.getApplicationDto().getStatus());
         applicationViewDto.setCurrentStatus(status);
 //        if(!StringUtil.isEmpty(applicationViewDto.getSubmissionDate()))
 //        applicationViewDto.setSubmissionDate(IaisEGPHelper.parseToString(IaisEGPHelper.parseToDate( applicationViewDto.getSubmissionDate(),"yyyy-MM-dd hh:mm"),"yyyy-MM-dd"));
         HcsaServiceDto hcsaServiceDto=applicationViewService.getHcsaServiceDtoById(applicationViewDto.getApplicationDto().getServiceId());
         applicationViewDto.setServiceType(hcsaServiceDto.getSvcName());
-
-
+        applicationViewDto.setSvcCode(hcsaServiceDto.getSvcCode());
         List<String> actionByList= IaisCommonUtils.genNewArrayList();
         for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:applicationViewDto.getAppPremisesRoutingHistoryDtoList()
         ) {
@@ -352,8 +349,25 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         log.info(StringUtil.changeForLog("The newAppPremisesRoutingHistoryDtos.size() is -->:"+newAppPremisesRoutingHistoryDtos.size()));
         applicationViewDto.setRollBackHistroyList(newAppPremisesRoutingHistoryDtos);
+
+        setTcuDate(appCorId,applicationViewDto);
+
         return applicationViewDto;
     }
+
+    private void setTcuDate(String appCorId,ApplicationViewDto applicationViewDto){
+        AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorId,InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        if(dto != null && dto.getRecomInDate() != null){
+            try {
+                applicationViewDto.setTcuFlag(true);
+                applicationViewDto.setTuc(Formatter.formatDate(dto.getRecomInDate()));
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+
+        }
+    }
+
 
     private void setAppealTypeValues(ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -369,9 +383,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    AppSvcPrincipalOfficersDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     appSvcCgoDto.setAssignSelect("newOfficer");
-                    List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     SelectOption sp0 = new SelectOption("-1", "Please Select");
                     List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();

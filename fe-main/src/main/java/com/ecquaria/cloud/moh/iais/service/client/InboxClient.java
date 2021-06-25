@@ -31,5 +31,4 @@ public interface InboxClient {
 
     @GetMapping(value = "/iais-inter-inbox/inbox/mask")
     FeignResponseEntity<List<InboxMsgMaskDto>> getInboxMsgMask(@RequestParam(name = "msgId")String msgId);
-
 }

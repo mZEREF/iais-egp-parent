@@ -18,21 +18,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 
-<style>
-    @media only screen and (min-width: 1201px) and (max-width: 1920px) {
-        .dashboard-multiple .dashboard-tile-item .dashboard-tile {
-            border-radius: 18px;
-            height: 265px;
-            margin-bottom: 55px;
-        }
-    }
-    .dashboard-chart .dashboard-tile-item .dashboard-tile a.empty-chart {
-        cursor: default;
-        background-image: url('<%=webroot1%>img/chart-0.png');
-        background-repeat: no-repeat;
-        background-position: center 25%;
-    }
-</style>
+
 <input type="hidden" name="overAllVal" value='${dashAllSvcCircleKpi}'/>
 <input type="hidden" name="BLBVal" value='${dashBLBCircleKpi}'/>
 <input type="hidden" name="CLBVal" value='${dashCLBCircleKpi}'/>
@@ -88,114 +74,111 @@
                             <div class="formpanel">
                                 <div class="expspace">
                                     <div class="form-horizontal">
-                                        <div class="dashboard-multiple">
+                                        <div class="multiple-chart">
                                             <div class="main-content" style="margin-top: 0px;">
                                                 <div class="row">
-                                                    <div class="col-lg-12 col-xs-12">
-                                                        <div class="center-content">
-                                                            <div class="intranet-content">
-
-                                                                <div class="row">
-                                                                    <div class="col-md-6 col-xs-12 col-lg-6">
-                                                                        <a data-tab="#" href="javascript:;" style="cursor: default;">
-                                                                            <div id="canvas-holder">
-                                                                                <canvas id="overAllCanvas"></canvas>
-                                                                            </div>
-                                                                        </a>
-                                                                    </div>
-                                                                    <div class="col-md-6 col-xs-12 col-lg-6">
-                                                                        <div class="form-horizontal filter-box">
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-12 col-md-4 control-label">Application type</label>
-                                                                                <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                                                                    <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-12 col-md-4 control-label">Service Licence</label>
-                                                                                <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
-                                                                                    <iais:select cssClass="" name="svcLic" firstOption="" needSort="true" options="dashServiceOption" multiValues="${dashSvcCheckList}" multiSelect="true" />
-                                                                                </div>
+                                                    <div class="">
+                                                        <div class="intranet-content">
+                                                            <div class="row">
+                                                                <div class="col-md-6 col-xs-12 col-lg-6">
+                                                                    <a data-tab="#" href="javascript:;" style="cursor: default;">
+                                                                        <div id="canvas-holder">
+                                                                            <canvas id="overAllCanvas"></canvas>
+                                                                        </div>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-md-6 col-xs-12 col-lg-6">
+                                                                    <div class="form-horizontal filter-box">
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-12 col-md-4 control-label">Application type</label>
+                                                                            <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
+                                                                                <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="col-md-12 col-xs-12">
-                                                                        <div style="text-align:right;">
-                                                                            <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
-                                                                            <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
-                                                                        </div>
-                                                                        <br/>
-                                                                    </div>
-                                                                    <hr>
-                                                                    <div class="col-xs-12">
-                                                                        <div class="dashboard-chart dashboard-multiple" style="cursor: default;">
-                                                                            <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
-                                                                                <div class="dashboard-tile-item">
-                                                                                    <div class="dashboard-tile">
-                                                                                        <a data-tab="#" id="${svcOp.value}Detail" href="javascript:;" style="cursor: default;">
-                                                                                            <div>
-                                                                                                <canvas id="${svcOp.value}Canvas"></canvas>
-                                                                                            </div>
-                                                                                            <p align="center" class="font-color-black cursor-default">${svcOp.text}</p>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </c:forEach>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-12 col-md-4 control-label">Service Licence</label>
+                                                                            <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
+                                                                                <iais:select cssClass="" name="svcLic" firstOption="" needSort="true" options="dashServiceOption" multiValues="${dashSvcCheckList}" multiSelect="true" />
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col-xs-12">
-                                                                        <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
-                                                                        <div class="table-gp">
-                                                                            <table class="table application-group" style="border-collapse:collapse;">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="" value="Last Modified Date"></iais:sortableHeader>
-                                                                                    <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <c:choose>
-                                                                                    <c:when test="${empty dashSearchResult.rows}">
-                                                                                        <tr>
-                                                                                            <td colspan="7">
-                                                                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                                <div class="col-md-12 col-xs-12">
+                                                                    <div style="text-align:right;">
+                                                                        <button class="btn btn-secondary" type="button" id="sysClearBtn" name="sysClearBtn">Clear</button>
+                                                                        <button class="btn btn-primary" type="button" id="sysSearchBtn" name="sysSearchBtn">Search</button>
+                                                                    </div>
+                                                                    <br/>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="col-xs-12">
+                                                                    <div class="dashboard-chart multiple-charts" style="cursor: default;">
+                                                                        <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
+                                                                            <div class="col-xs-12 col-md-6 col-lg-3 dashboard-tile-item">
+                                                                                <div class="dashboard-tile">
+                                                                                    <a data-tab="#" id="${svcOp.value}Detail" href="javascript:;" style="cursor: default;">
+                                                                                        <div>
+                                                                                            <canvas id="${svcOp.value}Canvas"></canvas>
+                                                                                        </div>
+                                                                                        <p class="dashboard-txt" class="font-color-black cursor-default">${svcOp.text}</p>
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </c:forEach>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
+                                                                    <div class="table-gp">
+                                                                        <table class="table application-group" style="border-collapse:collapse;">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="" value="Last Modified Date"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <c:choose>
+                                                                                <c:when test="${empty dashSearchResult.rows}">
+                                                                                    <tr>
+                                                                                        <td colspan="7">
+                                                                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <c:forEach var="pool" items="${dashSearchResult.rows}"
+                                                                                               varStatus="status">
+                                                                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
+                                                                                            <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
+                                                                                            <td>
+                                                                                                <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
+                                                                                                    <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
+                                                                                                    </a>
+                                                                                                </p>
                                                                                             </td>
+                                                                                            <td><iais:code code="${pool.appType}"/></td>
+                                                                                            <td><c:out value="${pool.submissionType}"/></td>
+                                                                                            <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                                                                                            <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
+                                                                                            <td><iais:code code="${pool.pmtStatus}"/></td>
                                                                                         </tr>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <c:forEach var="pool" items="${dashSearchResult.rows}"
-                                                                                                   varStatus="status">
-                                                                                            <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
-                                                                                                <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
-                                                                                                <td>
-                                                                                                    <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
-                                                                                                        <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
-                                                                                                        </a>
-                                                                                                    </p>
-                                                                                                </td>
-                                                                                                <td><iais:code code="${pool.appType}"/></td>
-                                                                                                <td><c:out value="${pool.submissionType}"/></td>
-                                                                                                <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
-                                                                                                <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
-                                                                                                <td><iais:code code="${pool.pmtStatus}"/></td>
-                                                                                            </tr>
-                                                                                        </c:forEach>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </table>
-                                                                        </div>
+                                                                                    </c:forEach>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </table>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col-xs-12">
-                                                                        <a class="back" id="Back" href="javascript:;"><em class="fa fa-angle-left"></em> Back</a>
-                                                                    </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <a class="back" id="Back" href="javascript:;"><em class="fa fa-angle-left"></em> Back</a>
                                                                 </div>
                                                             </div>
                                                         </div>

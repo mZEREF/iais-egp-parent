@@ -45,6 +45,7 @@
                         <thead>
                         <tr align="center">
                           <th>No</th>
+                          <th>Vehicle Number</th>
                           <th>NC Clause</th>
                           <th>Checklist Question</th>
                           <th>Findings/Non-Compliances</th>
@@ -66,6 +67,7 @@
                             <c:forEach var="feRecNc" items="${inspecUserRecUploadDtos}" varStatus = "recNo">
                               <tr>
                                 <td><c:out value="${recNo.count}"/></td>
+                                <td><c:out value="${feRecNc.vehicleNo}"/></td>
                                 <td><c:out value="${feRecNc.checkClause}"/></td>
                                 <td><iais:code code="${feRecNc.checkQuestion}"/></td>
                                 <c:if test="${empty feRecNc.appPremisesPreInspectionNcItemDto.ncs}">

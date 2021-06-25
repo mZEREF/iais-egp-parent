@@ -17,7 +17,7 @@
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="col-xs-4">
-                    <strong class="app-font-size-22 premHeader">Mode of Service Delivery (6)</strong>
+                    <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${premNo}</strong>
                 </div>
                 <div class="col-xs-6 text-right">
                     <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
@@ -30,7 +30,7 @@
                 <label class="col-xs-12 col-md-4 control-label" for="premisesType">What is your mode of service delivery ? <span
                         class="mandatory">*</span></label>
                 <input class="premTypeValue" type="hidden" name="premType" value="">
-                (1)
+                ${premTypeInfo}
             </div>
             <div class="row">
                 <div class="col-xs-12 col-md-4"></div>
@@ -42,7 +42,7 @@
                 <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
                         class="mandatory">*</span></label>
                 <div class=" col-xs-11 col-sm-7 col-md-5">
-                    (2)
+                    ${onSiteSelectStr}
                     <span class="error-msg"></span>
                 </div>
                 <div class="clear"></div>
@@ -51,7 +51,7 @@
                 <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
                         class="mandatory">*</span></label>
                 <div class=" col-xs-11 col-sm-7 col-md-5">
-                    (3)
+                    ${conveyanceSelectStr}
                     <span class="error-msg"></span>
                 </div>
                 <div class="clear"></div>
@@ -60,7 +60,7 @@
                 <label class="col-xs-12 col-md-4 control-label">Add or select a mode of service delivery from the list : <span
                         class="mandatory">*</span></label>
                 <div class=" col-xs-11 col-sm-7 col-md-5">
-                    (PREMOFFSITESELECT)
+                    ${offSiteSelectStr}
                     <span class="error-msg"></span>
                 </div>
                 <div class="clear"></div>
@@ -114,7 +114,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Address Type <span
                             class="mandatory">*</span></label>
                     <div class=" col-xs-7 col-sm-4 col-md-5">
-                        (4)
+                        ${onSiteAddressTypeStr}
                         <span class="error-msg"></span>
                     </div>
                     <div class="clear"></div>
@@ -184,18 +184,18 @@
                     </div>
                     <div class="clear"></div>
                 </div>
-                <div class="form-group other-lic-content">
+                <div class="form-group other-lic-content co-location-div">
                     <label class="col-xs-12 col-md-4 control-label" style="width:34%;">Are you co-locating with another
                         licensee? <span class="mandatory">*</span></label>
                     <div class=" col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
-                        <input type="hidden" name="onSiteIsOtherLic" value=""/>
+                        <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value=""/>
                         <div class="form-check col-sm-3">
-                            <input class="form-check-input other-lic" type="radio" name="otherLicence${premVal}" value="1"
+                            <input class="form-check-input other-lic co-location" type="radio" name="otherLicence${premVal}" value="1"
                                    aria-invalid="false">
                             <label class="form-check-label"><span class="check-circle"></span>Yes</label>
                         </div>
                         <div class="form-check col-sm-3">
-                            <input class="form-check-input other-lic" type="radio" name="otherLicence${premVal}" value="0"
+                            <input class="form-check-input other-lic co-location" type="radio" name="otherLicence${premVal}" value="0"
                                    aria-invalid="false">
                             <label class="form-check-label"><span class="check-circle"></span>No</label>
                         </div>
@@ -217,7 +217,7 @@
                         <label class="control-label">End</label>
                     </div>
                     <div class="col-md-2 col-xs-2">
-                        <label class="control-label">24 Hours</label>
+                        <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -434,7 +434,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Address Type <span
                             class="mandatory">*</span></label>
                     <div class=" col-xs-7 col-sm-4 col-md-5">
-                        (5)
+                        ${conveyanceAddressTypeStr}
                         <span class="error-msg"></span>
                     </div>
                     <div class="clear"></div>
@@ -508,7 +508,7 @@
                         <label class="control-label">End</label>
                     </div>
                     <div class="col-md-2 col-xs-2">
-                        <label class="control-label">24 Hours</label>
+                        <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -711,7 +711,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Address Type <span
                             class="mandatory">*</span></label>
                     <div class=" col-xs-7 col-sm-4 col-md-5">
-                        (OFFSITEADDRTYPESELECT)
+                        ${offSiteAddressTypeStr}
                         <span class="error-msg"></span>
                     </div>
                     <div class="clear"></div>
@@ -785,7 +785,7 @@
                         <label class="control-label">End</label>
                     </div>
                     <div class="col-md-2 col-xs-2">
-                        <label class="control-label">24 Hours</label>
+                        <label class="control-label">All day</label>
                     </div>
                     <div class="clear"></div>
                 </div>

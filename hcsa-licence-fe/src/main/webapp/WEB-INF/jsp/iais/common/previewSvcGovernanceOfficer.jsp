@@ -14,9 +14,9 @@
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
                             <p><strong>Clinical Governance Officer<c:if test="${currentPreviewSvcInfo.appSvcCgoDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong></p>
                         </div>
-                        <table class="col-xs-8">
+                        <table class="col-xs-12">
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation </p>
                                 </td>
                                 <td>
@@ -25,7 +25,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name </p>
                                 </td>
                                 <td>
@@ -33,7 +33,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No. </p>
                                 </td>
                                 <td>
@@ -42,7 +42,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type </p>
                                 </td>
                                 <td>
@@ -51,7 +51,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation </p>
                                 </td>
                                 <td>
@@ -61,7 +61,7 @@
 
                             <c:if test="${'DES999' == cgo.designation}">
                                 <tr>
-                                    <td class="col-xs-8">
+                                    <td class="col-xs-6">
                                     </td>
                                     <td>
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.otherDesignation}"/> </p>
@@ -71,7 +71,7 @@
 
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Type </p>
 
                                 </td>
@@ -88,7 +88,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Regn. No. </p>
                                 </td>
                                 <td>
@@ -97,7 +97,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty </p>
                                 </td>
                                 <td>
@@ -106,7 +106,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Sub-specialty</p>
                                 </td>
                                 <td>
@@ -115,7 +115,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                                 </td>
                                 <td>
@@ -123,7 +123,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Other Qualification </p>
                                 </td>
                                 <td>
@@ -132,7 +132,7 @@
                             </tr>
 
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No. </p>
                                 </td>
                                 <td>
@@ -140,7 +140,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="col-xs-8">
+                                <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address </p>
                                 </td>
                                 <td>

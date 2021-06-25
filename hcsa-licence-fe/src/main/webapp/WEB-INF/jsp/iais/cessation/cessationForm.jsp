@@ -347,23 +347,23 @@
                             </div>
                         </div>
                     </div>
-                    <br/>
-                    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-                    </form>
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                    <span style="padding-right: 10%" class="components">
-                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic"><em
-                                    class="fa fa-angle-left"></em> Back</a>
-                        </span>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                    <span style="padding-left: 73%" class="components">
-                           <a class="btn btn-primary next" href="javascript:void(0);"
-                              onclick="submitSure('submit')">Next</a>
-                        </span>
-                            </div>
+                </div>
+                <br/>
+                <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+                </form>
+                <div class="application-tab-footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                                <span style="padding-right: 10%" class="components">
+                        <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic"><em
+                                class="fa fa-angle-left"></em> Back</a>
+                    </span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                                <span style="padding-left: 73%" class="components">
+                       <a class="btn btn-primary next" href="javascript:void(0);"
+                          onclick="submitSure('submit')">Next</a>
+                    </span>
                         </div>
                     </div>
                 </div>
@@ -411,8 +411,7 @@
     }
 
     function submitSure(action) {
-            uploadFileValidate();
-            submit(action);
+        submit(action);
     }
 
     function back(action) {

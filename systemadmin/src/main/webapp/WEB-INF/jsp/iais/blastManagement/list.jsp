@@ -117,14 +117,14 @@
                                         <tr style="display: table-row;">
                                             <td>
                                                 <p><input type="checkbox" id="edit${massIndex}" name="editBlast" value="<iais:mask name='editBlast' value='${item.id}'/>"
-                                                <c:choose>
-                                                <c:when test="${!empty item.actual}">
-                                                          data-edit = "0"
-                                                </c:when>
-                                                <c:otherwise>
-                                                          data-edit = "1"
-                                                </c:otherwise>
-                                                </c:choose>
+                                                    <c:choose>
+                                                    <c:when test="${!empty item.actual}">
+                                                        data-edit = "0"
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        data-edit = "1"
+                                                    </c:otherwise>
+                                                    </c:choose>
                                                 ></p>
                                             </td>
                                             <td>
@@ -229,10 +229,10 @@
         if ($("input:checkbox:checked").length > 0) {
             var canedit = 1;
             $("input:checkbox:checked").each(function(i){
-                var edit = $(this).data("edit");
-                if(edit == 0){
-                    canedit = 0;
-                }
+               var edit = $(this).data("edit");
+               if(edit == 0){
+                   canedit = 0;
+               }
             })
 
             if(canedit == 1 ){

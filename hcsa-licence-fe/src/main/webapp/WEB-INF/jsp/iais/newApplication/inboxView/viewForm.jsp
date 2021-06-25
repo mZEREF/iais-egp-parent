@@ -28,6 +28,15 @@
                     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST007'}">
                       <%@include file="../../common/previewMedAlert.jsp"%>
                     </c:if>
+                    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST008'}">
+                      <%@include file="../../common/previewSvcVehicle.jsp"%>
+                    </c:if>
+                    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST009'}">
+                      <%@include file="../../common/previewSvcClinicalDirector.jsp"%>
+                    </c:if>
+                    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST010'}">
+                      <%@include file="../../common/previewSvcCharges.jsp"%>
+                    </c:if>
                   </c:forEach>
               </div>
           </div>

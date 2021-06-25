@@ -14,21 +14,21 @@
         <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
         <div id="clearBody">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-5 col-md-5" for="appNoPath" style="margin-top:1%;">Search by Application No.
+                        <label class="col-xs-12 col-md-5" for="appNoPath" style="margin-top:1%;">Search by Application No.
                             or Part of:</label>
-                        <div class="col-xs-7 col-md-7">
+                        <div class="col-xs-12 col-md-7">
                             <input id="appNoPath" name="appNoPath" type="text" maxlength="20"
                                    value="${param.appNoPath}">
                         </div>
                     </iais:value>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="appServiceType" style="margin-top:3%;">Service
+                        <label class="col-xs-12 col-md-4" for="appServiceType" style="margin-top:3%;">Service
                             Type:</label>
-                        <div class="col-xs-8 col-md-8">
+                        <div class="col-xs-12 col-md-8">
                             <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType"
                                          options="appServiceType" firstOption="All" value="${param.appServiceType}"/>
                         </div>
@@ -36,21 +36,21 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 14px">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-5 col-md-5" for="appTypeSelect" style="margin-top:3%;">Application
+                        <label class="col-xs-12 col-md-5" for="appTypeSelect" style="margin-top:3%;">Application
                             Type:</label>
-                        <div class="col-xs-7 col-md-7">
+                        <div class="col-xs-12 col-md-7">
                             <iais:select name="appTypeSelect" id="appTypeSelect" cssClass="appTypeSelect"
                                          options="appTypeSelect" firstOption="All" value="${param.appTypeSelect}"/>
                         </div>
                     </iais:value>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">Application
+                        <label class="col-xs-12 col-md-4" for="appStatusSelect" style="margin-top:3%;">Application
                             Status:</label>
-                        <div class="col-xs-8 col-md-8">
+                        <div class="col-xs-12 col-md-8">
                             <%String appStatusSelect = request.getParameter("appStatusSelect");%>
                             <iais:select options="appStatusSelect" cssClass="appStatusSelect" name="appStatusSelect"
                                          id="appStatusSelect" firstOption="All" value="${param.appStatusSelect}"/>
@@ -59,28 +59,28 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-5 col-md-5" for="esd" style="margin-top:3%;">Date Submitted:</label>
-                        <div class="col-xs-7 col-md-7">
+                        <label class="col-xs-12 col-md-5" for="esd" style="margin-top:3%;">Date Submitted:</label>
+                        <div class="col-xs-12 col-md-7">
 
                             <iais:datePicker id="esd" name="esd" value="${param.esd}" onchange="LimitDeadline(this.value)"/>
                         </div>
                     </iais:value>
                 </div>
-                <div class="col-md-6">
+                <div class="col-xs-12 col-md-6">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
-                        <div class="col-xs-8 col-md-8">
+                        <label class="col-xs-12 col-md-4" for="appStatusSelect" style="margin-top:3%;">To</label>
+                        <div class="col-xs-12 col-md-8">
                             <iais:datePicker id="eed" name="eed" value="${param.eed}"/>
                         </div>
                     </iais:value>
                 </div>
                 <c:if test="${!empty ADEM}">
                     <div class="row" style="margin-bottom: 37px;">
-                        <div class="col-md-6">
-                            <span class="col-xs-5 col-md-5"></span>
-                            <div class="col-md-7">
+                        <div class="col-xs-12 col-md-6">
+                            <span class="col-xs-12 col-md-5"></span>
+                            <div class="col-xs-12 col-md-7">
                                 <span class="error-msg" style="width: 150%;position: absolute;">${ADEM}</span>
                             </div>
                         </div>
@@ -227,7 +227,8 @@
                                                        || app.status == 'APST071' || app.status == 'APST034' || app.status == 'APST019'
                                                        || app.status == 'APST020' || app.status == 'APST022' || app.status == 'APST032'
                                                        || app.status == 'APST048' || app.status == 'APST049' || app.status == 'APST039'
-                                                       || app.status == 'APST040' || app.status == 'APST011' || app.status == 'APST004'}">
+                                                       || app.status == 'APST040' || app.status == 'APST011' || app.status == 'APST004'
+                                                       || app.status =='APST033'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">

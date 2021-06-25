@@ -37,30 +37,30 @@
                                                                     style="z-index: 10" >i</a></span>
             <span class="right-content">${self_ack009}</span>
         </label>
-        <%--        <div class="visible-lg">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack020}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 275px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-md">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack020}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 170px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-sm">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack020}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 170px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-xs">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack020}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 240px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
+<%--        <div class="visible-lg">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack020}' data-original-title=''--%>
+<%--               style="position: absolute;left: 275px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-md">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack020}' data-original-title=''--%>
+<%--               style="position: absolute;left: 170px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-sm">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack020}' data-original-title=''--%>
+<%--               style="position: absolute;left: 170px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-xs">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack020}' data-original-title=''--%>
+<%--               style="position: absolute;left: 240px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
     </div>
 
     <div class="form-check progress-step-check" style="width: 65%">
@@ -75,30 +75,30 @@
                                                                      style="z-index: 10" >i</a></span>
             <span class="right-content">${self_ack010}</span>
         </label>
-        <%--        <div class="visible-lg">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack021}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 285px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-md">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack021}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-sm">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack021}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-xs">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack021}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 250px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
+<%--        <div class="visible-lg">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack021}' data-original-title=''--%>
+<%--               style="position: absolute;left: 285px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-md">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack021}' data-original-title=''--%>
+<%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-sm">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack021}' data-original-title=''--%>
+<%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-xs">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack021}' data-original-title=''--%>
+<%--               style="position: absolute;left: 250px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
     </div>
     <div class="form-check progress-step-check" style="width: 65%">
         <input class="form-check-input" id="amendLicence3"
@@ -112,30 +112,30 @@
                                                                      style="z-index: 10" >i</a></span>
             <span class="right-content">${self_ack011}</span>
         </label>
-        <%--        <div class="visible-lg">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack024}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 285px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-md">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack024}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 180px; top: 10px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-sm">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack024}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-xs">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack024}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 250px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
+<%--        <div class="visible-lg">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack024}' data-original-title=''--%>
+<%--               style="position: absolute;left: 285px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-md">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack024}' data-original-title=''--%>
+<%--               style="position: absolute;left: 180px; top: 10px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-sm">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack024}' data-original-title=''--%>
+<%--               style="position: absolute;left: 180px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-xs">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack024}' data-original-title=''--%>
+<%--               style="position: absolute;left: 250px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
     </div>
 
     <div class="form-check progress-step-check" style="width: 65%">
@@ -150,30 +150,40 @@
                                                                       style="z-index: 10" >i</a></span>
             <span class="right-content">${self_ack012}</span>
         </label>
-        <%--        <div class="visible-lg">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack022}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 298px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-md">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack022}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 190px; top: 20px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-sm">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack022}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 190px; top: 20px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
-        <%--        <div class="visible-xs">--%>
-        <%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
-        <%--               data-toggle="tooltip" data-html="true"--%>
-        <%--               title='${inbox_ack022}' data-original-title=''--%>
-        <%--               style="position: absolute;left: 260px; top: 15px;z-index: 10" >i</a>--%>
-        <%--        </div>--%>
+<%--        <div class="visible-lg">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack022}' data-original-title=''--%>
+<%--               style="position: absolute;left: 298px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-md">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack022}' data-original-title=''--%>
+<%--               style="position: absolute;left: 190px; top: 20px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-sm">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack022}' data-original-title=''--%>
+<%--               style="position: absolute;left: 190px; top: 20px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
+<%--        <div class="visible-xs">--%>
+<%--            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);"--%>
+<%--               data-toggle="tooltip" data-html="true"--%>
+<%--               title='${inbox_ack022}' data-original-title=''--%>
+<%--               style="position: absolute;left: 260px; top: 15px;z-index: 10" >i</a>--%>
+<%--        </div>--%>
     </div>
 
+    <div class="form-check progress-step-check" style="width: 65%">
+        <input class="form-check-input" id="amendLicence5"
+               type="radio" name="amendLicenceType"
+               aria-invalid="false">
+        <label class="form-check-label" for="amendLicence5">
+            <span class="check-circle"></span>
+            <span class="left-content">Amend Vehicles (EAS/MTS only)</span>
+            <span class="right-content">${self_ack013}</span>
+        </label>
+    </div>
 </div>

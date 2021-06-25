@@ -1,0 +1,524 @@
+<style>
+    input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color:#999999 !important;
+    }
+    .disabled-placeHolder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color:#999999!important;
+    }
+    .disabled-placeHolder::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
+        color:#999999!important;
+    }
+    .radio-disabled::before{
+        background-color: #999999 !important;
+        /*border: 1px solid #999999 !important;*/
+    }
+    .radio-disabled{
+        border-color: #999999 !important;
+    }
+</style>
+<div class="row">
+    <div class="col-xs-12 col-md-12 text-right">
+        <c:if test="${AppSubmissionDto.needEditController }">
+            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                <div class="app-font-size-16">
+                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                </div>
+            </c:if>
+            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+        </c:if>
+    </div>
+</div>
+
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+
+
+<%--<c:set var="clinicalDirectorDtoList" value="${clinicalDirectorDtoList}"/>--%>
+<div class="row cdForm">
+    <div class="col-md-12 col-xs-12">
+        <div class="row control control-caption-horizontal">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                    <label  class="control-label control-set-font control-font-label">
+                        <div style="font-weight: 600;font-size: 2.2rem">
+                            <strong>Clinical Director</strong>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <c:choose>
+        <c:when test="${empty clinicalDirectorDtoList}">
+            <c:set var="pageLength" value="1"/>
+        </c:when>
+        <c:when test="${clinicalDirectorConfig.mandatoryCount > clinicalDirectorDtoList.size() }">
+            <c:set var="pageLength" value="${clinicalDirectorConfig.mandatoryCount}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="pageLength" value="${clinicalDirectorDtoList.size()}"/>
+        </c:otherwise>
+    </c:choose>
+    <input type="hidden" name="cdLength" value="${pageLength}" />
+    <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="cdStat">
+        <c:set var="index" value="${cdStat.index}" />
+        <c:set var="clinicalDirectorDto" value="${clinicalDirectorDtoList[index]}"/>
+        <%@include file="clinicalDirectorDetail.jsp" %>
+    </c:forEach>
+
+    <c:if test="${ requestInformationConfig==null}">
+        <c:choose>
+            <c:when test="${!empty clinicalDirectorDtoList}">
+                <c:set var="cdLength" value="${clinicalDirectorDtoList.size()}"/>
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test="${AppSubmissionDto.needEditController}">
+                        <c:set var="cdLength" value="0"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="cdLength" value="${clinicalDirectorConfig.mandatoryCount}"/>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+        <c:set var="needAddPsn" value="true"/>
+        <c:choose>
+            <c:when test="${clinicalDirectorConfig.status =='CMSTAT003'}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${cdLength >= clinicalDirectorConfig.maximumCount}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
+        </c:choose>
+        <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+            <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
+                <span style="">+ Add Clinical Director</span>
+            </span>
+        </div>
+    </c:if>
+</div>
+<%@include file="../../common/prsLoading.jsp"%>
+<script>
+    $(document).ready(function () {
+
+        holdCerByEMS();
+        noRegWithProfBoard();
+        addClinicalDirectorBtn();
+        removeClinicalDirector();
+        showOtherSpecialty();
+        profRegNoBlur();
+        $('select.specialty').trigger('change');
+        $("input[name='noRegWithProfBoard']").trigger('change');
+        doEdite();
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //rfc,renew,rfi
+        if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
+            disabledPage();
+            $('select').prop('disabled',true);
+            $('.date_picker').addClass('disabled-placeHolder');
+            $('input.holdCerByEMS:checked').each(function () {
+                $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
+            });
+        }
+
+        // init
+        $('div.clinicalDirectorContent').each(function () {
+            var assignSelVal = $(this).find('.assignSel:input').val();
+            console.info("init ---- " + assignSelVal);
+            if (isEmpty(assignSelVal)) {
+                $(this).find('select.assignSel option').eq(0).prop("selected", true);
+            } else if ("-1" != assignSelVal && 'newOfficer' != assignSelVal) {
+                var data;
+                try{
+                    data = $.parseJSON($(this).find('.psnEditField:input').val());
+                } catch (e) {
+                    data = {};
+                };
+                disableContent($(this).find('div.person-detail'), data);
+            }
+            $(this).find('select').niceSelect("update");
+            //trigger prs
+            $(this).find('.profRegNo').trigger('blur');
+        });
+        assignSelectBindEvent();
+    });
+
+    var holdCerByEMS = function() {
+        $('.holdCerByEMS').unbind('click');
+        $('.holdCerByEMS').click(function () {
+            var holdCerByEMSVal = $(this).val();
+            $(this).closest('div.holdCerByEMSDiv').find('input[name="holdCerByEMSVal"]').val(holdCerByEMSVal);
+        });
+    };
+
+    var noRegWithProfBoard = function () {
+        $('.noRegWithProfBoard').unbind('click');
+        $('.noRegWithProfBoard').click(function () {
+            var noRegWithProfBoardVal = "";
+            if($(this).prop('checked')){
+                noRegWithProfBoardVal = $(this).val();
+            }
+            $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
+        });
+    };
+
+    var showOtherSpecialty = function () {
+        $('select.specialty').unbind('change');
+        $('select.specialty').change(function () {
+            var $otherSpecialtyEle = $(this).closest('.clinicalDirectorContent').find('div.otherSpecialtyDiv');
+            var val = $(this).val();
+            if ('EAMS006' == val) {
+                $otherSpecialtyEle.removeClass('hidden');
+            } else {
+                $otherSpecialtyEle.addClass('hidden');
+            }
+        });
+    };
+
+    var addClinicalDirectorBtn = function () {
+        $('.addClinicalDirectorBtn').unbind('click');
+        $('.addClinicalDirectorBtn').click(function () {
+            showWaiting();
+            var cdLength = $('.clinicalDirectorContent').length;
+
+            $.ajax({
+                url: '${pageContext.request.contextPath}/clinical-director-html',
+                dataType: 'json',
+                data: {
+                    "cdLength": cdLength
+                },
+                type: 'POST',
+                success: function (data) {
+                    if ('200' == data.resCode) {
+                        $('.addClinicalDirectorDiv').before(data.resultJson+'');
+                        //
+                        removeClinicalDirector();
+                        showOtherSpecialty();
+                        noRegWithProfBoard();
+                        assignSelectBindEvent();
+                        profRegNoBlur();
+                        $('.date_picker').datepicker({
+                            format:"dd/mm/yyyy",
+                            autoclose:true,
+                            todayHighlight:true,
+                            orientation:'bottom'
+                        });
+
+
+                        var cdLength = $('.clinicalDirectorContent').length;
+                        $('input[name="cdLength"]').val(cdLength);
+                        //hidden add more
+                        if (cdLength >= '${clinicalDirectorConfig.maximumCount}') {
+                            $('.addClinicalDirectorDiv').addClass('hidden');
+                        }
+                        if(cdLength <= '${clinicalDirectorConfig.mandatoryCount}'){
+                            //remove del btn for mandatory count
+
+                        }
+                        $('.clinicalDirectorContent').each(function (k,v) {
+                            $(this).find('.assign-psn-item').html(k+1);
+                        });
+                        $('#isEditHiddenVal').val('1');
+                    }
+                    dismissWaiting();
+                },
+                error: function (data) {
+                    console.log("err");
+                    dismissWaiting();
+                }
+            });
+        });
+    };
+
+    var removeClinicalDirector = function () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            $(this).closest('div.clinicalDirectorContent').remove();
+
+            var cdLength = $('.clinicalDirectorContent').length;
+            $('input[name="cdLength"]').val(cdLength);
+            //reset number
+            $('div.clinicalDirectorContent').each(function (k,v) {
+                $(this).find('.assign-psn-item').html(k+1);
+
+                $(this).find('input.profRegNo').prop('name','profRegNo'+k);
+                $(this).find('input.name').prop('name','name'+k);
+                $(this).find('input.idNo').prop('name','idNo'+k);
+                $(this).find('input.otherSpecialty').prop('name','otherSpecialty'+k);
+                $(this).find('input.specialtyGetDate').prop('name','specialtyGetDate'+k);
+                $(this).find('input.typeOfCurrRegi').prop('name','typeOfCurrRegi'+k);
+                $(this).find('input.currRegiDate').prop('name','currRegiDate'+k);
+                $(this).find('input.praCerEndDate').prop('name','praCerEndDate'+k);
+                $(this).find('input.typeOfRegister').prop('name','typeOfRegister'+k);
+                $(this).find('input.holdCerByEMSVal').prop('name','holdCerByEMSVal'+k);
+                $(this).find('input.holdCerByEMS').prop('name','holdCerByEMS'+k);
+                $(this).find('input.relevantExperience').prop('name','relevantExperience'+k);
+                $(this).find('input.aclsExpiryDate').prop('name','aclsExpiryDate'+k);
+                $(this).find('input.bclsExpiryDate').prop('name','bclsExpiryDate'+k);
+                $(this).find('input.mobileNo').prop('name','mobileNo'+k);
+                $(this).find('input.emailAddr').prop('name','emailAddr'+k);
+                $(this).find('input.noRegWithProfBoardVal').prop('name','noRegWithProfBoardVal'+k);
+                $(this).find('input.noRegWithProfBoard').prop('id','noRegWithProfBoard'+k);
+                $(this).find('label.noRegWithProfBoard').prop('for','noRegWithProfBoard'+k);
+                $(this).find('input.transportYear').prop('name','transportYear'+k);
+                $(this).find('input.isPartEdit').prop('name','isPartEdit'+k);
+                $(this).find('input.cdIndexNo').prop('name','cdIndexNo'+k);
+                $(this).find('input.licPerson').prop('name','licPerson'+k);
+
+                $(this).find('select.assignSel').prop('name','assignSel'+k);
+                $(this).find('select.professionBoard').prop('name','professionBoard'+k);
+                $(this).find('select.salutation').prop('name','salutation'+k);
+                $(this).find('select.idType').prop('name','idType'+k);
+                $(this).find('select.designation').prop('name','designation'+k);
+                $(this).find('select.specialty').prop('name','specialty'+k);
+            });
+            $('div.clinicalDirectorContent').find('select').niceSelect('update');
+            //display add more
+            if (cdLength < '${clinicalDirectorConfig.maximumCount}') {
+                $('.addClinicalDirectorDiv').removeClass('hidden');
+            }
+            if(cdLength <= 1){
+                $('.clinicalDirectorContent:eq(0) .assign-psn-item').html('');
+            }
+            $('#isEditHiddenVal').val('1');
+        });
+    }
+
+    var doEdite = function () {
+        $('a.cdEdit').click(function () {
+            var $currContent = $(this).closest('div.clinicalDirectorContent');
+            $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('.edit-content').addClass('hidden');
+            $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('div.nice-select').removeClass('disabled');
+            $currContent.find('input[type="text"]').css('border-color', '');
+            $currContent.find('input[type="text"]').css('color', '');
+            $currContent.find('.date_picker').removeClass('disabled-placeHolder');
+            $currContent.find('input.holdCerByEMS').each(function () {
+                $(this).closest('div').find('label span.check-circle').removeClass('radio-disabled');
+            });
+            $currContent.find('input[type="checkbox"]').prop('disabled',false);
+            $currContent.find('input[type="radio"]').prop('disabled',false);
+            $currContent.find('.assignSel').prop('disabled',false);
+            $('#isEditHiddenVal').val('1');
+
+            var appType = $('input[name="applicationType"]').val();
+            var assignSelectVal = $currContent.find('select.assignSel').val();
+            var licPerson = $currContent.find('input.licPerson').val();
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            if(needControlName){
+                var prgNo = $currContent.find('input.profRegNo').val();
+                if(!isEmpty(prgNo)){
+                    controlEdit($currContent.find('input.field-name'), 'disabled', false);
+                }
+            }
+        });
+    }
+
+    function assignSelectBindEvent() {
+        $('.assignSel').on('change', function() {
+            clearErrorMsg();
+            assignSel(this, $(this).closest('div.clinicalDirectorContent').find('div.person-detail'));
+        });
+    }
+
+    var assignSel = function (srcSelector, targetSelector) {
+        var assignSelVal = $(srcSelector).val();
+        // console.info(assignSelVal);
+        var $content = $(targetSelector);
+        // init
+        $content.find(':input').css('border-color','');
+        $content.find(':input').css('color','');
+        $content.find(':input').prop('disabled', false);
+        <c:if test="${'true' == canEdit}">
+        $content.find('input.cdIndexNo').val('');
+        </c:if>
+        $content.find('.specialty-label').html('');
+        if('-1' == assignSelVal) {
+            $content.addClass('hidden');
+            clearFields($content);
+        } else if('newOfficer' == assignSelVal) {
+            $content.removeClass('hidden');
+            clearFields($content);
+        } else {
+            $content.removeClass('hidden');
+            var arr = assignSelVal.split(',');
+            var idType = arr[0];
+            var idNo = arr[1];
+            loadSelectPsn($content, idType, idNo, 'CD', fillClinicalDirector);
+        }
+    }
+
+    function fillClinicalDirector($current, data, psnType) {
+        if (isEmpty($current)) {
+            return;
+        }
+        if (isEmpty(data)) {
+            $current.addClass('hidden');
+            clearFields($content);
+        }
+        $.each(data, function(i, val) {
+            if (i == 'psnEditDto') {
+                //console.info(val);
+                disableContent($current, val);
+            } else if(i == 'licPerson'){
+                var licPerson = data.licPerson;
+                // alert(licPerson);
+                if ('1' == licPerson){
+                    $current.find('input.licPerson').val('1');
+                }else{
+                    $current.find('input.licPerson').val('0');
+                }
+            } else if(i == 'speciality'){
+                var speciality = data.speciality;
+                if(isEmpty(speciality)){
+                    $current.find('.specialty-label').html('');
+                }else{
+                    $current.find('.specialty-label').html(speciality);
+                }
+
+            } else {
+                var $input = $current.find('.' + i + ':input');
+                if ($input.length == 0) {
+                    return;
+                }
+                var type = $input[0].type, tag = $input[0].tagName.toLowerCase();
+                //console.info("Field - " + i + " : " + val);
+                //console.info("Tag - " + tag + " : " + type);
+                if (type == 'radio') {
+                    $input.filter('[value="' + val + '"]').prop('checked', true);
+                    $input.filter(':not([value="' + val + '"])').prop('checked', false);
+                } else if (type == 'checkbox') {
+                    if ($.isArray(val)) {
+                        $input.prop('checked', false);
+                        for (var v in val) {
+                            if (curVal == v) {
+                                $(this).prop('checked', true);
+                            }
+                        }
+                    } else {
+                        $input.filter('[value="' + val + '"]').prop('checked', true);
+                        $input.filter(':not([value="' + val + '"])').prop('checked', false);
+                    }
+                } else if (tag == 'select') {
+                    var oldVal = $input.val();
+                    $input.val(val);
+                    if (isEmpty($input.val())) {
+                        $input[0].selectedIndex = 0;
+                    }
+                    if ($input.val() != oldVal) {
+                        $input.niceSelect("update");
+                    }
+                } else {
+                    $input.val(val);
+                }
+            }
+        });
+    }
+
+    function disableContent($current, data) {
+        if (isEmpty(data) || isEmpty($current)) {
+            return;
+        }
+        $.each(data, function(i, val) {
+            //console.info(i + " : " + val);
+            var $input = $current.find('.' + i + ':input');
+            if ($input.length > 0 && !val) {
+                $input.prop('disabled', true);
+                $input.css('border-color','#ededed');
+                $input.css('color','#999');
+                if ($input[0].tagName.toLowerCase() == 'select') {
+                    $input.niceSelect("update");
+                }
+            }
+        });
+    }
+
+    var profRegNoBlur = function () {
+        $('input.profRegNo').unbind('blur');
+        $('input.profRegNo').blur(function(event, action){
+            var prgNo = $(this).val();
+            var $prsLoadingContent = $(this).closest('div.clinicalDirectorContent');
+            //prs loading
+            prdLoading($prsLoadingContent, prgNo, action, prsCallBackFuns);
+        });
+    };
+
+    var prsCallBackFuns ={
+        fillData:function ($prsLoadingEle, data, needControlName) {
+            var specialty = data.specialty ;
+            if(isEmpty(specialty)){
+                specialty = '';
+            }
+            var name = data.name;
+            /*if(!isEmpty(data) && !isEmpty(data.regno) && !isEmpty(name) && isEmpty(specialty)){
+                specialty = 'No specialty';
+            }*/
+            var specialtyGetDate = '';
+            if(!isEmpty(data.entryDateSpecialist)){
+                specialtyGetDate = data.entryDateSpecialist[0];
+            }
+            var typeOfCurrRegi = '';
+            var currRegiDate = '';
+            var praCerEndDate = '';
+            var typeOfRegister = '';
+            if(!isEmpty(data.registration)){
+                var registration = data.registration[0];
+                typeOfCurrRegi = registration['Registration Type'];
+                currRegiDate = registration['Registration Start Date'];
+                praCerEndDate = registration['PC End Date'];
+                typeOfRegister = registration['Register Type'];
+            }
+
+
+            $prsLoadingEle.find('.specialty-label').html(specialty);
+            if(needControlName){
+                $prsLoadingEle.find('.name').val(name);
+            }
+            $prsLoadingEle.find('.specialtyGetDate').val(specialtyGetDate);
+            $prsLoadingEle.find('.typeOfCurrRegi').val(typeOfCurrRegi);
+            $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
+            $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
+            $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
+        },
+        setEdit:function ($prsLoadingEle, propStyle, canEdit, needControlName) {
+            var nameEle = $prsLoadingEle.find('.name');
+            var specialtyGetDateEle = $prsLoadingEle.find('.specialtyGetDate');
+            var typeOfCurrRegiEle = $prsLoadingEle.find('.typeOfCurrRegi');
+            var currRegiDateEle = $prsLoadingEle.find('.currRegiDate');
+            var praCerEndDateEle = $prsLoadingEle.find('.praCerEndDate');
+            var typeOfRegisterEle = $prsLoadingEle.find('.typeOfRegister');
+            if(needControlName){
+                controlEdit(nameEle, propStyle, canEdit);
+            }
+            controlEdit(specialtyGetDateEle, propStyle, canEdit);
+            controlEdit(typeOfCurrRegiEle, propStyle, canEdit);
+            controlEdit(currRegiDateEle, propStyle, canEdit);
+            controlEdit(praCerEndDateEle, propStyle, canEdit);
+            controlEdit(typeOfRegisterEle, propStyle, canEdit);
+        }
+    };
+    $("input[name='noRegWithProfBoard']").change(function (){
+
+        if($(this).parent().prev().val()==1){
+            if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
+                $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+                $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
+            }
+        }else {
+            $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').remove();
+            $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
+        }
+    });
+</script>

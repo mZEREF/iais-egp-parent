@@ -227,6 +227,7 @@ public class InsRepServiceImpl implements InsRepService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
+                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");
@@ -254,6 +255,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     reportNcRectifiedDto.setNcs(preInspNc.getNcs());
+                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
@@ -961,8 +963,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routTaskToRoutBackAo3(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
-        {
+    public void routTaskToRoutBackAo3(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks,boolean ao1Role) {
             String serviceId = StringUtil.isNotEmpty(applicationDto.getRoutingServiceId()) ? applicationDto.getRoutingServiceId() : applicationDto.getServiceId();
             String status = applicationDto.getStatus();
             String applicationNo = applicationDto.getApplicationNo();
@@ -988,17 +989,21 @@ public class InsRepServiceImpl implements InsRepService {
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
             updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
             completedTask(taskDto, applicationNo);
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
-            String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+            if(RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                String workGroupId = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_AO3, applicationDto).getGroupId();
+                taskDto.setWkGrpId(StringUtil.isNotEmpty(workGroupId) ? workGroupId : "4C43D448-F90C-EA11-BE7D-000C29F371DC");
+            }
             List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
             taskService.createTasks(taskDtos);
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
-            String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+            String groupId1 =  ao1Role ? getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto).getGroupId() : getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto).getGroupId();
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
+            if(RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                subStage = null;
+                stageId = HcsaConsts.ROUTING_STAGE_AO3;
+            }
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(),stageId, null, null, roleId, groupId1, subStage);
 
         }
-    }
 
     @Override
     public InspectionReportDto getInspectorUser(TaskDto taskDto, LoginContext loginContext) {

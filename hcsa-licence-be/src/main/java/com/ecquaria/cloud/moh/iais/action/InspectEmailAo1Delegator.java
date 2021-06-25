@@ -1,12 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -19,8 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -30,13 +28,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -58,27 +53,22 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.util.WorkDayCalculateUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
-import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -100,25 +90,22 @@ import java.util.Map;
  */
 @Delegator("validateEmailDelegator")
 @Slf4j
-public class InspectEmailAo1Delegator {
+public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDelegator{
     @Autowired
     InspEmailService inspEmailService;
     @Autowired
     InspectionService inspectionService;
-    @Autowired
-    private TaskService taskService;
+
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-    @Autowired
-    InsepctionNcCheckListService insepctionNcCheckListService;
+
     @Autowired
     private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    FillupChklistService fillupChklistService;
+
     @Autowired
     OrganizationClient organizationClient;
     @Autowired
@@ -133,6 +120,8 @@ public class InspectEmailAo1Delegator {
     ApplicationClient applicationClient;
     @Autowired
     ApplicationService applicationService;
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
     private static final String ADCHK_DTO="adchklDto";
     private static final String TASK_DTO="taskDto";
     private static final String APP_VIEW_DTO="applicationViewDto";
@@ -147,11 +136,12 @@ public class InspectEmailAo1Delegator {
     private static final String DRA_EMA_ID="draftEmailId";
 
     public void start(BaseProcessClass bpc){
-        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request=bpc.request;
+        clearSessionForStartCheckList(request);
         String taskId = "";
         try{
             taskId = ParamUtil.getMaskedString(request,"taskId");
@@ -170,43 +160,12 @@ public class InspectEmailAo1Delegator {
             return;
         }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
-        String appPremCorrId = taskDto.getRefNo();
-        List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-        List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-        InspectionFillCheckListDto commonDto = null;
-        if(commonList!=null && !commonList.isEmpty()){
-            commonDto = commonList.get(0);
-        }
-        InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
-        AdCheckListShowDto adchklDto = insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
-        ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        appViewDto.setCurrentStatus(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appViewDto.getApplicationDto().getStatus()}).get(0).getText());
-
-        // change common data;
-        insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
-        //  change service checklist data
-        if(serListDto != null){
-            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
-            if(fdtoList != null && fdtoList.size() >0){
-                for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
-                    insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
-                }
-            }
-        }
-        //set num
-        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-        ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
-        ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
-        ParamUtil.setSessionAttr(request,COM_DTO,commonDto);
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
-        ParamUtil.setSessionAttr(request,MSG_CON, null);
-        ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
+        setCheckDataHaveFinished(request,taskDto);
+        ParamUtil.setSessionAttr(request,MSG_CON, null);;
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
         //get selections dd hh
-        ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
-        ParamUtil.setSessionAttr(request,"ddSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(false));
-        ParamUtil.setSessionAttr(request,"frameworknOption",(Serializable) LicenceUtil.getIncludeRiskTypes());
+        setSelectionsForDDMMAndAuditRiskSelect(request);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request,"backSearchParamFromHcsaApplication",searchParamGroup);
     }
@@ -494,7 +453,12 @@ public class InspectEmailAo1Delegator {
                         for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                         ) {
                             stringBuilder.append("<tr><td>").append(++i);
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+//EAS or MTS
+                            if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
+                                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                            }else {
+                                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            }
                             stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
                             stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getNcs()));
                             stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
@@ -634,51 +598,6 @@ public class InspectEmailAo1Delegator {
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
     }
 
-
-    public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
-        InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
-            temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
-        }
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
-        return cDto;
-    }
-
-    public InspectionFDtosDto getDataFromPage(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
-        String tcu = ParamUtil.getString(request,"tuc");
-        String bestpractice = ParamUtil.getString(request,"bestpractice");
-        String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        serListDto.setTcuRemark(tcuremark);
-        serListDto.setTuc(tcu);
-        serListDto.setBestPractice(bestpractice);
-        return serListDto;
-    }
-
-    public AdCheckListShowDto getAdhocDtoFromPage(HttpServletRequest request){
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,ADCHK_DTO);
-        List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
-        if(itemDtoList!=null && !itemDtoList.isEmpty()){
-            for(AdhocNcCheckItemDto temp:itemDtoList){
-                String answer = ParamUtil.getString(request,temp.getId()+"adhocrad");
-                String remark = ParamUtil.getString(request,temp.getId()+"adhocremark");
-                String rec = ParamUtil.getString(request,temp.getId()+"adhocrec");
-                temp.setAdAnswer(answer);
-                temp.setRemark(remark);
-                temp.setRectified(!StringUtil.isEmpty(rec)&&"No".equals(answer));
-            }
-        }
-        showDto.setAdItemList(itemDtoList);
-        return showDto;
-    }
-
-
     private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
                                                                          TaskDto taskDto, String userId, String remarks,String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
@@ -736,141 +655,6 @@ public class InspectEmailAo1Delegator {
         ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
     }
 
-    public InspectionFDtosDto getServiceCheckListDataFormViewPage(HttpServletRequest request){
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
-        if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fdto:serListDto.getFdtoList()){
-                if(fdto!=null&&!IaisCommonUtils.isEmpty(fdto.getCheckList())){
-                    List<InspectionCheckQuestionDto> checkListDtoList = fdto.getCheckList();
-                    for(InspectionCheckQuestionDto temp:checkListDtoList){
-                        getServiceData(temp,fdto,request);
-                    }
-                    fillupChklistService.fillInspectionFillCheckListDto(fdto);
-                }
-            }
-        }
-        return serListDto;
-    }
-
-    public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
-        String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
-        String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
-        if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
-            temp.setRectified(true);
-        }else{
-            temp.setRectified(false);
-        }
-        temp.setChkanswer(answer);
-        temp.setRemark(remark);
-    }
-
-    private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
-        InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SER_LIST_DTO);
-        String tcuflag = ParamUtil.getString(request,"tcuType");
-        String tcu = null;
-        if(!StringUtil.isEmpty(tcuflag)){
-            tcu = ParamUtil.getString(request,"tuc");
-        }
-        String bestpractice = ParamUtil.getString(request,"bestpractice");
-        String tcuremark = ParamUtil.getString(request,"tcuRemark");
-        String otherOfficers = ParamUtil.getString(request,"otherinspector");
-
-        //startHour   startHourMin  endHour endHourMin
-        String inspectionDate = ParamUtil.getString(request,"inspectionDate");
-        String startHour = ParamUtil.getString(request,"startHour");
-        String startMin = ParamUtil.getString(request,"startHourMin");
-        String endHour = ParamUtil.getString(request,"endHour");
-        String endMin = ParamUtil.getString(request,"endHourMin");
-        String startTime = startHour+" : "+startMin;
-        String endTime =  endHour+" : "+endMin;
-        serListDto.setStartTime(startTime);
-        serListDto.setEndTime(endTime);
-        serListDto.setStartHour(startHour);
-        serListDto.setEndHour(endHour);
-        serListDto.setStartMin(startMin);
-        serListDto.setEndMin(endMin);
-        serListDto.setInspectionDate(inspectionDate);
-        serListDto.setOtherinspectionofficer(otherOfficers);
-        serListDto.setTcuRemark(tcuremark);
-        if(!StringUtil.isEmpty(tcuflag)){
-            serListDto.setTcuFlag(true);
-            serListDto.setTuc(tcu);
-        }else{
-            serListDto.setTcuFlag(false);
-            serListDto.setTuc(null);
-        }
-        serListDto.setBestPractice(bestpractice);
-
-        // set litter file
-        String litterFile =  ParamUtil.getString(request,"litterFile" );
-        if(!StringUtil.isEmpty(litterFile)){
-            String litterFileId =  ParamUtil.getString(request,"litterFileId" );
-            CommonsMultipartFile file= (CommonsMultipartFile) request.getFile("selectedFileView");
-            if(StringUtil.isEmpty(litterFileId) && file != null && file.getSize() != 0){
-                if (!StringUtil.isEmpty(file.getOriginalFilename())) {
-                    file.getFileItem().setFieldName("selectedFile");
-                    TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request, TASK_DTO);
-                    String correlationId = taskDto.getRefNo();
-                    AppPremisesSpecialDocDto appIntranetDocDto = new AppPremisesSpecialDocDto();
-                    appIntranetDocDto.setDocName(litterFile);
-                    appIntranetDocDto.setAppPremCorreId(correlationId);
-                    appIntranetDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
-                    long size = file.getSize()/1024;
-                    if(size <= Integer.MAX_VALUE ){
-                        appIntranetDocDto.setDocSize((int)size);
-                    }else {
-                        appIntranetDocDto.setDocSize(Integer.MAX_VALUE);
-                    }
-                    //delete file
-                    insepctionNcCheckListService.deleteInvalidFile(serListDto);
-                    //save file
-                    if( size <= 10240) {
-                        appIntranetDocDto.setFileRepoId(insepctionNcCheckListService.saveFiles(file));
-                    }
-                    serListDto.setAppPremisesSpecialDocDto(appIntranetDocDto);
-                }
-            }
-        }else {
-            //delete file
-            insepctionNcCheckListService.deleteInvalidFile(serListDto);
-            serListDto.setAppPremisesSpecialDocDto(null);
-            // serListDto.setFile(null);
-        }
-
-        ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
-        getAuditData(request);
-        return serListDto;
-    }
-
-    private void  getAuditData(MultipartHttpServletRequest request)throws IOException {
-        ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
-        if (appViewDto != null && appViewDto.getLicPremisesAuditDto() != null){
-            LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
-            String framework = ParamUtil.getString(request,"framework");
-            String periods = ParamUtil.getString(request,"periods");
-            String frameworkRemarks = ParamUtil.getString(request,"frameworkRemarks");
-            if( !StringUtil.isEmpty(framework) && framework.equalsIgnoreCase("0")){
-                licPremisesAuditDto.setInRiskSocre(0);
-                if(!StringUtil.isEmpty(periods)){
-                    licPremisesAuditDto.setIncludeRiskType(periods);
-                    if(periods.equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
-                        licPremisesAuditDto.setLgrRemarks(frameworkRemarks );
-                    } else {
-                        licPremisesAuditDto.setLgrRemarks(null);
-                    }
-                } else {
-                    licPremisesAuditDto.setIncludeRiskType(null);
-                    licPremisesAuditDto.setLgrRemarks(null);
-                }
-            }else {
-                licPremisesAuditDto.setInRiskSocre(1);
-                licPremisesAuditDto.setIncludeRiskType(null);
-                licPremisesAuditDto.setLgrRemarks(null);
-            }
-            ParamUtil.setSessionAttr(request,APP_VIEW_DTO,appViewDto);
-        }
-    }
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{
         log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);

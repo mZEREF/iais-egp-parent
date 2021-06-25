@@ -18,6 +18,7 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,7 +66,7 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = MiscUtil.generateFile(file.getOriginalFilename());
+            File toFile = MiscUtil.generateFile(FilenameUtils.getName(file.getOriginalFilename()));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
