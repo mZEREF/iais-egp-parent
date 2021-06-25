@@ -40,7 +40,7 @@
                         <p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p>
                         <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
                         <c:if test="${dAmount!='$0.0'}">
-                            <p class="ack-font-14">Transactional Information:</p>
+                            <p class="ack-font-14">Transactional details:</p>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
