@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
@@ -68,8 +69,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -649,6 +652,20 @@ public class InterInboxDelegator {
      */
     public void licDoRenew(BaseProcessClass bpc) throws IOException  {
         boolean result = true;
+        List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = hcsaConfigClient.getActiveBundleDtoList().getEntity();
+        Map<String,List<HcsaFeeBundleItemDto>> map=new HashMap<>(10);
+        if(hcsaFeeBundleItemDtos!=null){
+            hcsaFeeBundleItemDtos.forEach((v)->{
+                List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(v.getBundleId());
+                if(hcsaFeeBundleItemDtos1==null){
+                    hcsaFeeBundleItemDtos1=new ArrayList<>();
+                    hcsaFeeBundleItemDtos1.add(v);
+                    map.put(v.getBundleId(),hcsaFeeBundleItemDtos1);
+                }else {
+                    hcsaFeeBundleItemDtos1.add(v);
+                }
+            });
+        }
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String tmp = MessageUtil.getMessageDesc("INBOX_ACK015");
@@ -681,8 +698,7 @@ public class InterInboxDelegator {
                 }
             }
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-            for (String licId:licIdValue
-                 ) {
+            for (String licId:licIdValue) {
                 errorMap = inboxService.checkRenewalStatus(licId);
                 if(!(errorMap.isEmpty())){
                     String licenseNo = errorMap.get("errorMessage");
@@ -703,7 +719,64 @@ public class InterInboxDelegator {
                     result = false;
                 }
             }
+            String bundle = bpc.request.getParameter("bundle");
+            if(result){
+                if("no".equals(bundle)){
 
+                }else if("yes".equals(bundle)){
+                    List<LicenceDto> bundleLicenceDtos = (List<LicenceDto> )bpc.request.getSession().getAttribute("bundleLicenceDtos");
+                    if(bundleLicenceDtos!=null){
+                        for (LicenceDto v : bundleLicenceDtos) {
+                            licIdValue.add(v.getId());
+                        }
+                    }
+                }else {
+                    List<HcsaServiceDto> entity = hcsaConfigClient.getActiveServices().getEntity();
+                    Map<String,HcsaServiceDto> hcsaServiceDtoMap=new HashMap<>(10);
+                    for (HcsaServiceDto v : entity) {
+                        hcsaServiceDtoMap.put(v.getSvcName(),v);
+                    }
+                    List<LicenceDto> bundleLicenceDtos=new ArrayList<>(10);
+                    for (String v : licIdValue) {
+                        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(v).getEntity();
+                        HcsaServiceDto hcsaServiceDto = hcsaServiceDtoMap.get(licenceDto.getSvcName());
+                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
+                            if(hcsaServiceDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())){
+                                List<LicenceDto> licenceDtos = licenceInboxClient.getBundleLicence(licenceDto).getEntity();
+                                if(!licenceDtos.isEmpty()){
+                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(hcsaFeeBundleItemDto.getBundleId());
+                                    for (LicenceDto dto : licenceDtos) {
+                                        HcsaServiceDto hcsaServiceDto1 = hcsaServiceDtoMap.get(dto.getSvcName());
+                                        for (HcsaFeeBundleItemDto feeBundleItemDto : hcsaFeeBundleItemDtos1) {
+                                            if(!feeBundleItemDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
+                                                bundleLicenceDtos.add(dto);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    List<LicenceDto> dtoList=new ArrayList<>(bundleLicenceDtos.size());
+                    if(!bundleLicenceDtos.isEmpty()){
+                        StringBuilder stringBuilder=new StringBuilder();
+                        bundleLicenceDtos.forEach((v)->{
+                            Map<String, String> map1 = inboxService.checkRenewalStatus(v.getId());
+                            if(map1.isEmpty()){
+                                stringBuilder.append(v.getLicenceNo());
+                                dtoList.add(v);
+                            }
+                        });
+                        if(!dtoList.isEmpty()){
+                            bpc.request.getSession().setAttribute("bundleLicenceDtos",dtoList);
+                            bpc.request.setAttribute("draftByLicAppId","This following licences are bundled with this licence. Would you like to renew them as well:"+stringBuilder.toString());
+                            bpc.request.setAttribute("isBundleShow","1");
+                            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                            return;
+                        }
+                    }
+                }
+            }
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

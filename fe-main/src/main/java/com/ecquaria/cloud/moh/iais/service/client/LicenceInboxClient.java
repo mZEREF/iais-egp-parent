@@ -122,4 +122,6 @@ public interface LicenceInboxClient {
 
     @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
+    @PostMapping(path = "/hcsa-licence/bundle-licence",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getBundleLicence(@RequestBody LicenceDto licenceDto);
 }
