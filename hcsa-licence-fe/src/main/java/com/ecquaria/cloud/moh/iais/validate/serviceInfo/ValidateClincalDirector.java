@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -13,7 +14,10 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import sop.util.DateUtil;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -194,16 +198,19 @@ public class ValidateClincalDirector implements ValidateFlow {
             }
         }
         validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
-        Date now = new Date();
+//        Date now = new Date();
+        LocalDate now = LocalDate.now();
         String err032 = MessageUtil.getMessageDesc("NEW_ERR0032");
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
-        if(!StringUtil.isEmpty(aclsExpiryDate) && now.after(aclsExpiryDate)){
+        LocalDate aclsDate = transferLocalDate(aclsExpiryDate);
+        if(!StringUtil.isEmpty(aclsExpiryDate) && aclsDate != null && aclsDate.isBefore(now)){
             map.put("expiryDateAcls"+index, err032);
         }
         Date bclsExpiryDate = appSvcClinicalDirectorDto.getBclsExpiryDate();
+        LocalDate bclsaDate = transferLocalDate(bclsExpiryDate);
         if(StringUtil.isEmpty(bclsExpiryDate)){
             map.put("expiryDateBcls"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Expiry Date (BCLS and AED)", "field"));
-        } else if (now.after(bclsExpiryDate)){
+        } else if (bclsaDate != null && bclsaDate.isBefore(now)){
             map.put("expiryDateBcls"+index, err032);
         }
     }
@@ -229,10 +236,11 @@ public class ValidateClincalDirector implements ValidateFlow {
             validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
         }
         Date aclsExpiryDate = appSvcClinicalDirectorDto.getAclsExpiryDate();
-        Date now = new Date();
+        LocalDate now = LocalDate.now();
+        LocalDate aclsDate = transferLocalDate(aclsExpiryDate);
         if(aclsExpiryDate==null){
             map.put("expiryDateAcls"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "aclsExpiryDate", "field"));
-        }else if(now.after(aclsExpiryDate)){
+        }else if(aclsDate != null && aclsDate.isBefore(now)){
             map.put("expiryDateAcls"+index, MessageUtil.getMessageDesc("NEW_ERR0032"));
         }
     }
@@ -246,5 +254,13 @@ public class ValidateClincalDirector implements ValidateFlow {
         }else if("EAS".equals(code)){
             doValidateForEAS(appSvcClinicalDirectorDto,map,index);
         }
+    }
+
+    private LocalDate transferLocalDate(Date date){
+        LocalDate localDate = null;
+        if(date != null){
+            localDate = LocalDate.parse(DateUtil.formatDate(date,Formatter.DATE), DateTimeFormatter.ofPattern(Formatter.DATE));
+        }
+        return localDate;
     }
 }
