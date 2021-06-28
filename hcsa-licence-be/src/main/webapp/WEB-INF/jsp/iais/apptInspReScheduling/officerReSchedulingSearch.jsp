@@ -62,7 +62,7 @@
                     <iais:value width="18">
                       <c:forEach var="workGroupNo" items="${workGroupNos}">
                         <div id="workGroupNo${workGroupNo}">
-                          <iais:select name="inspectorName${workGroupNo}" options="inspectorOption${workGroupNo}" firstOption="Please Select"></iais:select>
+                          <iais:select name="inspectorName${workGroupNo}" options="inspectorOption${workGroupNo}" firstOption="Please Select" needSort="true"></iais:select>
                         </div>
                       </c:forEach>
                     </iais:value>
