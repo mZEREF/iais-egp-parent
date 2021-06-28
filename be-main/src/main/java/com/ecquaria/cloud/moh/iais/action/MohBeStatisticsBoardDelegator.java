@@ -2,12 +2,32 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Shicheng
@@ -68,7 +88,7 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardInit(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardInit start ...."));
-
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_INTRANET_STATISTICS_BOARD);
     }
 
     /**
@@ -79,7 +99,76 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardPre(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardPre start ...."));
+        String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
+        if(StringUtil.isEmpty(switchAction)) {
+            switchAction = BeDashboardConstant.SWITCH_ACTION_STATISTICS_ALL;
+        }
+        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
+        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        //search system dashboard stage show
+        SearchParam searchParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+        searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        //set filter
+        searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchParam);
+        SearchResult<DashAllActionAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashAllActionResult(searchParam);
+        //get Dashboard Circle Kpi Show Dto
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
+        //set Dashboard Circle Kpi Show Session
+        setDashCircleKpiShowSession(bpc.request, dashStageCircleKpiDtos);
+        //get service option
+        List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
+        //set session
+        setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
+        ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
+        ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", null);
+    }
 
+    private void setDashCircleKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos) {
+        if(!IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                if(dashStageCircleKpiDto != null) {
+                    String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
+                    String stageId = dashStageCircleKpiDto.getStageId();
+                    if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAsoCircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPsoCircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_PRE.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPreInspCircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_INP.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashInspCircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_POT.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashPostInspCircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo1CircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo2CircleKpi", jsonData);
+                    } else if(HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
+                        ParamUtil.setSessionAttr(request, "dashAo3CircleKpi", jsonData);
+                    } else {
+                        ParamUtil.setSessionAttr(request, "dashOverAllCircleKpi", jsonData);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setSessionBySvcAppTypeFilter(HttpServletRequest request, String[] services, String[] appTypes) {
+        if(services != null && services.length > 0) {
+            List<String> serviceList = Arrays.asList(services);
+            ParamUtil.setSessionAttr(request, "dashSvcCheckList", (Serializable) serviceList);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashSvcCheckList", null);
+        }
+        if(appTypes != null && appTypes.length > 0) {
+            List<String> appTypeList = Arrays.asList(appTypes);
+            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", (Serializable) appTypeList);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashAppTypeCheckList", null);
+        }
     }
 
     /**
@@ -90,7 +179,8 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardStep(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardStep start ...."));
-
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        ParamUtil.setRequestAttr(bpc.request, "dashActionValue", actionValue);
     }
 
     /**
@@ -101,7 +191,55 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardSearch(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardSearch start ...."));
+        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "dashServiceOption");
+        String dashSysStageVal = ParamUtil.getRequestString(bpc.request, "dashSysStageVal");
+        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
+        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        //create count's searchParam
+        SearchParam searchCountParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+        searchCountParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        //create detail's SearchParam
+        SearchParam searchParam = getSearchParam(bpc, true, DashAllGrpAppQueryDto.class.getName());
+        //set stageId Filter
+        String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
+        if(!StringUtil.isEmpty(stageId)) {
+            searchCountParam.addFilter("stage_id", stageId, true);
+            searchParam.addFilter("stage_id", stageId, true);
+        }
+        //set filter
+        searchCountParam = mohHcsaBeDashboardService.setSysDashFilter(searchCountParam, services, appTypes);
+        searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        //get result
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
+        SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
+        searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
+        //get Dashboard Circle Kpi Show Dto
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageSvcKpiShow(searchCountResult, serviceOption);
+        //set Dashboard Circle Kpi Show Session
+        setDashStageKpiShowSession(bpc.request, dashStageCircleKpiDtos, serviceOption);
+        //set session
+        setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
+    }
 
+    private SearchParam getSearchParam(BaseProcessClass bpc){
+        return getSearchParam(bpc, false, null);
+    }
+
+    private SearchParam getSearchParam(BaseProcessClass bpc, boolean isNew, String className){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "dashSearchParam");
+        int pageSize = SystemParamUtil.getDefaultPageSize();
+        if(searchParam == null || isNew){
+            searchParam = new SearchParam(className);
+            searchParam.setPageSize(pageSize);
+            searchParam.setPageNo(1);
+            searchParam.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+        }
+        return searchParam;
     }
 
     /**
@@ -112,7 +250,62 @@ public class MohBeStatisticsBoardDelegator {
      */
     public void beStatisticsBoardPage(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the beStatisticsBoardPage start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        CrudHelper.doPaging(searchParam, bpc.request);
+        List<SelectOption> serviceOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "dashServiceOption");
+        String dashSysStageVal = ParamUtil.getRequestString(bpc.request, "dashSysStageVal");
+        String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
+        String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
+        //create count's searchParam
+        SearchParam searchCountParam = new SearchParam(DashAllActionAppQueryDto.class.getName());
+        searchCountParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+        //set stageId Filter
+        String stageId = mohHcsaBeDashboardService.getStageIdByJspClickVal(dashSysStageVal);
+        if(!StringUtil.isEmpty(stageId)) {
+            searchCountParam.addFilter("stage_id", stageId, true);
+            searchParam.addFilter("stage_id", stageId, true);
+        }
+        //set filter
+        searchCountParam = mohHcsaBeDashboardService.setSysDashFilter(searchCountParam, services, appTypes);
+        searchParam = mohHcsaBeDashboardService.setSysDashFilter(searchParam, services, appTypes);
+        //get result
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemOverAll", searchCountParam);
+        SearchResult<DashAllActionAppQueryDto> searchCountResult = mohHcsaBeDashboardService.getDashAllActionResult(searchCountParam);
+        QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetail", searchParam);
+        SearchResult<DashAllGrpAppQueryDto> searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailQueryResult(searchParam);
+        searchResult = mohHcsaBeDashboardService.getDashSysGrpDetailOtherData(searchResult);
+        //get Dashboard Circle Kpi Show Dto
+        List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageSvcKpiShow(searchCountResult, serviceOption);
+        //set Dashboard Circle Kpi Show Session
+        setDashStageKpiShowSession(bpc.request, dashStageCircleKpiDtos, serviceOption);
+        //set session
+        setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "dashSysStageValReq", dashSysStageVal);
+    }
 
+    private void setDashStageKpiShowSession(HttpServletRequest request, List<DashStageCircleKpiDto> dashStageCircleKpiDtos, List<SelectOption> serviceOption) {
+        if(!IaisCommonUtils.isEmpty(serviceOption) && !IaisCommonUtils.isEmpty(dashStageCircleKpiDtos)) {
+            for(SelectOption selectOption : serviceOption) {
+                if(selectOption != null) {
+                    String svcCodeOpVal = selectOption.getValue();
+                    for(DashStageCircleKpiDto dashStageCircleKpiDto : dashStageCircleKpiDtos) {
+                        String svcCode = dashStageCircleKpiDto.getSvcCode();
+                        String jsonData = JsonUtil.parseToJson(dashStageCircleKpiDto);
+                        if(!StringUtil.isEmpty(svcCodeOpVal) && svcCodeOpVal.equals(svcCode)) {
+                            StringBuilder stringBuilder = new StringBuilder("dash");
+                            stringBuilder.append(svcCode);
+                            stringBuilder.append("CircleKpi");
+                            ParamUtil.setSessionAttr(request, stringBuilder.toString(), jsonData);
+                        }
+                        if(StringUtil.isEmpty(svcCode)) {
+                            ParamUtil.setSessionAttr(request, "dashAllSvcCircleKpi", jsonData);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
