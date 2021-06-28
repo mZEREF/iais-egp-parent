@@ -195,7 +195,7 @@ public class InspectionCheckListCommonMethodDelegator {
             for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
                 List<InspectionCheckQuestionDto> checkList = inspectionFillCheckListDto.getCheckList();
                 for(InspectionCheckQuestionDto inspectionCheckQuestionDto : checkList){
-                    String prefix = inspectionFillCheckListDto.getSubName()+ inspectionCheckQuestionDto.getSectionNameShow()+inspectionCheckQuestionDto.getItemId();
+                    String prefix = inspectionFillCheckListDto.getSubName()+ StringUtil.getNonNull(inspectionCheckQuestionDto.getSectionNameShow())+inspectionCheckQuestionDto.getItemId();
                     List<AnswerForDifDto> answerForDifDtos = inspectionCheckQuestionDto.getAnswerForDifDtos();
                     int index = 0;
                     for(AnswerForDifDto answerForDifDto : answerForDifDtos){
@@ -541,6 +541,7 @@ public class InspectionCheckListCommonMethodDelegator {
                  }
                  ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
              }
+             fillupChklistService.getNoVehicleAdhoc(adchklDto);
         }
     }
 
@@ -577,7 +578,7 @@ public class InspectionCheckListCommonMethodDelegator {
     public void saveCheckList(HttpServletRequest request,InspectionFillCheckListDto commonDto,AdCheckListShowDto adchklDto, InspectionFDtosDto serListDto,String appPremId){
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
             List<InspectionSpecServiceDto> fDtosDtos =( List<InspectionSpecServiceDto>) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS);
-            insepctionNcCheckListService.submitSpecService(commonDto, fDtosDtos,serListDto,appPremId);
+            insepctionNcCheckListService.submitSpecService(commonDto, fDtosDtos,serListDto,adchklDto,appPremId);
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DTOS,(Serializable) fDtosDtos);
         }else {
             insepctionNcCheckListService.submit(commonDto,adchklDto,serListDto,appPremId);

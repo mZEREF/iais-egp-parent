@@ -27,6 +27,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     private static final String SUBMIT_CHECK_LIST = "sumbit_check_list_pend_ins";
     private static final String MESSAGE_TAG_DRAFT = "Draft" ;
     public static final String NEXT_ACTION = "next";
+    private static final String DECONFLICT  = "deconflict_check_list";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
