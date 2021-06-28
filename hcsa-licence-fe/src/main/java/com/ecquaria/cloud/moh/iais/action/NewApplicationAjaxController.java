@@ -908,7 +908,7 @@ public class NewApplicationAjaxController {
         return appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo());
     }
 
-    @GetMapping(value = "/person-info/licesee-detail")
+    @GetMapping(value = "/person-info/individual-licesee")
     public @ResponseBody SubLicenseeDto getLiceseeDetail(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("the getLiceseeDetail start ...."));
         String idType = ParamUtil.getString(request, "idType");

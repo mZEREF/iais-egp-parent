@@ -402,7 +402,14 @@ function clearFields(targetSelector) {
     if (isEmpty(targetSelector)) {
         return;
     }
-    $(targetSelector).find(':input[class!="not-clear"]').each(function() {
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[class!="not-clear"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function() {
         var type = this.type, tag = this.tagName.toLowerCase();
         if (!$(this).hasClass('not-clear')) {
             if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {

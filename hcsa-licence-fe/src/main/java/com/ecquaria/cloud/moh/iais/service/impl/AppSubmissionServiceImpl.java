@@ -74,6 +74,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -769,10 +770,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request) {
         if (subLicenseeDto == null) {
-            return true;
+            if (errorMap != null) {
+                errorMap.put("licenseeType", "Invalid Data");
+            }
+            return false;
         }
-        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
+
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
         if (result != null) {
             map = result.retrieveAll();
         }
@@ -780,7 +785,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
             String assignSelect = subLicenseeDto.getAssignSelect();
             if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
-                errorMap.put("assignSelect", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("assignSelect", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }
 
@@ -788,10 +793,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String idType = subLicenseeDto.getIdType();
             String idNumber = subLicenseeDto.getIdNumber();
             if (StringUtil.isEmpty(idType)) {
-                errorMap.put("idType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("idType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
             if (StringUtil.isEmpty(idNumber)) {
-                errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+            }
+            String mobileNo = subLicenseeDto.getTelephoneNo();
+            if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
+                map.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
 
@@ -800,13 +809,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String floorNo = subLicenseeDto.getFloorNo();
             String unitNo = subLicenseeDto.getUnitNo();
             if (StringUtil.isEmpty(blkNo)) {
-                errorMap.put("blkNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("blkNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
             if (StringUtil.isEmpty(floorNo)) {
-                errorMap.put("floorNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("floorNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
             if (StringUtil.isEmpty(unitNo)) {
-                errorMap.put("unitNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                map.put("unitNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
             }
         }
 
@@ -818,14 +827,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String idNo = subLicenseeDto.getIdNumber();
             if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo)) != null) {
                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("{ID No.}",idNo);
-                map.put("idNumber",errMsg);
+                errMsg = errMsg.replace("{ID No.}", idNo);
+                map.put("idNumber", errMsg);
             }
         }
-        if (errorMap != null) {
-            errorMap.putAll(map);
+
+
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
+            if (!map.isEmpty() && errorMap != null) {
+                errorMap.put("licenseeType", "Invalid Licensee Type");
+            }
+            return map.isEmpty();
+        } else {
+            if (errorMap != null) {
+                errorMap.putAll(map);
+            }
+            return map.isEmpty();
         }
-        return map.isEmpty();
     }
 
     @Override
@@ -2208,6 +2226,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc) {
         StringBuilder sB = new StringBuilder(40);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        // sub licensee (licensee details)
+        /*
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+        if (validateSubLicenseeDto(previewAndSubmitMap, subLicenseeDto, bpc.request)) {
+            coMap.put("licensee", "licensee");
+        } else {
+            coMap.put("licensee", "");
+        }
+         */
+        // premises
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
@@ -2221,10 +2249,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else {
             coMap.put("premises", "premises");
         }
-        //
-        // Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,
-        // NewApplicationDelegator.LICPERSONSELECTMAP);
-        //
+        // service info
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         ServiceStepDto serviceStepDto = new ServiceStepDto();

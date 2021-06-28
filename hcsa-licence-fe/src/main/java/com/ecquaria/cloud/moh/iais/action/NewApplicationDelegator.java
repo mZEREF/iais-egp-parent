@@ -323,7 +323,8 @@ public class NewApplicationDelegator {
     public void prepareSubLicensee(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("..... Prepare Sub Licensee...."));
         List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getAllSubLicensees().getEntity();
-        bpc.request.getSession().setAttribute(LICENSEE_MAP, NewApplicationHelper.genSubLicessMap(subLicenseeDtoList));
+        Map<String, SubLicenseeDto> licenseeMap = NewApplicationHelper.genSubLicessMap(subLicenseeDtoList);
+        bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
         bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(subLicenseeDtoList));
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -332,11 +333,16 @@ public class NewApplicationDelegator {
             subLicenseeDto = new SubLicenseeDto();
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
-        if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (loginContext != null) {
+        if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect())) {
+            subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
+                    subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber()));
+        }
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if (loginContext != null) {
+            if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
                 subLicenseeDto.setUenNo(loginContext.getUenNo());
             }
+            bpc.request.setAttribute("subLicenseeDto", appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo()));
         }
     }
 
@@ -421,40 +427,52 @@ public class NewApplicationDelegator {
     }
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
-        SubLicenseeDto dto = new SubLicenseeDto();
         String assignSelect = ParamUtil.getString(request, "assignSelect");
         String licenseeType = ParamUtil.getString(request, "licenseeType");
-        String idType = ParamUtil.getString(request, "idType");
-        String idNumber = ParamUtil.getString(request, "idNumber");
-        String licenseeName = ParamUtil.getString(request, "licenseeName");
-        String postalCode = ParamUtil.getString(request, "postalCode");
-        String addrType = ParamUtil.getString(request, "addrType");
-        String blkNo = ParamUtil.getString(request, "blkNo");
-        String floorNo = ParamUtil.getString(request, "floorNo");
-        String unitNo = ParamUtil.getString(request, "unitNo");
-        String streetName = ParamUtil.getString(request, "streetName");
-        String buildingName = ParamUtil.getString(request, "buildingName");
-        String telephoneNo = ParamUtil.getString(request, "telephoneNo");
-        String emailAddr = ParamUtil.getString(request, "emailAddr");
+        SubLicenseeDto dto = null;
+        // Check licensee type
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            dto = appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo());
+            if (dto == null) {
+                dto = new SubLicenseeDto();
+                dto.setAssignSelect(assignSelect);
+                dto.setLicenseeType(licenseeType);
+            }
+        } else {
+            String idType = ParamUtil.getString(request, "idType");
+            String idNumber = ParamUtil.getString(request, "idNumber");
+            String licenseeName = ParamUtil.getString(request, "licenseeName");
+            String postalCode = ParamUtil.getString(request, "postalCode");
+            String addrType = ParamUtil.getString(request, "addrType");
+            String blkNo = ParamUtil.getString(request, "blkNo");
+            String floorNo = ParamUtil.getString(request, "floorNo");
+            String unitNo = ParamUtil.getString(request, "unitNo");
+            String streetName = ParamUtil.getString(request, "streetName");
+            String buildingName = ParamUtil.getString(request, "buildingName");
+            String telephoneNo = ParamUtil.getString(request, "telephoneNo");
+            String emailAddr = ParamUtil.getString(request, "emailAddr");
 
-        dto.setAssignSelect(assignSelect);
-        dto.setLicenseeType(licenseeType);
-        dto.setIdType(idType);
-        dto.setIdNumber(idNumber);
-        dto.setLicenseeName(licenseeName);
-        dto.setPostalCode(postalCode);
-        dto.setAddrType(addrType);
-        dto.setBlkNo(blkNo);
-        dto.setFloorNo(floorNo);
-        dto.setUnitNo(unitNo);
-        dto.setStreetName(streetName);
-        dto.setBuildingName(buildingName);
-        dto.setTelephoneNo(telephoneNo);
-        dto.setEmailAddr(emailAddr);
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            dto.setOrgId(loginContext.getOrgId());
-            dto.setUenNo(loginContext.getUenNo());
+            dto = new SubLicenseeDto();
+            dto.setAssignSelect(assignSelect);
+            dto.setLicenseeType(licenseeType);
+            dto.setIdType(idType);
+            dto.setIdNumber(idNumber);
+            dto.setLicenseeName(licenseeName);
+            dto.setPostalCode(postalCode);
+            dto.setAddrType(addrType);
+            dto.setBlkNo(blkNo);
+            dto.setFloorNo(floorNo);
+            dto.setUnitNo(unitNo);
+            dto.setStreetName(streetName);
+            dto.setBuildingName(buildingName);
+            dto.setTelephoneNo(telephoneNo);
+            dto.setEmailAddr(emailAddr);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext != null) {
+                dto.setOrgId(loginContext.getOrgId());
+                dto.setUenNo(loginContext.getUenNo());
+            }
         }
         return dto;
     }
