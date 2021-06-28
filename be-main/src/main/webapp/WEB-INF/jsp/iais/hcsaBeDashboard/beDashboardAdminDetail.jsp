@@ -73,7 +73,7 @@
                         <div class="ctnpanel ctnpanelbottom1">
                             <div class="formpanel">
                                 <div class="expspace">
-                                    <div class="form-horizontal">
+                                    <div class="">
                                         <div class="multiple-chart">
                                             <div class="main-content" style="margin-top: 0px;">
                                                 <div class="row">
