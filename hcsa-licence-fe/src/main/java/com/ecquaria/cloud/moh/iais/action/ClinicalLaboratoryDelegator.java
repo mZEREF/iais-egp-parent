@@ -2004,9 +2004,6 @@ public class ClinicalLaboratoryDelegator {
             //get data from page
             List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = genAppSvcClinicalDirectorDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-            syncDropDownAndPsn(appSubmissionDto, appSvcClinicalDirectorDtos, null, bpc.request);
-            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
-
             log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info start ..."));
             log.debug("prs server flag {}",prsFlag);
             String appType = appSubmissionDto.getAppType();
@@ -2068,8 +2065,8 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
                 currSvcInfoDto.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtos);
-                setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             }
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info end ..."));
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
@@ -2081,6 +2078,8 @@ public class ClinicalLaboratoryDelegator {
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.CLINICAL_DIRECTOR);
+        } else {
+            syncDropDownAndPsn(appSubmissionDto, currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), null, bpc.request);
         }
         log.debug(StringUtil.changeForLog("doClinicalDirector end ..."));
     }
@@ -2953,6 +2952,7 @@ public class ClinicalLaboratoryDelegator {
 
                 String assignSel = ParamUtil.getString(request,"assignSel"+i);
                 AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
                 appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
@@ -2990,16 +2990,6 @@ public class ClinicalLaboratoryDelegator {
                 }else{
                     appSvcClinicalDirectorDto.setOtherDesignation(null);
                 }
-//                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
-//                    appSvcClinicalDirectorDto.setSpeciality(specialty);
-//                }
-//                if (canSetValue(appPsnEditDto.isSpecialityOther(), isNewOfficer, partEdit)) {
-//                    if(ApplicationConsts.EAS_MTS_SPECIALTY_OTHERS.equals(specialty)){
-//                        appSvcClinicalDirectorDto.setSpecialityOther(specialityOther);
-//                    }else{
-//                        appSvcClinicalDirectorDto.setSpecialityOther(null);
-//                    }
-//                }
                 if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
                 }
@@ -4243,7 +4233,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         //set person into dropdown
-        personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, newPersonList, svcCode);
+        personMap = NewApplicationHelper.initSetPsnIntoSelMap(personMap, newPersonList, svcCode);
         //sync data
         NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
         return personMap;

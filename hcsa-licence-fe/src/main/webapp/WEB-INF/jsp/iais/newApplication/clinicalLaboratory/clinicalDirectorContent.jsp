@@ -146,7 +146,9 @@
                 } catch (e) {
                     data = {};
                 };
-                disableContent($(this).find('div.person-detail'), data);
+                if ('1' == $(this).find('.licPerson:input').val()) {
+                    disableContent($(this).find('div.person-detail'), data);
+                }
             }
             $(this).find('select').niceSelect("update");
             //trigger prs
@@ -375,7 +377,9 @@
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
-                disableContent($current, val);
+                if (data.licPerson) {
+                    disableContent($current, val);
+                }
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
                 // alert(licPerson);
