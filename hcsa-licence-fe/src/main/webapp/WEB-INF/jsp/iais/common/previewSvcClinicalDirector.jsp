@@ -96,6 +96,15 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cdDto.designation}"/> </p>
                                 </td>
                             </tr>
+                            <c:if test="${'DES999' == cdDto.designation}">
+                                <tr>
+                                    <td class="col-xs-6">
+                                    </td>
+                                    <td>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cdDto.otherDesignation}"/> </p>
+                                    </td>
+                                </tr>
+                            </c:if>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Specialty </p>

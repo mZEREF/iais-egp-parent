@@ -64,7 +64,7 @@
                                     <td class="col-xs-6">
                                     </td>
                                     <td>
-                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${cgo.otherDesignation}"/> </p>
+                                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><c:out value="${cgo.otherDesignation}"/> </p>
                                     </td>
                                 </tr>
                             </c:if>
