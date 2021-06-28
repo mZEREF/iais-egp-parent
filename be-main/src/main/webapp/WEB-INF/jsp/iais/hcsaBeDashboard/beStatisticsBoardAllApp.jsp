@@ -85,8 +85,8 @@
       <div class="center-content">
         <div class="intranet-content">
           <iais:body>
-            <iais:section title="" id = "demoList">
-              <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
+            <iais:section title="" id = "Statistics board">
+              <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardSystem.jsp" %>
             </iais:section>
           </iais:body>
         </div>
@@ -95,7 +95,8 @@
   </form>
 </div>
 <script type="text/javascript">
-    function intraStatisticsBoardSubmit(action) {
+
+    function intraDashboardSubmit(action) {
         showWaiting();
         $("[name='hcsaBeDashboardSwitchType']").val(action);
         var mainPoolForm = document.getElementById('beDashboardForm');
