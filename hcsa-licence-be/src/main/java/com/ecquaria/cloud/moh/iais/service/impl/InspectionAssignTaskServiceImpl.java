@@ -488,24 +488,30 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 try {
                     for(TaskDto taskDto : commPools) {
                         if(taskDto != null && appNoCheck.equals(taskDto.getApplicationNo())) {
-                            //set inspector lead
-                            setInspLeadForMultAssign(taskDto);
                             //get applicationViewDto
                             ApplicationViewDto applicationViewDto = searchByAppCorrId(taskDto.getRefNo());
                             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                             List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                             applicationDtos.add(applicationDto);
-                            //get Create task
-                            TaskDto createTask = getComCreateTask(taskDto, applicationDtos, userId);
-                            List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
-                            createTasks.add(createTask);
-                            //set status in current Task
-                            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                            //create and update task
-                            taskService.createTasks(createTasks);
-                            taskService.updateTask(taskDto);
-                            //create history and update app status
-                            updateHistoryAppStatusForMult(applicationDto, taskDto);
+                            if(RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
+                                //broadcast task assign
+                                String saveFlag = assignBroadcastTask(taskDto, applicationDtos, IaisEGPHelper.getCurrentAuditTrailDto(), loginContext);
+                                return saveFlag;
+                            } else {
+                                //set inspector lead
+                                setInspLeadForMultAssign(taskDto);
+                                //get Create task
+                                TaskDto createTask = getComCreateTask(taskDto, applicationDtos, userId);
+                                List<TaskDto> createTasks = IaisCommonUtils.genNewArrayList();
+                                createTasks.add(createTask);
+                                //set status in current Task
+                                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                //create and update task
+                                taskService.createTasks(createTasks);
+                                taskService.updateTask(taskDto);
+                                //create history and update app status
+                                updateHistoryAppStatusForMult(applicationDto, taskDto);
+                            }
                         }
                     }
                 } catch (Exception e) {
