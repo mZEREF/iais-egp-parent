@@ -133,7 +133,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="hcsaBeDashboardSwitchType" name="hcsaBeDashboardSwitch" x="950" y="100">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSort" value="&quot;sort&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSearch" value="&quot;detail&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardSearch" value="&quot;sysdet&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/beStatisticsBoardPre" value="&quot;allapp&quot;"/>
   </Switch>
