@@ -737,8 +737,10 @@ public class InterInboxDelegator {
                         hcsaServiceDtoMap.put(v.getSvcName(),v);
                     }
                     List<LicenceDto> bundleLicenceDtos=new ArrayList<>(10);
+                    List<LicenceDto> list=new ArrayList<>(10);
                     for (String v : licIdValue) {
                         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(v).getEntity();
+                        list.add(licenceDto);
                         HcsaServiceDto hcsaServiceDto = hcsaServiceDtoMap.get(licenceDto.getSvcName());
                         for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
                             if(hcsaServiceDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())){
@@ -758,6 +760,15 @@ public class InterInboxDelegator {
                         }
                     }
                     List<LicenceDto> dtoList=new ArrayList<>(bundleLicenceDtos.size());
+                    List<LicenceDto> removeList=new ArrayList<>(10);
+                    for (LicenceDto v : bundleLicenceDtos) {
+                        for (LicenceDto licenceDto : list) {
+                            if(v.getId().equals(licenceDto.getId())){
+                                removeList.add(v);
+                            }
+                        }
+                    }
+                    bundleLicenceDtos.removeAll(removeList);
                     if(!bundleLicenceDtos.isEmpty()){
                         StringBuilder stringBuilder=new StringBuilder();
                         bundleLicenceDtos.forEach((v)->{
