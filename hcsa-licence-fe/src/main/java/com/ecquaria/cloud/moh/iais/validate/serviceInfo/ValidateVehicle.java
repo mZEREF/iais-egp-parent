@@ -140,13 +140,13 @@ public class ValidateVehicle implements ValidateFlow {
                 if(v1==null){
                     chassisNumMap.put(chassisNum,chassisNum);
                 }else {
-                    map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    map.put("chassisNum"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }
                 String v2 = engineNumMap.get(engineNum);
                 if(v2==null){
                     engineNumMap.put(engineNum,engineNum);
                 }else {
-                    map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    map.put("engineNum"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }
             }
         }

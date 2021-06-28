@@ -737,18 +737,23 @@ public class InterInboxDelegator {
                         hcsaServiceDtoMap.put(v.getSvcName(),v);
                     }
                     List<LicenceDto> bundleLicenceDtos=new ArrayList<>(10);
+                    List<LicenceDto> list=new ArrayList<>(10);
+                    //This can be optimized
                     for (String v : licIdValue) {
                         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(v).getEntity();
+                        list.add(licenceDto);
                         HcsaServiceDto hcsaServiceDto = hcsaServiceDtoMap.get(licenceDto.getSvcName());
-                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
-                            if(hcsaServiceDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())){
+                        ListIterator<HcsaFeeBundleItemDto> iterator = hcsaFeeBundleItemDtos.listIterator();
+                        while (iterator.hasNext()){
+                            HcsaFeeBundleItemDto next = iterator.next();
+                            if(hcsaServiceDto.getSvcCode().equals(next.getSvcCode())){
                                 List<LicenceDto> licenceDtos = licenceInboxClient.getBundleLicence(licenceDto).getEntity();
                                 if(!licenceDtos.isEmpty()){
-                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(hcsaFeeBundleItemDto.getBundleId());
+                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(next.getBundleId());
                                     for (LicenceDto dto : licenceDtos) {
                                         HcsaServiceDto hcsaServiceDto1 = hcsaServiceDtoMap.get(dto.getSvcName());
                                         for (HcsaFeeBundleItemDto feeBundleItemDto : hcsaFeeBundleItemDtos1) {
-                                            if(!feeBundleItemDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
+                                            if(!feeBundleItemDto.getSvcCode().equals(next.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
                                                 bundleLicenceDtos.add(dto);
                                             }
                                         }
@@ -758,6 +763,15 @@ public class InterInboxDelegator {
                         }
                     }
                     List<LicenceDto> dtoList=new ArrayList<>(bundleLicenceDtos.size());
+                    List<LicenceDto> removeList=new ArrayList<>(10);
+                    for (LicenceDto v : bundleLicenceDtos) {
+                        for (LicenceDto licenceDto : list) {
+                            if(v.getId().equals(licenceDto.getId())){
+                                removeList.add(v);
+                            }
+                        }
+                    }
+                    bundleLicenceDtos.removeAll(removeList);
                     if(!bundleLicenceDtos.isEmpty()){
                         StringBuilder stringBuilder=new StringBuilder();
                         bundleLicenceDtos.forEach((v)->{
