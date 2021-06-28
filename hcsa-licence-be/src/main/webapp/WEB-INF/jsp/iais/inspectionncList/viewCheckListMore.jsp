@@ -53,7 +53,7 @@
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/><br>
                                     <span><strong>General</strong></span>
                                     <%@ include file="TabsForMoreIns.jsp" %>
-                                    <%@ include file="combined.jsp" %>
+                                    <%@ include file="common/combined.jsp" %>
                                     <%@ include file="inspChecklist.jsp" %>
                                   </div>
                                   <div class="tab-pane  ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
@@ -63,22 +63,12 @@
                                           <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
                                           </c:if>
                                           <%@ include file="TabsForMoreIns.jsp" %>
-                                              <%@ include file="combinedService.jsp" %>
+                                              <%@ include file="common/combinedService.jsp" %>
                                               <%@ include file="inspChecklistService.jsp" %>
                                       </c:if>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
-                                    <div style="float:right">
-                                    <c:if test="${(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status) && nowTabIn == inspectorUserFinishChecklistId}">
-                                        <button class="btn btn-primary next" type="button" onclick="javascript:doBack()">Submit</button>
-                                            <button class="btn btn-primary next" type="button" onclick="javascript:doSaveDraftCheckList();">Save Draft</button>
-                                    </c:if>
-                                    </div>
-                                </div>
-                            </div>
+                            <%@ include file="common/submitMoreInsChecklist.jsp" %>
                         </div>
                     </div>
                 </div>
@@ -88,60 +78,3 @@
 </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script type="text/javascript">
-    function doBack(){
-        showWaiting();
-        $("#doSubmitAction").val("next");
-        SOP.Crud.cfxSubmit("mainForm", "back");
-    }
-    function doBackToMain(){
-        showWaiting();
-        $("#doSubmitAction").val("");
-        SOP.Crud.cfxSubmit("mainForm", "back");
-    }
-    function showCheckBox(str,indexIns){
-        if(indexIns != null &&indexIns != "" ){
-            indexIns = "Ins" + indexIns;
-        }else {
-            indexIns = "";
-        }
-        var divId = str+'ck'+ indexIns;
-        var comId = str+'comck'+indexIns;
-        divId  = divId.replace(/\s*/g,"");
-        comId = comId.replace(/\s*/g,"");
-        $("#"+divId).show();
-        $("#"+comId).show();
-    }
-    function hideCheckBox(str,indexIns){
-        if(indexIns != null &&indexIns != "" ){
-            indexIns = "Ins" + indexIns;
-        }else {
-            indexIns = "";
-        }
-        var divId = str+'ck'+ indexIns;;
-        var comdivId = str+'comck'+indexIns;;
-        divId  = divId.replace(/\s*/g,"");
-        comdivId = comdivId.replace(/\s*/g,"");
-        $("#"+divId).hide();
-        $("#"+comdivId).hide();
-    }
-
-    function doChangeDeconflict(index,divId,size){
-       if(index == 1){
-           divId += "comDiv"
-       }else if (index == 2){
-            divId += "serDiv";
-        }else {
-           divId += "adhocDiv";
-           size=size-1;
-       }
-        for(var i = 0; i<= size; i++){
-           var id = "#"+divId+i;
-           $(id).css("background-color", "lightgreen");
-        }
-    }
-    function doSaveDraftCheckList(){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "saveDraft");
-    }
-</script>

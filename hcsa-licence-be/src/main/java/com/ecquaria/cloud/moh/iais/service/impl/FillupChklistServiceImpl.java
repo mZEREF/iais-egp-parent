@@ -2204,4 +2204,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
        }
        return null;
     }
+
+    @Override
+    public AdCheckListShowDto getNoVehicleAdhoc(AdCheckListShowDto adCheckListShowDto) {
+        if(adCheckListShowDto != null && IaisCommonUtils.isNotEmpty(adCheckListShowDto.getAdItemList())){
+            Iterator<AdhocNcCheckItemDto> itemDtoIterator = adCheckListShowDto.getAdItemList().iterator();
+            while(itemDtoIterator.hasNext()){
+                AdhocNcCheckItemDto adhocNcCheckItemDto = itemDtoIterator.next();
+                if(StringUtil.isNotEmpty(adhocNcCheckItemDto.getIdentify())){
+                    itemDtoIterator.remove();
+                }
+            }
+        }
+        return adCheckListShowDto;
+    }
 }

@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenc
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.GenerateLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.DocumentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesScopeGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSubLicenseeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcSpecificPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
@@ -1152,7 +1154,10 @@ public class LicenceApproveBatchjob {
                     }
                     superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
-
+                //create LicSubLicenseeInfoDto
+                LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
+                licSubLicenseeInfoDto.setOrgId(organizationId);
+                superLicDto.setLicSubLicenseeInfoDto(licSubLicenseeInfoDto);
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -1209,6 +1214,18 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
+
+    private LicSubLicenseeInfoDto getLicSubLicenseeInfoDto(ApplicationListDto applicationListDto){
+        log.info(StringUtil.changeForLog("The getLicSubLicenseeInfoDto start ..."));
+        LicSubLicenseeInfoDto result = null;
+        List<SubLicenseeDto> subLicenseeDtos = applicationListDto.getSubLicenseeDtos();
+        if(!IaisCommonUtils.isEmpty(subLicenseeDtos)){
+            SubLicenseeDto subLicenseeDto = subLicenseeDtos.get(0);
+            result = MiscUtil.transferEntityDto(subLicenseeDto,LicSubLicenseeInfoDto.class);
+        }
+        log.info(StringUtil.changeForLog("The getLicSubLicenseeInfoDto end ..."));
+        return result;
+    }
 
     private boolean isApplicaitonReject(AppPremisesRecommendationDto appPremisesRecommendationDto) {
         boolean result = false;

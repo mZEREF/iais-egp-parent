@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -39,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -79,12 +81,22 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonForRenew;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -92,14 +104,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -138,7 +142,8 @@ public class WithOutRenewalDelegator {
     private SystemAdminClient systemAdminClient;
     @Autowired
     NewApplicationDelegator newApplicationDelegator;
-
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigFeClient;
     @Autowired
     RequestForChangeService requestForChangeService;
     @Autowired
@@ -914,6 +919,47 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
+            } else if( appSubmissionDtos.size() > 1){
+                List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = hcsaConfigFeClient.getActiveBundleDtoList().getEntity();
+                List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigFeClient.getActiveServices().getEntity();
+                Map<String,HcsaServiceDto> map=new HashMap<>(10);
+                Map<String,List<HcsaFeeBundleItemDto>> bundleMap=new HashMap<>(10);
+                hcsaServiceDtoList.forEach((v)->{
+                    map.put(v.getSvcName(),v);
+                });
+                hcsaFeeBundleItemDtos.forEach((v)->{
+                    List<HcsaFeeBundleItemDto> feeBundleItemDtos = bundleMap.get(v.getBundleId());
+                    if(feeBundleItemDtos==null){
+                        feeBundleItemDtos=new ArrayList<>(10);
+                        feeBundleItemDtos.add(v);
+                        bundleMap.put(v.getBundleId(),feeBundleItemDtos);
+                    }else {
+                        feeBundleItemDtos.add(v);
+                    }
+
+                });
+                Map<String,List<AppSubmissionDto>> appSubmitMap=new HashMap<>(10);
+                for (AppSubmissionDto var1 : appSubmissionDtos) {
+                    String serviceName = var1.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                    HcsaServiceDto hcsaServiceDto = map.get(serviceName);
+                    for (HcsaFeeBundleItemDto var2 : hcsaFeeBundleItemDtos) {
+                        if(var2.getSvcCode().equals(hcsaServiceDto.getSvcCode())){
+                            List<AppSubmissionDto> dtoList = appSubmitMap.get(var2.getBundleId());
+                            if(dtoList==null){
+                                dtoList=new ArrayList<>(10);
+                                dtoList.add(var1);
+                                appSubmitMap.put(var2.getBundleId(),dtoList);
+                            }else {
+                                dtoList.add(var1);
+                            }
+
+                        }
+                    }
+                }
+                appSubmitMap.forEach((k,v)->{
+                    long l = System.currentTimeMillis();
+                    v.forEach(var1-> var1.getAppSvcRelatedInfoDtoList().get(0).setAlignFlag(Long.toString(l)));
+                });
             }
             String licenceId = appSubmissionDto.getLicenceId();
             renewLicIds.add(licenceId);
@@ -1464,7 +1510,7 @@ public class WithOutRenewalDelegator {
                     case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
                         html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
+                        html = GatewayPayNowAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);break;
                     default: html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, backUrl);
 
                 }

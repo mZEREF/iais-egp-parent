@@ -104,4 +104,6 @@ public interface FillupChklistService {
     boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto);
 
     InspectionSpecServiceDto getOriginalInspectionSpecServiceDtoByTaskId(boolean needVehicleSeparation,boolean beforeFinishList,String taskId);
+
+    AdCheckListShowDto getNoVehicleAdhoc(AdCheckListShowDto adCheckListShowDto);
 }

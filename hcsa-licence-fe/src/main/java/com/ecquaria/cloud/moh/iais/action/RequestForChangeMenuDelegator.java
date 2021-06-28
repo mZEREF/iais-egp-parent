@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -697,6 +698,9 @@ public class RequestForChangeMenuDelegator {
     }
 
 
+    public void initPsnEditInfo(BaseProcessClass bpc){
+        log.info("------");
+    }
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
         String actionType = ParamUtil.getRequestString(bpc.request, "actionType");
@@ -928,7 +932,7 @@ public class RequestForChangeMenuDelegator {
         personnelEditDto.setMobileNo(mobile);
         personnelEditDto.setSalutation(salutation);
         personnelEditDto.setPsnName(psnName);
-        if (psnTypes.contains("CGO")) {
+        if (psnTypes.contains("CGO")|| psnTypes.contains("CD")) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOtherDesignation(otherDesignation);
         }
@@ -991,9 +995,9 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
+            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
-            }else if(psnTypes.contains("CGO") &&"DES999".equals(designation1)){
+            }else if((psnTypes.contains("CGO")||psnTypes.contains("CD")) &&"DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
                     errMap.put("otherDesignation1" , designationMsg);
                 }
@@ -1033,9 +1037,9 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("mobileNo", "GENERAL_ERR0007");
                 }
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
+            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", designationMsg);
-            }else if(psnTypes.contains("CGO")&&"DES999".equals(designation)){
+            }else if((psnTypes.contains("CGO") || psnTypes.contains("CD"))&&"DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
                     errMap.put("otherDesignation" , designationMsg);
                 }
@@ -1469,7 +1473,7 @@ public class RequestForChangeMenuDelegator {
                         html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        html = GatewayPayNowAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     default:
                         html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);

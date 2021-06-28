@@ -3,7 +3,7 @@
 
 <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
     <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('General')"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
-    <li class="complete ${nowComTabIn == 'ServiceInfo' ? 'active' : ''}" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
+    <li class="complete ${nowComTabIn == 'ServiceInfo' ? 'active' : ''}" role="presentation" onclick="javascript:doChangeTab('ServiceInfo')"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
     <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
         <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
         <li class="complete ${nowComTabIn == errorTabName ? 'active' : ''}" role="presentation"  onclick="javascript:doChangeTab('${errorTabName}')"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab"
