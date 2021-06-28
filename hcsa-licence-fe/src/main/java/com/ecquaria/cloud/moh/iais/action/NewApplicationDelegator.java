@@ -336,6 +336,7 @@ public class NewApplicationDelegator {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
+                log.info("-------licAppGrpPremisesDtoMap size --->"+licAppGrpPremisesDtoMap.size());
                 //remove premise info when pending premises hci same
 //                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
                 List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtoList);
@@ -383,6 +384,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                log.info("--------> newLicAppGrpPremisesDtoMap size --->"+newLicAppGrpPremisesDtoMap.size());
             }
         } else {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
