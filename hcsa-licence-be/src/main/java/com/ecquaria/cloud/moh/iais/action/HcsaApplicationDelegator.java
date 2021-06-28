@@ -3336,9 +3336,10 @@ public class HcsaApplicationDelegator {
     }
 
     private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
-                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationViewDto.getApplicationType())){
+        String appType = applicationViewDto.getApplicationDto() == null ? "" : applicationViewDto.getApplicationDto().getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase( appType) ||
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase( appType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase( appType)){
              applicationViewDto.setShowTcu(true);
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
