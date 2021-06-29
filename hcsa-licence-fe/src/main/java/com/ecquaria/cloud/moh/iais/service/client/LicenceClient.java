@@ -176,7 +176,7 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/LicBaseSpecifiedCorrelation/{svcType}/{originLicenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicBaseSpecifiedCorrelationDto>> getLicBaseSpecifiedCorrelationDtos(@PathVariable("svcType") String svcType,
                                                                                                  @PathVariable("originLicenceId") String originLicenceId);
-    
-    @GetMapping(value = "/hcsa-licence/all-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<SubLicenseeDto>> getAllSubLicensees();
+
+    @GetMapping(value = "/hcsa-licence/individual-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(@RequestParam("orgId") String orgId);
 }

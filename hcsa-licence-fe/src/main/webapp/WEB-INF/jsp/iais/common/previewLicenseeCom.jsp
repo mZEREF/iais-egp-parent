@@ -47,11 +47,15 @@
             <c:out value="${subLicenseeDto.blkNo}" />
         </iais:value>
     </iais:row>
-    <iais:row>
-        <iais:field value="Floor / Unit No." width="5"/>
+    <iais:row cssClass="address">
+        <iais:field value="Floor No." width="5"/>
         <iais:value width="7">
             <c:out value="${subLicenseeDto.floorNo}" />
-            <c:if test="${not empty subLicenseeDto.floorNo}">-</c:if>
+        </iais:value>
+    </iais:row>
+    <iais:row cssClass="address">
+        <iais:field value="Unit No." width="5"/>
+        <iais:value width="7">
             <c:out value="${subLicenseeDto.unitNo}" />
         </iais:value>
     </iais:row>
@@ -71,7 +75,7 @@
     <%-- Address end --%>
 
     <iais:row>
-        <iais:field value="${subLicenseeDto.licenseeType == companyType ? 'Office Telephone No.' : 'Telephone No.'}" width="5"/>
+        <iais:field value="${subLicenseeDto.licenseeType == companyType ? 'Office Telephone No.' : 'Mobile No.'}" width="5"/>
         <iais:value width="7" display="true">
             <c:out value="${subLicenseeDto.telephoneNo}" />
         </iais:value>

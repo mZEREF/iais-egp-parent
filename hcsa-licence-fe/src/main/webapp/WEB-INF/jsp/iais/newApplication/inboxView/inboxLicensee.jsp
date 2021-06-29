@@ -1,21 +1,11 @@
 <style>
-    p, span{
+    span{
         word-wrap: break-word;
     }
 </style>
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
-<c:if test="${empty printView}">
-    <c:choose>
-        <c:when test="${!FirstView}">
-            <c:set var="headingSign" value="${empty coMap.licensee ? 'incompleted' : 'completed'}" />
-        </c:when>
-        <c:when test="${needShowErr}">
-            <c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}" />
-        </c:when>
-    </c:choose>
-</c:if>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#previewLicensee">
                 Licensee Details
@@ -24,10 +14,6 @@
     </div>
     <div id="previewLicensee" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
-            <c:if test="${(AppSubmissionDto.appEditSelectDto==null || AppSubmissionDto.appEditSelectDto.licenseeEdit) && empty
-            printView}">
-                <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
-            </c:if>
             <div class="panel-main-content form-horizontal">
                 <iais:row>
                     <iais:value width="10">
@@ -41,7 +27,7 @@
                     </iais:value>
                 </iais:row>
 
-                <%@include file="previewLicenseeCom.jsp"%>
+                <%@include file="/WEB-INF/jsp/iais/common/previewLicenseeCom.jsp"%>
             </div>
         </div>
     </div>

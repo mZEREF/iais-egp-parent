@@ -413,7 +413,7 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<SubLicenseeDto>> getAllSubLicensees() {
+    public FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

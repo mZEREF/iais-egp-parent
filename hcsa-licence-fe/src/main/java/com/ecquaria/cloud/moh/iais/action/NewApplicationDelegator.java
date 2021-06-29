@@ -70,7 +70,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -322,7 +321,8 @@ public class NewApplicationDelegator {
      */
     public void prepareSubLicensee(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("..... Prepare Sub Licensee...."));
-        List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getAllSubLicensees().getEntity();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getIndividualSubLicensees(loginContext.getOrgId()).getEntity();
         Map<String, SubLicenseeDto> licenseeMap = NewApplicationHelper.genSubLicessMap(subLicenseeDtoList);
         bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
         bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(subLicenseeDtoList));
@@ -337,13 +337,10 @@ public class NewApplicationDelegator {
             subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
                     subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber()));
         }
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        if (loginContext != null) {
-            if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
-                subLicenseeDto.setUenNo(loginContext.getUenNo());
-            }
-            bpc.request.setAttribute("subLicenseeDto", appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo()));
+        if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
+            subLicenseeDto.setUenNo(loginContext.getUenNo());
         }
+        bpc.request.setAttribute("subLicenseeDto", appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo()));
     }
 
     /**
