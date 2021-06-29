@@ -82,7 +82,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     public void successViewBack(BaseProcessClass bpc){
         log.info("=======inspectionNcCheckListDelegator successViewBack=======");
         HttpServletRequest request = bpc.request;
-
+        log.info(StringUtil.changeForLog(request.getRequestURI()));
     }
 
     private boolean setCsrf(BaseProcessClass bpc,TaskDto taskDto){

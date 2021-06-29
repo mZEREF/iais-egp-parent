@@ -25,8 +25,8 @@ import java.util.Map;
  * @Date: 2019/11/27 10:06
  */
 @Slf4j
-public class InspectionCheckListValidation implements CustomizeValidator {
-    private static final String ERR0010 = "GENERAL_ERR0006";
+public class InspectionCheckListValidation extends CheckListCommonValidate implements CustomizeValidator{
+
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -72,10 +72,10 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
             if(licPremisesAuditDto.getInRiskSocre().equals(0)){
                 if(StringUtil.isEmpty(licPremisesAuditDto.getIncludeRiskType())){
-                    errMap.put("periods","GENERAL_ERR0006");
+                    errMap.put("periods",ERR0010);
                 }else if(licPremisesAuditDto.getIncludeRiskType().equalsIgnoreCase(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY)) {
                     if(StringUtil.isEmpty(licPremisesAuditDto.getLgrRemarks())){
-                        errMap.put("frameworkRemarks","GENERAL_ERR0006");
+                        errMap.put("frameworkRemarks",ERR0010);
                     }else if(licPremisesAuditDto.getIncludeRiskType().length() > 2000){
                         errMap.put("frameworkRemarks",MessageUtil.replaceMessage("UC_INSP_ERR0002","2000","4000"));
                     }
@@ -113,22 +113,9 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             List<AdhocNcCheckItemDto> itemDtoList = inspectionSpecServiceDto.getAdchklDto().getAdItemList();
             if(itemDtoList!=null && !itemDtoList.isEmpty()){
                 boolean isError = true;
-                String identify = inspectionSpecServiceDto.getIdentify();
+                String identify = StringUtil.getNonNull(inspectionSpecServiceDto.getIdentify());
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                    String  prefix = temp.getId() + identify;
-                    if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(prefix+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
-                        if(isError)
-                            isError = false;
-                    } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(prefix +"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
-                        if(isError)
-                            isError = false;
-                    }else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(prefix +"adhoc",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
-                        if(isError)
-                            isError = false;
-                    }
+                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId() + identify+"adhoc",errMap);
                 }
                 return  isError;
             }
@@ -159,19 +146,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             if(itemDtoList!=null && !itemDtoList.isEmpty()){
                 boolean isError = true;
                 for(AdhocNcCheckItemDto temp:itemDtoList){
-                    if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
-                        if(isError)
-                            isError = false;
-                    } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
-                        if(isError)
-                            isError = false;
-                    }else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
-                        if(isError)
-                            isError = false;
-                    }
+                    isError = verifyQuestionDto(temp.getAdAnswer(),temp.getRemark(),temp.getNcs(),isError,temp.getId()+"adhoc",errMap);
                 }
                 return  isError;
             }
@@ -202,20 +177,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
-                    String prefix = StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId();
-                    if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(prefix+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
-                        if(isError)
-                            isError = false;
-                    }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(prefix+"com",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
-                        if(isError)
-                            isError = false;
-                    }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                        errMap.put(prefix+"com",MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
-                        if(isError)
-                            isError = false;
-                    }
+                    isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,StringUtil.getNonNull(temp.getSectionNameShow()) + temp.getItemId()+"com",errMap);
                 }
             }
             return isError;
@@ -228,20 +190,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(!IaisCommonUtils.isEmpty(cqDtoList)){
             boolean isError = true;
             for(InspectionCheckQuestionDto temp:cqDtoList){
-                String prefix = fDto.getSubName()+StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId();
-                if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(prefix,MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
-                    if(isError)
-                        isError = false;
-                }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                    errMap.put(prefix,MessageUtil.replaceMessage(ERR0010,"Remark","field"));
-                    if(isError)
-                        isError = false;
-                }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getNcs())){
-                    errMap.put(prefix,MessageUtil.replaceMessage(ERR0010,"Findings/NCs","field"));
-                    if(isError)
-                        isError = false;
-                }
+                isError =  verifyQuestionDto(temp.getChkanswer(),temp.getRemark(),temp.getNcs(),isError,fDto.getSubName()+StringUtil.getNonNull(temp.getSectionNameShow())+temp.getItemId(),errMap);
             }
             return  isError;
         }
@@ -367,17 +316,6 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         return false;
     }
 
-    public boolean fillServiceVad(InspectionFillCheckListDto fDto){
-        List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
-        if(!IaisCommonUtils.isEmpty(cqDtoList)){
-            for(InspectionCheckQuestionDto temp:cqDtoList){
-                if(StringUtil.isEmpty(temp.getChkanswer())){
-                   return false;
-                }
-            }
-        }
-        return true;
-    }
 
 
     public void tcuVad(InspectionFDtosDto icDto,Map<String, String> errMap){
@@ -394,7 +332,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             log.debug(e.toString());
         }
         if(icDto.isTcuFlag() && StringUtil.isEmpty(icDto.getTuc())){
-            errMap.put("tcuDate","GENERAL_ERR0006");
+            errMap.put("tcuDate",ERR0010);
         }
         String tcuRemark = icDto.getTcuRemark();
         if(tcuRemark!=null&&tcuRemark.length()>300){
