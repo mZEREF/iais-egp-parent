@@ -32,14 +32,14 @@ public class IaisEGPConstant {
     public static final String BE_CSS_ROOT                         = "/be/";
     public static final String COMMON_CSS_ROOT                     = "/common/";
 
-    public static final String PROCESS_DOWNLOAD_FILE_BYTE_DATA = "processDownloadFileByteData";
-    public static final String PROCESS_DOWNLOAD_FILE_NAME = "processDownloadFileName";
+    public static final String PROCESS_DOWNLOAD_FILE_BYTE_DATA     = "processDownloadFileByteData";
+    public static final String PROCESS_DOWNLOAD_FILE_NAME          = "processDownloadFileName";
 
-    public static final String SESSION_ENTRANCE   = "session_entrance";
+    public static final String SESSION_ENTRANCE                    = "session_entrance";
 
+    public static final String ASSIGN_SELECT_ADD_NEW               = "newOfficer";
 
-
-    public static final String OFFICE_TELNO_MATCH     = "^[3|6][0-9]{7}$";
+    public static final String OFFICE_TELNO_MATCH                  = "^[3|6][0-9]{7}$";
 
 
 

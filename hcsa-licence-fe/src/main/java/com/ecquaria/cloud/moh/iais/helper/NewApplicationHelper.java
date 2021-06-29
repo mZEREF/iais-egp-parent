@@ -1655,7 +1655,7 @@ public class NewApplicationHelper {
             SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             psnSelectList.add(sp0);
         }
-        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         psnSelectList.add(sp1);
 
         List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
