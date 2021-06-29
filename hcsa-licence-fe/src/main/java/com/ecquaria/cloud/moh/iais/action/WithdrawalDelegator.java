@@ -501,7 +501,9 @@ public class WithdrawalDelegator {
                         withdrawnDto.setHciName(agp.getHciName());
                     } else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(agp.getPremisesType())) {
                         withdrawnDto.setHciName(agp.getOffSiteHciName());
-                    } else {
+                    } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(agp.getPremisesType())) {
+                        withdrawnDto.setHciName(agp.getEasMtsHciName());
+                    } else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(agp.getPremisesType())){
                         withdrawnDto.setHciName(agp.getConveyanceHciName());
                     }
                 }else {
