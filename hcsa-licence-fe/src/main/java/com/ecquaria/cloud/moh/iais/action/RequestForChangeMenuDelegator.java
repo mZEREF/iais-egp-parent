@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -87,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -689,7 +691,9 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
-        ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
+        if(oldPersonnelDto==null){
+            ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
+        }
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
@@ -700,6 +704,7 @@ public class RequestForChangeMenuDelegator {
 
     public void initPsnEditInfo(BaseProcessClass bpc){
         log.info("------");
+        bpc.request.getSession().removeAttribute("oldPersonnelDtooldPersonnelDto");
     }
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
@@ -817,6 +822,17 @@ public class RequestForChangeMenuDelegator {
         for(AppSubmissionDto v : appSubmissionDtos1){
             requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = v.getAppSvcRelatedInfoDtoList();
+            Iterator<AppSvcRelatedInfoDto> iterator = appSvcRelatedInfoDtoList.iterator();
+            while (iterator.hasNext()){
+                AppSvcRelatedInfoDto next = iterator.next();
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                    for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                    }
+                }
+            }
         }
         //save
         List<AppSubmissionDto> appSubmissionDtos2 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
@@ -825,6 +841,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos2);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
+        bpc.request.getSession().setAttribute("personnelEditDto",personnelEditDto);
     }
 
     public void paymentSwitch(BaseProcessClass bpc){
@@ -1786,6 +1803,16 @@ public class RequestForChangeMenuDelegator {
                     if (!StringUtil.isEmpty(appGrpPremisesDtos)) {
                         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                             appGrpPremisesDto.setSelfAssMtFlag(4);
+                        }
+                    }
+                    Iterator<AppSvcRelatedInfoDto> iterator = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().iterator();
+                    while (iterator.hasNext()){
+                        AppSvcRelatedInfoDto next = iterator.next();
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                        if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                            for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                                appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                            }
                         }
                     }
                 } else {

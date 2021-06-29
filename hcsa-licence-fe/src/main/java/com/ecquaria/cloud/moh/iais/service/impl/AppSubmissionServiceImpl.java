@@ -2424,7 +2424,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         String licenseeId = loginContext.getLicenseeId();
         List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
 
-        validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
+        validateVehicle.doValidateVehicles(errorMap,dto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
         return errorMap;
     }
 

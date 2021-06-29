@@ -1926,7 +1926,7 @@ public class ClinicalLaboratoryDelegator {
                     oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
                 }
             }
-            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),licenseeId,oldAppSvcVehicleDto);
+            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
             validateVehicle.doValidateVehicles(map,appSubmissionDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");

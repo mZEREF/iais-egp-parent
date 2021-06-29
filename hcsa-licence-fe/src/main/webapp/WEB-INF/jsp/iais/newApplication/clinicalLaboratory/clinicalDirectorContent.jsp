@@ -524,7 +524,7 @@
     };
     $("input[name='noRegWithProfBoard']").change(function (){
 
-        if($(this).parent().prev().val()==1){
+        if($(this).parent().prev().val()==0){
             if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
                 $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
                 $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
