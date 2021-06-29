@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
@@ -121,6 +122,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2578,6 +2580,17 @@ public class NewApplicationDelegator {
                 for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                     appGrpPremisesDto.setSelfAssMtFlag(4);
                 }
+                Iterator<AppSvcRelatedInfoDto> iterator = appSubmissionDto1.getAppSvcRelatedInfoDtoList().iterator();
+                while (iterator.hasNext()){
+                    AppSvcRelatedInfoDto next = iterator.next();
+                    List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                    if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                        for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                        }
+                    }
+                }
+
             }
             //set missing data
             AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
