@@ -20,6 +20,7 @@ import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import com.ecquaria.egp.core.payment.runtime.Soapi;
 import ecq.commons.helper.StringHelper;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSig
  * @author junyu
  * @date 2021/03/11
  */
+@Slf4j
 @Controller
 public class NetsSysToSysController {
     @Autowired
@@ -157,7 +159,20 @@ public class NetsSysToSysController {
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_MONTH, 1);
         String expiryDate = df.format(cal.getTime());
-
+        log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
+        log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);
+        log.info("countryCode {}",GatewayPayNowConfig.countryCode);
+        log.info("merchantName {}",GatewayPayNowConfig.merchantName);
+        log.info("merchantCity {}",GatewayPayNowConfig.merchantCity);
+        log.info("globalUniqueID {}",GatewayPayNowConfig.globalUniqueID);
+        log.info("proxyType {}",GatewayPayNowConfig.proxyType);
+        log.info("proxyValue {}",GatewayPayNowConfig.proxyValue);
+        log.info("editableAmountInd {}",GatewayPayNowConfig.editableAmountInd);
+        log.info("expiryDate {}",expiryDate);
+        log.info("pointOfIntiation {}",GatewayPayNowConfig.pointOfIntiation);
+        log.info("amount {}",amoStr);
+        log.info("billReferenceNumber {}",appGrpNo);
+        log.info("payloadFormatInd {}",GatewayPayNowConfig.payloadFormatInd);
 
         PayNow payNowObject = qrGenerator.getPayNowObject(GatewayPayNowConfig.merchantCategoryCode,
                 GatewayPayNowConfig.txnCurrency, GatewayPayNowConfig.countryCode,
