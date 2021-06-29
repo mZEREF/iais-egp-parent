@@ -181,7 +181,6 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">Specialty</label>
-                    <span class="mandatory">*</span>
                 </div>
                 <div class="control-label formtext col-md-7 col-xs-12" >
                      <label class="control-label control-set-font control-font-label specialty-label">
@@ -256,7 +255,6 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">Relevant Experience</label>
-                    <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="relevantExperience${index}" value="${clinicalDirectorDto.relevantExperience}"></iais:input>
