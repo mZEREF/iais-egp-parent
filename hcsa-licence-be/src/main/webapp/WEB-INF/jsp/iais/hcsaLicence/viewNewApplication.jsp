@@ -581,13 +581,13 @@
                       </td>
                       <td>
                         <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDateStr}">
-                            ${appSvcClinicalDirectorDto.bclsExpiryDateStr}
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDate}">
+                            <fmt:formatDate value="${appSvcClinicalDirectorDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
                         </span>
                         </div>
                         <div class="col-xs-6">
-                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDateStr}">
-                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDateStr}
+                        <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDate}">
+                            <fmt:formatDate value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].bclsExpiryDate}" pattern="dd/MM/yyyy"/>
                         </span>
                         </div>
                       </td>
