@@ -180,7 +180,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Profession Regn. No.</p>
                     </td>
                     <td>
-                      <div class="col-xs-6 img=show">
+                      <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
                             ${appSvcClinicalDirectorDto.profRegNo}
                               <c:if test="${empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
@@ -204,7 +204,7 @@
                               </c:if>
                         </span>
                       </div>
-                      <c:if test="${not empty listHashMap[appSvcClinicalDirectorDtoList.profRegNo]}">
+                      <c:if test="${not empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
                         <div class="row new-img-show" style="display: none">
                           <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
@@ -224,9 +224,9 @@
                                 <td>Other disciplinary action Start Date</td>
                                 <td>Other Disciplinary action End Date</td>
                               </tr>
-                              <c:forEach items="${listHashMap[appSvcClinicalDirectorDtoList.profRegNo]}" var="list">
+                              <c:forEach items="${listHashMap[appSvcClinicalDirectorDto.profRegNo]}" var="list">
                                 <tr>
-                                  <td>${appSvcClinicalDirectorDtoList.profRegNo}</td>
+                                  <td>${appSvcClinicalDirectorDto.profRegNo}</td>
                                   <td style="text-align: left">
                                     <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
                                     <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
