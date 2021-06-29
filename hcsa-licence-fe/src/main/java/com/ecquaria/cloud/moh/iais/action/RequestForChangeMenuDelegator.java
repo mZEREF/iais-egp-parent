@@ -822,6 +822,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos2);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
+        bpc.request.getSession().setAttribute("personnelEditDto",personnelEditDto);
     }
 
     public void paymentSwitch(BaseProcessClass bpc){
