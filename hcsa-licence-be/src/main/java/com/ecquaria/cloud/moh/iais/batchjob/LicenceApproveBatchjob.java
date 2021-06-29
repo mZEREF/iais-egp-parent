@@ -1156,7 +1156,9 @@ public class LicenceApproveBatchjob {
                 }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
-                licSubLicenseeInfoDto.setOrgId(organizationId);
+                if(licSubLicenseeInfoDto != null){
+                    licSubLicenseeInfoDto.setOrgId(organizationId);
+                }
                 superLicDto.setLicSubLicenseeInfoDto(licSubLicenseeInfoDto);
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
