@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.MohHcsaBeDashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class MohBeStatisticsBoardDelegator {
 
     @Autowired
     private MohHcsaBeDashboardService mohHcsaBeDashboardService;
+
+    @Autowired
+    private InspectionMainService inspectionService;
 
     /**
      * StartStep: beStatisticsBoardStart
@@ -101,7 +105,7 @@ public class MohBeStatisticsBoardDelegator {
         log.info(StringUtil.changeForLog("the beStatisticsBoardPre start ...."));
         String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
         if(StringUtil.isEmpty(switchAction)) {
-            switchAction = BeDashboardConstant.SWITCH_ACTION_STATISTICS_ALL;
+            switchAction = BeDashboardConstant.SWITCH_ACTION_SYSTEM_ALL;
         }
         String[] services = ParamUtil.getStrings(bpc.request,"svcLic");
         String[] appTypes = ParamUtil.getStrings(bpc.request,"appType");
@@ -116,10 +120,13 @@ public class MohBeStatisticsBoardDelegator {
         List<DashStageCircleKpiDto> dashStageCircleKpiDtos = mohHcsaBeDashboardService.getDashStageCircleKpiShow(searchResult);
         //set Dashboard Circle Kpi Show Session
         setDashCircleKpiShowSession(bpc.request, dashStageCircleKpiDtos);
+        //get appType option
+        List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         //get service option
         List<SelectOption> serviceOption = mohHcsaBeDashboardService.getHashServiceOption();
         //set session
         setSessionBySvcAppTypeFilter(bpc.request, services, appTypes);
+        ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setSessionAttr(bpc.request, "dashServiceOption", (Serializable) serviceOption);
         ParamUtil.setSessionAttr(bpc.request, "dashSwitchActionValue", switchAction);
         ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", null);
