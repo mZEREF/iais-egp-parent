@@ -2030,10 +2030,17 @@ public class ClinicalLaboratoryDelegator {
                             setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
                             continue;
                         }
+                        /*
                         boolean isLicPsn = appSvcPsnDto.isLicPerson();
-                        if((!isLicPsn && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))){
+                        String assignSel = ParamUtil.getString(bpc.request,"assignSel"+i);
+                        if ((IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel)
+                                && !isLicPsn && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType))
+                                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
+                                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
                             appSvcPsnDto.setName(name);
                         }
+                        */
+                        appSvcPsnDto.setName(name);
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
                         if(!IaisCommonUtils.isEmpty(specialtyList)){
@@ -2958,7 +2965,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcClinicalDirectorDto.setPsnEditDto(appPsnEditDto);
                 }
                 boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(cdIndexNo);
-                boolean isNewOfficer = "newOfficer".equals(assignSel);
+                boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel) || !appSvcClinicalDirectorDto.isLicPerson();
                 if (canSetValue(appPsnEditDto.isProfessionBoard(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setProfessionBoard(professionBoard);
                 }
@@ -3883,7 +3890,7 @@ public class ClinicalLaboratoryDelegator {
             SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             assignSelectList.add(assignOp1);
         }
-        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption assignOp2 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         assignSelectList.add(assignOp2);
         //get current cgo,po,dpo,medAlert
         Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
@@ -3901,7 +3908,7 @@ public class ClinicalLaboratoryDelegator {
             SelectOption assignOp1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             assignSelectList.add(assignOp1);
         }
-        SelectOption assignOp2 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption assignOp2 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         assignSelectList.add(assignOp2);
         return assignSelectList;
     }
@@ -3931,7 +3938,6 @@ public class ClinicalLaboratoryDelegator {
     private Set<String> getRfcClickEditPageSet(AppSubmissionDto appSubmissionDto) {
         return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
     }
-
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson star ..."));

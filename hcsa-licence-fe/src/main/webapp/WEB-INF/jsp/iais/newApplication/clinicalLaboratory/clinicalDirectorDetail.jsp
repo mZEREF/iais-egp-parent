@@ -199,7 +199,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="specialtyGetDate" name="specialtyGetDate${index}" value="${clinicalDirectorDto.specialtyGetDateStr}" />
+                    <iais:datePicker cssClass="specialtyGetDate field-name" name="specialtyGetDate${index}"
+                                     value="${clinicalDirectorDto.specialtyGetDateStr}" />
                 </div>
             </div>
         </div>
@@ -211,7 +212,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${clinicalDirectorDto.typeOfCurrRegi}" />
+                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi field-name" name="typeOfCurrRegi${index}"
+                                value="${clinicalDirectorDto.typeOfCurrRegi}" />
                 </div>
             </div>
         </div>
@@ -223,7 +225,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="currRegiDate" name="currRegiDate${index}" value="${clinicalDirectorDto.currRegiDateStr}" />
+                    <iais:datePicker cssClass="currRegiDate field-name" name="currRegiDate${index}"
+                                     value="${clinicalDirectorDto.currRegiDateStr}" />
                 </div>
             </div>
         </div>
@@ -235,7 +238,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="praCerEndDate" name="praCerEndDate${index}" value="${clinicalDirectorDto.praCerEndDateStr}" />
+                    <iais:datePicker cssClass="praCerEndDate field-name" name="praCerEndDate${index}"
+                                     value="${clinicalDirectorDto.praCerEndDateStr}" />
                 </div>
             </div>
         </div>
@@ -247,7 +251,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${clinicalDirectorDto.typeOfRegister}"></iais:input>
+                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister field-name" name="typeOfRegister${index}"
+                                value="${clinicalDirectorDto.typeOfRegister}"></iais:input>
                 </div>
             </div>
         </div>

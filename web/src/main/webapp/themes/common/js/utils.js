@@ -62,6 +62,39 @@ function doValidationParse(data){
                 }
             }
         }
+        gotoFirstMsg();
+    }
+}
+
+function gotoFirstMsg() {
+    if ($('span.error-msg').not(':empty').length <= 0) {
+        return;
+    }
+
+    $target = $('span.error-msg').not(':empty').first();
+    if ($target.is(':hidden')) {
+        if ($target.closest('.panel-collapse').length > 0) {
+            $target.closest('.panel-collapse').collapse('show');
+        } else {
+            return;
+        }
+    }
+    var correlationId = $target.attr('id').replace('error_', '');
+    var errorTop = 0;
+    if ($(':input[name="' + correlationId + '"]').length > 0) {
+        errorTop = $(':input[name="' + correlationId + '"]').offset().top;
+    } else if ($('#' + correlationId).length > 0) {
+        errorTop = $('#' + correlationId).offset().top;
+    } else {
+        errorTop = $target.offset().top;
+    }
+    if (errorTop <= 0) {
+        errorTop = $target.offset().top;
+    }
+    if (errorTop > 0) {
+        $('html,body').animate({scrollTop: errorTop - 100});
+    } else {
+        $('html,body').animate({scrollTop: errorTop - 100});
     }
 }
 

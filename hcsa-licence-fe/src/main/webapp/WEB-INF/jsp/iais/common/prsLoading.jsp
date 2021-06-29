@@ -127,7 +127,7 @@
         $content.css('color', '');
     }
     function isNeedControlName(assignSelectVal, licPerson, appType) {
-        return ('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType);
+        return true;//('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType);
     }
 
     function clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action) {

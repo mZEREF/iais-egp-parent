@@ -113,13 +113,13 @@
 
         // disabled <a>
         $('a').prop('disabled',true);
-        /*if(isChrome){
+        if(isChrome){
             addPrintListener();
             window.print();
         }else{
             window.print();
             window.close();
-        }*/
+        }
 
     });
 

@@ -1656,7 +1656,7 @@ public class NewApplicationHelper {
             SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             psnSelectList.add(sp0);
         }
-        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         psnSelectList.add(sp1);
 
         List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
@@ -3859,7 +3859,7 @@ public class NewApplicationHelper {
     public static List<SelectOption> genSubLicessOption(List<SubLicenseeDto> subLicenseeDtoList) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
         options.add(new SelectOption("-1", "Please Select"));
-        options.add(new SelectOption("newOfficer", "I'd like to add a new licensee"));
+        options.add(new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new licensee"));
         if (subLicenseeDtoList != null) {
             subLicenseeDtoList.stream().forEach(dto -> options.add(new SelectOption(getPersonKey(dto.getIdType(), dto.getIdNumber()),
                     getPersonView(dto.getIdType(), dto.getIdNumber(), dto.getLicenseeName()))));
@@ -3881,7 +3881,7 @@ public class NewApplicationHelper {
         if (keySet != null && keySet.contains(personKey)) {
             assignSelect = personKey;
         } else if (!StringUtil.isEmpty(personKey)) {
-            assignSelect = "newOfficer";
+            assignSelect = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW;
         }
         return assignSelect;
     }
