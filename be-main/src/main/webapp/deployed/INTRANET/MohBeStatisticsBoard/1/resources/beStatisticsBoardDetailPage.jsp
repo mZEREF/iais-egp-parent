@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beStatisticsBoardAllApp.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardAdminDetail.jsp"%>
