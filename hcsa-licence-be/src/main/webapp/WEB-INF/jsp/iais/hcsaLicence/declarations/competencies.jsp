@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="col-xs-12 form-group txt-area-normal">
-            <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
+            <p>If you have selected 'No' to any of the questions above, please provide further details below:</p>
             <textarea disabled id="competencyRemarks" maxlength="1000" class="form-control" name="competenciesRemark">${appDeclarationMessageDto.competenciesRemark}</textarea>
         </div>
     </div>

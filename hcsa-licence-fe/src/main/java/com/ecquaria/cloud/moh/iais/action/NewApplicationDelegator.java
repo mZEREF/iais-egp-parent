@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
@@ -123,6 +124,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -503,6 +505,7 @@ public class NewApplicationDelegator {
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if (!StringUtil.isEmpty(licenseeId)) {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
+            log.info("----------- licAppGrpPremisesDtoMap ----->"+ licAppGrpPremisesDtoMap.size());
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
                 //remove premise info when pending premises hci same
@@ -552,6 +555,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                log.info("-------newLicAppGrpPremisesDtoMap----> "+newLicAppGrpPremisesDtoMap.size());
             }
         } else {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -2748,6 +2752,17 @@ public class NewApplicationDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto1.getAppGrpPremisesDtoList();
                 for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                     appGrpPremisesDto.setSelfAssMtFlag(4);
+                }
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = appSubmissionDto1.getAppSvcRelatedInfoDtoList();
+                Iterator<AppSvcRelatedInfoDto> iterator = appSvcRelatedInfoDtoList1.iterator();
+                while (iterator.hasNext()){
+                    AppSvcRelatedInfoDto next = iterator.next();
+                    List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                    if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                        for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                        }
+                    }
                 }
             }
             //set missing data

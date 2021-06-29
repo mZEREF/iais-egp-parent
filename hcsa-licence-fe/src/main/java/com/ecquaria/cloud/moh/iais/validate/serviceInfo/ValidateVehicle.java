@@ -30,8 +30,10 @@ import java.util.Map;
 public class ValidateVehicle implements ValidateFlow {
     @Autowired
     private ApplicationFeClient applicationFeClient;
+    @Autowired
+    private HcsaLicenClient hcsaLicenClient;
     @Override
-    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos,String licenseeId, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
         if(appSvcVehicleDtos==null){
             return;
         }
@@ -39,6 +41,7 @@ public class ValidateVehicle implements ValidateFlow {
         List<String>chassisNumList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String>engineNumNumList=new ArrayList<>(appSvcVehicleDtos.size());
         List<String> validateVehicleName=new ArrayList<>(appSvcVehicleDtos.size());
+        Map<Integer,String> indexMap=new HashMap<>(appSvcVehicleDtos.size());
         for(int i=0;i<appSvcVehicleDtos.size();i++){
             String vehicleName = appSvcVehicleDtos.get(i).getVehicleName();
             String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
@@ -60,14 +63,14 @@ public class ValidateVehicle implements ValidateFlow {
                     //validate  vehicle number used. how to do ? RFC Renew Rfi how to do ?I haven't come up with a solution yet
                     //1. licence used ,rfc renew use some vehicle no.--ok
                     //2. rfc renew change vehicle A-->B ，rfi use A ---> ok。
-                    if(oldAppSvcVehicleDto==null){
-                     /*   List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName,licenseeId).getEntity();
+                /*    if(oldAppSvcVehicleDto==null){
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName).getEntity();
                         if(!appSvcVehicleDtoList.isEmpty()){
                             map.put("vehicleName" + i, "NEW_ERR0028");
-                        }*/
+                        }
                     }else {
-
-                    }
+                        indexMap.put(i,vehicleName);
+                    }*/
 
                 }
             }
@@ -94,7 +97,7 @@ public class ValidateVehicle implements ValidateFlow {
         }
         //need validate
         if(!validateVehicleName.isEmpty()){
-           /* List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
+/*            List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
             if(!entity.isEmpty()){
                 validateVehicleName.forEach((v)->{
                     indexMap.forEach((k,var)->{

@@ -1366,6 +1366,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
                         validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i,masterCodeDto, floorUnitList,  floorUnitNo,licenseeId);
+                        validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
+                                i,licenseeId,appGrpPremisesDto,needAppendMsg,rfi,premisesHciList,oldPremiseHciList);
                     }
                 } else {
                     //premiseSelect = organization hci code
