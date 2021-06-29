@@ -658,8 +658,8 @@
                     <iais:code code="${generalChargesDtos.chargesType}"></iais:code>
                   </span>
                   <br>
-                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].chargesType}">
-                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].chargesType}"></iais:code>
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].chargesType}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].chargesType}"></iais:code>
                   </span>
                 </div>
               </td>
@@ -675,8 +675,8 @@
                   </span>
                 </div>
                 <div class="col-xs-6">
-                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].minAmount}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].minAmount}
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].minAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].minAmount}
                   </span>
                 </div>
               </td>
@@ -692,8 +692,8 @@
                   </span>
                 </div>
                 <div class="col-xs-6">
-                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].maxAmount}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].maxAmount}
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].maxAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].maxAmount}
                   </span>
                 </div>
               </td>
@@ -708,8 +708,8 @@
                       ${generalChargesDtos.remarks}
                   </span>
                   <br>
-                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].remarks}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[index.index].remarks}
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].remarks}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.generalChargesDtos[status.index].remarks}
                   </span>
                 </div>
 
@@ -734,8 +734,8 @@
                     <iais:code code="${otherChargesDtos.chargesCategory}"></iais:code>
                   </span>
                   <br>
-                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesCategory}">
-                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesCategory}"></iais:code>
+                  <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].chargesCategory}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].chargesCategory}"></iais:code>
                   </span>
                 </div>
               </td>
@@ -750,8 +750,8 @@
                     <iais:code code="${otherChargesDtos.chargesType}"></iais:code>
                   </span>
                   <br>
-                  <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesType}">
-                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].chargesType}"></iais:code>
+                  <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].chargesType}">
+                     <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].chargesType}"></iais:code>
                   </span>
                 </div>
               </td>
@@ -767,8 +767,8 @@
                   </span>
                 </div>
                 <div class="col-xs-6">
-                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].minAmount}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].minAmount}
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].minAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].minAmount}
                   </span>
                 </div>
               </td>
@@ -784,8 +784,8 @@
                   </span>
                 </div>
                 <div class="col-xs-6">
-                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].maxAmount}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].maxAmount}
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].maxAmount}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].maxAmount}
                   </span>
                 </div>
               </td>
@@ -799,8 +799,8 @@
                   <span class="newVal " attr="${otherChargesDtos.remarks}">
                       ${otherChargesDtos.remarks}
                   </span>
-                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[index.index].remarks}
+                  <span class="oldVal " style="display: none"  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].remarks}">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcChargesPageDto.otherChargesDtos[status.index].remarks}
                   </span>
                 </div>
               </td>
