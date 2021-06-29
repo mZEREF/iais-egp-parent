@@ -95,7 +95,7 @@
             <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND CHARINDEX(:appNo, B.application_no) >0 </#if>
             <#if appStatus??> AND ${appStatus}</#if>
-            <#if service_id??> AND ${service_id}</#if>
+            <#if service_id??> AND (${service_id} OR CHARINDEX(:serviceCode, B.code) >0) </#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>

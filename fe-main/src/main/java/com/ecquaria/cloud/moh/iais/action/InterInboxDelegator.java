@@ -1072,6 +1072,10 @@ public class InterInboxDelegator {
                     inboxParam.addFilter("B.service_id"+indx, hcsaServiceDto.getId());
                     indx++;
                 }
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceType);
+                if (hcsaServiceDto != null && !StringUtil.isEmpty(hcsaServiceDto.getSvcCode())){
+                    inboxParam.addFilter("serviceCode",  hcsaServiceDto.getSvcCode());
+                }
 //                inboxParam.addFilter("serviceType", serviceType,true);
             }
         }
