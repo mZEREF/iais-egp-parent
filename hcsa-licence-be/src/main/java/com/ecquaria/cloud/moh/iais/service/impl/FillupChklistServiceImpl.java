@@ -1055,7 +1055,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = IaisCommonUtils.genNewArrayList();
-        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos  = organizationClient.getCurrTaskByRefNo(taskDto.getRefNo()).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> userIds = new ArrayList<>(taskDtos.size());
             for(TaskDto taskDto1 : taskDtos){

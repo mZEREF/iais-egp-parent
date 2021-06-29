@@ -81,7 +81,7 @@
         <div class="col-xs-8 col-sm-6 col-md-5">
             <p>
             <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
-                <c:out value="${officer}"/>
+                <c:if test="${status.index >0}">, </c:if><c:out value="${officer}"/>
             </c:forEach>
             </p>
         </div>
