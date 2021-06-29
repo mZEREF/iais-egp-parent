@@ -37,54 +37,15 @@
                                     <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
                                         <c:choose>
                                             <c:when test="${pool.roles.size() == 1}">
-                                                <c:choose>
-                                                    <c:when test="${assessList == 'CGO'}">
-                                                        Clinical Governance Officer
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'PO'}">
-                                                        Principal Officer
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'DPO'}">
-                                                        Nominee
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'MAP'}">
-                                                        MedAlert
-                                                    </c:when>
-                                                </c:choose>
+                                                <iais:code code="${assessList}"/>
                                             </c:when>
                                             <c:otherwise>
                                                 <c:choose>
                                                     <c:when test="${pool.roles.size() == assessStatus.index + 1}">
-                                                        <c:choose>
-                                                            <c:when test="${assessList == 'CGO'}">
-                                                                Clinical Governance Officer
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'PO'}">
-                                                                Principal Officer
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'DPO'}">
-                                                                Nominee
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'MAP'}">
-                                                                MedAlert
-                                                            </c:when>
-                                                        </c:choose>
+                                                        <iais:code code="${assessList}"/>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <c:choose>
-                                                            <c:when test="${assessList == 'CGO'}">
-                                                                Clinical Governance Officer,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'PO'}">
-                                                                Principal Officer,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'DPO'}">
-                                                                Nominee,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'MAP'}">
-                                                                MedAlert,
-                                                            </c:when>
-                                                        </c:choose>
+                                                        <iais:code code="${assessList}"/>,
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:otherwise>
