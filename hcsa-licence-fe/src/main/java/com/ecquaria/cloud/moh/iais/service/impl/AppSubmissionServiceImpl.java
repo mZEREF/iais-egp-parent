@@ -1210,6 +1210,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getRenewalAmount start ...."));
         log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtosAll=IaisCommonUtils.genNewArrayList();
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+            appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
+
+        }
+        int easMtsVehicleCount = getEasMtsVehicleCount(appSvcRelatedInfoDtosAll);
+        boolean hadEas = false;
+        boolean hadMts = false;
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtosAll){
+            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
+            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
+                hadEas = true;
+            }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
+                hadMts = true;
+            }
+        }
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1233,17 +1249,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
 
-            boolean hadEas = false;
-            boolean hadMts = false;
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-                if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                    hadEas = true;
-                }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                    hadMts = true;
-                }
-            }
-            int easMtsVehicleCount = getEasMtsVehicleCount(appSvcRelatedInfoDtos);
+
             log.debug("eas nad mts vehicle count is {}",easMtsVehicleCount);
             List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = appConfigClient.getActiveBundleDtoList().getEntity();
 
