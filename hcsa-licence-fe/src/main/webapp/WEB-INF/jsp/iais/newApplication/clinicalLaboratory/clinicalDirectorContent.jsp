@@ -325,7 +325,6 @@
             var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
             if(needControlName){
                 var prgNo = $currContent.find('input.profRegNo').val();
-                console.info("prgNo: " + prgNo);
                 if(!isEmpty(prgNo)){
                     controlEdit($currContent.find('input.field-name'), 'disabled', false);
                 }
