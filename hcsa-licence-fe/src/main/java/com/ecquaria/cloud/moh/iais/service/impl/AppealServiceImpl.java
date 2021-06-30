@@ -1736,7 +1736,7 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
+    /*private void sendEmail(HttpServletRequest request) throws IOException, TemplateException {
         LoginContext loginContext = (LoginContext) request.getSession().getAttribute("loginContext");
         String newApplicationNo = (String) request.getAttribute("newApplicationNo");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
@@ -1767,7 +1767,7 @@ public class AppealServiceImpl implements AppealService {
             }
         }
         //need address form login
-    }
+    }*/
 
     private void sendAdminEmail(HttpServletRequest request) throws IOException, TemplateException {
         List<String> email = adminEmail(request);

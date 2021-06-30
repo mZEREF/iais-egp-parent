@@ -554,7 +554,11 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+
+                }else {
+                    licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                }
                 log.info("-------newLicAppGrpPremisesDtoMap----> "+newLicAppGrpPremisesDtoMap.size());
             }
         } else {
