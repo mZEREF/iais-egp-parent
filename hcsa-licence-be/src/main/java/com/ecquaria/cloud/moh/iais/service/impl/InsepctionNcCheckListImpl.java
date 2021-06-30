@@ -300,26 +300,18 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void submitSpecService(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId) {
+    public void submitSpecService(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, AdCheckListShowDto adCheckListShowDto,String appPremId) {
         //save other data
         saveOtherDataForPengingIns(serListDto,appPremId);
         //save spec checklist data
-        saveBeforeSubmitSpecCheckList(commDto, inspectionSpecServiceDtos, serListDto,appPremId);
+        saveBeforeSubmitSpecCheckList(commDto, inspectionSpecServiceDtos, serListDto,adCheckListShowDto,appPremId);
     }
 
     @Override
-    public void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId) {
-        if(commDto!=null){
-            saveInspectionCheckListDto(commDto,appPremId);
-        }
-
-        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
-        if(commDto!=null&& IaisCommonUtils.isNotEmpty(commDto.getCheckList())){
-            fillcheckDtoList.add(commDto);
-        }
-
+    public void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto,AdCheckListShowDto adCheckListShowDto,String appPremId) {
+        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,adCheckListShowDto,serListDto,appPremId);
+        AdCheckListShowDto adchklDto =(AdCheckListShowDto) com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adCheckListShowDto);
         if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
-            AdCheckListShowDto adchklDto =null;
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
 
                 if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
@@ -340,16 +332,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     }
                 }
             }
-            if (adchklDto != null) {
-                saveAdhocDto(adchklDto, appPremId);
-            }
-
-            if (IaisCommonUtils.isNotEmpty(fillcheckDtoList) || (adchklDto != null && !IaisCommonUtils.isEmpty(adchklDto.getAdItemList()))) {
-                saveNcItem(fillcheckDtoList, appPremId, adchklDto);
-            }
-
+        }
+        if(adchklDto != null) {
+            saveAdhocDto(adchklDto, appPremId);
         }
 
+        if (IaisCommonUtils.isNotEmpty(fillcheckDtoList) || (adchklDto != null && !IaisCommonUtils.isEmpty(adchklDto.getAdItemList()))) {
+            saveNcItem(fillcheckDtoList, appPremId, adchklDto);
+        }
 
     }
 
@@ -638,7 +628,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    public void saveAdhocDto(AdCheckListShowDto showDto,String appPremId){
+    private void saveAdhocDto(AdCheckListShowDto showDto,String appPremId){
         List<AdhocNcCheckItemDto>  itemDtoList = showDto.getAdItemList();
         List<AdhocChecklistItemDto> saveItemDtoList = IaisCommonUtils.genNewArrayList();
         AdhocCheckListConifgDto dto = applicationClient.getAdhocConfigByAppPremCorrId(appPremId).getEntity();
@@ -1199,11 +1189,14 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos) {
+    public void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos,AdCheckListShowDto showDto, InspectionFDtosDto serListDto) {
         CheckListDraftAllDto checkListDraftAllDto = new CheckListDraftAllDto();
         checkListDraftAllDto.setCommonDto(infillDto);
         List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
-        AdCheckListShowDto adchklDto =null;
+        if(IaisCommonUtils.isNotEmpty(serListDto.getFdtoList())){
+            fdtoList.addAll(serListDto.getFdtoList());
+        }
+        AdCheckListShowDto adchklDto = (AdCheckListShowDto)com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(showDto);
         if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
                 if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDto.getFdtoList())){
@@ -1227,17 +1220,27 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         checkListDraftAllDto.setAdCheckListShowDto(adchklDto);
         checkListDraftAllDto.setRefNo(appPremId);
         checkListDraftAllDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        checkListDraftAllDto.setVehicleService(true);
         fillUpCheckListGetAppClient.saveDraftAnswerForCheckList(checkListDraftAllDto);
     }
 
     @Override
     public void saveBeforeSubmitCheckList(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto, String appPremId) {
+        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,showDto,serListDto,appPremId);
+        if (showDto != null) {
+            saveAdhocDto(showDto, appPremId);
+        }
+        if(!fillcheckDtoList.isEmpty() || !IaisCommonUtils.isEmpty(showDto.getAdItemList())){
+            saveNcItem(fillcheckDtoList,appPremId,showDto);
+        }
+    }
+
+    private List<InspectionFillCheckListDto> getFillcheckDtoListAndSaveCheckListNoVehicle(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId){
+        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(commDto!=null){
             saveInspectionCheckListDto(commDto,appPremId);
         }
         saveSerListDto(serListDto,appPremId);
-        saveAdhocDto(showDto,appPremId);
-        List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto temp:serListDto.getFdtoList()){
                 fillcheckDtoList.add(temp);
@@ -1246,10 +1249,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if(commDto!=null&&commDto.getCheckList()!=null&&!commDto.getCheckList().isEmpty()){
             fillcheckDtoList.add(commDto);
         }
-        if(!fillcheckDtoList.isEmpty() || !IaisCommonUtils.isEmpty(showDto.getAdItemList()))
-        {
-            saveNcItem(fillcheckDtoList,appPremId,showDto);
-        }
+        return fillcheckDtoList;
     }
 
 

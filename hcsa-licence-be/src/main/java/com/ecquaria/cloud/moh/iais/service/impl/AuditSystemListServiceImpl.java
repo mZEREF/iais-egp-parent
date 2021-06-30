@@ -63,11 +63,9 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
 import com.google.common.collect.Maps;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,6 +256,20 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
+    @Override
+    public void setTcuAuditFlag(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
+        if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            Iterator<AuditTaskDataFillterDto> itemDtoIterator = auditTaskDataDtos.iterator();
+            while(itemDtoIterator.hasNext()){
+                AuditTaskDataFillterDto temp  = itemDtoIterator.next();
+                if(temp.isSelectedForAudit()){
+                    temp.setTcuAudit(true);
+                }else {
+                    itemDtoIterator.remove();
+                }
+            }
+        }
+    }
     private void assignTask(AuditTaskDataFillterDto temp) {
         String submitId = generateIdClient.getSeqId().getEntity();
         //create auditType data  and create grop info

@@ -1,11 +1,11 @@
-<c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
-    <c:set value = "ServiceInfo${service.identify}" var = "errorTabName"/>
-<div class="tab-pane ${errorSpecTab == errorTabName ? 'active' : ''}" id="ServiceInfo${service.identify}" role="tabpanel">
-    <c:if test="${not empty service.fdtoList}">
-        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${service.serviceDo}"/>/<c:out value="${service.serviceTotal}"/><br>
-        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${service.serviceNc}"/>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<div class="tab-pane ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
+    <c:if test="${not empty serListDto.fdtoList}">
+        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
+        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>
     </c:if>
-    <c:forEach var ="cdto" items ="${service.fdtoList}" varStatus="one">
+    <c:forEach var ="cdto" items ="${serListDto.fdtoList}" varStatus="one">
         <h3>${cdto.subType}</h3>
         <div class="table-gp">
             <c:forEach var ="section" items ="${cdto.sectionDtoList}" varStatus="two">
@@ -56,19 +56,19 @@
                             <c:set value = "${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "ckkId"/>
                             <td class="text-right">
                                 <div class="form-check">
-                                    <input name="<c:out value="${ckkId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input" />
+                                    <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input" />
                                     <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxYes"><span class="check-circle"></span></label>
                                 </div>
                             </td>
                             <td class="text-right">
                                 <div class="form-check">
-                                    <input name="<c:out value="${ckkId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" class="form-check-input" />
+                                    <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No" class="form-check-input" />
                                     <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"><span class="check-circle"></span></label>
                                 </div>
                             </td>
                             <td class="text-right">
                                 <div class="form-check">
-                                    <input name="<c:out value="${ckkId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" class="form-check-input" />
+                                    <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" class="form-check-input" />
                                     <label class="form-check-label" for="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa"><span class="check-circle"></span></label>
                                 </div>
                             </td>
@@ -80,26 +80,26 @@
                                 </td>
                             </c:if>
                             <td>
-                                <textarea cols="35" rows="4" name="<c:out value="${ckkId}"/>FindNcs" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
+                                <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>FindNcs" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxFindNcs" maxlength="500"><c:out value="${item.incqDto.ncs}"/></textarea>
                                 <br/>
-                                <c:set value = "error_${ckkId}FindNcs" var = "err"/>
+                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}FindNcs" var = "err"/>
                                 <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                             </td>
                             <td>
-                                <textarea cols="35" rows="4" name="<c:out value="${ckkId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
+                                <textarea cols="35" rows="4" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
                                 <br/>
-                                <c:set value = "error_${ckkId}Remark" var = "err"/>
+                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}Remark" var = "err"/>
                                 <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                             </td>
                             <td class="text-center">
-                                <div id="<c:out value="${ckkId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                                <div id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>ck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
                                     <div class="form-check">
-                                        <input name="<c:out value="${ckkId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
+                                        <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <c:set value = "error_${ckkId}" var = "err"/>
+                                <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
                                 <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                             </td>
                         </tr>
@@ -109,10 +109,9 @@
             </c:forEach>
         </div>
     </c:forEach>
-    <c:if test="${not empty service.adchklDto.adItemList}">
-
-        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${service.adhocDo}"/>/<c:out value="${service.adhocTotal}"/><br>
-        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${service.adhocNc}"/>
+    <c:if test="${not empty adchklDto.adItemList}">
+        <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.adhocDo}"/>/<c:out value="${serListDto.adhocTotal}"/><br>
+        <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.adhocNc}"/>
         <div class="table-gp">
             <h3>Adhoc</h3>
             <br/>
@@ -133,50 +132,50 @@
                 </thead>
                 <tbody>
 
-                <c:forEach var = "item" items = "${service.adchklDto.adItemList}" varStatus="status">
+                <c:forEach var = "item" items = "${adchklDto.adItemList}" varStatus="status">
                     <tr>
                         <td class="row_no">   <div class="form-check">${(status.index + 1) }</div></td>
                         <td> <div class="form-check"><c:out value="${item.question}"/></div></td>
-                        <c:set value = "${item.id}${service.identify}" var = "ckkId"/>
+                        <c:set value = "${item.id}" var = "ckkId"/>
                         <td class="text-right">
-                            <div class="form-check"><input name="<c:out value="${ckkId}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input"/>
-                                <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxYes"><span class="check-circle"></span></label>
+                            <div class="form-check"><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes" class="form-check-input"/>
+                                <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxYes"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td class="text-right">
                             <div class="form-check">
-                                <input name="<c:out value="${ckkId}"/>adhocrad" id="<c:out value="${ckkId}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" class="form-check-input"/>
-                                <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxNo"><span class="check-circle"></span></label>
+                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No" class="form-check-input"/>
+                                <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNo"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td class="text-right">
                             <div class="form-check">
-                                <input name="<c:out value="${ckkId}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"  class="form-check-input"/>
-                                <label class="form-check-label" for="<c:out value="${ckkId}"/>adhocitemCheckboxNa"><span class="check-circle"></span></label>
+                                <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'N/A'}">checked</c:if> value="N/A"  class="form-check-input"/>
+                                <label class="form-check-label" for="<c:out value="${item.id}"/>adhocitemCheckboxNa"><span class="check-circle"></span></label>
                             </div>
                         </td>
                         <td>
-                            <textarea cols="35" rows="4" name="<c:out value="${ckkId}"/>adhocFindNcs" id="<c:out value="${ckkId}"/>adhocitemCheckboxFindNcs" id="" maxlength="500"><c:out value="${item.ncs}"/></textarea>
+                            <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocFindNcs" id="<c:out value="${item.id}"/>adhocitemCheckboxFindNcs" id="" maxlength="500"><c:out value="${item.ncs}"/></textarea>
                             <br/>
-                            <c:set value = "error_${ckkId}adhocFindNcs" var = "err"/>
+                            <c:set value = "error_${item.id}adhocFindNcs" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td>
-                            <textarea cols="35" rows="4" name="<c:out value="${ckkId}"/>adhocremark" id="<c:out value="${ckkId}"/>adhocitemCheckboxRemark" id="" maxlength="500"><c:out value="${item.remark}"/></textarea>
+                            <textarea cols="35" rows="4" name="<c:out value="${item.id}"/>adhocremark" id="<c:out value="${item.id}"/>adhocitemCheckboxRemark" id="" maxlength="500"><c:out value="${item.remark}"/></textarea>
                             <br/>
-                            <c:set value = "error_${ckkId}adhocRemark" var = "err"/>
+                            <c:set value = "error_${item.id}adhocRemark" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                         <td class="text-center">
-                            <div id="<c:out value="${ckkId}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
+                            <div id="<c:out value="${item.id}"/>ck"<c:if test="${item.adAnswer != 'No'}">hidden</c:if>>
                                 <div class="form-check">
-                                    <input name="<c:out value="${ckkId}"/>adhocrec" id="<c:out value="${ckkId}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
+                                    <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                 </div>
                             </div>
 
                         </td>
                         <td>
-                            <c:set value = "error_${ckkId}adhoc" var = "err"/>
+                            <c:set value = "error_${item.id}adhoc" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
                     </tr>
@@ -187,4 +186,6 @@
         </div>
     </c:if>
 </div>
-</c:forEach>
+
+
+

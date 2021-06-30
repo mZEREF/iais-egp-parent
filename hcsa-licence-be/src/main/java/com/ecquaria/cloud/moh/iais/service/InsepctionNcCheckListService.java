@@ -39,11 +39,11 @@ public interface InsepctionNcCheckListService {
     void saveOtherDataForPengingIns(InspectionFDtosDto serListDto,String appPremId);
     void saveBeforeFinishCheckListRec(String appPremId,String mobileRemarks);
 
-    void submitSpecService(InspectionFillCheckListDto infillDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId);
+    void submitSpecService(InspectionFillCheckListDto infillDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto,AdCheckListShowDto adCheckListShowDto, String appPremId);
 
-    void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto infillDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, String appPremId);
+    void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto infillDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto, AdCheckListShowDto adCheckListShowDto,String appPremId);
 
-    void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos);
+    void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos,AdCheckListShowDto showDto, InspectionFDtosDto serListDto);
 
     void saveTcuDate(String appPremId,String tcu,boolean showTcu);
 }
