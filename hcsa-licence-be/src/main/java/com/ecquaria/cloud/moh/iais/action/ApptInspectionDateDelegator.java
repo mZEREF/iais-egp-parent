@@ -101,6 +101,7 @@ public class ApptInspectionDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "amPmOption", null);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
         ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", null);
+        ParamUtil.setSessionAttr(bpc.request, "tcuApptAnnounced", null);
     }
 
     /**
@@ -121,8 +122,11 @@ public class ApptInspectionDateDelegator {
             apptInspectionDateDto = apptInspectionDateService.getInspectionDate(taskDto, apptInspectionDateDto, applicationViewDto);
             //get inspection appt draft
             List<AppPremInspApptDraftDto> appPremInspApptDraftDtos = apptInspectionDateService.getInspApptDraftBySamePremises(apptInspectionDateDto);
+            //task is tcu audit
+            String tcuAudit = apptInspectionDateService.getTcuAuditAnnouncedFlag(taskDto.getRefNo());
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
             ParamUtil.setSessionAttr(bpc.request, "scheduledInspApptDraftDtos", (Serializable) appPremInspApptDraftDtos);
+            ParamUtil.setSessionAttr(bpc.request, "tcuApptAnnounced", tcuAudit);
         } else {
             applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
             List<ApptAppInfoShowDto> apptAppInfoShowDtos = apptInspectionDateService.getApplicationInfoToShow(apptInspectionDateDto.getRefNo(), apptInspectionDateDto.getTaskDtos(), null);
@@ -180,6 +184,13 @@ public class ApptInspectionDateDelegator {
             processDec = InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE;
         }
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        //set TcuAuditAnnouncedFlag
+        String[] tcuApptAnnouncedCheck = ParamUtil.getStrings(bpc.request, "tcuApptAnnouncedCheck");
+        if(tcuApptAnnouncedCheck != null && tcuApptAnnouncedCheck.length > 0){
+            apptInspectionDateDto.setTcuAuditAnnouncedFlag(AppConsts.YES);
+        } else {
+            apptInspectionDateDto.setTcuAuditAnnouncedFlag(null);
+        }
         apptInspectionDateDto.setProcessDec(processDec);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
         if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
