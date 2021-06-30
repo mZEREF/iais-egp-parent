@@ -207,7 +207,7 @@
               </div>
               <c:if test="${'assignme' eq dashSwitchActionValue}">
                 <c:choose>
-                  <c:when test="${\"AO1\".equals(curRole)}">
+                  <c:when test="${'AO1' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">
@@ -221,7 +221,7 @@
                       </div>
                     </div>
                   </c:when>
-                  <c:when test="${\"AO2\".equals(curRole)}">
+                  <c:when test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">
@@ -235,7 +235,7 @@
                       </div>
                     </div>
                   </c:when>
-                  <c:when test="${\"AO3\".equals(curRole)}">
+                  <c:when test="${'AO3' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">
