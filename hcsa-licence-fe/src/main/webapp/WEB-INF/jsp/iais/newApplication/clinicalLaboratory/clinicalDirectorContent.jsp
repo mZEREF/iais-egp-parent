@@ -397,6 +397,41 @@
                     $current.find('.specialty-label').html(speciality);
                 }
 
+            } else if(i == 'specialtyGetDate'){
+                var specialtyGetDateStr = data.specialtyGetDateStr;
+                if(isEmpty(specialtyGetDateStr)){
+                    $current.find('.specialtyGetDate').val('');
+                }else{
+                    $current.find('.specialtyGetDate').val(specialtyGetDateStr);
+                }
+            } else if(i == 'currRegiDate'){
+                var currRegiDateStr = data.currRegiDateStr;
+                if(isEmpty(currRegiDateStr)){
+                    $current.find('.currRegiDate').val('');
+                }else{
+                    $current.find('.currRegiDate').val(currRegiDateStr);
+                }
+            } else if(i == 'praCerEndDate'){
+                var praCerEndDateStr = data.praCerEndDateStr;
+                if(isEmpty(praCerEndDateStr)){
+                    $current.find('.praCerEndDate').val('');
+                }else{
+                    $current.find('.praCerEndDate').val(praCerEndDateStr);
+                }
+            } else if(i == 'aclsExpiryDate'){
+                var aclsExpiryDateStr = data.aclsExpiryDateStr;
+                if(isEmpty(aclsExpiryDateStr)){
+                    $current.find('.aclsExpiryDate').val('');
+                }else{
+                    $current.find('.aclsExpiryDate').val(aclsExpiryDateStr);
+                }
+            } else if(i == 'bclsExpiryDate'){
+                var bclsExpiryDateStr = data.bclsExpiryDateStr;
+                if(isEmpty(bclsExpiryDateStr)){
+                    $current.find('.bclsExpiryDate').val('');
+                }else{
+                    $current.find('.bclsExpiryDate').val(bclsExpiryDateStr);
+                }
             } else {
                 var $input = $current.find('.' + i + ':input');
                 if ($input.length == 0) {
