@@ -12,7 +12,10 @@
                     text-decoration: none;
                     color: #FFFFFF;
                 }
-
+                .tooltip .tooltip-inner {
+                    width: 300px;
+                    max-width: 300px;
+                }
             </style>
             <p class="form-check-title">What would you like to do today?</p>
             <div class="form-check progress-step-check" style="width: 70%;margin-bottom: 0;">
