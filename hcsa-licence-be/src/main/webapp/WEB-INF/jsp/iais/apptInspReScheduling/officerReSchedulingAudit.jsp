@@ -83,6 +83,18 @@
                       </div>
                     </div>
                   </div>
+                  <c:if test="${'true' eq tcuReApptAnnounced}">
+                    <div class="row" style="margin-bottom: 200px;">
+                      <div class="col-md-1">
+                        <label style="font-size: 16px">Announced?</label>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="col-xs-12 col-md-5">
+                          <input type="checkbox" name="tcuReApptAnnouncedCheck" value="1"/>
+                        </div>
+                      </div>
+                    </div>
+                  </c:if>
                   <iais:action>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:auditReSchedulingConfirm()">Confirm</button>
                     <a class="back" id="Back" onclick="javascript:auditReSchedulingBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
