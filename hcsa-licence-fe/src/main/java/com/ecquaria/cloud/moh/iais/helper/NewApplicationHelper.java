@@ -3191,17 +3191,19 @@ public class NewApplicationHelper {
         return selectOptionList;
     }
 
-    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType){
+    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType) {
         boolean pageCanEdit = false;
-        if(appEditSelectDto != null){
-            if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)){
+        if (appEditSelectDto != null) {
+            if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isPremisesEdit();
             } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isServiceEdit();
             } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isDocEdit();
-            }else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT.equals(currentType)) {
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isServiceEdit() || appEditSelectDto.isDocEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_LICENSEE.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isLicenseeEdit();
             }
         }
         return pageCanEdit;

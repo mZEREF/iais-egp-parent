@@ -6,14 +6,12 @@
             <strong class="app-font-size-22 premHeader">Licensee Details</strong>
         </iais:value>
         <iais:value width="6" cssClass="text-right">
-            <c:choose>
-                <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
-                    <c:set var="canEdit" value="false"/>
-                    <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                        <a class="app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
-                    </c:if>
-                </c:when>
-            </c:choose>
+            <c:if test="${canEdit}">
+                <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                <a id="edit" class="text-right app-font-size-16">
+                    <em class="fa fa-pencil-square-o">&nbsp;Edit</em>
+                </a>
+            </c:if>
         </iais:value>
     </iais:row>
 
@@ -134,6 +132,7 @@
             clearErrorMsg();
             assignSelect(this, $(this).closest('div.licenseeContent').find('div.licensee-detail'));
         });
+        $('#edit').on('click', editContent);
 
         $('.retrieveAddr').click(function() {
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
@@ -226,33 +225,15 @@
         }
     }
 
-    /*function editContent(targetSelector) {
-        var $currContent = $(targetSelector);
-        $currContent.find('.edit-content').addClass('hidden');
-        $currContent.find('input[type="text"]').prop('disabled', false);
-        $currContent.find('div.nice-select').removeClass('disabled');
-        $currContent.find('input[type="text"]').css('border-color', '');
-        $currContent.find('input[type="text"]').css('color', '');
-        $currContent.find('.date_picker').removeClass('disabled-placeHolder');
-        $currContent.find('input.holdCerByEMS').each(function () {
-            $(this).closest('div').find('label span.check-circle').removeClass('radio-disabled');
-        });
-        $currContent.find('input[type="checkbox"]').prop('disabled',false);
-        $currContent.find('input[type="radio"]').prop('disabled',false);
-        $currContent.find('.assignSel').prop('disabled',false);
+    function editContent() {
         $('#isEditHiddenVal').val('1');
-
-        var appType = $('input[name="applicationType"]').val();
-        var assignSelectVal = $currContent.find('select.assignSel').val();
-        var licPerson = $currContent.find('input.licPerson').val();
-        var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-        if(needControlName){
-            var prgNo = $currContent.find('input.profRegNo').val();
-            if(!isEmpty(prgNo)){
-                controlEdit($currContent.find('input.field-name'), 'disabled', false);
-            }
-        }
-    }*/
+        <c:if test="${!isNewApp && not empty dto.licenseeType}">
+            unDisableContent('div.licensee-detail');
+        </c:if>
+        <c:if test="${!isNewApp && empty dto.licenseeType || isNewApp}">
+            unDisableContent('div.licenseeContent');
+        </c:if>
+    }
 
     var loadCompanyLicensee = function ($target) {
         showWaiting();

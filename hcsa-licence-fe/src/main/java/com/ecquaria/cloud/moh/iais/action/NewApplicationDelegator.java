@@ -363,7 +363,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_LICENSEE, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (isGetDataFromPage) {

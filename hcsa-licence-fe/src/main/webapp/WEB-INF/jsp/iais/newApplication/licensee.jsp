@@ -11,6 +11,16 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <c:set var="dto" value="${AppSubmissionDto.subLicenseeDto}"/>
+<c:set var="isNewApp" value="${AppSubmissionDto.appType== 'APTY002'}" scope="request"/>
+<c:choose>
+    <c:when test="${isNewApp}">
+        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.licenseeEdit}" scope="request"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="canEdit" value="${dto.licenseeType != 'LICTSUB001'}" scope="request"/>
+    </c:otherwise>
+</c:choose>
+
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <div class="main-content">

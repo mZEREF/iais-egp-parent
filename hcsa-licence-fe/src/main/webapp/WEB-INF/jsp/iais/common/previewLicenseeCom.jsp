@@ -30,7 +30,7 @@
 
     <%-- Address start --%>
     <iais:row cssClass="postalCodeDiv">
-        <iais:field value="Postal Code " width="5"/>
+        <iais:field value="Postal Code" width="5"/>
         <iais:value width="7" display="true">
             <c:out value="${subLicenseeDto.postalCode}" />
         </iais:value>

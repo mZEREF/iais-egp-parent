@@ -180,7 +180,7 @@ public class LicenceViewServiceDelegator {
         if(appEditSelectDto==null){
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
-        AppEditSelectDto  rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");
+        AppEditSelectDto rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");
         String  isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
         if(AppConsts.YES.equals(isSaveRfiSelect)){
             bpc.request.getSession().setAttribute("pageAppEditSelectDto",rfiAppEditSelectDto);
@@ -849,6 +849,10 @@ public class LicenceViewServiceDelegator {
     /**
      * StartStep: doSaveSelect
      *
+     * not used,
+     *
+     * Refer to {@link com.ecquaria.cloud.moh.iais.ajax.RequestForInformationSubmitAjaxController}#callRfiSubmit(bpc.request)
+     *
      * @param bpc
      * @throws
      */
@@ -924,7 +928,7 @@ public class LicenceViewServiceDelegator {
                 oldAppSvcRelatedInfoDto = doAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList, oldAppSubmissionDto, bpc.request);
             }
         }
-        /*************************/
+
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList1 = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         Map<String,AppSvcChckListDto> svcChckListDtoMap=IaisCommonUtils.genNewHashMap();
