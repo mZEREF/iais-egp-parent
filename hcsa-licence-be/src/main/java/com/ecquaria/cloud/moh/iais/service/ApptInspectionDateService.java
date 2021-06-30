@@ -164,4 +164,13 @@ public interface ApptInspectionDateService {
       * @Descripation: getInspApptDraftBySamePremises
       */
     List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/6/30
+      * @Param: refNo
+      * @return: String
+      * @Descripation: getTcuAuditAnnouncedFlag
+      */
+    String getTcuAuditAnnouncedFlag(String refNo);
 }

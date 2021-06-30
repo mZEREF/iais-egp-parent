@@ -608,8 +608,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     @Override
-    public void saveTcuDate(String appPremId,String tcu,boolean showTcu){
-        if(showTcu){
+    public void saveTcuDate(String appPremId,String tcu){
             AppPremisesRecommendationDto appPreRecommentdationDto = getTcuRec(appPremId,tcu);
             appPreRecommentdationDto.setId(null);
             appPreRecommentdationDto.setAppPremCorreId(appPremId);
@@ -617,7 +616,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
             appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
-        }
     }
     private void saveSerListDto(InspectionFDtosDto serListDto,String appPremId) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();

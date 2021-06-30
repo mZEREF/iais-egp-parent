@@ -45,5 +45,5 @@ public interface InsepctionNcCheckListService {
 
     void saveDraftSpecChecklist(InspectionFillCheckListDto infillDto, String appPremId, List<InspectionSpecServiceDto> inspectionSpecServiceDtos,AdCheckListShowDto showDto, InspectionFDtosDto serListDto);
 
-    void saveTcuDate(String appPremId,String tcu,boolean showTcu);
+    void saveTcuDate(String appPremId,String tcu);
 }

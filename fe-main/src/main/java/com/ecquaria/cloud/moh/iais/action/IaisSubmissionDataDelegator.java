@@ -134,6 +134,15 @@ public class IaisSubmissionDataDelegator {
         }
     }
 
+    public void PreparePrintSwitch(BaseProcessClass bpc){
+        String crud_action_type = bpc.request.getParameter("whichPage");
+        bpc.request.setAttribute("crud_action_type",crud_action_type);
+    }
+    public void PreparePrintLdtData(BaseProcessClass bpc){
+        String crud_action_type = bpc.request.getParameter("whichPage");
+        bpc.request.setAttribute("crud_action_type",crud_action_type);
+    }
+
     public void saveDataLDT(BaseProcessClass bpc) throws ParseException {
         LaboratoryDevelopTestDto laboratoryDevelopTestDto = transformPageData(bpc.request);
         ValidationResult validationResult = WebValidationHelper.validateProperty(laboratoryDevelopTestDto,"save");

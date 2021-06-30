@@ -199,6 +199,7 @@ public class CessationApplicationFeDelegator {
     public void valiant(BaseProcessClass bpc) throws IOException {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
         ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         if ("back".equals(action_type)) {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");

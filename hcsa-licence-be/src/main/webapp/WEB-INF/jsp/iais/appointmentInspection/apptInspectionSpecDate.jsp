@@ -83,6 +83,18 @@
                       </div>
                     </div>
                   </div>
+                  <c:if test="${'true' eq tcuApptAnnounced}">
+                    <div class="row" style="margin-bottom: 200px;">
+                      <div class="col-md-1">
+                        <label style="font-size: 16px">Announced?</label>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="col-xs-12 col-md-5">
+                          <input type="checkbox" name="tcuApptAnnouncedCheck" value="1" <c:if test="${'1' eq apptInspectionDateDto.tcuAuditAnnouncedFlag}">checked="checked"</c:if>/>
+                        </div>
+                      </div>
+                    </div>
+                  </c:if>
                   <iais:action>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionSpecDateConfirm()">Confirm</button>
                     <a class="back" id="Back" onclick="javascript:apptInspectionSpecDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>

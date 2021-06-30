@@ -24,7 +24,7 @@ public class DeclarationOnCompetencies implements Declarations {
         if(StringUtil.isEmpty(competenciesItem1)){
             map.put("competenciesItem1", err06);
         }else {
-            if("1".equals(competenciesItem1)){
+            if("0".equals(competenciesItem1)){
                 flag=true;
             }
         }
@@ -32,7 +32,7 @@ public class DeclarationOnCompetencies implements Declarations {
         if(StringUtil.isEmpty(competenciesItem2)){
             map.put("competenciesItem2", err06);
         }else {
-            if("1".equals(competenciesItem2)){
+            if("0".equals(competenciesItem2)){
                 flag=true;
             }
         }
@@ -40,12 +40,12 @@ public class DeclarationOnCompetencies implements Declarations {
         if(StringUtil.isEmpty(competenciesItem3)){
             map.put("competenciesItem3", err06);
         }else {
-            if("1".equals(competenciesItem3)){
+            if("0".equals(competenciesItem3)){
                 flag=true;
             }
         }
         String competenciesRemark = appDeclarationMessageDto.getCompetenciesRemark();
-        if(StringUtil.isEmpty(competenciesRemark)&&!flag){
+        if(StringUtil.isEmpty(competenciesRemark)&&flag){
             map.put("competenciesRemark", err06);
         }else if(!StringUtil.isEmpty(competenciesRemark)&&competenciesRemark.length()>=1000){
             String general_err0041= NewApplicationHelper.repLength("this","1000");
