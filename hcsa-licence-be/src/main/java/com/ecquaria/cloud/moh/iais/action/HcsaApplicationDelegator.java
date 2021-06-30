@@ -617,8 +617,8 @@ public class HcsaApplicationDelegator {
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
-            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc(),applicationViewDto.isShowTcu());
+        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage) && applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
+            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc());
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType());
