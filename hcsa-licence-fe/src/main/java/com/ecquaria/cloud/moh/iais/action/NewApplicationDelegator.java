@@ -1879,7 +1879,7 @@ public class NewApplicationDelegator {
                 AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(applicationDto.getApplicationNo());
                 if (rfiPremises != null) {
                     String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType()) || ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType()) || ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
                         premHci = rfiPremises.getHciName() + premHci;
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
                         premHci = rfiPremises.getVehicleNo() + premHci;
