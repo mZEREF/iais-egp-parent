@@ -175,13 +175,12 @@ public class LicenceViewServiceDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
         }
-        AppEditSelectDto appEditSelectDto;
-        appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
-        if(appEditSelectDto==null){
+        AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
+        if (appEditSelectDto == null) {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
         AppEditSelectDto rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");
-        String  isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
+        String isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
         if(AppConsts.YES.equals(isSaveRfiSelect)){
             bpc.request.getSession().setAttribute("pageAppEditSelectDto",rfiAppEditSelectDto);
         }else {
@@ -362,9 +361,8 @@ public class LicenceViewServiceDelegator {
         if (appPremisesCorrelationDto == null) {
             return null;
         }
-        AppSubmissionDto appSubmissionDto;
         String applicationId = appPremisesCorrelationDto.getApplicationId();
-        appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
+        AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
 
         // new
         ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
@@ -393,7 +391,7 @@ public class LicenceViewServiceDelegator {
                 LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
                 request.setAttribute("oldLicenceDto", oldLicenceDto);
             }
-            AppSubmissionDto appSubmission = hcsaLicenceClient.getAppSubmissionDto(entity.getOriginLicenceId()).getEntity();
+            AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(entity.getOriginLicenceId()).getEntity();
             if (appSubmission != null) {
                 appSubmissionDto.setOldAppSubmissionDto(appSubmission);
             }
