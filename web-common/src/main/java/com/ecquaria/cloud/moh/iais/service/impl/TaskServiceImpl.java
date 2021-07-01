@@ -273,6 +273,9 @@ public class TaskServiceImpl implements TaskService {
                                     appPremisesCorrelationDto.getId(),isSystemAdmin?null:workGroupId,
                                     userId, assignDate,score,TaskUrl,roleId,
                                     auditTrailDto);
+                            if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)){
+                                taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                            }
                             taskDtos.add(taskDto);
                             if(orgUserDto!=null){
                                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison sendNoteToAdm "));
