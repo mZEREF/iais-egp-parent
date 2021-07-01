@@ -2960,7 +2960,12 @@ public class ClinicalLaboratoryDelegator {
                 String assignSel = ParamUtil.getString(request,"assignSel"+i);
                 AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                 appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
-                appSvcClinicalDirectorDto.setAssignSelect(assignSel);
+                log.info(StringUtil.changeForLog("Clinical Director assgined select: " + assignSel));
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                    appSvcClinicalDirectorDto.setAssignSelect(assignSel);
+                } else {
+                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getPersonKey(idType, idNo));
+                }
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
                     appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcClinicalDirectorDto);
