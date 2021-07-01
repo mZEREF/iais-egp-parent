@@ -828,7 +828,7 @@
                             <%--<iframe class="svc-iframe" title=""
                                     src="${pageContext.request.contextPath}/eservice/INTRANET/MOHServiceView"
                                     id="elemId-0" width="100%" height="100%"></iframe>--%>
-                            <%@include file="/WEB-INF/jsp/iais/hcsaLicence/viewForm.jsp"%>
+                            <%@include file="/WEB-INF/jsp/iais/hcsaLicence/section/viewNewApplication.jsp"%>
                             <!--scrolling="no" scrollbar="no" -->
                           </div>
                         </div>
