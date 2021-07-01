@@ -17,7 +17,7 @@
     }
 </style>
 <div class="tab-pane" id="tabApp" role="tabpanel">
-    <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input id="action" type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value=""/>

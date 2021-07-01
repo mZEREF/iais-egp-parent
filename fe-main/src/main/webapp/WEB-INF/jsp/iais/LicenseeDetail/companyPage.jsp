@@ -48,7 +48,7 @@
                             <em class="fa fa-angle-left">&nbsp;Back</em>
                         </a>
                     </div>
-                    <div class="text-right col-sm-12 col-md-8">
+                    <div class="col-sm-12 col-md-10 text-right">
                         <button class="btn btn-primary" id="refresh" >Refresh and Save Data</button>
                     </div>
                 </div>

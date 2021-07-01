@@ -34,18 +34,24 @@
                         <%@include file="section/boardMember.jsp" %>
                     </c:forEach>
                 </div>
-                <div class="container-footer">
-                    <div class="col-sm-4 col-md-2 text-left">
-                        <a style="padding-left: 5px;" class="back" id="back">
-                            <em class="fa fa-angle-left">&nbsp;Back</em>
-                        </a>
+                <c:if test="${'common'.equals(flag)}">
+                    <div class="container-footer">
+                        <div class="col-sm-4 col-md-2 text-left">
+                            <a style="padding-left: 5px;" class="back" id="back">
+                                <em class="fa fa-angle-left">&nbsp;Back</em>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                </c:if>
             </div>
         </div>
     </div>
 </form>
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#companyDetail').collapse('show');
+    });
+
     $("#back").click(function () {
         $("[name='crud_action_type']").val('back');
         $('#mainForm').submit();
