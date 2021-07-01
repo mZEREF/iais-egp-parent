@@ -701,7 +701,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         //url
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        //get submit user Id
+        ApplicationDto appDto = applicationViewDto.getApplicationDto();
+        String applicantId;
+        if(!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appDto.getApplicationType())) {
+            applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        } else {
+            applicantId = getAppSubmitByWithLicId(appDto.getOriginLicenceId());
+        }
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         //send msg
@@ -782,7 +789,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        //get submit user Id
+        ApplicationDto appDto = applicationViewDto.getApplicationDto();
+        String applicantId;
+        if(!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appDto.getApplicationType())) {
+            applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        } else {
+            applicantId = getAppSubmitByWithLicId(appDto.getOriginLicenceId());
+        }
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         //send msg
