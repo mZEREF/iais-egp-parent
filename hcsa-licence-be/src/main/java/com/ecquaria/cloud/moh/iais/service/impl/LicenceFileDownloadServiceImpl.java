@@ -626,19 +626,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         ApplicationDto oldAppDto=applicationClient.getApplicationById(oldAppId).getEntity();
                         List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
                         String asoId="";
-                        for (TaskDto task:oldTaskDtos
-                        ) {
-                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
-                                asoId=task.getUserId();
-                            }
-                            if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
-                                task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                                taskService.updateTask(task);
+                        if(oldTaskDtos.size()!=0){
+                            for (TaskDto task:oldTaskDtos
+                            ) {
+                                if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                    asoId=task.getUserId();
+                                }
+                                if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
+                                    task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                    taskService.updateTask(task);
+                                }
                             }
                         }
                         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
 
-                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)&&oldTaskDtos.size()!=0){
                             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                             emailMap.put("officer_name", orgUserDto.getDisplayName());
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
