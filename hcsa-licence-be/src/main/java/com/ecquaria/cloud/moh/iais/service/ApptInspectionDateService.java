@@ -173,4 +173,13 @@ public interface ApptInspectionDateService {
      * @Descripation: getTcuAuditAnnouncedFlag
      */
     String getTcuAuditAnnouncedFlag(String refNo);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/7/1
+     * @Param: originLicenceId
+     * @return: String
+     * @Descripation: getAppSubmitByWithLicId
+     */
+    String getAppSubmitByWithLicId(String originLicenceId);
 }

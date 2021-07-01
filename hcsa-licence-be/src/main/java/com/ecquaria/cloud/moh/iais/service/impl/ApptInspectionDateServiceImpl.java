@@ -431,7 +431,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(AppConsts.YES.equals(apptInspectionDateDto.getTcuAuditAnnouncedFlag())) {
             //url
             String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+            String applicantId = getAppSubmitByWithLicId(applicationViewDto.getApplicationDto().getOriginLicenceId());
             //send email
             String urlId = taskDto.getRefNo();
             Map<String, Object> map = inspectionDateSendEmail(saveDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
@@ -439,6 +439,26 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             String applicationNo = taskDto.getApplicationNo();
             createMessage(loginUrl, applicationNo, map, applicationDtos);
         }
+    }
+
+    @Override
+    public String getAppSubmitByWithLicId(String originLicenceId) {
+        if(!StringUtil.isEmpty(originLicenceId)) {
+            List<String> appIds = hcsaLicenceClient.getAppIdsByLicId(originLicenceId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appIds)) {
+                String appId = appIds.get(appIds.size() - 1);
+                if(!StringUtil.isEmpty(appId)) {
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                    if(applicationDto != null) {
+                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                        if(applicationGroupDto != null) {
+                            return applicationGroupDto.getSubmitBy();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
