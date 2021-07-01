@@ -781,7 +781,7 @@
             </tr>
             <tr>
               <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount to</p>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount To</p>
               </td>
               <td>
                 <div class="col-xs-6">
@@ -798,7 +798,7 @@
             </tr>
             <tr>
               <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remake</p>
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Remakes</p>
               </td>
               <td>
                 <div class="col-xs-12">
@@ -816,7 +816,7 @@
           </table>
         </c:forEach>
         <c:forEach items="${appSvcChargesPageDto.otherChargesDtos}" var="otherChargesDtos" varStatus="status">
-          <p><strong class="col-xs-6">Medical Equipment and other Charges <c:if
+          <p><strong class="col-xs-6">Medical Equipment and Other Charges <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos)>1}">${status.index+1}</c:if>:</strong><span
                   class="col-xs-4 col-md-4"></span>
           </p>
