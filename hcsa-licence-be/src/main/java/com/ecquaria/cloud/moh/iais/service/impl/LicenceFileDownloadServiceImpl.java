@@ -79,6 +79,11 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,10 +107,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -626,19 +627,21 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         ApplicationDto oldAppDto=applicationClient.getApplicationById(oldAppId).getEntity();
                         List<TaskDto> oldTaskDtos= taskService.getTaskbyApplicationNo(oldAppDto.getApplicationNo());
                         String asoId="";
-                        for (TaskDto task:oldTaskDtos
-                        ) {
-                            if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
-                                asoId=task.getUserId();
-                            }
-                            if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
-                                task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                                taskService.updateTask(task);
+                        if(oldTaskDtos.size()!=0){
+                            for (TaskDto task:oldTaskDtos
+                            ) {
+                                if(task.getRoleId().equals(RoleConsts.USER_ROLE_ASO)){
+                                    asoId=task.getUserId();
+                                }
+                                if(task.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING)||task.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)){
+                                    task.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                    taskService.updateTask(task);
+                                }
                             }
                         }
                         OrgUserDto orgUserDto= organizationClient.retrieveOrgUserAccountById(asoId).getEntity();
 
-                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
+                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)&&oldTaskDtos.size()!=0){
                             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                             emailMap.put("officer_name", orgUserDto.getDisplayName());
                             emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(oldAppDto.getApplicationType()));
