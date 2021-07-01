@@ -50,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -61,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
+import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -1146,59 +1148,22 @@ public class NewApplicationHelper {
                     if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
                         person.setOtherDesignation(psnDto.getOtherDesignation());
                     }
-                    String professionBoard = psnDto.getProfessionBoard();
-                    if (!StringUtil.isEmpty(professionBoard)) {
-                        person.setProfessionBoard(professionBoard);
-                    }
+                    person.setProfessionBoard(psnDto.getProfessionBoard());
                     person.setProfRegNo(psnDto.getProfRegNo());
-                    Date specialtyGetDate = psnDto.getSpecialtyGetDate();
-                    if (specialtyGetDate != null) {
-                        person.setSpecialtyGetDate(specialtyGetDate);
-                    }
-                    String specialtyGetDateStr = psnDto.getSpecialtyGetDateStr();
-                    if (!StringUtil.isEmpty(specialtyGetDateStr)) {
-                        person.setSpecialtyGetDateStr(specialtyGetDateStr);
-                    }
-                    String typeOfCurrRegi = psnDto.getTypeOfCurrRegi();
-                    if (!StringUtil.isEmpty(typeOfCurrRegi)) {
-                        person.setTypeOfCurrRegi(typeOfCurrRegi);
-                    }
-                    Date currRegiDate = psnDto.getCurrRegiDate();
-                    if (currRegiDate != null) {
-                        person.setCurrRegiDate(currRegiDate);
-                    }
-                    String currRegiDateStr = psnDto.getCurrRegiDateStr();
-                    if (!StringUtil.isEmpty(currRegiDateStr)) {
-                        person.setCurrRegiDateStr(currRegiDateStr);
-                    }
-                    Date praCerEndDate = psnDto.getPraCerEndDate();
-                    if (praCerEndDate != null) {
-                        person.setPraCerEndDate(praCerEndDate);
-                    }
-                    String praCerEndDateStr = psnDto.getPraCerEndDateStr();
-                    if (!StringUtil.isEmpty(praCerEndDateStr)) {
-                        person.setPraCerEndDateStr(praCerEndDateStr);
-                    }
-                    String typeOfRegister = psnDto.getTypeOfRegister();
-                    if (!StringUtil.isEmpty(typeOfRegister)) {
-                        person.setTypeOfRegister(typeOfRegister);
-                    }
-                    String relevantExperience = psnDto.getRelevantExperience();
-                    if (!StringUtil.isEmpty(relevantExperience)) {
-                        person.setRelevantExperience(relevantExperience);
-                    }
-                    String holdCerByEMS = psnDto.getHoldCerByEMS();
-                    if (!StringUtil.isEmpty(holdCerByEMS)) {
-                        person.setHoldCerByEMS(holdCerByEMS);
-                    }
-                    Date aclsExpiryDate = psnDto.getAclsExpiryDate();
-                    if (aclsExpiryDate != null) {
-                        person.setAclsExpiryDate(aclsExpiryDate);
-                    }
-                    String aclsExpiryDateStr = psnDto.getAclsExpiryDateStr();
-                    if (!StringUtil.isEmpty(aclsExpiryDateStr)) {
-                        person.setAclsExpiryDateStr(aclsExpiryDateStr);
-                    }
+                    person.setSpecialtyGetDate(handleDate(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
+                    person.setSpecialtyGetDateStr(handleDateString(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
+                    person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
+                    person.setCurrRegiDate(handleDate(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
+                    person.setCurrRegiDateStr(handleDateString(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
+                    person.setPraCerEndDate(handleDate(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
+                    person.setPraCerEndDateStr(handleDateString(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
+                    person.setTypeOfRegister(psnDto.getTypeOfRegister());
+                    person.setRelevantExperience(psnDto.getRelevantExperience());
+                    person.setHoldCerByEMS(psnDto.getHoldCerByEMS());
+                    person.setAclsExpiryDate(handleDate(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
+                    person.setAclsExpiryDateStr(handleDateString(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
+                    person.setBclsExpiryDate(handleDate(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
+                    person.setBclsExpiryDateStr(handleDateString(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
                     person.setDesignation(designation);
@@ -1297,6 +1262,26 @@ public class NewApplicationHelper {
             }
         }
         return personMap;
+    }
+
+    public static Date handleDate(Date date, String str) {
+        Date newDate = null;
+        if (date != null) {
+            newDate = (Date) date.clone();
+        } else {
+            newDate = DateUtil.parseDate(str, Formatter.DATE);
+        }
+        return newDate;
+    }
+
+    public static String handleDateString(Date date, String str) {
+        String newDate = null;
+        if (date != null) {
+            newDate = Formatter.formatDate(date);
+        } else if (CommonValidator.isDate(str)) {
+            newDate = str;
+        }
+        return newDate;
     }
 
     @Deprecated
