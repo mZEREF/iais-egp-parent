@@ -73,7 +73,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" style="margin-bottom: 200px;">
+                  <div class="row">
                     <div class="col-md-1">
                       <label style="font-size: 16px"> </label>
                     </div>
@@ -84,7 +84,7 @@
                     </div>
                   </div>
                   <c:if test="${'true' eq tcuApptAnnounced}">
-                    <div class="row" style="margin-bottom: 200px;">
+                    <div class="row">
                       <div class="col-md-1">
                         <label style="font-size: 16px">Announced?</label>
                       </div>
@@ -95,6 +95,7 @@
                       </div>
                     </div>
                   </c:if>
+                  <div class="row" style="margin-bottom: 200px;"></div>
                   <iais:action>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptInspectionSpecDateConfirm()">Confirm</button>
                     <a class="back" id="Back" onclick="javascript:apptInspectionSpecDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
