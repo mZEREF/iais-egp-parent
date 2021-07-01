@@ -593,16 +593,11 @@ public class WithdrawalDelegator {
                     if (!"applyPagePrint".equals(printActionType)){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                         WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                        //isValid = IaisEGPConstant.NO;\
-                        if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
-                            ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                        }
+                        ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                         wdIsValid = IaisEGPConstant.NO;
                     }
                 }
-                if (StringUtil.isEmpty(isDoView) && "Y".equals(isDoView)){
-                    ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-                }
+                ParamUtil.setSessionAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                 withdrawnDtoList.add(withdrawnDto);
             }
         }
