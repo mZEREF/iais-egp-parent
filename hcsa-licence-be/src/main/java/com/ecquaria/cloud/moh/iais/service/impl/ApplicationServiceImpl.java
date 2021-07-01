@@ -914,6 +914,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     //Send EN_RFC_005_CLARIFICATION
     @Override
     public void sendRfcClarificationEmail(String licenseeId, ApplicationViewDto applicationViewDto, String internalRemarks, String recipientRole,String recipientUserId) throws Exception {
+        log.info(StringUtil.changeForLog("the sendRfcClarificationEmail start ..."));
+        log.info(StringUtil.changeForLog("the sendRfcClarificationEmail recipientUserId is -->:"+recipientUserId));
         String licenseeName = null;
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
@@ -982,6 +984,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         notificationHelper.sendNotification(smsParam);
+        log.info(StringUtil.changeForLog("the sendRfcClarificationEmail end ..."));
     }
 
     @Override
