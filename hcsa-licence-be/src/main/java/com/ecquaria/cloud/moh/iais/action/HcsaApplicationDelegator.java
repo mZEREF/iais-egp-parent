@@ -1033,6 +1033,15 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, null, submissionId);
             //0062460 update FE  application status.
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+            String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+            log.info(StringUtil.changeForLog("The broadcast for licenseeId is -->:"+licenseeId));
+            try {
+                for(String userId : userIds){
+                    applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, null, userId);
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
 
         log.debug(StringUtil.changeForLog("the do broadcast end ...."));
