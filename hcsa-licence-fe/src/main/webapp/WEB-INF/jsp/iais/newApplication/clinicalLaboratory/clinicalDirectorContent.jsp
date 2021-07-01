@@ -472,6 +472,10 @@
                 }
             }
         });
+        var prgNo = $current.find(('input.profRegNo')).val();
+        if (!isEmpty(prgNo)) {
+            $current.find('.profRegNo').trigger('blur');
+        }
     }
 
     function disableContent($current, data) {
