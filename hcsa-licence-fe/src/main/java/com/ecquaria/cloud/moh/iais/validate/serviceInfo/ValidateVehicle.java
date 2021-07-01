@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
@@ -33,7 +32,7 @@ public class ValidateVehicle implements ValidateFlow {
     @Autowired
     private HcsaLicenClient hcsaLicenClient;
     @Override
-    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtoAlls,List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
         if(appSvcVehicleDtos==null){
             return;
         }
@@ -53,6 +52,16 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("vehicleName"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }else {
                     vehicleNameList.add(vehicleName);
+                    int vehicleCount=0;
+                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
+                         ) {
+                        if (asv.getVehicleName().equals(vehicleName)){
+                            vehicleCount++;
+                        }
+                    }
+                    if(vehicleCount>=2){
+                        map.put("vehicleName"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    }
                 }
                 if(vehicleName.length() > 10){
                     String general_err0041= NewApplicationHelper.repLength("Vehicle Number","10");

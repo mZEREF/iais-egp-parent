@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -129,6 +130,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private ApptInspectionDateService apptInspectionDateService;
 
     @Autowired
     private AppointmentClient appointmentClient;
@@ -718,8 +722,13 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             //url
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             if(applicationDto != null) {
-                ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-                String applicantId = applicationGroupDto.getSubmitBy();
+                String applicantId;
+                if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
+                    ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                    applicantId = applicationGroupDto.getSubmitBy();
+                } else {
+                    applicantId = apptInspectionDateService.getAppSubmitByWithLicId(applicationDto.getOriginLicenceId());
+                }
                 OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
                 String applicantName = orgUserDto.getDisplayName();
                 AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
