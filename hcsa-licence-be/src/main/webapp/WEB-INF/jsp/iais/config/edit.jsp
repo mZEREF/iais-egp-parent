@@ -142,7 +142,7 @@
                   <div class="form-check " style="left: 10%">
                     <c:set var="type" value="${PremisesType}"></c:set>
                     <input class="form-check-input" name="PremisesType"  id="icon6checkboxSample" <c:if test="${fn:contains(type,'EASMTS')}">checked="checked"</c:if> type="checkbox" value="EASMTS" aria-invalid="false">
-                    <label class="form-check-label"  for="icon6checkboxSample"><span class="check-square"></span> Conveyance(in a mobile clinic / ambulance)</label>
+                    <label class="form-check-label"  for="icon6checkboxSample"><span class="check-square"></span> Conveyance (in a mobile clinic / ambulance)</label>
                   </div>
                 </div>
               </c:when>

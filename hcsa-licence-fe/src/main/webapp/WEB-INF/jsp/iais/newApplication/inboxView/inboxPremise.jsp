@@ -21,7 +21,7 @@
                                     <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">Off-site</c:if>
                                        <c:if test="${appGrpPremDto.premisesType=='EASMTS'}">
-                                           Conveyance(in a mobile clinic / ambulance)
+                                           Conveyance (in a mobile clinic / ambulance)
                                        </c:if>
                                     </span>
                                 </p>
@@ -1021,7 +1021,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Public email</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Public Email</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsPubEmail}</span></p>
@@ -1035,6 +1035,7 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsPubHotline}</span></p>
                                 </div>
                             </div>
+                        <c:if test="${appGrpPremDto.premisesType !='EASMTS'}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with another licensee?</span></p>
@@ -1048,6 +1049,7 @@
                                     </p>
                                 </div>
                             </div>
+                        </c:if>
                         </c:if>
                         <c:choose>
                             <c:when test="${'EASMTS'==appGrpPremDto.premisesType}"></c:when>
