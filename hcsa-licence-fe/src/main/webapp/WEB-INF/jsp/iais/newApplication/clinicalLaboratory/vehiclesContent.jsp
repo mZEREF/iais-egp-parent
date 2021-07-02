@@ -1,8 +1,9 @@
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                 <div class="app-font-size-16">
                     <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
                 </div>
@@ -13,7 +14,7 @@
 </div>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${isRfi}">1</c:if>"/>
 
 <c:set var="vehicleDtoList" value="${vehicleDtoList}"/>
 <div class="row vehiclesForm">
@@ -53,7 +54,7 @@
                         </div>
 
                         <div class="col-md-7 col-xs-7 text-right">
-                            <c:if test="${vehicleStat.index - vehicleConfigDto.mandatoryCount >=0}">
+                            <c:if test="${!isRfi && (vehicleStat.index - vehicleConfigDto.mandatoryCount >= 0)}">
                                 <div class="">
                                     <h4 class="text-danger">
                                         <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -138,7 +139,7 @@
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
         </c:choose>
-        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn || isRfi}">hidden</c:if>">
             <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Vehicle</span>
             </span>
