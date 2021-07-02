@@ -2292,7 +2292,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         String serviceId = dto.getServiceId();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
-        if(dtos!=null&&dtos.size()!=0){
+        if(!IaisCommonUtils.isEmpty(dtos)){
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:dtos) {
                 List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
                 appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
