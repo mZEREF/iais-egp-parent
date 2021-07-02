@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <webui:setLayout name="iais-intranet"/>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -59,7 +60,7 @@
                                         <td><c:out value="${item.resultComplicance}"/></td>
                                         <td><c:out value="${item.svcCode}"/></td>
                                         <td><c:out value="${item.hclCode}"/></td>
-                                        <td><c:out value="${item.premisesType}"/></td>
+                                        <td><c:out value="${item.premisesType == ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE ? ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW : item.premisesType}"/></td>
                                         <td><iais:code code="${item.riskType}"></iais:code></td>
                                     </tr>
                                 </c:forEach>
