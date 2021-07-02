@@ -79,10 +79,10 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -94,6 +94,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -103,13 +111,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -152,14 +153,7 @@ public class LicenceApproveBatchjob {
     @Value("${iais.email.sender}")
     private String mailSender;
 
-    @Value("${iais.system.one.address}")
-    private String systemAddressOne;
 
-    @Value("${iais.system.two.address}")
-    private String systemAddressTwo;
-
-    @Value("${iais.system.phone.number}")
-    private String systemPhoneNumber;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -171,9 +165,9 @@ public class LicenceApproveBatchjob {
     private String secSecretKey;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-    @Autowired
-    private NotificationHelper notificationHelper;
 
+    @Autowired
+    private LicenceFileDownloadService licenceFileDownloadService;
     private Map<String, Integer> hciCodeVersion = new HashMap();
     private Map<String, Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
@@ -261,7 +255,14 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-
+                        try {
+                            for (ApplicationDto applicationDto:applicationDtos
+                                 ) {
+                                licenceFileDownloadService.sendRfc008Email(applicationGroupDto,applicationDto);
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage());
+                        }
                         generateUEN(eventBusLicenceGroupDtos);
                     }
 
