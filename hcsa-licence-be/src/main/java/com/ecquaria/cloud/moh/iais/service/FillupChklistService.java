@@ -42,9 +42,9 @@ public interface FillupChklistService {
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
     void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag);
-    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType);
+    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType,boolean needVehicleSeparation);
 
-    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service);
+    List<InspectionFillCheckListDto> getInspectionFillCheckListDtoListForReview(String taskId, String service,boolean needVehicleSeparation);
 
     void getTcuInfo(InspectionFDtosDto serListDto, String appPremCorrId);
 
@@ -95,11 +95,15 @@ public interface FillupChklistService {
 
     boolean isBeforeFinishCheckList(String refNo);
 
-    void getRateOfSpecCheckList( List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto);
+    void getRateOfSpecCheckList( List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto);
 
     AdCheckListShowDto getSpecAhocData(AdCheckListShowDto adCheckListShowDto,String identify,boolean beforeFinishList,List<OrgUserDto>  orgUserDtos);
 
     AppPremisesPreInspectChklDto getAppPremChklDtoByCorrIdAndVehicleName(String CorrId, String configId, String vehicleName);
 
     boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto);
+
+    InspectionSpecServiceDto getOriginalInspectionSpecServiceDtoByTaskId(boolean needVehicleSeparation,boolean beforeFinishList,String taskId);
+
+    AdCheckListShowDto getNoVehicleAdhoc(AdCheckListShowDto adCheckListShowDto);
 }

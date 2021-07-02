@@ -38,6 +38,9 @@
                                 <c:if test="${'CONVEYANCE'==pool.premisesType}">
                                     <c:out value="Conveyance"/>
                                 </c:if>
+                                <c:if test="${'EASMTS'==pool.premisesType}">
+                                    <c:out value="Conveyance (in a mobile clinic / ambulance)"/>
+                                </c:if>
                                 <c:if test="${'OFFSITE'==pool.premisesType}">
                                     <c:out value="Off-site"/>
                                 </c:if>

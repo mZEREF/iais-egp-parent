@@ -16,13 +16,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem1" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem1" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem1" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem1" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem1=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
         </div>
@@ -34,13 +34,13 @@
                 </span>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem2" value = "0" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='0'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem2" value = "1" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='1'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>Yes</label>
             </div>
             <div class="form-check col-xs-3">
-                <input class="form-check-input" disabled type="radio" name="competenciesItem2" value = "1" aria-invalid="false"
-                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='1'}">checked="checked"</c:if> >
+                <input class="form-check-input" disabled type="radio" name="competenciesItem2" value = "0" aria-invalid="false"
+                       <c:if test="${appDeclarationMessageDto.competenciesItem2=='0'}">checked="checked"</c:if> >
                 <label class="form-check-label"><span class="check-circle"></span>No</label>
             </div>
         </div>
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="col-xs-12 form-group txt-area-normal">
-            <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
+            <p>If you have selected 'No' to any of the questions above, please provide further details below:</p>
             <textarea disabled id="competencyRemarks" maxlength="1000" class="form-control" name="competenciesRemark">${appDeclarationMessageDto.competenciesRemark}</textarea>
         </div>
     </div>

@@ -279,6 +279,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     @Override
+    public String getTcuAuditAnnouncedFlag(String appPremCorrId) {
+        String tcuAudit = AppConsts.FALSE;
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.PROCESS_DECI_TCU_AUDIT).getEntity();
+        if(appPremisesRecommendationDto != null) {
+            tcuAudit = AppConsts.TRUE;
+        }
+        return tcuAudit;
+    }
+
+    @Override
     public List<ApptAppInfoShowDto> getApplicationInfoToShow(List<String> premCorrIds, List<TaskDto> taskDtoList, Map<String, ApplicationDto> corrAppMap) {
         List<ApptAppInfoShowDto> apptAppInfoShowDtos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(premCorrIds)) {
@@ -381,8 +391,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto1 : taskDtos) {
             String appPremCorrId = taskDto1.getRefNo();
+            //add application
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            applicationDtos.add(applicationDto);
+            //save
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
             appPremisesInspecApptDto.setApptRefNo(apptRefNo);
@@ -397,7 +412,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             //update Inspection status
             updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
             //Application data
-            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
             ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
 
             if (taskDto != null) {
@@ -414,6 +428,37 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             taskDtoList.add(tDto);
         }
         taskService.createTasks(taskDtoList);
+        if(AppConsts.YES.equals(apptInspectionDateDto.getTcuAuditAnnouncedFlag())) {
+            //url
+            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+            String applicantId = getAppSubmitByWithLicId(applicationViewDto.getApplicationDto().getOriginLicenceId());
+            //send email
+            String urlId = taskDto.getRefNo();
+            Map<String, Object> map = inspectionDateSendEmail(saveDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
+            //send msg
+            String applicationNo = taskDto.getApplicationNo();
+            createMessage(loginUrl, applicationNo, map, applicationDtos);
+        }
+    }
+
+    @Override
+    public String getAppSubmitByWithLicId(String originLicenceId) {
+        if(!StringUtil.isEmpty(originLicenceId)) {
+            List<String> appIds = hcsaLicenceClient.getAppIdsByLicId(originLicenceId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appIds)) {
+                String appId = appIds.get(appIds.size() - 1);
+                if(!StringUtil.isEmpty(appId)) {
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+                    if(applicationDto != null) {
+                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                        if(applicationGroupDto != null) {
+                            return applicationGroupDto.getSubmitBy();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -656,7 +701,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
         //url
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        //get submit user Id
+        ApplicationDto appDto = applicationViewDto.getApplicationDto();
+        String applicantId;
+        if(!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appDto.getApplicationType())) {
+            applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        } else {
+            applicantId = getAppSubmitByWithLicId(appDto.getOriginLicenceId());
+        }
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         //send msg
@@ -737,7 +789,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-        String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        //get submit user Id
+        ApplicationDto appDto = applicationViewDto.getApplicationDto();
+        String applicantId;
+        if(!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appDto.getApplicationType())) {
+            applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
+        } else {
+            applicantId = getAppSubmitByWithLicId(appDto.getOriginLicenceId());
+        }
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
         //send msg

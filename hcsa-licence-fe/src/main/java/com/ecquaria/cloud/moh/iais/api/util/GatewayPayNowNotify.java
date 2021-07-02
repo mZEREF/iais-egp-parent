@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.api.util;
 
 
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayPayNowConfig;
-import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 
 import java.util.HashMap;
 import java.util.Map;

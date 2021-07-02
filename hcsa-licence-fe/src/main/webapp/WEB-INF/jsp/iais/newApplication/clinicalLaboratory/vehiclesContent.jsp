@@ -34,17 +34,7 @@
         <div class="vehicleContent">
             <input type="hidden" class ="isPartEdit" name="isPartEdit${vehicleStat.index}" value="0"/>
             <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
-            <div class="col-md-12 col-xs-12">
-                <div class="edit-content">
-                    <c:if test="${'true' == canEdit}">
-                        <p>
-                        <div class="text-right app-font-size-16">
-                            <a class="edit vehicleEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
-                        </div>
-                        </p>
-                    </c:if>
-                </div>
-            </div>
+
 
 
             <div class="col-md-12 col-xs-12">

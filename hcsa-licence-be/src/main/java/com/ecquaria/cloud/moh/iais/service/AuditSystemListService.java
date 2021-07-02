@@ -43,4 +43,6 @@ public interface AuditSystemListService {
     SelectOption getRoleSelectOption(List<Role> roles,String roleId);
 
     boolean  rightControlForRole(List<SelectOption> roleSels,String roleId);
+
+    void setTcuAuditFlag(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 }

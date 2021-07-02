@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <h2>Payment Method</h2>
 <input type="hidden" name="reloadPayMethod" value="${reloadPaymentMethod}"/>
 <div class="col-xs-12">
@@ -16,6 +17,12 @@
         <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
         <br>
         <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
+    </div>
+    <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
+        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}">
+        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}"/></label>
+        <br>
+        <img src="<%=webroot1%>img/paymentPayNow.png" width="66" height="30" alt="PayNow">
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-md-3 col-xs-12">

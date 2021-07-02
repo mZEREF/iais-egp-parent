@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
@@ -37,9 +36,9 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -105,7 +104,7 @@ public class InspectionSendRecBatchjob {
     private BeEicGatewayClient beEicGatewayClient;
 
     @Autowired
-    private LicenseeService licenseeService;
+    private ApptInspectionDateService apptInspectionDateService;
 
     @Autowired
     private AppointmentClient appointmentClient;
@@ -166,17 +165,15 @@ public class InspectionSendRecBatchjob {
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
             if(jobRemindMsgTrackingDto2 == null) {
                 List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(aDto.getId());
-                String applicantId = dto.getApplicationGroupDto().getSubmitBy();
-                String applicantName;
+                String applicantId;
                 if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(aDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(aDto.getApplicationType())) {
-                    String licenseeId = dto.getApplicationGroupDto().getLicenseeId();
-                    LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
-                    applicantName = licenseeDto.getName();
+                    applicantId = apptInspectionDateService.getAppSubmitByWithLicId(aDto.getOriginLicenceId());
                 }else{
-                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
-                    applicantName = orgUserDto.getDisplayName();
+                    applicantId = dto.getApplicationGroupDto().getSubmitBy();
                 }
+                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+                String applicantName = orgUserDto.getDisplayName();
                 String appNo = aDto.getApplicationNo();
                 //get rec date
                 List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);

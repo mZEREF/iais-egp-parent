@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -54,8 +53,8 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -152,7 +151,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private MsgTemplateClient msgTemplateClient;
 
     @Autowired
-    private LicenseeService licenseeService;
+    private ApptInspectionDateService apptInspectionDateService;
 
     @Autowired
     private AppointmentClient appointmentClient;
@@ -300,17 +299,15 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
             String tatTimeStr = tatTime.format(dtf);
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-            String applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
-            String applicantName;
+            String applicantId;
             if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType()) ||
                     ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
-                String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
-                LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
-                applicantName = licenseeDto.getName();
+                applicantId = apptInspectionDateService.getAppSubmitByWithLicId(applicationDto.getOriginLicenceId());
             }else{
-                OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
-                applicantName = orgUserDto.getDisplayName();
+                applicantId = applicationViewDto.getApplicationGroupDto().getSubmitBy();
             }
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicantId).getEntity();
+            String applicantName = orgUserDto.getDisplayName();
             String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
             map.put("ApplicantName", applicantName);
             map.put("ApplicationType", appType);

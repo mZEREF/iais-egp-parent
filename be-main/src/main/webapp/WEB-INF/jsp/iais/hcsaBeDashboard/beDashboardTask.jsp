@@ -191,9 +191,9 @@
                         <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                           <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                           <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
-                                                                                                     data-toggle="collapse" aria-expanded="false"
-                                                                                                     data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
-                                                                                                     onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
+                                                                                             data-toggle="collapse" aria-expanded="false"
+                                                                                             data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                             onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                           <td><iais:code code="${pool.applicationType}"/></td>
                           <td><c:out value="${pool.submissionType}"/></td>
                           <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
@@ -207,7 +207,7 @@
               </div>
               <c:if test="${'assignme' eq dashSwitchActionValue}">
                 <c:choose>
-                  <c:when test="${\"AO1\".equals(curRole)}">
+                  <c:when test="${'AO1' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">
@@ -221,7 +221,7 @@
                       </div>
                     </div>
                   </c:when>
-                  <c:when test="${\"AO2\".equals(curRole)}">
+                  <c:when test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">
@@ -235,7 +235,7 @@
                       </div>
                     </div>
                   </c:when>
-                  <c:when test="${\"AO3\".equals(curRole)}">
+                  <c:when test="${'AO3' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="application-tab-footer">
                       <div class="row">
                         <div class="col-xs-11 col-md-11">

@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
@@ -121,6 +122,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -336,6 +338,7 @@ public class NewApplicationDelegator {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
+                log.info("-------licAppGrpPremisesDtoMap size --->"+licAppGrpPremisesDtoMap.size());
                 //remove premise info when pending premises hci same
 //                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
                 List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtoList);
@@ -382,7 +385,13 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                    //68859
+                }else {
+                    licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
+                }
+
+                log.info("--------> newLicAppGrpPremisesDtoMap size --->"+newLicAppGrpPremisesDtoMap.size());
             }
         } else {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -908,7 +917,7 @@ public class NewApplicationDelegator {
                 ServiceStepDto serviceStepDto = new ServiceStepDto();
                 serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
                 List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-                appSubmissionService.doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
+                appSubmissionService.doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             }
             bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
@@ -1698,7 +1707,7 @@ public class NewApplicationDelegator {
                 AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(applicationDto.getApplicationNo());
                 if (rfiPremises != null) {
                     String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(), rfiPremises.getBlkNo(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo());
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())) {
+                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType()) || ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType()) || ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
                         premHci = rfiPremises.getHciName() + premHci;
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
                         premHci = rfiPremises.getVehicleNo() + premHci;
@@ -2576,6 +2585,17 @@ public class NewApplicationDelegator {
                 for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
                     appGrpPremisesDto.setSelfAssMtFlag(4);
                 }
+                Iterator<AppSvcRelatedInfoDto> iterator = appSubmissionDto1.getAppSvcRelatedInfoDtoList().iterator();
+                while (iterator.hasNext()){
+                    AppSvcRelatedInfoDto next = iterator.next();
+                    List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                    if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                        for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                        }
+                    }
+                }
+
             }
             //set missing data
             AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();

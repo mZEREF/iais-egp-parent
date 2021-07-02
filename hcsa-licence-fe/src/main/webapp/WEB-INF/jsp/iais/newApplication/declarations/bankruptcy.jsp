@@ -85,7 +85,7 @@
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyItem4"></span>
         </div>
         <div class="col-xs-12 txt-area-normal">
-            <p>If you have selected 'Yes' to any of the questions above, please provide further details below:</p>
+            <p>If you have selected 'No' to any of the questions above, please provide further details below:</p>
             <textarea id="bankruptcyRemark" class="form-control" name="bankruptcyRemark" maxlength="1000"><c:out value="${appDeclarationMessageDto.bankruptcyRemark}" /></textarea>
             <span class="error-msg col-xs-12 form-group" name="iaisErrorMsg" id="error_bankruptcyRemark"></span>
         </div>

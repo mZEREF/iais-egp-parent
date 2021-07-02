@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -25,4 +26,8 @@ public interface HcsaConfigClient {
 
     @PostMapping(value = "/iais-hcsa-service/service-by-name", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaServiceByNames(@RequestBody List<String> svcNames);
+    @GetMapping(value = "/iais-hcsa-fee/active-bundle-item", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaFeeBundleItemDto>> getActiveBundleDtoList();
+    @GetMapping(path = "/iais-hcsa-service/servicedto-by-name/{svcName}")
+    FeignResponseEntity<HcsaServiceDto> getServiceDtoByName(@PathVariable(name = "svcName") String svcName);
 }

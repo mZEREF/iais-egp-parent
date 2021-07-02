@@ -117,6 +117,7 @@
         removeClinicalDirector();
         showOtherSpecialty();
         profRegNoBlur();
+        designationBindEvent();
         $('select.specialty').trigger('change');
         $("input[name='noRegWithProfBoard']").trigger('change');
         doEdite();
@@ -145,11 +146,14 @@
                 } catch (e) {
                     data = {};
                 };
-                disableContent($(this).find('div.person-detail'), data);
+                if ('1' == $(this).find('.licPerson:input').val()) {
+                    disableContent($(this).find('div.person-detail'), data);
+                }
             }
             $(this).find('select').niceSelect("update");
             //trigger prs
             $(this).find('.profRegNo').trigger('blur');
+            $(this).find('.designation').trigger('change');
         });
         assignSelectBindEvent();
     });
@@ -207,6 +211,7 @@
                         showOtherSpecialty();
                         noRegWithProfBoard();
                         assignSelectBindEvent();
+                        designationBindEvent();
                         profRegNoBlur();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
@@ -345,6 +350,7 @@
         $content.find('input.cdIndexNo').val('');
         </c:if>
         $content.find('.specialty-label').html('');
+        $content.find('div.other-designation').addClass('hidden');
         if('-1' == assignSelVal) {
             $content.addClass('hidden');
             clearFields($content);
@@ -371,7 +377,9 @@
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
-                disableContent($current, val);
+                if (data.licPerson) {
+                    disableContent($current, val);
+                }
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
                 // alert(licPerson);
@@ -388,6 +396,41 @@
                     $current.find('.specialty-label').html(speciality);
                 }
 
+            } else if(i == 'specialtyGetDate'){
+                var specialtyGetDateStr = data.specialtyGetDateStr;
+                if(isEmpty(specialtyGetDateStr)){
+                    $current.find('.specialtyGetDate').val('');
+                }else{
+                    $current.find('.specialtyGetDate').val(specialtyGetDateStr);
+                }
+            } else if(i == 'currRegiDate'){
+                var currRegiDateStr = data.currRegiDateStr;
+                if(isEmpty(currRegiDateStr)){
+                    $current.find('.currRegiDate').val('');
+                }else{
+                    $current.find('.currRegiDate').val(currRegiDateStr);
+                }
+            } else if(i == 'praCerEndDate'){
+                var praCerEndDateStr = data.praCerEndDateStr;
+                if(isEmpty(praCerEndDateStr)){
+                    $current.find('.praCerEndDate').val('');
+                }else{
+                    $current.find('.praCerEndDate').val(praCerEndDateStr);
+                }
+            } else if(i == 'aclsExpiryDate'){
+                var aclsExpiryDateStr = data.aclsExpiryDateStr;
+                if(isEmpty(aclsExpiryDateStr)){
+                    $current.find('.aclsExpiryDate').val('');
+                }else{
+                    $current.find('.aclsExpiryDate').val(aclsExpiryDateStr);
+                }
+            } else if(i == 'bclsExpiryDate'){
+                var bclsExpiryDateStr = data.bclsExpiryDateStr;
+                if(isEmpty(bclsExpiryDateStr)){
+                    $current.find('.bclsExpiryDate').val('');
+                }else{
+                    $current.find('.bclsExpiryDate').val(bclsExpiryDateStr);
+                }
             } else {
                 var $input = $current.find('.' + i + ':input');
                 if ($input.length == 0) {
@@ -420,11 +463,18 @@
                     if ($input.val() != oldVal) {
                         $input.niceSelect("update");
                     }
+                    if(i == 'designation'){
+                        designationChange($current, val);
+                    }
                 } else {
                     $input.val(val);
                 }
             }
         });
+        var prgNo = $current.find(('input.profRegNo')).val();
+        if (!isEmpty(prgNo)) {
+            $current.find('.profRegNo').trigger('blur');
+        }
     }
 
     function disableContent($current, data) {
@@ -521,4 +571,21 @@
             $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
         }
     });
+
+    function designationBindEvent() {
+        $('.designation').unbind('change');
+        $('.designation').on('change', function() {
+            var thisVal = $(this).val();
+            var currContEle = $(this).closest('div.clinicalDirectorContent');
+            designationChange(currContEle, thisVal);
+        });
+    }
+    function designationChange(currContEle, designationVal) {
+        console.log(designationVal);
+        if('DES999' == designationVal){
+            currContEle.find('div.other-designation').removeClass('hidden');
+        } else{
+            currContEle.find('div.other-designation').addClass('hidden');
+        }
+    }
 </script>

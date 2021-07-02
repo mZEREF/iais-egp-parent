@@ -84,4 +84,9 @@ public class INTRANET___MohInspectionAllotTaskInspector___1 extends BaseProcessC
 		EngineHelper.delegate(DELEGATOR, "inspectionAllotTaskInspectorSearch", this);
 	}
 
+	public void mohComPoolMulAssign_OnStepProcess_0() throws Exception {
+	// 		mohComPoolMulAssign->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "mohComPoolMulAssign", this);
+	}
+
 }

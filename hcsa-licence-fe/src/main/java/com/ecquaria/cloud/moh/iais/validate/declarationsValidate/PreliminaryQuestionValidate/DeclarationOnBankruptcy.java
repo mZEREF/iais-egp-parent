@@ -24,7 +24,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         if(StringUtil.isEmpty(bankruptcyItem1)){
             map.put("bankruptcyItem1", err06);
         }else {
-            if("1".equals(bankruptcyItem1)){
+            if("0".equals(bankruptcyItem1)){
                 flag=true;
             }
         }
@@ -32,7 +32,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         if(StringUtil.isEmpty(bankruptcyItem2)){
             map.put("bankruptcyItem2", err06);
         }else {
-            if("1".equals(bankruptcyItem2)){
+            if("0".equals(bankruptcyItem2)){
                 flag=true;
             }
         }
@@ -40,7 +40,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         if(StringUtil.isEmpty(bankruptcyItem3)){
             map.put("bankruptcyItem3", err06);
         }else {
-            if("1".equals(bankruptcyItem3)){
+            if("0".equals(bankruptcyItem3)){
                 flag=true;
             }
         }
@@ -48,7 +48,7 @@ public class DeclarationOnBankruptcy implements Declarations {
         if (StringUtil.isEmpty(bankruptcyItem4)) {
             map.put("bankruptcyItem4", err06);
         } else {
-            if ("1".equals(bankruptcyItem4)) {
+            if ("0".equals(bankruptcyItem4)) {
                 flag = true;
             }
         }

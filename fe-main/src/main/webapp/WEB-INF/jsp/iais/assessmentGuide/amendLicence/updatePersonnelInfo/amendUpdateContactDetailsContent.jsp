@@ -25,74 +25,35 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
-                            <tr>
-                                <td>
-                                    <p class="visible-xs visible-sm table-row-title">Type</p>
-                                        ${pool.svcName}</td>
-                                <td>
-                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                        ${pool.licenceNo}</td>
-                                <td>
-                                    <p class="visible-xs visible-sm table-row-title">Role</p>
-                                    <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
-                                        <c:choose>
-                                            <c:when test="${pool.roles.size() == 1}">
-                                                <c:choose>
-                                                    <c:when test="${assessList == 'CGO'}">
-                                                        Clinical Governance Officer
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'PO'}">
-                                                        Principal Officer
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'DPO'}">
-                                                        Nominee
-                                                    </c:when>
-                                                    <c:when test="${assessList == 'MAP'}">
-                                                        MedAlert
-                                                    </c:when>
-                                                </c:choose>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:choose>
-                                                    <c:when test="${pool.roles.size() == assessStatus.index + 1}">
-                                                        <c:choose>
-                                                            <c:when test="${assessList == 'CGO'}">
-                                                                Clinical Governance Officer
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'PO'}">
-                                                                Principal Officer
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'DPO'}">
-                                                                Nominee
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'MAP'}">
-                                                                MedAlert
-                                                            </c:when>
-                                                        </c:choose>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <c:choose>
-                                                            <c:when test="${assessList == 'CGO'}">
-                                                                Clinical Governance Officer,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'PO'}">
-                                                                Principal Officer,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'DPO'}">
-                                                                Nominee,
-                                                            </c:when>
-                                                            <c:when test="${assessList == 'MAP'}">
-                                                                MedAlert,
-                                                            </c:when>
-                                                        </c:choose>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                                </td>
-                            </tr>
-                        </c:forEach>
+                        <tr>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Type</p>
+                                    ${pool.svcName}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                    ${pool.licenceNo}</td>
+                            <td>
+                                <p class="visible-xs visible-sm table-row-title">Role</p>
+                                <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
+                                    <c:choose>
+                                        <c:when test="${pool.roles.size() == 1}">
+                                            <iais:code code="${assessList}"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:choose>
+                                                <c:when test="${pool.roles.size() == assessStatus.index + 1}">
+                                                    <iais:code code="${assessList}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <iais:code code="${assessList}"/>,
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </c:otherwise>
             </c:choose>
             </tbody>

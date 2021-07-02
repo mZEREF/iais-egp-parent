@@ -24,7 +24,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
         if(StringUtil.isEmpty(criminalRecordsItem1)){
             map.put("criminalRecordsItem1", err06);
         }else {
-            if("1".equals(criminalRecordsItem1)){
+            if("0".equals(criminalRecordsItem1)){
                 flag=true;
             }
         }
@@ -33,7 +33,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
             map.put("criminalRecordsItem2", err06);
 
         }else {
-            if("1".equals(criminalRecordsItem2)){
+            if("0".equals(criminalRecordsItem2)){
                 flag=true;
             }
         }
@@ -42,7 +42,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
             map.put("criminalRecordsItem3", err06);
 
         }else {
-            if("1".equals(criminalRecordsItem3)){
+            if("0".equals(criminalRecordsItem3)){
                 flag=true;
             }
         }
@@ -51,7 +51,7 @@ public class DeclarationOnCriminalRecords implements Declarations {
             map.put("criminalRecordsItem4", err06);
 
         }else {
-            if("1".equals(criminalRecordsItem4)){
+            if("0".equals(criminalRecordsItem4)){
                 flag=true;
             }
         }

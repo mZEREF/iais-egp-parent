@@ -79,7 +79,7 @@
     <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorSort_OnStepProcess_0" name="inspectionAllotTaskInspectorSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorPage" x="1500" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="InspectionAllotTaskInspectorPage" x="1490" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -91,6 +91,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="inspectionAllotTaskInspectorQuery2_OnStepProcess_0" name="inspectionAllotTaskInspectorQuery2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="mohComPoolMulAssign" x="700" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="mohComPoolMulAssign_OnStepProcess_0" name="mohComPoolMulAssign_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -159,7 +166,7 @@
    <position>{(920,560)(680,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorStep1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" style="oblique">
-   <position>{(680,560)(761,183)(930,120)}</position>
+   <position>{(680,560)(617,560)(617,195)(930,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSuccess" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
    <position>{(1170,120)(1450,260)}</position>
@@ -177,7 +184,7 @@
    <position>{(910,400)(680,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="rectanular">
-   <position>{(1170,120)(1520,120)}</position>
+   <position>{(1170,120)(1510,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
    <position>{(1170,120)(1690,260)}</position>
@@ -186,7 +193,7 @@
    <position>{(1170,120)(1460,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorPage" style="oblique">
-   <position>{(1520,120)(1889,119)(1680,550)}</position>
+   <position>{(1510,120)(1889,119)(1680,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" style="rectanular">
    <position>{(1690,260)(1680,550)}</position>
@@ -199,6 +206,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/InspectionAllotTaskInspectorQuery" linkstyle="Direct" name="" sourceName="/Pages/WebPage/InspectionAllotTaskInspectorSuccessPage" style="oblique">
    <position>{(1440,400)(1396,400)(1396,616)(761,616)(680,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/mohComPoolMulAssign" linkstyle="Direct" name="" sourceName="/Switches/Switch/InspectionAllotTaskInspectorSwitch1" style="oblique">
+   <position>{(1170,120)(720,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/InspectionAllotTaskInspectorSuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/mohComPoolMulAssign" style="oblique">
+   <position>{(720,260)(769,481)(1541,481)(1440,400)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -216,6 +229,7 @@
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSort" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/InspectionAllotTaskInspectorPre" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/mohComPoolMulAssign" value="&quot;mulassign&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

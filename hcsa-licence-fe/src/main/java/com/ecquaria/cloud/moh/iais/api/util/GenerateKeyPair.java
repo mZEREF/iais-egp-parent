@@ -59,7 +59,7 @@ public class GenerateKeyPair {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		com.ecquaria.egp.core.payment.api.util.GenerateKeyPair n = new com.ecquaria.egp.core.payment.api.util.GenerateKeyPair();
+		GenerateKeyPair n = new GenerateKeyPair();
 		n.run();
 	}
 

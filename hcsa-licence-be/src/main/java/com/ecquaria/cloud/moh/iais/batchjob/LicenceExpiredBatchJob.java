@@ -124,14 +124,17 @@ public class LicenceExpiredBatchJob {
     }
 
     private void updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
+        log.info(StringUtil.changeForLog("The updateLicenceStatus start ..."));
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
         for (LicenceDto licenceDto : licenceDtos) {
+            try {
             List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
             licenceDto.setAuditTrailDto(auditTrailDto);
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
+            log.info(StringUtil.changeForLog("The updateLicenceStatus  licenceNo is -->:"+licenceNo));
             StringBuilder svcNameLicNo = new StringBuilder();
             svcNameLicNo.append(svcName).append(" : ").append(licenceNo);
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
@@ -165,7 +168,7 @@ public class LicenceExpiredBatchJob {
             }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
-            try {
+
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
                 ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
@@ -223,6 +226,7 @@ public class LicenceExpiredBatchJob {
                 msgParam.setRefId(licenceDto.getId());
                 notificationHelper.sendNotification(msgParam);
             } catch (Exception e) {
+                log.error(StringUtil.changeForLog("The error LicenceNo -->:"+licenceDto.getLicenceNo()));
                 log.error(e.getMessage(), e);
             }
         }
@@ -235,7 +239,7 @@ public class LicenceExpiredBatchJob {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-
+        log.info(StringUtil.changeForLog("The updateLicenceStatus end ..."));
     }
 
     private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {

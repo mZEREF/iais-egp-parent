@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineA
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
@@ -86,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -813,6 +816,17 @@ public class RequestForChangeMenuDelegator {
         for(AppSubmissionDto v : appSubmissionDtos1){
             requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
+            Iterator<AppSvcRelatedInfoDto> iterator = v.getAppSvcRelatedInfoDtoList().iterator();
+            while (iterator.hasNext()){
+                AppSvcRelatedInfoDto next = iterator.next();
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                    for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                        appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                    }
+                }
+            }
+
         }
         //save
         List<AppSubmissionDto> appSubmissionDtos2 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
@@ -821,6 +835,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos2);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
+        bpc.request.getSession().setAttribute("personnelEditDto",personnelEditDto);
     }
 
     public void paymentSwitch(BaseProcessClass bpc){
@@ -928,7 +943,7 @@ public class RequestForChangeMenuDelegator {
         personnelEditDto.setMobileNo(mobile);
         personnelEditDto.setSalutation(salutation);
         personnelEditDto.setPsnName(psnName);
-        if (psnTypes.contains("CGO")) {
+        if (psnTypes.contains("CGO")|| psnTypes.contains("CD")) {
             personnelEditDto.setDesignation(designation);
             personnelEditDto.setOtherDesignation(otherDesignation);
         }
@@ -991,9 +1006,9 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
+            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation1)) {
                 errMap.put("designation1", designationMsg);
-            }else if(psnTypes.contains("CGO") &&"DES999".equals(designation1)){
+            }else if((psnTypes.contains("CGO")||psnTypes.contains("CD")) &&"DES999".equals(designation1)){
                 if(StringUtil.isEmpty(otherDesignation1)){
                     errMap.put("otherDesignation1" , designationMsg);
                 }
@@ -1033,9 +1048,9 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("mobileNo", "GENERAL_ERR0007");
                 }
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
+            if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", designationMsg);
-            }else if(psnTypes.contains("CGO")&&"DES999".equals(designation)){
+            }else if((psnTypes.contains("CGO")||psnTypes.contains("CD"))&&"DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
                     errMap.put("otherDesignation" , designationMsg);
                 }
@@ -1469,7 +1484,7 @@ public class RequestForChangeMenuDelegator {
                         html = GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                        html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
+                        html = GatewayPayNowAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                     default:
                         html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
@@ -1782,6 +1797,16 @@ public class RequestForChangeMenuDelegator {
                     if (!StringUtil.isEmpty(appGrpPremisesDtos)) {
                         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                             appGrpPremisesDto.setSelfAssMtFlag(4);
+                        }
+                    }
+                    Iterator<AppSvcRelatedInfoDto> iterator = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().iterator();
+                    while (iterator.hasNext()){
+                        AppSvcRelatedInfoDto next = iterator.next();
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
+                        if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
+                            for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                                appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                            }
                         }
                     }
                 } else {

@@ -95,7 +95,7 @@
             <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND CHARINDEX(:appNo, B.application_no) >0 </#if>
             <#if appStatus??> AND ${appStatus}</#if>
-            <#if service_id??> AND ${service_id}</#if>
+            <#if service_id??> AND (${service_id} OR CHARINDEX(:serviceCode, B.code) >0) </#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
@@ -208,7 +208,7 @@
 	               as address,p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
-                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE') and
+                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS') and
                    li.STATUS ='LICEST001' and p.ID in (
                            SELECT  MAX(li.PREMISES_ID) FROM
                    lic_premises as li WHERE li.LICENCE_ID in
