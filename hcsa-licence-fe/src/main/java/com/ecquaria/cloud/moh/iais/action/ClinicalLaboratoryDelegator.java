@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -55,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
@@ -83,6 +85,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -114,6 +117,9 @@ public class ClinicalLaboratoryDelegator {
     private ValidateCharges validateCharges;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private LicenceClient licenceClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -124,6 +130,7 @@ public class ClinicalLaboratoryDelegator {
     private String secSecretKey;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
+
     public static final String GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
     public static final String GOVERNANCEOFFICERSDTOLIST = "GovernanceOfficersList";
@@ -1889,13 +1896,10 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
-        boolean isRfi = false;
-        if (requestInformationConfig != null) {
-            isRfi = true;
-        }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-        if (isGetDataFromPage) {
+        if (isGetDataFromPage && !isRfi) {
             //get data from page
             List<AppSvcVehicleDto> appSvcVehicleDtos = genAppSvcVehicleDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcVehicleDtoList(appSvcVehicleDtos);
@@ -1905,9 +1909,9 @@ public class ClinicalLaboratoryDelegator {
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>();
         if("next".equals(crud_action_type)){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            String licenseeId = loginContext.getLicenseeId();
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
+            // LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            // String licenseeId = loginContext.getLicenseeId();
+            /*
             boolean checkIsRfi = NewApplicationHelper.checkIsRfi(bpc.request);
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())&&!checkIsRfi){
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
@@ -1925,9 +1929,11 @@ public class ClinicalLaboratoryDelegator {
                 if(oldAppSubmissionDto!=null){
                     oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
                 }
-            }
+            }*/
+            String appId = getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
             validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
-            validateVehicle.doValidateVehicles(map,appSubmissionDto);
+            //validateVehicle.doValidateVehicles(map,appSubmissionDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -1942,6 +1948,15 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);
         }
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
+    }
+
+    private String getRelatedAppId(String appId, String licenceId) {
+        String orgAppId = appId;
+        if (StringUtil.isEmpty(appId) && StringUtil.isNotEmpty(licenceId)) {
+            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getLicCorrBylicId(licenceId).getEntity();
+            orgAppId = Optional.ofNullable(licAppCorrDtos).map(dtos -> dtos.get(0).getApplicationId()).orElseGet(() -> null);
+        }
+        return orgAppId;
     }
 
     /**
@@ -3691,19 +3706,15 @@ public class ClinicalLaboratoryDelegator {
         }
     }
 
-
-    /*
-     * get current svc dto
-     * */
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
-        log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:"+currentSvcId));
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfo(AppSubmissionDto appSubmissionDto, String currentSvcId, String appNo) {
+        log.info(StringUtil.changeForLog("service id: " + currentSvcId + " - appNo: " + appNo));
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
         if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
                 for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    if (currentSvcId.equals(svcRelatedInfoDto.getServiceId())) {
+                    if (currentSvcId.equals(svcRelatedInfoDto.getServiceId()) && (StringUtil.isEmpty(appNo) ||
+                            appNo.equals(svcRelatedInfoDto.getAppNo()))) {
                         appSvcRelatedInfoDto = svcRelatedInfoDto;
                         break;
                     }
@@ -3713,22 +3724,19 @@ public class ClinicalLaboratoryDelegator {
         return appSvcRelatedInfoDto;
     }
 
+    /*
+     * get current svc dto
+     * */
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
+        log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:" + currentSvcId));
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId, String appNo) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-        if (appSubmissionDto != null) {
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
-                for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    String currAppNo = StringUtil.nullToEmpty(svcRelatedInfoDto.getAppNo());
-                    if (currentSvcId.equals(svcRelatedInfoDto.getServiceId()) && appNo.equals(currAppNo)) {
-                        appSvcRelatedInfoDto = svcRelatedInfoDto;
-                        break;
-                    }
-                }
-            }
-        }
-        return appSvcRelatedInfoDto;
+        return getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, appNo);
     }
 
     private void setAppSvcRelatedInfoMap(HttpServletRequest request, String currentSvcId, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {

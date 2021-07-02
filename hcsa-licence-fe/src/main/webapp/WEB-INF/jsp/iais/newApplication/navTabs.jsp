@@ -26,10 +26,10 @@
         <a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a>
     </li>
     <li id="documentsli" role="presentation" class="${empty coMap.document ? 'incomplete' : 'complete'}">
-        <a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a>
+        <a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary<br> Documents</a>
     </li>
     <li id="serviceFormsli" role="presentation" class="${empty coMap.information ? 'incomplete' : 'complete'}">
-        <a id="serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a>
+        <a id="serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related<br> Information</a>
     </li>
     <li id="previewli" role="presentation" class="${empty coMap.previewli ? 'incomplete' : 'complete'}">
         <a id="preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a>

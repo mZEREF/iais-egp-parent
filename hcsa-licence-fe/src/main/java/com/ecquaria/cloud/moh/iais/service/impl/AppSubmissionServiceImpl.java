@@ -84,7 +84,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppDeclarationDocShowPageDto;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -844,6 +843,33 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             return map.isEmpty();
         }
+    }
+
+    @Override
+    public List<AppSvcVehicleDto> getActiveVehicles(String appId) {
+        List<AppSvcVehicleDto> vehicles = applicationFeClient.getActiveVehicles().getEntity();
+        if (vehicles == null || vehicles.isEmpty()) {
+            return vehicles;
+        }
+        List<LicAppCorrelationDto> licAppCorrList = licenceClient.getInactiveLicAppCorrelations().getEntity();
+        List<AppSvcVehicleDto> result = IaisCommonUtils.genNewArrayList(vehicles.size());
+        vehicles.forEach(vehicle -> {
+            if (!isIn(vehicle.getAppId(), licAppCorrList) &&
+                    !Optional.ofNullable(appId).filter(curr -> curr.equals(vehicle.getAppId())).isPresent()) {
+                result.add(vehicle);
+            }
+        });
+        return result;
+    }
+
+    private boolean isIn(String appId, List<LicAppCorrelationDto> licAppCorrList) {
+        if (licAppCorrList == null || licAppCorrList.isEmpty()) {
+            return false;
+        }
+        if (StringUtil.isEmpty(appId)) {
+            return true;
+        }
+        return licAppCorrList.stream().anyMatch(corr -> appId.equals(corr.getApplicationId()));
     }
 
     @Override
@@ -2353,7 +2379,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),map,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
         }
-        validateVehicle.doValidateVehicles(previewAndSubmitMap,appSubmissionDto);
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request, documentMap,false);
         doCommomDocument(bpc.request, documentMap);
@@ -2399,7 +2424,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB, Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig, AppSvcRelatedInfoDto dto,List<AppSvcRelatedInfoDto> dtos, int uploadFileLimit, String sysFileType,List<AppGrpPremisesDto> appGrpPremisesDtos) {
+    public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB,
+            Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
+            AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos, int uploadFileLimit, String sysFileType,
+            List<AppGrpPremisesDto> appGrpPremisesDtos) {
         String serviceId = dto.getServiceId();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
@@ -2477,10 +2505,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
         }
         validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
-        // LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        // String licenseeId = loginContext.getLicenseeId();
         // Vehicles
-        List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
+        List<AppSvcVehicleDto> oldAppSvcVehicleDto = getActiveVehicles(dto.getAppId());
         validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
         return errorMap;
     }

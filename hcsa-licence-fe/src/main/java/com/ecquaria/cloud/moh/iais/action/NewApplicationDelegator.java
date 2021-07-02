@@ -1355,7 +1355,7 @@ public class NewApplicationDelegator {
             }
         }
 
-        String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
+        // String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             String effectiveDateStr = ParamUtil.getString(bpc.request, "rfcEffectiveDate");
@@ -2994,6 +2994,7 @@ public class NewApplicationDelegator {
     public void doSubmit(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do doSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        // validate all data
         Map<String, String> map = appSubmissionService.doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
             //set audit

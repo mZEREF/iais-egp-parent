@@ -179,4 +179,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/individual-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(@RequestParam("orgId") String orgId);
+
+    @GetMapping(value = "/hcsa-licence/inactive-licence-app-correlations", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations();
 }

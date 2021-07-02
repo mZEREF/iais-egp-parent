@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -361,4 +362,7 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoByVehicleNumber(@RequestParam("vehicleNumber") String vehicleNumber);
     @PutMapping(path="/iais-application/fe-giro-retrigger", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> updateAppGrpPmtStatus(@RequestBody ApplicationGroupDto applicationGroupDto, @RequestParam(name = "giroAccNo") String giroAccNo);
+
+    @GetMapping(value = "/iais-submission/active-vehicles", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();
 }

@@ -420,4 +420,12 @@ public class LicenceInFallback implements LicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }
