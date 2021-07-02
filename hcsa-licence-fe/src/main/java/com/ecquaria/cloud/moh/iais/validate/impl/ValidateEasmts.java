@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validate.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import com.ecquaria.cloud.moh.iais.validate.abstractValidate.AbstractValidate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2021/4/23 13:18
  */
 @Component
+@Slf4j
 public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Autowired
     private LicenceClient licenceClient;
@@ -183,5 +186,57 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Override
     protected void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap, String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo, AppGrpPremisesDto appGrpPremisesDto) {
         super.checkOperaionUnit(operationalUnitDtos, errorMap, floorErrName, unitErrName, floorUnitList, floorUnitErrName, floorUnitNo, appGrpPremisesDto);
+    }
+    @Override
+    public void doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi, List<String> premisesHciList,List<String> oldPremiseHciList) {
+        String PostalCode = map.get("easMtsPostalCode" + index);
+        String FloorNo = map.get("easMtsFloorNo" + index);
+        String BlockNo = map.get("easMtsBlockNo" + index);
+        String UnitNo = map.get("easMtsUnitNo" + index);
+        String HciName = map.get("easMtsHciName" + index);
+        String currentHci = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getEasMtsPostalCode(), appGrpPremisesDto.getEasMtsBlockNo(), appGrpPremisesDto.getEasMtsFloorNo(), appGrpPremisesDto.getEasMtsUnitNo());
+        boolean clickEdit = appGrpPremisesDto.isClickEdit();
+        boolean hciFlag=StringUtil.isEmpty(PostalCode)&&StringUtil.isEmpty(FloorNo)&&StringUtil.isEmpty(BlockNo)
+                &&StringUtil.isEmpty(UnitNo)&&StringUtil.isEmpty(HciName);
+        log.info(StringUtil.changeForLog("hciFlag:-->easm" + hciFlag));
+        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type);
+        if (newTypeFlag && hciFlag && !rfi) {
+            //new
+            if (!IaisCommonUtils.isEmpty(premisesHciList)) {
+                checkHciIsSame(appGrpPremisesDto,premisesHciList,map,"premisesHci" + index);
+            }
+        } else if (newTypeFlag && hciFlag && rfi && clickEdit) {
+            //new rfi
+            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHciList.contains(currentHci)) {
+                checkHciIsSame(appGrpPremisesDto,premisesHciList,map,"premisesHci" + index);
+            }
+        }
+        if (hciFlag) {
+            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
+            checkCoLocationDto.setLicenseeId(licenseeId);
+            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
+            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
+            if (flag) {
+                needAppendMsg = true;
+            }
+        }
+        String hciNameUsed = map.get("hciNameUsed");
+        String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
+        if (needAppendMsg) {
+            if (StringUtil.isEmpty(hciNameUsed)) {
+                map.put("hciNameUsed", errMsg);
+            } else {
+                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
+                map.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
+            }
+        }
+    }
+    protected void  checkHciIsSame(AppGrpPremisesDto appGrpPremisesDto,List<String> premisesHciList,Map<String, String> errorMap,String errName){
+        List<String> currHciList = NewApplicationHelper.genPremisesHciList(appGrpPremisesDto);
+        for(String hci:currHciList){
+            if(premisesHciList.contains(hci)){
+                errorMap.put(errName, "NEW_ERR0005");
+            }
+        }
     }
 }

@@ -51,12 +51,14 @@
                                                                           </div>
                                                                       </c:if>
                                                                   </td>
-                                                                  <td> <c:if test="${answerForDifDtoStatus.index == 0}">
-                                                                      <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
+                                                              <c:if test="${answerForDifDtoStatus.index == 0}">
+                                                                  <td rowspan="${inspectorsParticipant.size()}">
+                                                                  <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
                                                                       <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}Remark"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}FindNcs"/>" name="iaisErrorMsg"></span>
-                                                                  </c:if></td>
+                                                                  </td>
+                                                                  </c:if>
                                                               </tr>
                                                           </c:forEach>
                                                           <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
@@ -128,14 +130,15 @@
                                                                       </div>
                                                                   </c:if>
                                                              </td>
-                                                              <td>
-                                                                  <c:if test="${answerForDifDtoStatus.index == 0}">
+                                                              <c:if test="${answerForDifDtoStatus.index == 0}">
+                                                              <td rowspan="${inspectorsParticipant.size()}" >
                                                                       <c:set value = "error_${ckkId}adhoc" var = "err"/>
                                                                       <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}Remark"/>" name="iaisErrorMsg"></span>
                                                                       <span class="error-msg" id="<c:out value="${err}FindNcs"/>" name="iaisErrorMsg"></span>
-                                                                  </c:if>
                                                               </td>
+                                                              </c:if>
+
                                                        </tr>
                                                       </c:forEach>
                                                 </c:forEach>

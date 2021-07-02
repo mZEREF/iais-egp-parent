@@ -135,6 +135,22 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String amoStr=Double.toString(amount);
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", expiryDate,"12", amoStr,"1234567890123456789012345");
 
+		log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
+		log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);
+		log.info("countryCode {}",GatewayPayNowConfig.countryCode);
+		log.info("merchantName {}",GatewayPayNowConfig.merchantName);
+		log.info("merchantCity {}",GatewayPayNowConfig.merchantCity);
+		log.info("globalUniqueID {}",GatewayPayNowConfig.globalUniqueID);
+		log.info("proxyType {}",GatewayPayNowConfig.proxyType);
+		log.info("proxyValue {}",GatewayPayNowConfig.proxyValue);
+		log.info("editableAmountInd {}",GatewayPayNowConfig.editableAmountInd);
+		log.info("expiryDate {}",expiryDate);
+		log.info("pointOfIntiation {}",GatewayPayNowConfig.pointOfIntiation);
+		log.info("amount {}",amoStr);
+		log.info("billReferenceNumber {}",appGrpNo);
+		log.info("payloadFormatInd {}",GatewayPayNowConfig.payloadFormatInd);
+
+
 		PayNow payNowObject = qrGenerator.getPayNowObject(GatewayPayNowConfig.merchantCategoryCode,
 				GatewayPayNowConfig.txnCurrency, GatewayPayNowConfig.countryCode,
 				GatewayPayNowConfig.merchantName, GatewayPayNowConfig.merchantCity,

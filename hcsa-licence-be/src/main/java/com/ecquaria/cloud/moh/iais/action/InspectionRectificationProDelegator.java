@@ -104,17 +104,9 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     public void inspectorProRectificationStart(BaseProcessClass bpc){
         clearSessionForStartCheckList(bpc.request);
         log.debug(StringUtil.changeForLog("the inspectorProRectificationStart start ...."));
-        String taskId = "";
-        try{
-            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
-        }catch (MaskAttackException e){
-            log.error(e.getMessage(), e);
-            try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
-            } catch (IOException ioe){
-                log.error(ioe.getMessage(), ioe);
-                return;
-            }
+        String taskId = verifyTaskId(bpc);
+        if(StringUtil.isEmpty(taskId)){
+            return;
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION,  AuditTrailConsts.FUNCTION_INSPECTION_RECTIFICATION, taskDto.getApplicationNo());

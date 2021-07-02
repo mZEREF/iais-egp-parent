@@ -79,11 +79,7 @@
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label" >Inspection Officer(s)</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <p>
-            <c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status">
-                <c:out value="${officer}"/>
-            </c:forEach>
-            </p>
+            <p><c:forEach var = "officer" items = "${serListDto.inspectionofficer}" varStatus="status"><c:if test="${status.index >0}">, </c:if><c:out value="${officer}"/></c:forEach></p>
         </div>
     </div>
 

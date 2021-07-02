@@ -155,6 +155,7 @@ public class AuditTcuListDelegator {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
+        auditSystemListService.setTcuAuditFlag(auditTaskDataDtos);
         auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK001"));
         ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");

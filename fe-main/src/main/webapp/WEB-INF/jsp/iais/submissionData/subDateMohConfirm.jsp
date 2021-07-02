@@ -32,7 +32,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printLDT('print')"> <em class="fa fa-print"></em>Print</a></div></p>
+        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
         <div class="tab-gp steps-tab">
             <div class="tab-content">
                 <div class="tab-pane active" id="premisesTab" role="tabpanel">
@@ -139,9 +139,8 @@
     @page { size: portrait; }
 </style>
 <script type="text/javascript">
-    function printLDT(id){
-        $('#tooltip').hide();
-        printpage(id);
-        $('#tooltip').show();
+    function printWDPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohFeMainPrint?whichPage=ldtPage",'_blank');
     }
+
 </script>

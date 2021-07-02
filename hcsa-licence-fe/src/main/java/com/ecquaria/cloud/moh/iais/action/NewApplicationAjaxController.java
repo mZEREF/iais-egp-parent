@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JarFileUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -892,6 +893,27 @@ public class NewApplicationAjaxController {
             specialtyAttr.put("style", "display: none;");
             String specialityHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, speciality);
             person.setSpecialityHtml(specialityHtml);
+        } else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
+            Date specialtyGetDate = person.getSpecialtyGetDate();
+            if(specialtyGetDate != null){
+                person.setSpecialtyGetDateStr(Formatter.formatDate(specialtyGetDate));
+            }
+            Date currRegiDate = person.getCurrRegiDate();
+            if(currRegiDate != null){
+                person.setCurrRegiDateStr(Formatter.formatDate(currRegiDate));
+            }
+            Date praCerEndDate = person.getPraCerEndDate();
+            if(praCerEndDate != null){
+                person.setPraCerEndDateStr(Formatter.formatDate(praCerEndDate));
+            }
+            Date acls = person.getAclsExpiryDate();
+            if(acls != null){
+                person.setAclsExpiryDateStr(Formatter.formatDate(acls));
+            }
+            Date bcls = person.getBclsExpiryDate();
+            if(bcls != null){
+                person.setBclsExpiryDateStr(Formatter.formatDate(bcls));
+            }
         }
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
         return person;

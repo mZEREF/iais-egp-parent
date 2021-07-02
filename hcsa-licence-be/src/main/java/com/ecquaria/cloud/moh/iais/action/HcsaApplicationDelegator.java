@@ -617,8 +617,8 @@ public class HcsaApplicationDelegator {
         }
         String decisionValue = ParamUtil.getString(bpc.request, "decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
-        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage)){
-            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc(),applicationViewDto.isShowTcu());
+        if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(nextStage) && applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
+            insepctionNcCheckListService.saveTcuDate(applicationViewDto.getAppPremisesCorrelationId(),applicationViewDto.getTuc());
         }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType());
@@ -1033,6 +1033,15 @@ public class HcsaApplicationDelegator {
             broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, null, submissionId);
             //0062460 update FE  application status.
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+            String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+            log.info(StringUtil.changeForLog("The broadcast for licenseeId is -->:"+licenseeId));
+            try {
+                for(String userId : userIds){
+                    applicationService.sendRfcClarificationEmail(licenseeId, applicationViewDto, internalRemarks, null, userId);
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
 
         log.debug(StringUtil.changeForLog("the do broadcast end ...."));
@@ -3337,9 +3346,10 @@ public class HcsaApplicationDelegator {
     }
 
     private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
-                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(applicationViewDto.getApplicationType()) ||
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationViewDto.getApplicationType())){
+        String appType = applicationViewDto.getApplicationDto() == null ? "" : applicationViewDto.getApplicationDto().getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase( appType) ||
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase( appType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase( appType)){
              applicationViewDto.setShowTcu(true);
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));

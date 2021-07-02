@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -48,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -59,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
+import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -74,6 +77,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * NewApplicationHelper
@@ -1081,158 +1085,12 @@ public class NewApplicationHelper {
         return psnDtos;
     }
 
-    public static Map<String,AppSvcPersonAndExtDto> setPsnIntoSelMap(Map<String,AppSvcPersonAndExtDto> personMap, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
-        if(IaisCommonUtils.isEmpty(psnDtos)){
-            return personMap;
-        }
-        for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
-            boolean partValidate = psnDoPartValidate(psnDto.getIdType(),psnDto.getIdNo(),psnDto.getName());
-            if(!partValidate){
-                continue;
-            }
-            String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
-            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
-            List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
-            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
-            specialtyAttr.put("name", "specialty");
-            specialtyAttr.put("class", "specialty");
-            specialtyAttr.put("style", "display: none;");
-            if(person == null){
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
-                    psnDto.setNeedSpcOptList(true);
-                    List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,true);
-                    psnDto.setSpcOptList(specialityOpts);
-                    String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
-                    psnDto.setSpecialityHtml(specialtySelectStr);
-                }
-                psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-                AppSvcPersonAndExtDto newPersonAndExtDto = new AppSvcPersonAndExtDto();
-                AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonDto.class);
-                AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonExtDto.class);
-                appSvcPersonExtDto.setServiceCode(svcCode);
-                appSvcPersonExtDto.setAssignSelect(psnDto.getAssignSelect());
-                appSvcPersonExtDtos.add(appSvcPersonExtDto);
-                newPersonAndExtDto.setPersonDto(appSvcPersonDto);
-                newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
-                newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
-                personMap.put(personMapKey,newPersonAndExtDto);
-            }else{
-                //dropdown psn
-                String licPerson = String.valueOf(person.isLicPerson());
-                //dto psn
-                String licPsn = String.valueOf(psnDto.isLicPerson());
-                if(!licPerson.equals(licPsn)){
-                    log.info(StringUtil.changeForLog("personMapKey:"+personMapKey+",dropdown psn:"+licPerson+",,,dto psn:"+licPsn));
-                    continue;
-                }
-                //set different page column
-                person.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-                person.setSalutation(psnDto.getSalutation());
-                person.setName(psnDto.getName());
-                person.setIdType(psnDto.getIdType());
-                person.setIdNo(psnDto.getIdNo());
-                person.setMobileNo(psnDto.getMobileNo());
-                person.setEmailAddr(psnDto.getEmailAddr());
-                String designation = psnDto.getDesignation();
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
-                    person.setDesignation(designation);
-                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
-                        person.setOtherDesignation(psnDto.getOtherDesignation());
-                    }
-                    person.setProfessionType(psnDto.getProfessionType());
-                    person.setProfRegNo(psnDto.getProfRegNo());
-                    person.setSpeciality(psnDto.getSpeciality());
-                    person.setSpecialityOther(psnDto.getSpecialityOther());
-                    person.setSubSpeciality(psnDto.getSubSpeciality());
-                    person.setQualification(psnDto.getQualification());
-                    person.setOtherQualification(psnDto.getOtherQualification());
-                    //
-                    person.setNeedSpcOptList(true);
-                    List<SelectOption> spcOpts = person.getSpcOptList();
-                    List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,false);
-                    if(!IaisCommonUtils.isEmpty(spcOpts)){
-                        for(SelectOption sp:spcOpts){
-                            if(!specialityOpts.contains(sp) && !"other".equals(sp.getValue())){
-                                specialityOpts.add(sp);
-                            }
-                        }
-                        String specialityVal = psnDto.getSpeciality();
-                        if(!StringUtil.isEmpty(specialityVal)){
-                            SelectOption sp = getSpecialtyByValue(specialityVal);
-                            if(!specialityOpts.contains(sp)){
-                                specialityOpts.add(sp);
-                            }
-                        }
-                    }else{
-                        log.info(StringUtil.changeForLog("person spcOpts is empty"));
-                    }
-                    SelectOption sp = new SelectOption("other", "Others");
-                    boolean flag=false;
-                    for(SelectOption selectOption : specialityOpts){
-                        String value = selectOption.getValue();
-                        if("other".equals(value)){
-                            flag=true;
-                            break;
-                        }
-                    }
-                    if(!flag){
-                        specialityOpts.add(sp);
-                    }
-                    person.setSpcOptList(specialityOpts);
-                    String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
-                    person.setSpecialityHtml(specialtySelectStr);
-                    psnDto.setSpcOptList(specialityOpts);
-                    psnDto.setSpecialityHtml(specialtySelectStr);
-                    psnDto.setNeedSpcOptList(true);
-                }
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
-                    person.setDesignation(psnDto.getDesignation());
-                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
-                        person.setOtherDesignation(psnDto.getOtherDesignation());
-                    }
-                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                }
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
-                    person.setDesignation(psnDto.getDesignation());
-                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
-                        person.setOtherDesignation(psnDto.getOtherDesignation());
-                    }
-                    person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                }
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-
-                }
-                //person.setLicPerson(true);
-                //for person dtos
-                //psnDto.setLicPerson(person.isLicPerson());
-                psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-
-                AppSvcPersonAndExtDto newPersonAndExtDto = new AppSvcPersonAndExtDto();
-                AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(person,AppSvcPersonDto.class);
-                AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(person,AppSvcPersonExtDto.class);
-                appSvcPersonExtDto.setServiceCode(svcCode);
-                appSvcPersonExtDto.setAssignSelect(person.getAssignSelect());
-                appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-                if(IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
-                    appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
-                }
-                appSvcPersonExtDtos.add(appSvcPersonExtDto);
-                newPersonAndExtDto.setPersonDto(appSvcPersonDto);
-                newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
-                newPersonAndExtDto.setLicPerson(person.isLicPerson());
-                personMap.put(personMapKey,newPersonAndExtDto);
-            }
-        }
-        return personMap;
-    }
-
     public static Map<String,AppSvcPersonAndExtDto> initSetPsnIntoSelMap(Map<String,AppSvcPersonAndExtDto> personMap, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
         if(IaisCommonUtils.isEmpty(psnDtos)){
             return personMap;
         }
         for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
-            if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
+            if(!psnDoPartValidate(psnDto.getIdType(),psnDto.getIdNo(),psnDto.getName())){
                 continue;
             }
             String personMapKey = NewApplicationHelper.getPersonKey(psnDto.getIdType(),psnDto.getIdNo());
@@ -1283,8 +1141,34 @@ public class NewApplicationHelper {
                 person.setIdNo(psnDto.getIdNo());
                 person.setMobileNo(psnDto.getMobileNo());
                 person.setEmailAddr(psnDto.getEmailAddr());
+                String designation = psnDto.getDesignation();
+                if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnDto.getPsnType())) {
+                    person.setDesignation(designation);
+                    if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)) {
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
+                    person.setProfessionBoard(psnDto.getProfessionBoard());
+                    person.setProfRegNo(psnDto.getProfRegNo());
+                    person.setSpecialtyGetDate(handleDate(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
+                    person.setSpecialtyGetDateStr(handleDateString(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
+                    person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
+                    person.setCurrRegiDate(handleDate(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
+                    person.setCurrRegiDateStr(handleDateString(psnDto.getCurrRegiDate(), psnDto.getCurrRegiDateStr()));
+                    person.setPraCerEndDate(handleDate(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
+                    person.setPraCerEndDateStr(handleDateString(psnDto.getPraCerEndDate(), psnDto.getPraCerEndDateStr()));
+                    person.setTypeOfRegister(psnDto.getTypeOfRegister());
+                    person.setRelevantExperience(psnDto.getRelevantExperience());
+                    person.setHoldCerByEMS(psnDto.getHoldCerByEMS());
+                    person.setAclsExpiryDate(handleDate(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
+                    person.setAclsExpiryDateStr(handleDateString(psnDto.getAclsExpiryDate(), psnDto.getAclsExpiryDateStr()));
+                    person.setBclsExpiryDate(handleDate(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
+                    person.setBclsExpiryDateStr(handleDateString(psnDto.getBclsExpiryDate(), psnDto.getBclsExpiryDateStr()));
+                }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
-                    person.setDesignation(psnDto.getDesignation());
+                    person.setDesignation(designation);
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
@@ -1344,17 +1228,19 @@ public class NewApplicationHelper {
                     psnDto.setNeedSpcOptList(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
+                    person.setDesignation(psnDto.getDesignation());
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                    person.setDesignation(psnDto.getDesignation());
+                    if(MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(designation)){
+                        person.setOtherDesignation(psnDto.getOtherDesignation());
+                    }
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
-                if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-
-                }
-                //person.setLicPerson(true);
-                //for person dtos
-                //psnDto.setLicPerson(person.isLicPerson());
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 psnDto.setLicPerson(person.isLicPerson());
 
@@ -1375,6 +1261,26 @@ public class NewApplicationHelper {
             }
         }
         return personMap;
+    }
+
+    public static Date handleDate(Date date, String str) {
+        Date newDate = null;
+        if (date != null) {
+            newDate = (Date) date.clone();
+        } else {
+            newDate = DateUtil.parseDate(str, Formatter.DATE);
+        }
+        return newDate;
+    }
+
+    public static String handleDateString(Date date, String str) {
+        String newDate = null;
+        if (date != null) {
+            newDate = Formatter.formatDate(date);
+        } else if (CommonValidator.isDate(str)) {
+            newDate = str;
+        }
+        return newDate;
     }
 
     @Deprecated
@@ -1734,7 +1640,7 @@ public class NewApplicationHelper {
             SelectOption sp0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
             psnSelectList.add(sp0);
         }
-        SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+        SelectOption sp1 = new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new personnel");
         psnSelectList.add(sp1);
 
         List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
@@ -1980,6 +1886,10 @@ public class NewApplicationHelper {
         return personKey;
     }
 
+    public static String getPersonView(String idType, String idNo, String name) {
+        return name + ", " + idNo + " (" + MasterCodeUtil.getCodeDesc(idType) + ")";
+    }
+
     public static String getPhName(List<SelectOption> phDtos, String dateStr){
         String result = "";
         if(IaisCommonUtils.isEmpty(phDtos) || StringUtil.isEmpty(dateStr)){
@@ -2209,7 +2119,6 @@ public class NewApplicationHelper {
         AppSvcPersonExtDto appSvcPersonExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
         if(appSvcPersonExtDto == null){
             appSvcPersonExtDto = new AppSvcPersonExtDto();
-
         }
         if(removeCurrExt && !IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
             appSvcPersonExtDtos.remove(appSvcPersonExtDto);
@@ -2380,7 +2289,7 @@ public class NewApplicationHelper {
             case ApplicationConsts.PAYMENT_METHOD_NAME_NETS:
                 url= GatewayNetsAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getNetsRetUrl());break;
             case ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW:
-                url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getPayNowRetUrl());break;
+                url= GatewayPayNowAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getPayNowRetUrl());break;
             default:
                 url= GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, request, pmtReturnUrlDto.getOtherRetUrl());
         }

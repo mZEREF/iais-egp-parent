@@ -3,9 +3,7 @@ package com.ecquaria.cloud.moh.iais.api.util;
 
 import com.ecquaria.cloud.moh.iais.api.config.GatewayPayNowConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
-import com.ecquaria.egp.core.payment.api.util.GatewayMd5Encrypt;
-import com.ecquaria.egp.core.payment.api.util.GatewayRSAEncrypt;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ public class GatewayPayNowCore {
 
 	private static String buildRSASign(Map<String, String> sArray) {
 		String prestr = createLinkString(sArray);
-        String mysign = com.ecquaria.egp.core.payment.api.util.GatewayRSAEncrypt.sign(prestr);
+        String mysign = GatewayRSAEncrypt.sign(prestr);
         return mysign;
 	}
 	

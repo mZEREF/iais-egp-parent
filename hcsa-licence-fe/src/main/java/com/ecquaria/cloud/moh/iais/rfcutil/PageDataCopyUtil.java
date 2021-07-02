@@ -302,6 +302,7 @@ public class PageDataCopyUtil {
             o.setEngineNum(v.getEngineNum());
             list.add(o);
         });
+        list.sort((s1,s2)->(s1.getVehicleName().compareTo(s2.getVehicleName())));
         return list;
     }
 

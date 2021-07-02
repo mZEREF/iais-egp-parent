@@ -2,6 +2,7 @@
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <input type="hidden" class="psnEditField" name="psnEditField${index}" value="<c:out value="${clinicalDirectorDto.psnEditFieldStr}" />"/>
     <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.cgoIndexNo}"/>
+    <input type="hidden" class="licPerson" name="licPerson" value="${clinicalDirectorDto.licPerson ? '1' : '0'}"/>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
@@ -166,6 +167,16 @@
             </div>
         </div>
 
+        <div class="row control control-caption-horizontal hidden other-designation">
+            <div class=" form-group form-horizontal formgap">
+                <div class="control-label formtext col-md-5 col-xs-5">
+                </div>
+                <div class="col-md-7 col-xs-12">
+                    <iais:input maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation${index}" value="${clinicalDirectorDto.otherDesignation}"/>
+                </div>
+            </div>
+        </div>
+
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
@@ -188,7 +199,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="specialtyGetDate" name="specialtyGetDate${index}" value="${clinicalDirectorDto.specialtyGetDateStr}" />
+                    <iais:datePicker cssClass="specialtyGetDate field-name" name="specialtyGetDate${index}"
+                                     value="${clinicalDirectorDto.specialtyGetDateStr}" />
                 </div>
             </div>
         </div>
@@ -200,7 +212,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi" name="typeOfCurrRegi${index}" value="${clinicalDirectorDto.typeOfCurrRegi}" />
+                    <iais:input maxLength="50" type="text" cssClass="typeOfCurrRegi field-name" name="typeOfCurrRegi${index}"
+                                value="${clinicalDirectorDto.typeOfCurrRegi}" />
                 </div>
             </div>
         </div>
@@ -212,7 +225,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="currRegiDate" name="currRegiDate${index}" value="${clinicalDirectorDto.currRegiDateStr}" />
+                    <iais:datePicker cssClass="currRegiDate field-name" name="currRegiDate${index}"
+                                     value="${clinicalDirectorDto.currRegiDateStr}" />
                 </div>
             </div>
         </div>
@@ -224,7 +238,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <iais:datePicker cssClass="praCerEndDate" name="praCerEndDate${index}" value="${clinicalDirectorDto.praCerEndDateStr}" />
+                    <iais:datePicker cssClass="praCerEndDate field-name" name="praCerEndDate${index}"
+                                     value="${clinicalDirectorDto.praCerEndDateStr}" />
                 </div>
             </div>
         </div>
@@ -236,7 +251,8 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
-                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister" name="typeOfRegister${index}" value="${clinicalDirectorDto.typeOfRegister}"></iais:input>
+                    <iais:input maxLength="50" type="text" cssClass="typeOfRegister field-name" name="typeOfRegister${index}"
+                                value="${clinicalDirectorDto.typeOfRegister}"></iais:input>
                 </div>
             </div>
         </div>
@@ -267,7 +283,7 @@
                     <input class="form-check-input holdCerByEMS" <c:if test="${'0' == clinicalDirectorDto.holdCerByEMS}">checked="checked"</c:if>  type="radio" name="holdCerByEMS${index}" value = "0" aria-invalid="false">
                     <label class="form-check-label" ><span class="check-circle"></span>No</label>
                 </div>
-                <span class="error-msg col-md-3" name="iaisErrorMsg" id="error_holdCerByEMS${index}"></span>
+                <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_holdCerByEMS${index}"></span>
             </div>
         </div>
 
@@ -282,6 +298,11 @@
                 <div class="col-md-3 col-xs-12">
                     <iais:datePicker cssClass="aclsExpiryDate" name="aclsExpiryDate${index}" value="${clinicalDirectorDto.aclsExpiryDateStr}" />
                 </div>
+                <div class="col-md-5">
+                </div>
+                <div class="col-md-7">
+                    <span class="error-msg" name="iaisErrorMsg" id="error_expiryDateAcls${index}"></span>
+                </div>
             </div>
         </div>
 
@@ -294,6 +315,11 @@
                     </div>
                     <div class="col-md-3 col-xs-12">
                         <iais:datePicker cssClass="bclsExpiryDate" name="bclsExpiryDate${index}" value="${clinicalDirectorDto.bclsExpiryDateStr}" />
+                    </div>
+                    <div class="col-md-5">
+                    </div>
+                    <div class="col-md-7">
+                        <span class="error-msg" name="iaisErrorMsg" id="error_expiryDateBcls${index}"></span>
                     </div>
                 </div>
             </div>

@@ -946,7 +946,7 @@ public class NotificationHelper {
 		params.put("appNo", appNo);
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
-		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)){
+		if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
