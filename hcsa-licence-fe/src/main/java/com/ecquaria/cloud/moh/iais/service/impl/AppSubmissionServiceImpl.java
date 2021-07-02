@@ -204,6 +204,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     private LicenseeService licenseeService;
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -2188,6 +2189,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return newPrimaryDocList;
     }
 
+    /**
+     * validate the all submission data
+     *
+     * @param bpc
+     * @return
+     */
     @Override
     public Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc) {
         Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
@@ -2217,9 +2224,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else {
             coMap.put("premises", "premises");
         }
-        //
-        Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-        //
+        // service info
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         ServiceStepDto serviceStepDto = new ServiceStepDto();
@@ -2287,47 +2292,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         String serviceId = dto.getServiceId();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
-        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:dtos
-        ) {
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:dtos) {
             List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
             appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
         }
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
             String psnType = hcsaSvcPersonnelDto.getPsnType();
             int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcPrincipalOfficersDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_PO,mandatoryCount,serviceId,sB);
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
-                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcPersonnelDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,mandatoryCount,serviceId,sB);
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcCgoDtoList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,mandatoryCount,serviceId,sB);
-            } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
-                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcMedAlertPersonList),errorMap,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,mandatoryCount,serviceId,sB);
-            }else if(ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)){
-                List<AppSvcVehicleDto> appSvcVehicleDtoList = dto.getAppSvcVehicleDtoList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcVehicleDtoList),errorMap,ApplicationConsts.PERSONNEL_VEHICLES,mandatoryCount,serviceId,sB);
-            }else if(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)){
-                List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
-                validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList),errorMap,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR,mandatoryCount,serviceId,sB);
-            }else if(ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)){
-                AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-                if(appSvcChargesPageDto!=null){
-                    validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
-                }else {
-                    errorMap.put("appSvcChargesPageDto","appSvcChargesPageDto is null");
-                }
-            }else if(ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)){
-                AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-                if(appSvcChargesPageDto!=null){
-                    validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()),errorMap,ApplicationConsts.PERSONNEL_CHARGES,mandatoryCount,serviceId,sB);
-                }else {
-                    errorMap.put("otherAppSvcChargesPageDto","other appSvcChargesPageDto is null");
-                }
-            }
+            valiatePersonnelCount(dto, psnType, mandatoryCount, sB, errorMap);
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
         Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
@@ -2387,16 +2359,73 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
         validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
+        // Clinical Director
+        String currSvcCode = dto.getServiceCode();
+        if (StringUtil.isEmpty(currSvcCode)) {
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
+        }
         validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = loginContext.getLicenseeId();
+        // Vehicles
         List<AppSvcVehicleDto> oldAppSvcVehicleDto=null;
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-        AppSubmissionDto oldRenewAppSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request, "oldRenewAppSubmissionDto");
         validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
 
         return errorMap;
+    }
+
+    /**
+     * validate all related service infos mandatory count
+     *
+     * @param dto
+     * @param psnType
+     * @param mandatoryCount
+     * @param sB
+     * @param errorMap
+     */
+    private void valiatePersonnelCount(AppSvcRelatedInfoDto dto, String psnType, int mandatoryCount, StringBuilder sB,
+            Map<String, String> errorMap) {
+        String serviceId = dto.getServiceId();
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcPrincipalOfficersDtoList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
+            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcPersonnelDtoList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcCgoDtoList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcMedAlertPersonList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)) {
+            List<AppSvcVehicleDto> appSvcVehicleDtoList = dto.getAppSvcVehicleDtoList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcVehicleDtoList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
+            validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList), errorMap,
+                    psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)) {
+            AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
+            if (appSvcChargesPageDto != null) {
+                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()), errorMap,
+                        psnType, mandatoryCount, serviceId, sB);
+            } else {
+                errorMap.put("appSvcChargesPageDto", "appSvcChargesPageDto is null");
+            }
+        } else if (ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)) {
+            AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
+            if (appSvcChargesPageDto != null) {
+                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()), errorMap,
+                        psnType, mandatoryCount, serviceId, sB);
+            } else {
+                errorMap.put("otherAppSvcChargesPageDto", "other appSvcChargesPageDto is null");
+            }
+        }
     }
 
     private void  validatePersonMandatoryCount(List<Object> list,Map<String,String> map,String type,Integer mandatoryCount,String serviceId,StringBuilder sB){
