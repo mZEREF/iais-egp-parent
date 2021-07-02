@@ -2295,7 +2295,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if(!IaisCommonUtils.isEmpty(dtos)){
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:dtos) {
                 List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
-                appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                if(!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)){
+                    appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                }
             }
         }
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
