@@ -128,7 +128,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
 
         if(StringUtil.isEmpty(easMtsPubEmail)){
             if(!"UOT002".equals(easMtsUseOnly)){
-                map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public email", "field"));
+                map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Email", "field"));
             }
         }else {
             boolean email = ValidationUtils.isEmail(easMtsPubEmail);

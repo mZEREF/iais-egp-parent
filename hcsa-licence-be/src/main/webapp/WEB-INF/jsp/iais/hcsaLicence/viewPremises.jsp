@@ -98,7 +98,7 @@
                                             Conveyance
                                           </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='EASMTS'}">
-                                            Conveyance(in a mobile clinic / ambulance)
+                                            Conveyance (in a mobile clinic / ambulance)
                                           </c:if>
                                         </span>
                                       </div>
