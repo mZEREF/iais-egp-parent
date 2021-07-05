@@ -489,6 +489,7 @@
             viewApp.SLA_DAYS ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.ACTION_BY ,viewApp.act_time
             FROM DASHBOARD_ALL_ACTIVE_APPLICATIONS_VIEW viewApp
             WHERE 1 = 1
+            <#if applicationNo??> and charindex(:applicationNo, viewApp.APPLICATION_NO) >0 </#if>
             <#if application_types??> and ${application_types}</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if user_id??> and viewApp.ACTION_BY= :user_id</#if>
@@ -504,6 +505,7 @@
             viewApp.ACTION_BY
             FROM DASHBOARD_ALL_GRP_APPLICATIONS_VIEW viewApp
             WHERE 1 = 1
+            <#if applicationNo??> and charindex(:applicationNo, viewApp.APPLICATION_NO) >0 </#if>
             <#if application_types??> and ${application_types}</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
             <#if role_id??> and viewApp.ROLE_ID= :role_id</#if>
@@ -521,6 +523,7 @@
             isnull (viewApp.total_sla_days,0) as total_sla_days, viewApp.APP_GRP_ID
             FROM DASHBOARD_APPLICATIONS_DETAILS_VIEW viewApp
             WHERE 1 = 1
+            <#if applicationNo??> and charindex(:applicationNo, viewApp.APPLICATION_NO) >0 </#if>
             <#if application_types??> and ${application_types}</#if>
             <#if groupId??> and viewApp.APP_GRP_ID = :groupId</#if>
             <#if svc_codes??> and  ${svc_codes}</#if>
