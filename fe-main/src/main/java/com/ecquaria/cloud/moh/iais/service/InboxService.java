@@ -46,14 +46,15 @@ public interface InboxService {
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
     List<PremisesDto> getPremisesByLicId(String licenceId);
     AuditTrailDto getLastLoginInfo(String loginUserId);
-    public Map<String,String> checkRfcStatus(String licenceId);
+    Map<String,String> checkRfcStatus(String licenceId);
     Map<String,Boolean> listResultCeased(List<String> licIds);
     Map<String,String> appealIsApprove(String appIdOrLicenceId,String type);
     List<ApplicationSubDraftDto> getDraftByLicAppId(String licAppId);
     ApplicationDraftDto getDraftByAppNo(String appNo);
     ApplicationGroupDto getAppGroupByGroupId(String appGroupId);
     void  deleteDraftByNo(String draftNo);
-    public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
-    public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
+    LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
+    LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
     List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId,String status);
+    Map<String,Boolean> getMapCanInsp();
 }

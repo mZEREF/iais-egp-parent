@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -515,5 +517,23 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId, String status) {
         return appInboxClient.getDraftByLicAppIdAndStatus(licAppId,status).getEntity();
+    }
+
+    @Override
+    public Map<String, Boolean> getMapCanInsp() {
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = null;
+        try {
+            hcsaSvcRoutingStageDtos = eicGatewayFeMainClient.getHcsaSvcRoutingStageDtoByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
+        }catch (Exception e){
+         log.error(e.getMessage(),e);
+        }
+        Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageDtos)){
+            for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos){
+                String key = hcsaSvcRoutingStageDto.getAppType() +"_"+ hcsaSvcRoutingStageDto.getServiceId();
+                map.put(key,Boolean.TRUE);
+            }
+        }
+        return map;
     }
 }
