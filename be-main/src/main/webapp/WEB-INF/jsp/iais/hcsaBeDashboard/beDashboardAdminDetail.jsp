@@ -90,6 +90,12 @@
                                                                 <div class="col-md-6 col-xs-12 col-lg-6">
                                                                     <div class="form-horizontal filter-box">
                                                                         <div class="form-group">
+                                                                            <label class="col-xs-12 col-md-4 control-label">Application No.</label>
+                                                                            <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
+                                                                                <input type="text" name="applicationNo" value="${dashFilterAppNo}"/>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
                                                                             <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                                                             <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
                                                                                 <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
@@ -211,11 +217,11 @@
         chartRegister();
         initChart('overAll', 'overAllCanvas', true, 'Overall');
         <c:forEach var="svcOp" items="${dashServiceOption}" varStatus="status">
-            initChart('${svcOp.value}', '${svcOp.value}Detail', false, null);
+        initChart('${svcOp.value}', '${svcOp.value}Detail', false, null);
         </c:forEach>
 
         $('#sysClearBtn').click(function () {
-            doClear();
+            doStatisticsBoardClear();
         });
 
         $('#sysSearchBtn').click(function () {
@@ -242,65 +248,65 @@
     var groupAjax = function (applicationGroupId, divid) {
         dividajaxlist.push(divid);
         $.post(
-            '/main-web/hcsa/intranet/dashboard/dashSysDetail.do',
-            {groupId: applicationGroupId},
-            function (data) {
-                let dashSupportFlag = data.dashSupportFlag;
-                let result = data.result;
-                if('Success' == result) {
-                    let res = data.ajaxResult;
-                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="7" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                        '<thead>' +
-                        '<tr>';
-                    if ("true" == dashSupportFlag) {
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }
-
-                    html += '<th width="15%">Application No.</th>' +
-                        '<th width="15%">Application Type</th>' +
-                        '<th width="15%">Service Licence</th>' +
-                        '<th width="15%">Officer Assigned</th>' +
-                        '<th width="15%">Days at Current Stage</th>' +
-                        '<th width="10%">Target TAT at Current Stage</th>' +
-                        '<th width="10%">Total Days Taken for Application</th>' +
-                        '<th width="10%">Total TAT for Application</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    for (let i = 0; i < res.rowCount; i++) {
-                        var color = "black";
-                        if ("black" == res.rows[i].kpiColor) {
-                            color = "black";
-                        } else if ("red" == res.rows[i].kpiColor) {
-                            color = "red";
-                        } else if ("amber" == res.rows[i].kpiColor) {
-                            color = "#DD9C00";
-                        }
-                        html += '<tr style = "color : ' + color + ';">';
+                '/main-web/hcsa/intranet/dashboard/dashSysDetail.do',
+                {groupId: applicationGroupId},
+                function (data) {
+                    let dashSupportFlag = data.dashSupportFlag;
+                    let result = data.result;
+                    if('Success' == result) {
+                        let res = data.ajaxResult;
+                        let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                                '<td colspan="7" style="padding: 0px 8px !important;">' +
+                                '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                                '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                                '<thead>' +
+                                '<tr>';
                         if ("true" == dashSupportFlag) {
-                            html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                            html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>';
-                        for (let j = 0; j < res.rows[i].appOwnerList.length; j++) {
-                            html += res.rows[i].appOwnerList[j] + '<br>';
+
+                        html += '<th width="15%">Application No.</th>' +
+                                '<th width="15%">Application Type</th>' +
+                                '<th width="15%">Service Licence</th>' +
+                                '<th width="15%">Officer Assigned</th>' +
+                                '<th width="15%">Days at Current Stage</th>' +
+                                '<th width="10%">Target TAT at Current Stage</th>' +
+                                '<th width="10%">Total Days Taken for Application</th>' +
+                                '<th width="10%">Total TAT for Application</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>';
+                        for (let i = 0; i < res.rowCount; i++) {
+                            var color = "black";
+                            if ("black" == res.rows[i].kpiColor) {
+                                color = "black";
+                            } else if ("red" == res.rows[i].kpiColor) {
+                                color = "red";
+                            } else if ("amber" == res.rows[i].kpiColor) {
+                                color = "#DD9C00";
+                            }
+                            html += '<tr style = "color : ' + color + ';">';
+                            if ("true" == dashSupportFlag) {
+                                html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
+                            }
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>';
+                            for (let j = 0; j < res.rows[i].appOwnerList.length; j++) {
+                                html += res.rows[i].appOwnerList[j] + '<br>';
+                            }
+                            html += '</p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Days at Current Stage</p><p>' + res.rows[i].slaDays + '</p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Target TAT at Current Stage</p><p>' + res.rows[i].kpi + '</p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Total Days Taken for Application</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
+                                    '<td><p class="visible-xs visible-sm table-row-title">Total TAT for Application</p><p>' + res.rows[i].allStageSumKpi + '</p></td>' +
+                                    '</tr>';
                         }
-                        html += '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Days at Current Stage</p><p>' + res.rows[i].slaDays + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Target TAT at Current Stage</p><p>' + res.rows[i].kpi + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Total Days Taken for Application</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Total TAT for Application</p><p>' + res.rows[i].allStageSumKpi + '</p></td>' +
-                            '</tr>';
+                        html += '</tbody></table></div></td></tr>';
+                        $('#advfilter' + divid).after(html);
                     }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
                 }
-            }
         )
     };
 
@@ -322,17 +328,17 @@
     function dashboardAppViewShow(appPremCorrId) {
         showWaiting();
         $.post(
-            '/main-web/hcsa/intranet/dashboard/applicationView.show',
-            {appPremCorrId: appPremCorrId},
-            function (data) {
-                let dashAppShowFlag = data.dashAppShowFlag;
-                if ('SUCCESS' == dashAppShowFlag) {
-                    window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
-                    dismissWaiting();
-                } else {
-                    dismissWaiting();
+                '/main-web/hcsa/intranet/dashboard/applicationView.show',
+                {appPremCorrId: appPremCorrId},
+                function (data) {
+                    let dashAppShowFlag = data.dashAppShowFlag;
+                    if ('SUCCESS' == dashAppShowFlag) {
+                        window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
+                        dismissWaiting();
+                    } else {
+                        dismissWaiting();
+                    }
                 }
-            }
         );
         dismissWaiting();
     }
