@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
@@ -35,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -58,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -78,6 +81,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -3871,6 +3875,16 @@ public class NewApplicationHelper {
             assignSelect = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW;
         }
         return assignSelect;
+    }
+
+    public static String getRelatedAppId(String appId, String licenceId) {
+        String orgAppId = appId;
+        if (StringUtil.isEmpty(appId) && StringUtil.isNotEmpty(licenceId)) {
+            LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
+            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getLicCorrBylicId(licenceId).getEntity();
+            orgAppId = Optional.ofNullable(licAppCorrDtos).map(dtos -> dtos.get(0).getApplicationId()).orElseGet(() -> null);
+        }
+        return orgAppId;
     }
 
 }
