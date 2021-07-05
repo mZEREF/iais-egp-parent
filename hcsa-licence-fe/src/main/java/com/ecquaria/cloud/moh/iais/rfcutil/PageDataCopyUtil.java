@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.rfcutil;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -20,7 +21,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class PageDataCopyUtil {
 
@@ -290,19 +293,30 @@ public class PageDataCopyUtil {
         }
         return list;
     };
-    public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList){
-        if(appSvcVehicleDtoList==null||appSvcVehicleDtoList.isEmpty()){
+
+    public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList) {
+        return copyAppSvcVehicleDto(appSvcVehicleDtoList, true);
+    }
+
+    public static List<AppSvcVehicleDto> copyAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList, boolean toLower) {
+        if (appSvcVehicleDtoList == null || appSvcVehicleDtoList.isEmpty()) {
             return new ArrayList<>(1);
         }
-        List<AppSvcVehicleDto> list=new ArrayList<>(appSvcVehicleDtoList.size());
-        appSvcVehicleDtoList.forEach((v)->{
-            AppSvcVehicleDto o=new AppSvcVehicleDto();
-            o.setVehicleName(v.getVehicleName());
-            o.setChassisNum(v.getChassisNum());
-            o.setEngineNum(v.getEngineNum());
+        List<AppSvcVehicleDto> list = new ArrayList<>(appSvcVehicleDtoList.size());
+        appSvcVehicleDtoList.forEach((v) -> {
+            AppSvcVehicleDto o = new AppSvcVehicleDto();
+            o.setVehicleName(Optional.ofNullable(v.getVehicleName())
+                    .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
+                    .orElseGet(() -> ""));
+            o.setChassisNum(Optional.ofNullable(v.getChassisNum())
+                    .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
+                    .orElseGet(() -> ""));
+            o.setEngineNum(Optional.ofNullable(v.getEngineNum())
+                    .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
+                    .orElseGet(() -> ""));
             list.add(o);
         });
-        list.sort((s1,s2)->(s1.getVehicleName().compareTo(s2.getVehicleName())));
+        list.sort(Comparator.comparing(AppSvcVehicleDto::getVehicleName));
         return list;
     }
 

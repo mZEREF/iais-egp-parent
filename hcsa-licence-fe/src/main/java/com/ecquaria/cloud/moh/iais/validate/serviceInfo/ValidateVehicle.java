@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
@@ -27,30 +29,33 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateVehicle implements ValidateFlow {
-    @Autowired
-    private ApplicationFeClient applicationFeClient;
-    @Autowired
-    private HcsaLicenClient hcsaLicenClient;
+
     @Override
-    public void doValidateVehicles(Map<String,String> map, List<AppSvcVehicleDto> appSvcVehicleDtoAlls,List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
-        if(appSvcVehicleDtos==null){
+    public void doValidateVehicles(Map<String, String> errorMap, List<AppSvcVehicleDto> appSvcVehicleDtoAlls,
+            List<AppSvcVehicleDto> appSvcVehicleDtos, List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+        if (appSvcVehicleDtos == null) {
             return;
         }
-        List<String> vehicleNameList=new ArrayList<>(appSvcVehicleDtos.size());
-        List<String>chassisNumList=new ArrayList<>(appSvcVehicleDtos.size());
-        List<String>engineNumNumList=new ArrayList<>(appSvcVehicleDtos.size());
-        List<String> validateVehicleName=new ArrayList<>(appSvcVehicleDtos.size());
-        Map<Integer,String> indexMap=new HashMap<>(appSvcVehicleDtos.size());
-        for(int i=0;i<appSvcVehicleDtos.size();i++){
+        Map<String, String> map = null;
+        List<String> vehicleNameList = new ArrayList<>(appSvcVehicleDtos.size());
+        List<String> chassisNumList = new ArrayList<>(appSvcVehicleDtos.size());
+        List<String> engineNumNumList = new ArrayList<>(appSvcVehicleDtos.size());
+        List<String> validateVehicleName = new ArrayList<>(appSvcVehicleDtos.size());
+        Map<Integer, String> indexMap = new HashMap<>(appSvcVehicleDtos.size());
+        for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+            map = IaisCommonUtils.genNewHashMap();
             String vehicleName = appSvcVehicleDtos.get(i).getVehicleName();
-            String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
-            String engineNum = appSvcVehicleDtos.get(i).getEngineNum();
-            if(StringUtil.isEmpty(vehicleName)){
-                map.put("vehicleName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-            }else {
-                if(vehicleNameList.contains(vehicleName)){
-                    map.put("vehicleName"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }else {
+            if (StringUtil.isEmpty(vehicleName)) {
+                map.put("vehicleName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+            } else if (vehicleName.length() > 10) {
+                map.put("vehicleName" + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
+            } else if (!VehNoValidator.validateNumber(vehicleName)) {
+                map.put("vehicleName" + i, "GENERAL_ERR0017");
+            } else {
+                vehicleName = vehicleName.toLowerCase(AppConsts.DFT_LOCALE);
+                if (vehicleNameList.contains(vehicleName)) {
+                    map.put("vehicleName" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                } else {
                     vehicleNameList.add(vehicleName);
                     int vehicleCount=0;
                     for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
@@ -63,33 +68,18 @@ public class ValidateVehicle implements ValidateFlow {
                         map.put("vehicleName"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                     }
                 }
-                if(vehicleName.length() > 10){
-                    String general_err0041= NewApplicationHelper.repLength("Vehicle Number","10");
-                    map.put("vehicleName" + i, general_err0041);
-                } else if(! VehNoValidator.validateNumber(vehicleName)){
-                    map.put("vehicleName" + i, "GENERAL_ERR0017");
-                }else {
-                    //validate  vehicle number used. how to do ? RFC Renew Rfi how to do ?I haven't come up with a solution yet
-                    //1. licence used ,rfc renew use some vehicle no.--ok
-                    //2. rfc renew change vehicle A-->B ，rfi use A ---> ok。
-                /*    if(oldAppSvcVehicleDto==null){
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = applicationFeClient.getAppSvcVehicleDtoByVehicleNumber(vehicleName).getEntity();
-                        if(!appSvcVehicleDtoList.isEmpty()){
-                            map.put("vehicleName" + i, "NEW_ERR0028");
-                        }
-                    }else {
-                        indexMap.put(i,vehicleName);
-                    }*/
-
-                }
             }
 
-            if(StringUtil.isEmpty(chassisNum)){
-                map.put("chassisNum"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-            }else {
-                if(chassisNumList.contains(chassisNum)){
-                    map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }else {
+            String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
+            if (StringUtil.isEmpty(chassisNum)) {
+                map.put("chassisNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Chassis Number", "field"));
+            } else if (chassisNum.length() > 25) {
+                map.put("chassisNum" + i, NewApplicationHelper.repLength("Chassis Number", "25"));
+            } else {
+                chassisNum = chassisNum.toLowerCase(AppConsts.DFT_LOCALE);
+                if (chassisNumList.contains(chassisNum)) {
+                    map.put("chassisNum" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                } else {
                     chassisNumList.add(chassisNum);
                     int chassisCount=0;
                     for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
@@ -104,12 +94,16 @@ public class ValidateVehicle implements ValidateFlow {
                 }
             }
 
-            if(StringUtil.isEmpty(engineNum)){
-                map.put("engineNum"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-            }else {
-                if(engineNumNumList.contains(engineNum)){
-                    map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }else {
+            String engineNum = appSvcVehicleDtos.get(i).getEngineNum();
+            if (StringUtil.isEmpty(engineNum)) {
+                map.put("engineNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Engine Number", "field"));
+            } else if (engineNum.length() > 25) {
+                map.put("engineNum" + i, NewApplicationHelper.repLength("Engine Number", "25"));
+            } else {
+                engineNum = engineNum.toLowerCase(AppConsts.DFT_LOCALE);
+                if (engineNumNumList.contains(engineNum)) {
+                    map.put("engineNum" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                } else {
                     engineNumNumList.add(engineNum);
                     int engineCount=0;
                     for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
@@ -123,64 +117,79 @@ public class ValidateVehicle implements ValidateFlow {
                     }
                 }
             }
+
+            if (map.isEmpty()) {
+                validateCurrentVehicle(map, "vehicleName", vehicleName, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, "chassisNum", vehicleName, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, "engineNum", engineNum, i, appSvcVehicleDtoAlls);
+                validateExistVehicle(map, "vehicleName", vehicleName, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, "chassisNum", vehicleName, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, "engineNum", engineNum, i, oldAppSvcVehicleDto);
+            }
+
+            log.info(StringUtil.changeForLog("Validate Vehicles " + i + "->" + JsonUtil.parseToJson(map)));
+            errorMap.putAll(map);
         }
-        //need validate
-        if(!validateVehicleName.isEmpty()){
-/*            List<Boolean> entity = hcsaLicenClient.vehicleIsUsed(validateVehicleName).getEntity();
-            if(!entity.isEmpty()){
-                validateVehicleName.forEach((v)->{
-                    indexMap.forEach((k,var)->{
-                        if(v.equals(var)){
-                            map.put("vehicleName"+k,MessageUtil.getMessageDesc("NEW_ERR0028"));
-                        }
-                    });
-                });
-            }*/
-            //need to do check application premises vehicle name;
+    }
+
+    private void validateExistVehicle(Map<String, String> map, String name, String value, int index,
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+        if (oldAppSvcVehicleDto == null || oldAppSvcVehicleDto.isEmpty()) {
+            return;
         }
-        log.info(StringUtil.changeForLog("=======> ValidateCharges->"+ JsonUtil.parseToJson(map)));
+        if (oldAppSvcVehicleDto.stream().anyMatch(asv -> value.equalsIgnoreCase(getValue(asv, name)))) {
+            map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
+        }
+    }
+
+    private void validateCurrentVehicle(Map<String, String> map, String name, String value, int index,
+            List<AppSvcVehicleDto> appSvcVehicleDtoAlls) {
+        int count = 0;
+        for (AppSvcVehicleDto asv : appSvcVehicleDtoAlls) {
+            if (value.equalsIgnoreCase(getValue(asv, name))) {
+                count++;
+            }
+        }
+        if (count >= 2) {
+            map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
+        }
+    }
+
+    private String getValue(AppSvcVehicleDto asv, String name) {
+        if ("vehicleName".equals(name)) {
+            return asv.getVehicleName();
+        } else if ("chassisNum".equals(name)) {
+            return asv.getChassisNum();
+        } else if ("engineNum".equals(name)) {
+            return asv.getEngineNum();
+        }
+        return "";
     }
 
     @Override
     public void doValidateVehicles(Map<String, String> map, AppSubmissionDto appSubmissionDto) {
-        if(appSubmissionDto==null){
+        if (appSubmissionDto == null) {
             return;
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(appSvcRelatedInfoDtoList==null){
+        if (appSvcRelatedInfoDtoList == null) {
             return;
         }
-        Map<String,String> vehicleNameMap=new HashMap<>(10);
-        Map<String,String> chassisNumMap=new HashMap<>(10);
-        Map<String,String> engineNumMap=new HashMap<>(10);
+        List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
+            appSvcRelatedInfoDtoList.stream().forEach(obj -> {
+                if (!IaisCommonUtils.isEmpty(obj.getAppSvcVehicleDtoList())) {
+                    appSvcVehicleDtos.addAll(obj.getAppSvcVehicleDtoList());
+                }
+            });
+        }
         for (int i = 0; i < appSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDtoList.get(i).getAppSvcVehicleDtoList();
-            if(appSvcVehicleDtoList==null){
+            if (appSvcVehicleDtoList == null) {
                 continue;
             }
-            for (int i1 = 0; i1 < appSvcVehicleDtoList.size(); i1++) {
-                String vehicleName = appSvcVehicleDtoList.get(i1).getVehicleName();
-                String chassisNum = appSvcVehicleDtoList.get(i1).getChassisNum();
-                String engineNum = appSvcVehicleDtoList.get(i1).getEngineNum();
-                String v = vehicleNameMap.get(vehicleName);
-                if(v==null){
-                    vehicleNameMap.put(vehicleName,vehicleName);
-                }else {
-                    map.put("vehicleName"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }
-                String v1 = chassisNumMap.get(chassisNum);
-                if(v1==null){
-                    chassisNumMap.put(chassisNum,chassisNum);
-                }else {
-                    map.put("chassisNum"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }
-                String v2 = engineNumMap.get(engineNum);
-                if(v2==null){
-                    engineNumMap.put(engineNum,engineNum);
-                }else {
-                    map.put("engineNum"+i1, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                }
-            }
+            doValidateVehicles(map, appSvcVehicleDtos, appSvcVehicleDtoList, null);
         }
     }
+
 }

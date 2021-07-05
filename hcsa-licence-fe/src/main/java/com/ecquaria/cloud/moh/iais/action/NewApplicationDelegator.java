@@ -2327,10 +2327,13 @@ public class NewApplicationDelegator {
                                 appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                                 appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
                             }
+                            boolean changeVehicles = EqRequestForChangeSubmitResultChange.changeAppSvcVehicleDtos(
+                                            appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList(),
+                                            oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
                             boolean eqAddFloorNo1 = eqAddFloorNo(appSubmissionDtoByLicenceId, oldAppSubmissionDto);
-                            if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation() &&!eqAddFloorNo1) {
+                            if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation() && !eqAddFloorNo1 && !changeVehicles) {
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-                                for(AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
+                                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()) {
                                     appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
                                 }
                             } else {
@@ -3519,11 +3522,12 @@ public class NewApplicationDelegator {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
         boolean changeLocation = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        boolean eqAppSvcVehicleDto = EqRequestForChangeSubmitResultChange.eqAppSvcVehicleDto(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList());
+        boolean changeAppSvcVehicleDtos = EqRequestForChangeSubmitResultChange.changeAppSvcVehicleDtos(
+                        appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         amendmentFeeDto.setChangeInHCIName(!changeHciName);
         amendmentFeeDto.setChangeInLocation(!changeLocation);
-        if(eqAppSvcVehicleDto){
+        if (changeAppSvcVehicleDtos) {
             amendmentFeeDto.setChangeInHCIName(Boolean.TRUE);
         }
         amendmentFeeDto.setIsCharity(isCharity);

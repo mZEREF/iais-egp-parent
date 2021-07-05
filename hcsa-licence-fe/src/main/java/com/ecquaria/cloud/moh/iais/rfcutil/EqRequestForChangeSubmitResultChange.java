@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import sop.util.CopyUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class EqRequestForChangeSubmitResultChange {
@@ -88,7 +89,7 @@ public class EqRequestForChangeSubmitResultChange {
         List<AppSvcDocDto> appSvcDocDtoLit = n.get(0).getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = o.get(0).getAppSvcDocDtoLit();
         boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
-        boolean eqAppSvcVehicle = eqAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
+        boolean eqAppSvcVehicle = changeAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
         boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(n.get(0).getAppSvcClinicalDirectorDtoList(), o.get(0).getAppSvcClinicalDirectorDtoList());
         boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(n.get(0).getAppSvcChargesPageDto(), o.get(0).getAppSvcChargesPageDto());
         if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter || eqServicePseronnel || eqSvcDoc || eqAppSvcVehicle || eqAppSvcClinicalDirector ||eqAppSvcChargesPageDto) {
@@ -513,14 +514,32 @@ public class EqRequestForChangeSubmitResultChange {
         return true;
     }
 
-    public static boolean eqAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList ,List<AppSvcVehicleDto> oldAppSvcVehicleDtoList){
-        List<AppSvcVehicleDto> n = PageDataCopyUtil.copyAppSvcVehicleDto(appSvcVehicleDtoList);
-        List<AppSvcVehicleDto> o = PageDataCopyUtil.copyAppSvcVehicleDto(oldAppSvcVehicleDtoList);
-        if(!n.equals(o)){
-        return true;
+    public static boolean changeAppSvcVehicleDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos) {
+        if (appSvcRelatedInfoDtos == null || oldAppSvcRelatedInfoDtos == null) {
+            return true;
+        }
+        if (appSvcRelatedInfoDtos.size() != oldAppSvcRelatedInfoDtos.size()) {
+            return true;
+        }
+        for (int i = 0, len = appSvcRelatedInfoDtos.size(); i < len; i++) {
+            if (changeAppSvcVehicleDto(appSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList(),
+                    oldAppSvcRelatedInfoDtos.get(i).getAppSvcVehicleDtoList())) {
+                return true;
+            }
         }
         return false;
     }
+
+    public static boolean changeAppSvcVehicleDto(List<AppSvcVehicleDto> appSvcVehicleDtoList ,List<AppSvcVehicleDto> oldAppSvcVehicleDtoList) {
+        List<AppSvcVehicleDto> n = PageDataCopyUtil.copyAppSvcVehicleDto(appSvcVehicleDtoList);
+        List<AppSvcVehicleDto> o = PageDataCopyUtil.copyAppSvcVehicleDto(oldAppSvcVehicleDtoList);
+        if (!n.equals(o)) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean eqAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
         AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
         AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);

@@ -1906,7 +1906,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
@@ -1941,7 +1940,15 @@ public class ClinicalLaboratoryDelegator {
                     oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
                 }
             }*/
-            String appId = getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
+            List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
+            if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
+                appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().forEach(obj -> {
+                    if (!IaisCommonUtils.isEmpty(obj.getAppSvcVehicleDtoList())) {
+                        appSvcVehicleDtos.addAll(obj.getAppSvcVehicleDtoList());
+                    }
+                });
+            }
+            String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
             validateVehicle.doValidateVehicles(map,currSvcInfoDtoAll,currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
             //validateVehicle.doValidateVehicles(map,appSubmissionDto);
@@ -1959,15 +1966,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);
         }
         log.debug(StringUtil.changeForLog("doVehicles end ..."));
-    }
-
-    private String getRelatedAppId(String appId, String licenceId) {
-        String orgAppId = appId;
-        if (StringUtil.isEmpty(appId) && StringUtil.isNotEmpty(licenceId)) {
-            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getLicCorrBylicId(licenceId).getEntity();
-            orgAppId = Optional.ofNullable(licAppCorrDtos).map(dtos -> dtos.get(0).getApplicationId()).orElseGet(() -> null);
-        }
-        return orgAppId;
     }
 
     /**
@@ -1992,8 +1990,9 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,CLINICALDIRECTORDTOLIST,appSvcClinicalDirectorDtos);
         List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
         ParamUtil.setRequestAttr(bpc.request,EASMTSSPECIALTYSELECTLIST,easMtsSpecialtySelectList);
+        /*
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        /*List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
+        List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
         ParamUtil.setRequestAttr(bpc.request,EASMTSDESIGNATIONSELECTLIST,easMtsDesignationSelectList);*/
         // Assgined person dropdown options
         ParamUtil.setRequestAttr(bpc.request, PERSON_OPTIONS, NewApplicationHelper.genAssignPersonSel(bpc.request, true));
