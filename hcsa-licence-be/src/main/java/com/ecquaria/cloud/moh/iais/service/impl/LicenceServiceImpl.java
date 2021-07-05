@@ -11,10 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceAddresses;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IssuanceBasic;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -73,19 +70,17 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * LicenceServiceImpl
@@ -245,7 +240,8 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public List<String> getLicenceOutDate(int outMonth){
-        return hcsaLicenceClient.getLicenceOutDate(outMonth).getEntity();
+        List<LicenseeDto> lics = organizationClient.getLicenseeDtoFromSingpass().getEntity();
+        return hcsaLicenceClient.getLicenceOutDate(lics, outMonth).getEntity();
     }
 
     @Override
