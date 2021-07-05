@@ -36,12 +36,12 @@ public interface MohHcsaBeDashboardService {
                                                               String roleId);
 
     /**
-      * @author: shicheng
-      * @Date 2021/4/15
-      * @Param: SearchParam, loginContext, actionValue
-      * @return: List<String>
-      * @Descripation: setPoolScopeByCurRoleId
-      */
+     * @author: shicheng
+     * @Date 2021/4/15
+     * @Param: SearchParam, loginContext, actionValue
+     * @return: List<String>
+     * @Descripation: setPoolScopeByCurRoleId
+     */
     List<String> setPoolScopeByCurRoleId(SearchParam searchParam, LoginContext loginContext, String switchAction, List<String> workGroupIds);
 
     SearchResult<DashComPoolQueryDto> getDashComPoolResult(SearchParam searchParam);
@@ -75,110 +75,119 @@ public interface MohHcsaBeDashboardService {
     SearchResult<DashRenewQueryDto> getDashRenewOtherData(SearchResult<DashRenewQueryDto> searchResult);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/10
-      * @Param: curRoleId, dashSwitchActionValue
-      * @return: List<SelectOption>
-      * @Descripation: get Application status option By Role and Switch
-      */
+     * @author: shicheng
+     * @Date 2021/5/10
+     * @Param: curRoleId, dashSwitchActionValue
+     * @return: List<SelectOption>
+     * @Descripation: get Application status option By Role and Switch
+     */
     List<SelectOption> getAppStatusOptionByRoleAndSwitch(String curRoleId, String dashSwitchActionValue);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/14
-      * @Param: appGroupId
-      * @return: Date
-      * @Descripation: getMaxUpdateByAppGroup
-      */
+     * @author: shicheng
+     * @Date 2021/5/14
+     * @Param: appGroupId
+     * @return: Date
+     * @Descripation: getMaxUpdateByAppGroup
+     */
     Date getMaxUpdateByAppGroup(String appGroupId);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/17
-      * @Param: application_status, appStatusOption
-      * @return:
-      * @Descripation:
-      */
+     * @author: shicheng
+     * @Date 2021/5/17
+     * @Param: application_status, appStatusOption
+     * @return:
+     * @Descripation:
+     */
     boolean containsAppStatus(List<SelectOption> appStatusOption, String application_status);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/20
-      * @Param: application_status
-      * @return: List<String>
-      * @Descripation: getSearchAppStatus
-      */
+     * @author: shicheng
+     * @Date 2021/5/20
+     * @Param: application_status
+     * @return: List<String>
+     * @Descripation: getSearchAppStatus
+     */
     List<String> getSearchAppStatus(String application_status);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/24
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getHashServiceOption
-      */
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: null
+     * @return: List<SelectOption>
+     * @Descripation: getHashServiceOption
+     */
     List<SelectOption> getHashServiceOption();
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/24
-      * @Param: searchResult
-      * @return: List<DashStageCircleKpiDto>
-      * @Descripation: getDashStageCircleKpiShow
-      */
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: searchResult
+     * @return: List<DashStageCircleKpiDto>
+     * @Descripation: getDashStageCircleKpiShow
+     */
     List<DashStageCircleKpiDto> getDashStageCircleKpiShow(SearchResult<DashAllActionAppQueryDto> searchResult);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/24
-      * @Param: searchParam
-      * @return: SearchResult<DashAllActionAppQueryDto>
-      * @Descripation: getDashAllActionResult
-      */
+     * @author: shicheng
+     * @Date 2021/5/24
+     * @Param: searchParam
+     * @return: SearchResult<DashAllActionAppQueryDto>
+     * @Descripation: getDashAllActionResult
+     */
     SearchResult<DashAllActionAppQueryDto> getDashAllActionResult(SearchParam searchParam);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/25
-      * @Param: searchParam, services, appTypes
-      * @return: SearchParam
-      * @Descripation: setSysDashFilter
-      */
+     * @author: shicheng
+     * @Date 2021/5/25
+     * @Param: searchParam, services, appTypes
+     * @return: SearchParam
+     * @Descripation: setSysDashFilter
+     */
     SearchParam setSysDashFilter(SearchParam searchParam, String[] services, String[] appTypes);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/27
-      * @Param: dashSysStageVal
-      * @return: String
-      * @Descripation: getStageIdByJspClickVal
-      */
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: dashSysStageVal
+     * @return: String
+     * @Descripation: getStageIdByJspClickVal
+     */
     String getStageIdByJspClickVal(String dashSysStageVal);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/27
-      * @Param: searchCountParam
-      * @return: SearchResult<DashAllGrpAppQueryDto>
-      * @Descripation: getDashSysGrpDetailQueryResult
-      */
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountParam
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailQueryResult
+     */
     SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailQueryResult(SearchParam searchCountParam);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/27
-      * @Param: searchResult
-      * @return: SearchResult<DashAllGrpAppQueryDto>
-      * @Descripation: getDashSysGrpDetailOtherData
-      */
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchResult
+     * @return: SearchResult<DashAllGrpAppQueryDto>
+     * @Descripation: getDashSysGrpDetailOtherData
+     */
     SearchResult<DashAllGrpAppQueryDto> getDashSysGrpDetailOtherData(SearchResult<DashAllGrpAppQueryDto> searchResult);
 
     /**
-      * @author: shicheng
-      * @Date 2021/5/27
-      * @Param: searchCountResult, serviceOption
-      * @return: List<DashStageCircleKpiDto>
-      * @Descripation: getDashStageSvcKpiShow
-      */
+     * @author: shicheng
+     * @Date 2021/5/27
+     * @Param: searchCountResult, serviceOption
+     * @return: List<DashStageCircleKpiDto>
+     * @Descripation: getDashStageSvcKpiShow
+     */
     List<DashStageCircleKpiDto> getDashStageSvcKpiShow(SearchResult<DashAllActionAppQueryDto> searchCountResult, List<SelectOption> serviceOption);
+
+    /**
+     * @author: shicheng
+     * @Date 2021/7/5
+     * @Param: searchParam, services, appTypes, applicationNo
+     * @return: SearchParam
+     * @Descripation: setStatisticsDashFilter
+     */
+    SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo);
 }

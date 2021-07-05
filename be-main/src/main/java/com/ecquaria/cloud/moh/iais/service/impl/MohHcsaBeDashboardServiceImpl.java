@@ -105,7 +105,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
-                                                                         TaskDto taskDto, String userId, String remarks, String subStage) {
+                                                                        TaskDto taskDto, String userId, String remarks, String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
@@ -133,8 +133,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Override
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                      String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
-                                                                      String roleId){
+                                                                     String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
+                                                                     String roleId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -156,7 +156,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
                 if (curRoleId.contains(RoleConsts.USER_LEAD) &&
-                    !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
+                        !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
                     //for ASO / PSO / Inspector lead
                     workGroupIds = getByAsoPsoInspLead(searchParam, loginContext);
                 } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
@@ -1025,6 +1025,28 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         return dashStageCircleKpiDtos;
     }
 
+    @Override
+    public SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo) {
+        if(services != null && services.length > 0) {
+            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
+            searchParam.addParam("svc_codes", serviceStr);
+            for(int i = 0; i < services.length; i++){
+                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
+            }
+        }
+        if(appTypes != null && appTypes.length > 0) {
+            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
+            searchParam.addParam("application_types", appTypeStr);
+            for(int i = 0; i < appTypes.length; i++){
+                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
+            }
+        }
+        if(!StringUtil.isEmpty(applicationNo)){
+            searchParam.addFilter("applicationNo", applicationNo, true);
+        }
+        return searchParam;
+    }
+
     private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {
         DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
         int allBlueCount = dashStageCircleKpiAllDto.getDashBlueCount();
@@ -1219,8 +1241,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     private List<SelectOption> getKpiAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
             if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
-               curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
-               curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+                    curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
             ) {
                 appStatusOption = inspectionService.getAppStatusOption(curRoleId);
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {

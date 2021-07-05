@@ -134,8 +134,8 @@ public class MohHcsaBeDashboardAjax {
                 String curRole = loginContext.getCurRoleId();
                 if(!StringUtil.isEmpty(curRole)) {
                     if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
-                       curRole.contains(RoleConsts.USER_ROLE_AO2) ||
-                       curRole.contains(RoleConsts.USER_ROLE_AO3)
+                            curRole.contains(RoleConsts.USER_ROLE_AO2) ||
+                            curRole.contains(RoleConsts.USER_ROLE_AO3)
                     ) {
                         map.put("dashSupportFlag", AppConsts.TRUE);
                     }
@@ -174,6 +174,7 @@ public class MohHcsaBeDashboardAjax {
     @RequestMapping(value = "dashSysDetail.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, Object> dashSysDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+        String dashFilterAppNo = (String)ParamUtil.getSessionAttr(request, "dashFilterAppNo");
         List<String> serviceList = (List<String>)ParamUtil.getSessionAttr(request, "dashSvcCheckList");
         List<String> appTypeList = (List<String>)ParamUtil.getSessionAttr(request, "dashAppTypeCheckList");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "dashSearchParam");
@@ -185,7 +186,7 @@ public class MohHcsaBeDashboardAjax {
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
             //set filter
-            searchParam = dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup);
+            searchParam = dashSysDetailDropFilter(searchParam, groupId, serviceList, appTypeList, searchParamGroup, dashFilterAppNo);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashSystemDetailAjax", searchParam);
             SearchResult<DashAppDetailsQueryDto> searchResult = beDashboardAjaxService.getDashAllActionResult(searchParam);
@@ -201,7 +202,7 @@ public class MohHcsaBeDashboardAjax {
     }
 
     private SearchParam dashSysDetailDropFilter(SearchParam searchParam, String groupId, List<String> serviceList, List<String> appTypeList,
-                                                SearchParam searchParamGroup) {
+                                                SearchParam searchParamGroup, String dashFilterAppNo) {
         //filter appGroup NO.
         searchParam.addFilter("groupId", groupId, true);
         if(serviceList != null && serviceList.size() > 0) {
@@ -217,6 +218,9 @@ public class MohHcsaBeDashboardAjax {
             for(int i = 0; i < appTypeList.size(); i++){
                 searchParam.addFilter("viewApp.APP_TYPE" + i, appTypeList.get(i));
             }
+        }
+        if(!StringUtil.isEmpty(dashFilterAppNo)){
+            searchParam.addFilter("applicationNo", dashFilterAppNo, true);
         }
         Map<String, Object> filters = searchParamGroup.getFilters();
         if(filters != null) {
