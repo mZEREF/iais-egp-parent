@@ -55,7 +55,7 @@ public class ValidateVehicle implements ValidateFlow {
                     int vehicleCount=0;
                     for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
                          ) {
-                        if (asv.getVehicleName().equals(vehicleName)){
+                        if (asv.getVehicleName()!=null&&asv.getVehicleName().equals(vehicleName)){
                             vehicleCount++;
                         }
                     }
@@ -91,6 +91,16 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }else {
                     chassisNumList.add(chassisNum);
+                    int chassisCount=0;
+                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
+                    ) {
+                        if (asv.getChassisNum()!=null&&asv.getChassisNum().equals(chassisNum)){
+                            chassisCount++;
+                        }
+                    }
+                    if(chassisCount>=2){
+                        map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    }
                 }
             }
 
@@ -101,6 +111,16 @@ public class ValidateVehicle implements ValidateFlow {
                     map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 }else {
                     engineNumNumList.add(engineNum);
+                    int engineCount=0;
+                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
+                    ) {
+                        if (asv.getEngineNum()!=null&&asv.getEngineNum().equals(engineNum)){
+                            engineCount++;
+                        }
+                    }
+                    if(engineCount>=2){
+                        map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    }
                 }
             }
         }
