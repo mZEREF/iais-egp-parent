@@ -116,7 +116,9 @@
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount to</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                    <span class="check-square"></span>Amount To
+                                </p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
@@ -192,7 +194,9 @@
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Amount to</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology">
+                                    <span class="check-square"></span>Amount To
+                                </p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
