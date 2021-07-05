@@ -460,4 +460,12 @@ public class OrganizationClientFallback implements OrganizationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoFromSingpass() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

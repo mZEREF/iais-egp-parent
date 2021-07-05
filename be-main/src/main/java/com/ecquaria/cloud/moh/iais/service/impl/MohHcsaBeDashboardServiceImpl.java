@@ -1025,6 +1025,28 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         return dashStageCircleKpiDtos;
     }
 
+    @Override
+    public SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo) {
+        if(services != null && services.length > 0) {
+            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
+            searchParam.addParam("svc_codes", serviceStr);
+            for(int i = 0; i < services.length; i++){
+                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
+            }
+        }
+        if(appTypes != null && appTypes.length > 0) {
+            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
+            searchParam.addParam("application_types", appTypeStr);
+            for(int i = 0; i < appTypes.length; i++){
+                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
+            }
+        }
+        if(!StringUtil.isEmpty(applicationNo)){
+            searchParam.addFilter("applicationNo", applicationNo, true);
+        }
+        return searchParam;
+    }
+
     private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {
         DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
         int allBlueCount = dashStageCircleKpiAllDto.getDashBlueCount();
