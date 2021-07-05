@@ -866,11 +866,9 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
             map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
         }
-
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
         }
-        validateVehicle.doValidateVehicles(map,appSubmissionDto);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(map)+"---map----"));
         bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
         return map;
@@ -1633,13 +1631,12 @@ public class ClinicalLaboratoryDelegator {
         String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
         if (isGetDataFromPage) {
             String currentSvcCod = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-            List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
             List<String> personnelTypeList = IaisCommonUtils.genNewArrayList();
             List<SelectOption> personnelTypeSel = genPersonnelTypeSel(currentSvcCod);
             for (SelectOption sp : personnelTypeSel) {
                 personnelTypeList.add(sp.getValue());
             }
-            appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
+            List<AppSvcPersonnelDto> appSvcPersonnelDtos = genAppSvcPersonnelDtoList(bpc.request, personnelTypeList, currentSvcCod);
 
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info start ..."));
             log.debug("prs server flag {}",prsFlag);
@@ -1896,15 +1893,6 @@ public class ClinicalLaboratoryDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        List<AppSvcVehicleDto> currSvcInfoDtoAll =IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
-                if(!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)){
-                    currSvcInfoDtoAll.addAll(appSvcVehicleDtoList);
-                }
-            }
-        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
@@ -1950,8 +1938,7 @@ public class ClinicalLaboratoryDelegator {
             }
             String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
-            validateVehicle.doValidateVehicles(map,currSvcInfoDtoAll,currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
-            //validateVehicle.doValidateVehicles(map,appSubmissionDto);
+            validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
