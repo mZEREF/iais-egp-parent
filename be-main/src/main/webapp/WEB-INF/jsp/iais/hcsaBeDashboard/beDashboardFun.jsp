@@ -132,8 +132,10 @@
         }
     };
 
-    var doClear = function () {
+    var doStatisticsBoardClear = function () {
         showWaiting();
+        $('input[name="applicationNo"]').val("");
+
         $('#appType').val('');
         $('#appType').next().find('span:eq(0)').html('-- Select --');
         $('#appType').next().find('input[type="checkbox"]').prop('checked',false);
