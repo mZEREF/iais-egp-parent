@@ -1138,8 +1138,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-            if(ApplicationConsts.VEHICLE_STATUS_SUBMIT.equals(appSvcVehicleDto.getStatus())
-                    && ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
+            if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
                 vehicleNoList.add(appSvcVehicleDto.getVehicleName());
             }
         } else {

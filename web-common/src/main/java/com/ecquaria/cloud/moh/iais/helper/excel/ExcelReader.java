@@ -5,7 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -149,8 +152,13 @@ public final class ExcelReader {
                     int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
                     Object value = getFieldValue(field, rowData.get(index), format);
-                    field.setAccessible(true);
-                    field.set(obj, value);
+                    Method setMed = null;
+                    try {
+                        setMed = clazz.getMethod("set" + StringUtil.capitalize(field.getName()), field.getType());
+                        setMed.invoke(obj, value);
+                    } catch (NoSuchMethodException | InvocationTargetException e) {
+                        throw new IaisRuntimeException(e);
+                    }
                 }
             }
             return obj;
