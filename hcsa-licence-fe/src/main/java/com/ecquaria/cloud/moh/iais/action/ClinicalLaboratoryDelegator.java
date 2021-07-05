@@ -1896,6 +1896,15 @@ public class ClinicalLaboratoryDelegator {
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        List<AppSvcVehicleDto> currSvcInfoDtoAll =IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)){
+                    currSvcInfoDtoAll.addAll(appSvcVehicleDtoList);
+                }
+            }
+        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
@@ -1934,7 +1943,7 @@ public class ClinicalLaboratoryDelegator {
             }*/
             String appId = getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
-            validateVehicle.doValidateVehicles(map,currSvcInfoDto.getAppSvcVehicleDtoList(),currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
+            validateVehicle.doValidateVehicles(map,currSvcInfoDtoAll,currSvcInfoDto.getAppSvcVehicleDtoList(),oldAppSvcVehicleDto);
             //validateVehicle.doValidateVehicles(map,appSubmissionDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
