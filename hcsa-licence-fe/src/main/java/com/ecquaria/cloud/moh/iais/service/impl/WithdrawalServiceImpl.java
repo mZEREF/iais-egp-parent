@@ -268,8 +268,10 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
                 String svcCode=serviceDto.getSvcCode();
                 if(svcCode.equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||svcCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                    if(!fee.equals(applicationGroupDto.getAmount()-100.0)&&!fee.equals(0.0)&&applicationGroupDto.getAmount()<=1300.0){
-                        fee=applicationGroupDto.getAmount()-100.0;
+                    if(fee!=null){
+                        if(!fee.equals(applicationGroupDto.getAmount()-100.0)&&!fee.equals(0.0)&&applicationGroupDto.getAmount()<=1300.0){
+                            fee=applicationGroupDto.getAmount()-100.0;
+                        }
                     }
                 }
                 if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)){
