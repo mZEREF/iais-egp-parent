@@ -20,36 +20,14 @@
     }
 
 %>
-<webui:setLayout name="iais-internet"/>
-<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-        <div class="container">
-            <div class="navigation-gp">
-                <div class="row">
-                    <%@ include file="../common/dashboardDropDown.jsp" %>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="prelogin-title">
-                    <h1>Laboratory Developed Test</h1>
-                </div>
-            </div>
-        </div>
-</div>
+<webui:setLayout name="iais-blank"/>
+
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <div class="row">
-            <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF();"> <em class="fa fa-print"></em>Print</a></div></p>
             <div class="col-lg-12 col-xs-12">
                 <div id = "print" class="center-content">
                     <span style="font-size:2rem;"><%=msg%></span>
-                </div>
-            </div>
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content " style="padding-top: 10px">
-                    <a href="${backUrl}"><em
-                            class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </div>
@@ -66,8 +44,34 @@
 
 </style>
 <script type="text/javascript">
-    function printWDPDF(){
-        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohFeMainPrint?whichPage=ldtMsg",'_blank');
-    }
+    $(document).ready(function () {
+        doPrint();
 
+    });
+
+    var userAgent = navigator.userAgent;
+    var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
+
+
+    var doPrint = function () {
+        $('a').prop('disabled',true);
+        if(isChrome){
+            addPrintListener();
+            window.print();
+        }else{
+            window.print();
+            window.close();
+        }
+    }
+    var addPrintListener = function () {
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function(mql) {
+                if (mql.matches) {
+                } else {
+                    window.close();
+                }
+            });
+        }
+    }
 </script>

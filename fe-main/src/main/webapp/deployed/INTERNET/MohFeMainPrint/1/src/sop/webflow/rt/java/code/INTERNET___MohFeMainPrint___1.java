@@ -27,4 +27,9 @@ public class INTERNET___MohFeMainPrint___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "PreparePrintLdtData", this);
 	}
 
+	public void prepareMsg_OnStepProcess_0() throws Exception {
+	// 		PrepareMsg->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "PrepareMsg", this);
+	}
+
 }

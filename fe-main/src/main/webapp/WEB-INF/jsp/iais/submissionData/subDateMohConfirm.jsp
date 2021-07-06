@@ -40,7 +40,7 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
-                                    <div id = 'print'>
+                                    <div id = "print">
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
