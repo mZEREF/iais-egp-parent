@@ -612,7 +612,7 @@ public class WithdrawalDelegator {
             if (!"applyPagePrint".equals(printActionType)) {
                 for (WithdrawnDto withdrawnDto : addWithdrawnDtoList) {
                     if (!applicationFeClient.isApplicationWithdrawal(withdrawnDto.getApplicationId()).getEntity()) {
-                        String withdrawalError = MessageUtil.replaceMessage("WDL_EER002", "appNo", withdrawnDto.getApplicationNo());
+                        String withdrawalError = MessageUtil.replaceMessage("WDL_EER002", withdrawnDto.getApplicationNo(), "appNo");
                         ParamUtil.setRequestAttr(bpc.request, "appIsWithdrawal", Boolean.TRUE);
                         bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT, withdrawalError);
                         wdIsValid = IaisEGPConstant.NO;
