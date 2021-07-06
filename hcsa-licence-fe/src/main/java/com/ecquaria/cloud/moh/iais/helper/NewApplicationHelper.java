@@ -1847,9 +1847,23 @@ public class NewApplicationHelper {
             premHci = appGrpPremisesDto.getEasMtsHciName() + premKey;
         }
         return premHci;
-
     }
 
+    public static String getHciName(AppGrpPremisesDto appGrpPremisesDto){
+        String hciName = "";
+        if (appGrpPremisesDto == null) {
+            hciName = null;
+        } else if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getOffSiteHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getConveyanceHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getEasMtsHciName();
+        }
+        return hciName;
+    }
 
     public static boolean checkIsRfi(HttpServletRequest request){
         Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);

@@ -1683,8 +1683,8 @@ public class RequestForChangeMenuDelegator {
             }
         }
 
-
-        boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList1, oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
+        boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList1,
+                oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
@@ -1719,7 +1719,7 @@ public class RequestForChangeMenuDelegator {
         boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
-        boolean eqAddFloorNo = NewApplicationDelegator.eqAddFloorNo(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
+        boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
 
         if (!isSame || !b || eqAddFloorNo) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
