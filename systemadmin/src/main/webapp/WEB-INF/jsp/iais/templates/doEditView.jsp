@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <label name="deliveryMode" id="deliveryMode"
+                                <label name="deliveryMode" id="deliveryModeCode"
                                        options="deliveryModeSelect" class="control-label" ><iais:code code="${MsgTemplateDto.deliveryMode}"></iais:code></label>
                                 <span id="error_deliveryMode" name="iaisErrorMsg"
                                       class="error-msg"></span>
@@ -143,7 +143,7 @@
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 
-
+<%@include file="initTinyMceCom.jsp" %>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
@@ -206,12 +206,11 @@
     }
 
     $(window).on("load", function(){
-        $("#htmlEditor").hide();
-        setTimeout("intiTinymce()", 1000);
+        intiTinymce();
     });
 
     function intiTinymce() {
-        $("#htmlEditor").show();
+        showWaiting();
         tinymce.init({
             selector: "#htmlEditor",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
@@ -253,26 +252,11 @@
 
             }
         });
-
+        dismissWaiting();
     }
 
     function tagConfirmCallbacksupport() {
         $('#support').modal('hide');
     }
-    function tinymce_updateCharCounter(el, len) {
-        $('#' + el.id).prev().find('.char_count').text(len + '/' + el.settings.max_chars);
-    }
 
-    function removeHTMLTag(str) {
-        str = str.replace(/<\/?[^>]*>/g, '');
-        str = str.replace(/[\r\n]/g,"");
-        return str;
-    }
-
-
-    function tinymce_getContentLength() {
-        var count = removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
-        console.log(count);
-        return count;
-    }
 </script>

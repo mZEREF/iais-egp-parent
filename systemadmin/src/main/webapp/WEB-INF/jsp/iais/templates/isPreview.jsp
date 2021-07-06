@@ -83,7 +83,7 @@
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
                             <div class="col-xs-12 col-sm-12 col-md-12">
-                                <textarea class="textarea" id="htmlEditor" title="content">${MsgTemplateDto.messageContent}</textarea>
+                                <textarea  rows="40" class="textarea" id="htmlEditor" title="content">${MsgTemplateDto.messageContent}</textarea>
                             </div>
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
@@ -101,13 +101,24 @@
 
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
+<%@include file="initTinyMceCom.jsp" %>
 <script>
 
     $("#BackMain").click(function () {
         $("#PreviewForm").submit();
     })
+    $(window).on("load", function(){
+        intiTinymce();
+    });
 
-    $(function () {
+    function tinymce_getContentLength() {
+        var count = removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
+        console.log(count);
+        return count;
+    }
+
+    function intiTinymce() {
+        showWaiting();
         tinymce.init({
             height:600,
             branding: false,
@@ -125,6 +136,34 @@
             ' bold italic backcolor | alignleft aligncenter ' +
             ' alignright alignjustify | bullist numlist outdent indent |' +
             ' removeformat | help',
+            max_chars: 8000,
+            setup: function (ed) {
+                var content;
+                var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
+                ed.on('keydown', function (e) {
+                    if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                    // if (tinymce_getContentLength()>= this.settings.max_chars) {
+                    //     e.preventDefault();
+                    //     e.stopPropagation();
+                    //     return false;
+                    // }
+                });
+                ed.on('keyup', function (e) {
+                    tinymce_updateCharCounter(this, tinymce_getContentLength());
+                });
+            },
+            init_instance_callback: function () { // initialize counter div
+                $('#' + this.id).prev().append('<div class="char_count" style="text-align:right"></div>');
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
+            },
+            paste_preprocess: function (plugin, args) {
+                var editor = tinymce.get(tinymce.activeEditor.id);
+                var len = editor.contentDocument.body.innerText.length;
+                var text = $(args.content).text();
+                tinymce_updateCharCounter(editor, len + text.length);
+            }
         });
-    });
+        dismissWaiting();
+    }
+
 </script>
