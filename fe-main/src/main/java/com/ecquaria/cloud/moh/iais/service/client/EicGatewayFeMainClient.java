@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LaboratoryDevelopTestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -126,4 +127,14 @@ public class EicGatewayFeMainClient {
                 signature2.date(), signature2.authorization(), LaboratoryDevelopTestDto.class);
     }
 
+
+    public FeignResponseEntity<List> getHcsaSvcRoutingStageDtoByStageId(String stageId) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap();
+        params.put("stageId", stageId);
+        return  IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/routing-stage-stageId", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), HcsaSvcRoutingStageDto.class);
+    }
 }

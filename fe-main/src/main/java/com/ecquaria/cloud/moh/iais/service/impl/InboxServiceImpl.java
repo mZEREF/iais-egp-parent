@@ -3,16 +3,23 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -29,14 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
-import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +90,8 @@ public class InboxServiceImpl implements InboxService {
 
     private static final String ACTIVE ="CMSTAT001";
 
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Override
     public String getServiceNameById(String serviceId) {
         return configInboxClient.getServiceNameById(serviceId).getEntity();
@@ -515,5 +517,33 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<ApplicationSubDraftDto> getDraftByLicAppIdAndStatus(String licAppId, String status) {
         return appInboxClient.getDraftByLicAppIdAndStatus(licAppId,status).getEntity();
+    }
+
+    @Override
+    public Map<String, Boolean> getMapCanInsp() {
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = null;
+        try {
+            hcsaSvcRoutingStageDtos = eicGatewayFeMainClient.getHcsaSvcRoutingStageDtoByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
+        }catch (Exception e){
+         log.error(e.getMessage(),e);
+        }
+        Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageDtos)){
+            List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+            if(IaisCommonUtils.isNotEmpty(hcsaServiceDtos)){
+                for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos){
+                    for(HcsaServiceDto hcsaServiceDto : hcsaServiceDtos){
+                        if(hcsaServiceDto.getId().equalsIgnoreCase(hcsaSvcRoutingStageDto.getServiceId())){
+                            String key = hcsaSvcRoutingStageDto.getAppType() +"_"+hcsaServiceDto.getSvcCode();
+                            if(map.get(key) == null){
+                                map.put(key,Boolean.TRUE);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return map;
     }
 }

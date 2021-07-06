@@ -19,6 +19,7 @@ public class SortableHeaderTag extends DivTagSupport {
     private String jsFunc;
     private boolean needSort;
     private boolean isFE;
+    private String customSpacing;
 
     public SortableHeaderTag() {
         super();
@@ -34,6 +35,7 @@ public class SortableHeaderTag extends DivTagSupport {
         setJsFunc("");
         setNeedSort(true);
         setIsFE(false);
+        setCustomSpacing("");
     }
 
     // Releases any resources we may have (or inherit)
@@ -83,7 +85,11 @@ public class SortableHeaderTag extends DivTagSupport {
             sb.append(StringUtil.viewHtml(value));
             sb.append("</p>");
         }else{
-            sb.append("<p>");
+            if(StringUtil.isNotEmpty(customSpacing)){
+                sb.append("<p style=\"margin-left:").append(customSpacing).append("px;\">");
+            }else {
+                sb.append("<p>");
+            }
             sb.append(StringUtil.viewHtml(value));
             sb.append("</p>");
         }
@@ -157,5 +163,8 @@ public class SortableHeaderTag extends DivTagSupport {
     }
     public void setIsFE(boolean isFE) {
         this.isFE = isFE;
+    }
+    public void setCustomSpacing(String customSpacing) {
+        this.customSpacing = customSpacing;
     }
 }
