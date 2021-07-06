@@ -473,7 +473,7 @@ public class WithdrawalDelegator {
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "rfiWithdrawDto");
                 if (withdrawnDto == null){
-                    if (!"applyPagePrint".equals(printActionType)) {
+                    if (!"applyPagePrint".equals(printActionType)&&i==0) {
                         withdrawnDto = (WithdrawnDto) ParamUtil.getSessionAttr(bpc.request, "withdrawDtoView");
                     }
                     if (withdrawnDto == null){
