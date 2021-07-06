@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubLicenseeCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -50,6 +52,12 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,11 +78,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -424,6 +427,8 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppSvcClinicalDirectorDto> appSvcClinicalDirectors = applicationListDto.getAppSvcClinicalDirectors();
         List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
+        List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtos= applicationListDto.getAppSubLicenseeCorrelationDtos();
+        List<SubLicenseeDto> subLicenseeDtos=applicationListDto.getSubLicenseeDtos();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -467,8 +472,17 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
             List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
             List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
+            List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtoList= IaisCommonUtils.genNewArrayList();
+            List<SubLicenseeDto> subLicenseeDtoList=IaisCommonUtils.genNewArrayList();
             groupDtos.add(every);
             String groupId = every.getId();
+            if(subLicenseeDtos!=null){
+                for (SubLicenseeDto v : subLicenseeDtos) {
+                    if(v.getAppGrpId().equals(groupId)){
+                        subLicenseeDtoList.add(v);
+                    }
+                }
+            }
             if(appDeclarationMessages!=null){
                 for (AppDeclarationMessageDto v : appDeclarationMessages) {
                     String appGrpId = v.getAppGrpId();
@@ -549,6 +563,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                         if(applicationDtoId.equals(applicationId) && appliGrpPremisesIds.contains(appGrpPremId)){
                             appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
+                            if(appSubLicenseeCorrelationDtos!=null){
+                                for (AppSubLicenseeCorrelationDto v : appSubLicenseeCorrelationDtos) {
+                                    if(v.getApplicationId().equals(applicationId)){
+                                        appSubLicenseeCorrelationDtoList.add(v);
+                                    }
+                                }
+                            }
                             for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
                                 String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
 
@@ -701,6 +722,8 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
             applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
             applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
+            applicationListFileDto.setSubLicenseeDtos(subLicenseeDtoList);
+            applicationListFileDto.setAppSubLicenseeCorrelationDtos(appSubLicenseeCorrelationDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;
