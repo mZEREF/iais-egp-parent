@@ -495,11 +495,7 @@ public class MohHcsaBeDashboardAjax {
                             map.put("dashRoleSwitchFlag", AppConsts.FAIL);
                         }
                     } else if(!RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(curRoleId)) {
-                        if(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN.equals(roleId)) {
-                            map.put("dashRoleSwitchFlag", AppConsts.SUCCESS);
-                        } else {
-                            map.put("dashRoleSwitchFlag", AppConsts.TRUE);
-                        }
+                        map.put("dashRoleSwitchFlag", AppConsts.TRUE);
                     }
                     loginContext.setCurRoleId(roleId);
                     poolRoleCheckDto.setCheckCurRole(roleSelectVal);
