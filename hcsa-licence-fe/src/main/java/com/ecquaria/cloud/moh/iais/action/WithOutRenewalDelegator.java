@@ -685,7 +685,8 @@ public class WithOutRenewalDelegator {
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
                 newAppSvcRelatedInfoDtoList.get(0).setAppSvcPrincipalOfficersDtoList(poAndDpo);
             }
-            boolean eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.eqGrpPremises(newAppGrpPremisesDtoList, oldAppGrpPremisesDtoList);
+            boolean eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(newAppGrpPremisesDtoList,
+                    oldAppGrpPremisesDtoList);
             if (replacePerson || updatePerson || eqGrpPremisesResult ||editDoc) {
                 ParamUtil.setRequestAttr(bpc.request, "changeRenew", "Y");
             }
@@ -781,7 +782,8 @@ public class WithOutRenewalDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
             if(appGrpPremisesDtoList != null){
-                eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+                eqGrpPremisesResult = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList,
+                        oldAppSubmissionDtoAppGrpPremisesDtoList);
             } else {
                 eqGrpPremisesResult = false;
             }
@@ -1387,7 +1389,8 @@ public class WithOutRenewalDelegator {
                             }
                         }
                     }
-                    boolean flag =EqRequestForChangeSubmitResultChange.eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+                    boolean flag =EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList,
+                            oldAppSubmissionDtoAppGrpPremisesDtoList);
                     log.info(StringUtil.changeForLog("flag is--"+flag));
                     if(flag){
                         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
@@ -1828,7 +1831,8 @@ public class WithOutRenewalDelegator {
         renewDto.setAppSubmissionDtos(appSubmissionDtos);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
         if (oldAppSubmissionDto != null && appSubmissionDto != null) {
-            boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.eqGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+            boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appSubmissionDto.getAppGrpPremisesDtoList(),
+                    oldAppSubmissionDto.getAppGrpPremisesDtoList());
             boolean eqServiceChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
             boolean eqDocChange = EqRequestForChangeSubmitResultChange.eqDocChange(appSubmissionDto.getAppGrpPrimaryDocDtos(), oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
             if(eqGrpPremises || eqServiceChange || eqDocChange){
