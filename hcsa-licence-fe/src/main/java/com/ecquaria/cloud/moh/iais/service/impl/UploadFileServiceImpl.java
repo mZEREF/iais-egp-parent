@@ -428,7 +428,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
         List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtos= applicationListDto.getAppSubLicenseeCorrelationDtos();
-        List<SubLicenseeDto> subLicenseeDtos=applicationListDto.getSubLicenseeDtos();
+        List<SubLicenseeDto> subLicenseeDtos=applicationListDto.getAppGrpSubLicenseeInfos();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         for(ApplicationGroupDto every :applicationGroup){
 
@@ -722,7 +722,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
             applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
             applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
-            applicationListFileDto.setSubLicenseeDtos(subLicenseeDtoList);
+            applicationListFileDto.setAppGrpSubLicenseeInfos(subLicenseeDtoList);
             applicationListFileDto.setAppSubLicenseeCorrelationDtos(appSubLicenseeCorrelationDtoList);
             applicationListFileDtoList.add(applicationListFileDto);
         }
