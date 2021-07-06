@@ -190,4 +190,13 @@ public interface MohHcsaBeDashboardService {
       * @Descripation: setStatisticsDashFilter
       */
     SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/7/5
+      * @Param: loginContext
+      * @return: String
+      * @Descripation: getPrivilegeFlagByRole
+      */
+    String getPrivilegeFlagByRole(LoginContext loginContext);
 }

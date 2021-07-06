@@ -127,9 +127,7 @@
       </div>
     </c:when>
     <c:when test="${'SYSTEM_USER_ADMIN' eq iais_Login_User_Info_Attr.curRoleId}">
-      <div class="multiple-chart">
-        <%@include file="beDashboardSystem.jsp"%>
-      </div>
+
     </c:when>
     <c:otherwise>
 

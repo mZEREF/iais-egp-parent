@@ -44,12 +44,16 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.privilege.Privilege;
+import com.ecquaria.cloud.privilege.PrivilegeServiceClient;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.rbac.user.UserIdentifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -102,6 +106,9 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Autowired
     private HcsaConfigMainClient hcsaConfigMainClient;
+
+    @Autowired
+    private PrivilegeServiceClient privilegeServiceClient;
 
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
@@ -1045,6 +1052,39 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             searchParam.addFilter("applicationNo", applicationNo, true);
         }
         return searchParam;
+    }
+
+    @Override
+    public String getPrivilegeFlagByRole(LoginContext loginContext) {
+        //
+        if(loginContext != null) {
+            List<String> roleIds = loginContext.getRoleIds();
+            if(!IaisCommonUtils.isEmpty(roleIds)) {
+                if(roleIds.size() == 1 && roleIds.contains(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)) {
+                    //new user data
+                    UserIdentifier userIdentifier = new UserIdentifier();
+                    userIdentifier.setId(loginContext.getLoginId());
+                    userIdentifier.setUserDomain("cs_hcsa");
+                    //add role
+                    String[] roleArr = {RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN};
+                    //get privilege Number
+                    Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
+                    if(privilegeNo != null && privilegeNo.length > 0) {
+                        //get Privilege
+                        long[] privilegeNoArr = Arrays.stream(privilegeNo).mapToLong(s -> Long.valueOf(s)).toArray();
+                        List<Privilege> privileges = privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity();
+                        if(!IaisCommonUtils.isEmpty(privileges)) {
+                            for(Privilege privilege : privileges) {
+                                if(privilege != null && "HALP_INTRA_STATISTICS_BOARD".equals(privilege.getId())) {
+                                    return AppConsts.SUCCESS;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return AppConsts.FAIL;
     }
 
     private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {
