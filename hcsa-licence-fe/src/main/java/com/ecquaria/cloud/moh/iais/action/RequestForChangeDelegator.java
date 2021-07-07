@@ -387,6 +387,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "maxFile", maxFile);
         ParamUtil.setRequestAttr(bpc.request, "pageShowFileDtos", pageShowFileDtos);
+        bpc.request.getSession().removeAttribute("appSubmissionDtos");
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
