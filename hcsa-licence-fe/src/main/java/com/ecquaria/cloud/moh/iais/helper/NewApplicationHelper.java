@@ -833,9 +833,6 @@ public class NewApplicationHelper {
         setSvcScopeInfo(appGrpPremisesDtos,appSvcRelatedInfoDto,map);
     }
 
-
-
-
     public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto){
         if(appGrpPremisesDto == null){
             return appGrpPremisesDto;
@@ -3856,6 +3853,18 @@ public class NewApplicationHelper {
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);
         return riskLevelResult;
+    }
+
+    public static boolean isEmpty(String assignSel) {
+        return StringUtil.isEmpty(assignSel) || "-1".equals(assignSel);
+    }
+
+    public static String getAssignSelect(String idType, String idNumber) {
+        String personKey = getPersonKey(idType, idNumber);
+        if (!StringUtil.isEmpty(personKey)) {
+            personKey = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW;
+        }
+        return personKey;
     }
 
     public static String getRelatedAppId(String appId, String licenceId) {

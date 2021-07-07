@@ -166,7 +166,6 @@
         $('.addVehicleBtn').click(function () {
             showWaiting();
             var vehicleLength = $('.vehicleContent').length;
-
             $.ajax({
                 url: '${pageContext.request.contextPath}/vehicle-html',
                 dataType: 'json',
@@ -177,7 +176,7 @@
                 success: function (data) {
                     if ('200' == data.resCode) {
                         $('.addVehicleDiv').before(data.resultJson+'');
-                        removeVehicle();
+                        removeVehicle();//bind event
                         refreshVehicle();
                         $('#isEditHiddenVal').val('1');
                     }

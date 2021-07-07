@@ -81,9 +81,8 @@
         </c:choose>
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
+                <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Board</label>
-                    <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:select cssClass="professionBoard"  name="professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD" value="${clinicalDirectorDto.professionBoard}" firstOption="Please Select"></iais:select>
@@ -92,9 +91,8 @@
         </div>
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
+                <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Regn. No.</label>
-                    <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${clinicalDirectorDto.profRegNo}"></iais:input>
@@ -104,7 +102,7 @@
 
         <c:if test="${'MTS' == currentSvcCode}">
             <div class="row control control-caption-horizontal">
-                <div class=" form-group form-horizontal formgap noRegWithProfBoardDiv">
+                <div class=" form-group form-horizontal formgap">
                     <div class="control-label formtext col-md-5 col-xs-5">
                         <label  class="control-label control-set-font control-font-label">Not registered with a Professional Board</label>
                     </div>
@@ -184,7 +182,7 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="control-label formtext col-md-7 col-xs-12" >
-                     <label class="control-label control-set-font control-font-label specialty-label">
+                     <label class="control-label control-set-font control-font-label specialty-label specialityField">
                          <c:out value="${clinicalDirectorDto.speciality}" />
                      </label>
                 </div>
@@ -194,9 +192,10 @@
 
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
-                    <span class="mandatory">*</span>
+                <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
+                    <label  class="control-label control-set-font control-font-label">
+                        Date when specialty was obtained
+                    </label>
                 </div>
                 <div class="col-md-3 col-xs-12">
                     <iais:datePicker cssClass="specialtyGetDate field-name" name="specialtyGetDate${index}"
