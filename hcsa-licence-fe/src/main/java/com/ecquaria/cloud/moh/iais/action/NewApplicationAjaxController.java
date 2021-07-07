@@ -927,7 +927,7 @@ public class NewApplicationAjaxController {
         if (loginContext == null) {
             return null;
         }
-        return appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo());
+        return appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(), loginContext.getUenNo());
     }
 
     @GetMapping(value = "/person-info/individual-licesee")

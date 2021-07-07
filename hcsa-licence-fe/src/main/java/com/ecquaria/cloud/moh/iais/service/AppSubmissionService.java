@@ -146,7 +146,7 @@ public interface AppSubmissionService {
     LicenceDto getLicenceDtoById(String licenceId);
     List<OrgGiroAccountInfoDto> getOrgGiroAccDtosByLicenseeId(String licenseeId);
 
-    SubLicenseeDto getLicenseeById(String licenseeId, String uenNo);
+    SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo);
     boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request);
 
     List<AppSvcVehicleDto> getActiveVehicles(String appId);

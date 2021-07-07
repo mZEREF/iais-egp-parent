@@ -10,6 +10,7 @@ import sop.util.CopyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EqRequestForChangeSubmitResultChange {
 
@@ -610,4 +611,9 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return false;
     }
+
+    public static boolean isChangeSubLicensee(SubLicenseeDto subLicenseeDto, SubLicenseeDto oldSbLicenseeDto) {
+        return Objects.equals(subLicenseeDto, oldSbLicenseeDto);
+    }
+
 }
