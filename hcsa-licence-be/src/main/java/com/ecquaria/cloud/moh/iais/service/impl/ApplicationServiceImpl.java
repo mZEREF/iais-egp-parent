@@ -1079,10 +1079,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
-        if( vehicleAppTypeFlag&&taskDto != null&&InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
-            {
-                if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
-                    String stageId = taskDto.getTaskKey();
+        if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+            if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                String stageId = taskDto.getTaskKey();
+                if(applicationGroupDto != null) {
+                    String nweLicenseeId = applicationGroupDto.getNewLicenseeId();
+                    String licenseeId = applicationGroupDto.getLicenseeId();
+                    if(!StringUtil.isEmpty(nweLicenseeId) && nweLicenseeId.equals(licenseeId)) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                    }
+                } else {
                     if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
@@ -1091,9 +1098,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
                     }
-                } else {
-                    log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
                 }
+            } else {
+                log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
             }
         }
         return vehicleFlag;
