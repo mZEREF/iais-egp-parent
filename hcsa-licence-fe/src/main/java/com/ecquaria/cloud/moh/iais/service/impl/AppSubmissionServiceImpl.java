@@ -404,7 +404,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void updateDraftStatus(String draftNo, String status) {
-        log.debug(StringUtil.changeForLog("updateDraftStatus start ..."));
+        log.debug(StringUtil.changeForLog("The doPaymentUpDate start ..."));
         applicationFeClient.updateDraftStatus(draftNo,status);
         log.debug(StringUtil.changeForLog("updateDraftStatus end ..."));
     }
@@ -747,7 +747,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public SubLicenseeDto getLicenseeById(String licenseeId, String uenNo) {
+    public SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo) {
         LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
         Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
         fieldMap.put("name", "licenseeName");
