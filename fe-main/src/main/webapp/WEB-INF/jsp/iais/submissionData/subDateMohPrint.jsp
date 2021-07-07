@@ -104,7 +104,7 @@
     .prelogin-title{
         padding-left: 90px;
     }
-    @page { size: portrait; }
+
 </style>
 <script type="text/javascript">
     $(document).ready(function () {

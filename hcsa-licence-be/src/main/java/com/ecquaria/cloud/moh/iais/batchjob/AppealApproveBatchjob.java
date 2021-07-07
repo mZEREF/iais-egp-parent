@@ -17,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -70,7 +69,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -625,6 +623,9 @@ public class AppealApproveBatchjob {
                         newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                         newAppPremRecomDto.setVersion(newVersion);
                         fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
+                        LicenceDto appealLicenceOld=hcsaLicenceClient.getLicenceDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
+                        appealLicenceOld.setExpiryDate(expiryDate);
+                        appealLicence.add(appealLicenceOld);
                     }
                 } else {
                     log.debug(StringUtil.changeForLog(""));
