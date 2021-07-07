@@ -16,7 +16,7 @@
     </iais:row>
 
     <iais:row cssClass="assignSelectRow">
-        <iais:field width="5" mandatory="true" value="Add/Assign a licensee"/>
+        <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
         <iais:value width="7">
             <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
         </iais:value>
@@ -191,6 +191,7 @@
             //loadCompanyLicensee($('div.licenseeContent'));
             $('.licensee-com').show();
             $('.licensee-detail').hide();
+            $('.assignSelectLabel .mandatory').remove();
             // init data
             clearFields('.assignSelectRow');
             var tagName = this.tagName;
@@ -204,6 +205,7 @@
             //unDisableContent('div.licenseeContent');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
+            $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         } else {
             $('.company-no').addClass('hidden');
             $('.ind-no').addClass('hidden');
@@ -211,6 +213,7 @@
             //unDisableContent('div.licenseeContent');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
+            $('.assignSelectLabel').append('<span class="mandatory">*</span>');
         }
     }
 

@@ -1907,27 +1907,6 @@ public class ClinicalLaboratoryDelegator {
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>();
         if("next".equals(crud_action_type)){
-            // LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            // String licenseeId = loginContext.getLicenseeId();
-            /*
-            boolean checkIsRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())&&!checkIsRfi){
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-                if(oldAppSubmissionDto!=null){
-                    oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
-                }
-            }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())&&!checkIsRfi){
-                AppSubmissionDto oldRenewAppSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request, "oldRenewAppSubmissionDto");
-                if(oldRenewAppSubmissionDto!=null){
-                    oldAppSvcVehicleDto=oldRenewAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
-                }
-            }
-            if(checkIsRfi){
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute(NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-                if(oldAppSubmissionDto!=null){
-                    oldAppSvcVehicleDto=oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList();
-                }
-            }*/
             List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().forEach(obj -> {
@@ -1977,10 +1956,6 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setRequestAttr(bpc.request,CLINICALDIRECTORDTOLIST,appSvcClinicalDirectorDtos);
         List<SelectOption> easMtsSpecialtySelectList = NewApplicationHelper.genEasMtsSpecialtySelectList(currSvcCode);
         ParamUtil.setRequestAttr(bpc.request,EASMTSSPECIALTYSELECTLIST,easMtsSpecialtySelectList);
-        /*
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<SelectOption> easMtsDesignationSelectList = NewApplicationHelper.genEasMtsDesignationSelectList(hcsaServiceDtos);
-        ParamUtil.setRequestAttr(bpc.request,EASMTSDESIGNATIONSELECTLIST,easMtsDesignationSelectList);*/
         // Assgined person dropdown options
         ParamUtil.setRequestAttr(bpc.request, PERSON_OPTIONS, NewApplicationHelper.genAssignPersonSel(bpc.request, true));
         List<SelectOption> designationOpList = NewApplicationHelper.genDesignationOpList(true);
@@ -1996,7 +1971,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void doClinicalDirector(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("doClinicalDirector start ..."));
-
         String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
 
@@ -2077,7 +2051,7 @@ public class ClinicalLaboratoryDelegator {
                             typeOfRegister = registrationDto.getRegisterType();
                         }
                         setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
-                    }else{
+                    } else if (!StringUtil.isEmpty(profRegNo)) {
                         setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
                     }
                 }
@@ -2971,10 +2945,10 @@ public class ClinicalLaboratoryDelegator {
                 AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                 appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
                 log.info(StringUtil.changeForLog("Clinical Director assgined select: " + assignSel));
-                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
                     appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 } else {
-                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getPersonKey(idType, idNo));
+                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
                 if (appPsnEditDto == null) {

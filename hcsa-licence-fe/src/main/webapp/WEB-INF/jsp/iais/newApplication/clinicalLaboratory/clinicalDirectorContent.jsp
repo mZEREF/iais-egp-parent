@@ -118,12 +118,12 @@
         showOtherSpecialty();
         profRegNoBlur();
         designationBindEvent();
-        $('select.specialty').trigger('change');
-        $("input[name='noRegWithProfBoard']").trigger('change');
+        specialityEvent();
         doEdite();
+        assignSelectBindEvent();
+        //rfc,renew,rfi
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
-        //rfc,renew,rfi
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
             disabledPage();
             $('select').prop('disabled',true);
@@ -132,7 +132,6 @@
                 $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
             });
         }
-
         // init
         $('div.clinicalDirectorContent').each(function () {
             var assignSelVal = $(this).find('.assignSel:input').val();
@@ -152,11 +151,25 @@
             }
             $(this).find('select').niceSelect("update");
             //trigger prs
-            $(this).find('.profRegNo').trigger('blur');
+            if (!isEmpty($(this).find('.profRegNo').val())) {
+                $(this).find('.profRegNo').trigger('blur');
+            }
             $(this).find('.designation').trigger('change');
+            $(this).find('.noRegWithProfBoard').trigger('click');
         });
-        assignSelectBindEvent();
     });
+
+    var specialityEvent = function() {
+        $('.specialityField').unbind('DOMNodeInserted');
+        $('.specialityField').on('DOMNodeInserted', function() {
+            var $content = $(this).closest('div.clinicalDirectorContent');
+            if (isEmpty($(this).text())) {
+                $content.find('.specialtyGetDateLabel .mandatory').remove();
+            } else {
+                $content.find('.specialtyGetDateLabel').append('<span class="mandatory">*</span>');
+            }
+        });
+    }
 
     var holdCerByEMS = function() {
         $('.holdCerByEMS').unbind('click');
@@ -170,9 +183,16 @@
         $('.noRegWithProfBoard').unbind('click');
         $('.noRegWithProfBoard').click(function () {
             var noRegWithProfBoardVal = "";
+            var $content = $(this).closest('div.clinicalDirectorContent');
             if($(this).prop('checked')){
                 noRegWithProfBoardVal = $(this).val();
+                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
+                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
+            } else {
+                $content.find('.professionBoardLabel .mandatory').remove();
+                $content.find('.profRegNoLabel .mandatory').remove();
             }
+
             $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
         });
     };

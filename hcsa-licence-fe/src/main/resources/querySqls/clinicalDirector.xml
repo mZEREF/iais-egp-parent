@@ -50,9 +50,8 @@
                 <div class="col-md-12 col-xs-12 person-detail hidden">
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
+                            <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
                                 <label class="control-label control-set-font control-font-label">Professional Board</label>
-                                <span class="mandatory">*</span>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 ${proBoardSel}
@@ -62,9 +61,8 @@
 
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
+                            <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
                                 <label class="control-label control-set-font control-font-label">Professional Regn. No.</label>
-                                <span class="mandatory">*</span>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 <input type="text" class="profRegNo" name="profRegNo${cdSuffix}" maxlength="20" autocomplete="off">
@@ -74,7 +72,7 @@
 
                     <#if (svcCode =='MTS')>
                         <div class="row control control-caption-horizontal">
-                            <div class=" form-group form-horizontal formgap noRegWithProfBoardDiv">
+                            <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext col-md-5 col-xs-5">
                                     <label class="control-label control-set-font control-font-label">Not registered with a Professional Board</label>
                                 </div>
@@ -152,22 +150,20 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5">
                                 <label class="control-label control-set-font control-font-label">Specialty</label>
-                                <span class="mandatory">*</span>
                             </div>
                             <div class="control-label formtext col-md-7 col-xs-12">
-                                <label class="control-label control-set-font control-font-label specialty-label">
+                                <label class="control-label control-set-font control-font-label specialty-label specialityField">
                                 </label>
                             </div>
                         </div>
                     </div>
 
-
-
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Date when specialty was obtained</label>
-                                <span class="mandatory">*</span>
+                            <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
+                                <label class="control-label control-set-font control-font-label">
+                                    Date when specialty was obtained
+                                </label>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 <input type="text" autocomplete="off" class="date_picker form-control specialtyGetDate" name="specialtyGetDate${cdSuffix}"  data-date-start-date="01/01/1900" value="" placeholder="dd/mm/yyyy" maxlength="10">

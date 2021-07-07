@@ -183,20 +183,14 @@ public class ValidateClincalDirector implements ValidateFlow {
     //Medical Transport Service
     protected void doValidateForMTS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
         String noRegWithProfBoard = appSvcClinicalDirectorDto.getNoRegWithProfBoard();
-        if(String.valueOf(1).equals(noRegWithProfBoard)){
-
-        }else {
+        if (!AppConsts.YES.equals(noRegWithProfBoard)) {
             String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
             if(StringUtil.isEmpty(professionBoard)||"-1".equals(professionBoard)){
                 map.put("professionBoard"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "professionBoard", "field"));
-            }else {
-
             }
             String profRegNo = appSvcClinicalDirectorDto.getProfRegNo();
             if(StringUtil.isEmpty(profRegNo)){
                 map.put("profRegNo"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "profRegNo", "field"));
-            }else {
-
             }
         }
         validateRelevantExperience(appSvcClinicalDirectorDto, map, index);
@@ -231,7 +225,6 @@ public class ValidateClincalDirector implements ValidateFlow {
 
     //Emergency Ambulance Service
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
-
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
         String regNo = appSvcClinicalDirectorDto.getProfRegNo();
         if(!StringUtil.isEmpty(regNo)&&StringUtil.isEmpty(speciality)){

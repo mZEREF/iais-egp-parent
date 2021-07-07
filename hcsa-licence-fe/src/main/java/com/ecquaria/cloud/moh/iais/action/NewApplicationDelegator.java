@@ -342,7 +342,7 @@ public class NewApplicationDelegator {
         if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
             subLicenseeDto.setUenNo(loginContext.getUenNo());
         }
-        bpc.request.setAttribute("subLicenseeDto", appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo()));
+        bpc.request.setAttribute("subLicenseeDto", appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(), loginContext.getUenNo()));
     }
 
     /**
@@ -432,12 +432,12 @@ public class NewApplicationDelegator {
         // Check licensee type
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            dto = appSubmissionService.getLicenseeById(loginContext.getLicenseeId(), loginContext.getUenNo());
+            dto = appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(), loginContext.getUenNo());
             if (dto == null) {
                 dto = new SubLicenseeDto();
-                dto.setAssignSelect(assignSelect);
-                dto.setLicenseeType(licenseeType);
             }
+            dto.setAssignSelect(assignSelect);
+            dto.setLicenseeType(licenseeType);
         } else {
             String idType = ParamUtil.getString(request, "idType");
             String idNumber = ParamUtil.getString(request, "idNumber");
@@ -1417,7 +1417,8 @@ public class NewApplicationDelegator {
         }
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
-        appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+        log.info(StringUtil.changeForLog("Payment result: " + result + "; reqRefNo: " + pmtRefNo
+                + "; Draft No.: " + appSubmissionDto.getDraftNo()));
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
@@ -1437,33 +1438,20 @@ public class NewApplicationDelegator {
 
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
-                        Double amount = appSubmissionDto1.getAmount();
-                        String grpId = appSubmissionDto1.getAppGrpId();
-                        boolean autoRfc = appSubmissionDto1.isAutoRfc();
-                        List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appSubmissionDto1.getAppGrpNo()).getEntity();
-                        if(entity!=null && !entity.isEmpty()){
-                            for(ApplicationDto applicationDto : entity){
-                                if(autoRfc){
-                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                                }else {
-                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-                                }
-                            }
-                            applicationFeClient.updateApplicationList(entity);
-                        }
-
                         ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                        appGrp.setId(grpId);
+                        appGrp.setId(appSubmissionDto1.getAppGrpId());
                         appGrp.setPmtRefNo(pmtRefNo);
-                        if (0.0 != amount) {
+                        appGrp.setGroupNo(appSubmissionDto1.getAppGrpNo());
+                        appGrp.setAutoRfc(appSubmissionDto1.isAutoRfc());
+                        Double amount = appSubmissionDto1.getAmount();
+                        if (amount != null && 0.0 != amount) {
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                             appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                            serviceConfigService.updatePaymentStatus(appGrp);
-                        }else {
+                        } else {
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                             appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                            serviceConfigService.updatePaymentStatus(appGrp);
                         }
+                        applicationFeClient.updatePaymentByAppGrp(appGrp);
                     }
                 }
                 String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
@@ -1489,7 +1477,8 @@ public class NewApplicationDelegator {
                 } catch (Exception e) {
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }
-            }else{
+            } else {
+                appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 if(!"cancelled".equals(result)){
                     Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                     errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
@@ -1501,7 +1490,8 @@ public class NewApplicationDelegator {
                 switch2 = "loading";
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
             }
-        }else{
+        } else {
+            appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
             log.debug(StringUtil.changeForLog("result is empty"));
             //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
             switch2 = "loading";
@@ -2363,6 +2353,8 @@ public class NewApplicationDelegator {
             return;
         }
 
+        boolean licenseeChange = EqRequestForChangeSubmitResultChange.isChangeSubLicensee(appSubmissionDto.getSubLicenseeDto(),
+                oldAppSubmissionDto.getSubLicenseeDto());
         boolean grpPremiseIsChange = changeInLocation || eqAddFloorNo || changeHciName;
         boolean serviceIsChange;
         boolean docIsChange;
@@ -2404,6 +2396,12 @@ public class NewApplicationDelegator {
         double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
         appSubmissionDto.setAmount(amount);
+
+        // TODO check
+        if (licenseeChange) {
+
+        }
+
         if(grpPremiseIsChange){
             boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList,
                     licenceById, amount, appGroupNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, bpc.request);
