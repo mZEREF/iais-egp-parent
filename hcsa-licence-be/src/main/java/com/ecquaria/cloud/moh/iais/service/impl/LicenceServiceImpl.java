@@ -353,9 +353,9 @@ public class LicenceServiceImpl implements LicenceService {
 
                                     Optional<PremisesGroupDto> premisesGroupOptional = premisesGroupDtos.stream().findFirst();
 
-                                    log.info("Uen Mail Flag {}", individual.getUenMailFlag());
+                                    log.info("Uen Mail Flag {}", individual != null ? individual.getUenMailFlag() : "");
 
-                                    if (premisesGroupOptional.isPresent() && individual.getUenMailFlag() == 0){
+                                    if (individual != null && premisesGroupOptional.isPresent() && individual.getUenMailFlag() == 0){
                                         PremisesDto premisesDto = premisesGroupDtos.get(0).getPremisesDto();
                                         log.info("Premises {}", JsonUtil.parseToJson(premisesDto));
                                         //judge licence is singlepass
