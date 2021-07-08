@@ -81,7 +81,7 @@
                                         <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${cdSuffix}" value="">
                                         <div class="control-item-container parent-form-check" >
                                             <input type="checkbox" id="noRegWithProfBoard${cdSuffix}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" >
-                                            <label for="noRegWithProfBoard${cdSuffix}" class="noRegWithProfBoard control-label control-set-font control-font-normal">
+                                            <label for="noRegWithProfBoard${cdSuffix}" class="control-label control-set-font control-font-normal">
                                                 <span class="check-square"></span>
                                             </label>
                                         </div>

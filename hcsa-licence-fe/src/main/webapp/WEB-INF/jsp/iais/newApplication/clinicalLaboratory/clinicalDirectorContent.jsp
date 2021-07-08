@@ -110,7 +110,6 @@
 <%@include file="../../common/prsLoading.jsp"%>
 <script>
     $(document).ready(function () {
-
         holdCerByEMS();
         noRegWithProfBoard();
         addClinicalDirectorBtn();
@@ -184,15 +183,14 @@
         $('.noRegWithProfBoard').click(function () {
             var noRegWithProfBoardVal = "";
             var $content = $(this).closest('div.clinicalDirectorContent');
-            if($(this).prop('checked')){
+            if ($(this).prop('checked')) {
                 noRegWithProfBoardVal = $(this).val();
-                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
-                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
-            } else {
                 $content.find('.professionBoardLabel .mandatory').remove();
                 $content.find('.profRegNoLabel .mandatory').remove();
+            } else {
+                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
+                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
             }
-
             $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
         });
     };
@@ -495,24 +493,6 @@
         if (!isEmpty(prgNo)) {
             $current.find('.profRegNo').trigger('blur');
         }
-    }
-
-    function disableContent($current, data) {
-        if (isEmpty(data) || isEmpty($current)) {
-            return;
-        }
-        $.each(data, function(i, val) {
-            //console.info(i + " : " + val);
-            var $input = $current.find('.' + i + ':input');
-            if ($input.length > 0 && !val) {
-                $input.prop('disabled', true);
-                $input.css('border-color','#ededed');
-                $input.css('color','#999');
-                if ($input[0].tagName.toLowerCase() == 'select') {
-                    $input.niceSelect("update");
-                }
-            }
-        });
     }
 
     var profRegNoBlur = function () {
