@@ -119,7 +119,7 @@ public class HcsaPremiseWorkload {
             HcsaPrimiseWorkloadDto hcsaPrimiseWorkloadDto = new HcsaPrimiseWorkloadDto();
             String name = item.getStageId();
             String manhour = ParamUtil.getString(request, name);
-            if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour)){
+            if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour) && manhour.length() <= 2){
                 item.setManhourCount(manhour);
                 hcsaPrimiseWorkloadDto.setId(item.getId());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
