@@ -51,8 +51,8 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                         StringBuilder sb=new StringBuilder();
                         Map<Integer,String> treeMap=new LinkedHashMap<>();
                         for (int i = 0; i < s.length; i++) {
-                            if (easMtsHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                treeMap.put(easMtsHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
+                            if (easMtsHciName.toUpperCase().contains(s[i].toUpperCase())) {
+                                treeMap.put(easMtsHciName.toUpperCase().indexOf(s[i].toUpperCase()),s[i]);
                             }
                         }
                         if(!treeMap.isEmpty()){
