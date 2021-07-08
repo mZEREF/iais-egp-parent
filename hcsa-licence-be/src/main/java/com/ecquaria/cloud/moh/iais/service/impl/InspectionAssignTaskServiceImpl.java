@@ -483,6 +483,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     public String assignMultTaskByAppNos(String[] appNoChecks, LoginContext loginContext, List<TaskDto> commPools) {
         List<String> appNoCheckList = filterAppNoChecks(appNoChecks);
         String userId = loginContext.getUserId();
+        List<String> appNoFailList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appNoCheckList) && !IaisCommonUtils.isEmpty(commPools)) {
             for(String appNoCheck : appNoCheckList) {
                 try {
@@ -496,7 +497,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                             if(RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                                 //broadcast task assign
                                 String saveFlag = assignBroadcastTask(taskDto, applicationDtos, IaisEGPHelper.getCurrentAuditTrailDto(), loginContext);
-                                return saveFlag;
+                                if(AppConsts.FAIL.equals(saveFlag)){
+                                    appNoFailList.add(taskDto.getApplicationNo());
+                                }
                             } else {
                                 //set inspector lead
                                 setInspLeadForMultAssign(taskDto);
@@ -507,10 +510,14 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                                 //set status in current Task
                                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                                 //create and update task
-                                taskService.createTasks(createTasks);
-                                taskService.updateTask(taskDto);
-                                //create history and update app status
-                                updateHistoryAppStatusForMult(applicationDto, taskDto);
+                                TaskDto updateTask = organizationClient.updateTaskForAssign(taskDto).getEntity();
+                                if(updateTask != null) {
+                                    taskService.createTasks(createTasks);
+                                    //create history and update app status
+                                    updateHistoryAppStatusForMult(applicationDto, taskDto);
+                                } else {
+                                    appNoFailList.add(taskDto.getApplicationNo());
+                                }
                             }
                         }
                     }
@@ -520,6 +527,28 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     continue;
                 }
             }
+        }
+        //jsp show ack
+        String comPoolAck = generateComPoolAck(appNoFailList);
+        return comPoolAck;
+    }
+
+    private String generateComPoolAck(List<String> appNoFailList) {
+        if(!IaisCommonUtils.isEmpty(appNoFailList)) {
+            Collections.sort(appNoFailList);
+            StringBuilder stringBuilder = new StringBuilder();
+            for(String appNo : appNoFailList) {
+                if(StringUtil.isEmpty(stringBuilder.toString())) {
+                    stringBuilder.append(appNo);
+                } else {
+                    stringBuilder.append(',');
+                    stringBuilder.append(' ');
+                    stringBuilder.append(appNo);
+                }
+            }
+            String ackStr = " submission failed.";
+            stringBuilder.append(ackStr);
+            return stringBuilder.toString();
         }
         return null;
     }

@@ -342,9 +342,9 @@ public class InspecAssignTaskDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<TaskDto> commPools = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "commPools");
         String[] appNoChecks = ParamUtil.getStrings(bpc.request,"comPoolMulCheck");
-        String saveFlag = inspectionAssignTaskService.assignMultTaskByAppNos(appNoChecks, loginContext, commPools);
-        if(AppConsts.FAIL.equals(saveFlag)){
-            ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
+        String comPoolAck = inspectionAssignTaskService.assignMultTaskByAppNos(appNoChecks, loginContext, commPools);
+        if(!StringUtil.isEmpty(comPoolAck)){
+            ParamUtil.setRequestAttr(bpc.request,"comPoolAck", comPoolAck);
         }
         ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
     }
