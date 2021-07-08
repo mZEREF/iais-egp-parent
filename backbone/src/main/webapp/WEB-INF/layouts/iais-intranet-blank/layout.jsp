@@ -16,7 +16,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<script src="https://assets.dcube.cloud/scripts/wogaa.js"></script>
 	<meta http-equiv="Pragma" content="no-cache"/>
 	<meta http-equiv="Cache Control" content="no-store"/>
 	<meta http-equiv="Expires" content="0"/>

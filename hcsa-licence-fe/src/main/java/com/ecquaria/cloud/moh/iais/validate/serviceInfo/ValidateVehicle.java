@@ -10,11 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -90,10 +87,10 @@ public class ValidateVehicle implements ValidateFlow {
 
             if (map.isEmpty()) {
                 validateCurrentVehicle(map, "vehicleName", vehicleName, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, "chassisNum", vehicleName, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, "chassisNum", chassisNum, i, appSvcVehicleDtoAlls);
                 validateCurrentVehicle(map, "engineNum", engineNum, i, appSvcVehicleDtoAlls);
                 validateExistVehicle(map, "vehicleName", vehicleName, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, "chassisNum", vehicleName, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, "chassisNum", chassisNum, i, oldAppSvcVehicleDto);
                 validateExistVehicle(map, "engineNum", engineNum, i, oldAppSvcVehicleDto);
             }
 
