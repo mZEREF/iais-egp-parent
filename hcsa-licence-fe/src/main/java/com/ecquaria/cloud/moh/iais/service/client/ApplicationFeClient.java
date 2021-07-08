@@ -367,6 +367,6 @@ public interface ApplicationFeClient {
     FeignResponseEntity<List<AppSvcVehicleDto>> getActiveVehicles();
 
     @PutMapping(path="/iais-application/payment-update", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void updatePaymentByAppGrp(@RequestBody ApplicationGroupDto applicationGroupDto);
+    FeignResponseEntity updatePaymentByAppGrp(@RequestBody ApplicationGroupDto applicationGroupDto);
 
 }
