@@ -133,7 +133,13 @@ public class HcsaPremiseWorkload {
                 if(StringUtil.isEmpty(manhour)){
                     item.setManhourCount(null);
                     errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
-                }else if(!StringUtils.isNumeric(manhour)){
+                } else if (manhour.length() > 2) {
+                    item.setManhourCount(manhour);
+                    Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
+                    map.put("field", "Workload Manhours");
+                    map.put("maxlength", "2");
+                    errMap.put(name,MessageUtil.getMessageDesc("GENERAL_ERR0041", map));
+                } else if(!StringUtils.isNumeric(manhour)){
                     item.setManhourCount(manhour);
                     errMap.put(name,MessageUtil.getMessageDesc("SC_ERR007"));
                 }else{
