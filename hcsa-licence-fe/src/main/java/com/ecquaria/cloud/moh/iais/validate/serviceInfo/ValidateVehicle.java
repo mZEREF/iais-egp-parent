@@ -120,10 +120,10 @@ public class ValidateVehicle implements ValidateFlow {
 
             if (map.isEmpty()) {
                 validateCurrentVehicle(map, "vehicleName", vehicleName, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, "chassisNum", vehicleName, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, "chassisNum", chassisNum, i, appSvcVehicleDtoAlls);
                 validateCurrentVehicle(map, "engineNum", engineNum, i, appSvcVehicleDtoAlls);
                 validateExistVehicle(map, "vehicleName", vehicleName, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, "chassisNum", vehicleName, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, "chassisNum", chassisNum, i, oldAppSvcVehicleDto);
                 validateExistVehicle(map, "engineNum", engineNum, i, oldAppSvcVehicleDto);
             }
 
