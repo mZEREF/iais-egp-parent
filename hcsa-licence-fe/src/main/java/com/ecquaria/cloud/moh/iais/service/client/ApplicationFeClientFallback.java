@@ -994,7 +994,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity updatePaymentByAppGrp(ApplicationGroupDto applicationGroupDto) {
+    public FeignResponseEntity<String> updatePaymentByAppGrp(ApplicationGroupDto applicationGroupDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
