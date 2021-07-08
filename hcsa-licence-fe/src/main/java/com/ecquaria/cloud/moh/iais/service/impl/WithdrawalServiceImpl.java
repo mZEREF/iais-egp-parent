@@ -274,7 +274,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         }
                     }
                 }
-                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee!=0.0){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
