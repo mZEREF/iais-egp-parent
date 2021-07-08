@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -36,13 +37,22 @@ import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -314,13 +324,19 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
+        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDateStr=df.format(new Date());
+
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                errorMap.put("errorMessage2",errorMsgEleven);
+                if(!(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                    errorMap.put("errorMessage2",errorMsgEleven);
+                }
             }
         }else{
             errorMap.put("errorMessage2",errorMsgEleven);
