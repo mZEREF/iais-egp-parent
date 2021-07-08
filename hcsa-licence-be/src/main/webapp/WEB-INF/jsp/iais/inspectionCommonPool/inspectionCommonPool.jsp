@@ -182,6 +182,10 @@
         $('#comPoolAssign').modal('hide');
     }
 
+    function tagConfirmCallbackcomPoolAssign(){
+        $('#comPoolAssign').modal('hide');
+    }
+
     function inspectionCommonPoolSubmit(action){
         $("[name='inspectionPoolType']").val(action);
         var mainPoolForm = document.getElementById('mainPoolForm');
