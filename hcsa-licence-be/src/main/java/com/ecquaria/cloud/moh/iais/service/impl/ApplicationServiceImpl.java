@@ -1084,10 +1084,19 @@ public class ApplicationServiceImpl implements ApplicationService {
                 ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                 String stageId = taskDto.getTaskKey();
                 if(applicationGroupDto != null) {
-                    String nweLicenseeId = applicationGroupDto.getNewLicenseeId();
+                    String newLicenseeId = applicationGroupDto.getNewLicenseeId();
                     String licenseeId = applicationGroupDto.getLicenseeId();
-                    if(!StringUtil.isEmpty(nweLicenseeId) && nweLicenseeId.equals(licenseeId)) {
+                    if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                    } else {
+                        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                                HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                                HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                        ) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                        }
                     }
                 } else {
                     if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
