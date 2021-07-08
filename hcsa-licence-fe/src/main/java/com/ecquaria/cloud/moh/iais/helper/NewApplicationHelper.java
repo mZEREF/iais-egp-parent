@@ -3877,7 +3877,6 @@ public class NewApplicationHelper {
         return map;
     }
 
-
     public static boolean isEmpty(String assignSel) {
         return StringUtil.isEmpty(assignSel) || "-1".equals(assignSel);
     }
@@ -3893,10 +3892,10 @@ public class NewApplicationHelper {
         return assignSelect;
     }
 
-    public static String getAssignSelect(String idType, String idNumber) {
+    public static String getAssignSelect(String idType, String idNumber, String defaultVal) {
         String personKey = getPersonKey(idType, idNumber);
-        if (!StringUtil.isEmpty(personKey)) {
-            personKey = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW;
+        if (StringUtil.isEmpty(personKey)) {
+            personKey = defaultVal;
         }
         return personKey;
     }

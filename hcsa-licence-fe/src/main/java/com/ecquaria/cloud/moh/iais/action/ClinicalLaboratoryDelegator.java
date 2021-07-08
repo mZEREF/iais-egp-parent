@@ -2948,7 +2948,8 @@ public class ClinicalLaboratoryDelegator {
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
                     appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 } else {
-                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo));
+                    appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
+                            IaisEGPConstant.ASSIGN_SELECT_ADD_NEW));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
