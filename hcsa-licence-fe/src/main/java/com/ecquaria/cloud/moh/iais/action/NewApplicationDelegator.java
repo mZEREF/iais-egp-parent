@@ -1264,6 +1264,7 @@ public class NewApplicationDelegator {
                     log.info(e.getMessage(), e);
                 }
 
+                List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
                 if (appSubmissionDtos != null) {
                     for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                         ApplicationGroupDto appGrp = new ApplicationGroupDto();
@@ -1279,7 +1280,9 @@ public class NewApplicationDelegator {
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                             appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
                         }
+                        log.info(StringUtil.changeForLog("Payment response data is " + JsonUtil.parseToJson(appGrp)));
                         applicationFeClient.updatePaymentByAppGrp(appGrp);
+                        appGrpIds.add(appSubmissionDto1.getAppGrpId());
                     }
                 }
                 String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
@@ -1287,15 +1290,18 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
                 ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
                 switch2 = "ack";
+
                 //update status
                 String appGrpId = appSubmissionDto.getAppGrpId();
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtRefNo(pmtRefNo);
-                appGrp.setPaymentDt(new Date());
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
-                serviceConfigService.updatePaymentStatus(appGrp);
+                if (!appGrpIds.contains(appGrpId)) {
+                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                    appGrp.setId(appGrpId);
+                    appGrp.setPmtRefNo(pmtRefNo);
+                    appGrp.setPaymentDt(new Date());
+                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                    appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                    serviceConfigService.updatePaymentStatus(appGrp);
+                }
                 //send email
                 try {
 //                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
