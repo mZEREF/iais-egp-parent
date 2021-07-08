@@ -344,7 +344,7 @@ public class InspecAssignTaskDelegator {
         String[] appNoChecks = ParamUtil.getStrings(bpc.request,"comPoolMulCheck");
         String comPoolAck = inspectionAssignTaskService.assignMultTaskByAppNos(appNoChecks, loginContext, commPools);
         if(!StringUtil.isEmpty(comPoolAck)){
-            ParamUtil.setRequestAttr(bpc.request,"comPoolAck", comPoolAck);
+            ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
         }
         ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
     }
