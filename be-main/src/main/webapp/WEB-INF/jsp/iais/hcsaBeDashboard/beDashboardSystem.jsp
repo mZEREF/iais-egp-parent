@@ -37,6 +37,12 @@
                     <div class="col-md-6 col-xs-12 col-lg-6">
                         <div class="form-horizontal filter-box">
                             <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Application No.</label>
+                                <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
+                                    <input type="text" name="applicationNo" value="${dashFilterAppNo}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">Application type</label>
                                 <div class="col-xs-12 col-sm-6 col-md-5" style="padding-left: unset;padding-top: 1%;">
                                     <iais:select cssClass="" name="appType" firstOption="" needSort="true" options="appTypeOption" multiValues="${dashAppTypeCheckList}" multiSelect="true" />
@@ -219,7 +225,7 @@
 
 
         $('#sysClearBtn').click(function () {
-            doClear();
+            doStatisticsBoardClear();
         });
 
         $('#sysSearchBtn').click(function () {

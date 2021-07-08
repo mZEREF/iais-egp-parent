@@ -102,4 +102,28 @@
         var mainPoolForm = document.getElementById('beDashboardForm');
         mainPoolForm.submit();
     }
+
+    function closeBanner() {
+        $('.alertBanner').hide();
+        $.ajax({
+            data:{},
+            type:"POST",
+            dataType: 'json',
+            url: '/main-web/backend/closeBanner.do',
+            error:function(data){},
+            success:function(data){}
+        });
+    }
+
+    function closeMaintainace() {
+        $('.alertMaintainace').hide();
+        $.ajax({
+            data:{},
+            type:"POST",
+            dataType: 'json',
+            url: '/main-web/backend/closeMaintenance.do',
+            error:function(data){},
+            success:function(data){}
+        });
+    }
 </script>
