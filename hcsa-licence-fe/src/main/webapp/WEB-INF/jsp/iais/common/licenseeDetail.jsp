@@ -120,8 +120,8 @@
     <%@include file="previewLicenseeCom.jsp"%>
 </div>
 
-<iais:confirm msg="${NEW_ACK016}" needCancel="false" callBack="$('#postalCodePop').modal('hide');" popupOrder="postalCodePop" needEscapHtml="false"
-              needFungDuoJi="false" />
+<iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"
+              popupOrder="postalCodePop" needEscapHtml="false" needFungDuoJi="false" />
 <script type="text/javascript">
     $(document).ready(function() {
         // init page
@@ -184,6 +184,7 @@
 
     function checkLicenseeType() {
         var type = $('#licenseeType').val();
+        $('.assignSelectLabel .mandatory').remove();
         if (type == '${companyType}') {
             $('.company-no').removeClass('hidden');
             $('.ind-no').addClass('hidden');
@@ -191,7 +192,6 @@
             //loadCompanyLicensee($('div.licenseeContent'));
             $('.licensee-com').show();
             $('.licensee-detail').hide();
-            $('.assignSelectLabel .mandatory').remove();
             // init data
             clearFields('.assignSelectRow');
             var tagName = this.tagName;

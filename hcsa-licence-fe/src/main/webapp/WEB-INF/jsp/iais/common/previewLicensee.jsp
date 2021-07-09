@@ -24,7 +24,7 @@
     </div>
     <div id="previewLicensee" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
-            <c:if test="${(AppSubmissionDto.appEditSelectDto==null || AppSubmissionDto.appEditSelectDto.licenseeEdit) && empty
+            <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.licenseeEdit) && empty
             printView}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>

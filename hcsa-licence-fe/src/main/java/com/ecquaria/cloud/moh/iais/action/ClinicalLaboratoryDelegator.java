@@ -1916,7 +1916,7 @@ public class ClinicalLaboratoryDelegator {
                 });
             }
             String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
-            log.info(StringUtil.changeForLog("The current application id: " + appId));
+            log.info(StringUtil.changeForLog("The current related application id: " + appId));
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
             validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
         }
