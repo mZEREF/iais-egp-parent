@@ -1830,6 +1830,7 @@ public class NewApplicationDelegator {
                                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(entity);
                                 }
                             }
+                            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoListExclude);
                         }
                     }
                 }
@@ -2660,7 +2661,6 @@ public class NewApplicationDelegator {
                             for (AppGrpPremisesDto appGrpPremisesDto1 : rfcAppGrpPremisesDtoList) {
                                 appGrpPremisesDto1.setGroupLicenceFlag(string.getId());
                             }
-                            //appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoListExclude);
                         }
                         appSubmissionDtoByLicenceId.setPartPremise(true);
                     } else {
