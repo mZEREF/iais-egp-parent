@@ -525,9 +525,12 @@
             $('#newPersonExist').hide();
             $('.designationSel').trigger('change');
         });
+
         $('#checkitem2').click(function () {
             $("#update").hide();
             $('#show').hide();
+            // init value
+            clearFields('#replaceOptionsId');
             $('#replace').show();
             $('#newPersonExist').hide();
         });
