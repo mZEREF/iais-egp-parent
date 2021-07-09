@@ -2660,7 +2660,7 @@ public class NewApplicationDelegator {
                             for (AppGrpPremisesDto appGrpPremisesDto1 : rfcAppGrpPremisesDtoList) {
                                 appGrpPremisesDto1.setGroupLicenceFlag(string.getId());
                             }
-                            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoListExclude);
+                            //appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoListExclude);
                         }
                         appSubmissionDtoByLicenceId.setPartPremise(true);
                     } else {
