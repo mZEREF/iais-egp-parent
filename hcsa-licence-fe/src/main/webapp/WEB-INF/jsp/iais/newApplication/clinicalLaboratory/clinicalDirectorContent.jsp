@@ -145,7 +145,7 @@
                     data = {};
                 };
                 if ('1' == $(this).find('.licPerson:input').val()) {
-                    disableContent($(this).find('div.person-detail'), data);
+                    disableCdContent($(this).find('div.person-detail'), data);
                 }
             }
             $(this).find('select').niceSelect("update");
@@ -362,9 +362,7 @@
         // console.info(assignSelVal);
         var $content = $(targetSelector);
         // init
-        $content.find(':input').css('border-color','');
-        $content.find(':input').css('color','');
-        $content.find(':input').prop('disabled', false);
+        unDisableContent($content);
         <c:if test="${'true' == canEdit}">
         $content.find('input.cdIndexNo').val('');
         </c:if>
@@ -392,12 +390,14 @@
         if (isEmpty(data)) {
             $current.addClass('hidden');
             clearFields($content);
+            return;
         }
+        console.info("11111111111111");
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
                 if (data.licPerson) {
-                    disableContent($current, val);
+                    disableCdContent($current, val);
                 }
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
@@ -491,9 +491,23 @@
             }
         });
         var prgNo = $current.find(('input.profRegNo')).val();
+        console.info("prgNo: " + prgNo);
         if (!isEmpty(prgNo)) {
             $current.find('.profRegNo').trigger('blur');
         }
+    }
+
+    function disableCdContent($current, data) {
+        if (isEmpty(data) || isEmpty($current)) {
+            return;
+        }
+        $.each(data, function(i, val) {
+            //console.info(i + " : " + val);
+            var $input = $current.find('.' + i + ':input');
+            if ($input.length > 0 && !val) {
+                disableContent($input);
+            }
+        });
     }
 
     var profRegNoBlur = function () {
