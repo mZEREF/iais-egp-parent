@@ -59,7 +59,8 @@ public class InsReportDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private FillupChklistService fillupChklistService;
-
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final static String RECOMMENDATION = "recommendation";
     private final static String CHRONO = "chrono";
@@ -77,6 +78,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request,"askType",null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+        vehicleCommonController.clearVehicleInformationSession(request);
     }
 
     public void inspectionReportInit(BaseProcessClass bpc) throws IOException {
@@ -146,6 +148,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
+        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto,InspectionConstants.SWITCH_ACTION_YES);
     }
 
     public void inspectionReportPre(BaseProcessClass bpc) {
