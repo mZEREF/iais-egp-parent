@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -43,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -314,13 +316,19 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
+        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDateStr=df.format(new Date());
+
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                errorMap.put("errorMessage2",errorMsgEleven);
+                if(!(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                    errorMap.put("errorMessage2",errorMsgEleven);
+                }
             }
         }else{
             errorMap.put("errorMessage2",errorMsgEleven);
@@ -413,7 +421,18 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
-        boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+        boolean isActive = false;
+        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDateStr=df.format(new Date());
+        if(licenceDto != null ){
+            if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                isActive=true;
+            }
+            if(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+                isActive=true;
+            }
+        }
         if(isActive){
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
