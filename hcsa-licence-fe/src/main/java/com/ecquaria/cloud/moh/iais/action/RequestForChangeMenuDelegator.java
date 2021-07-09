@@ -697,7 +697,6 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
-        ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", oldPersonnelDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
         ParamUtil.setRequestAttr(bpc.request, ClinicalLaboratoryDelegator.DROPWOWN_IDTYPESELECT, idTypeSelectList);
@@ -1099,9 +1098,9 @@ public class RequestForChangeMenuDelegator {
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getDesignation())) {
                     errMap.put("designation2", designationMsg);
                 }else if((psnTypes.contains("PO") || psnTypes.contains("DPO")) && "DES999".equals(newPerson.getDesignation())){
-                   if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
-                       errMap.put("otherDesignation2", designationMsg);
-                   }
+                    if(StringUtil.isEmpty(newPerson.getOtherDesignation())){
+                        errMap.put("otherDesignation2", designationMsg);
+                    }
                 }
                 String generalSixTelNo = MessageUtil.replaceMessage("GENERAL_ERR0006", "Office Telephone No", "field");
                 if ((psnTypes.contains("PO") || psnTypes.contains("DPO")) && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
@@ -1130,26 +1129,20 @@ public class RequestForChangeMenuDelegator {
         return errMap;
     }
 
-    private PersonnelListDto getOldPersonnelDto(PersonnelListDto personnelListDto) {
+    private PersonnelListDto transferDto(PersonnelListDto personnelListDto) {
+        if (personnelListDto == null) {
+            return null;
+        }
         PersonnelListDto oldDto = new PersonnelListDto();
-        String idNo = personnelListDto.getIdNo();
-        String idType = personnelListDto.getIdType();
-        String salutation = personnelListDto.getSalutation();
-        String psnName = personnelListDto.getPsnName();
-        String designation = personnelListDto.getDesignation();
-        String mobileNo = personnelListDto.getMobileNo();
-        String officeTelNo = personnelListDto.getOfficeTelNo();
-        String emailAddr = personnelListDto.getEmailAddr();
-        String otherDesignation = personnelListDto.getOtherDesignation();
-        oldDto.setIdNo(idNo);
-        oldDto.setIdType(idType);
-        oldDto.setPsnName(psnName);
-        oldDto.setSalutation(salutation);
-        oldDto.setDesignation(designation);
-        oldDto.setOfficeTelNo(officeTelNo);
-        oldDto.setMobileNo(mobileNo);
-        oldDto.setEmailAddr(emailAddr);
-        oldDto.setOtherDesignation(otherDesignation);
+        oldDto.setIdNo(personnelListDto.getIdNo());
+        oldDto.setIdType(personnelListDto.getIdType());
+        oldDto.setPsnName(personnelListDto.getPsnName());
+        oldDto.setSalutation(personnelListDto.getSalutation());
+        oldDto.setDesignation(personnelListDto.getDesignation());
+        oldDto.setOtherDesignation(personnelListDto.getOtherDesignation());
+        oldDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+        oldDto.setMobileNo(personnelListDto.getMobileNo());
+        oldDto.setEmailAddr(personnelListDto.getEmailAddr());
         return oldDto;
     }
 
@@ -1931,7 +1924,7 @@ public class RequestForChangeMenuDelegator {
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-       /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
+        /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
 
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
@@ -2181,6 +2174,20 @@ public class RequestForChangeMenuDelegator {
                         appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
                         appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
                         appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
+                    }
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(appSvcClinicalDirectorDtoList!=null){
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    if(v.getIdNo().equals(personnelListDto.getIdNo())){
+                        v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                        v.setEmailAddr(personnelListDto.getEmailAddr());
+                        v.setMobileNo(personnelListDto.getMobileNo());
+                        v.setDesignation(personnelListDto.getDesignation());
+                        v.setOtherDesignation(personnelListDto.getOtherDesignation());
+                        v.setName(personnelListDto.getPsnName());
+                        v.setSalutation(personnelListDto.getSalutation());
                     }
                 }
             }
