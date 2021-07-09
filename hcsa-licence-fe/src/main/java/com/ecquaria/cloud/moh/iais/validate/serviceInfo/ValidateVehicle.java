@@ -38,7 +38,7 @@ public class ValidateVehicle implements ValidateFlow {
         if (appSvcVehicleDtos == null) {
             return;
         }
-        Map<String, String> map = null;
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         List<String> vehicleNameList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> chassisNumList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> engineNumNumList = new ArrayList<>(appSvcVehicleDtos.size());
@@ -46,7 +46,6 @@ public class ValidateVehicle implements ValidateFlow {
         Map<Integer, String> indexMap = new HashMap<>(appSvcVehicleDtos.size());
         for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
             AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
-            map = IaisCommonUtils.genNewHashMap();
             String vehicleName = currentDto.getVehicleName();
             if (StringUtil.isEmpty(vehicleName)) {
                 map.put(VEHICLE_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
@@ -90,8 +89,11 @@ public class ValidateVehicle implements ValidateFlow {
                     engineNumNumList.add(engineNum);
                 }
             }
-
-            if (map.isEmpty()) {
+        }
+        // validate for other services and existed db
+        if (map.isEmpty()) {
+            for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+                AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
                 validateCurrentVehicle(map, VEHICLE_NAME, currentDto, i, appSvcVehicleDtoAlls);
                 validateCurrentVehicle(map, CHASSIS_NAME, currentDto, i, appSvcVehicleDtoAlls);
                 validateCurrentVehicle(map, ENGINE_NAME, currentDto, i, appSvcVehicleDtoAlls);
@@ -99,9 +101,9 @@ public class ValidateVehicle implements ValidateFlow {
                 validateExistVehicle(map, CHASSIS_NAME, currentDto, i, oldAppSvcVehicleDto);
                 validateExistVehicle(map, ENGINE_NAME, currentDto, i, oldAppSvcVehicleDto);
             }
-            log.info(StringUtil.changeForLog("Validate Vehicles " + i + "->" + JsonUtil.parseToJson(map)));
-            errorMap.putAll(map);
         }
+        log.info(StringUtil.changeForLog("Validate Vehicles ->" + JsonUtil.parseToJson(map)));
+        errorMap.putAll(map);
     }
 
     private void validateExistVehicle(Map<String, String> map, String name, AppSvcVehicleDto currentDto, int index,
@@ -117,13 +119,8 @@ public class ValidateVehicle implements ValidateFlow {
 
     private void validateCurrentVehicle(Map<String, String> map, String name, AppSvcVehicleDto currentDto, int index,
             List<AppSvcVehicleDto> appSvcVehicleDtoAlls) {
-        int count = 0;
         String value = getValue(currentDto, name);
-        for (AppSvcVehicleDto asv : appSvcVehicleDtoAlls) {
-            if (value.equalsIgnoreCase(getValue(asv, name))) {
-                count++;
-            }
-        }
+        long count = appSvcVehicleDtoAlls.stream().filter(asv -> value.equalsIgnoreCase(getValue(asv, name))).count();
         if (count >= 2) {
             map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
         }
