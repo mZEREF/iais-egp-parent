@@ -10,17 +10,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenClient;
 import com.ecquaria.cloud.moh.iais.validate.ValidateFlow;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Wenkang
@@ -29,6 +27,10 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateVehicle implements ValidateFlow {
+
+    private static final String VEHICLE_NAME = "vehicleName";
+    private static final String ENGINE_NAME = "engineNum";
+    private static final String CHASSIS_NAME = "chassisNum";
 
     @Override
     public void doValidateVehicles(Map<String, String> errorMap, List<AppSvcVehicleDto> appSvcVehicleDtoAlls,
@@ -43,108 +45,80 @@ public class ValidateVehicle implements ValidateFlow {
         List<String> validateVehicleName = new ArrayList<>(appSvcVehicleDtos.size());
         Map<Integer, String> indexMap = new HashMap<>(appSvcVehicleDtos.size());
         for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+            AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
             map = IaisCommonUtils.genNewHashMap();
-            String vehicleName = appSvcVehicleDtos.get(i).getVehicleName();
+            String vehicleName = currentDto.getVehicleName();
             if (StringUtil.isEmpty(vehicleName)) {
-                map.put("vehicleName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
+                map.put(VEHICLE_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
             } else if (vehicleName.length() > 10) {
-                map.put("vehicleName" + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
+                map.put(VEHICLE_NAME + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
             } else if (!VehNoValidator.validateNumber(vehicleName)) {
-                map.put("vehicleName" + i, "GENERAL_ERR0017");
+                map.put(VEHICLE_NAME + i, "GENERAL_ERR0017");
             } else {
                 vehicleName = vehicleName.toLowerCase(AppConsts.DFT_LOCALE);
                 if (vehicleNameList.contains(vehicleName)) {
-                    map.put("vehicleName" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    map.put(VEHICLE_NAME + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 } else {
                     vehicleNameList.add(vehicleName);
-                    int vehicleCount=0;
-                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
-                    ) {
-                        if (asv.getVehicleName()!=null&&asv.getVehicleName().equals(vehicleName)){
-                            vehicleCount++;
-                        }
-                    }
-                    if(vehicleCount>=2){
-                        map.put("vehicleName"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                    }
                 }
             }
 
-            String chassisNum = appSvcVehicleDtos.get(i).getChassisNum();
+            String chassisNum = currentDto.getChassisNum();
             if (StringUtil.isEmpty(chassisNum)) {
-                map.put("chassisNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Chassis Number", "field"));
+                map.put(CHASSIS_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Chassis Number", "field"));
             } else if (chassisNum.length() > 25) {
-                map.put("chassisNum" + i, NewApplicationHelper.repLength("Chassis Number", "25"));
+                map.put(CHASSIS_NAME + i, NewApplicationHelper.repLength("Chassis Number", "25"));
             } else {
                 chassisNum = chassisNum.toLowerCase(AppConsts.DFT_LOCALE);
                 if (chassisNumList.contains(chassisNum)) {
-                    map.put("chassisNum" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    map.put(CHASSIS_NAME + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 } else {
                     chassisNumList.add(chassisNum);
-                    int chassisCount=0;
-                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
-                    ) {
-                        if (asv.getChassisNum()!=null&&asv.getChassisNum().equals(chassisNum)){
-                            chassisCount++;
-                        }
-                    }
-                    if(chassisCount>=2){
-                        map.put("chassisNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                    }
                 }
             }
 
-            String engineNum = appSvcVehicleDtos.get(i).getEngineNum();
+            String engineNum = currentDto.getEngineNum();
             if (StringUtil.isEmpty(engineNum)) {
-                map.put("engineNum" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Engine Number", "field"));
+                map.put(ENGINE_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Engine Number", "field"));
             } else if (engineNum.length() > 25) {
-                map.put("engineNum" + i, NewApplicationHelper.repLength("Engine Number", "25"));
+                map.put(ENGINE_NAME + i, NewApplicationHelper.repLength("Engine Number", "25"));
             } else {
                 engineNum = engineNum.toLowerCase(AppConsts.DFT_LOCALE);
                 if (engineNumNumList.contains(engineNum)) {
-                    map.put("engineNum" + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    map.put(ENGINE_NAME + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
                 } else {
                     engineNumNumList.add(engineNum);
-                    int engineCount=0;
-                    for (AppSvcVehicleDto asv:appSvcVehicleDtoAlls
-                    ) {
-                        if (asv.getEngineNum()!=null&&asv.getEngineNum().equals(engineNum)){
-                            engineCount++;
-                        }
-                    }
-                    if(engineCount>=2){
-                        map.put("engineNum"+i, MessageUtil.getMessageDesc("NEW_ERR0012"));
-                    }
                 }
             }
 
             if (map.isEmpty()) {
-                validateCurrentVehicle(map, "vehicleName", vehicleName, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, "chassisNum", chassisNum, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, "engineNum", engineNum, i, appSvcVehicleDtoAlls);
-                validateExistVehicle(map, "vehicleName", vehicleName, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, "chassisNum", chassisNum, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, "engineNum", engineNum, i, oldAppSvcVehicleDto);
+                validateCurrentVehicle(map, VEHICLE_NAME, currentDto, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, CHASSIS_NAME, currentDto, i, appSvcVehicleDtoAlls);
+                validateCurrentVehicle(map, ENGINE_NAME, currentDto, i, appSvcVehicleDtoAlls);
+                validateExistVehicle(map, VEHICLE_NAME, currentDto, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, CHASSIS_NAME, currentDto, i, oldAppSvcVehicleDto);
+                validateExistVehicle(map, ENGINE_NAME, currentDto, i, oldAppSvcVehicleDto);
             }
-
             log.info(StringUtil.changeForLog("Validate Vehicles " + i + "->" + JsonUtil.parseToJson(map)));
             errorMap.putAll(map);
         }
     }
 
-    private void validateExistVehicle(Map<String, String> map, String name, String value, int index,
+    private void validateExistVehicle(Map<String, String> map, String name, AppSvcVehicleDto currentDto, int index,
             List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
         if (oldAppSvcVehicleDto == null || oldAppSvcVehicleDto.isEmpty()) {
             return;
         }
+        String value = getValue(currentDto, name);
         if (oldAppSvcVehicleDto.stream().anyMatch(asv -> value.equalsIgnoreCase(getValue(asv, name)))) {
             map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
         }
     }
 
-    private void validateCurrentVehicle(Map<String, String> map, String name, String value, int index,
+    private void validateCurrentVehicle(Map<String, String> map, String name, AppSvcVehicleDto currentDto, int index,
             List<AppSvcVehicleDto> appSvcVehicleDtoAlls) {
         int count = 0;
+        String value = getValue(currentDto, name);
         for (AppSvcVehicleDto asv : appSvcVehicleDtoAlls) {
             if (value.equalsIgnoreCase(getValue(asv, name))) {
                 count++;
@@ -156,14 +130,15 @@ public class ValidateVehicle implements ValidateFlow {
     }
 
     private String getValue(AppSvcVehicleDto asv, String name) {
-        if ("vehicleName".equals(name)) {
-            return asv.getVehicleName();
-        } else if ("chassisNum".equals(name)) {
-            return asv.getChassisNum();
-        } else if ("engineNum".equals(name)) {
-            return asv.getEngineNum();
+        String val = null;
+        if (VEHICLE_NAME.equals(name)) {
+            val = asv.getVehicleName();
+        } else if (CHASSIS_NAME.equals(name)) {
+            val = asv.getChassisNum();
+        } else if (ENGINE_NAME.equals(name)) {
+            val = asv.getEngineNum();
         }
-        return "";
+        return Optional.ofNullable(val).orElseGet(() -> "");
     }
 
     @Override
@@ -175,7 +150,7 @@ public class ValidateVehicle implements ValidateFlow {
         if (appSvcRelatedInfoDtoList == null) {
             return;
         }
-        List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
+        List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)) {
             appSvcRelatedInfoDtoList.stream().forEach(obj -> {
                 if (!IaisCommonUtils.isEmpty(obj.getAppSvcVehicleDtoList())) {
