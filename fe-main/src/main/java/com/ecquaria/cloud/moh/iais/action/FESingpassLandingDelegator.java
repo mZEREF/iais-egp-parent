@@ -68,8 +68,6 @@ public class FESingpassLandingDelegator {
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String ssoLoginFlag = (String) request.getAttribute("ssoLoginFlag");
-        myInfoAjax.noTakenCallMyInfo(bpc,"FE_Singpass_Landing/receiveUserInfo");
-        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(request,"FE_Singpass_Landing/receiveUserInfo");
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] START ...."));
         ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
@@ -104,6 +102,8 @@ public class FESingpassLandingDelegator {
         ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNoUpper);
         ParamUtil.setRequestAttr(request, UserConstants.ID_TYPE, idType);
         ParamUtil.setRequestAttr(request, UserConstants.LOGIN_SCP, scp);
+        myInfoAjax.noTakenCallMyInfo(bpc,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
+        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(request,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] END ...." + "nric : " + identityNoUpper));
     }
 
