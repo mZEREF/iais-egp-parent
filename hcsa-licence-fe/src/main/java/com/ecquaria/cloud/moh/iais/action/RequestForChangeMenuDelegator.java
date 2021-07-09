@@ -91,6 +91,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
@@ -658,23 +659,28 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
     }
 
-    public void preparePersonnelEdit(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
+    public void initPsnEditInfo(BaseProcessClass bpc) {
+        bpc.request.getSession().removeAttribute("oldPersonnelDtooldPersonnelDto");
         String idNo = ParamUtil.getMaskedString(bpc.request, "personnelNo");
         List<PersonnelListDto> personnelList = (List<PersonnelListDto>) ParamUtil.getSessionAttr(bpc.request, "personnelListDtos");
-        PersonnelListDto personnelEditDto = new PersonnelListDto();
-        if (StringUtil.isEmpty(idNo)) {
-            personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
-        } else {
-            for (PersonnelListDto dto : personnelList) {
-                String idNo1 = dto.getIdNo();
-                if (idNo.equals(idNo1)) {
-                    personnelEditDto = dto;
-                    break;
-                }
-            }
+        PersonnelListDto personnelEditDto = null;
+        if (personnelList != null) {
+            String finalIdNo = Optional.ofNullable(idNo).orElseGet(() -> "");
+            personnelEditDto = personnelList.stream().filter(dto -> finalIdNo.equals(dto.getIdNo())).findAny().orElseGet(() -> null);
         }
-        PersonnelListDto oldPersonnelDto = getOldPersonnelDto(personnelEditDto);
+        log.info(StringUtil.changeForLog("personnelEditDto: " +
+                Optional.ofNullable(personnelEditDto).map(dto -> dto.getIdNo()).orElseGet(() -> null)));
+        ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", transferDto(personnelEditDto));
+        ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
+    }
+
+    public void preparePersonnelEdit(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
+        PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
+        if (personnelEditDto == null) {
+            personnelEditDto = new PersonnelListDto();
+            personnelEditDto.setLicPsnTypeDtoMaps(IaisCommonUtils.genNewHashMap(0));
+        }
         String replaceName = ParamUtil.getString(bpc.request, "replaceName");
         if (StringUtil.isEmpty(replaceName)) {
             ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
@@ -698,7 +704,6 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel Amendment");
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
-
 
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
@@ -816,7 +821,8 @@ public class RequestForChangeMenuDelegator {
         for(AppSubmissionDto v : appSubmissionDtos1){
             requestForChangeService.svcDocToPresmise(v);
             requestForChangeService.premisesDocToSvcDoc(v);
-            Iterator<AppSvcRelatedInfoDto> iterator = v.getAppSvcRelatedInfoDtoList().iterator();
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = v.getAppSvcRelatedInfoDtoList();
+            Iterator<AppSvcRelatedInfoDto> iterator = appSvcRelatedInfoDtoList.iterator();
             while (iterator.hasNext()){
                 AppSvcRelatedInfoDto next = iterator.next();
                 List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
@@ -826,7 +832,6 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
             }
-
         }
         //save
         List<AppSubmissionDto> appSubmissionDtos2 = requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
@@ -865,47 +870,13 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean isEdit(PersonnelListDto newDto, PersonnelListDto oldDto, PersonnelListDto newPersonDto) {
-        PersonnelListDto compareNewDto = new PersonnelListDto();
-        String idNo = newDto.getIdNo();
-        String idType = newDto.getIdType();
-        String salutation = newDto.getSalutation();
-        String psnName = newDto.getPsnName();
-        String designation = newDto.getDesignation();
-        String otherDesignation = newDto.getOtherDesignation();
-        String mobileNo = newDto.getMobileNo();
-        String officeTelNo = newDto.getOfficeTelNo();
-        String emailAddr = newDto.getEmailAddr();
-        String idNo1 = newPersonDto.getIdNo();
-        if (!StringUtil.isEmpty(idNo1)) {
-            String idType1 = newPersonDto.getIdType();
-            String salutation1 = newPersonDto.getSalutation();
-            String psnName1 = newPersonDto.getPsnName();
-            String designation1 = newPersonDto.getDesignation();
-            String otherDesignation1 = newPersonDto.getOtherDesignation();
-            String mobileNo1 = newPersonDto.getMobileNo();
-            String officeTelNo1 = newPersonDto.getOfficeTelNo();
-            String emailAddr1 = newPersonDto.getEmailAddr();
-            compareNewDto.setIdNo(idNo1);
-            compareNewDto.setIdType(idType1);
-            compareNewDto.setPsnName(psnName1);
-            compareNewDto.setSalutation(salutation1);
-            compareNewDto.setDesignation(designation1);
-            compareNewDto.setOtherDesignation(otherDesignation1);
-            compareNewDto.setOfficeTelNo(officeTelNo1);
-            compareNewDto.setMobileNo(mobileNo1);
-            compareNewDto.setEmailAddr(emailAddr1);
+        PersonnelListDto compareNewDto = null;
+        if (!StringUtil.isEmpty(newPersonDto.getIdNo())) {
+            compareNewDto = transferDto(newPersonDto);
         } else {
-            compareNewDto.setIdNo(idNo);
-            compareNewDto.setIdType(idType);
-            compareNewDto.setPsnName(psnName);
-            compareNewDto.setSalutation(salutation);
-            compareNewDto.setDesignation(designation);
-            compareNewDto.setOtherDesignation(otherDesignation);
-            compareNewDto.setOfficeTelNo(officeTelNo);
-            compareNewDto.setMobileNo(mobileNo);
-            compareNewDto.setEmailAddr(emailAddr);
+            compareNewDto = transferDto(newDto);
         }
-        if (!compareNewDto.equals(oldDto)) {
+        if (compareNewDto != null && !compareNewDto.equals(oldDto)) {
             return true;
         } else {
             return false;
@@ -1050,7 +1021,7 @@ public class RequestForChangeMenuDelegator {
             }
             if ((psnTypes.contains("CGO")||psnTypes.contains("CD")) && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", designationMsg);
-            }else if((psnTypes.contains("CGO")||psnTypes.contains("CD"))&&"DES999".equals(designation)){
+            }else if((psnTypes.contains("CGO") || psnTypes.contains("CD"))&&"DES999".equals(designation)){
                 if(StringUtil.isEmpty(otherDesignation)){
                     errMap.put("otherDesignation" , designationMsg);
                 }
@@ -2270,7 +2241,20 @@ public class RequestForChangeMenuDelegator {
                     appSvcMedAlertPerson.setOfficeTelNo(personnelListDto.getOfficeTelNo());
                 }
             }
-
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if(appSvcClinicalDirectorDtoList!=null){
+                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                    v.setIdNo(personnelListDto.getIdNo());
+                    v.setIdType(personnelListDto.getIdType());
+                    v.setName(personnelListDto.getPsnName());
+                    v.setSalutation(personnelListDto.getSalutation());
+                    v.setMobileNo(personnelListDto.getMobileNo());
+                    v.setEmailAddr(personnelListDto.getEmailAddr());
+                    v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                    v.setDesignation(personnelListDto.getDesignation());
+                    v.setOtherDesignation(personnelListDto.getOtherDesignation());
+                }
+            }
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtoList)) {
                 for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
