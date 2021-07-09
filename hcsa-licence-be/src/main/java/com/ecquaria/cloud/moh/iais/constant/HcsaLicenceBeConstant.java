@@ -47,4 +47,8 @@ public class HcsaLicenceBeConstant {
     public static final String CHECK_LIST_COM_TAB_NAME  = "nowComTabIn";
 
     public static final int RISK_Validate_HIGH_MAX = 999;
+
+    public static final String APP_VEHICLE_FLAG = "appVehicleFlag";
+
+    public static final String APP_VEHICLE_NO_LIST ="appVehicleNoList";
 }

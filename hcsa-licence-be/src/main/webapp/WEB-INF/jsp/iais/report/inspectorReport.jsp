@@ -483,6 +483,7 @@
                         </c:if>
                     </table>
                 </div>
+                <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
             </div>
         </div>
         <div id="sectionF" class="alert alert-info" role="alert">

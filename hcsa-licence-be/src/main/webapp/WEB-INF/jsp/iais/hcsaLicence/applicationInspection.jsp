@@ -397,6 +397,7 @@
                         <td class="col-xs-4"></td>
                     </tr>
                 </table>
+                <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
             </div>
         </div>
     </div>
