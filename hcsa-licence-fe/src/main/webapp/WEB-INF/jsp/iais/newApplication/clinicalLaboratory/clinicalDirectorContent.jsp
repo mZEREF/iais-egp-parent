@@ -145,7 +145,7 @@
                     data = {};
                 };
                 if ('1' == $(this).find('.licPerson:input').val()) {
-                    disableContent($(this).find('div.person-detail'), data);
+                    disableCdContent($(this).find('div.person-detail'), data);
                 }
             }
             $(this).find('select').niceSelect("update");
@@ -324,6 +324,7 @@
             $currContent.find('input.isPartEdit').val('1');
             $currContent.find('.edit-content').addClass('hidden');
             $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('select').prop('disabled', false);
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');
@@ -361,9 +362,7 @@
         // console.info(assignSelVal);
         var $content = $(targetSelector);
         // init
-        $content.find(':input').css('border-color','');
-        $content.find(':input').css('color','');
-        $content.find(':input').prop('disabled', false);
+        unDisableContent($content);
         <c:if test="${'true' == canEdit}">
         $content.find('input.cdIndexNo').val('');
         </c:if>
@@ -391,12 +390,14 @@
         if (isEmpty(data)) {
             $current.addClass('hidden');
             clearFields($content);
+            return;
         }
+        console.info("11111111111111");
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
                 if (data.licPerson) {
-                    disableContent($current, val);
+                    disableCdContent($current, val);
                 }
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
@@ -490,9 +491,23 @@
             }
         });
         var prgNo = $current.find(('input.profRegNo')).val();
+        console.info("prgNo: " + prgNo);
         if (!isEmpty(prgNo)) {
             $current.find('.profRegNo').trigger('blur');
         }
+    }
+
+    function disableCdContent($current, data) {
+        if (isEmpty(data) || isEmpty($current)) {
+            return;
+        }
+        $.each(data, function(i, val) {
+            //console.info(i + " : " + val);
+            var $input = $current.find('.' + i + ':input');
+            if ($input.length > 0 && !val) {
+                disableContent($input);
+            }
+        });
     }
 
     var profRegNoBlur = function () {
@@ -507,6 +522,7 @@
 
     var prsCallBackFuns ={
         fillData:function ($prsLoadingEle, data, needControlName) {
+            console.info(data);
             var specialty = data.specialty ;
             if(isEmpty(specialty)){
                 specialty = '';
@@ -559,18 +575,6 @@
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
         }
     };
-    $("input[name='noRegWithProfBoard']").change(function (){
-
-        if($(this).parent().prev().val()==1){
-            if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
-                $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
-                $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
-            }
-        }else {
-            $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').remove();
-            $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
-        }
-    });
 
     function designationBindEvent() {
         $('.designation').unbind('change');
