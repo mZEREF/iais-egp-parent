@@ -44,12 +44,16 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntraDashboardClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.privilege.Privilege;
+import com.ecquaria.cloud.privilege.PrivilegeServiceClient;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sop.rbac.user.UserIdentifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -103,9 +107,12 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     @Autowired
     private HcsaConfigMainClient hcsaConfigMainClient;
 
+    @Autowired
+    private PrivilegeServiceClient privilegeServiceClient;
+
     @Override
     public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
-                                                                         TaskDto taskDto, String userId, String remarks, String subStage) {
+                                                                        TaskDto taskDto, String userId, String remarks, String subStage) {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
@@ -133,8 +140,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
 
     @Override
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                      String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
-                                                                      String roleId){
+                                                                     String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
+                                                                     String roleId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
@@ -156,7 +163,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             String curRoleId = loginContext.getCurRoleId();
             if(!StringUtil.isEmpty(curRoleId)) {
                 if (curRoleId.contains(RoleConsts.USER_LEAD) &&
-                    !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
+                        !curRoleId.contains(RoleConsts.USER_ROLE_AO)) {
                     //for ASO / PSO / Inspector lead
                     workGroupIds = getByAsoPsoInspLead(searchParam, loginContext);
                 } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {
@@ -1025,6 +1032,61 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
         return dashStageCircleKpiDtos;
     }
 
+    @Override
+    public SearchParam setStatisticsDashFilter(SearchParam searchParam, String[] services, String[] appTypes, String applicationNo) {
+        if(services != null && services.length > 0) {
+            String serviceStr = SqlHelper.constructInCondition("viewApp.SVC_CODE", services.length);
+            searchParam.addParam("svc_codes", serviceStr);
+            for(int i = 0; i < services.length; i++){
+                searchParam.addFilter("viewApp.SVC_CODE" + i, services[i]);
+            }
+        }
+        if(appTypes != null && appTypes.length > 0) {
+            String appTypeStr = SqlHelper.constructInCondition("viewApp.APP_TYPE", appTypes.length);
+            searchParam.addParam("application_types", appTypeStr);
+            for(int i = 0; i < appTypes.length; i++){
+                searchParam.addFilter("viewApp.APP_TYPE" + i, appTypes[i]);
+            }
+        }
+        if(!StringUtil.isEmpty(applicationNo)){
+            searchParam.addFilter("applicationNo", applicationNo, true);
+        }
+        return searchParam;
+    }
+
+    @Override
+    public String getPrivilegeFlagByRole(LoginContext loginContext) {
+        //
+        if(loginContext != null) {
+            List<String> roleIds = loginContext.getRoleIds();
+            if(!IaisCommonUtils.isEmpty(roleIds)) {
+                if(roleIds.size() == 1 && roleIds.contains(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN)) {
+                    //new user data
+                    UserIdentifier userIdentifier = new UserIdentifier();
+                    userIdentifier.setId(loginContext.getLoginId());
+                    userIdentifier.setUserDomain("cs_hcsa");
+                    //add role
+                    String[] roleArr = {RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN};
+                    //get privilege Number
+                    Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
+                    if(privilegeNo != null && privilegeNo.length > 0) {
+                        //get Privilege
+                        long[] privilegeNoArr = Arrays.stream(privilegeNo).mapToLong(s -> Long.valueOf(s)).toArray();
+                        List<Privilege> privileges = privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity();
+                        if(!IaisCommonUtils.isEmpty(privileges)) {
+                            for(Privilege privilege : privileges) {
+                                if(privilege != null && "HALP_INTRA_STATISTICS_BOARD".equals(privilege.getId())) {
+                                    return AppConsts.SUCCESS;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return AppConsts.FAIL;
+    }
+
     private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {
         DashStageCircleKpiDto dashStageCircleKpiAllDto = new DashStageCircleKpiDto();
         int allBlueCount = dashStageCircleKpiAllDto.getDashBlueCount();
@@ -1219,8 +1281,8 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
     private List<SelectOption> getKpiAppStatusOptionByRole(String curRoleId, List<SelectOption> appStatusOption) {
         if(!StringUtil.isEmpty(curRoleId)) {
             if(curRoleId.contains(RoleConsts.USER_ROLE_ASO) ||
-               curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
-               curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
+                    curRoleId.contains(RoleConsts.USER_ROLE_PSO) ||
+                    curRoleId.contains(RoleConsts.USER_ROLE_INSPECTIOR)
             ) {
                 appStatusOption = inspectionService.getAppStatusOption(curRoleId);
             } else if (curRoleId.contains(RoleConsts.USER_ROLE_AO1)) {

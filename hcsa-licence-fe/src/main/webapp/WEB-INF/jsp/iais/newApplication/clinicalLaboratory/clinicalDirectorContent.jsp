@@ -110,7 +110,6 @@
 <%@include file="../../common/prsLoading.jsp"%>
 <script>
     $(document).ready(function () {
-
         holdCerByEMS();
         noRegWithProfBoard();
         addClinicalDirectorBtn();
@@ -118,12 +117,12 @@
         showOtherSpecialty();
         profRegNoBlur();
         designationBindEvent();
-        $('select.specialty').trigger('change');
-        $("input[name='noRegWithProfBoard']").trigger('change');
+        specialityEvent();
         doEdite();
+        assignSelectBindEvent();
+        //rfc,renew,rfi
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
-        //rfc,renew,rfi
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
             disabledPage();
             $('select').prop('disabled',true);
@@ -132,7 +131,6 @@
                 $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
             });
         }
-
         // init
         $('div.clinicalDirectorContent').each(function () {
             var assignSelVal = $(this).find('.assignSel:input').val();
@@ -147,16 +145,30 @@
                     data = {};
                 };
                 if ('1' == $(this).find('.licPerson:input').val()) {
-                    disableContent($(this).find('div.person-detail'), data);
+                    disableCdContent($(this).find('div.person-detail'), data);
                 }
             }
             $(this).find('select').niceSelect("update");
             //trigger prs
-            $(this).find('.profRegNo').trigger('blur');
+            if (!isEmpty($(this).find('.profRegNo').val())) {
+                $(this).find('.profRegNo').trigger('blur');
+            }
             $(this).find('.designation').trigger('change');
+            $(this).find('.noRegWithProfBoard').trigger('click');
         });
-        assignSelectBindEvent();
     });
+
+    var specialityEvent = function() {
+        $('.specialityField').unbind('DOMNodeInserted');
+        $('.specialityField').on('DOMNodeInserted', function() {
+            var $content = $(this).closest('div.clinicalDirectorContent');
+            if (isEmpty($(this).text())) {
+                $content.find('.specialtyGetDateLabel .mandatory').remove();
+            } else {
+                $content.find('.specialtyGetDateLabel').append('<span class="mandatory">*</span>');
+            }
+        });
+    }
 
     var holdCerByEMS = function() {
         $('.holdCerByEMS').unbind('click');
@@ -170,8 +182,14 @@
         $('.noRegWithProfBoard').unbind('click');
         $('.noRegWithProfBoard').click(function () {
             var noRegWithProfBoardVal = "";
-            if($(this).prop('checked')){
+            var $content = $(this).closest('div.clinicalDirectorContent');
+            if ($(this).prop('checked')) {
                 noRegWithProfBoardVal = $(this).val();
+                $content.find('.professionBoardLabel .mandatory').remove();
+                $content.find('.profRegNoLabel .mandatory').remove();
+            } else {
+                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
+                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
             }
             $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
         });
@@ -306,6 +324,7 @@
             $currContent.find('input.isPartEdit').val('1');
             $currContent.find('.edit-content').addClass('hidden');
             $currContent.find('input[type="text"]').prop('disabled', false);
+            $currContent.find('select').prop('disabled', false);
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');
@@ -343,9 +362,7 @@
         // console.info(assignSelVal);
         var $content = $(targetSelector);
         // init
-        $content.find(':input').css('border-color','');
-        $content.find(':input').css('color','');
-        $content.find(':input').prop('disabled', false);
+        unDisableContent($content);
         <c:if test="${'true' == canEdit}">
         $content.find('input.cdIndexNo').val('');
         </c:if>
@@ -373,12 +390,14 @@
         if (isEmpty(data)) {
             $current.addClass('hidden');
             clearFields($content);
+            return;
         }
+        console.info("11111111111111");
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
                 if (data.licPerson) {
-                    disableContent($current, val);
+                    disableCdContent($current, val);
                 }
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
@@ -472,12 +491,13 @@
             }
         });
         var prgNo = $current.find(('input.profRegNo')).val();
+        console.info("prgNo: " + prgNo);
         if (!isEmpty(prgNo)) {
             $current.find('.profRegNo').trigger('blur');
         }
     }
 
-    function disableContent($current, data) {
+    function disableCdContent($current, data) {
         if (isEmpty(data) || isEmpty($current)) {
             return;
         }
@@ -485,12 +505,7 @@
             //console.info(i + " : " + val);
             var $input = $current.find('.' + i + ':input');
             if ($input.length > 0 && !val) {
-                $input.prop('disabled', true);
-                $input.css('border-color','#ededed');
-                $input.css('color','#999');
-                if ($input[0].tagName.toLowerCase() == 'select') {
-                    $input.niceSelect("update");
-                }
+                disableContent($input);
             }
         });
     }
@@ -507,6 +522,7 @@
 
     var prsCallBackFuns ={
         fillData:function ($prsLoadingEle, data, needControlName) {
+            console.info(data);
             var specialty = data.specialty ;
             if(isEmpty(specialty)){
                 specialty = '';
@@ -559,18 +575,6 @@
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
         }
     };
-    $("input[name='noRegWithProfBoard']").change(function (){
-
-        if($(this).parent().prev().val()==1){
-            if($(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').length<1){
-                $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
-                $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').append("<span class=\"mandatory\">*</span>");
-            }
-        }else {
-            $(this).closest('div.control-caption-horizontal').prev().children().children('div.control-label').children('span').remove();
-            $(this).closest('div.control-caption-horizontal').prev().prev().children().children('div.control-label').children('span').remove();
-        }
-    });
 
     function designationBindEvent() {
         $('.designation').unbind('change');

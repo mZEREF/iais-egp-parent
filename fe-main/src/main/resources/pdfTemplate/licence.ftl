@@ -33,7 +33,7 @@
                   <tbody>
                   <tr align = "left">
                     <td>
-                      <p><br></br></p>
+                      <p><br/></p>
                       <p>1</p>
                     </td>
                     <td>
@@ -193,6 +193,11 @@
       font-size: 14pt;
       font-weight: 700;
       text-transform:uppercase;
+    }
+    .vehicle-number {
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px;
     }
     .lic-footer {
       margin-top: 150px;

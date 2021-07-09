@@ -11,24 +11,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
-<webui:setLayout name="iais-internet"/>
-<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
-    <div class="container">
-        <div class="navigation-gp">
-            <div class="row">
-                <%@ include file="../common/dashboardDropDown.jsp" %>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="prelogin-title">
-                <h1>Laboratory Developed Test</h1>
-            </div>
-        </div>
-    </div>
-</div>
-
+<webui:setLayout name="iais-blank"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
@@ -39,7 +22,7 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
-                                    <div id = 'print'>
+                                    <div id = "print">
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
@@ -98,15 +81,6 @@
                                         </iais:value>
                                     </iais:row>
                                         </div>
-                                    <div class="application-tab-footer">
-                                        <div class="row">
-                                            <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/IaisSubmissionData/1/prepareData"><em class="fa fa-angle-left"></em> Back</a></div>
-                                            <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,11 +104,11 @@
     .prelogin-title{
         padding-left: 90px;
     }
-    @page { size: portrait; }
+
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-        doPrint('print');
+        doPrint();
 
     });
 
@@ -142,14 +116,25 @@
     var isChrome = userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1;
 
 
-    var doPrint = function (id) {
+    var doPrint = function () {
         $('a').prop('disabled',true);
         if(isChrome){
             addPrintListener();
-            printpage(id);
+            window.print();
         }else{
-            printpage(id);
+            window.print();
             window.close();
+        }
+    }
+    var addPrintListener = function () {
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function(mql) {
+                if (mql.matches) {
+                } else {
+                    window.close();
+                }
+            });
         }
     }
 </script>

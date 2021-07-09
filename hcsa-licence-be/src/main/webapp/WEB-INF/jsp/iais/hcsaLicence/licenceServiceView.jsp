@@ -29,7 +29,7 @@
       <%@include file="../withdrawViewForm/withdrawForm.jsp"%>
     </c:when>
     <c:otherwise>
-      <%@include file="viewPremises.jsp"%>
+      <%@include file="viewApplication.jsp"%>
     </c:otherwise>
   </c:choose>
   <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel"

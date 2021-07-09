@@ -1,8 +1,9 @@
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                 <div class="app-font-size-16">
                     <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
                 </div>
@@ -13,7 +14,7 @@
 </div>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
-<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${isRfi}">1</c:if>"/>
 
 <c:set var="vehicleDtoList" value="${vehicleDtoList}"/>
 <div class="row vehiclesForm">
@@ -35,8 +36,6 @@
             <input type="hidden" class ="isPartEdit" name="isPartEdit${vehicleStat.index}" value="0"/>
             <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
 
-
-
             <div class="col-md-12 col-xs-12">
                 <p style="font-weight: 600;font-size: 2.2rem"></p>
             </div>
@@ -52,9 +51,9 @@
                             </label>
                         </div>
 
-                        <div class="col-md-7 col-xs-7 text-right">
-                            <c:if test="${vehicleStat.index - vehicleConfigDto.mandatoryCount >=0}">
-                                <div class="">
+                        <div class="col-md-7 col-xs-7 text-right ">
+                            <c:if test="${!isRfi}"><%-- && (vehicleStat.index - vehicleConfigDto.mandatoryCount >= 0)--%>
+                                <div class="vehicleRemoveBtn">
                                     <h4 class="text-danger">
                                         <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                     </h4>
@@ -138,7 +137,7 @@
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
         </c:choose>
-        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>">
+        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn || isRfi}">hidden</c:if>">
             <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Vehicle</span>
             </span>
@@ -160,14 +159,13 @@
             disabledPage();
         }
 
-
+        refreshVehicle();
     });
 
     var addVehicle = function(){
         $('.addVehicleBtn').click(function () {
             showWaiting();
             var vehicleLength = $('.vehicleContent').length;
-
             $.ajax({
                 url: '${pageContext.request.contextPath}/vehicle-html',
                 dataType: 'json',
@@ -178,23 +176,8 @@
                 success: function (data) {
                     if ('200' == data.resCode) {
                         $('.addVehicleDiv').before(data.resultJson+'');
-                        //
-                        removeVehicle();
-
-                        var vehicleLength = $('.vehicleContent').length;
-                        $('input[name="vehiclesLength"]').val(vehicleLength);
-                        //hidden add more
-                        if (vehicleLength >= '${vehicleConfigDto.maximumCount}') {
-                            $('.addVehicleDiv').addClass('hidden');
-                        }
-                        if(vehicleLength <= '${vehicleConfigDto.mandatoryCount}'){
-                            //remove del btn for mandatory count
-
-                        }
-                        $('.vehicleContent').each(function (k,v) {
-                            $(this).find('.assign-psn-item').html(k+1);
-                        });
-
+                        removeVehicle();//bind event
+                        refreshVehicle();
                         $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
@@ -211,28 +194,49 @@
     var removeVehicle = function () {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
+            showWaiting();
+            var vehicleLength = $('.vehicleContent').length;
+            if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
+                dismissWaiting();
+                return;
+            }
             var $currVehicleContent = $(this).closest('div.vehicleContent');
             $currVehicleContent.remove();
-            var vehicleLength = $('.vehicleContent').length;
-            $('input[name="vehiclesLength"]').val(vehicleLength);
-            //reset number
-            $('div.vehicleContent').each(function (k,v) {
-                $(this).find('.assign-psn-item').html(k+1);
-                $(this).find('.vehicleName').prop('name','vehicleName'+k);
-                $(this).find('.chassisNum').prop('name','chassisNum'+k);
-                $(this).find('.engineNum').prop('name','engineNum'+k);
-                $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
-                $(this).find('.vehicleIndexNo').prop('name','vehicleIndexNo'+k);
-            });
-            //display add more
-            if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
-                $('.addVehicleDiv').removeClass('hidden');
-            }
-            if(vehicleLength <= 1){
-                $('.vehicleContent:eq(0) .assign-psn-item').html('');
-            }
             $('#isEditHiddenVal').val('1');
+            refreshVehicle();
+            dismissWaiting();
         });
+    }
+
+    function refreshVehicle() {
+        var vehicleLength = $('.vehicleContent').length;
+        $('input[name="vehiclesLength"]').val(vehicleLength);
+        if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
+            $('.vehicleRemoveBtn').hide();
+        } else {
+            $('.vehicleRemoveBtn').show();
+        }
+        //reset number
+        $('div.vehicleContent').each(function (k,v) {
+            $(this).find('.assign-psn-item').html(k+1);
+            $(this).find('.vehicleName').prop('name','vehicleName'+k);
+            $(this).find('.chassisNum').prop('name','chassisNum'+k);
+            $(this).find('.engineNum').prop('name','engineNum'+k);
+            $(this).find('.isPartEdit').prop('name','isPartEdit'+k);
+            $(this).find('.vehicleIndexNo').prop('name','vehicleIndexNo'+k);
+            <c:if test="${AppSubmissionDto.appType == 'APTY002'}" >
+            if (k == 0) {
+                $(this).find('.vehicleRemoveBtn').hide();
+            }
+            </c:if>
+        });
+        //display add more
+        if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
+            $('.addVehicleDiv').removeClass('hidden');
+        }
+        if (vehicleLength <= 1) {
+            $('.vehicleContent:eq(0) .assign-psn-item').html('');
+        }
     }
 
     var doEdite = function () {
@@ -244,7 +248,6 @@
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');
-
             $('#isEditHiddenVal').val('1');
         });
     }

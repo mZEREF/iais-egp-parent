@@ -20,7 +20,7 @@
                                 </label>
                             </div>
                             <div class="col-md-7 col-xs-7 text-right">
-                                <div class="">
+                                <div class="vehicleRemoveBtn">
                                     <h4 class="text-danger">
                                         <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                     </h4>

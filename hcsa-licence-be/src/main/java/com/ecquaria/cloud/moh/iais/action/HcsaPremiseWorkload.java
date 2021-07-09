@@ -119,7 +119,7 @@ public class HcsaPremiseWorkload {
             HcsaPrimiseWorkloadDto hcsaPrimiseWorkloadDto = new HcsaPrimiseWorkloadDto();
             String name = item.getStageId();
             String manhour = ParamUtil.getString(request, name);
-            if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour)){
+            if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour) && manhour.length() <= 2){
                 item.setManhourCount(manhour);
                 hcsaPrimiseWorkloadDto.setId(item.getId());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
@@ -133,7 +133,13 @@ public class HcsaPremiseWorkload {
                 if(StringUtil.isEmpty(manhour)){
                     item.setManhourCount(null);
                     errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
-                }else if(!StringUtils.isNumeric(manhour)){
+                } else if (manhour.length() > 2) {
+                    item.setManhourCount(manhour);
+                    Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
+                    map.put("field", "Workload Manhours");
+                    map.put("maxlength", "2");
+                    errMap.put(name,MessageUtil.getMessageDesc("GENERAL_ERR0041", map));
+                } else if(!StringUtils.isNumeric(manhour)){
                     item.setManhourCount(manhour);
                     errMap.put(name,MessageUtil.getMessageDesc("SC_ERR007"));
                 }else{

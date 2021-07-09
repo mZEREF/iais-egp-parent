@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -57,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -77,6 +80,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -828,9 +832,6 @@ public class NewApplicationHelper {
         }
         setSvcScopeInfo(appGrpPremisesDtos,appSvcRelatedInfoDto,map);
     }
-
-
-
 
     public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto){
         if(appGrpPremisesDto == null){
@@ -1842,9 +1843,23 @@ public class NewApplicationHelper {
             premHci = appGrpPremisesDto.getEasMtsHciName() + premKey;
         }
         return premHci;
-
     }
 
+    public static String getHciName(AppGrpPremisesDto appGrpPremisesDto){
+        String hciName = "";
+        if (appGrpPremisesDto == null) {
+            hciName = null;
+        } else if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getOffSiteHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getConveyanceHciName();
+        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            hciName = appGrpPremisesDto.getEasMtsHciName();
+        }
+        return hciName;
+    }
 
     public static boolean checkIsRfi(HttpServletRequest request){
         Object requestInformationConfig = ParamUtil.getSessionAttr(request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
@@ -3839,4 +3854,27 @@ public class NewApplicationHelper {
         riskLevelResult.add(so3);
         return riskLevelResult;
     }
+
+    public static boolean isEmpty(String assignSel) {
+        return StringUtil.isEmpty(assignSel) || "-1".equals(assignSel);
+    }
+
+    public static String getAssignSelect(String idType, String idNumber, String defaultVal) {
+        String personKey = getPersonKey(idType, idNumber);
+        if (StringUtil.isEmpty(personKey)) {
+            personKey = defaultVal;
+        }
+        return personKey;
+    }
+
+    public static String getRelatedAppId(String appId, String licenceId) {
+        String orgAppId = appId;
+        if (StringUtil.isEmpty(appId) && StringUtil.isNotEmpty(licenceId)) {
+            LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
+            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getLicCorrBylicId(licenceId).getEntity();
+            orgAppId = Optional.ofNullable(licAppCorrDtos).map(dtos -> dtos.get(0).getApplicationId()).orElseGet(() -> null);
+        }
+        return orgAppId;
+    }
+
 }

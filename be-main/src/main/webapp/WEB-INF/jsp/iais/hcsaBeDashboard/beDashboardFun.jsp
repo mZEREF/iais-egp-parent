@@ -6,12 +6,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 <style>
-    .font-color-black{
-        color: #333333;
-    }
-    .cursor-default{
-        cursor: default;!important;
-    }
+  .font-color-black{
+    color: #333333;
+  }
+  .cursor-default{
+    cursor: default;!important;
+  }
 </style>
 <script>
 
@@ -132,8 +132,10 @@
         }
     };
 
-    var doClear = function () {
+    var doStatisticsBoardClear = function () {
         showWaiting();
+        $('input[name="applicationNo"]').val("");
+
         $('#appType').val('');
         $('#appType').next().find('span:eq(0)').html('-- Select --');
         $('#appType').next().find('input[type="checkbox"]').prop('checked',false);

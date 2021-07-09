@@ -51,8 +51,8 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                         StringBuilder sb=new StringBuilder();
                         Map<Integer,String> treeMap=new LinkedHashMap<>();
                         for (int i = 0; i < s.length; i++) {
-                            if (easMtsHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                treeMap.put(easMtsHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
+                            if (easMtsHciName.toUpperCase().contains(s[i].toUpperCase())) {
+                                treeMap.put(easMtsHciName.toUpperCase().indexOf(s[i].toUpperCase()),s[i]);
                             }
                         }
                         if(!treeMap.isEmpty()){
@@ -128,7 +128,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
 
         if(StringUtil.isEmpty(easMtsPubEmail)){
             if(!"UOT002".equals(easMtsUseOnly)){
-                map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public email", "field"));
+                map.put("easMtsPubEmail"+index,MessageUtil.replaceMessage("GENERAL_ERR0006", "Public Email", "field"));
             }
         }else {
             boolean email = ValidationUtils.isEmail(easMtsPubEmail);

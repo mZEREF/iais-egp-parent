@@ -26,6 +26,9 @@
                   <c:when test="${'true' eq taskHasBeenAssigned}">
                     <h2><iais:message key="LOLEV_ACK039" escape="true"></iais:message></h2>
                   </c:when>
+                  <c:when test="${not empty comPoolAck}">
+                    <h2><c:out value="${comPoolAck}"></c:out></h2>
+                  </c:when>
                   <c:otherwise>
                     <h2><iais:message key="LOLEV_ACK029" escape="true"></iais:message></h2>
                   </c:otherwise>

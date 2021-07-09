@@ -76,8 +76,7 @@ public class MyInfoAjax {
 		}
 		return null;
 	}
-
-	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix){
+	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix,String nric){
 		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			log.info("-----------myinfo.true.open is No-------");
@@ -85,10 +84,10 @@ public class MyInfoAjax {
 			return ;
 		}
 		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
-    	LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-		if(loginContext != null){
+		nric = getNric(nric, request);
+		if(StringUtil.isNotEmpty(nric)){
 			String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
-			String nric = loginContext.getNricNum();
+
 			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric)); ;
 			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
 			if(takenStartTime == null){
@@ -105,8 +104,10 @@ public class MyInfoAjax {
 			}
 		}
 	}
-
-	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix){
+	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix){
+		setVerifyTakenAndAuthoriseApiUrl(request,redirectUriPostfix,"");
+	}
+	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix,String nric){
 		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
 			log.info("-----------myinfo.true.open is No-------");
@@ -119,6 +120,7 @@ public class MyInfoAjax {
 			String state = ParamUtil.getString(request,"state");
 			String error = ParamUtil.getString(request,"error");
 			String errorDescription = ParamUtil.getString(request,"error_description");
+			log.info(StringUtil.changeForLog("--------state :"+state+"----------"));
 			if("500".equalsIgnoreCase(error)){
 				log.info("Unknown or other server side errors");
 			}else if("503".equalsIgnoreCase(error)){
@@ -128,13 +130,13 @@ public class MyInfoAjax {
 				log.info(errorDescription);
 			}else {
 				//Assembly data acquisition get taken
-				LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-				if(loginContext != null){
+				nric = getNric(nric,request);
+				if(StringUtil.isNotEmpty(nric)){
 					String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
-					MyInfoTakenDto accessTokenDto =  getTakenCallMyInfo(code,loginContext.getNricNum(),redirectUri);
+					MyInfoTakenDto accessTokenDto =  getTakenCallMyInfo(code,nric,redirectUri);
 					if(accessTokenDto != null){
-						setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(loginContext.getNricNum(),accessTokenDto.getToken_type(),accessTokenDto.getAccess_token()),request);
-						MyInfoDto myInfoDto =  getMyInfoByTrue(loginContext.getNricNum(),accessTokenDto.getToken_type(),accessTokenDto.getAccess_token());
+						setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(nric,accessTokenDto.getToken_type(),accessTokenDto.getAccess_token()),request);
+						MyInfoDto myInfoDto =  getMyInfoByTrue(nric,accessTokenDto.getToken_type(),accessTokenDto.getAccess_token());
 						return myInfoDto;
 					}else {
 						log.info("------------The myinfo fetch taken connection failed-----------");
@@ -145,8 +147,24 @@ public class MyInfoAjax {
 
 			}
 		}
-
 		return null;
+	}
+
+	private String getNric(String nric,HttpServletRequest request){
+		if(StringUtil.isNotEmpty(nric)){
+           return nric;
+		}
+		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		if(loginContext != null){
+			return loginContext.getNricNum();
+		}
+		log.info(StringUtil.changeForLog("-------------- getNric is null ------------"));
+		return "";
+	}
+
+
+	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix){
+	   return  noTakenCallMyInfo(bpc,redirectUriPostfix,"");
 	}
 
 	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){

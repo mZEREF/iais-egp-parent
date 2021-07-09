@@ -81,6 +81,7 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -150,14 +151,7 @@ public class LicenceApproveBatchjob {
     @Value("${iais.email.sender}")
     private String mailSender;
 
-    @Value("${iais.system.one.address}")
-    private String systemAddressOne;
 
-    @Value("${iais.system.two.address}")
-    private String systemAddressTwo;
-
-    @Value("${iais.system.phone.number}")
-    private String systemPhoneNumber;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -169,9 +163,9 @@ public class LicenceApproveBatchjob {
     private String secSecretKey;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-    @Autowired
-    private NotificationHelper notificationHelper;
 
+    @Autowired
+    private LicenceFileDownloadService licenceFileDownloadService;
     private Map<String, Integer> hciCodeVersion = new HashMap();
     private Map<String, Integer> keyPersonnelVersion = IaisCommonUtils.genNewHashMap();
 
@@ -259,7 +253,14 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
-
+                        try {
+                            for (ApplicationDto applicationDto:applicationDtos
+                            ) {
+                                licenceFileDownloadService.sendRfc008Email(applicationGroupDto,applicationDto);
+                            }
+                        }catch (Exception e){
+                            log.error(e.getMessage());
+                        }
                         generateUEN(eventBusLicenceGroupDtos);
                     }
 

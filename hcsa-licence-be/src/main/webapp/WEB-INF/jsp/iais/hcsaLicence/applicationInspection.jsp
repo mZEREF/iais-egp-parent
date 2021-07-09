@@ -54,7 +54,7 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Licensee Name:</p>
+                            <p>Licensee Name</p>
                         </td>
                         <td class="col-xs-4">
                             <p><c:out value="${insRepDto.licenseeName}"/></p>

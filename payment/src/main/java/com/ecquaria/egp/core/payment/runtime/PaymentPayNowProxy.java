@@ -128,7 +128,8 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.DAY_OF_MONTH, 1);
+		int minute = cal.get(Calendar.MINUTE);
+		cal.set(Calendar.MINUTE, minute + 1);
 		String expiryDate = df.format(cal.getTime());
 
 		double amount = Double.parseDouble(amo)/100;

@@ -180,20 +180,20 @@ public class ApplicationServiceImpl implements ApplicationService {
         boolean result = true;
         Map<String,List<ApplicationDto>> applicationMap = tidyApplicationDto(applicationDtoList);
         if(applicationMap!=null && applicationMap.size()>0){
-          for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
-              String key = entry.getKey();
-              List<ApplicationDto> value = entry.getValue();
-              if(appNo.equals(key)){
-                  continue;
-              }else if(!containStatus(value,status)){
-                  result = false;
-                  break;
-              }
+            for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
+                String key = entry.getKey();
+                List<ApplicationDto> value = entry.getValue();
+                if(appNo.equals(key)){
+                    continue;
+                }else if(!containStatus(value,status)){
+                    result = false;
+                    break;
+                }
 
-          }
-          for(ApplicationDto applicationDto : applicationDtoList){
-              applicationDto.setStatus(status);
-          }
+            }
+            for(ApplicationDto applicationDto : applicationDtoList){
+                applicationDto.setStatus(status);
+            }
         }
         return result;
     }
@@ -548,23 +548,23 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
-       }
+        }
     }
 
     @Override
     public void alertSelfDeclNotification() {
         //These emails will only be reminded three times at different times, see database table -> smemail.notification
-       List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
-       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
+        List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_NOTIC, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT_SMS , email_008);
 
-       List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
-       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
+        List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR_SMS, email_001);
 
-       List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
-       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
+        List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_NOTICE, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC_SMS, email_002);
 
-       List<SelfAssMtEmailDto> email_to_inspecotr_004 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
-       sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_004);
+        List<SelfAssMtEmailDto> email_to_inspecotr_004 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB).getEntity();
+        sendChecklistReminder(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR_FOR_BATCH_JOB, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR, "", MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_TO_INSPECTOR_SMS, email_to_inspecotr_004);
     }
 
     @Override
@@ -895,7 +895,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if(!StringUtil.isEmpty(eventRefNum)){
             EicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
             if(appEicRequestTrackingDto!=null){
-                 eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
+                eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
                 if(eventApplicationGroupDto!= null){
                     eicCallFeApplication(eventApplicationGroupDto);
                 }else{
@@ -1079,10 +1079,26 @@ public class ApplicationServiceImpl implements ApplicationService {
     public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
-        if( vehicleAppTypeFlag&&taskDto != null&&InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
-            {
-                if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
-                    String stageId = taskDto.getTaskKey();
+        if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+            if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
+                ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                String stageId = taskDto.getTaskKey();
+                if(applicationGroupDto != null) {
+                    String newLicenseeId = applicationGroupDto.getNewLicenseeId();
+                    String licenseeId = applicationGroupDto.getLicenseeId();
+                    if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
+                        vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                    } else {
+                        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
+                                HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
+                                HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
+                        ) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+                        }
+                    }
+                } else {
                     if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
@@ -1091,9 +1107,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                     ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
                     }
-                } else {
-                    log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
                 }
+            } else {
+                log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));
             }
         }
         return vehicleFlag;
@@ -1138,8 +1154,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-            if(ApplicationConsts.VEHICLE_STATUS_SUBMIT.equals(appSvcVehicleDto.getStatus())
-                    && ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
+            if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
                 vehicleNoList.add(appSvcVehicleDto.getVehicleName());
             }
         } else {
