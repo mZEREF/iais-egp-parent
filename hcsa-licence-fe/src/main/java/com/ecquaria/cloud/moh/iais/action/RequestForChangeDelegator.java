@@ -387,6 +387,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "maxFile", maxFile);
         ParamUtil.setRequestAttr(bpc.request, "pageShowFileDtos", pageShowFileDtos);
+        bpc.request.getSession().removeAttribute("appSubmissionDtos");
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
@@ -589,6 +590,22 @@ public class RequestForChangeDelegator {
         if(error.isEmpty()){
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
+            if(licenseeDto != null && licenceDto != null){
+                String svcName = licenceDto.getSvcName();
+                log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
+                if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
+                        || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
+                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                    hcsaServiceDto.setSvcName(svcName);
+                    hcsaServiceDtos.add(hcsaServiceDto);
+                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                    if(!canCreateEasOrMts){
+                        error.put("uenError","RFC_ERR022");
+                    }
+                }
+            }
         }
 
         ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));

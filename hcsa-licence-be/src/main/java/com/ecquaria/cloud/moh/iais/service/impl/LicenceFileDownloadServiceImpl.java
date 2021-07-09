@@ -79,6 +79,11 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,10 +107,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -299,6 +300,80 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         return organizationClient.getTasksByRefNo(refNo).getEntity();
 
     }
+
+    @Override
+    public void sendRfc008Email(ApplicationGroupDto applicationGroupDto, ApplicationDto application) throws IOException, TemplateException {
+        String serviceName = HcsaServiceCacheHelper.getServiceById(application.getServiceId()).getSvcName();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
+        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
+            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(application.getOriginLicenceId()).getEntity();
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("officer_name", "");
+            emailMap.put("ServiceLicenceName", serviceName);
+            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
+            emailMap.put("Licensee", licenseeDto.getName());
+            if(licenceDto!=null&&licenceDto.getLicenceNo()!=null){
+                emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
+            }else {
+                emailMap.put("LicenceNumber", "");
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+            if(appEditSelectDtos!=null&&appEditSelectDtos.size()!=0){
+                if (appEditSelectDtos.get(0).isServiceEdit()){
+                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
+                }
+            }
+            if (applicationGroupDto.getNewLicenseeId()!=null){
+                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
+            }
+            emailMap.put("ServiceNames", stringBuilder);
+            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
+            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
+            emailParam.setQueryCode(application.getApplicationNo());
+            emailParam.setReqRefNum(application.getApplicationNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(application.getApplicationNo());
+            emailParam.setTemplateContent(emailMap);
+            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
+            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
+            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+            map1.put("ApplicationNumber", application.getApplicationNo());
+            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
+            emailParam.setSubject(subject);
+            log.info("start send email start");
+            notificationHelper.sendNotification(emailParam);
+            log.info("start send email end");
+            //emailClient.sendNotification(emailDto).getEntity();
+
+            //sms
+            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS).getEntity();
+            subject = null;
+            try {
+                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
+            } catch (IOException |TemplateException e) {
+                log.info(e.getMessage(),e);
+            }
+            EmailParam smsParam = new EmailParam();
+            smsParam.setQueryCode(application.getApplicationNo());
+            smsParam.setReqRefNum(application.getApplicationNo());
+            smsParam.setRefId(application.getApplicationNo());
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setSubject(subject);
+            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
+            emailMap.put("ApplicationNumber", application.getApplicationNo());
+            smsParam.setTemplateContent(emailMap);
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            log.info("start send sms start");
+            notificationHelper.sendNotification(smsParam);
+            log.info("start send sms end");
+        }
+
+    }
+
     @Override
     public void initPath() {
 
@@ -322,7 +397,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
-    ,String groupPath,String submissionId)  throws Exception {
+            ,String groupPath,String submissionId)  throws Exception {
 
         Boolean flag=Boolean.FALSE;
 
@@ -371,12 +446,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
-        ,String groupPath)  {
+    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
+            ,String groupPath)  {
 
 
-            try {
-                if(!zipEntry.getName().endsWith(File.separator)){
+        try {
+            if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
@@ -399,18 +474,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         count=cos.read(b);
                     }
 
-                }else {
-                    log.info(zipEntry.getName()+"------zipEntry.getName()------");
-                    String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
-                    if(s.endsWith(File.separator)){
-                        s=s.substring(0,s.length()-1);
-                    }
-                    File file = MiscUtil.generateFile(s);
-                    file.mkdirs();
-                    log.info(file.getPath()+"-----else  zipFile-----");
-
+            }else {
+                log.info(zipEntry.getName()+"------zipEntry.getName()------");
+                String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
+                if(s.endsWith(File.separator)){
+                    s=s.substring(0,s.length()-1);
                 }
-            }catch (IOException e){
+                File file = MiscUtil.generateFile(s);
+                file.mkdirs();
+                log.info(file.getPath()+"-----else  zipFile-----");
+
+            }
+        }catch (IOException e){
 
             }finally {
                 if(cos!=null){
@@ -442,16 +517,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-            }
-
         }
+
+    }
 
 
 
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId,Long l)
-           {
+    {
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
 
@@ -538,7 +613,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(cessionOrwith);
         boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
         if(b){
-           return Boolean.FALSE;
+            return Boolean.FALSE;
         }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
@@ -716,7 +791,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }
 
-                });
+        });
         log.info("withdrow email function end");
 
     }
@@ -728,8 +803,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ApplicationDto next = applicationDtoListIterator.next();
             String status = next.getStatus();
             if(!ApplicationConsts.PENDING_ASO_REPLY.equals(status)&&
-               !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
-               !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
+                    !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
+                    !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
                 List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(next.getId()).getEntity();
                 if(!entity.isEmpty()){
                     Iterator<AppPremiseMiscDto> iterator = entity.iterator();
@@ -756,8 +831,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*
-    *
-    * save file to fileRepro*/
+     *
+     * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath,"files");
         if(!file.exists()){
@@ -884,9 +959,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     "saveFileName", currentApp + "-" + currentDomain,
                     ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(applicationDtos));
 
-        }
+    }
 
-        public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
+    public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
         AuditTrailDto intranet =new AuditTrailDto();
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
@@ -1067,7 +1142,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             boolean flag=false;
             for(ApplicationDto application :v){
                 if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
-                ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
+                        ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
                     requestForInforList.add(application);
                     flag=true;
                 }
@@ -1177,90 +1252,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
                         if(!autoRfc){
                             list.addAll(applicationDtoList);
                         }
-                    }
-
-                    String serviceId = application.getServiceId();
-                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                    ApplicationGroupDto applicationGroupDto = k;
-                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationGroupDto.getLicenseeId()).getEntity();
-
-                    try {
-                        if(application.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE) && applicationGroupDto.isAutoApprove()){
-                            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(application.getOriginLicenceId()).getEntity();
-                            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                            emailMap.put("officer_name", "");
-                            emailMap.put("ServiceLicenceName", serviceName);
-                            emailMap.put("ApplicationDate", Formatter.formatDate(applicationGroupDto.getSubmitDt()));
-                            emailMap.put("Licensee", licenseeDto.getName());
-                            if(licenceDto!=null&&licenceDto.getLicenceNo()!=null){
-                                emailMap.put("LicenceNumber", licenceDto.getLicenceNo());
-                            }else {
-                                emailMap.put("LicenceNumber", "");
-                            }
-                            StringBuilder stringBuilder = new StringBuilder();
-                            List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(application.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                            if(appEditSelectDtos!=null&&appEditSelectDtos.size()!=0){
-                                if (appEditSelectDtos.get(0).isServiceEdit()){
-                                    stringBuilder.append("<p class=\"line\">   ").append("Remove subsumed service").append("</p>");
-                                }
-                            }
-                            if (applicationGroupDto.getNewLicenseeId()!=null){
-                                stringBuilder.append("<p class=\"line\">   ").append("Change in Management of Licensee").append("</p>");
-                            }
-                            emailMap.put("ServiceNames", stringBuilder);
-                            emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
-                            emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");
-                            EmailParam emailParam = new EmailParam();
-                            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER);
-                            emailParam.setQueryCode(application.getApplicationNo());
-                            emailParam.setReqRefNum(application.getApplicationNo());
-                            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                            emailParam.setRefId(application.getApplicationNo());
-                            emailParam.setTemplateContent(emailMap);
-                            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER).getEntity();
-                            Map<String, Object> map1 = IaisCommonUtils.genNewHashMap();
-                            map1.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
-                            map1.put("ApplicationNumber", application.getApplicationNo());
-                            String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map1);
-                            emailParam.setSubject(subject);
-                            log.info("start send email start");
-                            notificationHelper.sendNotification(emailParam);
-                            log.info("start send email end");
-                            //emailClient.sendNotification(emailDto).getEntity();
-
-                            //sms
-                            msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS).getEntity();
-                            subject = null;
-                            try {
-                                subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map1);
-                            } catch (IOException |TemplateException e) {
-                                log.info(e.getMessage(),e);
-                            }
-                            EmailParam smsParam = new EmailParam();
-                            smsParam.setQueryCode(application.getApplicationNo());
-                            smsParam.setReqRefNum(application.getApplicationNo());
-                            smsParam.setRefId(application.getApplicationNo());
-                            smsParam.setTemplateContent(emailMap);
-                            smsParam.setSubject(subject);
-                            emailMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(application.getApplicationType()));
-                            emailMap.put("ApplicationNumber", application.getApplicationNo());
-                            smsParam.setTemplateContent(emailMap);
-                            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
-                            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                            log.info("start send sms start");
-                            notificationHelper.sendNotification(smsParam);
-                            log.info("start send sms end");
-                        }
-
-                    }catch (Exception e ){
-                        log.info(e.getMessage(),e);
                     }
                 }
 
@@ -1285,8 +1283,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 

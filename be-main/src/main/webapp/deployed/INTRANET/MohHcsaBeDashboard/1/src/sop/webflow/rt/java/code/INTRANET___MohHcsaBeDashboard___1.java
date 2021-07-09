@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
@@ -112,31 +113,6 @@ public class INTRANET___MohHcsaBeDashboard___1 extends BaseProcessClass {
 	public void hcsaBeDashboardComDo_OnStepProcess_0() throws Exception {
 	// 		hcsaBeDashboardComDo->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "hcsaBeDashboardComDo", this); 
-	}
-
-	public void hcsaDashSysAll_OnStepProcess_0() throws Exception {
-	// 		hcsaDashSysAll->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hcsaDashSysAll", this); 
-	}
-
-	public void hcsaDashSysAllStep_OnStepProcess_0() throws Exception {
-	// 		hcsaDashSysAllStep->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hcsaDashSysAllStep", this); 
-	}
-
-	public void hcsaDashSysDetail_OnStepProcess_0() throws Exception {
-	// 		hcsaDashSysDetail->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetail", this); 
-	}
-
-	public void hcsaDashSysDetailStep_OnStepProcess_0() throws Exception {
-	// 		hcsaDashSysDetailStep->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetailStep", this); 
-	}
-
-	public void hcsaDashSysDetailStepPage_OnStepProcess_0() throws Exception {
-	// 		hcsaDashSysDetailStepPage->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hcsaDashSysDetailStepPage", this); 
 	}
 
 }

@@ -102,6 +102,7 @@
                 JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                 JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                 JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+                where  T1.STATUS not in ('APST009','APST045')
         ) T5  JOIN taskView T7 ON T7.ref_No = T5.corrid WHERE (T7.task_status = 'TSTATUS001' or T7.task_status = 'TSTATUS002')
                 <#if userId??> and T7.user_id = :userId </#if>
                 <#if roleId??> and T7.role_id = :roleId </#if>
@@ -146,6 +147,7 @@
                 JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID
                 JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                 JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
+                where  T1.STATUS not in ('APST009','APST045')
         ) T5   JOIN taskView T7 ON T7.ref_No = T5.corrid WHERE (T7.task_status = 'TSTATUS001' or T7.task_status = 'TSTATUS002')
                 <#if userId??> and T7.user_id = :userId </#if>
                 <#if roleId??> and T7.role_id = :roleId </#if>

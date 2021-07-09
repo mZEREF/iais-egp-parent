@@ -19,7 +19,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem1=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem1" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem1"></span>
     <br>
@@ -34,7 +34,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem2=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem2" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem2"></span>
     <br>
@@ -49,7 +49,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem3=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem3" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem3"></span>
     <br>
@@ -64,7 +64,7 @@
     </div>
     <div class="form-check col-xs-3">
       <input  class="form-check-input other-lic co-location" <c:if test="${appDeclarationMessageDto.criminalRecordsItem4=='0'}">checked="checked"</c:if> type="radio" name="criminalRecordsItem4" value = "0" aria-invalid="false">
-      <label class="form-check-label" ><span class="check-circle"></span>NO</label>
+      <label class="form-check-label" ><span class="check-circle"></span>No</label>
     </div>
     <span  class="error-msg col-xs-12" name="iaisErrorMsg" id="error_criminalRecordsItem4"></span>
     <br>

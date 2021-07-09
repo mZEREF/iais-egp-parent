@@ -157,7 +157,8 @@ public class NetsSysToSysController {
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
+        int minute = cal.get(Calendar.MINUTE);
+        cal.set(Calendar.MINUTE, minute + 1);
         String expiryDate = df.format(cal.getTime());
         log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
         log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);

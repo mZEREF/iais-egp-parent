@@ -921,6 +921,7 @@ public class InterInboxDelegator {
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
+            Map<String,Boolean> mapCanInsps = inboxService.getMapCanInsp();
             inboxAppQueryDtoList.forEach(h ->{
                 String status = h.getStatus();
                 Integer selfAssmtFlag = h.getSelfAssmtFlag();
@@ -930,12 +931,7 @@ public class InterInboxDelegator {
                         && selfAssmtFlag == 2){
                     h.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
                 }
-
-                if(h.getHasSubmitPrefDate() == null || 0==h.getHasSubmitPrefDate()){
-                    h.setCanInspection(Boolean.TRUE);
-                }else{
-                    h.setCanInspection(Boolean.FALSE);
-                }
+                h.setCanInspection(getCanInspFlow(h,mapCanInsps));
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
@@ -1537,5 +1533,9 @@ public class InterInboxDelegator {
         }
 
         return null;
+    }
+
+    private boolean getCanInspFlow(InboxAppQueryDto inboxAppQueryDto,Map<String,Boolean> mapCanInsps){
+        return mapCanInsps.get(StringUtil.getNonNull(inboxAppQueryDto.getApplicationType())+"_"+StringUtil.getNonNull(inboxAppQueryDto.getCode())) != null && (inboxAppQueryDto.getHasSubmitPrefDate() == null || 0==inboxAppQueryDto.getHasSubmitPrefDate());
     }
 }

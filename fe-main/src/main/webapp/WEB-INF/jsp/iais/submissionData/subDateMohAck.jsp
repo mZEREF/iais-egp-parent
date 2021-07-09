@@ -40,9 +40,9 @@
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <div class="row">
-            <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printpage('print')"> <em class="fa fa-print"></em>Print</a></div></p>
+            <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF();"> <em class="fa fa-print"></em>Print</a></div></p>
             <div class="col-lg-12 col-xs-12">
-                <div id = 'print' class="center-content">
+                <div id = "print" class="center-content">
                     <span style="font-size:2rem;"><%=msg%></span>
                 </div>
             </div>
@@ -65,3 +65,9 @@
     }
 
 </style>
+<script type="text/javascript">
+    function printWDPDF(){
+        window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohFeMainPrint?whichPage=ldtMsg",'_blank');
+    }
+
+</script>

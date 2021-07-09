@@ -89,168 +89,164 @@
                 </div>
               </div>
               <%@ include file="/WEB-INF/jsp/iais/hcsaBeDashboard/beDashboardMenu.jsp" %>
-              <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
-                <br>
-                <div class="row">
-                  <div class="col-xs-10 col-md-12">
-                    <div class="components">
-                      <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                         data-target="#beInboxFilter">Filter</a>
-                    </div>
+              <br>
+              <div class="row">
+                <div class="col-xs-10 col-md-12">
+                  <div class="components">
+                    <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
+                       data-target="#beInboxFilter">Filter</a>
                   </div>
                 </div>
-                <p></p>
-                <div id = "beInboxFilter" class="collapse">
-                  <iais:row>
-                    <iais:field value="Application No."/>
-                    <iais:value width="18">
-                      <input type="text" name="application_no" value="${dashSearchParam.filters['application_no']}"/>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="Application Type"/>
-                    <iais:value width="18">
-                      <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
-                                   firstOption="Please Select" needSort="true"
-                                   value="${dashSearchParam.filters['application_type']}"></iais:select>
-                    </iais:value>
-                  </iais:row>
-                  <c:if test="${'common' ne dashSwitchActionValue && 'reply' ne dashSwitchActionValue}">
-                    <iais:row>
-                      <iais:field value="Application Status"/>
-                      <iais:value width="18">
-                        <c:if test="${empty dashCommonPoolStatus}">
-                          <iais:select name="application_status" options="appStatusOption" needSort="true"
-                                       cssClass="application_status" firstOption="Please Select"
-                                       value="${dashAppStatus}"></iais:select>
-                        </c:if>
-                        <c:if test="${not empty dashCommonPoolStatus}">
-                          <iais:select name="application_status" options="appStatusOption" needSort="true"
-                                       cssClass="application_status" firstOption="Please Select"
-                                       value="APST029"></iais:select>
-                        </c:if>
-                      </iais:value>
-                    </iais:row>
-                  </c:if>
-                  <iais:row>
-                    <iais:field value="HCI Code"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_code" value="${dashSearchParam.filters['hci_code']}"/>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Name"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_name" value="${dashSearchParam.filters['hci_name']}"/>
-                    </iais:value>
-                  </iais:row>
-                  <iais:row>
-                    <iais:field value="HCI Address"/>
-                    <iais:value width="18">
-                      <input type="text" name="hci_address" value="${dashSearchParam.filters['hci_address']}"/>
-                    </iais:value>
-                  </iais:row>
-                  <iais:action style="text-align:right;">
-                    <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
-                    <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
-                  </iais:action>
-                </div>
-              </c:if>
-            </iais:section>
-            <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
-              <br>
-              <br>
-              <h3>
-                <span>Search Results</span>
-              </h3>
-              <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
-              <div class="table-gp">
-                <table class="table application-group" style="border-collapse:collapse;">
-                  <thead>
-                  <tr>
-                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="" value="Last Modified Date"></iais:sortableHeader>
-                    <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
-                  </tr>
-                  </thead>
-                  <c:choose>
-                    <c:when test="${empty dashSearchResult.rows}">
-                      <tr>
-                        <td colspan="7">
-                          <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                        </td>
-                      </tr>
-                    </c:when>
-                    <c:otherwise>
-                      <c:forEach var="pool" items="${dashSearchResult.rows}"
-                                 varStatus="status">
-                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
-                          <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
-                          <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
-                                                                                             data-toggle="collapse" aria-expanded="false"
-                                                                                             data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
-                                                                                             onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
-                          <td><iais:code code="${pool.applicationType}"/></td>
-                          <td><c:out value="${pool.submissionType}"/></td>
-                          <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
-                          <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
-                          <td><iais:code code="${pool.paymentStatus}"/></td>
-                        </tr>
-                      </c:forEach>
-                    </c:otherwise>
-                  </c:choose>
-                </table>
               </div>
-              <c:if test="${'assignme' eq dashSwitchActionValue}">
+              <p></p>
+              <div id = "beInboxFilter" class="collapse">
+                <iais:row>
+                  <iais:field value="Application No."/>
+                  <iais:value width="18">
+                    <input type="text" name="application_no" value="${dashSearchParam.filters['application_no']}"/>
+                  </iais:value>
+                </iais:row>
+                <iais:row>
+                  <iais:field value="Application Type"/>
+                  <iais:value width="18">
+                    <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
+                                 firstOption="Please Select" needSort="true"
+                                 value="${dashSearchParam.filters['application_type']}"></iais:select>
+                  </iais:value>
+                </iais:row>
+                <c:if test="${'common' ne dashSwitchActionValue && 'reply' ne dashSwitchActionValue}">
+                  <iais:row>
+                    <iais:field value="Application Status"/>
+                    <iais:value width="18">
+                      <c:if test="${empty dashCommonPoolStatus}">
+                        <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                     cssClass="application_status" firstOption="Please Select"
+                                     value="${dashAppStatus}"></iais:select>
+                      </c:if>
+                      <c:if test="${not empty dashCommonPoolStatus}">
+                        <iais:select name="application_status" options="appStatusOption" needSort="true"
+                                     cssClass="application_status" firstOption="Please Select"
+                                     value="APST029"></iais:select>
+                      </c:if>
+                    </iais:value>
+                  </iais:row>
+                </c:if>
+                <iais:row>
+                  <iais:field value="HCI Code"/>
+                  <iais:value width="18">
+                    <input type="text" name="hci_code" value="${dashSearchParam.filters['hci_code']}"/>
+                  </iais:value>
+                </iais:row>
+                <iais:row>
+                  <iais:field value="HCI Name"/>
+                  <iais:value width="18">
+                    <input type="text" name="hci_name" value="${dashSearchParam.filters['hci_name']}"/>
+                  </iais:value>
+                </iais:row>
+                <iais:row>
+                  <iais:field value="HCI Address"/>
+                  <iais:value width="18">
+                    <input type="text" name="hci_address" value="${dashSearchParam.filters['hci_address']}"/>
+                  </iais:value>
+                </iais:row>
+                <iais:action style="text-align:right;">
+                  <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">Clear</button>
+                  <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
+                </iais:action>
+              </div>
+            </iais:section>
+            <br>
+            <br>
+            <h3>
+              <span>Search Results</span>
+            </h3>
+            <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
+            <div class="table-gp">
+              <table class="table application-group" style="border-collapse:collapse;">
+                <thead>
+                <tr>
+                  <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="" value="Last Modified Date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false" field="PMT_STATUS" value="Payment Status"></iais:sortableHeader>
+                </tr>
+                </thead>
                 <c:choose>
-                  <c:when test="${'AO1' eq iais_Login_User_Info_Attr.curRoleId}">
-                    <div class="application-tab-footer">
-                      <div class="row">
-                        <div class="col-xs-11 col-md-11">
-                          <div class="text-right">
-                            <a class="btn btn-primary btn-support"
-                               onclick="javascript:approve()">Support</a>
-                            <a class="btn btn-primary btn-approve"
-                               onclick="javascript:aoApprove('ao1approve')">Approve</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <c:when test="${empty dashSearchResult.rows}">
+                    <tr>
+                      <td colspan="7">
+                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                      </td>
+                    </tr>
                   </c:when>
-                  <c:when test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId}">
-                    <div class="application-tab-footer">
-                      <div class="row">
-                        <div class="col-xs-11 col-md-11">
-                          <div class="text-right">
-                            <a class="btn btn-primary btn-support"
-                               onclick="javascript:approve()">Support</a>
-                            <a class="btn btn-primary btn-approve"
-                               onclick="javascript:aoApprove('ao2approve')">Approve</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </c:when>
-                  <c:when test="${'AO3' eq iais_Login_User_Info_Attr.curRoleId}">
-                    <div class="application-tab-footer">
-                      <div class="row">
-                        <div class="col-xs-11 col-md-11">
-                          <div class="text-right">
-                            <a class="btn btn-primary btn-approve"
-                               onclick="javascript:approve()">Approve</a>
-                            <a class="btn btn-primary btn-trigger"
-                               onclick="javascript:trigger()">Trigger to DMS</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </c:when>
+                  <c:otherwise>
+                    <c:forEach var="pool" items="${dashSearchResult.rows}"
+                               varStatus="status">
+                      <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
+                        <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
+                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
+                                                                                           data-toggle="collapse" aria-expanded="false"
+                                                                                           data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                           onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
+                        <td><iais:code code="${pool.applicationType}"/></td>
+                        <td><c:out value="${pool.submissionType}"/></td>
+                        <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><fmt:formatDate value='${pool.groupUpDt}' pattern='dd/MM/yyyy' /></td>
+                        <td><iais:code code="${pool.paymentStatus}"/></td>
+                      </tr>
+                    </c:forEach>
+                  </c:otherwise>
                 </c:choose>
-              </c:if>
+              </table>
+            </div>
+            <c:if test="${'assignme' eq dashSwitchActionValue}">
+              <c:choose>
+                <c:when test="${'AO1' eq iais_Login_User_Info_Attr.curRoleId}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao1approve')">Approve</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </c:when>
+                <c:when test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-support"
+                             onclick="javascript:approve()">Support</a>
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:aoApprove('ao2approve')">Approve</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </c:when>
+                <c:when test="${'AO3' eq iais_Login_User_Info_Attr.curRoleId}">
+                  <div class="application-tab-footer">
+                    <div class="row">
+                      <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                          <a class="btn btn-primary btn-approve"
+                             onclick="javascript:approve()">Approve</a>
+                          <a class="btn btn-primary btn-trigger"
+                             onclick="javascript:trigger()">Trigger to DMS</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </c:when>
+              </c:choose>
             </c:if>
           </iais:body>
         </div>

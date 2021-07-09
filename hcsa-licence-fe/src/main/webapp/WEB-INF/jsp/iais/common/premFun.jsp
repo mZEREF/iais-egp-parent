@@ -631,12 +631,14 @@
             console.log(premContent.find('.eventDiv').length);
             var premType = premContent.find('input[name="premType"]').val();
             var premDivName = "";
-            if("ONSITE" == premType){
+            if ("ONSITE" == premType) {
                 premDivName = 'new-premise-form-on-site';
-            }else if ("CONVEYANCE" == premType) {
+            } else if ("CONVEYANCE" == premType) {
                 premDivName = 'new-premise-form-conv';
-            }else if ('OFFSITE' == premType){
+            } else if ('OFFSITE' == premType){
                 premDivName = 'new-premise-form-off-site';
+            } else if ('EASMTS' == premType) {
+                premDivName = 'new-premise-form-eas-mts';
             }
 
             if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){

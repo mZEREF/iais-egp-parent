@@ -200,10 +200,10 @@
                                             <c:if test="${app.status == 'APST007'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
+                                                    <c:if test="${app.canInspection}">
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
-                                                    <c:if test="${app.canInspection}">
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
                                                     <c:if test="${app.pmtStatus == 'PMT06'}">
@@ -231,10 +231,10 @@
                                                        || app.status =='APST033'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
+                                                    <c:if test="${app.canInspection}">
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
-                                                    <c:if test="${app.canInspection}">
                                                         <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                     </c:if>
                                                     <c:if test="${app.pmtStatus == 'PMT06'}">
@@ -264,10 +264,10 @@
                                         <c:when test="${app.applicationType == 'APTY009'}">
                                             <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                 <option value="" selected>Select</option>
+                                                <c:if test="${app.canInspection}">
                                                 <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                     <option value="Assessment">Assessment</option>
                                                 </c:if>
-                                                <c:if test="${app.canInspection}">
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
                                                 </c:if>
                                                 <c:if test="${app.pmtStatus == 'PMT06'}">
