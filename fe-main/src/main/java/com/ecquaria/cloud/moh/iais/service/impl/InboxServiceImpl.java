@@ -429,7 +429,18 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
-        boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+        boolean isActive = false;
+        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String nowDateStr=df.format(new Date());
+        if(licenceDto != null ){
+            if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                isActive=true;
+            }
+            if(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+                isActive=true;
+            }
+        }
         if(isActive){
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
