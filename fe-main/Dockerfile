@@ -1,6 +1,5 @@
 FROM 192.168.7.88/ecq/tomcat:9.0.40.1-adoptopenjdk8u265-b01
 
-RUN deluser --remove-home egpcloud
 RUN adduser -D -u 1000 iais
 RUN chown -R iais:iais /usr/local/tomcat
 
