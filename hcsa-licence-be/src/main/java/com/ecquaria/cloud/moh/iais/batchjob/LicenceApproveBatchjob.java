@@ -75,6 +75,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -94,14 +95,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -111,6 +104,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -1140,7 +1140,8 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 String applicationType = applicationDto.getApplicationType();
 
-                LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+               // LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                LicenceDto originLicenceDto = licenceService.getLicDtoById(originLicenceId);
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, applicationDto, null, false);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -1155,6 +1156,14 @@ public class LicenceApproveBatchjob {
                     }
                     superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
+
+                if((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                        && AccessUtil.isActiveMigrated()
+                        && originLicenceDto.isMigrated()){
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                }
+
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
                 if(licSubLicenseeInfoDto != null){
@@ -1831,7 +1840,6 @@ public class LicenceApproveBatchjob {
             }
         }
 
-
         if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
@@ -1839,6 +1847,7 @@ public class LicenceApproveBatchjob {
             licenceDto.setGrpLic(originLicenceDto.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.getMigrated());
+            licenceDto.setMigratedDt(originLicenceDto.getMigratedDt());
             if (!applicationDto.isNeedNewLicNo()) {
                 licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
                 licenceDto.setVersion(originLicenceDto.getVersion() + 1);
@@ -1977,11 +1986,13 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setOriginLicenceId(originLicenceDto.getId());
                 licenceDto.setMigrated(originLicenceDto.getMigrated());
+                licenceDto.setMigratedDt(originLicenceDto.getMigratedDt());
             } else {
                 licenceDto.setMigrated(0);
             }
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
+
         }
         List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
 
@@ -1990,8 +2001,16 @@ public class LicenceApproveBatchjob {
         }else if (applicationDto != null) {
                 applicationDtos1.add(applicationDto);
         }
-        //status
-        licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
+        if((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                && AccessUtil.isActiveMigrated()
+                && originLicenceDto.isMigrated()){
+            licenceDto.setStatus(originLicenceDto.getStatus());
+        }else{
+            //status
+            licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
+        }
+
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));

@@ -324,8 +324,8 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
-        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String periodDateStr = ConfigHelper.getString(AppConsts.PERIOD_APPROVED_MIGRATED_LICENCE);
+        SimpleDateFormat df = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
         String nowDateStr=df.format(new Date());
 
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
