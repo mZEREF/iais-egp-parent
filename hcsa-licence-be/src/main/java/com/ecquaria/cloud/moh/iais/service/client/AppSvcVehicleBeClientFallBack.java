@@ -20,14 +20,6 @@ public class AppSvcVehicleBeClientFallBack implements AppSvcVehicleBeClient {
     }
 
     @Override
-    public FeignResponseEntity<AppSvcVehicleDto> updateAppSvcVehicleDto(AppSvcVehicleDto appSvcVehicleDto) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
-    @Override
     public FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoListByCorrId(String appPremCorrId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
