@@ -1042,7 +1042,11 @@ public class LicenceServiceImpl implements LicenceService {
     }
 
     @Override
-    public LicenceDto getLicDtoById(String relateRecId) {
-        return hcsaLicenceClient.getLicDtoById(relateRecId).getEntity();
+    public LicenceDto getLicDtoById(String licenceId) {
+        LicenceDto result = null;
+        if(!StringUtil.isEmpty(licenceId)){
+            result = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
+        }
+        return result;
     }
 }
