@@ -234,26 +234,32 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
             }
             if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr));
                 for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
                     String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
                     String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
                     //status not empty
-                    if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
-                        errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
-                    } else {
-                        String vehicleNoRadio = vehicleNoRadios[0];
-                        if (StringUtil.isEmpty(vehicleNoRadio)) {
+                    if(appVeh){
+                        if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
                             errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
                         } else {
-                            String vehicleNoStatusCode;
-                            if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(vehicleNoRadio)) {
-                                vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_APPROVE;
+                            String vehicleNoRadio = vehicleNoRadios[0];
+                            if (StringUtil.isEmpty(vehicleNoRadio)) {
+                                errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
                             } else {
-                                vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_REJECT;
+                                String vehicleNoStatusCode;
+                                if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(vehicleNoRadio)) {
+                                    vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_APPROVE;
+                                } else {
+                                    vehicleNoStatusCode = ApplicationConsts.VEHICLE_STATUS_REJECT;
+                                }
+                                appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
                             }
-                            appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
                         }
+                    }else {
+                        appSvcVehicleDtos.get(i).setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
                     }
+
                     //remark length vali
                     if (StringUtil.isEmpty(vehicleNoRemarks)) {
                         appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
@@ -269,7 +275,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 //not reject, At least one approve
-                if(!rejectCode.contains(recommendationStr)){
+                if(appVeh){
                     boolean approveFlag = false;
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(appSvcVehicleDto != null) {

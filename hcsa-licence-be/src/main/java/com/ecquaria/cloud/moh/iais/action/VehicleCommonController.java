@@ -32,7 +32,7 @@ public class VehicleCommonController {
         //get vehicleNoList for edit
         List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
         //sort AppSvcVehicleDto List
-        applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
+        applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
         ParamUtil.setSessionAttr(request,  HcsaLicenceBeConstant.APP_VEHICLE_NO_LIST, (Serializable) vehicleNoList);
         ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG, vehicleFlag);
     }

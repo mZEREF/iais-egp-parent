@@ -83,10 +83,8 @@
             $('.vehicle-approve').attr("disabled","disabled");
             $('.vehicle-reject').attr("disabled","disabled");
         }else{
-            $('.vehicle-approve').prop('checked', false);
-            $('.vehicle-reject').prop('checked', true);
-            $('.vehicle-approve').attr("disabled","disabled");
-            $('.vehicle-reject').attr("disabled","disabled");
+            $('.vehicle-approve').removeAttr("disabled","disabled");
+            $('.vehicle-reject').removeAttr("disabled","disabled");
         }
 
     }
