@@ -135,7 +135,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 }
                                 try {
                                     boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                                    if (withdrawReturnFee){
+                                    if (withdrawReturnFee&&fee!=null&&fee!=0.0){
                                         AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                                         applicationService.saveAppReturnFee(appReturnFeeDto);
                                     }
@@ -151,7 +151,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                                 msgInfoMap.put("S_LName", serviceName);
                                 msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                                 msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||
+                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||fee==0.0||
                                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
                                     msgInfoMap.put("paymentType", "2");
                                     msgInfoMap.put("paymentMode", "");
