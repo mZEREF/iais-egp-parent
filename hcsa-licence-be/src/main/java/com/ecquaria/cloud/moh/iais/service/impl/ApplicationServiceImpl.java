@@ -1092,15 +1092,17 @@ public class ApplicationServiceImpl implements ApplicationService {
                         actionVehicleFlag = true;
                     }
                 }
-                if(actionVehicleFlag){
-                    if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId) || HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
+                if(!actionVehicleFlag){
+                    if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
                             ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                    }
+                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)){
+                        vehicleFlag = ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW;
+                     }
                 }
             } else {
                 log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));

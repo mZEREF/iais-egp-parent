@@ -475,15 +475,15 @@
                                     <iais:select cssClass="nice-select recommendationRfc" id="recommendationRfc"
                                                  name="recommendationRfc" options="recommendationOption"
                                                  firstOption="Please Select"
-                                                 value="${appPremisesRecommendationDto.recommendation}"/>
+                                                 value="${appPremisesRecommendationDto.recommendation}" onchange="doChangeVehicleShow(this.value)"/>
                                     <span id="error_recommendationRfc" name="iaisErrorMsg" class="error-msg"></span>
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
                         </c:if>
+                        <%@include file="/WEB-INF/jsp/iais/report/reportSvcVehicleShow.jsp"%>
                     </table>
                 </div>
-                <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
             </div>
         </div>
         <div id="sectionF" class="alert alert-info" role="alert">
@@ -641,6 +641,7 @@
             $("#period").hide();
             $("#selfPeriod").hide();
         }
+        doChangeVehicleShow(obj);
     }
 
 
