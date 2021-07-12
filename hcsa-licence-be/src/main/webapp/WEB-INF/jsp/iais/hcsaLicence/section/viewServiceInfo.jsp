@@ -2882,110 +2882,12 @@
         </c:if>
     });
 
-    $("#licenseeCheckbox").click(function () {
-      let jQuery = $(this).closest("div.panel-body");
-      let jQuery1 = jQuery.attr("style");
-      if ("" == jQuery1 || undefined ==jQuery1) {
-        jQuery.attr("style", "background-color: #999999;");
-      } else {
-        jQuery.attr("style", "");
-      }
-    });
-
-    $('#primaryCheckbox').click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-    $("#serviceCheckbox").click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-    $("#premisesCheckbox").click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-
-    function closeThis(obj) {
-        $(obj).closest('div.row').attr("style", "display:none");
-    }
-
-
     function showThisTableNewService(obj) {
-        $(obj).closest('div.img-show').closest('td').find("div.new-img-show").removeAttr("style");
+        $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
     }
 
     function showThisTableOldService(obj) {
-        $(obj).closest('div.img-show').closest('td').find('div.old-img-show').removeAttr("style");
-    }
-
-    hideImg('newVal', 'oldVal');
-
-    function hideImg(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().find('.' + newValClass);
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if (oldVal.length > 0 && newVal.length <= 0) {
-                newEle.children('img').attr("style", "display: none");
-            } else if (oldVal.length <= 0 && newVal.length > 0) {
-                $(this).children('img').attr("style", "display: none");
-            } else {
-                newEle.children('img').removeAttr("style");
-            }
-        });
-    }
-
-    hightLightChangeVal('newVal', 'oldVal');
-
-    function hightLightChangeVal(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle;
-            if($(this).parent().children('.'+newValClass).length>0){
-                newEle = $(this).parent().children('.'+newValClass);
-            }else {
-                newEle = $(this).parent().prev().find('.' + newValClass);
-            }
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if ($('#oldAppSubmissionDto').val() == 'false') {
-                if (oldVal.length > 0 || newVal.length > 0) {
-                    if (oldVal != newVal) {
-                        $(this).show();
-                        var newHtml ;
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            newHtml= $(this).parent().children('.' + newValClass).html();
-                        }else {
-                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
-                        }
-                        var oldHtml = $(this).html();
-                        $(this).html(newHtml);
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            $(this).parent().children('.' + newValClass).html(oldHtml);
-                        }else {
-                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
-                        }
-                        $(this).attr("class", "newVal compareTdStyle");
-                    } else if (oldVal.length > 0 && newVal.length <= 0) {
-                        $(this).hide();
-                    }
-                }
-            }
-        });
+        $(obj).closest('div.img-show').closest('td').find('div.old-img-show').show();
     }
 
 </script>
