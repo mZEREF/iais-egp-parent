@@ -144,6 +144,5 @@ public interface AppSubmissionService {
     LicenceDto getLicenceDtoById(String licenceId);
     List<OrgGiroAccountInfoDto> getOrgGiroAccDtosByLicenseeId(String licenseeId);
 
-    List<AppSvcVehicleDto> getActiveVehicles(String appId);
-
+    List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
 }
