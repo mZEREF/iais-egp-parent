@@ -72,4 +72,9 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 	public void controlSwitch_OnStepProcess_1() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "paymentSwitch", this);
 	}
+
+	public void initPsnEditInfo_OnStepProcess_0() throws Exception {
+	// 		initPsnEditInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "initPsnEditInfo", this);
+	}
 }

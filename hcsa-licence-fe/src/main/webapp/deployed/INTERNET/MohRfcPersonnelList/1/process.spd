@@ -79,6 +79,13 @@
     <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_1" name="controlSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="initPsnEditInfo" x="670" y="80">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initPsnEditInfo_OnStepProcess_0" name="initPsnEditInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="personnelList" stageIndicator="" x="180" y="80">
@@ -129,9 +136,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
    <position>{(520,100)(540,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
-   <position>{(520,100)(660,210)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
    <position>{(370,220)(450,570)}</position>
   </SynchronousLink>
@@ -180,6 +184,12 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/paymentSwitch" style="rectanular">
    <position>{(790,310)(800,200)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initPsnEditInfo" style="rectanular">
+   <position>{(690,100)(660,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/initPsnEditInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch" style="rectanular">
+   <position>{(520,100)(690,100)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -188,7 +198,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;edit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/initPsnEditInfo" value="&quot;edit&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preparePersonnelEdit" executor="" icon="" leftOperand="action_type" name="Switch1" x="700" y="550">
    <Description/>
