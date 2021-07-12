@@ -95,87 +95,87 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     applicationService.updateFEApplicaiton(h);
                     boolean isCharity = false;
                     String applicantName = "";
-                        String oldAppId = h.getId();
-                        if (!StringUtil.isEmpty(oldAppId)) {
-                            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                            String serviceId = oldApplication.getServiceId();
-                            String applicationNo = oldApplication.getApplicationNo();
-                            String applicationType1 = oldApplication.getApplicationType();
-                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
-                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                            if (orgUserDto != null) {
-                                applicantName = orgUserDto.getDisplayName();
+                    String oldAppId = h.getId();
+                    if (!StringUtil.isEmpty(oldAppId)) {
+                        ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                        String serviceId = oldApplication.getServiceId();
+                        String applicationNo = oldApplication.getApplicationNo();
+                        String applicationType1 = oldApplication.getApplicationType();
+                        String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                        if (orgUserDto != null) {
+                            applicantName = orgUserDto.getDisplayName();
+                        }
+                        String licenseeId = applicationGroupDto.getLicenseeId();
+                        String paymentMethod = applicationGroupDto.getPayMethod();
+                        String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                        Double fee = 0.0;
+                        applicationService.closeTaskWhenWhAppApprove(h.getId());
+                        List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                        applicationDtoList.add(oldApplication);
+                        String entityType = "";
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                        if (licenseeDto != null) {
+                            LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                            if (licenseeEntityDto != null) {
+                                entityType = licenseeEntityDto.getEntityType();
                             }
-                            String licenseeId = applicationGroupDto.getLicenseeId();
-                            String paymentMethod = applicationGroupDto.getPayMethod();
-                            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                                Double fee = 0.0;
-                                applicationService.closeTaskWhenWhAppApprove(h.getId());
-                                List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-                                applicationDtoList.add(oldApplication);
-                                String entityType = "";
-                                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                                if (licenseeDto != null) {
-                                    LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                                    if (licenseeEntityDto != null) {
-                                        entityType = licenseeEntityDto.getEntityType();
-                                    }
-                                }
-                                if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                                    isCharity = true;
-                                }
-                                for (ApplicationDto applicationDto1 : applicationDtoList) {
-                                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                                    applicationDto1.setIsCharity(isCharity);
-                                }
-                                List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
-                                if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
-                                    fee = applicationDtoList2.get(0).getReturnFee();
-                                }
-                                try {
-                                    boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                                    if (withdrawReturnFee){
-                                        AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
-                                        applicationService.saveAppReturnFee(appReturnFeeDto);
-                                    }
-                                }catch (Exception e){
-                                    log.error("Withdraw application return is failed");
-                                    log.error(e.getMessage(), e);
-                                }
-                                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                                msgInfoMap.put("Applicant", applicantName);
-                                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-                                msgInfoMap.put("ApplicationNumber", applicationNo);
-                                msgInfoMap.put("reqAppNo", applicationNo);
-                                msgInfoMap.put("S_LName", serviceName);
-                                msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                                msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||
-                                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
-                                    msgInfoMap.put("paymentType", "2");
-                                    msgInfoMap.put("paymentMode", "");
-                                    msgInfoMap.put("returnMount", 0.0);
-                                } else {
-                                    msgInfoMap.put("returnMount", fee);
-                                    if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
-                                        msgInfoMap.put("paymentType", "0");
-                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
-                                    } else {
-                                        msgInfoMap.put("paymentType", "1");
-                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
-                                    }
-                                }
-                                msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
-                                msgInfoMap.put("systemLink", loginUrl);
-                                msgInfoMap.put("emailAddress", systemAddressOne);
-                                try {
-                                    newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
-                                    newApplicationDelegator.sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
-                                    newApplicationDelegator.sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                                } catch (Exception e) {
-                                    log.info(e.getMessage(),e);
-                                }
+                        }
+                        if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                            isCharity = true;
+                        }
+                        for (ApplicationDto applicationDto1 : applicationDtoList) {
+                            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                            applicationDto1.setIsCharity(isCharity);
+                        }
+                        List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+                        if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
+                            fee = applicationDtoList2.get(0).getReturnFee();
+                        }
+                        try {
+                            boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
+                            if (withdrawReturnFee&&fee!=null&&fee!=0.0){
+                                AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                                applicationService.saveAppReturnFee(appReturnFeeDto);
+                            }
+                        }catch (Exception e){
+                            log.error("Withdraw application return is failed");
+                            log.error(e.getMessage(), e);
+                        }
+                        Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                        msgInfoMap.put("Applicant", applicantName);
+                        msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                        msgInfoMap.put("ApplicationNumber", applicationNo);
+                        msgInfoMap.put("reqAppNo", applicationNo);
+                        msgInfoMap.put("S_LName", serviceName);
+                        msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                        msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                        if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||fee==0.0||
+                                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
+                            msgInfoMap.put("paymentType", "2");
+                            msgInfoMap.put("paymentMode", "");
+                            msgInfoMap.put("returnMount", 0.0);
+                        } else {
+                            msgInfoMap.put("returnMount", fee);
+                            if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                                msgInfoMap.put("paymentType", "0");
+                                msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+                            } else {
+                                msgInfoMap.put("paymentType", "1");
+                                msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
+                            }
+                        }
+                        msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
+                        msgInfoMap.put("systemLink", loginUrl);
+                        msgInfoMap.put("emailAddress", systemAddressOne);
+                        try {
+                            newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
+                            newApplicationDelegator.sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
+                            newApplicationDelegator.sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                        } catch (Exception e) {
+                            log.info(e.getMessage(),e);
+                        }
                     }
                 });
                 log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+withdrawApplicationDtoList.size()));
