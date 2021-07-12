@@ -43,6 +43,7 @@
                 <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRemarksError${status.index}"></span>
               </td>
             </tr>
+            <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleApproveOne"></span>
           </c:forEach>
           </tbody>
         </table>

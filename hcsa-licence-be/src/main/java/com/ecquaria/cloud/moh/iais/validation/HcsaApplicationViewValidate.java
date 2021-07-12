@@ -209,13 +209,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
         //validate vehicle EAS / MTS
-        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag);
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr);
         tcuVerification(errMap,applicationViewDto);
         return errMap;
     }
 
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
-                                                  String nextStage, String nextStageReplys, String appVehicleFlag) {
+                                                  String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr) {
         if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             if(applicationDto != null) {
@@ -229,6 +229,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
                         String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
                         String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
+                        //status not empty
                         if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
                             errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
                         } else {
@@ -245,6 +246,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
                             }
                         }
+                        //remark length vali
                         if (StringUtil.isEmpty(vehicleNoRemarks)) {
                             appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
                         } else {
@@ -258,7 +260,27 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                             }
                         }
                     }
-                    applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    //not reject, At least one approve
+                    if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
+                        boolean approveFlag = false;
+                        for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                            if(appSvcVehicleDto != null) {
+                                if(!StringUtil.isEmpty(appSvcVehicleDto.getStatus()) && ApplicationConsts.VEHICLE_STATUS_APPROVE.equals(appSvcVehicleDto.getStatus())) {
+                                    approveFlag = true;
+                                } else if(StringUtil.isEmpty(appSvcVehicleDto.getStatus())) {
+                                    approveFlag = true;
+                                }
+                            }
+                        }
+                        if(!approveFlag) {
+                            errMap.put("vehicleApproveOne", "NEW_ERR0033");
+                        }
+                    }
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                        applicationViewDto.setVehicleRfcShowDtos(appSvcVehicleDtos);
+                    } else {
+                        applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
+                    }
                 }
             }
         }
