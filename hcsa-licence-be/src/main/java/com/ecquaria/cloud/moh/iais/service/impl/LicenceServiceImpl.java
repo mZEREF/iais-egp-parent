@@ -642,6 +642,7 @@ public class LicenceServiceImpl implements LicenceService {
                 log.info(e.getMessage(),e);
             }
             EmailParam msgParam = new EmailParam();
+            msgParam.setNeedSendNewLicensee(true);
             msgParam.setQueryCode(applicationDto.getApplicationNo());
             msgParam.setReqRefNum(applicationDto.getApplicationNo());
             msgParam.setRefId(applicationDto.getApplicationNo());
@@ -666,6 +667,7 @@ public class LicenceServiceImpl implements LicenceService {
             log.info(e.getMessage(),e);
         }
         EmailParam smsParam = new EmailParam();
+        smsParam.setNeedSendNewLicensee(true);
         smsParam.setQueryCode(applicationDto.getApplicationNo());
         smsParam.setReqRefNum(applicationDto.getApplicationNo());
         smsParam.setRefId(applicationDto.getApplicationNo());
