@@ -110,7 +110,7 @@
                         <label  class="control-label control-set-font control-font-label">
                             <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${index}" value="${clinicalDirectorDto.noRegWithProfBoard}"/>
                             <div class="control-item-container parent-form-check" >
-                                <input type="checkbox" id="noRegWithProfBoard${index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked="checked"</c:if> >
+                                <input type="checkbox" id="noRegWithProfBoard${index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked</c:if> >
                                 <label for="noRegWithProfBoard${index}" class="control-label control-set-font control-font-normal">
                                     <span class="check-square"></span>
                                 </label>

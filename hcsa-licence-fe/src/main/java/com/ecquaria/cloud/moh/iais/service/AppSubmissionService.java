@@ -149,5 +149,5 @@ public interface AppSubmissionService {
     SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo);
     boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request);
 
-    List<AppSvcVehicleDto> getActiveVehicles(String appId);
+    List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
 }

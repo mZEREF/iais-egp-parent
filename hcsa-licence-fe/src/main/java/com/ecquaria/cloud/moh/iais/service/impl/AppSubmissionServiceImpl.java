@@ -846,16 +846,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppSvcVehicleDto> getActiveVehicles(String appId) {
+    public List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds) {
         List<AppSvcVehicleDto> vehicles = applicationFeClient.getActiveVehicles().getEntity();
         if (vehicles == null || vehicles.isEmpty()) {
             return vehicles;
         }
+        if (appIds == null) {
+            appIds = IaisCommonUtils.genNewArrayList(0);
+        }
+        final List<String> finalAppIds = appIds;
         List<LicAppCorrelationDto> licAppCorrList = licenceClient.getInactiveLicAppCorrelations().getEntity();
         List<AppSvcVehicleDto> result = IaisCommonUtils.genNewArrayList(vehicles.size());
         vehicles.forEach(vehicle -> {
-            if (!isIn(vehicle.getAppId(), licAppCorrList) &&
-                    !Optional.ofNullable(appId).filter(curr -> curr.equals(vehicle.getAppId())).isPresent()) {
+            if (!isIn(vehicle.getAppId(), licAppCorrList) && !finalAppIds.contains(vehicle.getAppId())) {
                 result.add(vehicle);
             }
         });
@@ -2379,8 +2382,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, currSvcInfoDto,dto,
                     systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             // vehicle
-            String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
+            List<String> appIds = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
+                    currSvcInfoDto.getServiceName());
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appIds);
             validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
             if (!map.isEmpty()) {
                 sB.append(serviceId);

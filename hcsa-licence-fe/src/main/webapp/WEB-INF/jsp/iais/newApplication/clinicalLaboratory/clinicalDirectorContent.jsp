@@ -148,13 +148,14 @@
                     disableCdContent($(this).find('div.person-detail'), data);
                 }
             }
-            $(this).find('select').niceSelect("update");
             //trigger prs
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
             $(this).find('.designation').trigger('change');
-            $(this).find('.noRegWithProfBoard').trigger('click');
+            checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
+            // update select tag
+            $(this).find('select').niceSelect("update");
         });
     });
 
@@ -181,19 +182,23 @@
     var noRegWithProfBoard = function () {
         $('.noRegWithProfBoard').unbind('click');
         $('.noRegWithProfBoard').click(function () {
-            var noRegWithProfBoardVal = "";
-            var $content = $(this).closest('div.clinicalDirectorContent');
-            if ($(this).prop('checked')) {
-                noRegWithProfBoardVal = $(this).val();
-                $content.find('.professionBoardLabel .mandatory').remove();
-                $content.find('.profRegNoLabel .mandatory').remove();
-            } else {
-                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
-                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
-            }
-            $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
+            checkNoRegWithProfBoard(this);
         });
     };
+
+    function checkNoRegWithProfBoard(selector) {
+        var noRegWithProfBoardVal = "";
+        var $content = $(selector).closest('div.clinicalDirectorContent');
+        if ($(selector).prop('checked')) {
+            noRegWithProfBoardVal = $(selector).val();
+            $content.find('.professionBoardLabel .mandatory').remove();
+            $content.find('.profRegNoLabel .mandatory').remove();
+        } else {
+            $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
+            $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
+        }
+        $(selector).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
+    }
 
     var showOtherSpecialty = function () {
         $('select.specialty').unbind('change');
