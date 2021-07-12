@@ -111,11 +111,21 @@
         </c:if>
     });
 
+    function changeSectionStyle() {
+        let $this = $(this);
+        let target = $this.closest("div.panel-body");
+        if ($this.is(":checked")) {
+            target.attr("style", "");
+        } else {
+            target.attr("style", "background-color: #999999;");
+        }
+    }
+
     function showThisTableNew(obj) {
-        $(obj).closest('div.img-show').next("div.new-img-show").removeAttr("style");
+        $(obj).closest('div.img-show').next("div.new-img-show").show();
     }
     function showThisTableOld(obj) {
-        $(obj).closest('div.img-show').next("div.old-img-show").removeAttr("style");
+        $(obj).closest('div.img-show').next("div.old-img-show").show();
     }
     function doVerifyFileGo(verify) {
         showWaiting();
@@ -139,4 +149,5 @@
     function tagConfirmCallbacksupport(){
         $('#support').modal('hide');
     }
+
 </script>
