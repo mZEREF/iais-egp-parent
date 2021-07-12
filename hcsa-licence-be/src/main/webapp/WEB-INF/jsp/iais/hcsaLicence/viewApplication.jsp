@@ -109,6 +109,8 @@
         <c:if test="${pageAppEditSelectDto.serviceEdit}">
         $('#serviceCheckbox').closest("div.panel-body").attr("style","");
         </c:if>
+
+        $('input[name="editCheckbox"]').click(changeSectionStyle);
     });
 
     function changeSectionStyle() {
