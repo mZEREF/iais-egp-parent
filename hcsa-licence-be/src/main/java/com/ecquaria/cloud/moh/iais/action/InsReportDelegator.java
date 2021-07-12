@@ -160,6 +160,7 @@ public class InsReportDelegator {
 
     public void inspectorReportSave(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the inspectorReportSave start ...."));
+        HttpServletRequest request = bpc.request;
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
@@ -210,6 +211,8 @@ public class InsReportDelegator {
         if (fastTracking != null) {
             applicationDto.setFastTracking(true);
         }
+        // save veh inf
+        insRepService.saveAppVehs((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getVehicleRfcShowDtos():applicationViewDto.getAppSvcVehicleDtos());
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)) {
             insRepService.routTaskToRoutBack(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
@@ -41,6 +42,5 @@ public interface InsRepService {
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
     void sendPostInsTaskFeData(String eventRefNum,String submissionId) ;
     AppPremisesRoutingHistoryDto getAppPremisesRoutingHistorySubStage(String corrId, String stageId);
-
-
+    void saveAppVehs(String flag, List<AppSvcVehicleDto> appSvcVehicleDtos);
 }

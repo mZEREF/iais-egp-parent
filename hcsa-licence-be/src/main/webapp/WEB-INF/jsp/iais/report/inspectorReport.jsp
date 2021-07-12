@@ -476,7 +476,6 @@
                                                  name="recommendationRfc" options="recommendationOption"
                                                  firstOption="Please Select"
                                                  value="${appPremisesRecommendationDto.recommendation}" onchange="doChangeVehicleShow(this.value)"/>
-                                    <span id="error_recommendationRfc" name="iaisErrorMsg" class="error-msg"></span>
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
@@ -656,16 +655,8 @@
 
     $(document).ready(function () {
         var type = $('input[name="appType"]').val();
-        if ($("#recommendation").val() == "IRE001") {
-            changeRecommendation("IRE001");
-        }
-        if ($("#recommendation").val() == "IRE002") {
-            changeRecommendation("IRE002");
-        }
-        if ($("#recommendation").val() == "IRE003") {
-            $("#period").hide();
-            $("#selfPeriod").hide();
-        }
+        var recommendation = (type === 'APTY005' ? $("#recommendationRfc").val() : $("#recommendation").val());
+        changeRecommendation(recommendation);
         if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007"&& type != "APTY009") {
             changePeriod("Others");
         }
