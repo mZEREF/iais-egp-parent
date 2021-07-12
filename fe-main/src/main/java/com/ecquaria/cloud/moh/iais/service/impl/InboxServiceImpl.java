@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -32,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -52,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -324,9 +323,6 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
-        String periodDateStr = ConfigHelper.getString(AppConsts.PERIOD_APPROVED_MIGRATED_LICENCE);
-        SimpleDateFormat df = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
-        String nowDateStr=df.format(new Date());
 
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -334,7 +330,7 @@ public class InboxServiceImpl implements InboxService {
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                if(!(AccessUtil.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
                     errorMap.put("errorMessage2",errorMsgEleven);
                 }
             }
@@ -430,14 +426,11 @@ public class InboxServiceImpl implements InboxService {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         boolean isActive = false;
-        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String nowDateStr=df.format(new Date());
         if(licenceDto != null ){
             if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                 isActive=true;
             }
-            if(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+            if(AccessUtil.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
                 isActive=true;
             }
         }
