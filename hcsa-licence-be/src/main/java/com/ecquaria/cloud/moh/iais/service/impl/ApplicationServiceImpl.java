@@ -1101,7 +1101,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                             ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
                     }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)){
-                        vehicleFlag = ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW;
+                        vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
                      }
                 }
             } else {

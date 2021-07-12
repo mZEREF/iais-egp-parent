@@ -11,9 +11,9 @@
 <c:if test="${'APTY005' ne applicationViewDto.applicationDto.applicationType}">
   <c:set var="appFlowSvcVehicleDtos" value="${applicationViewDto.appSvcVehicleDtos}"/>
 </c:if>
-<c:if test="${'edit' eq appVehicleFlag || 'view' eq appVehicleFlag}">
+<c:if test="${'RETYPE007_edit' eq appVehicleFlag || 'RETYPE007_view' eq appVehicleFlag}">
   <tr>
-    <td class="col-xs-4"><p>Vehicle Recommendations <c:if test="${'edit' eq appVehicleFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
+    <td class="col-xs-4"><p>Vehicle Recommendations <c:if test="${'RETYPE007_edit' eq appVehicleFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
     <td class="col-xs-4"><div class="table-gp" >
     <table class="table">
       <thead>
@@ -26,7 +26,7 @@
       </thead>
       <tbody>
       <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
-        <c:if test="${'edit' eq appVehicleFlag}">
+        <c:if test="${'RETYPE007_edit' eq appVehicleFlag}">
         <tr>
           <td><c:out value="${status.count}"></c:out></td>
           <td><c:out value="${appVehicleNo.vehicleName}"/></td>
@@ -44,7 +44,7 @@
           </td>
         </tr>
         </c:if>
-        <c:if test="${'view' eq appVehicleFlag}">
+        <c:if test="${'RETYPE007_view' eq appVehicleFlag}">
         <tr>
           <td><c:out value="${status.count}"></c:out></td>
           <td><c:out value="${appVehicleNo.vehicleName}"/></td>
@@ -67,6 +67,7 @@
       </c:forEach>
       </tbody>
     </table>
+     <span class="error-msg" name="iaisErrorMsg" id="error_vehicleApproveOne"></span>
   </div></td>
     <td class="col-xs-4"/>
   </tr>
