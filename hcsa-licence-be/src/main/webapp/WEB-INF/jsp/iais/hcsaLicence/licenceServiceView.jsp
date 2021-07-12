@@ -42,8 +42,8 @@
           </div>
         </div>
         <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6"
-                  data-dismiss="modal" onclick="cancel()">OK
+          <button type="button" style="margin-left: 50%" class="next btn btn-primary col-md-6" data-dismiss="modal">
+            OK
           </button>
         </div>
       </div>
