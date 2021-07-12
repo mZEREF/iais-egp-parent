@@ -752,7 +752,17 @@
         var recommendation = $("[name='recommendation']").val();
         if('other' == recommendation){
             $('#recommendationOtherDropdown').removeClass('hidden');
+            $('.vehicle-approve').removeAttr("disabled","disabled");
+            $('.vehicle-reject').removeAttr("disabled","disabled");
+        } else if('reject' == recommendation) {
+            $('.vehicle-approve').attr("disabled","disabled");
+            $('.vehicle-reject').attr("disabled","disabled");
+            $('.vehicle-approve').prop('checked', false);
+            $('.vehicle-reject').prop('checked', true);
+            $('#recommendationOtherDropdown').addClass('hidden');
         }else{
+            $('.vehicle-approve').removeAttr("disabled","disabled");
+            $('.vehicle-reject').removeAttr("disabled","disabled");
             $('#recommendationOtherDropdown').addClass('hidden');
         }
     }
