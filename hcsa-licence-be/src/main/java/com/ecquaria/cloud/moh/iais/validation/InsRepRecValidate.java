@@ -66,7 +66,7 @@ public class InsRepRecValidate implements CustomizeValidator {
             }
         }
         verifyVehicleEasMtsReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
-            return errorMap;
+        return errorMap;
     }
 
     private void verifyVehicleEasMtsReport(HttpServletRequest request, Map<String, String> errorMap, ApplicationViewDto applicationViewDto,String recommendation){
@@ -74,7 +74,7 @@ public class InsRepRecValidate implements CustomizeValidator {
             List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
             rejectCode.add(InspectionReportConstants.REJECTED);
             rejectCode.add(InspectionReportConstants.RFC_REJECTED);
-            HcsaApplicationViewValidate.valiVehicleEasMtsCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode);
+            HcsaApplicationViewValidate.valiVehicleEasMtsCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode, null);
         }
     }
 }

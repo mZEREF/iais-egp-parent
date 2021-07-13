@@ -1104,8 +1104,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
                     ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)){
-                        vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
+                        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                        if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                        } else {
+                            vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_" + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                        }
                     }
                 }
             } else {
