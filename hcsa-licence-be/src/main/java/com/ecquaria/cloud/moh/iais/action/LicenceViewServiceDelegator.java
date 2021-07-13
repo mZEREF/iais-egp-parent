@@ -314,15 +314,18 @@ public class LicenceViewServiceDelegator {
                 String hciName = appGrpPremisesDto.getHciName();
                 String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
-                if(appPremisesOperationalUnitDtos!=null){
-                    for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
-                        String floorNo1 = appPremisesOperationalUnitDto.getFloorNo();
-                        String unitNo1 = appPremisesOperationalUnitDto.getUnitNo();
+                map.put("floorNo0",floorNo);
+                map.put("unitNo0",unitNo);
+                int i = 1;
+                if (appPremisesOperationalUnitDtos != null) {
+                    for (AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos) {
+                        map.put("floorNo" + i, appPremisesOperationalUnitDto.getFloorNo());
+                        map.put("unitNo" + i, appPremisesOperationalUnitDto.getUnitNo());
+                        i++;
                     }
                 }
+                map.put("floorUnitSize", String.valueOf(i));
                 map.put("blkNo",blkNo);
-                map.put("floorNo",floorNo);
-                map.put("unitNo",unitNo);
                 map.put("postCode",postalCode);
                 map.put("hciName",hciName);
                 map.put("vehicleNo",conveyanceVehicleNo);
