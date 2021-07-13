@@ -52,6 +52,8 @@ public class InsReportAoDelegator  {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private FillupChklistService fillupChklistService;
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
 
     private final static String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
     private final static String OTHERS="Others";
@@ -70,6 +72,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, INSREPDTO, null);
         ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
+        vehicleCommonController.clearVehicleInformationSession(request);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
     }
     public void AoInit(BaseProcessClass bpc) throws IOException {
@@ -115,6 +118,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, TASKDTO, taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
+        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto,InspectionConstants.SWITCH_ACTION_YES);
     }
 
     public void AoReportPre(BaseProcessClass bpc) {

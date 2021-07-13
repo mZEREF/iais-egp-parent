@@ -217,19 +217,29 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
                                                   String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr) {
         if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            if(applicationDto != null) {
-                List<AppSvcVehicleDto> appSvcVehicleDtos;
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                    appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
-                } else {
-                    appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
-                }
-                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
-                    for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
-                        String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
-                        String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
-                        //status not empty
+            List<String> rejectCode = IaisCommonUtils.genNewArrayList(1);
+            rejectCode.add(RECOMMENDATION_REJECT);
+            valiVehicleEasMtsCommon(request,errMap,applicationViewDto,recommendationStr,rejectCode);
+        }
+        return errMap;
+    }
+
+    public static  void valiVehicleEasMtsCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,String recommendationStr,List<String> rejectCode){
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        if(applicationDto != null) {
+            List<AppSvcVehicleDto> appSvcVehicleDtos;
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
+            } else {
+                appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+            }
+            if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+                boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr));
+                for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+                    String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
+                    String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
+                    //status not empty
+                    if(appVeh){
                         if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
                             errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
                         } else {
@@ -246,48 +256,48 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 appSvcVehicleDtos.get(i).setStatus(vehicleNoStatusCode);
                             }
                         }
-                        //remark length vali
-                        if (StringUtil.isEmpty(vehicleNoRemarks)) {
+                    }else {
+                        appSvcVehicleDtos.get(i).setStatus(ApplicationConsts.VEHICLE_STATUS_REJECT);
+                    }
+
+                    //remark length vali
+                    if (StringUtil.isEmpty(vehicleNoRemarks)) {
+                        appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
+                    } else {
+                        if (vehicleNoRemarks.length() <= 400) {
                             appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
                         } else {
-                            if (vehicleNoRemarks.length() <= 400) {
-                                appSvcVehicleDtos.get(i).setRemarks(vehicleNoRemarks);
-                            } else {
-                                Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
-                                repMap.put("number", "400");
-                                repMap.put("fieldNo", "Remarks");
-                                errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap();
+                            repMap.put("number", "400");
+                            repMap.put("fieldNo", "Remarks");
+                            errMap.put("vehicleNoRemarksError" + i, MessageUtil.getMessageDesc("GENERAL_ERR0036", repMap));
+                        }
+                    }
+                }
+                //not reject, At least one approve
+                if(appVeh){
+                    boolean approveFlag = false;
+                    for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                        if(appSvcVehicleDto != null) {
+                            if(!StringUtil.isEmpty(appSvcVehicleDto.getStatus()) && ApplicationConsts.VEHICLE_STATUS_APPROVE.equals(appSvcVehicleDto.getStatus())) {
+                                approveFlag = true;
+                            } else if(StringUtil.isEmpty(appSvcVehicleDto.getStatus())) {
+                                approveFlag = true;
                             }
                         }
                     }
-                    //not reject, At least one approve
-                    if(!RECOMMENDATION_REJECT.equals(recommendationStr)){
-                        boolean approveFlag = false;
-                        for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
-                            if(appSvcVehicleDto != null) {
-                                if(!StringUtil.isEmpty(appSvcVehicleDto.getStatus()) && ApplicationConsts.VEHICLE_STATUS_APPROVE.equals(appSvcVehicleDto.getStatus())) {
-                                    approveFlag = true;
-                                } else if(StringUtil.isEmpty(appSvcVehicleDto.getStatus())) {
-                                    approveFlag = true;
-                                }
-                            }
-                        }
-                        if(!approveFlag) {
-                            errMap.put("vehicleApproveOne", "NEW_ERR0033");
-                        }
+                    if(!approveFlag) {
+                        errMap.put("vehicleApproveOne", "NEW_ERR0033");
                     }
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
-                        applicationViewDto.setVehicleRfcShowDtos(appSvcVehicleDtos);
-                    } else {
-                        applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
-                    }
+                }
+                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
+                    applicationViewDto.setVehicleRfcShowDtos(appSvcVehicleDtos);
+                } else {
+                    applicationViewDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
                 }
             }
         }
-        return errMap;
     }
-
-
     /**
      * private method
      */

@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.constant;
 
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+
 public class HcsaLicenceBeConstant {
 
     private HcsaLicenceBeConstant() {
@@ -47,4 +49,10 @@ public class HcsaLicenceBeConstant {
     public static final String CHECK_LIST_COM_TAB_NAME  = "nowComTabIn";
 
     public static final int RISK_Validate_HIGH_MAX = 999;
+
+    public static final String APP_VEHICLE_FLAG = "appVehicleFlag";
+
+    public static final String APP_VEHICLE_NO_LIST ="appVehicleNoList";
+
+    public static final String EDIT_VEHICLE_FLAG = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ InspectionConstants.SWITCH_ACTION_EDIT;
 }

@@ -1080,6 +1080,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         String vehicleFlag = AppConsts.FALSE;
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
         if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
+            boolean actionVehicleFlag = false;
             if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
                 ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                 String stageId = taskDto.getTaskKey();
@@ -1088,25 +1089,20 @@ public class ApplicationServiceImpl implements ApplicationService {
                     String licenseeId = applicationGroupDto.getLicenseeId();
                     if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                    } else {
-                        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
-                            vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
-                        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
-                                HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
-                                HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
-                        ) {
-                            vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                        }
+                        actionVehicleFlag = true;
                     }
-                } else {
+                }
+                if(!actionVehicleFlag){
                     if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
-                    ) {
+                            ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                    }
+                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)){
+                        vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                     }
                 }
             } else {
                 log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));

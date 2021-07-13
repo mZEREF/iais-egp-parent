@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -100,6 +101,9 @@ public class InsRepServiceImpl implements InsRepService {
     InspEmailService inspEmailService;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -1369,4 +1373,11 @@ public class InsRepServiceImpl implements InsRepService {
         return dto;
     }
 
+    @Override
+    public void saveAppVehs(String flag, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+        log.info("---------------saveAppVehs--------------------");
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase(flag) && IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
+            appSvcVehicleBeClient.createAppSvcVehicleDtoList(appSvcVehicleDtos);
+        }
+    }
 }

@@ -4,13 +4,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +25,7 @@ public class InsRepRecValidate implements CustomizeValidator {
     private static final String CHRONO = "chrono";
     private static final String NUMBER = "number";
     private static final String OTHERS = "Others";
+
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = new HashMap<>(34);
@@ -61,6 +65,16 @@ public class InsRepRecValidate implements CustomizeValidator {
                 }
             }
         }
+        verifyVehicleEasMtsReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
             return errorMap;
+    }
+
+    private void verifyVehicleEasMtsReport(HttpServletRequest request, Map<String, String> errorMap, ApplicationViewDto applicationViewDto,String recommendation){
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG))){
+            List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
+            rejectCode.add(InspectionReportConstants.REJECTED);
+            rejectCode.add(InspectionReportConstants.RFC_REJECTED);
+            HcsaApplicationViewValidate.valiVehicleEasMtsCommon(request,errorMap,applicationViewDto,StringUtil.getNonNull(recommendation),rejectCode);
+        }
     }
 }
