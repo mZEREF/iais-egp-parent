@@ -345,7 +345,7 @@
 
     function jumpToPagechangePage() {
         showWaiting();
-        $("[name='hcsaBeDashboardSwitchType']").val('syspage');
+        $("[name='hcsaBeDashboardSwitchType']").val('page');
         var mainPoolForm = document.getElementById('beDashboardForm');
         mainPoolForm.submit();
     }
