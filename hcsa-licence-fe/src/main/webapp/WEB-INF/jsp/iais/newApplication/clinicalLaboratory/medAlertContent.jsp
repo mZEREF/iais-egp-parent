@@ -247,6 +247,9 @@
                 <c:when test="${mapDtoLength >= mapHcsaSvcPersonnel.maximumCount}">
                     <c:set var="needAddPsn" value="false"/>
                 </c:when>
+                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                    <c:set var="needAddPsn" value="false"/>
+                </c:when>
             </c:choose>
             <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv" >
                 <div class="control control-caption-horizontal">
