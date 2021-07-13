@@ -3569,8 +3569,8 @@ public class NewApplicationDelegator {
             boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(!changeHciName);
-        amendmentFeeDto.setChangeInLocation(!changeLocation);
+        amendmentFeeDto.setChangeInHCIName(changeHciName);
+        amendmentFeeDto.setChangeInLocation(changeLocation);
         if (changeVehicles) {
             amendmentFeeDto.setChangeInHCIName(Boolean.TRUE);
         }
