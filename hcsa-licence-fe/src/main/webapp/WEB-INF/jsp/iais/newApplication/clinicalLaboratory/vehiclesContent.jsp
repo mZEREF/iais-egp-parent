@@ -112,7 +112,7 @@
 
 
 
-    <c:if test="${ requestInformationConfig==null}">
+    <c:if test="${!isRfi}">
         <c:choose>
             <c:when test="${!empty vehicleDtoList}">
                 <c:set var="vehicleLength" value="${vehicleDtoList.size()}"/>
@@ -136,8 +136,11 @@
             <c:when test="${vehicleLength >= vehicleConfigDto.maximumCount}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
+            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
         </c:choose>
-        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn || isRfi}">hidden</c:if>">
+        <div class="col-md-12 col-xs-12 addVehicleDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addVehicleBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Vehicle</span>
             </span>
@@ -230,10 +233,12 @@
             }
             </c:if>
         });
-        //display add more
+        <c:if test="${AppSubmissionDto.appType == 'APTY002' || 'true' == canEdit}">
+        // display add more
         if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
             $('.addVehicleDiv').removeClass('hidden');
         }
+        </c:if>
         if (vehicleLength <= 1) {
             $('.vehicleContent:eq(0) .assign-psn-item').html('');
         }
