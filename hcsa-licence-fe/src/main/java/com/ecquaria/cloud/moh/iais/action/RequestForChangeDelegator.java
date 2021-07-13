@@ -457,7 +457,7 @@ public class RequestForChangeDelegator {
             }
         }
         if(error.isEmpty()){
-            LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+            LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
@@ -585,7 +585,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
-        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
         if(error.isEmpty()){
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);

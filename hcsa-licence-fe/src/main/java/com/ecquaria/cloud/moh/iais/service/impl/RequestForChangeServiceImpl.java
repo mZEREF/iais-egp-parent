@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -71,11 +70,6 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.validate.impl.ValidateEasmts;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -89,6 +83,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import static java.util.regex.Pattern.compile;
 
@@ -249,6 +247,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public LicenceDto getLicenceDtoByLicenceId(String licenceId) {
         return licenceClient.getLicBylicId(licenceId).getEntity();
+    }
+
+    @Override
+    public LicenceDto getLicDtoById(String licenceId) {
+        LicenceDto result = null;
+        if(!StringUtil.isEmpty(licenceId)){
+            result = licenceClient.getLicDtoById(licenceId).getEntity();
+        }
+        return result;
     }
 
     @Override
