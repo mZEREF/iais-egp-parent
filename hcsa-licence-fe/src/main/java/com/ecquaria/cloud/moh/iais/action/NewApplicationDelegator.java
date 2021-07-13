@@ -2443,7 +2443,7 @@ public class NewApplicationDelegator {
 
         }
 
-        if(grpPremiseIsChange){
+        if (grpPremiseIsChange) {
             boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList,
                     licenceById, amount, appGroupNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, bpc.request);
             if (!isValid) {
@@ -3754,8 +3754,8 @@ public class NewApplicationDelegator {
             boolean isCharity) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(!changeHciName);
-        amendmentFeeDto.setChangeInLocation(!changeLocation);
+        amendmentFeeDto.setChangeInHCIName(changeHciName);
+        amendmentFeeDto.setChangeInLocation(changeLocation);
         if (changeVehicles) {
             amendmentFeeDto.setChangeInHCIName(Boolean.TRUE);
         }
