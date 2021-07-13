@@ -1127,7 +1127,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto) {
-        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlag) || InspectionConstants.SWITCH_ACTION_VIEW.equals(vehicleFlag)) {
+        String vehicleFlagString = StringUtil.getNonNull(vehicleFlag).replace(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_","");
+        if(InspectionConstants.SWITCH_ACTION_EDIT.equals(vehicleFlagString) || InspectionConstants.SWITCH_ACTION_VIEW.equals(vehicleFlagString)) {
             if(applicationViewDto != null) {
                 List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
