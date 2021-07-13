@@ -565,8 +565,18 @@
 
     function checkDms() {
         var isRequestForChange = $('#isRequestForChange').val();
+        var decisionValues = $("[name='decisionValues']").val();
         if(isRequestForChange != 'Y'){
             checkRecommendationDMS();
+        }
+        if('decisionReject' == decisionValues) {
+            $('.vehicle-approve').attr("disabled","disabled");
+            $('.vehicle-reject').attr("disabled","disabled");
+            $('.vehicle-approve').prop('checked', false);
+            $('.vehicle-reject').prop('checked', true);
+        } else {
+            $('.vehicle-approve').removeAttr("disabled","disabled");
+            $('.vehicle-reject').removeAttr("disabled","disabled");
         }
     }
 

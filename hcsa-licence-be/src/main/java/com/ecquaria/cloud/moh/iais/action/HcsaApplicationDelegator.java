@@ -3243,7 +3243,7 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
-        setShowAndEditTcuDate(bpc.request,applicationViewDto);
+        setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         //filter vehicle
         vehicleCommonController.setVehicleInformation(bpc.request,taskDto,applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -3336,14 +3336,31 @@ public class HcsaApplicationDelegator {
         setChooseInspectionValue(bpc.request, applicationViewDto);
     }
 
-    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
+    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto,TaskDto taskDto){
         String appType = applicationViewDto.getApplicationDto() == null ? "" : applicationViewDto.getApplicationDto().getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase( appType) ||
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase( appType) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase( appType)){
-             applicationViewDto.setShowTcu(true);
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+            if(!RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(loginContext.getCurRoleId())){
+
+                if(RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(loginContext.getCurRoleId())){
+                    if(HcsaConsts.ROUTING_STAGE_ASO.equalsIgnoreCase(taskDto.getTaskKey()) || HcsaConsts.ROUTING_STAGE_PSO.equalsIgnoreCase(taskDto.getTaskKey())){
+                        applicationViewDto.setShowTcu(true);
+                        applicationViewDto.setEditTcu(true);
+                        return;
+                    }
+                }
+
+                if(applicationViewDto.getApplicationDto() != null && fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null){
+                    if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
+                       return;
+                    }
+                }
+
+                applicationViewDto.setShowTcu(true);
+                applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+            }
         }
     }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
