@@ -55,6 +55,8 @@ public interface RequestForChangeService {
 
     LicenceDto getLicenceDtoByLicenceId(String licenceId);
 
+    public LicenceDto getLicDtoById(String licenceId) ;
+
     LicenseeIndividualDto getLicIndByNRIC(String nric);
 
     LicenseeDto getLicenseeByUenNo(String uenNo);

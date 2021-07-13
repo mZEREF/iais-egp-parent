@@ -162,8 +162,6 @@ public class HcsaApplicationDelegator {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
-    @Value("${easmts.vehicle.sperate.flag}")
-    private String vehicleOpenFlag;
 
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
@@ -171,9 +169,10 @@ public class HcsaApplicationDelegator {
     private RfiCanCheck rfiCanCheck;
     @Autowired
     private NotificationHelper notificationHelper;
-
     @Autowired
     private FillupChklistService fillupChklistService;
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
     /**
@@ -200,8 +199,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", null);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", null);
+        vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request, "backSearchParamFromHcsaApplication", searchParamGroup);
@@ -3246,14 +3244,8 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
         setShowAndEditTcuDate(bpc.request,applicationViewDto);
-        //get vehicle flag
-        String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
-        //get vehicleNoList for edit
-        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
-        //sort AppSvcVehicleDto List
-        applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
+        //filter vehicle
+        vehicleCommonController.setVehicleInformation(bpc.request,taskDto,applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request, applicationViewDto);

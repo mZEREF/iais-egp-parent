@@ -11,11 +11,12 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
-import java.util.Date;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * @Author: yichen
@@ -94,9 +95,7 @@ public final class EicRequestTrackingHelper {
         eicRequestTrackingDto.setFirstActionAt(now);
         eicRequestTrackingDto.setLastActionAt(now);
 
-        saveEicTrack(client, eicRequestTrackingDto);
-
-        return eicRequestTrackingDto;
+        return saveEicTrack(client, eicRequestTrackingDto);
     }
 
     public EicRequestTrackingDto saveEicTrack(int client, EicRequestTrackingDto eicRequestTrackingDto) {

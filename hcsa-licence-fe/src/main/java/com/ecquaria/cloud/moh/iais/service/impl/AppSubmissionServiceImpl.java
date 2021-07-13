@@ -1580,27 +1580,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getCharityRenewalAmount start ...."));
         log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
         List<String> premises = IaisCommonUtils.genNewArrayList();
-        String hciCodeEas = null;
-        String hciCodeMts = null;
-        boolean hadEas = false;
-        boolean hadMts = false;
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtosAll=IaisCommonUtils.genNewArrayList();
-        for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            String hciCode = appGrpPremisesDtos.get(0).getHciCode();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
-                String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-                if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                    hadEas = true;
-                    hciCodeEas = hciCode;
-                }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                    hadMts = true;
-                    hciCodeMts = hciCode;
-                }
-            }
-
-        }
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
             String licenceId1 = appSubmissionDto.getLicenceId();
@@ -1642,11 +1621,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
-                    if(baseServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                        if(hadEas&&hadMts&&hciCodeEas.equals(hciCodeMts)){
-                            licenceFeeDto.setBundle(3);
-                        }
-                    }
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(premisessTypes);
@@ -1696,11 +1670,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                     licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                    if(hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                        if(hadEas&&hadMts&&hciCodeEas.equals(hciCodeMts)){
-                            licenceFeeDto.setBundle(3);
-                        }
-                    }
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);

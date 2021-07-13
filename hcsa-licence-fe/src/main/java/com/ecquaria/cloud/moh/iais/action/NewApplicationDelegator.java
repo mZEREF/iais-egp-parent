@@ -80,6 +80,7 @@ import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -113,6 +114,21 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -129,20 +145,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * egator
@@ -2430,6 +2432,9 @@ public class NewApplicationDelegator {
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
+        if(licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceById.getMigrated()==1&& AccessUtil.isActiveMigrated()){
+            amount=0.0;
+        }
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
         appSubmissionDto.setAmount(amount);
 

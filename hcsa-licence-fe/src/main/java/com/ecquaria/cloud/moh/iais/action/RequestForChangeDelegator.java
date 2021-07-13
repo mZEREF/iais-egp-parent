@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -50,6 +51,16 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -59,15 +70,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /****
  *
@@ -457,7 +459,7 @@ public class RequestForChangeDelegator {
             }
         }
         if(error.isEmpty()){
-            LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+            LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
@@ -479,6 +481,9 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
+                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& AccessUtil.isActiveMigrated()){
+                        amount=0.0;
+                    }
                     appSubmissionDto.setAmount(amount);
                     log.info(StringUtil.changeForLog("The amount.length is -->:"+amount));
                     log.info(StringUtil.changeForLog("The selectCheakboxs.length is -->:"+selectCheakboxs.length));
@@ -585,7 +590,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
-        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
         if(error.isEmpty()){
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
