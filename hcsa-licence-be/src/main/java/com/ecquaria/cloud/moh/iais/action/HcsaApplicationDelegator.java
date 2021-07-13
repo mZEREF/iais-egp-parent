@@ -3244,6 +3244,7 @@ public class HcsaApplicationDelegator {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
         setShowAndEditTcuDate(bpc.request,applicationViewDto);
+        //filter vehicle
         vehicleCommonController.setVehicleInformation(bpc.request,taskDto,applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
