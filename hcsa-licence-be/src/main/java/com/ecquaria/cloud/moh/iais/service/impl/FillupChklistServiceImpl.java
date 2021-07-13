@@ -2192,7 +2192,18 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public boolean checklistNeedVehicleSeparation(ApplicationViewDto appViewDto){
-            return (IaisCommonUtils.isEmpty(appViewDto.getAppSvcVehicleDtos()) || hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() == null) ? false : true;
+        List<AppSvcVehicleDto> appSvcVehicleDtos =  appViewDto.getAppSvcVehicleDtos();
+        if(IaisCommonUtils.isEmpty(appSvcVehicleDtos)){
+            return  false;
+        }
+        if( ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appViewDto.getApplicationDto().getApplicationType())){
+            //get vehicleNoList for edit
+            List<String> vehicleNoList = applicationService.getVehicleNoByFlag(InspectionConstants.SWITCH_ACTION_EDIT, appViewDto);
+            //sort AppSvcVehicleDto List
+            applicationService.sortAppSvcVehicleListToShow(vehicleNoList, appViewDto);
+            appSvcVehicleDtos = appViewDto.getVehicleRfcShowDtos();
+        }
+        return (IaisCommonUtils.isEmpty(appSvcVehicleDtos) || hcsaChklClient.getMaxVersionInspectionEntityConfig(appViewDto.getSvcCode(), AdhocChecklistServiceImpl.compareType(appViewDto.getApplicationDto().getApplicationType()), AdhocChecklistServiceImpl.compareModule(appViewDto.getApplicationDto().getApplicationType()),HcsaChecklistConstants.INSPECTION_ENTITY_VEHICLE ).getEntity() == null) ? false : true;
     }
 
     @Override
