@@ -118,7 +118,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setSessionAttr(request, TASKDTO, taskDto);
         SearchParam searchParamGroup = (SearchParam)ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(request,"backSearchParamFromHcsaApplication",searchParamGroup);
-        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto,InspectionConstants.SWITCH_ACTION_YES);
+        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
     public void AoReportPre(BaseProcessClass bpc) {
