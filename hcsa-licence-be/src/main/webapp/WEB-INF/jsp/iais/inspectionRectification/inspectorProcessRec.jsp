@@ -362,6 +362,10 @@
             $("#indicateCondRemarks").show();
             $("#processRec").show();
             $("#processRecRfi").hide();
+        } else {
+            $("#indicateCondRemarks").hide();
+            $("#processRec").show();
+            $("#processRecRfi").hide();
         }
     }
 
