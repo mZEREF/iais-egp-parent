@@ -215,7 +215,7 @@
         </c:forEach>
 
         $('#sysClearBtn').click(function () {
-            doClear();
+            doStatisticsBoardClear();
         });
 
         $('#sysSearchBtn').click(function () {
@@ -339,7 +339,7 @@
 
     function jumpToPagechangePage() {
         showWaiting();
-        $("[name='hcsaBeDashboardSwitchType']").val('syspage');
+        $("[name='hcsaBeDashboardSwitchType']").val('page');
         var mainPoolForm = document.getElementById('beDashboardForm');
         mainPoolForm.submit();
     }
