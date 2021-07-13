@@ -96,7 +96,7 @@ public final class EicRequestTrackingHelper {
 
         saveEicTrack(client, eicRequestTrackingDto);
 
-        return eicRequestTrackingDto;
+        return saveEicTrack(client, eicRequestTrackingDto);
     }
 
     public EicRequestTrackingDto saveEicTrack(int client, EicRequestTrackingDto eicRequestTrackingDto) {
