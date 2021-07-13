@@ -148,7 +148,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
-        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto,InspectionConstants.SWITCH_ACTION_YES);
+        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
     public void inspectionReportPre(BaseProcessClass bpc) {

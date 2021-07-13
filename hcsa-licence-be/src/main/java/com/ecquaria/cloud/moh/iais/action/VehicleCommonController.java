@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,10 @@ public class VehicleCommonController {
 
     @Autowired
     private ApplicationService applicationService;
+    @Value("${easmts.vehicle.sperate.flag}")
+    private String vehicleOpenFlag;
 
-    public void setVehicleInformation(HttpServletRequest request, TaskDto taskDto, ApplicationViewDto applicationViewDto,String vehicleOpenFlag){
+    public void setVehicleInformation(HttpServletRequest request, TaskDto taskDto, ApplicationViewDto applicationViewDto){
         //get vehicle flag
         String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
         //get vehicleNoList for edit
