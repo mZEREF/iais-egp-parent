@@ -1089,6 +1089,12 @@ public class AppealServiceImpl implements AppealService {
                         String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                         if(StringUtil.isEmpty(otherQualification)){
                             map.put("otherQualification" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification ","field"));
+                        }else if(otherQualification.length()>100){
+                            Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                            repMap.put("number","100");
+                            repMap.put("fieldNo","Other Qualification");
+                            map.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+
                         }
                         if (StringUtil.isEmpty(professionRegoNo)) {
 /*
