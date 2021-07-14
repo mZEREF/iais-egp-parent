@@ -225,6 +225,14 @@ public class ValidateClincalDirector implements ValidateFlow {
 
     //Emergency Ambulance Service
     protected void doValidateForEAS(AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto,Map<String, String> map,int index){
+        String professionBoard = appSvcClinicalDirectorDto.getProfessionBoard();
+        if(StringUtil.isEmpty(professionBoard)||"-1".equals(professionBoard)){
+            map.put("professionBoard"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "professionBoard", "field"));
+        }
+        String profRegNo = appSvcClinicalDirectorDto.getProfRegNo();
+        if(StringUtil.isEmpty(profRegNo)){
+            map.put("profRegNo"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "profRegNo", "field"));
+        }
         String speciality = appSvcClinicalDirectorDto.getSpeciality();
         String regNo = appSvcClinicalDirectorDto.getProfRegNo();
         if(!StringUtil.isEmpty(regNo)&&StringUtil.isEmpty(speciality)){

@@ -83,6 +83,9 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Board</label>
+                    <c:if test="${'EAS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:select cssClass="professionBoard"  name="professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD" value="${clinicalDirectorDto.professionBoard}" firstOption="Please Select"></iais:select>
@@ -93,6 +96,9 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Regn. No.</label>
+                    <c:if test="${'EAS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${clinicalDirectorDto.profRegNo}"></iais:input>
