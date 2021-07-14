@@ -48,10 +48,6 @@
     </div>
 </form>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#companyDetail').collapse('show');
-    });
-
     $("#back").click(function () {
         $("[name='crud_action_type']").val('back');
         $('#mainForm').submit();
