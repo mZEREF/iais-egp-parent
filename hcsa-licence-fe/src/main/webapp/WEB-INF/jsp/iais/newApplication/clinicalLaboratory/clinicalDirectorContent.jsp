@@ -164,13 +164,14 @@
 
     var specialityEvent = function() {
         $('.specialityField').unbind('DOMNodeInserted');
+        $('.specialityField').unbind('DOMNodeRemoved');
         $('.specialityField').on('DOMNodeInserted', function() {
-            var $content = $(this).closest('div.clinicalDirectorContent');
-            if (isEmpty($(this).text())) {
-                $content.find('.specialtyGetDateLabel .mandatory').remove();
-            } else {
-                $content.find('.specialtyGetDateLabel').append('<span class="mandatory">*</span>');
-            }
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.removeClass('hidden');
+        });
+        $('.specialityField').on('DOMNodeRemoved', function() {
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.addClass('hidden');
         });
     }
 
@@ -239,6 +240,7 @@
                         assignSelectBindEvent();
                         designationBindEvent();
                         profRegNoBlur();
+                        specialityEvent();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
