@@ -61,6 +61,7 @@
           <iais:field value="Blacked Out Date Description"/>
           <iais:value width="18">
             <input type="text" id="blacked_out_desc" maxlength="255" name="desc"  value="${desc}">
+            <span class="error-msg" id="error_desc" name="iaisErrorMsg"></span>
           </iais:value>
         </iais:row>
 

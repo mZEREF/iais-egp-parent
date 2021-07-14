@@ -205,8 +205,8 @@ public class MohIntranetUserDelegator {
             return;
         }
         orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        intranetUserService.createIntranetUser(orgUserDto);
         saveEgpUser(orgUserDto);
+        intranetUserService.createIntranetUser(orgUserDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
     }
 
@@ -937,7 +937,6 @@ public class MohIntranetUserDelegator {
                 List<String> msg = IaisCommonUtils.genNewArrayList();
                 String s = "add success !";
                 msg.add(s);
-                intranetUserService.createIntranetUsers(orgUserDtos);
                 for (OrgUserDto orgUserDto : orgUserDtos) {
                     saveEgpUser(orgUserDto);
                     OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
@@ -946,6 +945,7 @@ public class MohIntranetUserDelegator {
                     orgUserUpLoadDto.setUserId(userId);
                     orgUserUpLoadDtos.add(orgUserUpLoadDto);
                 }
+                intranetUserService.createIntranetUsers(orgUserDtos);
             }
             ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -1056,10 +1056,10 @@ public class MohIntranetUserDelegator {
             }
             //new
             if (!IaisCommonUtils.isEmpty(orgUserDtosNew)) {
-                intranetUserService.createIntranetUsers(orgUserDtosNew);
                 for (OrgUserDto orgUserDto : orgUserDtosNew) {
                     saveEgpUser(orgUserDto);
                 }
+                intranetUserService.createIntranetUsers(orgUserDtosNew);
             }
             //update
             if (!IaisCommonUtils.isEmpty(orgUserDtosOld)) {

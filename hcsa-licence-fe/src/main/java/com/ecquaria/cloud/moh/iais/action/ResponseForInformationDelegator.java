@@ -305,6 +305,12 @@ public class ResponseForInformationDelegator {
                 String userReply=mulReq.getParameter("userReply"+info.getId());
                 if(StringUtil.isEmpty(userReply)){
                     errMap.put("userReply"+info.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
+                }else if(userReply.length()>1000){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("number","1000");
+                    repMap.put("fieldNo","Information");
+                    errMap.put("userReply"+info.getId(),MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+
                 }
             }
         }
