@@ -54,7 +54,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
 
             StringBuilder url = new StringBuilder();
             url.append("https://").append(request.getServerName())
-                    .append("/main-web/eservice/INTRANET/MohBackendInbox");
+                    .append("/main-web/eservice/INTRANET/MohHcsaBeDashboard");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),request);
             try {
                 clearSession(request);

@@ -424,7 +424,7 @@
                                                                     </c:if>
                                                                     <%--</table>--%>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                                                                         Submit

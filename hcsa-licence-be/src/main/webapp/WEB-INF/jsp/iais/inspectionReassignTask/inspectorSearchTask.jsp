@@ -28,7 +28,7 @@
               <%--                <div class="bg-title">--%>
               <%--                  <h2>You are not authorised to access this function.</h2>--%>
               <%--                </div>--%>
-              <%--                <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>--%>
+              <%--                <div align="left"><span><a href="/main-web/eservice/INTRANET/MohHcsaBeDashboard"><em class="fa fa-angle-left"></em> Back</a></span></div>--%>
               <%--              </c:if>--%>
               <div class="bg-title">
                 <h2>
