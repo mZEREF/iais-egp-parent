@@ -94,8 +94,6 @@ public final class EicRequestTrackingHelper {
         eicRequestTrackingDto.setFirstActionAt(now);
         eicRequestTrackingDto.setLastActionAt(now);
 
-        saveEicTrack(client, eicRequestTrackingDto);
-
         return saveEicTrack(client, eicRequestTrackingDto);
     }
 
