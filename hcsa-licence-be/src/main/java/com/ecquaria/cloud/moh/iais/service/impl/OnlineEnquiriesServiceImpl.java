@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -172,7 +173,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", null);
         ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", null);
         ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", null);
+        ParamUtil.setSessionAttr(request, "subLicenseeDto", null);
 
+        if(licenceDto.getSubLicenseeId()!=null){
+            SubLicenseeDto subLicenseeDto=hcsaLicenceClient.getSubLicenseesById(licenceDto.getSubLicenseeId()).getEntity();
+            ParamUtil.setSessionAttr(request, "subLicenseeDto", subLicenseeDto);
+        }
         try {
             AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(licenceId).getEntity();
             ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcChargesPageDto());
