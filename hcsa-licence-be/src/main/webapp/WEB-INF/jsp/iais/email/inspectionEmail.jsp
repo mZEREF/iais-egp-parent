@@ -91,9 +91,10 @@
                                                     <iais:row>
                                                         <iais:field value="Internal Remarks"/>
                                                         <iais:value width="4000">
-                                                            <textarea name="Remarks" cols="60" rows="7"
+                                                            <textarea id="Remarks" name="Remarks" cols="60" rows="7"
                                                                       maxlength="300"
                                                                       >${insEmailDto.remarks}</textarea>
+                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="remarksMsg" >Remarks should not be more than 300 characters.</span>
                                                         </iais:value>
                                                     </iais:row>
                                                     <iais:row>
@@ -153,13 +154,18 @@
     }
 
     function doSend() {
-        showWaiting();
         var f = $('#decision_email option:selected').val();
+        var remark = $('#Remarks').val();
 
-        if (f == "" || f == null) {
+        if (f == null || f == ""  ) {
             $("#selectDecisionMsg").show();
-            dismissWaiting();
-        } else {
+        }
+
+        if(remark.length>300){
+            $("#remarksMsg").show();
+        }
+        if(f != null && f != ""  &&remark.length<=300){
+            showWaiting();
             SOP.Crud.cfxSubmit("mainForm", "send");
         }
     }

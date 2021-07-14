@@ -77,6 +77,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remark</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <textarea style="width: 100%" rows="6" id="codeRemarks"  name="codeRemarksEd" maxlength="255">${MasterCodeDto.remarks}</textarea>
+                                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 
