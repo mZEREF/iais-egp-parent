@@ -94,7 +94,7 @@ public class LicenceExpiredBatchJob {
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
-        if (licenceDtos != null && !licenceDtos.isEmpty()) {
+        if (!IaisCommonUtils.isEmpty(licenceDtos)) {
             for (LicenceDto licenceDto : licenceDtos) {
                 //shi fou you qi ta de app zai zuo
                 String licId = licenceDto.getId();
