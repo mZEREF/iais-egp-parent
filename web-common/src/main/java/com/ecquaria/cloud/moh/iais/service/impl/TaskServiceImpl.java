@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -76,6 +77,8 @@ public class TaskServiceImpl implements TaskService {
     private String mailSender;
     @Autowired
     private CommonEmailClient emailClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
 
 
@@ -194,7 +197,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId) {
-        return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
+        return taskOrganizationClient.getTaskScores(workGroupId,String.valueOf(systemParamConfig.getWorkloadCalculation())).getEntity();
     }
 
     @Override
