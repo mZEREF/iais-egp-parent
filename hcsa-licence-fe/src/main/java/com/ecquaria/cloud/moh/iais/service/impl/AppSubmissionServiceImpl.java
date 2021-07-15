@@ -2389,6 +2389,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             sB.append(errIcon);
         }
         bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
+        log.info(StringUtil.changeForLog("Error Message: " + previewAndSubmitMap));
         return previewAndSubmitMap;
     }
 
