@@ -1,4 +1,4 @@
-FROM tomcat:9.0.40-jdk8-adoptopenjdk-hotspot
+FROM 192.168.7.88/ecq/tomcat:9.0.40.1-adoptopenjdk8u265-b01
 
 COPY target/web.war /usr/local/tomcat/webapps/web.war
 
