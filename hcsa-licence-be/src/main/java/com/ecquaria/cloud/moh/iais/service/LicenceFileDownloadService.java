@@ -16,8 +16,6 @@ public interface LicenceFileDownloadService {
     void initPath();
 
     boolean decompression() throws Exception;
-    List<ApplicationDto> listApplication();
-    void requestForInfList(List<ApplicationDto> list);
     Boolean changeFeApplicationStatus();
     List<TaskDto> getTasksByRefNo(String refNo);
 

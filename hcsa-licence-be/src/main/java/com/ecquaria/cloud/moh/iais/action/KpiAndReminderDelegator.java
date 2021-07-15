@@ -16,6 +16,12 @@ import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.impl.KpiAndReminderServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,11 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author Wenkang
@@ -54,7 +55,7 @@ public class KpiAndReminderDelegator {
     public void cancel(BaseProcessClass bpc){
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
-                .append("/main-web/eservice/INTRANET/MohBackendInbox");
+                .append("/main-web/eservice/INTRANET/MohHcsaBeDashboard");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),bpc.request);
         try {
             bpc.response.sendRedirect(tokenUrl);

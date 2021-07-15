@@ -1078,15 +1078,19 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto) {
         String vehicleFlag = AppConsts.FALSE;
+        //filter appType
         boolean vehicleAppTypeFlag = getVehicleAppTypeFlag(applicationViewDto);
+        //filter vehicleOpenFlag
         if(vehicleAppTypeFlag && taskDto != null && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
             boolean actionVehicleFlag = false;
+            //filter stage
             if(!IaisCommonUtils.isEmpty(applicationViewDto.getAppSvcVehicleDtos())) {
                 ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                 String stageId = taskDto.getTaskKey();
                 if(applicationGroupDto != null) {
                     String newLicenseeId = applicationGroupDto.getNewLicenseeId();
                     String licenseeId = applicationGroupDto.getLicenseeId();
+                    //filter DM data
                     if(!StringUtil.isEmpty(newLicenseeId) && newLicenseeId.equals(licenseeId)) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
                         actionVehicleFlag = true;
@@ -1100,8 +1104,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
                             ) {
                         vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
-                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)){
-                        vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_"+ (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                    }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
+                        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                        if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
+                            vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
+                        } else {
+                            vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_" + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                        }
                      }
                 }
             } else {

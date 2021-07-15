@@ -99,6 +99,9 @@
             <c:when test="${cdLength >= clinicalDirectorConfig.maximumCount}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
+            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
         </c:choose>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
@@ -161,13 +164,14 @@
 
     var specialityEvent = function() {
         $('.specialityField').unbind('DOMNodeInserted');
+        $('.specialityField').unbind('DOMNodeRemoved');
         $('.specialityField').on('DOMNodeInserted', function() {
-            var $content = $(this).closest('div.clinicalDirectorContent');
-            if (isEmpty($(this).text())) {
-                $content.find('.specialtyGetDateLabel .mandatory').remove();
-            } else {
-                $content.find('.specialtyGetDateLabel').append('<span class="mandatory">*</span>');
-            }
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.removeClass('hidden');
+        });
+        $('.specialityField').on('DOMNodeRemoved', function() {
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.addClass('hidden');
         });
     }
 
@@ -236,6 +240,7 @@
                         assignSelectBindEvent();
                         designationBindEvent();
                         profRegNoBlur();
+                        specialityEvent();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,

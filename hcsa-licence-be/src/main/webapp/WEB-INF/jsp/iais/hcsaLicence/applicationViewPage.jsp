@@ -424,7 +424,7 @@
                                                                         </c:if>
                                                                         <%--</table>--%>
                                                                     </iais:section>
-                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                                                                     <div align="right">
                                                                         <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                                                                             Submit
@@ -565,8 +565,18 @@
 
     function checkDms() {
         var isRequestForChange = $('#isRequestForChange').val();
+        var decisionValues = $("[name='decisionValues']").val();
         if(isRequestForChange != 'Y'){
             checkRecommendationDMS();
+        }
+        if('decisionReject' == decisionValues) {
+            $('.vehicle-approve').attr("disabled","disabled");
+            $('.vehicle-reject').attr("disabled","disabled");
+            $('.vehicle-approve').prop('checked', false);
+            $('.vehicle-reject').prop('checked', true);
+        } else {
+            $('.vehicle-approve').removeAttr("disabled","disabled");
+            $('.vehicle-reject').removeAttr("disabled","disabled");
         }
     }
 

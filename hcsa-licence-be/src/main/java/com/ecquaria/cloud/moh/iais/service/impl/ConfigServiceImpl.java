@@ -1474,7 +1474,7 @@ public class ConfigServiceImpl implements ConfigService {
     private void sendURL(HttpServletRequest request,HttpServletResponse response){
         StringBuilder url = new StringBuilder();
         url.append("https://").append(request.getServerName())
-                .append("/main-web/eservice/INTRANET/MohBackendInbox");
+                .append("/main-web/eservice/INTRANET/MohHcsaBeDashboard");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),request);
         try {
             response.sendRedirect(tokenUrl);

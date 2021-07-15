@@ -1,3 +1,4 @@
+<%@page import="com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig" %>
 <%@ page import="com.ecquaria.cloud.helper.EngineHelper" %>
 <%
     //handle to the Engine APIs
@@ -38,7 +39,7 @@
     </div>
 </div>
 <script  type="text/javascript">
-    setInterval(function(){ payNowImgStringRefresh(); }, 60000);
+    setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
 
     function payNowImgStringRefresh(){
         $.ajax({

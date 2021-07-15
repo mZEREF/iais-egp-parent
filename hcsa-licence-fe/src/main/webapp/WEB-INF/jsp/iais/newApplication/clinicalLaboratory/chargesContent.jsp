@@ -146,6 +146,9 @@
                             <c:when test="${generalChargesLength >= generalChargesConfig.maximumCount}">
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
+                            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                                <c:set var="needAddPsn" value="false"/>
+                            </c:when>
                         </c:choose>
                         <div class="col-md-12 col-xs-12 addGeneralChargesDiv <c:if test="${!needAddPsn}">hidden</c:if>">
                             <span class="addGeneralChargesBtn" style="color:deepskyblue;cursor:pointer;">
@@ -289,6 +292,9 @@
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                                 <c:when test="${otherChargesLength >= otherChargesConfig.maximumCount}">
+                                    <c:set var="needAddPsn" value="false"/>
+                                </c:when>
+                                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                             </c:choose>

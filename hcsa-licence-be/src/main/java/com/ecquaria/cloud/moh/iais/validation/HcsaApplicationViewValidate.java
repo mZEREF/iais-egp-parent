@@ -54,6 +54,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String nextStage = ParamUtil.getRequestString(request, "nextStage");
         String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
+        String decisionValue = ParamUtil.getString(request,"decisionValues");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAudit = ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType);
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
@@ -106,7 +107,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             //verify upload file
             checkIsUploadDMS(applicationViewDto,errMap);
 
-            String decisionValue = ParamUtil.getString(request,"decisionValues");
             if(StringUtil.isEmpty(decisionValue)){
                 errMap.put("decisionValues",generalErrSix);
             }else{
@@ -209,22 +209,25 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
         }
         //validate vehicle EAS / MTS
-        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr);
+        errMap = valiVehicleEasMts(request, errMap, applicationViewDto, nextStage, nextStageReplys, appVehicleFlag, recommendationStr, decisionValue);
         tcuVerification(errMap,applicationViewDto);
         return errMap;
     }
 
     private Map<String, String> valiVehicleEasMts(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
-                                                  String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr) {
+                                                  String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr,
+                                                  String decisionValue) {
         if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
             List<String> rejectCode = IaisCommonUtils.genNewArrayList(1);
             rejectCode.add(RECOMMENDATION_REJECT);
-            valiVehicleEasMtsCommon(request,errMap,applicationViewDto,recommendationStr,rejectCode);
+            rejectCode.add(DECISION_REJECT);
+            valiVehicleEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);
         }
         return errMap;
     }
 
-    public static  void valiVehicleEasMtsCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,String recommendationStr,List<String> rejectCode){
+    public static void valiVehicleEasMtsCommon(HttpServletRequest request, Map<String, String> errMap, ApplicationViewDto applicationViewDto,
+                                                String recommendationStr, List<String> rejectCode, String decisionValue){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if(applicationDto != null) {
             List<AppSvcVehicleDto> appSvcVehicleDtos;
@@ -234,7 +237,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
             }
             if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
-                boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr));
+                boolean appVeh = !rejectCode.contains(StringUtil.getNonNull(recommendationStr)) && !rejectCode.contains(StringUtil.getNonNull(decisionValue));
                 for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
                     String[] vehicleNoRadios = ParamUtil.getStrings(request, "vehicleNoRadio" + i);
                     String vehicleNoRemarks = ParamUtil.getRequestString(request, "vehicleNoRemarks" + i);
@@ -242,10 +245,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     if(appVeh){
                         if (vehicleNoRadios == null || vehicleNoRadios.length == 0) {
                             errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                            appSvcVehicleDtos.get(i).setStatus(null);
                         } else {
                             String vehicleNoRadio = vehicleNoRadios[0];
                             if (StringUtil.isEmpty(vehicleNoRadio)) {
                                 errMap.put("vehicleNoRadioError" + i, "GENERAL_ERR0006");
+                                appSvcVehicleDtos.get(i).setStatus(null);
                             } else {
                                 String vehicleNoStatusCode;
                                 if(BeDashboardConstant.SWITCH_ACTION_APPROVE.equals(vehicleNoRadio)) {
