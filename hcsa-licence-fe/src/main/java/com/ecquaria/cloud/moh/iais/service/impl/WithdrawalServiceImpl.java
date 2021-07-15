@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -265,15 +264,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                String svcCode=serviceDto.getSvcCode();
-                if(svcCode.equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||svcCode.equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                    if(fee!=null){
-                        if(!fee.equals(applicationGroupDto.getAmount()-100.0)&&!fee.equals(0.0)&&applicationGroupDto.getAmount()<=1300.0){
-                            fee=applicationGroupDto.getAmount()-100.0;
-                        }
-                    }
-                }
                 if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee!=0.0){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
