@@ -1,12 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#companyDetail">
+            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#boardMember${index}">
                 Board Member ${index}
             </a>
         </h4>
     </div>
-    <div id="companyDetail" class="panel-collapse collapse">
+    <div id="boardMember${index}" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>

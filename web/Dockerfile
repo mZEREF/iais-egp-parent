@@ -1,5 +1,5 @@
 FROM 192.168.7.88/ecq/tomcat:9.0.40.1-adoptopenjdk8u265-b01
-
+USER root
 COPY target/web.war /usr/local/tomcat/webapps/web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh

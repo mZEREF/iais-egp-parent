@@ -264,8 +264,11 @@
 
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
+                <div class="control-label formtext col-md-5 col-xs-5 relevantExperienceLabel">
                     <label  class="control-label control-set-font control-font-label">Relevant Experience</label>
+                    <c:if test="${'MTS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="relevantExperience${index}" value="${clinicalDirectorDto.relevantExperience}"></iais:input>

@@ -583,6 +583,19 @@
             controlEdit(currRegiDateEle, propStyle, canEdit);
             controlEdit(praCerEndDateEle, propStyle, canEdit);
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
+
+            if ('EAS' == '${currentSvcCode}'){
+                var specialityField = $prsLoadingEle.find('.specialityField');
+                var relevantExperienceSpan = $prsLoadingEle.find('.relevantExperienceLabel').find('.mandatory');
+                if(isEmpty(specialityField.text()) && !isEmpty($prsLoadingEle.find('input.profRegNo').val())){
+                    if (relevantExperienceSpan.length==0){
+                        $prsLoadingEle.find('.relevantExperienceLabel').append('<span class="mandatory">*</span>');
+                    }
+                    relevantExperienceSpan.removeClass('hidden');
+                }else {
+                    relevantExperienceSpan.addClass('hidden');
+                }
+            }
         }
     };
 
