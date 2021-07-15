@@ -218,7 +218,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                                   String nextStage, String nextStageReplys, String appVehicleFlag, String recommendationStr,
                                                   String decisionValue) {
         if (applicationViewDto != null && (VERIFIED.equals(nextStage) || "PROCREP".equals(nextStageReplys)) && InspectionConstants.SWITCH_ACTION_EDIT.equals(appVehicleFlag))  {
-            List<String> rejectCode = IaisCommonUtils.genNewArrayList(1);
+            List<String> rejectCode = IaisCommonUtils.genNewArrayList(2);
             rejectCode.add(RECOMMENDATION_REJECT);
             rejectCode.add(DECISION_REJECT);
             valiVehicleEasMtsCommon(request, errMap, applicationViewDto, recommendationStr, rejectCode, decisionValue);

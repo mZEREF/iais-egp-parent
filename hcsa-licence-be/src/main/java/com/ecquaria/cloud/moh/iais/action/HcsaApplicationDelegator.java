@@ -2986,7 +2986,7 @@ public class HcsaApplicationDelegator {
 
         //save the broadcast
         //set vehicle No
-        broadcastApplicationDto = broadcastService.replySetVehicleByRole(loginContext, applicationViewDto, broadcastApplicationDto);
+        broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
