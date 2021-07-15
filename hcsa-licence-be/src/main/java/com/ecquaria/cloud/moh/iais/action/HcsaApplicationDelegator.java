@@ -3361,8 +3361,6 @@ public class HcsaApplicationDelegator {
                 applicationViewDto.setShowTcu(true);
                 applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
             }
-            applicationViewDto.setShowTcu(true);
-            applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
         }
     }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {
