@@ -29,6 +29,7 @@ import ecq.commons.helper.StringHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
@@ -59,7 +60,8 @@ import java.util.Map;
 
 @Slf4j
 public class PaymentPayNowProxy extends PaymentProxy {
-
+	@Value("${paynow.qr.expiry.minutes}")
+	private int expiryMinutes;
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String IMPL_CONTINUE_TOKEN_PREFIX = "IMPL_CONTINUE_TOKEN_";
@@ -129,7 +131,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		int minute = cal.get(Calendar.MINUTE);
-		cal.set(Calendar.MINUTE, minute + 1);
+		cal.set(Calendar.MINUTE, minute + expiryMinutes);
 		String expiryDate = df.format(cal.getTime());
 
 		double amount = Double.parseDouble(amo)/100;
