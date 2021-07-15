@@ -399,7 +399,7 @@ function toggleOnSelect(sel, val, elem) {
         $('#' + elem).show();
     } else {
         $('#' + elem).hide();
-        $('#' + elem).clearFields();
+        clearFields('#' + elem);
     }
 }
 
