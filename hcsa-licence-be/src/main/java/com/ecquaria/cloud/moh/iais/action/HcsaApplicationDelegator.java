@@ -233,6 +233,8 @@ public class HcsaApplicationDelegator {
             String newCorrelationId = appPremisesCorrelationDto.getId();
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
             applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+            //set can tcu date
+            setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -561,7 +563,7 @@ public class HcsaApplicationDelegator {
     }
 
     private void setTcuDate(HttpServletRequest request, ApplicationViewDto applicationViewDto){
-        if(applicationViewDto.isShowTcu()){
+        if(applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
             String tcuflag = ParamUtil.getString(request,"tcuType");
             if(!StringUtil.isEmpty(tcuflag)){
                 applicationViewDto.setTcuFlag(true);
