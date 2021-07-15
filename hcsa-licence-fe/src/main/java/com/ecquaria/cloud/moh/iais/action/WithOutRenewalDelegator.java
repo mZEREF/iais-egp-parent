@@ -1106,9 +1106,16 @@ public class WithOutRenewalDelegator {
 
     private void setCheckRepeatAppData(List<AppSubmissionDto> saveutoAppSubmissionDto){
         if(IaisCommonUtils.isNotEmpty(saveutoAppSubmissionDto)){
+            boolean checkRepeatAppData = false;
             for(AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto){
-                if(ApplicationConsts. APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppGroupAppType())){
-                    appSubmissionDto.setCheckRepeatAppData(true);
+                if(ApplicationConsts. APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppType())){
+                    checkRepeatAppData = true;
+                }
+            }
+
+            if(checkRepeatAppData){
+                for(AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto){
+                    appSubmissionDto.setCheckRepeatAppData(checkRepeatAppData);
                 }
             }
         }

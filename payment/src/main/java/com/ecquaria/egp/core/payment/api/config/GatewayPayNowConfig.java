@@ -54,7 +54,7 @@ public class GatewayPayNowConfig {
 	public static final String payloadFormatInd = ConfigHelper.getString("payNow.qr.payload.format.ind");
 
 
-
+	public static final String timeout = ConfigHelper.getString("payNow.payment.refresh.ms");
 
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = ConfigHelper.getString("payNow.payment.log.path");
