@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -55,14 +54,11 @@ import java.util.Map;
 public class UnprocessedTaskJobHandler extends IJobHandler {
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private InspEmailService inspEmailService;
+
     @Autowired
     private EmailClient emailClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
-    private final String EMAILMPLATEID = "A0D4EADD-D61B-EA11-BE7D-000C29F371DC";
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
