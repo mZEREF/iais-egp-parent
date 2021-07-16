@@ -1915,9 +1915,10 @@ public class ClinicalLaboratoryDelegator {
                     }
                 });
             }
-            String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
-            log.info(StringUtil.changeForLog("The current application id: " + appId));
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
+            List<String> appIds = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
+                    currSvcInfoDto.getServiceName());
+            log.info(StringUtil.changeForLog("The current related application id: " + appIds));
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appIds);
             validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
         }
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
@@ -2064,7 +2065,7 @@ public class ClinicalLaboratoryDelegator {
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
         if("next".equals(crud_action_type)){
-            validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
+            validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
         }
 
         if(!map.isEmpty()){

@@ -1,3 +1,4 @@
+<%@page import="com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig" %>
 <%@ page import="com.ecquaria.cloud.helper.EngineHelper" %>
 <%
     //handle to the Engine APIs
@@ -32,13 +33,13 @@
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href=${payNowCallBackUrl}>Cancel</a>
-<%--            <span style="float:right">&nbsp;</span>--%>
-<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
+            <%--            <span style="float:right">&nbsp;</span>--%>
+            <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
 </div>
 <script  type="text/javascript">
-    setInterval(function(){ payNowImgStringRefresh(); }, 60000);
+    setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
 
     function payNowImgStringRefresh(){
         $.ajax({

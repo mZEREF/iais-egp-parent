@@ -399,7 +399,7 @@ function toggleOnSelect(sel, val, elem) {
         $('#' + elem).show();
     } else {
         $('#' + elem).hide();
-        $('#' + elem).clearFields();
+        clearFields('#' + elem);
     }
 }
 
@@ -407,35 +407,18 @@ function isEmpty(str) {
     return typeof str === 'undefined' || str == null || str == '' || str == 'undefined';
 }
 
-$.fn.clearFields = function() {
-    return this.each(function() {
-        var type = this.type, tag = this.tagName.toLowerCase();
-        if (tag == 'form' || tag == 'div' || tag == 'span' || tag == 'ul' || tag == 'table' || tag == 'tr' || tag == 'td') {
-            return $(':input[class!="not-clear"]', this).clearFields();
-        }
-
-        if (!$(this).hasClass('not-clear')) {
-            if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
-                this.value = '';
-                if (tag == 'textarea' && $(this).hasClass('riched')) {
-                    $('#' + $(this).attr('id') + 'Rich').html('');
-                }
-            } else if (type == 'checkbox') {
-                this.checked = false;
-            } else if (type == 'radio') {
-                this.checked = false;
-            } else if (tag == 'select') {
-                this.selectedIndex = 0;
-            }
-        }
-    });
-};
-
 function clearFields(targetSelector) {
     if (isEmpty(targetSelector)) {
         return;
     }
-    $(targetSelector).find(':input[class!="not-clear"]').each(function() {
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[class!="not-clear"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function() {
         var type = this.type, tag = this.tagName.toLowerCase();
         if (!$(this).hasClass('not-clear')) {
             if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea') {
@@ -448,6 +431,56 @@ function clearFields(targetSelector) {
                 this.selectedIndex = 0;
                 $(this).niceSelect("update");
             }
+        }
+    });
+}
+
+function disableContent(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[type!="hidden"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function(i, ele) {
+        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        if (type == 'hidden') {
+            return;
+        }
+        $input.prop('disabled', true);
+        $input.css('border-color','#ededed');
+        $input.css('color','#999');
+        if (tag == 'select') {
+            $input.niceSelect("update");
+        }
+    });
+}
+
+function unDisableContent(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if (!$selector.is(":input")) {
+        $selector = $(targetSelector).find(':input[type!="hidden"]');
+    }
+    if ($selector.length <= 0) {
+        return;
+    }
+    $selector.each(function() {
+        var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+        if (type == 'hidden') {
+            return;
+        }
+        $input.prop('disabled', false);
+        $input.css('border-color','');
+        $input.css('color','');
+        if (tag == 'select') {
+            $input.niceSelect("update");
         }
     });
 }

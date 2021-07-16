@@ -3,6 +3,12 @@
     <input type="hidden" value="${transfer}" name="transfer" id="transfer">
     <h1>Amendment</h1>
     <c:if test="${AppSubmissionDto.licenceNo ne null}">
+        <c:if test="${empty SvcName}">
+            <c:set var="SvcName" value="${AppSubmissionDto.serviceName}" />
+        </c:if>
+        <c:if test="${empty SvcName}">
+            <c:set var="SvcName" value="${AppSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}" />
+        </c:if>
     <p class="center">You are amending the <strong>${SvcName}  licence (Licence No. ${AppSubmissionDto.licenceNo}</strong>)</p>
     </c:if>
 </div>

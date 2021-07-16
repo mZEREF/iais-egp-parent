@@ -664,16 +664,16 @@
   $('#hciNameClick').click(function () {
       var jQuery = $('#hciNameShowOrHidden').attr('style');
       if(jQuery.match("display: none")){
-          var a= $('#hciNameShowOrHidden').height();
-          var b= $('.panel-body').height();
+          var a = $('#hciNameShowOrHidden').height();
+          var b = $('#collapsePremise .panel-body').height();
           if(a>b){
               $('#hciNameShowOrHidden').height(b)
-          }else {
+          } else {
               $('#hciNameShowOrHidden').height(a)
           }
           $('#hciNameShowOrHidden').show();
           $('#addressShowOrHidden').hide();
-      }else {
+      } else {
           $('#hciNameShowOrHidden').hide();
       }
   });
@@ -681,16 +681,16 @@
   $('#addressClick').click(function () {
       var jQuery = $('#addressShowOrHidden').attr('style');
       if(jQuery.match("display: none")){
-        var a= $('#addressShowOrHidden').height();
-        var b= $('.panel-body').height();
+        var a = $('#addressShowOrHidden').height();
+        var b = $('#collapsePremise .panel-body').height();
         if(a>b){
             $('#addressShowOrHidden').height(b)
-        }else {
+        } else {
             $('#addressShowOrHidden').height(a)
         }
           $('#addressShowOrHidden').show();
           $('#hciNameShowOrHidden').hide();
-      }else {
+      } else {
           $('#addressShowOrHidden').hide();
       }
   });

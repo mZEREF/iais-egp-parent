@@ -12,17 +12,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -37,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -79,7 +84,8 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-
+    @Autowired
+    private AppInspectionStatusClient appInspectionStatusClient;
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
@@ -87,108 +93,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         try {
             AuditTrailHelper.setupBatchJobAuditTrail(this);
-            List<ApplicationDto> withdrawApplicationDtoList = applicationClient.saveWithdrawn().getEntity();
-            //get old application
-            HcsaApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(HcsaApplicationDelegator.class);
-            if (!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
-                withdrawApplicationDtoList.forEach(h -> {
-                    applicationService.updateFEApplicaiton(h);
-                    boolean isCharity = false;
-                    String applicantName = "";
-                        String oldAppId = h.getId();
-                        if (!StringUtil.isEmpty(oldAppId)) {
-                            ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                            String serviceId = oldApplication.getServiceId();
-                            String applicationNo = oldApplication.getApplicationNo();
-                            String applicationType1 = oldApplication.getApplicationType();
-                            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-                            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
-                            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
-                            if (orgUserDto != null) {
-                                applicantName = orgUserDto.getDisplayName();
-                            }
-                            String licenseeId = applicationGroupDto.getLicenseeId();
-                            String paymentMethod = applicationGroupDto.getPayMethod();
-                            String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
-                                Double fee = 0.0;
-                                applicationService.closeTaskWhenWhAppApprove(h.getId());
-                                List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-                                applicationDtoList.add(oldApplication);
-                                String entityType = "";
-                                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                                if (licenseeDto != null) {
-                                    LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                                    if (licenseeEntityDto != null) {
-                                        entityType = licenseeEntityDto.getEntityType();
-                                    }
-                                }
-                                if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                                    isCharity = true;
-                                }
-                                for (ApplicationDto applicationDto1 : applicationDtoList) {
-                                    applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
-                                    applicationDto1.setIsCharity(isCharity);
-                                }
-                                List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
-                                if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
-                                    fee = applicationDtoList2.get(0).getReturnFee();
-                                }
-                                try {
-                                    boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                                    if (withdrawReturnFee){
-                                        AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
-                                        applicationService.saveAppReturnFee(appReturnFeeDto);
-                                    }
-                                }catch (Exception e){
-                                    log.error("Withdraw application return is failed");
-                                    log.error(e.getMessage(), e);
-                                }
-                                Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
-                                msgInfoMap.put("Applicant", applicantName);
-                                msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
-                                msgInfoMap.put("ApplicationNumber", applicationNo);
-                                msgInfoMap.put("reqAppNo", applicationNo);
-                                msgInfoMap.put("S_LName", serviceName);
-                                msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                                msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                                if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||
-                                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
-                                    msgInfoMap.put("paymentType", "2");
-                                    msgInfoMap.put("paymentMode", "");
-                                    msgInfoMap.put("returnMount", 0.0);
-                                } else {
-                                    msgInfoMap.put("returnMount", fee);
-                                    if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
-                                        msgInfoMap.put("paymentType", "0");
-                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
-                                    } else {
-                                        msgInfoMap.put("paymentType", "1");
-                                        msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
-                                    }
-                                }
-                                msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
-                                msgInfoMap.put("systemLink", loginUrl);
-                                msgInfoMap.put("emailAddress", systemAddressOne);
-                                try {
-                                    newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
-                                    newApplicationDelegator.sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
-                                    newApplicationDelegator.sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
-                                } catch (Exception e) {
-                                    log.info(e.getMessage(),e);
-                                }
-                    }
-                });
-                log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+withdrawApplicationDtoList.size()));
-                List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
-                    for(ApplicationDto oldApplicationDto : withdrawApplicationDtoList){
-                        doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
-                    }
-                }
-                JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + withdrawApplicationDtoList.size()));
-            }else{
-                JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
-            }
+            jobRun();
         }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
@@ -197,12 +102,158 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         return ReturnT.SUCCESS;
     }
 
+    public void jobRun() throws FeignException {
+        List<ApplicationDto> withdrawApplicationDtoList = applicationClient.saveWithdrawn().getEntity();
+        //get old application
+        HcsaApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(HcsaApplicationDelegator.class);
+        if (!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
+            withdrawApplicationDtoList.forEach(h -> {
+                applicationService.updateFEApplicaiton(h);
+                boolean isCharity = false;
+                String applicantName = "";
+                String oldAppId = h.getId();
+                if (!StringUtil.isEmpty(oldAppId)) {
+                    ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                    String serviceId = oldApplication.getServiceId();
+                    String applicationNo = oldApplication.getApplicationNo();
+                    String applicationType1 = oldApplication.getApplicationType();
+                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                    ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(oldApplication.getAppGrpId()).getEntity();
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(applicationGroupDto.getSubmitBy()).getEntity();
+                    if (orgUserDto != null) {
+                        applicantName = orgUserDto.getDisplayName();
+                    }
+                    String licenseeId = applicationGroupDto.getLicenseeId();
+                    String paymentMethod = applicationGroupDto.getPayMethod();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
+                    Double fee = 0.0;
+                    applicationService.closeTaskWhenWhAppApprove(h.getId());
+                    List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
+                    applicationDtoList.add(oldApplication);
+                    String entityType = "";
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                    if (licenseeDto != null) {
+                        LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                        if (licenseeEntityDto != null) {
+                            entityType = licenseeEntityDto.getEntityType();
+                        }
+                    }
+                    if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                        isCharity = true;
+                    }
+                    for (ApplicationDto applicationDto1 : applicationDtoList) {
+                        applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                        applicationDto1.setIsCharity(isCharity);
+                    }
+                    List<ApplicationDto> applicationDtoList2 = hcsaConfigClient.returnFee(applicationDtoList).getEntity();
+                    if (!IaisCommonUtils.isEmpty(applicationDtoList2)) {
+                        fee = applicationDtoList2.get(0).getReturnFee();
+                    }
+                    try {
+                        boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
+                        if (withdrawReturnFee&&fee!=null&&fee!=0.0){
+                            AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
+                            applicationService.saveAppReturnFee(appReturnFeeDto);
+                        }
+                    }catch (Exception e){
+                        log.error("Withdraw application return is failed");
+                        log.error(e.getMessage(), e);
+                    }
+                    Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+                    msgInfoMap.put("Applicant", applicantName);
+                    msgInfoMap.put("ApplicationType", MasterCodeUtil.getCodeDesc(applicationType1));
+                    msgInfoMap.put("ApplicationNumber", applicationNo);
+                    msgInfoMap.put("reqAppNo", applicationNo);
+                    msgInfoMap.put("S_LName", serviceName);
+                    msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                    msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                    if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||fee==0.0||
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
+                        msgInfoMap.put("paymentType", "2");
+                        msgInfoMap.put("paymentMode", "");
+                        msgInfoMap.put("returnMount", 0.0);
+                    } else {
+                        msgInfoMap.put("returnMount", fee);
+                        if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                            msgInfoMap.put("paymentType", "0");
+                            msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO));
+                        } else {
+                            msgInfoMap.put("paymentType", "1");
+                            msgInfoMap.put("paymentMode", MasterCodeUtil.getCodeDesc(paymentMethod));
+                        }
+                    }
+                    msgInfoMap.put("adminFee", ApplicationConsts.PAYMRNT_ADMIN_FEE);
+                    msgInfoMap.put("systemLink", loginUrl);
+                    msgInfoMap.put("emailAddress", systemAddressOne);
+                    try {
+                        newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_EMAIL, msgInfoMap, oldApplication);
+                        newApplicationDelegator.sendSMS(oldApplication, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_SMS, msgInfoMap);
+                        newApplicationDelegator.sendInboxMessage(oldApplication, serviceId, msgInfoMap, MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_APPROVE_MESSAGE);
+                    } catch (Exception e) {
+                        log.info(e.getMessage(),e);
+                    }
+                }
+            });
+            log.debug(StringUtil.changeForLog("**** The withdraw Application List size"+withdrawApplicationDtoList.size()));
+            List<String> oldAppGroupExcuted = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
+                for(ApplicationDto oldApplicationDto : withdrawApplicationDtoList){
+                    doWithdrawal(oldApplicationDto,oldAppGroupExcuted);
+                }
+            }
+            JobLogger.log(StringUtil.changeForLog("The withdraw Application List" + withdrawApplicationDtoList.size()));
+        }else{
+            JobLogger.log(StringUtil.changeForLog("The withdraw Application List is null *****"));
+        }
+    }
     private void doWithdrawal(ApplicationDto oldApplicationDto, List<String> oldAppGroupExcuted) throws FeignException {
         if(oldApplicationDto != null){
             log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
             String oldAppGrpId = oldApplicationDto.getAppGrpId();
             String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationService.getAppPremisesCorrelationByAppGroupId(oldAppGrpId);
+            for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos
+            ) {
+                if(apc.getApplicationId().equals(oldApplicationDto.getId())){
+                    AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(apc.getId()).getEntity();
+                    if(appInspectionStatusDto!=null){
+                        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
+                        appInspectionStatusClient.update(appInspectionStatusDto);
+                    }
+                }else if(taskService.checkCompleteTaskByApplicationNo(applicationDtoList,apc.getId())){
+
+                    String appId = apc.getApplicationId();
+                    ApplicationDto otherApp=applicationClient.getApplicationById(appId).getEntity();
+                    String stageId = HcsaConsts.ROUTING_STAGE_AO3;
+                    String roleId = RoleConsts.USER_ROLE_AO3;
+                    updateCurrentApplicationStatus(applicationDtoList, appId, otherApp.getStatus());
+                    List<ApplicationDto> ao2AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+                    List<ApplicationDto> ao3AppList = getStatusAppList(applicationDtoList, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                    List<ApplicationDto> creatTaskApplicationList = ao2AppList;
+                    if (IaisCommonUtils.isEmpty(ao2AppList) && !IaisCommonUtils.isEmpty(ao3AppList)) {
+                        creatTaskApplicationList = ao3AppList;
+                    } else {
+                        stageId = HcsaConsts.ROUTING_STAGE_AO2;
+                        roleId = RoleConsts.USER_ROLE_AO2;
+                    }
+                    // send the task to Ao2  or Ao3
+                    HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                    hcsaSvcStageWorkingGroupDto.setServiceId(otherApp.getServiceId());
+                    hcsaSvcStageWorkingGroupDto.setType(otherApp.getApplicationType());
+                    hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+                    hcsaSvcStageWorkingGroupDto.setOrder(1);
+                    HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1=hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+
+                    TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(creatTaskApplicationList,
+                            stageId, roleId, IaisEGPHelper.getCurrentAuditTrailDto(),RoleConsts.USER_ROLE_AO3, hcsaSvcStageWorkingGroupDto1.getGroupId());
+                    List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                    List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+                    taskService.createTasks(taskDtos);
+                    appPremisesRoutingHistoryService.createHistorys(appPremisesRoutingHistoryDtos);
+                }
+            }
+
             if(IaisCommonUtils.isEmpty(applicationDtoList) || applicationDtoList.size() == 1){
                 return;
             }else{
@@ -226,6 +277,33 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+    private List<ApplicationDto> getStatusAppList(List<ApplicationDto> applicationDtos, String status) {
+        if (IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(status)) {
+            return null;
+        }
+        List<ApplicationDto> applicationDtoList = null;
+        for (ApplicationDto applicationDto : applicationDtos) {
+            if (status.equals(applicationDto.getStatus())) {
+                if (applicationDtoList == null) {
+                    applicationDtoList = IaisCommonUtils.genNewArrayList();
+                    applicationDtoList.add(applicationDto);
+                } else {
+                    applicationDtoList.add(applicationDto);
+                }
+            }
+        }
+
+        return applicationDtoList;
+    }
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos, String applicationId, String status) {
+        if (!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                if (applicationId.equals(applicationDto.getId())) {
+                    applicationDto.setStatus(status);
                 }
             }
         }

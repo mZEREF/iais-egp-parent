@@ -206,7 +206,7 @@
     }
 
     $(window).on("load", function(){
-        intiTinymce();
+        setTimeout("intiTinymce()", 1000);
     });
 
     function intiTinymce() {

@@ -43,10 +43,10 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <c:choose>
                                     <c:when test="${empty MasterCodeDto.version}">
-                                       <p>-</p>
+                                        <p>-</p>
                                     </c:when>
                                     <c:otherwise>
-                                    <p>${ MasterCodeDto.version}</p>
+                                        <p>${ MasterCodeDto.version}</p>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -77,6 +77,7 @@
                             <label class="col-xs-12 col-md-4 control-label" for="description">Remark</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <textarea style="width: 100%" rows="6" id="codeRemarks"  name="codeRemarksEd" maxlength="255">${MasterCodeDto.remarks}</textarea>
+                                <span id="error_remarks" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 
@@ -116,7 +117,7 @@
                 </div>
             </div>
         </div>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+        <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
     </form>
 </div>
 

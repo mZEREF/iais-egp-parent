@@ -31,7 +31,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -100,6 +102,9 @@ public class InsRepServiceImpl implements InsRepService {
     InspEmailService inspEmailService;
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -909,14 +914,15 @@ public class InsRepServiceImpl implements InsRepService {
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
             updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
             completedTask(taskDto, applicationNo);
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
-            String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+            setWorkGroupIdForTask(applicationDto,taskDto,stageId);
             List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
             taskService.createTasks(taskDtos);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
             String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            String groupId1 = getWorkGroupFormRoleId(loginContext.getCurRoleId(),serviceId,applicationDto,groupId2);
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
         } else {
             String componentValue = historyExtDto.getComponentValue();
             if ("N".equals(componentValue)) {
@@ -942,13 +948,7 @@ public class InsRepServiceImpl implements InsRepService {
                 completedTask(taskDto, applicationNo);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-                List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                applicationDtos.add(applicationDto);
-                List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
-                hcsaSvcStageWorkingGroupDtos =taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                if( !IaisCommonUtils.isEmpty(hcsaSvcStageWorkingGroupDtos)){
-                    taskDto.setWkGrpId(hcsaSvcStageWorkingGroupDtos.get(0).getGroupId());
-                }
+                setWorkGroupIdForTask(applicationDto,taskDto,stageId);
                 List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
                 taskService.createTasks(taskDtos);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
@@ -959,6 +959,30 @@ public class InsRepServiceImpl implements InsRepService {
                 createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
                 createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
             }
+        }
+    }
+
+    private String getWorkGroupFormRoleId(String roleId,String serviceId,ApplicationDto applicationDto,String groupId2){
+        String groupId1;
+        if(!RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(roleId)){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+            groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+        }else {
+            groupId1 = groupId2;
+        }
+        return groupId1;
+    }
+    private void setWorkGroupIdForTask(ApplicationDto applicationDto, TaskDto taskDto,String stageId){
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);
+        hcsaSvcStageWorkingGroupDtos =taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        if( !IaisCommonUtils.isEmpty(hcsaSvcStageWorkingGroupDtos) && StringUtil.isNotEmpty(hcsaSvcStageWorkingGroupDtos.get(0).getGroupId())){
+            taskDto.setWkGrpId(hcsaSvcStageWorkingGroupDtos.get(0).getGroupId());
+        }else if(HcsaConsts.ROUTING_STAGE_AO2.equalsIgnoreCase(stageId)){
+            taskDto.setWkGrpId("A03EDD16-F90C-EA11-BE7D-000C29F371DC");
+        }else if(HcsaConsts.ROUTING_STAGE_AO3.equalsIgnoreCase(stageId)){
+            taskDto.setWkGrpId("4C43D448-F90C-EA11-BE7D-000C29F371DC");
         }
     }
 
@@ -1369,4 +1393,11 @@ public class InsRepServiceImpl implements InsRepService {
         return dto;
     }
 
+    @Override
+    public void saveAppVehs(String flag, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+        log.info("---------------saveAppVehs--------------------");
+        if(HcsaLicenceBeConstant.EDIT_VEHICLE_FLAG.equalsIgnoreCase(flag) && IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
+            appSvcVehicleBeClient.createAppSvcVehicleDtoList(appSvcVehicleDtos);
+        }
+    }
 }

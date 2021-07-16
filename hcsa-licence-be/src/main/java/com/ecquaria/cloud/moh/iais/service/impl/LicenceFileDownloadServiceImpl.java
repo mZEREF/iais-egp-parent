@@ -270,21 +270,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     @Override
-    public List<ApplicationDto> listApplication() {
-
-        List<ApplicationDto> byPathParam =  applicationClient. getApplicationDto().getEntity();
-        return byPathParam;
-    }
-
-    @Override
-    public void requestForInfList(List<ApplicationDto> list) {
-
-        List<ApplicationDto> entity = applicationClient.getRequesForInfList().getEntity();
-        list.addAll(entity);
-
-    }
-
-    @Override
     public Boolean changeFeApplicationStatus() {
         int status = applicationClient.updateStatus("AGST002").getStatusCode();
         if(status==200){

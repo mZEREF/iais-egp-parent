@@ -3,7 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import sop.webflow.rt.api.Process;
 
 /**
@@ -31,9 +31,9 @@ public interface BroadcastService {
     /**
      * @author: shicheng
      * @Date 2021/6/24
-     * @Param: loginContext, applicationViewDto, broadcastApplicationDto
+     * @Param: taskDto, applicationViewDto, broadcastApplicationDto
      * @return: BroadcastApplicationDto
      * @Descripation: replySetVehicleByRole
      */
-    BroadcastApplicationDto replySetVehicleByRole(LoginContext loginContext, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
+    BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
 }

@@ -39,7 +39,7 @@
                 </c:choose>
               </div>
             </div>
-            <div align="left"><span><a href="/hcsa-licence-web/eservice/INTRANET/MohInspectionAllotTaskInspector"><em class="fa fa-angle-left"></em> Back</a></span></div>
+            <div align="left"><span><a href="/main-web/eservice/INTRANET/MohHcsaBeDashboard"><em class="fa fa-angle-left"></em> Back</a></span></div>
           </div>
         </div>
       </div>

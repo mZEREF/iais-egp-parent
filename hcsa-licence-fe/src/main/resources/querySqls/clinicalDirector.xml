@@ -52,6 +52,9 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
                                 <label class="control-label control-set-font control-font-label">Professional Board</label>
+                                <#if (svcCode =='EAS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 ${proBoardSel}
@@ -63,6 +66,9 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
                                 <label class="control-label control-set-font control-font-label">Professional Regn. No.</label>
+                                <#if (svcCode =='EAS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 <input type="text" class="profRegNo" name="profRegNo${cdSuffix}" maxlength="20" autocomplete="off">
@@ -163,6 +169,7 @@
                             <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
                                 <label class="control-label control-set-font control-font-label">
                                     Date when specialty was obtained
+                                    <span class="mandatory hidden">*</span>
                                 </label>
                             </div>
                             <div class="col-md-7 col-xs-12">
@@ -221,9 +228,11 @@
 
                     <div class="row control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
+                            <div class="control-label formtext col-md-5 col-xs-5 relevantExperienceLabel">
                                 <label class="control-label control-set-font control-font-label">Relevant Experience</label>
-                                <span class="mandatory">*</span>
+                                <#if (svcCode =='MTS')>
+                                    <span class="mandatory">*</span>
+                                </#if>
                             </div>
                             <div class="col-md-7 col-xs-12">
                                 <input type="text" name="relevantExperience${cdSuffix}" class="relevantExperience" value="" maxlength="180" autocomplete="off">

@@ -35,7 +35,7 @@
                                 <%@include file="/WEB-INF/jsp/iais/inspectionncList/inspectiondetail.jsp"%>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                                        <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                                         <input type="hidden" name="viewchk" id = "viewchk">
                                         <div align="right">
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">

@@ -1053,6 +1053,7 @@ public class WithOutRenewalDelegator {
             at.setFunctionName(AuditTrailConsts.FUNCTION_RENEW);
             autoAppSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
             autoAppSubmissionListDto.setEventRefNo(auto.toString());
+            setCheckRepeatAppData(saveutoAppSubmissionDto);
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, autoSubmissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
@@ -1065,6 +1066,7 @@ public class WithOutRenewalDelegator {
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
         appSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         appSubmissionListDto.setEventRefNo(l.toString());
+        setCheckRepeatAppData(appSubmissionDtos3);
         eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
         rfcAppSubmissionDtos.addAll(noAutoAppSubmissionDtos);
@@ -1102,6 +1104,22 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
     }
 
+    private void setCheckRepeatAppData(List<AppSubmissionDto> saveutoAppSubmissionDto){
+        if(IaisCommonUtils.isNotEmpty(saveutoAppSubmissionDto)){
+            boolean checkRepeatAppData = false;
+            for(AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto){
+                if(ApplicationConsts. APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(appSubmissionDto.getAppType())){
+                    checkRepeatAppData = true;
+                }
+            }
+
+            if(checkRepeatAppData){
+                for(AppSubmissionDto appSubmissionDto : saveutoAppSubmissionDto){
+                    appSubmissionDto.setCheckRepeatAppData(checkRepeatAppData);
+                }
+            }
+        }
+    }
     public static void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList, FeeDto feeDto, List<AppFeeDetailsDto> appFeeDetailsDto, BaseProcessClass bpc){
         List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
         Double total = feeDto.getTotal();

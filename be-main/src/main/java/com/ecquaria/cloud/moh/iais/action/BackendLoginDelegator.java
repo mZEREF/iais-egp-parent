@@ -114,7 +114,6 @@ public class BackendLoginDelegator {
         user.setMobileNo(orgUserDto.getMobileNo());
         user.setEmail(orgUserDto.getEmail());
         user.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-        user.setPassword("$2a$12$BaTEVyvwaRuop2SdFoK5jOZvK8tnycxVNx1MYVGjbd1vPEQLcaK4K");
         user.setId(orgUserDto.getUserId());
 
         String conInfo = AuthenticationConfig.getConcurrentUserSession();

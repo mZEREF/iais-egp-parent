@@ -156,7 +156,7 @@
                         <div class="tab-pane" id="tabInspection" role="tabpanel">
                           <%@ include file="../checklist/common/checklistTab.jsp" %>
                           <iais:action>
-                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                            <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                             <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskEdit()">Update</button>
                           </iais:action>
                         </div>
@@ -267,7 +267,7 @@
                               </div>
                             </div>
                             <iais:action>
-                              <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohBackendInbox?fromOther=1"><em class="fa fa-angle-left"></em> Back</a>
+                              <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                               <button class="btn btn-primary" style="float:right" name="submitBtn" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>

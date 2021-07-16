@@ -2,14 +2,14 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
@@ -111,16 +111,16 @@ public class BroadcastServiceImpl implements BroadcastService {
     }
 
     @Override
-    public BroadcastApplicationDto replySetVehicleByRole(LoginContext loginContext, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto) {
-        if(loginContext != null && applicationViewDto != null) {
-            String curRoleId = loginContext.getCurRoleId();
+    public BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(taskDto != null && applicationViewDto != null) {
+            String stageId = taskDto.getTaskKey();
             List<AppSvcVehicleDto> appSvcVehicleDtos;
             if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
                 appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
             } else {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
             }
-            if(RoleConsts.USER_ROLE_ASO.equals(curRoleId) || RoleConsts.USER_ROLE_PSO.equals(curRoleId)) {
+            if(HcsaConsts.ROUTING_STAGE_ASO.equals(stageId) || HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
                 if (!IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
                     //get db data
                     List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appSvcVehicleDtos.get(0).getAppPremCorreId()).getEntity();

@@ -531,19 +531,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private boolean checkTaskAppStatus(String status,String correlationId){
-        boolean flag = true;
         boolean inspectionFlowOver = true;
         boolean pendingRfi = ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status);
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus pendingRfi : " + pendingRfi));
+        boolean appWithdraw = ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(status);
+        boolean appStatusFlag = false;
+        if(!pendingRfi || appWithdraw) {
+            appStatusFlag = true;
+        }
+        log.info(StringUtil.changeForLog("checkTaskAppStatus pendingRfi : " + pendingRfi));
         AppInspectionStatusDto inspectionStatusDto = hcsaAppClient.getAppInspectionStatusByPremId(correlationId).getEntity();
         //in inspection && not the end
         if(inspectionStatusDto != null){
             inspectionFlowOver = InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT.equals(inspectionStatusDto.getStatus());
         }
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inspectionFlowOver));
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus status : " + status));
-        log.debug(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + correlationId));
-        flag = !pendingRfi && inspectionFlowOver;
+        log.info(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + inspectionFlowOver));
+        log.info(StringUtil.changeForLog("checkTaskAppStatus status : " + status));
+        log.info(StringUtil.changeForLog("checkTaskAppStatus inInspection : " + correlationId));
+        boolean flag = appStatusFlag && inspectionFlowOver;
         log.debug(StringUtil.changeForLog("checkTaskAppStatus flag : " + flag));
         return flag;
     }
