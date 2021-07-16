@@ -76,7 +76,6 @@ public class InsReportDelegator {
     }
     public void clearSession(HttpServletRequest request ){
         ParamUtil.setSessionAttr(request, "insRepDto", null);
-        ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request,"askType",null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         vehicleCommonController.clearVehicleInformationSession(request);

@@ -1736,45 +1736,11 @@ public class HcsaApplicationDelegator {
     }
 
     private void initAoRecommendation(String correlationId, BaseProcessClass bpc, String appType) {
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        AppPremisesRecommendationDto initRecommendationDto = vehicleCommonController.initAoRecommendation(correlationId, bpc,appType);
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
-        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-
-        AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-        if (appPremisesRecommendationDto != null) {
-            String reportRemarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(reportRemarks);
-            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            if (recomInNumber != null) {
-                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber, appPremisesRecommendationDto.getChronoUnit());
-                initRecommendationDto.setPeriod(recommendationOnlyShowStr);
-            }
-            String remarks = appPremisesRecommendationDto.getRemarks();
-            initRecommendationDto.setRemarks(remarks);
-        }
-        if (engageRecommendationDto != null) {
-            String remarks = engageRecommendationDto.getRemarks();
-            String engage = "on";
-            initRecommendationDto.setEngageEnforcement(engage);
-            initRecommendationDto.setEngageEnforcementRemarks(remarks);
-        }
         if (riskRecommendationDto != null) {
             String riskLevel = riskRecommendationDto.getRecomDecision();
             initRecommendationDto.setRiskLevel(riskLevel);
-        }
-        if (followRecommendationDto != null) {
-            String followRemarks = followRecommendationDto.getRemarks();
-            initRecommendationDto.setFollowUpAction(followRemarks);
-        }
-        if (appPremisesRecommendationDto != null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
-            String recommendation = appPremisesRecommendationDto.getRecomDecision();
-            if (InspectionReportConstants.RFC_APPROVED.equals(recommendation)) {
-                initRecommendationDto.setPeriod(InspectionReportConstants.APPROVED);
-            }
-            if (InspectionReportConstants.RFC_REJECTED.equals(recommendation)) {
-                initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
-            }
         }
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", initRecommendationDto);
     }
