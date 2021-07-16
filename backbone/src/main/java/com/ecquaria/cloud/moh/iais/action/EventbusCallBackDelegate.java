@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
@@ -82,14 +83,14 @@ public class EventbusCallBackDelegate {
                     for (ServiceStatus status : ent.getValue()) {
                         log.info("Come into Compensation ======>");
                         submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
-                                + RestApiUrlConsts.EVENT_BUS,
+                                        + RestApiUrlConsts.EVENT_BUS,
                                 submissionId, status.getServiceName(), operation);
                     }
                 }
             } else if (!pending) {
                 String flag = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .get("IaisEventbusCbCount",
-                        submissionId + "_" + operation + "_CallbackFlag");
+                                submissionId + "_" + operation + "_CallbackFlag");
                 if (StringUtil.isEmpty(flag)) {
                     log.info("<======= Do callback =======>");
                     SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("IaisEventbusCbCount",
@@ -181,7 +182,7 @@ public class EventbusCallBackDelegate {
 
     private void invokeMethod(String submissionId, String eventRefNum, String clsName, String methodName)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class cls = Class.forName(clsName);
+        Class cls = MiscUtil.getClassFromName(clsName);
         Object obj = SpringContextHelper.getContext().getBean(cls);
         Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
         med.invoke(obj, new String[] {eventRefNum, submissionId});
