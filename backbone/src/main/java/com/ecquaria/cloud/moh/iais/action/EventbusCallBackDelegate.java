@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
@@ -181,7 +182,7 @@ public class EventbusCallBackDelegate {
 
     private void invokeMethod(String submissionId, String eventRefNum, String clsName, String methodName)
             throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Class cls = Class.forName(clsName);
+        Class cls = MiscUtil.getClassFromName(clsName);
         Object obj = SpringContextHelper.getContext().getBean(cls);
         Method med = cls.getMethod(methodName, new Class[]{String.class, String.class});
         med.invoke(obj, new String[] {eventRefNum, submissionId});
