@@ -830,8 +830,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 map.put("idNumber", errMsg);
             }
         }
-
-
+        // add log
+        if (!map.isEmpty()) {
+            log.info(StringUtil.changeForLog("Error Message : " + map + " For the Sub Licensee - " +
+                    JsonUtil.parseToJson(subLicenseeDto)));
+        }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
             if (!map.isEmpty() && errorMap != null) {
                 errorMap.put("licenseeType", "Invalid Licensee Type");
