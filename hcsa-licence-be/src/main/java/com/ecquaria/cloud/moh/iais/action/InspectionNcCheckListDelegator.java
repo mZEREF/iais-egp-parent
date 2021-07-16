@@ -88,7 +88,7 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
     private boolean setCsrf(BaseProcessClass bpc,TaskDto taskDto){
         if( taskDto == null || TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(taskDto.getTaskStatus()) || taskDto.getUpdateCount() ==1) {
             try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe){
                 log.error(ioe.getMessage(),ioe);
             }

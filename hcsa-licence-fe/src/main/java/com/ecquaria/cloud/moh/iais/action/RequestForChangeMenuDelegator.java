@@ -1272,7 +1272,7 @@ public class RequestForChangeMenuDelegator {
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         try {
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             bpc.request.getSession().setAttribute("appSubmissionDtos", null);
             bpc.request.getSession().setAttribute("appSubmissionDto", null);
         } catch (IOException e) {
@@ -1423,7 +1423,7 @@ public class RequestForChangeMenuDelegator {
                     .append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
         double a = 0.0;
@@ -1455,7 +1455,7 @@ public class RequestForChangeMenuDelegator {
                         html = GatewayAPI.create_partner_trade_by_buyer_url(fieldMap, bpc.request, url);
                         break;
                 }
-                bpc.response.sendRedirect(html);
+                IaisEGPHelper.redirectUrl(bpc.response, html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
@@ -1494,7 +1494,7 @@ public class RequestForChangeMenuDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
 
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
@@ -1590,7 +1590,7 @@ public class RequestForChangeMenuDelegator {
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         try {
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

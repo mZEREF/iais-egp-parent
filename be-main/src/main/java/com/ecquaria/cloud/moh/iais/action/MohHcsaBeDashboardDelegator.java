@@ -681,7 +681,7 @@ public class MohHcsaBeDashboardDelegator {
         }catch (MaskAttackException e){
             log.error(e.getMessage(), e);
             try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe){
                 log.error(ioe.getMessage(), ioe);
                 return taskId;

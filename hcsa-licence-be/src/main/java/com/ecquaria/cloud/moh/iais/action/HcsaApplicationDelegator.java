@@ -3223,7 +3223,7 @@ public class HcsaApplicationDelegator {
             taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
-            bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+            IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
         }
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_LOAD_LEVELING, AuditTrailConsts.FUNCTION_APPLICATION_MAIN_FLOW);

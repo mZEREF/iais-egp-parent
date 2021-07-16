@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -58,7 +59,7 @@ public class KpiAndReminderDelegator {
                 .append("/main-web/eservice/INTRANET/MohHcsaBeDashboard");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),bpc.request);
         try {
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 
         } catch (IOException e) {
             log.info(e.getMessage(),e);
