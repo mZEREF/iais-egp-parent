@@ -76,13 +76,12 @@
                 return;
             } else if ('serviceForms' == currId) {
                 showWaiting();
-                // submit('serviceForms',null,null);
                 $("[name='crud_action_type']").val('serviceForms');
                 $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
                 $("[name='crud_action_type_form_page']").val('jump');
                 var mainForm = document.getElementById("mainForm");
                 mainForm.submit();
-            } else {
+            } else if (currId != 'payment') {
                 showWaiting();
                 $('#mainForm').find(':input').prop('disabled',false);
                 submit(currId,null,null);
