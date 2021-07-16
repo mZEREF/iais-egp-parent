@@ -388,6 +388,7 @@
                 </div>
               </div>
               <c:forEach items="${appGrpPremDto.weeklyDtoList}" var="weeklyDto" varStatus="weekSta">
+                <c:set var="oldWeeklyDto" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index]}"/>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="col-md-12" style="padding: 0px">
@@ -397,8 +398,8 @@
                        </c:forEach>
                     </span>
                       <br>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}">
-                      <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectValList}" var="oldSelectValList" varStatus="in">
+                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.selectValList}">
+                      <c:forEach items="${oldWeeklyDto.selectValList}" var="oldSelectValList" varStatus="in">
                         <iais:code code="${oldSelectValList}"/><c:if test="${!in.last}">,</c:if>
                       </c:forEach>
                     </span>
@@ -414,31 +415,28 @@
                           <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
                         </c:if>
                       </span>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}">
-                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.startFrom}">
+                        <c:if test="${oldWeeklyDto.selectAllDay}">
                         </c:if>
-                        <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
-                          <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].startFrom}" pattern="HH : mm"/>
+                        <c:if test="${!oldWeeklyDto.selectAllDay}">
+                          <fmt:formatDate value="${oldWeeklyDto.startFrom}" pattern="HH : mm"/>
                         </c:if>
                       </span>
-
                     </div>
                     <div class="col-md-4" style="padding-right: 0px">
-
                       <span class="newVal" attr="${weeklyDto.endTo}">
                         <c:if test="${weeklyDto.selectAllDay}">
-
                         </c:if>
                         <c:if test="${!weeklyDto.selectAllDay}">
                           <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
                         </c:if>
                       </span>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}">
-                         <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.endTo}">
+                         <c:if test="${oldWeeklyDto.selectAllDay}">
 
                          </c:if>
-                         <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
-                           <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].endTo}" pattern="HH : mm"/>
+                         <c:if test="${!oldWeeklyDto.selectAllDay}">
+                           <fmt:formatDate value="${oldWeeklyDto.endTo}" pattern="HH : mm"/>
                          </c:if>
                       </span>
                     </div>
@@ -453,8 +451,8 @@
                       </span>
                       </div>
                       <div class="col-md-6" style="padding: 0px">
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
-                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].weeklyDtoList[weekSta.index].selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.selectAllDay}">
+                        <c:if test="${oldWeeklyDto.selectAllDay}">
                           <div class="form-check active">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                           </div>
@@ -474,6 +472,7 @@
                 </div>
               </div>
               <c:forEach items="${appGrpPremDto.phDtoList}" var="op" varStatus="opSta">
+                <c:set var="oldOp" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index]}" />
                 <div class="row">
                   <div class="col-md-6">
                     <div class="col-md-12" style="padding: 0px">
@@ -483,8 +482,8 @@
                          </c:forEach>
                     </span>
                       <br>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}">
-                        <c:forEach items="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectValList}" var="oldPhDtoList" varStatus="in">
+                      <span class="oldVal" style="display: none" attr="${oldOp.selectValList}">
+                        <c:forEach items="${oldOp.selectValList}" var="oldPhDtoList" varStatus="in">
                           <iais:code code="${oldPhDtoList}"/><c:if test="${!in.last}">,</c:if>
                         </c:forEach>
                     </span>
@@ -500,11 +499,11 @@
                           <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
                         </c:if>
                       </span>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}">
-                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldOp.startFrom}">
+                        <c:if test="${oldOp.selectAllDay}">
                         </c:if>
-                        <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
-                          <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].startFrom}" pattern="HH : mm"/>
+                        <c:if test="${!oldOp.selectAllDay}">
+                          <fmt:formatDate value="${oldOp.startFrom}" pattern="HH : mm"/>
                         </c:if>
                       </span>
 
@@ -520,12 +519,12 @@
                          </c:if>
 
                       </span>
-                      <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}">
-                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldOp.endTo}">
+                        <c:if test="${oldOp.selectAllDay}">
 
                         </c:if>
-                        <c:if test="${!appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
-                          <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].endTo}" pattern="HH : mm"/>
+                        <c:if test="${!oldOp.selectAllDay}">
+                          <fmt:formatDate value="${oldOp.endTo}" pattern="HH : mm"/>
                         </c:if>
                       </span>
 
@@ -542,8 +541,8 @@
                         </span>
                       </div>
                       <div class="col-md-6" style="padding: 0px">
-                        <span class="oldVal" style="display: none" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
-                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].phDtoList[opSta.index].selectAllDay}">
+                        <span class="oldVal" style="display: none" attr="${oldOp.selectAllDay}">
+                           <c:if test="${oldOp.selectAllDay}">
                              <div class="form-check active">
                               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                             </div>

@@ -75,6 +75,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1434,7 +1435,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                 if (entity != null) {
                     String serviceId = entity.getServiceId();
-                    if (StringUtil.isEmpty(serviceId)) {
+                    if (StringUtil.isEmpty(serviceId)) {// the current is primary document
                         AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                         appGrpPrimaryDocDto.setSvcDocId(svcDocId);
                         appGrpPrimaryDocDto.setSvcComDocId(svcDocId);
@@ -1455,6 +1456,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
             }
             appSvcDocDtoLit.removeAll(deleteSvcDoc);
+            // remove the primary documents
             appSvcDocDtoLit.removeAll(appSvcDocDtos);
             for (int i = 0; i < appSvcDocDtoLit.size(); i++) {
                 for (int j = 0; j < appSvcDocDtoLit.size() && j != i; j++) {
@@ -1510,7 +1512,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 appGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtoList);
             }
         }
+        // check seq num and remove duplicate the documents
+        int maxSeqNum = NewApplicationHelper.getMaxFileIndex(appSubmissionDto.getMaxFileIndex() + 1);
         for (int i = 0; i < appGrpPrimaryDocDtos.size(); i++) {
+            if (appGrpPrimaryDocDtos.get(i).getSeqNum() == null) {
+                appGrpPrimaryDocDtos.get(i).setSeqNum(maxSeqNum++);
+            }
             for (int j = 0; j < appGrpPrimaryDocDtos.size() && j != i; j++) {
                 if (appGrpPrimaryDocDtos.get(i).getFileRepoId().equals(appGrpPrimaryDocDtos.get(j).getFileRepoId())) {
                     appGrpPrimaryDocDtos.remove(appGrpPrimaryDocDtos.get(i));
@@ -1519,9 +1526,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
             }
         }
+        NewApplicationHelper.reSetMaxFileIndex(maxSeqNum);
+        appGrpPrimaryDocDtos.stream().sorted(Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum));
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-
-
     }
 
     @Override
