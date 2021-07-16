@@ -59,7 +59,8 @@ public class InsReportDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private FillupChklistService fillupChklistService;
-
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
     private final static String RECOMMENDATION_DTO = "appPremisesRecommendationDto";
     private final static String RECOMMENDATION = "recommendation";
     private final static String CHRONO = "chrono";
@@ -77,6 +78,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request,"askType",null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
+        vehicleCommonController.clearVehicleInformationSession(request);
     }
 
     public void inspectionReportInit(BaseProcessClass bpc) throws IOException {
@@ -146,6 +148,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(request, "riskLevelForSave", riskLevelForSave);
+        vehicleCommonController.setVehicleInformation(request,taskDto,applicationViewDto);
     }
 
     public void inspectionReportPre(BaseProcessClass bpc) {
@@ -157,6 +160,7 @@ public class InsReportDelegator {
 
     public void inspectorReportSave(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the inspectorReportSave start ...."));
+        HttpServletRequest request = bpc.request;
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, "applicationViewDto");
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
@@ -207,6 +211,8 @@ public class InsReportDelegator {
         if (fastTracking != null) {
             applicationDto.setFastTracking(true);
         }
+        // save veh inf
+        insRepService.saveAppVehs((String)ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.APP_VEHICLE_FLAG),ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType) ? applicationViewDto.getVehicleRfcShowDtos():applicationViewDto.getAppSvcVehicleDtos());
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)) {
             insRepService.routTaskToRoutBack(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);

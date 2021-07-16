@@ -108,7 +108,7 @@
         $("#PreviewForm").submit();
     })
     $(window).on("load", function(){
-        intiTinymce();
+        setTimeout("intiTinymce()", 1000);
     });
 
     function tinymce_getContentLength() {

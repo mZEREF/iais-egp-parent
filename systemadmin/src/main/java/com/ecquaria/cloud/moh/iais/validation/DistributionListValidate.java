@@ -26,8 +26,13 @@ public class DistributionListValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         DistributionListWebDto distribution = (DistributionListWebDto) ParamUtil.getSessionAttr(request, "distribution");
+        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(distribution.getDisname())){
             errMap.put("disname",MessageUtil.replaceMessage("GENERAL_ERR0006","Distribution Name","field"));
+        }else if(distribution.getDisname().length()>500){
+            repMap.put("number","500");
+            repMap.put("fieldNo","Distribution Name");
+            errMap.put("disname", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(StringUtil.isEmpty(distribution.getService())){
             errMap.put("service",MessageUtil.replaceMessage("GENERAL_ERR0006","Service","field"));
@@ -37,6 +42,10 @@ public class DistributionListValidate implements CustomizeValidator {
         }
         if(StringUtil.isEmpty(distribution.getMode())){
             errMap.put("mode",MessageUtil.replaceMessage("GENERAL_ERR0006","Mode of Delivery","field"));
+        }else if(distribution.getMode().length()>500){
+            repMap.put("number","500");
+            repMap.put("fieldNo","Mode of Delivery");
+            errMap.put("mode", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         if(EMAIL.equals(distribution.getMode())){
             if(distribution.getEmailAddress() != null && distribution.getEmailAddress().size()>0){

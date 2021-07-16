@@ -34,7 +34,7 @@ public interface ApplicationViewService {
 
     List<HcsaSvcSubtypeOrSubsumedDto> getHcsaSvcSubtypeOrSubsumedByServiceId(String serviceId);
 
-    public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
+   AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
     HcsaSvcRoutingStageDto getStageById(String id);
 

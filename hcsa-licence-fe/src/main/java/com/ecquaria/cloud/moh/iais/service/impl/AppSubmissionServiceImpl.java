@@ -403,7 +403,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void updateDraftStatus(String draftNo, String status) {
-        log.debug(StringUtil.changeForLog("updateDraftStatus start ..."));
+        log.debug(StringUtil.changeForLog("The doPaymentUpDate start ..."));
         applicationFeClient.updateDraftStatus(draftNo,status);
         log.debug(StringUtil.changeForLog("updateDraftStatus end ..."));
     }
@@ -746,16 +746,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public List<AppSvcVehicleDto> getActiveVehicles(String appId) {
+    public List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds) {
         List<AppSvcVehicleDto> vehicles = applicationFeClient.getActiveVehicles().getEntity();
         if (vehicles == null || vehicles.isEmpty()) {
             return vehicles;
         }
+        if (appIds == null) {
+            appIds = IaisCommonUtils.genNewArrayList(0);
+        }
+        final List<String> finalAppIds = appIds;
         List<LicAppCorrelationDto> licAppCorrList = licenceClient.getInactiveLicAppCorrelations().getEntity();
         List<AppSvcVehicleDto> result = IaisCommonUtils.genNewArrayList(vehicles.size());
         vehicles.forEach(vehicle -> {
-            if (!isIn(vehicle.getAppId(), licAppCorrList) &&
-                    !Optional.ofNullable(appId).filter(curr -> curr.equals(vehicle.getAppId())).isPresent()) {
+            if (!isIn(vehicle.getAppId(), licAppCorrList) && !finalAppIds.contains(vehicle.getAppId())) {
                 result.add(vehicle);
             }
         });
@@ -1477,27 +1480,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getCharityRenewalAmount start ...."));
         log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
         List<String> premises = IaisCommonUtils.genNewArrayList();
-        String hciCodeEas = null;
-        String hciCodeMts = null;
-        boolean hadEas = false;
-        boolean hadMts = false;
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtosAll=IaisCommonUtils.genNewArrayList();
-        for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            String hciCode = appGrpPremisesDtos.get(0).getHciCode();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
-                String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-                if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                    hadEas = true;
-                    hciCodeEas = hciCode;
-                }else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                    hadMts = true;
-                    hciCodeMts = hciCode;
-                }
-            }
-
-        }
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
             String licenceId1 = appSubmissionDto.getLicenceId();
@@ -1539,11 +1521,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
-                    if(baseServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                        if(hadEas&&hadMts&&hciCodeEas.equals(hciCodeMts)){
-                            licenceFeeDto.setBundle(3);
-                        }
-                    }
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                     licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                     licenceFeeDto.setPremises(premisessTypes);
@@ -1593,11 +1570,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                     licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                    if(hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)){
-                        if(hadEas&&hadMts&&hciCodeEas.equals(hciCodeMts)){
-                            licenceFeeDto.setBundle(3);
-                        }
-                    }
                     licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                     licenceFeeDto.setPremises(premisessTypes);
                     licenceFeeDto.setCharity(isCharity);
@@ -2269,8 +2241,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, currSvcInfoDto,dto,
                     systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             // vehicle
-            String appId = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId());
-            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appId);
+            List<String> appIds = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
+                    currSvcInfoDto.getServiceName());
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appIds);
             validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
             if (!map.isEmpty()) {
                 sB.append(serviceId);
@@ -2306,6 +2279,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             sB.append(errIcon);
         }
         bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
+        log.info(StringUtil.changeForLog("Error Message: " + previewAndSubmitMap));
         return previewAndSubmitMap;
     }
 
@@ -2413,7 +2387,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(), null);
-
         return errorMap;
     }
 

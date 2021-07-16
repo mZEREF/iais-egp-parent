@@ -162,8 +162,6 @@ public class HcsaApplicationDelegator {
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
-    @Value("${easmts.vehicle.sperate.flag}")
-    private String vehicleOpenFlag;
 
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
@@ -171,9 +169,10 @@ public class HcsaApplicationDelegator {
     private RfiCanCheck rfiCanCheck;
     @Autowired
     private NotificationHelper notificationHelper;
-
     @Autowired
     private FillupChklistService fillupChklistService;
+    @Autowired
+    private VehicleCommonController vehicleCommonController;
     private static final String[] reasonArr = new String[]{ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, ApplicationConsts.CESSATION_REASON_OTHER};
     private static final String[] patientsArr = new String[]{ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER};
     /**
@@ -200,8 +199,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appealRecommendationValueOnlyShow", "");
         ParamUtil.setSessionAttr(bpc.request, "isDMS", null);
         ParamUtil.setSessionAttr(bpc.request, "finalStage", Boolean.FALSE);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", null);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", null);
+        vehicleCommonController.clearVehicleInformationSession(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "backendinboxSearchParam");
         ParamUtil.setSessionAttr(bpc.request, "backSearchParamFromHcsaApplication", searchParamGroup);
@@ -235,6 +233,8 @@ public class HcsaApplicationDelegator {
             String newCorrelationId = appPremisesCorrelationDto.getId();
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
             applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+            //set can tcu date
+            setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -294,9 +294,9 @@ public class HcsaApplicationDelegator {
     private void dealWithDoc(ApplicationViewDto applicationViewDto){
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
         if(appSupDocDtoList!=null){
-           for(AppSupDocDto v : appSupDocDtoList){
+            for(AppSupDocDto v : appSupDocDtoList){
 
-           }
+            }
         }
     }
     /**
@@ -563,7 +563,7 @@ public class HcsaApplicationDelegator {
     }
 
     private void setTcuDate(HttpServletRequest request, ApplicationViewDto applicationViewDto){
-        if(applicationViewDto.isShowTcu()){
+        if(applicationViewDto.isShowTcu() && applicationViewDto.isEditTcu()){
             String tcuflag = ParamUtil.getString(request,"tcuType");
             if(!StringUtil.isEmpty(tcuflag)){
                 applicationViewDto.setTcuFlag(true);
@@ -2398,13 +2398,13 @@ public class HcsaApplicationDelegator {
         }
         //if Giro payment fail
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
-            ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
-            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
         ) {
             if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
                 if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(appGroupDtoView.getPmtStatus()) ||
-                    ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
-                    ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
+                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
                 } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
@@ -2413,7 +2413,6 @@ public class HcsaApplicationDelegator {
         }
         //set appSvcVehicleDto
         broadcastApplicationDto = broadcastService.setAppSvcVehicleDtoByAppView(broadcastApplicationDto, applicationViewDto, appStatus, applicationType);
-        broadcastApplicationDto.setAppSvcVehicleDtos(applicationViewDto.getAppSvcVehicleDtos());
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
@@ -2426,7 +2425,7 @@ public class HcsaApplicationDelegator {
         if (withdrawApplicationDto != null) {
             /**
              * Send Withdrawal Application Email
-       14      */
+             14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
                 boolean isCharity = false;
                 String applicantName = "";
@@ -2948,7 +2947,7 @@ public class HcsaApplicationDelegator {
                     (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_PSO.equals(roleId))
-                    ) {
+            ) {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
             subStageId = HcsaConsts.ROUTING_STAGE_POT;
@@ -2987,7 +2986,7 @@ public class HcsaApplicationDelegator {
 
         //save the broadcast
         //set vehicle No
-        broadcastApplicationDto = broadcastService.replySetVehicleByRole(loginContext, applicationViewDto, broadcastApplicationDto);
+        broadcastApplicationDto = broadcastService.replySetVehicleByRole(taskDto, applicationViewDto, broadcastApplicationDto);
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         String evenRefNum = String.valueOf(System.currentTimeMillis());
@@ -3246,15 +3245,9 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
-        setShowAndEditTcuDate(bpc.request,applicationViewDto);
-        //get vehicle flag
-        String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
-        //get vehicleNoList for edit
-        List<String> vehicleNoList = applicationService.getVehicleNoByFlag(vehicleFlag, applicationViewDto);
-        //sort AppSvcVehicleDto List
-        applicationViewDto = applicationService.sortAppSvcVehicleListToShow(vehicleNoList, applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleNoList", (Serializable) vehicleNoList);
-        ParamUtil.setSessionAttr(bpc.request, "appVehicleFlag", vehicleFlag);
+        setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
+        //filter vehicle
+        vehicleCommonController.setVehicleInformation(bpc.request,taskDto,applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request, applicationViewDto);
@@ -3345,14 +3338,31 @@ public class HcsaApplicationDelegator {
         setChooseInspectionValue(bpc.request, applicationViewDto);
     }
 
-    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto){
+    private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto,TaskDto taskDto){
         String appType = applicationViewDto.getApplicationDto() == null ? "" : applicationViewDto.getApplicationDto().getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase( appType) ||
                 ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase( appType) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase( appType)){
-             applicationViewDto.setShowTcu(true);
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+            if(!RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(loginContext.getCurRoleId())){
+
+                if(RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(loginContext.getCurRoleId())){
+                    if(HcsaConsts.ROUTING_STAGE_ASO.equalsIgnoreCase(taskDto.getTaskKey()) || HcsaConsts.ROUTING_STAGE_PSO.equalsIgnoreCase(taskDto.getTaskKey())){
+                        applicationViewDto.setShowTcu(true);
+                        applicationViewDto.setEditTcu(true);
+                        return;
+                    }
+                }
+
+                if(applicationViewDto.getApplicationDto() != null && fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null){
+                    if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
+                        return;
+                    }
+                }
+
+                applicationViewDto.setShowTcu(true);
+                applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
+            }
         }
     }
     private void setChooseInspectionValue(HttpServletRequest request, ApplicationViewDto applicationViewDto) {

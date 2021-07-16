@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspecti
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -22,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -67,10 +68,11 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
     @Autowired
     private InspectionRectificationProService inspectionRectificationProService;
 
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
     private FillupChklistService fillupChklistService;
-
 
     @Autowired
     private ApplicationViewService applicationViewService;
@@ -421,7 +423,13 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
         //get nc count
         int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
-
+        //set best Practice
+        AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_TCU).getEntity();
+        String bestPractice = "-";
+        if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
+            bestPractice = ncRecommendationDto.getBestPractice();
+        }
+        inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setInspectors(inspectorUser.getInspectors());
         inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
         inspectionReportDto.setInspectorLeads(inspectorLeads);

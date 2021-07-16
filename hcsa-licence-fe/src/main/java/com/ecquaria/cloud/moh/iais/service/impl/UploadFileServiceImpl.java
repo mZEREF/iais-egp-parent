@@ -424,283 +424,285 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
-        for(ApplicationGroupDto every :applicationGroup){
+        if(IaisCommonUtils.isNotEmpty(applicationGroup)){
+            for(ApplicationGroupDto every :applicationGroup){
 
-            Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
-            Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
-            Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
+                Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
+                Set<String> appSvcKeyPersonIds=IaisCommonUtils.genNewHashSet();
+                Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
 
-            ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
-            List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();
-            List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-            List<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewArrayList();
-            List<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewArrayList();
-            List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewArrayList();
-            List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
-            List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewArrayList();
-            List<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewArrayList();
-            List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewArrayList();
-            List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
-            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
-            Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=new HashSet<>(16);
+                ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
+                List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();
+                List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
+                List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewArrayList();
+                List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewArrayList();
+                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
+                List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewArrayList();
+                List<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewArrayList();
+                List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewArrayList();
+                List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
+                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=new HashSet<>(16);
 
-            List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
-            List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
-            List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
-            Set<AppPremEventPeriodDto> appPremEventPeriodDtoSet=new HashSet<>(16);
+                List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
+                List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremEventPeriodDto> appPremEventPeriodDtoSet=new HashSet<>(16);
 
-            List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
-            Set<AppPremOpenPeriodDto> appPremOpenPeriodDtoSet=new HashSet<>(16);
+                List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremOpenPeriodDto> appPremOpenPeriodDtoSet=new HashSet<>(16);
 
-            List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
-            List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
-            List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
-            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=IaisCommonUtils.genNewArrayList();
-            Set<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoSet=IaisCommonUtils.genNewHashSet();
+                List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
+                List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
+                List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
+                List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoSet=IaisCommonUtils.genNewHashSet();
 
-            List<AppSvcChargesDto> appSvcChargesDtoList=new ArrayList<>(10);
-            List<AppSvcVehicleDto> appSvcVehicleDtoList=new ArrayList<>(10);
-            List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
-            List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
-            List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
-            groupDtos.add(every);
-            String groupId = every.getId();
-            if(appDeclarationMessages!=null){
-                for (AppDeclarationMessageDto v : appDeclarationMessages) {
-                    String appGrpId = v.getAppGrpId();
+                List<AppSvcChargesDto> appSvcChargesDtoList=new ArrayList<>(10);
+                List<AppSvcVehicleDto> appSvcVehicleDtoList=new ArrayList<>(10);
+                List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
+                List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
+                List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
+                groupDtos.add(every);
+                String groupId = every.getId();
+                if(appDeclarationMessages!=null){
+                    for (AppDeclarationMessageDto v : appDeclarationMessages) {
+                        String appGrpId = v.getAppGrpId();
+                        if(groupId.equals(appGrpId)){
+                            appDeclarationMessageDtos.add(v);
+                        }
+                    }
+                }
+                if(appDeclarationDocs!=null){
+                    for (AppDeclarationDocDto v : appDeclarationDocs) {
+                        String appGrpId = v.getAppGrpId();
+                        if(groupId.equals(appGrpId)){
+                            appDeclarationDocDtoList.add(v);
+                        }
+                    }
+                }
+                for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
+                    String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
+                    if(groupId.equals(grpPremisesDtoAppGrpId)){
+                        appGrpPremisesDtos.add(appliGrpPremisesDto);
+                        appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
+                        String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
+                        for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
+                            String premId = appPremPhOpenPeriodDto.getPremId();
+                            if(appliGrpPremisesDtoId.equals(premId)){
+                                appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
+                            }
+                        }
+                        for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
+                            String premisesId = appPremisesOperationalUnitDto.getPremisesId();
+                            if(appliGrpPremisesDtoId.equals(premisesId)){
+                                appPremisesOperationalUnitDtoSet.add(appPremisesOperationalUnitDto);
+                            }
+                        }
+                        if(appPremEventPeriods!=null){
+                            for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
+                                String appGrpPremId = appPremEventPeriodDto.getAppGrpPremId();
+                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                    appPremEventPeriodDtoSet.add(appPremEventPeriodDto);
+                                }
+                            }
+                        }
+                        if(appPremOpenPeriods!=null){
+                            for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
+                                String appGrpPremId = appPremOpenPeriodDto.getAppGrpPremId();
+                                if(appliGrpPremisesDtoId.equals(appGrpPremId)){
+                                    appPremOpenPeriodDtoSet.add(appPremOpenPeriodDto);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if(appGroupMiscs!=null){
+                    for(AppGroupMiscDto appGroupMiscDto : appGroupMiscs){
+                        if(appGroupMiscDto.getAppGrpId().equals(groupId)){
+                            appGroupMiscDtos.add(appGroupMiscDto);
+                        }
+                    }
+                }
+                for(ApplicationDto applicationDto:application){
+                    String applicationDtoId = applicationDto.getId();
+                    String appGrpId = applicationDto.getAppGrpId();
+                    String applicationNo = applicationDto.getApplicationNo();
                     if(groupId.equals(appGrpId)){
-                        appDeclarationMessageDtos.add(v);
+                        if(appFeeDetails!=null){
+                            for(AppFeeDetailsDto appFeeDetailsDto : appFeeDetails){
+                                if(applicationNo.equals(appFeeDetailsDto.getApplicationNo())){
+                                    appFeeDetailsDtos.add(appFeeDetailsDto);
+                                }
+                            }
+                        }
+                        applicationDtos.add(applicationDto);
+                        for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
+                            String applicationId = appPremisesCorrelationDto.getApplicationId();
+                            String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
+                            String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
+
+                            if(applicationDtoId.equals(applicationId) && appliGrpPremisesIds.contains(appGrpPremId)){
+                                appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
+                                for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
+                                    String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
+
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appSvcPremisesScopeDtos.add(appSvcPremisesScopeDto);
+                                        appSvcPremisesScopeIds.add(appSvcPremisesScopeDto.getId());
+                                    }
+
+                                }
+
+                                for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
+                                    String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremisesSelfDeclChklDtos.add(appPremisesSelfDeclChklDto);
+
+                                    }
+                                }
+
+                                for(AppSvcDocDto appSvcDocDto:appSvcDoc){
+                                    String appPremCorreId = appSvcDocDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appSvcDocDtos.add(appSvcDocDto);
+                                    }
+
+                                }
+
+                                for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
+                                    String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremiseMiscDtoList.add(appPremiseMiscDto);
+                                    }
+                                }
+
+                                for(AppPremisesSpecialDocDto appPremisesSpecialDocDto:appPremisesSpecialDocEntities){
+                                    String appPremCorreId = appPremisesSpecialDocDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
+                                    }
+                                }
+                                for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicles){
+                                    String appPremCorreId = appSvcVehicleDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appSvcVehicleDtoList.add(appSvcVehicleDto);
+                                    }
+                                }
+                                for(AppSvcChargesDto appSvcChargesDto : appSvcChargesPages){
+                                    String appPremCorreId = appSvcChargesDto.getAppPremCorreId();
+                                    if(premisesCorrelationDtoId.equals(appPremCorreId)){
+                                        appSvcChargesDtoList.add(appSvcChargesDto);
+                                    }
+                                }
+                            }
+                        }
+
+                        for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
+                            String applicationId = appSvcKeyPersonnelDto.getApplicationId();
+
+                            if(applicationDtoId.equals(applicationId) ){
+                                appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
+                                appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
+                            }
+
+                        }
+                        for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto: appSvcKeyPersonnelDtos){
+                            String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
+                            String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
+                            for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
+                                if(appGrpPsnId.equals(appGrpPersonnelDto.getId())){
+                                    appGrpPersonnelDtos.add(appGrpPersonnelDto);
+                                }
+                            }
+                            if(!StringUtil.isEmpty(appGrpPsnExtId)){
+                                for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
+                                    if (appGrpPsnExtId.equals(appGrpPersonnelExtDto.getId())){
+                                        appGrpPersonnelExtDtos.add(appGrpPersonnelExtDto);
+                                    }
+                                }
+                            }
+                        }
+                        for(AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto:appSvcPremisesScopeAllocation){
+                            String applicationId = appSvcPremisesScopeAllocationDto.getApplicationId();
+                            String appSvcKeyPsnId = appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId();
+                            String appSvcPremScopeId = appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId();
+                            if(applicationDtoId.equals(applicationId)&&appSvcKeyPersonIds.contains(appSvcKeyPsnId)
+                                    &&appSvcPremisesScopeIds.contains(appSvcPremScopeId)){
+                                appSvcPremisesScopeAllocationDtos.add(appSvcPremisesScopeAllocationDto);
+
+                            }
+                        }
+                        for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnel){
+                            String applicationId = appSvcPersonnelDto.getApplicationId();
+                            if(applicationDtoId.equals(applicationId)){
+                                appSvcPersonnelDtos.add(appSvcPersonnelDto);
+
+                            }
+                        }
+                        if(appEditSelects!=null){
+                            for(AppEditSelectDto appEditSelectDto:appEditSelects){
+                                String applicationId = appEditSelectDto.getApplicationId();
+                                if(applicationDto.getId().equals(applicationId)){
+                                    appEditSelectDtos.add(appEditSelectDto);
+
+                                }
+                            }
+                        }
+
                     }
+
+
                 }
-            }
-            if(appDeclarationDocs!=null){
-                for (AppDeclarationDocDto v : appDeclarationDocs) {
-                    String appGrpId = v.getAppGrpId();
+
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
+                    String appGrpId = appGrpPrimaryDocDto.getAppGrpId();
                     if(groupId.equals(appGrpId)){
-                        appDeclarationDocDtoList.add(v);
+                        appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+
                     }
                 }
+
+                applicationListFileDto.setApplicationGroup(groupDtos);
+                applicationListFileDto.setApplication( applicationDtos);
+                applicationListFileDto.setAppGrpPremises(appGrpPremisesDtos);
+                applicationListFileDto.setAppGrpPrimaryDoc (appGrpPrimaryDocDtos);
+                appPremisesOperationalUnitDtoList.addAll(appPremisesOperationalUnitDtoSet);
+                appPremEventPeriodDtoList.addAll(appPremEventPeriodDtoSet);
+                appPremOpenPeriodDtoList.addAll(appPremOpenPeriodDtoSet);
+                appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
+
+                applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
+
+                applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtos);
+                applicationListFileDto.setAppSvcPremisesScope  (appSvcPremisesScopeDtos);
+                applicationListFileDto.setAppGrpPersonnel (appGrpPersonnelDtos);
+                applicationListFileDto.setAppGrpPersonnelExt (appGrpPersonnelExtDtos);
+                applicationListFileDto.setAppSvcKeyPersonnel (appSvcKeyPersonnelDtos);
+                applicationListFileDto.setAppSvcPremisesScopeAllocation (appSvcPremisesScopeAllocationDtos);
+                applicationListFileDto.setAppSvcPersonnel (appSvcPersonnelDtos);
+                applicationListFileDto.setAppPremisesSelfDeclChklEntity(appPremisesSelfDeclChklDtos);
+                applicationListFileDto.setAppSvcDoc(appSvcDocDtos);
+                applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
+                applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
+                applicationListFileDto.setAppEditSelects(appEditSelectDtos);
+                applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
+                applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
+                applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
+                applicationListFileDto.setAppPremEventPeriods(appPremEventPeriodDtoList);
+                applicationListFileDto.setAppPremOpenPeriods(appPremOpenPeriodDtoList);
+                applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList);
+                applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList);
+                applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
+                applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
+                applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
+                applicationListFileDtoList.add(applicationListFileDto);
             }
-            for(AppGrpPremisesEntityDto appliGrpPremisesDto:appGrpPremises){
-                String grpPremisesDtoAppGrpId = appliGrpPremisesDto.getAppGrpId();
-                if(groupId.equals(grpPremisesDtoAppGrpId)){
-                    appGrpPremisesDtos.add(appliGrpPremisesDto);
-                    appliGrpPremisesIds.add(appliGrpPremisesDto.getId());
-                    String appliGrpPremisesDtoId = appliGrpPremisesDto.getId();
-                    for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto :appPremPhOpenPeriodDtos){
-                        String premId = appPremPhOpenPeriodDto.getPremId();
-                        if(appliGrpPremisesDtoId.equals(premId)){
-                            appPremPhOpenPeriodDtoSet.add(appPremPhOpenPeriodDto);
-                        }
-                    }
-                    for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
-                        String premisesId = appPremisesOperationalUnitDto.getPremisesId();
-                        if(appliGrpPremisesDtoId.equals(premisesId)){
-                            appPremisesOperationalUnitDtoSet.add(appPremisesOperationalUnitDto);
-                        }
-                    }
-                    if(appPremEventPeriods!=null){
-                        for(AppPremEventPeriodDto appPremEventPeriodDto: appPremEventPeriods){
-                            String appGrpPremId = appPremEventPeriodDto.getAppGrpPremId();
-                            if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                                appPremEventPeriodDtoSet.add(appPremEventPeriodDto);
-                            }
-                        }
-                    }
-                  if(appPremOpenPeriods!=null){
-                      for(AppPremOpenPeriodDto appPremOpenPeriodDto : appPremOpenPeriods){
-                          String appGrpPremId = appPremOpenPeriodDto.getAppGrpPremId();
-                          if(appliGrpPremisesDtoId.equals(appGrpPremId)){
-                              appPremOpenPeriodDtoSet.add(appPremOpenPeriodDto);
-                          }
-                      }
-                  }
-
-                }
-            }
-            if(appGroupMiscs!=null){
-                for(AppGroupMiscDto appGroupMiscDto : appGroupMiscs){
-                    if(appGroupMiscDto.getAppGrpId().equals(groupId)){
-                        appGroupMiscDtos.add(appGroupMiscDto);
-                    }
-                }
-            }
-            for(ApplicationDto applicationDto:application){
-                String applicationDtoId = applicationDto.getId();
-                String appGrpId = applicationDto.getAppGrpId();
-                String applicationNo = applicationDto.getApplicationNo();
-                if(groupId.equals(appGrpId)){
-                    if(appFeeDetails!=null){
-                        for(AppFeeDetailsDto appFeeDetailsDto : appFeeDetails){
-                            if(applicationNo.equals(appFeeDetailsDto.getApplicationNo())){
-                                appFeeDetailsDtos.add(appFeeDetailsDto);
-                            }
-                        }
-                    }
-                    applicationDtos.add(applicationDto);
-                    for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelation){
-                        String applicationId = appPremisesCorrelationDto.getApplicationId();
-                        String appGrpPremId = appPremisesCorrelationDto.getAppGrpPremId();
-                        String premisesCorrelationDtoId = appPremisesCorrelationDto.getId();
-
-                        if(applicationDtoId.equals(applicationId) && appliGrpPremisesIds.contains(appGrpPremId)){
-                            appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
-                            for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
-                                String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
-
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcPremisesScopeDtos.add(appSvcPremisesScopeDto);
-                                    appSvcPremisesScopeIds.add(appSvcPremisesScopeDto.getId());
-                                }
-
-                            }
-
-                            for (AppPremisesSelfDeclChklDto appPremisesSelfDeclChklDto :appPremisesSelfDeclChklEntity){
-                                String appPremCorreId = appPremisesSelfDeclChklDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremisesSelfDeclChklDtos.add(appPremisesSelfDeclChklDto);
-
-                                }
-                            }
-
-                            for(AppSvcDocDto appSvcDocDto:appSvcDoc){
-                                String appPremCorreId = appSvcDocDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcDocDtos.add(appSvcDocDto);
-                                }
-
-                            }
-
-                            for(AppPremiseMiscDto appPremiseMiscDto:appPremiseMiscEntities){
-                                String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremiseMiscDtoList.add(appPremiseMiscDto);
-                                }
-                            }
-
-                            for(AppPremisesSpecialDocDto appPremisesSpecialDocDto:appPremisesSpecialDocEntities){
-                                String appPremCorreId = appPremisesSpecialDocDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
-                                }
-                            }
-                            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicles){
-                                String appPremCorreId = appSvcVehicleDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcVehicleDtoList.add(appSvcVehicleDto);
-                                }
-                            }
-                            for(AppSvcChargesDto appSvcChargesDto : appSvcChargesPages){
-                                String appPremCorreId = appSvcChargesDto.getAppPremCorreId();
-                                if(premisesCorrelationDtoId.equals(appPremCorreId)){
-                                    appSvcChargesDtoList.add(appSvcChargesDto);
-                                }
-                            }
-                        }
-                    }
-
-                    for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto:appSvcKeyPersonnel){
-                        String applicationId = appSvcKeyPersonnelDto.getApplicationId();
-
-                        if(applicationDtoId.equals(applicationId) ){
-                            appSvcKeyPersonnelDtos.add(appSvcKeyPersonnelDto);
-                            appSvcKeyPersonIds.add(appSvcKeyPersonnelDto.getId());
-                        }
-
-                    }
-                    for(AppSvcKeyPersonnelDto appSvcKeyPersonnelDto: appSvcKeyPersonnelDtos){
-                        String appGrpPsnExtId = appSvcKeyPersonnelDto.getAppGrpPsnExtId();
-                        String appGrpPsnId = appSvcKeyPersonnelDto.getAppGrpPsnId();
-                        for (AppGrpPersonnelDto appGrpPersonnelDto:appGrpPersonnel){
-                            if(appGrpPsnId.equals(appGrpPersonnelDto.getId())){
-                                appGrpPersonnelDtos.add(appGrpPersonnelDto);
-                            }
-                        }
-                        if(!StringUtil.isEmpty(appGrpPsnExtId)){
-                            for(AppGrpPersonnelExtDto appGrpPersonnelExtDto: appGrpPersonnelExt){
-                                if (appGrpPsnExtId.equals(appGrpPersonnelExtDto.getId())){
-                                    appGrpPersonnelExtDtos.add(appGrpPersonnelExtDto);
-                                }
-                            }
-                        }
-                    }
-                    for(AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto:appSvcPremisesScopeAllocation){
-                        String applicationId = appSvcPremisesScopeAllocationDto.getApplicationId();
-                        String appSvcKeyPsnId = appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId();
-                        String appSvcPremScopeId = appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId();
-                        if(applicationDtoId.equals(applicationId)&&appSvcKeyPersonIds.contains(appSvcKeyPsnId)
-                                &&appSvcPremisesScopeIds.contains(appSvcPremScopeId)){
-                            appSvcPremisesScopeAllocationDtos.add(appSvcPremisesScopeAllocationDto);
-
-                        }
-                    }
-                    for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnel){
-                        String applicationId = appSvcPersonnelDto.getApplicationId();
-                        if(applicationDtoId.equals(applicationId)){
-                            appSvcPersonnelDtos.add(appSvcPersonnelDto);
-
-                        }
-                    }
-                    if(appEditSelects!=null){
-                        for(AppEditSelectDto appEditSelectDto:appEditSelects){
-                            String applicationId = appEditSelectDto.getApplicationId();
-                            if(applicationDto.getId().equals(applicationId)){
-                                appEditSelectDtos.add(appEditSelectDto);
-
-                            }
-                        }
-                    }
-
-                }
-
-
-            }
-
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDoc){
-                String appGrpId = appGrpPrimaryDocDto.getAppGrpId();
-                if(groupId.equals(appGrpId)){
-                    appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-
-                }
-            }
-
-            applicationListFileDto.setApplicationGroup(groupDtos);
-            applicationListFileDto.setApplication( applicationDtos);
-            applicationListFileDto.setAppGrpPremises(appGrpPremisesDtos);
-            applicationListFileDto.setAppGrpPrimaryDoc (appGrpPrimaryDocDtos);
-            appPremisesOperationalUnitDtoList.addAll(appPremisesOperationalUnitDtoSet);
-            appPremEventPeriodDtoList.addAll(appPremEventPeriodDtoSet);
-            appPremOpenPeriodDtoList.addAll(appPremOpenPeriodDtoSet);
-            appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
-
-            applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
-
-            applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtos);
-            applicationListFileDto.setAppSvcPremisesScope  (appSvcPremisesScopeDtos);
-            applicationListFileDto.setAppGrpPersonnel (appGrpPersonnelDtos);
-            applicationListFileDto.setAppGrpPersonnelExt (appGrpPersonnelExtDtos);
-            applicationListFileDto.setAppSvcKeyPersonnel (appSvcKeyPersonnelDtos);
-            applicationListFileDto.setAppSvcPremisesScopeAllocation (appSvcPremisesScopeAllocationDtos);
-            applicationListFileDto.setAppSvcPersonnel (appSvcPersonnelDtos);
-            applicationListFileDto.setAppPremisesSelfDeclChklEntity(appPremisesSelfDeclChklDtos);
-            applicationListFileDto.setAppSvcDoc(appSvcDocDtos);
-            applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
-            applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
-            applicationListFileDto.setAppEditSelects(appEditSelectDtos);
-            applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
-            applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
-            applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
-            applicationListFileDto.setAppPremEventPeriods(appPremEventPeriodDtoList);
-            applicationListFileDto.setAppPremOpenPeriods(appPremOpenPeriodDtoList);
-            applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList);
-            applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList);
-            applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
-            applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
-            applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
-            applicationListFileDtoList.add(applicationListFileDto);
         }
         return applicationListFileDtoList;
 

@@ -388,16 +388,114 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
                     </td>
                     <td>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
                             ${appSvcClinicalDirectorDto.idNo}
+                            <c:if test="${empty hashMap[appSvcClinicalDirectorDto.idNo]}">
+                               <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </c:if>
+                          <c:if test="${not empty hashMap[appSvcClinicalDirectorDto.idNo]}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" width="25"
+                                 onclick="showThisTableNewService(this)" height="25" alt="NETS">
+                          </c:if>
                         </span>
                       </div>
-                      <div class="col-xs-6">
+                      <div class="col-xs-6 img-show">
                         <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}
+                          <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                         <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
+                           <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
+                                width="25" height="25" alt="NETS">
+                         </c:if>
                         </span>
                       </div>
+                      <c:if test="${not empty hashMap[appSvcClinicalDirectorDto.idNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach items="${hashMap[appSvcClinicalDirectorDto.idNo]}" var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                              <tr></tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
+                            <label style="font-weight: normal">The Professional has existing disciplinary records in
+                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
+                                                  onclick="closeThis(this)">X</span>
+                            <table border="1px"
+                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
+                              <tr>
+                                <td>Indentification No.</td>
+                                <td>Case No.</td>
+                                <td>Case Type Description</td>
+                                <td>Case Status Description</td>
+                                <td>Offence Description</td>
+                                <td>Outcome Description</td>
+                                <td>Outcome Issue Date</td>
+                                <td>Prosecution Outcome Description</td>
+                                <td>Created Date</td>
+                                <td>Update Date</td>
+                              </tr>
+                              <c:forEach
+                                      items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}"
+                                      var="map">
+                                <tr>
+                                  <td>${map.identificationNo}</td>
+                                  <td>${map.caseNo}</td>
+                                  <td>${map.caseType}</td>
+                                  <td>${map.caseStatus}</td>
+                                  <td>${map.offenceDesc}</td>
+                                  <td>${map.outcome}</td>
+                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td>${map.prosecutionOutcome}</td>
+                                  <td><fmt:formatDate value="${map.createdDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                  <td><fmt:formatDate value="${map.updatedDate}"
+                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                </tr>
+                              </c:forEach>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
                     </td>
                   </tr>
                   <tr>
@@ -2783,100 +2881,13 @@
         $('.panel-body').attr("style", "background-color: #999999;");
         </c:if>
     });
-    $('#primaryCheckbox').click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-    $("#serviceCheckbox").click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-    $("#premisesCheckbox").click(function () {
-        let jQuery = $(this).closest("div.panel-body");
-        let jQuery1 = jQuery.attr("style");
-        if ("" == jQuery1 || undefined ==jQuery1) {
-            jQuery.attr("style", "background-color: #999999;");
-        } else {
-            jQuery.attr("style", "");
-        }
-    });
-
-    function closeThis(obj) {
-        $(obj).closest('div.row').attr("style", "display:none");
-    }
-
 
     function showThisTableNewService(obj) {
-        $(obj).closest('div.img-show').closest('td').find("div.new-img-show").removeAttr("style");
+        $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
     }
 
     function showThisTableOldService(obj) {
-        $(obj).closest('div.img-show').closest('td').find('div.old-img-show').removeAttr("style");
-    }
-
-    hideImg('newVal', 'oldVal');
-
-    function hideImg(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle = $(this).parent().prev().find('.' + newValClass);
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if (oldVal.length > 0 && newVal.length <= 0) {
-                newEle.children('img').attr("style", "display: none");
-            } else if (oldVal.length <= 0 && newVal.length > 0) {
-                $(this).children('img').attr("style", "display: none");
-            } else {
-                newEle.children('img').removeAttr("style");
-            }
-        });
-    }
-
-    hightLightChangeVal('newVal', 'oldVal');
-
-    function hightLightChangeVal(newValClass, oldValClass) {
-        $('.' + oldValClass).each(function () {
-            var oldVal = $(this).attr('attr');
-            var newEle;
-            if($(this).parent().children('.'+newValClass).length>0){
-                newEle = $(this).parent().children('.'+newValClass);
-            }else {
-                newEle = $(this).parent().prev().find('.' + newValClass);
-            }
-            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if ($('#oldAppSubmissionDto').val() == 'false') {
-                if (oldVal.length > 0 || newVal.length > 0) {
-                    if (oldVal != newVal) {
-                        $(this).show();
-                        var newHtml ;
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            newHtml= $(this).parent().children('.' + newValClass).html();
-                        }else {
-                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
-                        }
-                        var oldHtml = $(this).html();
-                        $(this).html(newHtml);
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            $(this).parent().children('.' + newValClass).html(oldHtml);
-                        }else {
-                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
-                        }
-                        $(this).attr("class", "newVal compareTdStyle");
-                    } else if (oldVal.length > 0 && newVal.length <= 0) {
-                        $(this).hide();
-                    }
-                }
-            }
-        });
+        $(obj).closest('div.img-show').closest('td').find('div.old-img-show').show();
     }
 
 </script>

@@ -83,6 +83,9 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5 professionBoardLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Board</label>
+                    <c:if test="${'EAS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:select cssClass="professionBoard"  name="professionBoard${index}" codeCategory="CATE_ID_PROFESSION_BOARD" value="${clinicalDirectorDto.professionBoard}" firstOption="Please Select"></iais:select>
@@ -93,6 +96,9 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5 profRegNoLabel">
                     <label  class="control-label control-set-font control-font-label">Professional Regn. No.</label>
+                    <c:if test="${'EAS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="20" type="text" cssClass="profRegNo" name="profRegNo${index}" value="${clinicalDirectorDto.profRegNo}"></iais:input>
@@ -110,7 +116,7 @@
                         <label  class="control-label control-set-font control-font-label">
                             <input type="hidden" class="noRegWithProfBoardVal" name="noRegWithProfBoardVal${index}" value="${clinicalDirectorDto.noRegWithProfBoard}"/>
                             <div class="control-item-container parent-form-check" >
-                                <input type="checkbox" id="noRegWithProfBoard${index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked="checked"</c:if> >
+                                <input type="checkbox" id="noRegWithProfBoard${index}" name="noRegWithProfBoard" class="control-input noRegWithProfBoard" value="1" <c:if test="${'1' == clinicalDirectorDto.noRegWithProfBoard}">checked</c:if> >
                                 <label for="noRegWithProfBoard${index}" class="control-label control-set-font control-font-normal">
                                     <span class="check-square"></span>
                                 </label>
@@ -195,6 +201,7 @@
                 <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
                     <label  class="control-label control-set-font control-font-label">
                         Date when specialty was obtained
+                        <span class="mandatory hidden">*</span>
                     </label>
                 </div>
                 <div class="col-md-3 col-xs-12">
@@ -258,9 +265,11 @@
 
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
-                <div class="control-label formtext col-md-5 col-xs-5">
+                <div class="control-label formtext col-md-5 col-xs-5 relevantExperienceLabel">
                     <label  class="control-label control-set-font control-font-label">Relevant Experience</label>
-                    <span class="mandatory">*</span>
+                    <c:if test="${'MTS' == currentSvcCode}">
+                        <span class="mandatory">*</span>
+                    </c:if>
                 </div>
                 <div class="col-md-7 col-xs-12">
                     <iais:input maxLength="180" type="text" cssClass="relevantExperience" name="relevantExperience${index}" value="${clinicalDirectorDto.relevantExperience}"></iais:input>

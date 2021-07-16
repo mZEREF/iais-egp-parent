@@ -81,6 +81,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -527,7 +528,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardCommonPool(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
-        if(!StringUtil.isEmpty(dashActionValue) && BeDashboardConstant.SWITCH_ACTION_BACK.equals(dashActionValue)) {
+        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes())) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
         } else {
             String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
@@ -871,46 +872,46 @@ public class MohHcsaBeDashboardDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         String dashSwitchActionValue = (String)ParamUtil.getSessionAttr(bpc.request, "dashSwitchActionValue");
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
-        if(BeDashboardConstant.SWITCH_ACTION_BACK.equals(dashActionValue)) {
+        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes())) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_COMMON.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
             SearchResult<DashComPoolQueryDto> searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_KPI.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
             SearchResult<DashKpiPoolQuery> searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
             SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_GROUP.equals(dashSwitchActionValue)) {
+        } else if(MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchParam);
             SearchResult<DashWorkTeamQueryDto> searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashWorkTeamOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_REPLY.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchParam);
             SearchResult<DashReplyQueryDto> searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashReplyOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_WAIT.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchParam);
             SearchResult<DashWaitApproveQueryDto> searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashWaitApproveOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(dashSwitchActionValue)) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes())) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchParam);
             SearchResult<DashRenewQueryDto> searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashRenewOtherData(searchResult);

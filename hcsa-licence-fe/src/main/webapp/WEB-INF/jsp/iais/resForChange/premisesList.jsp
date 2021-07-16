@@ -7,14 +7,19 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-    <%@include file="dashboard.jsp"%>
-    <%@include file="../common/dashboard.jsp" %>
-    <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
-    <style>
-      .col-xs-12.col-md-8.text-right>.nav{
+<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<style>
+    .col-xs-12.col-md-8.text-right>.nav{
         margin-right: 20%;
-      }
-    </style>
+    }
+
+    .premTypeDiv li {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+</style>
 <div class="tab-pane" id="tabApp" role="tabpanel">
   <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -26,7 +31,7 @@
   <div class="container" style="margin-top:1%">
     <div class="form-group">
       <label class="control-label" for="premType">Type</label>
-      <div class="col-xs-12 col-md-8 col-lg-9" id="premTypeDiv">
+      <div class="col-xs-12 col-md-8 col-lg-9 premTypeDiv" id="premTypeDiv">
         <iais:select name="premType"  value="${premiseDoSearch}" options="applicationType" firstOption="All"></iais:select>
       </div>
     </div>

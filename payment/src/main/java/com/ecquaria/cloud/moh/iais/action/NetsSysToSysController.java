@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +63,8 @@ public class NetsSysToSysController {
     private PaymentClient paymentClient;
     public static final Locale LOCALE = new Locale("en", "SG");
     static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
-
+    @Value("${paynow.qr.expiry.minutes}")
+    private int expiryMinutes;
     @Autowired
     private PaymentRedisHelper redisCacheHelper;
     @RequestMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, value =
@@ -158,7 +160,7 @@ public class NetsSysToSysController {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         int minute = cal.get(Calendar.MINUTE);
-        cal.set(Calendar.MINUTE, minute + 1);
+        cal.set(Calendar.MINUTE, minute + expiryMinutes);
         String expiryDate = df.format(cal.getTime());
         log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
         log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);

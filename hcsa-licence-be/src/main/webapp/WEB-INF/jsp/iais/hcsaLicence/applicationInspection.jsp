@@ -396,6 +396,7 @@
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>
+                    <%@include file="/WEB-INF/jsp/iais/report/reportSvcVehicleShow.jsp"%>
                 </table>
             </div>
         </div>

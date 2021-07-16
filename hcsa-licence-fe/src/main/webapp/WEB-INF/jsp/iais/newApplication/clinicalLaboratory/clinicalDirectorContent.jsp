@@ -99,6 +99,9 @@
             <c:when test="${cdLength >= clinicalDirectorConfig.maximumCount}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
+            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                <c:set var="needAddPsn" value="false"/>
+            </c:when>
         </c:choose>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
@@ -148,25 +151,27 @@
                     disableCdContent($(this).find('div.person-detail'), data);
                 }
             }
-            $(this).find('select').niceSelect("update");
             //trigger prs
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
             $(this).find('.designation').trigger('change');
-            $(this).find('.noRegWithProfBoard').trigger('click');
+            checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
+            // update select tag
+            $(this).find('select').niceSelect("update");
         });
     });
 
     var specialityEvent = function() {
         $('.specialityField').unbind('DOMNodeInserted');
+        $('.specialityField').unbind('DOMNodeRemoved');
         $('.specialityField').on('DOMNodeInserted', function() {
-            var $content = $(this).closest('div.clinicalDirectorContent');
-            if (isEmpty($(this).text())) {
-                $content.find('.specialtyGetDateLabel .mandatory').remove();
-            } else {
-                $content.find('.specialtyGetDateLabel').append('<span class="mandatory">*</span>');
-            }
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.removeClass('hidden');
+        });
+        $('.specialityField').on('DOMNodeRemoved', function() {
+            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
+            dateSpan.addClass('hidden');
         });
     }
 
@@ -181,19 +186,23 @@
     var noRegWithProfBoard = function () {
         $('.noRegWithProfBoard').unbind('click');
         $('.noRegWithProfBoard').click(function () {
-            var noRegWithProfBoardVal = "";
-            var $content = $(this).closest('div.clinicalDirectorContent');
-            if ($(this).prop('checked')) {
-                noRegWithProfBoardVal = $(this).val();
-                $content.find('.professionBoardLabel .mandatory').remove();
-                $content.find('.profRegNoLabel .mandatory').remove();
-            } else {
-                $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
-                $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
-            }
-            $(this).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
+            checkNoRegWithProfBoard(this);
         });
     };
+
+    function checkNoRegWithProfBoard(selector) {
+        var noRegWithProfBoardVal = "";
+        var $content = $(selector).closest('div.clinicalDirectorContent');
+        if ($(selector).prop('checked')) {
+            noRegWithProfBoardVal = $(selector).val();
+            $content.find('.professionBoardLabel .mandatory').remove();
+            $content.find('.profRegNoLabel .mandatory').remove();
+        } else {
+            $content.find('.professionBoardLabel').append('<span class="mandatory">*</span>');
+            $content.find('.profRegNoLabel').append('<span class="mandatory">*</span>');
+        }
+        $(selector).closest('div.noRegWithProfBoardDiv').find('input.noRegWithProfBoardVal').val(noRegWithProfBoardVal);
+    }
 
     var showOtherSpecialty = function () {
         $('select.specialty').unbind('change');
@@ -231,6 +240,7 @@
                         assignSelectBindEvent();
                         designationBindEvent();
                         profRegNoBlur();
+                        specialityEvent();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
@@ -573,6 +583,19 @@
             controlEdit(currRegiDateEle, propStyle, canEdit);
             controlEdit(praCerEndDateEle, propStyle, canEdit);
             controlEdit(typeOfRegisterEle, propStyle, canEdit);
+
+            if ('EAS' == '${currentSvcCode}'){
+                var specialityField = $prsLoadingEle.find('.specialityField');
+                var relevantExperienceSpan = $prsLoadingEle.find('.relevantExperienceLabel').find('.mandatory');
+                if(isEmpty(specialityField.text()) && !isEmpty($prsLoadingEle.find('input.profRegNo').val())){
+                    if (relevantExperienceSpan.length==0){
+                        $prsLoadingEle.find('.relevantExperienceLabel').append('<span class="mandatory">*</span>');
+                    }
+                    relevantExperienceSpan.removeClass('hidden');
+                }else {
+                    relevantExperienceSpan.addClass('hidden');
+                }
+            }
         }
     };
 

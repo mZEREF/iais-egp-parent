@@ -3867,14 +3867,19 @@ public class NewApplicationHelper {
         return personKey;
     }
 
-    public static String getRelatedAppId(String appId, String licenceId) {
-        String orgAppId = appId;
-        if (StringUtil.isEmpty(appId) && StringUtil.isNotEmpty(licenceId)) {
+    public static List<String> getRelatedAppId(String appId, String licenceId, String svcName) {
+        List<String> appIds = IaisCommonUtils.genNewArrayList();
+        if (StringUtil.isNotEmpty(licenceId)) {
             LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
-            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getLicCorrBylicId(licenceId).getEntity();
-            orgAppId = Optional.ofNullable(licAppCorrDtos).map(dtos -> dtos.get(0).getApplicationId()).orElseGet(() -> null);
+            List<LicAppCorrelationDto> licAppCorrDtos = licenceClient.getAllRelatedLicAppCorrs(licenceId, svcName).getEntity();
+            if (licAppCorrDtos != null && !licAppCorrDtos.isEmpty()) {
+                licAppCorrDtos.forEach(dto -> appIds.add(dto.getApplicationId()));
+            }
         }
-        return orgAppId;
+        if (StringUtil.isNotEmpty(appId)) {
+            appIds.add(appId);
+        }
+        return appIds;
     }
 
 }

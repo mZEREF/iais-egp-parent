@@ -46,6 +46,10 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence-rfc/lic-corrid{licenceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrBylicId(@PathVariable(value = "licenceId") String licenceId);
 
+    @GetMapping(path= "/hcsa-licence-rfc/all-related-lic-app-corrs", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicAppCorrelationDto>> getAllRelatedLicAppCorrs(@RequestParam("licenceId") String licenceId,
+            @RequestParam(value = "svcName", required = false) String svcName);
+
     @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byid/{licenceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicId(@RequestParam(value = "licenceId") String licenceId);
 
