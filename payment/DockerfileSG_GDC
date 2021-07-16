@@ -1,5 +1,5 @@
-FROM nexus3:5000/ecq/tomcat:9.0.40.1-adoptopenjdk8u265-b01
-
+FROM hub.ecquaria.com:8251/docker-mohiais-egp/tomcat:9.0.40.1-adoptopenjdk8u265-b01
+USER root
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
