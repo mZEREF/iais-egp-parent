@@ -4,14 +4,11 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -26,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -48,14 +44,13 @@ public class InsReportAoDelegator  {
     private InsRepService insRepService;
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
     @Autowired
     private FillupChklistService fillupChklistService;
     @Autowired
     private VehicleCommonController vehicleCommonController;
 
-    private final static String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
+
     private final static String OTHERS="Others";
     private final static String APPROVAL="Approval";
     private final static String REJECT="Reject";
@@ -70,7 +65,6 @@ public class InsReportAoDelegator  {
 
     public void clearSession( HttpServletRequest request ){
         ParamUtil.setSessionAttr(request, INSREPDTO, null);
-        ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
         vehicleCommonController.clearVehicleInformationSession(request);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
@@ -99,7 +93,7 @@ public class InsReportAoDelegator  {
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
-        initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
+        vehicleCommonController.initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
 
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
@@ -180,51 +174,7 @@ public class InsReportAoDelegator  {
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
 
-    private void initAoRecommendation(String correlationId,BaseProcessClass bpc,String appType){
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
-        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
-        AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
-        if (appPremisesRecommendationDto != null) {
-            String reportRemarks = appPremisesRecommendationDto.getRemarks();
-            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
-            if(InspectionReportConstants.APPROVED.equals(recomDecision)||InspectionReportConstants.APPROVEDLTC.equals(recomDecision)){
-                initRecommendationDto.setRemarks(reportRemarks);
-                Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
-                initRecommendationDto.setPeriod(recommendationOnlyShowStr);
-            }
-            if(InspectionReportConstants.REJECTED.equals(recomDecision)){
-                initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
-            }
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-                String recommendation = appPremisesRecommendationDto.getRecomDecision();
-                if(InspectionReportConstants.RFC_APPROVED.equals(recommendation)){
-                    initRecommendationDto.setPeriod(InspectionReportConstants.APPROVED);
-                }
-                if(InspectionReportConstants.RFC_REJECTED.equals(recommendation)){
-                    initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
-                }
-            }
-        }
-        if (engageRecommendationDto != null) {
-            String remarks = engageRecommendationDto.getRemarks();
-            String engage ;
-            if(StringUtil.isEmpty(remarks)){
-                engage = "off";
-            }else {
-                engage = "on";
-            }
-            initRecommendationDto.setEngageEnforcement(engage);
-            initRecommendationDto.setEngageEnforcementRemarks(remarks);
-        }
-        if (followRecommendationDto != null) {
-            String followRemarks = followRecommendationDto.getRemarks();
-            initRecommendationDto.setFollowUpAction(followRemarks);
-        }
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, initRecommendationDto);
-    }
 
     private List<SelectOption> getProcessingDecision(String status) {
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
@@ -241,20 +191,6 @@ public class InsReportAoDelegator  {
         riskLevelResult.add(so2);
         return riskLevelResult;
     }
-    private String getRecommendationOnlyShowStr (Integer recomInNumber){
-        if(recomInNumber >= 12){
-            if( recomInNumber % 12 == 0){
-                return  recomInNumber / 12 == 1 ? "1 Year":  (recomInNumber / 12 + " Year(s)");
-            }else {
-                if(recomInNumber / 12 == 1) {
-                    return  recomInNumber % 12 == 1 ? (1 + " Year " + 1 + " Month"):  (1 + " Year " + recomInNumber % 12 + " Month(s)");
-                }else {
-                    return  recomInNumber % 12 == 1 ? (recomInNumber / 12 + " Year(s) " + 1 + " Month"):  (recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)");
-                }
-            }
-        }else {
-            return  recomInNumber == 1 ? (recomInNumber + " Month") : (recomInNumber + " Month(s)");
-        }
-    }
+
 
 }
