@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -18,13 +19,14 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
 
 /**
  * EicSelfRecoveJobHandler
@@ -161,9 +163,9 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
             ert.setFirstActionAt(now);
         }
         try {
-            Class dtoCls = Class.forName(ert.getDtoClsName());
+            Class dtoCls = MiscUtil.getClassFromName(ert.getDtoClsName());
             Object obj = JsonUtil.parseToObject(ert.getDtoObject(), dtoCls);
-            Class actCls = Class.forName(ert.getActionClsName());
+            Class actCls = MiscUtil.getClassFromName(ert.getActionClsName());
             Object actObj = SpringContextHelper.getContext().getBean(actCls);
             Method method = actCls.getMethod(ert.getActionMethod(), dtoCls);
             method.invoke(actObj, obj);
