@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
@@ -92,6 +93,33 @@ import java.util.Set;
 
 @Slf4j
 public class NewApplicationHelper {
+
+    public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+        Integer maxFileIndex = 0;
+        if (checkGlobal && request != null) {
+            maxFileIndex = (Integer) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
+        if (maxFileIndex != null && maxFileIndex > maxSeqNum) {
+            maxSeqNum = maxFileIndex;
+        }
+        if (checkGlobal && request != null) {
+            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, maxSeqNum);
+        }
+        return maxSeqNum;
+    }
+
+    public static int getMaxFileIndex(int maxSeqNum) {
+        return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+    }
+
+    public static void reSetMaxFileIndex(int maxSeqNum, HttpServletRequest request) {
+        getMaxFileIndex(maxSeqNum, true, request);
+    }
+
+    public static void reSetMaxFileIndex(int maxSeqNum) {
+        getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+    }
+
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int premCount = 0 ;
