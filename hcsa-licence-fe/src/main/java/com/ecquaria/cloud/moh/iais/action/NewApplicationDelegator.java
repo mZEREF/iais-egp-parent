@@ -1531,12 +1531,12 @@ public class NewApplicationDelegator {
                 StringBuilder url = new StringBuilder();
                 url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             } else if ("ChooseSvc".equals(action)) {
                 StringBuilder url = new StringBuilder();
                 url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu");
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         }
@@ -1642,13 +1642,13 @@ public class NewApplicationDelegator {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-        response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
 
     private void sendURL(HttpServletRequest request, HttpServletResponse response, String url) {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -2949,7 +2949,7 @@ public class NewApplicationDelegator {
                 .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?DraftNumber=")
                 .append(MaskUtil.maskValue("DraftNumber",draftNo));
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 
         log.info(StringUtil.changeForLog("do reSubmit end ..."));
     }
@@ -3015,7 +3015,7 @@ public class NewApplicationDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareTranfer");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
         log.info(StringUtil.changeForLog("do doPayValidate end ..."));
     }
@@ -3288,7 +3288,7 @@ public class NewApplicationDelegator {
                     .append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
         String a = appSubmissionDto.getPaymentMethod();
@@ -3316,7 +3316,7 @@ public class NewApplicationDelegator {
             try {
                 appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                 String url = NewApplicationHelper.genBankUrl(bpc.request,payMethod,fieldMap,pmtReturnUrlDto);
-                bpc.response.sendRedirect(url);
+                IaisEGPHelper.redirectUrl(bpc.response, url);
                 //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
@@ -3362,7 +3362,7 @@ public class NewApplicationDelegator {
                     .append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));

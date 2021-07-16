@@ -57,17 +57,7 @@ import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -101,9 +91,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private ApplicationClient applicationClient;
-
-    @Autowired
-    private ApplicationService applicationService;
 
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
@@ -145,6 +132,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     private AppealApplicaionService appealApplicaionService;
     @Autowired
     private OrganizationClient organizationClient;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -1062,7 +1052,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         broadcastApplicationDto = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto, bpc.process, submissionId);
 
         //0062460 update FE  application status.
-        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
     @Override
@@ -1103,7 +1093,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
                             ) {
-                        vehicleFlag = InspectionConstants.SWITCH_ACTION_VIEW;
+
+                        vehicleFlag = (fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "")
+                                + InspectionConstants.SWITCH_ACTION_VIEW;
                     }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
                         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                         if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {

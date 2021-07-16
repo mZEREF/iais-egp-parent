@@ -112,12 +112,14 @@ public class ValidateClincalDirector implements ValidateFlow {
 //                }
                 Date specialtyGetDate = appSvcClinicalDirectorDtos.get(i).getSpecialtyGetDate();
                 String specialtyStr = appSvcClinicalDirectorDtos.get(i).getSpeciality();
-                if(specialtyGetDate==null && !StringUtil.isEmpty(specialtyStr)){
-                    map.put("specialtyGetDate"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "specialtyGetDate", "field"));
-                }else {
-
-                }
+                String regNo = appSvcClinicalDirectorDtos.get(i).getProfRegNo();
                 String typeOfCurrRegi = appSvcClinicalDirectorDtos.get(i).getTypeOfCurrRegi();
+                //non-mandatory when no return Specialty value from PRS
+                if(!(!StringUtil.isEmpty(regNo) && !StringUtil.isEmpty(typeOfCurrRegi) && StringUtil.isEmpty(specialtyStr))){
+                    if(StringUtil.isEmpty(specialtyGetDate)) {
+                        map.put("specialtyGetDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "specialtyGetDate", "field"));
+                    }
+                }
                 if(StringUtil.isEmpty(typeOfCurrRegi)){
                     map.put("typeOfCurrRegi"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "typeOfCurrRegi", "field"));
                 }else {
@@ -126,14 +128,12 @@ public class ValidateClincalDirector implements ValidateFlow {
                         map.put("typeOfCurrRegi"+i,general_err0041);
                     }
                 }
-                Date currRegiDate = appSvcClinicalDirectorDtos.get(i).getCurrRegiDate();
-                if(currRegiDate==null){
+                String currRegiDate = appSvcClinicalDirectorDtos.get(i).getCurrRegiDateStr();
+                if(StringUtil.isEmpty(currRegiDate)){
                     map.put("currRegiDate"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "currRegiDate", "field"));
-                }else {
-
                 }
-                Date praCerEndDate = appSvcClinicalDirectorDtos.get(i).getPraCerEndDate();
-                if(praCerEndDate==null){
+                String praCerEndDate = appSvcClinicalDirectorDtos.get(i).getPraCerEndDateStr();
+                if(StringUtil.isEmpty(praCerEndDate)){
                     map.put("praCerEndDate"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "praCerEndDate", "field"));
                 }
                 String typeOfRegister = appSvcClinicalDirectorDtos.get(i).getTypeOfRegister();

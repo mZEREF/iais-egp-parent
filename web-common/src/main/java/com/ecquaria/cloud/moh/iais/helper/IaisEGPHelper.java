@@ -143,6 +143,13 @@ public final class IaisEGPHelper extends EGPHelper {
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
 
     /**
+     * @author: Shicheng on 2021/07/16 15:03
+     */
+    public static void redirectUrl(HttpServletResponse response, String url) throws IOException {
+        response.sendRedirect(url);
+    }
+
+    /**
      * @author: Shicheng on 2020/11/03 13:49
      * @description: encryption Prs the signature
      */
@@ -552,7 +559,7 @@ public final class IaisEGPHelper extends EGPHelper {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
