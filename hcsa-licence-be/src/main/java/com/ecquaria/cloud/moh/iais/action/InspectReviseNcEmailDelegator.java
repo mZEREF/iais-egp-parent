@@ -696,7 +696,6 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                 ParamUtil.setSessionAttr(request, SER_LIST_DTO, serListDto);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
-            setRate(request);
             setChangeTabForChecklist(request);
         }else {
             serListDto.setCheckListTab("chkList");

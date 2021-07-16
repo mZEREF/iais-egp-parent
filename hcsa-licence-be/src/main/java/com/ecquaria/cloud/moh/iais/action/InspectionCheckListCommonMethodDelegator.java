@@ -597,5 +597,6 @@ public class InspectionCheckListCommonMethodDelegator {
         if(AppConsts.YES.equalsIgnoreCase((String) ParamUtil.getSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE))){
             getSpecServiceCheckListDataFormViewPage(request);
         }
+        setRate(request);
     }
 }
