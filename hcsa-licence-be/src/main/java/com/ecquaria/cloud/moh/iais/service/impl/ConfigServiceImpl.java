@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -1471,7 +1472,7 @@ public class ConfigServiceImpl implements ConfigService {
                 .append("/main-web/eservice/INTRANET/MohHcsaBeDashboard");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),request);
         try {
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
             request.getSession().removeAttribute("orgUserDto");
         } catch (IOException e) {
           log.error(e.getMessage(),e);

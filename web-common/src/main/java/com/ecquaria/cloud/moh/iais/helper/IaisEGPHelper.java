@@ -559,7 +559,7 @@ public final class IaisEGPHelper extends EGPHelper {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

@@ -58,7 +58,8 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),request);
             try {
                 clearSession(request);
-                response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(response,
+                        tokenUrl);
                 return;
             } catch (IOException e) {
                 log.info(e.getMessage(),e);
