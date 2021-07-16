@@ -432,7 +432,7 @@ public class RetriggerGiroPaymentDelegator {
             pmtReturnUrlDto.setOtherRetUrl(GatewayStripeConfig.retrigger_giro_paymeny_return_rul);
             try {
                 String url = NewApplicationHelper.genBankUrl(bpc.request,payMethod,fieldMap,pmtReturnUrlDto);
-                bpc.response.sendRedirect(url);
+                IaisEGPHelper.redirectUrl(bpc.response, url);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
@@ -454,7 +454,7 @@ public class RetriggerGiroPaymentDelegator {
                     .append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohRetriggerGiroPayment/preAck");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
         ParamUtil.setRequestAttr(bpc.request,"isValid",ISVALID_VALUE_TO_BANK);

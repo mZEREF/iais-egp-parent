@@ -1310,7 +1310,7 @@ public class ServiceMenuDelegator {
                 .append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 
         log.info(StringUtil.changeForLog("back inbox end ..."));
     }
@@ -1429,7 +1429,7 @@ public class ServiceMenuDelegator {
 //            url.append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
 //            tokenUrl = tokenUrl + "&licenseView="+type;
-//            bpc.response.sendRedirect(tokenUrl);
+//            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 //        }catch (Exception e){
 //            log.info(e.getMessage());
 //        }

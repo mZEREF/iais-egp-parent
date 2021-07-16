@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -137,7 +138,7 @@ public class InspectionCheckListCommonMethodDelegator {
         }catch (MaskAttackException e){
             log.error(e.getMessage(),e);
             try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe){
                 log.error(ioe.getMessage(),ioe);
             }
