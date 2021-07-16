@@ -339,11 +339,9 @@ public class InspectionNcCheckListDelegator extends InspectionCheckListCommonMet
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 serListDto.setCheckListTab("chkList");
                 ParamUtil.setSessionAttr(request, SERLISTDTO, serListDto);
-                setRate(request);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
             } else {
                 serListDto.setCheckListTab("chkList");
-                setRate(request);
                 saveCheckListBefore(request);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
