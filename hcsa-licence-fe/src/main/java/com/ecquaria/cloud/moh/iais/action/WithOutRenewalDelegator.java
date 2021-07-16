@@ -1210,10 +1210,19 @@ public class WithOutRenewalDelegator {
     private void updateDraftStatus(AppSubmissionDto appSubmissionDto){
         if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-            for(ApplicationSubDraftDto applicationSubDraftDto : entity){
-                String draftJson = applicationSubDraftDto.getDraftJson();
-                AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+            if(IaisCommonUtils.isEmpty(entity)){
+                entity = IaisCommonUtils.genNewArrayList();
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = applicationFeClient.getDraftByLicAppIdAndStatus(appSubmissionDto.getLicenceId(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT).getEntity();
+            if(IaisCommonUtils.isNotEmpty(applicationSubDraftDtos)){
+                entity.addAll(applicationSubDraftDtos);
+            }
+            if(IaisCommonUtils.isNotEmpty(entity)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+                    String draftJson = applicationSubDraftDto.getDraftJson();
+                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                    applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+                }
             }
         }
     }
