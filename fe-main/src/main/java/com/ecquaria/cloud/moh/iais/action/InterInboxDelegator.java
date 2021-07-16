@@ -1407,7 +1407,7 @@ public class InterInboxDelegator {
                     .append("?appGrpNo=")
                     .append(MaskUtil.maskValue("appGrpNo", applicationGroupDto.getGroupNo()));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         }
     }
 

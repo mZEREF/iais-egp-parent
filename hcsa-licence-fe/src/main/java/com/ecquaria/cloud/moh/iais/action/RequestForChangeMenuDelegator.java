@@ -1514,7 +1514,7 @@ public class RequestForChangeMenuDelegator {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-        response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
     /**/
 

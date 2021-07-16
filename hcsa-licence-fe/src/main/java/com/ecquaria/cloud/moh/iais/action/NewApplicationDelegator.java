@@ -1642,13 +1642,13 @@ public class NewApplicationDelegator {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-        response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
 
     private void sendURL(HttpServletRequest request, HttpServletResponse response, String url) {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
