@@ -807,15 +807,7 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
             if ("next".equals(crud_action_type)) {
                 errorMap = NewApplicationHelper.doValidateLaboratory(appGrpPremisesDtoList, appSvcLaboratoryDisciplinesDtoList, currentSvcId,hcsaSvcSubtypeOrSubsumedDtos);
-
-                if (appSubmissionDto.isNeedEditController()) {
-                    /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_LABORATORY);
-                    appSubmissionDto.setClickEditPage(clickEditPages);*/
-                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                    appEditSelectDto.setServiceEdit(true);
-                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-                }
+                reSetChangesForApp(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             }
             ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
@@ -1002,14 +994,7 @@ public class ClinicalLaboratoryDelegator {
                     map = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, map, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
                 }
                 errList.putAll(map);
-                if (appSubmissionDto.isNeedEditController()) {
-                    /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
-                    appSubmissionDto.setClickEditPage(clickEditPages);*/
-                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                    appEditSelectDto.setServiceEdit(true);
-                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-                }
+                reSetChangesForApp(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -1167,9 +1152,7 @@ public class ClinicalLaboratoryDelegator {
                     Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
                     appSubmissionDto.setClickEditPage(clickEditPages);
-                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                    appEditSelectDto.setServiceEdit(true);
-                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+                    reSetChangesForApp(appSubmissionDto);
                 }
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
 
@@ -1281,19 +1264,7 @@ public class ClinicalLaboratoryDelegator {
                         map = NewApplicationHelper.psnMandatoryValidate(dpoPsnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, map, dpoLength, "dpoPsnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
                     }
                 }
-                if (appSubmissionDto.isNeedEditController()) {
-//                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-//                    if (isGetDataFromPagePo) {
-//                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
-//                    }
-//                    if (isGetDataFromPageDpo) {
-//                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
-//                    }
-//                    appSubmissionDto.setClickEditPage(clickEditPages);
-                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                    appEditSelectDto.setServiceEdit(true);
-                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-                }
+                reSetChangesForApp(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -1419,9 +1390,7 @@ public class ClinicalLaboratoryDelegator {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DOCUMENT);
                 appSubmissionDto.setClickEditPage(clickEditPages);
-                AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                appEditSelectDto.setServiceEdit(true);
-                appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+                reSetChangesForApp(appSubmissionDto);
             }
 
             List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.SVC_DOC_CONFIG);
@@ -1799,14 +1768,7 @@ public class ClinicalLaboratoryDelegator {
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(nextStep)) {
-                if (appSubmissionDto.isNeedEditController()) {
-//                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-//                    clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_MEDALERT_PERSON);
-//                    appSubmissionDto.setClickEditPage(clickEditPages);
-                    AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
-                    appEditSelectDto.setServiceEdit(true);
-                    appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-                }
+               reSetChangesForApp(appSubmissionDto);
                 Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
                 //validate mandatory count
                 int psnLength = 0;
@@ -2134,6 +2096,7 @@ public class ClinicalLaboratoryDelegator {
             AppSvcChargesPageDto appSvcClinicalDirectorDto = genAppSvcChargesDto(bpc.request, appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcChargesPageDto(appSvcClinicalDirectorDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+            reSetChangesForApp(appSubmissionDto);
         }
         String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String,String> map=new HashMap<>(8);
@@ -4781,5 +4744,13 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return result;
+    }
+
+    private void reSetChangesForApp(AppSubmissionDto appSubmissionDto){
+        if (appSubmissionDto.isNeedEditController()) {
+            AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+            appEditSelectDto.setServiceEdit(true);
+            appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        }
     }
 }
