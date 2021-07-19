@@ -21,7 +21,7 @@
   String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <style type="text/css">
-  ul li:before {
+  li.apptInspScheduleUl:before {
     background-color: #333333;
   }
 </style>
@@ -86,7 +86,7 @@
                       <div class="col-md-6">
                         <ul>
                           <c:forEach var="insepctionDate" items="${reschedulingOfficerDto.newInspDates}">
-                            <li><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
+                            <li class="apptInspScheduleUl"><span style="font-size: 16px"><c:out value="${insepctionDate}"/></span></li>
                           </c:forEach>
                         </ul>
                       </div>
