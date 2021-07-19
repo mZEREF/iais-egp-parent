@@ -114,6 +114,8 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -4622,7 +4624,8 @@ public class NewApplicationDelegator {
                 Integer oldVersion = appGrpPrimaryDocDto.getVersion();
                 if(configDocId.equals(appGrpPrimaryDocDto.getSvcComDocId()) && seqNum == appGrpPrimaryDocDto.getSeqNum()){
                     canFound = true;
-                    if(md5Code.equals(appGrpPrimaryDocDto.getMd5Code())){
+                    if(MessageDigest.isEqual(md5Code.getBytes(StandardCharsets.UTF_8),
+                            appGrpPrimaryDocDto.getMd5Code().getBytes(StandardCharsets.UTF_8))){
                         if(!StringUtil.isEmpty(oldVersion)){
                             version = oldVersion;
                         }

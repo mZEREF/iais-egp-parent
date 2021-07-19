@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +80,7 @@ public class ClinicalOfficerValidate implements CustomizeValidator {
                 }
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                 if(!StringUtil.isEmpty(emailAddr)){
-                    if(!emailAddr.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
+                    if(!ValidationUtils.isEmail(emailAddr)){
                         map.put("emailAddr"+i,"GENERAL_ERR0014");
                     }
                 }

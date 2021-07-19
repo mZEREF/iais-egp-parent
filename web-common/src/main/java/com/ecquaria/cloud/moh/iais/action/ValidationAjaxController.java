@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -41,7 +42,7 @@ public class ValidationAjaxController {
                     }
                     String controllerName = contorllerPara[i];
 
-                    Class<?> clazz = Class.forName(controllerName);
+                    Class<?> clazz = MiscUtil.getClassFromName(controllerName);
                     Object obj = clazz.newInstance();
                     Method method = clazz.getMethod("getValueFromPage", new Class[] {HttpServletRequest.class});
 
@@ -50,14 +51,14 @@ public class ValidationAjaxController {
                             "")));
                     if (!StringUtil.isEmpty(profiles[i])) {
                         ValidationResult constraintViolations =
-                                WebValidationHelper.validateProperty(Class.forName(entityPara[i]).cast(
+                                WebValidationHelper.validateProperty(MiscUtil.getClassFromName(entityPara[i]).cast(
                                         method.invoke(obj, new Object[] {request})), profiles[i]);
                         if (constraintViolations.isHasErrors()) {
                             errorMsg.putAll(constraintViolations.retrieveAll());
                         }
                     } else {
                         ValidationResult constraintViolations =
-                                WebValidationHelper.validateEntity(Class.forName(entityPara[i]).cast(
+                                WebValidationHelper.validateEntity(MiscUtil.getClassFromName(entityPara[i]).cast(
                                         method.invoke(obj, new Object[] {request})));
                         if (constraintViolations.isHasErrors()) {
                             errorMsg.putAll(constraintViolations.retrieveAll());

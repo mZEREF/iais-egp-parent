@@ -1402,9 +1402,13 @@ public class MohIntranetUserDelegator {
         clientUser.setEmail(email);
         String randomStr = IaisEGPHelper.generateRandomString(6);
         String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+        randomStr = IaisEGPHelper.generateRandomString(6);
+        String chanQue = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+        randomStr = IaisEGPHelper.generateRandomString(6);
+        String chanAns = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
         clientUser.setPassword(pwd);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
+        clientUser.setPasswordChallengeQuestion(chanQue);
+        clientUser.setPasswordChallengeAnswer(chanAns);
         intranetUserService.saveEgpUser(clientUser);
     }
 
@@ -1425,8 +1429,12 @@ public class MohIntranetUserDelegator {
             clientUser.setId(userId);
             clientUser.setDisplayName(displayName);
             clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-            clientUser.setPasswordChallengeQuestion("A");
-            clientUser.setPasswordChallengeAnswer("A");
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String chanQue = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+            randomStr = IaisEGPHelper.generateRandomString(6);
+            String chanAns = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+            clientUser.setPasswordChallengeQuestion(chanQue);
+            clientUser.setPasswordChallengeAnswer(chanAns);
             clientUser.setAccountActivateDatetime(accountActivateDatetime);
             clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
             clientUser.setFirstName(firstName);
