@@ -382,29 +382,11 @@ public class NewApplicationDelegator {
         }
 
         String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
-//        if (!"saveDraft".equals(action)) {
-//
-//        }
-        //errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keywords, isRfi);
-//        String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
-//        String crud_action_type = bpc.request.getParameter("crud_action_type");
-//        bpc.request.setAttribute("continueStep", crud_action_type);
-//        bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
-//        if ("continue".equals(crud_action_type_continue)) {
-//            errorMap.remove("hciNameUsed");
-//        }
-//        String string = errorMap.get("hciNameUsed");
-//        if (string != null) {
-//            bpc.request.setAttribute("hciNameUsed", "hciNameUsed");
-//        }
+
         if (errorMap.size() > 0) {
             //set audit
             NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
                     appSubmissionDto.getLicenceNo());
-//            String hciNameUsed = errorMap.get("hciNameUsed");
-//            if (!StringUtil.isEmpty(hciNameUsed)) {
-//                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
-//            }
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
             bpc.request.setAttribute("errormapIs", "error");
@@ -1071,6 +1053,7 @@ public class NewApplicationDelegator {
             //update address
             NewApplicationHelper.updatePremisesAddress(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+
         }
         String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
@@ -4503,6 +4486,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            coMap.put("licensee", "licensee");
             coMap.put("premises", "premises");
             coMap.put("document", "document");
             coMap.put("information", "information");
