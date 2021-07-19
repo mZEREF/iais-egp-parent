@@ -32,8 +32,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInsGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +42,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -271,6 +272,6 @@ public interface HcsaLicenceClient {
     @GetMapping(path= "/hcsa-licence/licence-corrId/hci-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getHciCodeByCorrId(@RequestParam(name = "corrId") String corrId);
 
-    @GetMapping(value = "/hcsa-licence/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
 }
