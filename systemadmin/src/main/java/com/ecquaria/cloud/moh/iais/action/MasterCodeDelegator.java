@@ -196,7 +196,7 @@ public class MasterCodeDelegator {
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, "MasterCodeView");
         getCategoryValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
-            masterCodeDto.setVersion(1f);
+            masterCodeDto.setVersion(1d);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
@@ -927,7 +927,7 @@ public class MasterCodeDelegator {
         MasterCodeDto masterCodeDto = (MasterCodeDto) CopyUtil.copyMutableObject(oldMasterCodeDto);
         getEditValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
-            masterCodeDto.setVersion(1f);
+            masterCodeDto.setVersion(1d);
         }
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1056,7 +1056,7 @@ public class MasterCodeDelegator {
             masterCodeDto.setMasterCodeId(null);
             Double version =  masterCodeDto.getVersion();
             if (StringUtil.isEmpty(version)){
-                masterCodeDto.setVersion(1f);
+                masterCodeDto.setVersion(1d);
             }else{
                 //get max version ms
                 MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
@@ -1064,7 +1064,7 @@ public class MasterCodeDelegator {
                 if (maxVersion != null){
                     masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
                 }else{
-                    masterCodeDto.setVersion(1f);
+                    masterCodeDto.setVersion(1d);
                 }
             }
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
