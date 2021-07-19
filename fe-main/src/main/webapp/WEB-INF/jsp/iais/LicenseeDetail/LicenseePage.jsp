@@ -29,10 +29,6 @@
                         <c:set var="index" value="${status.index + 1}" />
                         <%@include file="section/licenseeDetail.jsp" %>
                     </c:forEach>
-                    <c:forEach var="item" items="${person}" varStatus="status">
-                        <c:set var="index" value="${status.index + 1}" />
-                        <%@include file="section/boardMember.jsp" %>
-                    </c:forEach>
                 </div>
                 <c:if test="${'common'.equals(flag)}">
                     <div class="container-footer">

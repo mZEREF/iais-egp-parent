@@ -86,6 +86,10 @@
                     </iais:value>
                 </iais:row>
             </div>
+            <c:forEach var="item" items="${person}" varStatus="status">
+                <c:set var="index" value="${status.index + 1}" />
+                <%@include file="boardMember.jsp" %>
+            </c:forEach>
         </div>
     </div>
 </div>

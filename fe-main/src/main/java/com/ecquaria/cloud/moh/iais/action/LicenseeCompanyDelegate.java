@@ -83,7 +83,7 @@ public class LicenseeCompanyDelegate {
             if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())) {
                 String organizationId = loginContext.getOrgId();
                 OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-                orgUserManageService.refreshLicensee(organizationDto.getUenNo());
+                orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
             }else{
                 MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),bpc.request);
                 if(myInfoDto != null){

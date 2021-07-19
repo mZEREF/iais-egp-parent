@@ -37,10 +37,6 @@
                         <c:set var="index" value="${status.index + 1}" />
                         <%@include file="section/licenseeDetail.jsp" %>
                     </c:forEach>
-                    <c:forEach var="item" items="${person}" varStatus="status">
-                        <c:set var="index" value="${status.index + 1}" />
-                        <%@include file="section/boardMember.jsp" %>
-                    </c:forEach>
                 </div>
                 <div class="container-footer">
                     <div class="col-sm-4 col-md-2 text-left">
