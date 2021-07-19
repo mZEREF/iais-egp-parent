@@ -324,7 +324,7 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
 
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if(licenceDto != null){
