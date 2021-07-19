@@ -2805,6 +2805,7 @@
     </div>
   </div>
   </c:if>
+  <%-- Document --%>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
     <div class="amended-service-info-gp">
       <label style="font-size: 2.2rem">${stepNameMap['SVST005']}</label>
@@ -2822,7 +2823,6 @@
                     </td>
                   </tr>
                   <c:forEach items="${svcDoc.value}" var="sinage" varStatus="inx">
-
                     <tr>
                       <td>
                         <div class="col-xs-6">
@@ -2830,38 +2830,25 @@
                               <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
                                 <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${sinage.fileRepoId}" docName="${sinage.docName}"/>
                                 <c:out value="(${sinage.docSize} KB)"/>
-                                   </span>
+                              </span>
                           </c:if>
                           <c:if test="${sinage.docSize==null}">
-                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}">
-
-                              </span>
+                              <span class="newVal " attr="${sinage.md5Code}${sinage.docName}"></span>
                           </c:if>
                         </div>
                         <div class="col-xs-6">
-
                           <c:if test="${oldSvcDoc[inx.index].docSize!=null}">
-                                  <span class="oldVal "
-                                        attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
-                                        style="display: none">
-                                    <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldSvcDoc[inx.index].fileRepoId}" docName="${oldSvcDoc[inx.index].docName}"/>
-                                      ${oldSvcDoc[inx.index].docName}
-                                  </a>
-                                  <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
-                                </span>
+                              <span class="oldVal " attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}">
+                                <iais:downloadLink fileRepoIdName="fileRo${inx.index}" fileRepoId="${oldSvcDoc[inx.index].fileRepoId}" docName="${oldSvcDoc[inx.index].docName}"/>
+                                <c:out value="(${oldSvcDoc[inx.index].docSize} KB)"/>
+                            </span>
                           </c:if>
                           <c:if test="${oldSvcDoc[inx.index].docSize==null}">
-                                <span class="oldVal "
-                                      attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"
-                                      style="display: none">
-
-                                </span>
+                                <span class="oldVal " attr="${oldSvcDoc[inx.index].md5Code}${oldSvcDoc[inx.index].docName}"></span>
                           </c:if>
-
                         </div>
                       </td>
                     </tr>
-
                   </c:forEach>
                 </c:forEach>
               </table>
