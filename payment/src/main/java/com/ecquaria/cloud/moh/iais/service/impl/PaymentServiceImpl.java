@@ -53,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentAppGrpClient paymentAppGrpClient;
 
     @Qualifier(value = "iaisRestTemplate")
-    private RestTemplate restTemplate=new RestTemplate();
+    private RestTemplate restTemplate;
 
     @Override
     public void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception {

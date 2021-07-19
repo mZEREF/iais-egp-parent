@@ -313,7 +313,7 @@ public class WebValidationHelper {
         }
 
         try {
-            Class valCls = Class.forName(ano.impClass());
+            Class valCls = MiscUtil.getClassFromName(ano.impClass());
             Object obj;
             try {
                 obj = SpringContextHelper.getContext().getBean(valCls);
@@ -325,7 +325,7 @@ public class WebValidationHelper {
             if (request != null) {
                 return cv.validate(request);
             }
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
