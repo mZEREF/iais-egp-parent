@@ -170,13 +170,6 @@ public class AppealApproveBatchjob {
 //                            break;
                               default:break;
                           }
-                          try {
-                              String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
-                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
-                          }catch (Exception e){
-                              log.info(e.getMessage(),e);
-                          }
-
                           /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
                       }
                   }
@@ -216,6 +209,22 @@ public class AppealApproveBatchjob {
                   appealApplicationDto.setAppealAppPremisesRecommendationDtos(appealAppPremisesRecommendationDtos);
                   appealApplicationDto.setRollBackAppPremisesRecommendationDtos(rollBackAppPremisesRecommendationDtos);
                   appealService.createAppealApplicationDto(appealApplicationDto);
+                  for (AppealApproveDto appealApproveDto: appealApproveDtos){
+                      ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
+                      AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
+                      if(applicationDto!= null && appealDto != null){
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
+                          String  appealType = appealDto.getAppealType();
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
+
+                          try {
+                              String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
+                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
+                          }catch (Exception e){
+                              log.info(e.getMessage(),e);
+                          }
+                      }
+                  }
               }
           }
         }else{

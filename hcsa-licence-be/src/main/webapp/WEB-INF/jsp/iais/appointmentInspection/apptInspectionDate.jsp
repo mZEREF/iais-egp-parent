@@ -275,7 +275,7 @@
                             '<div class="col-md-6">' +
                             '<ul>';
                         for(var i = 0; i < inspDateList.length; i++){
-                            html += '<li><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
+                            html += '<li class="apptInspScheduleUl"><span style="font-size: 16px">' + inspDateList[i] + '</span></li>';
                         }
                         html += '</ul>' +
                             '</div>' +

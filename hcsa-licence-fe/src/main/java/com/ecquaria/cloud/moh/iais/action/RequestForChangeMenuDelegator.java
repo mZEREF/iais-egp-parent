@@ -75,13 +75,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -94,6 +87,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -940,7 +939,7 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(email1)) {
                 errMap.put("emailAddr1", emailMsg);
             } else if (!StringUtil.isEmpty(email1)) {
-                if (!email1.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                if (!ValidationUtils.isEmail(email1)) {
                     errMap.put("emailAddr1", "GENERAL_ERR0014");
                 }
             }
@@ -1065,7 +1064,7 @@ public class RequestForChangeMenuDelegator {
                 if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
                     errMap.put("emailAddr2", emailMsg);
                 } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
-                    if (!newPerson.getEmailAddr().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                    if (!ValidationUtils.isEmail(newPerson.getEmailAddr())) {
                         errMap.put("emailAddr2", "GENERAL_ERR0014");
                     }
                 }

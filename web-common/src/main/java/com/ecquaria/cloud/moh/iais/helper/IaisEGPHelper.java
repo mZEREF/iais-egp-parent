@@ -580,10 +580,10 @@ public final class IaisEGPHelper extends EGPHelper {
     public static void retrigerEicMethods(List<EicRequestTrackingDto> trackList) {
         trackList.forEach(e -> {
             try {
-                Class actCls = Class.forName(e.getActionClsName());
+                Class actCls = MiscUtil.getClassFromName(e.getActionClsName());
                 Object actObj = SpringContextHelper.getContext().getBean(actCls);
                 Method med = actCls.getMethod("aaaa");
-                Class dtoCls = Class.forName(e.getDtoClsName());
+                Class dtoCls = MiscUtil.getClassFromName(e.getDtoClsName());
                 Object dto = JsonUtil.parseToObject(e.getDtoObject(), dtoCls);
                 if (med != null) {
                     med.invoke(actObj, dto);

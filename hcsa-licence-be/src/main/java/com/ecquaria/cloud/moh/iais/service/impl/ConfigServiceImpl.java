@@ -125,9 +125,9 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private static List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
-    private List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+    private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
 
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
@@ -987,7 +987,7 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public synchronized List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
-        if (this.hcsaSvcRoutingStageDtos == null) {
+        if (hcsaSvcRoutingStageDtos == null) {
             List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
             for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
                 String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
@@ -1000,9 +1000,9 @@ public class ConfigServiceImpl implements ConfigService {
                     log.error(e.getMessage(), e);
                 }
             }
-            this.hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
+            hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
         }
-        return this.hcsaSvcRoutingStageDtos;
+        return hcsaSvcRoutingStageDtos;
     }
 
     private List<WorkingGroupDto> getWorkingGroup() {
@@ -1075,15 +1075,15 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private  List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if(this.hcsaServiceCatgoryDtos!=null){
-            return this.hcsaServiceCatgoryDtos;
+        if(hcsaServiceCatgoryDtos!=null){
+            return hcsaServiceCatgoryDtos;
         }
         synchronized (this){
-            if (this.hcsaServiceCatgoryDtos == null) {
+            if (hcsaServiceCatgoryDtos == null) {
                 //this config cannot change,so need init once
-                this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+                hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
             }
-            return this.hcsaServiceCatgoryDtos;
+            return hcsaServiceCatgoryDtos;
         }
     }
 

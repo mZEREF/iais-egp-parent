@@ -56,7 +56,7 @@ public class StripeServiceImpl implements StripeService {
     private String gateWayUrl;
 
     @Qualifier(value = "iaisRestTemplate")
-    private RestTemplate restTemplate=new RestTemplate();
+    private RestTemplate restTemplate;
 
     @Override
     public Session createSession(SessionCreateParams params) throws StripeException {

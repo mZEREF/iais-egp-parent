@@ -38,7 +38,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     private final static String SYSTEM_PARAM_EDIT_OFFSET = "cache_system_param_edit_offset";
 
-    private HashMap<String, Long> propertiesBitIndex =  IaisCommonUtils.genNewHashMap();
+    private static HashMap<String, Long> propertiesBitIndex =  IaisCommonUtils.genNewHashMap();
 
     @Autowired
     private SystemClient systemClient;
