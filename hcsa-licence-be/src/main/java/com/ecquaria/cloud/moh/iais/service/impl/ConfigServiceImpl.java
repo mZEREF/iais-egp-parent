@@ -1000,7 +1000,6 @@ public class ConfigServiceImpl implements ConfigService {
                     log.error(e.getMessage(), e);
                 }
             }
-            hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDtos;
         }
         return hcsaSvcRoutingStageDtos;
     }
