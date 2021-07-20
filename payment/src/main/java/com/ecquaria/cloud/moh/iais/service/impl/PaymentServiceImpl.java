@@ -50,9 +50,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentAppGrpClient paymentAppGrpClient;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Override
     public void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception {
         String keyId= GatewayConfig.eNetsKeyId;
@@ -141,6 +138,7 @@ public class PaymentServiceImpl implements PaymentService {
         headers.set("authorization-Secondary", signature2.authorization());
         HttpEntity<String> entity = new HttpEntity<String>(soapiToGW,
                 headers);
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =
                 restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, String.class);
         log.info(StringUtil.changeForLog("S2S response status : " + response.getStatusCodeValue()));
