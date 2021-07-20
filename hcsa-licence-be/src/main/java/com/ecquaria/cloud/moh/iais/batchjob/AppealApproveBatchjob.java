@@ -632,13 +632,16 @@ public class AppealApproveBatchjob {
                         newAppPremRecomDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                         newAppPremRecomDto.setVersion(newVersion);
                         fillUpCheckListGetAppClient.saveAppRecom(newAppPremRecomDto);
-                        LicenceDto appealLicenceOld=hcsaLicenceClient.getLicenceDtoById(licAppCorrelationDto.getLicenceId()).getEntity();
-                        appealLicenceOld.setExpiryDate(expiryDate);
-                        appealLicence.add(appealLicenceOld);
                     }
                 } else {
                     log.debug(StringUtil.changeForLog(""));
                 }
+                List<LicenceDto> entity = hcsaLicenceClient.getBaseOrSpecLicence(licenceDto.getId()).getEntity();
+                for (LicenceDto lic:entity
+                ) {
+                    lic.setExpiryDate(expiryDate);
+                }
+                appealLicence.addAll(entity);
                 appealLicenceDto.setExpiryDate(expiryDate);
                 appPremiseMiscDtoList.add(appPremiseMiscDto);
                 appealLicence.add(appealLicenceDto);
