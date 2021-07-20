@@ -1129,7 +1129,7 @@ public class BackendInboxDelegator {
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if(returnFee==null || returnFee == 0d){
+                if(returnFee==null || MiscUtil.doubleEquals(returnFee, 0d)){
                     continue;
                 }
                 appReturnFeeDto.setReturnAmount(returnFee);

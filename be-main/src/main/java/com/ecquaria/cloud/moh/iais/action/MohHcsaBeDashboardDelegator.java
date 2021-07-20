@@ -529,7 +529,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardCommonPool(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
-        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes())) {
+        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes(StandardCharsets.UTF_8))) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
         } else {
             String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
