@@ -175,8 +175,8 @@ public class TaskServiceImpl implements TaskService {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
             }
              result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                     correlationId,isSystemAdmin?null:workGroupId,
-                    userId, assignDate,score,TaskUrl,roleId,
+                     correlationId,TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
+                    userId, assignDate,null,score,TaskUrl,roleId,
                      IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
@@ -273,8 +273,8 @@ public class TaskServiceImpl implements TaskService {
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
                             TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                                    appPremisesCorrelationDto.getId(),isSystemAdmin?null:workGroupId,
-                                    userId, assignDate,score,TaskUrl,roleId,
+                                    appPremisesCorrelationDto.getId(),TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
+                                    userId, assignDate,null,score,TaskUrl,roleId,
                                     auditTrailDto);
                             if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)){
                                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);

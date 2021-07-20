@@ -1018,8 +1018,8 @@ public class HcsaApplicationDelegator {
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastApplicationDto.setApplicationDto(applicationDto);
             //create the new task and create the history
-            TaskDto taskDtoNew = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), taskDto.getTaskKey(), TaskConsts.TASK_TYPE_MAIN_FLOW, taskDto.getRefNo(), null,
-                    null, null, 0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST, IaisEGPHelper.getCurrentAuditTrailDto());
+            TaskDto taskDtoNew = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), taskDto.getTaskKey(), TaskConsts.TASK_TYPE_MAIN_FLOW, taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, null,
+                    null, null, null,0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_BROADCAST, IaisEGPHelper.getCurrentAuditTrailDto());
             broadcastOrganizationDto.setCreateTask(taskDtoNew);
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(),
                     taskDto.getTaskKey(), null, taskDto.getWkGrpId(), null, null, null, RoleConsts.USER_ROLE_AO3);
@@ -2169,8 +2169,8 @@ public class HcsaApplicationDelegator {
                 log.debug(StringUtil.changeForLog("The stageId is-->;" + stageId));
                 if (appPremisesRoutingHistoryDto1 != null) {
                     TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), stageId, TaskConsts.TASK_TYPE_MAIN_FLOW,
-                            taskDto.getRefNo(), appPremisesRoutingHistoryDto1.getWrkGrpId(),
-                            appPremisesRoutingHistoryDto1.getActionby(), new Date(), 0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, roleId,
+                            taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, appPremisesRoutingHistoryDto1.getWrkGrpId(),
+                            appPremisesRoutingHistoryDto1.getActionby(), new Date(), null,0, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, roleId,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                     //delete workgroup
@@ -2942,7 +2942,7 @@ public class HcsaApplicationDelegator {
             TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
         }
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), stageId, taskType,
-                taskDto.getRefNo(), wrkGpId, userId, new Date(), 0, TaskUrl, roleId,
+                taskDto.getRefNo(), TaskConsts.TASK_STATUS_PENDING,wrkGpId, userId, new Date(), null,0, TaskUrl, roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 

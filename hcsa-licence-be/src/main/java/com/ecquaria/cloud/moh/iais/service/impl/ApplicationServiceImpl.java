@@ -1032,7 +1032,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //update inspector status
         updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), HcsaConsts.ROUTING_STAGE_INS, taskType,
-                taskDto.getRefNo(), wrkGpId, userId, new Date(), 0, TaskUrl, roleId,
+                taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING, wrkGpId, userId, new Date(), null,0, TaskUrl, roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
         //create new history
