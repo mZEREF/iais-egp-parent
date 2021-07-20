@@ -73,12 +73,13 @@
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
                 on app.APPLICATION_NO = app2.application_no and app.version = app2.version
+                LEFT JOIN application ab on app.APPLICATION_NO =ab.BASE_APPLICATION_NO
                 LEFT join (select apm.RELATE_REC_ID,corr_app.id misc_id  from
-                  app_premises_misc apm
+                 app_premises_misc apm
                  join app_premises_correlation apc on apc.ID = apm.APP_PREM_CORRE_ID
                  JOIN application corr_app on corr_app.ID = apc.APPLICATION_ID and corr_app.STATUS not in ('APST009','APST050','APST006')
                  where  apm.APPEAL_TYPE like 'APPEAL%'
-                ) as misc  on misc.RELATE_REC_ID = app.id
+                ) as misc  on ( misc.RELATE_REC_ID = ab.id )
                 union
                 select
                     A.ID as id,A.DRAFT_NO AS application_no,1 as has_submit_pref_date,A.app_grp_id,A.licensee_id,'PMTDF001',A.app_type,
