@@ -172,7 +172,7 @@
                                                        || app.status =='APST075' ||  app.status == 'APST050'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
-                                                        <option value="Appeal">Appeal</option>
+                                                        <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>
                                                         <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                             <option value="Assessment">Assessment</option>
                                                         </c:if>
