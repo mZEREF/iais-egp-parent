@@ -1184,6 +1184,7 @@ public class NewApplicationHelper {
                     }
                     person.setProfessionBoard(psnDto.getProfessionBoard());
                     person.setProfRegNo(psnDto.getProfRegNo());
+                    person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialtyGetDate(handleDate(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
                     person.setSpecialtyGetDateStr(handleDateString(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
                     person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());
