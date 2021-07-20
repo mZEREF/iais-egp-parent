@@ -28,7 +28,7 @@
             printView}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
-            <div class="panel-main-content form-horizontal">
+            <div class="panel-main-content form-horizontal min-row">
                 <iais:row>
                     <iais:value width="10">
                         <strong class="app-font-size-22 premHeader">Licensee Details</strong>

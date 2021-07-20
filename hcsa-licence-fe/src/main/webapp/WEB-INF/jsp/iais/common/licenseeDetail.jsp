@@ -288,8 +288,7 @@
         showWaiting();
         var jsonData = {
             'idType':idType,
-            'idNo':idNo,
-            'psnType':psnType
+            'idNo':idNo
         };
         $.ajax({
             'url':'${pageContext.request.contextPath}/person-info/individual-licesee',
