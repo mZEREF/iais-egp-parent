@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventInspRecItemNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRecJobFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -34,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -64,9 +64,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private String sharedPath;
     @Value("${iais.sharedfolder.rectification.in}")
     private String inSharedPath;
-    private String download;
-    private String zipFile;
-    private String compressPath;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -92,15 +89,19 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private GenerateIdClient generateIdClient;
 
-    @PostConstruct
-    private void init() {
-        compressPath = sharedPath + "recUnZipFile";
-        download = compressPath + File.separator + "backupsRec";
+    private InspRecJobFieldDto getInspRecJobFieldDto() {
+        InspRecJobFieldDto inspRecJobFieldDto = new InspRecJobFieldDto();
+        String compressPath = sharedPath + "recUnZipFile";
+        String download = compressPath + File.separator + "backupsRec";
         String inFolder = inSharedPath;
         if (!inFolder.endsWith(File.separator)) {
             inFolder += File.separator;
         }
-        zipFile = inFolder;
+        String zipFile = inFolder;
+        inspRecJobFieldDto.setDownload(download);
+        inspRecJobFieldDto.setCompressPath(compressPath);
+        inspRecJobFieldDto.setZipFile(zipFile);
+        return inspRecJobFieldDto;
     }
 
     @Override
@@ -112,6 +113,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void deleteUnZipFile() {
+        InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
+        String download = inspRecJobFieldDto.getDownload();
+        String compressPath = inspRecJobFieldDto.getDownload();
+        String zipFile = inspRecJobFieldDto.getDownload();
         File downloadFile = MiscUtil.generateFile(download);
         File zipFiles = MiscUtil.generateFile(zipFile);
         File compressPathFile = MiscUtil.generateFile(compressPath);
@@ -126,6 +131,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
+        InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
+        String zipFile = inspRecJobFieldDto.getDownload();
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
         if(MiscUtil.generateFile(zipFile).isDirectory()){
             File[] files = MiscUtil.generateFile(zipFile).listFiles();
@@ -224,6 +231,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private String unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
+        InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
+        String compressPath = inspRecJobFieldDto.getDownload();
         if(!zipEntry.getName().endsWith(File.separator)) {
             String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
             String reportFilePath = realPath.substring(realPath.lastIndexOf(File.separator,realPath.lastIndexOf(File.separator) - 1) + 1);
@@ -270,6 +279,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
+        InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
+        String download = inspRecJobFieldDto.getDownload();
         File file = MiscUtil.generateFile(download);
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
