@@ -3074,7 +3074,8 @@ public class NewApplicationDelegator {
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
         String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-
+        log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
+                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
