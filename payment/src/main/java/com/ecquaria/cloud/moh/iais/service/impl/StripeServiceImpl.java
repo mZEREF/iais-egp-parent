@@ -53,9 +53,6 @@ public class StripeServiceImpl implements StripeService {
     @Value("${iais.inter.gateway.url}")
     private String gateWayUrl;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Override
     public Session createSession(SessionCreateParams params) throws StripeException {
         // Set your secret key. Remember to switch to your live secret key in production!
@@ -202,6 +199,7 @@ public class StripeServiceImpl implements StripeService {
 
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         PaymentIntent session=ApiResource.GSON.fromJson(response.getBody(), PaymentIntent.class);
@@ -254,7 +252,7 @@ public class StripeServiceImpl implements StripeService {
         HttpContent httpContent= FormEncoder.createHttpContent(params.toMap());
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(httpContent.byteArrayContent(),
                 headers);
-
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
@@ -306,6 +304,7 @@ public class StripeServiceImpl implements StripeService {
         }
         HttpEntity<byte[]> entity = new HttpEntity<byte[]>(null,
                 headers);
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
