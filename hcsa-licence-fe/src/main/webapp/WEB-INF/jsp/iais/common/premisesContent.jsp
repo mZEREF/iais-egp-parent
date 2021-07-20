@@ -985,6 +985,13 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
+                    <iais:row>
+                        <iais:field value="Email " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="66" cssClass="conveyanceEmail" type="text" name="conveyanceEmail" id="conveyanceEmail" value="${appGrpPremisesDto.conveyanceEmail}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceEmail${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
 
                     <iais:row>
                         <div class="col-md-12 col-xs-12">
@@ -1510,6 +1517,13 @@
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="offSiteBuildingName" type="text" name="offSiteBuildingName" id="offSiteBuildingName" value="${appGrpPremisesDto.offSiteBuildingName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBuildingName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Email " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="66" cssClass="offSiteEmail" type="text" name="offSiteEmail" id="offSiteEmail" value="${appGrpPremisesDto.offSiteEmail}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteEmail${status.index}"></span>
                         </iais:value>
                     </iais:row>
 
