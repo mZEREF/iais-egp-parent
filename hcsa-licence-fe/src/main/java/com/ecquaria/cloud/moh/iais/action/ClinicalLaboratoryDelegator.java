@@ -4690,35 +4690,35 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private AppSvcPrincipalOfficersDto setClinicalDirectorPrsInfo(AppSvcPrincipalOfficersDto appSvcPsnDto, String specialtyStr,
-                                                                  String specialtyGetDateStr, String typeOfCurrRegi, String currRegiDateStr, String praCerEndDateStr, String typeOfRegister){
+            String specialtyGetDateStr, String typeOfCurrRegi, String currRegiDateStr, String praCerEndDateStr,
+            String typeOfRegister) {
         appSvcPsnDto.setSpeciality(specialtyStr);
         appSvcPsnDto.setTypeOfCurrRegi(typeOfCurrRegi);
         appSvcPsnDto.setTypeOfRegister(typeOfRegister);
 
-        if(StringUtil.isEmpty(specialtyGetDateStr)){
+        if (StringUtil.isEmpty(specialtyGetDateStr)) {
             appSvcPsnDto.setSpecialtyGetDate(null);
-        }else{
+        } else {
             Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
             appSvcPsnDto.setSpecialtyGetDate(date);
         }
-        appSvcPsnDto.setSpecialtyGetDateStr(specialtyGetDateStr);
-        if(StringUtil.isEmpty(specialtyGetDateStr)){
+        appSvcPsnDto.setCurrRegiDateStr(currRegiDateStr);
+        if (StringUtil.isEmpty(currRegiDateStr)) {
             appSvcPsnDto.setCurrRegiDate(null);
-        }else{
-            Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+        } else {
+            Date date = DateUtil.parseDate(currRegiDateStr, Formatter.DATE);
             appSvcPsnDto.setCurrRegiDate(date);
         }
-        appSvcPsnDto.setCurrRegiDateStr(currRegiDateStr);
-        if(StringUtil.isEmpty(specialtyGetDateStr)){
+        appSvcPsnDto.setPraCerEndDateStr(praCerEndDateStr);
+        if (StringUtil.isEmpty(praCerEndDateStr)) {
             appSvcPsnDto.setPraCerEndDate(null);
-        }else{
-            Date date = DateUtil.parseDate(specialtyGetDateStr, Formatter.DATE);
+        } else {
+            Date date = DateUtil.parseDate(praCerEndDateStr, Formatter.DATE);
             appSvcPsnDto.setPraCerEndDate(date);
         }
-        appSvcPsnDto.setPraCerEndDateStr(praCerEndDateStr);
-
         return appSvcPsnDto;
     }
+
     private List<AppSvcBusinessDto> genAppSvcBusinessDtoList(HttpServletRequest request, List<AppGrpPremisesDto> appGrpPremisesDtos, String appType){
         List<AppSvcBusinessDto> appSvcBusinessDtos = IaisCommonUtils.genNewArrayList();
         String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
