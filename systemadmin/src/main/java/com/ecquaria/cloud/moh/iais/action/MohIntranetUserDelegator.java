@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -818,6 +819,26 @@ public class MohIntranetUserDelegator {
 
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
+                for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
+                     ) {
+                    List<String> roleIdList = IaisCommonUtils.genNewArrayList();
+                    roleIdList.add(ugc.getUserRoleId());
+                    List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
+                    if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
+                        WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
+                        workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
+                        workloadCalculationDto.setDays(days);
+                        workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
+                        workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
+                        workloadCalculationDto.setAuditTrailDto(auditTrailDto);
+                        intranetUserService.workloadCalculation(workloadCalculationDto);
+                    }
+
+
+
+                }
+
             }
         }
         List<String> existRoles = (List<String>) ParamUtil.getSessionAttr(bpc.request, "orgUserRoleDtos");

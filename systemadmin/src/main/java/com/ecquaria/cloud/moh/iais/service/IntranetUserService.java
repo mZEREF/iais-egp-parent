@@ -13,15 +13,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.role.Role;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import org.xml.sax.SAXException;
 
 /**
  * @author weilu
@@ -87,4 +88,6 @@ public interface IntranetUserService {
     List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException;
 
     List<OrganizationDto> getUenList();
+
+    Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto);
 }
