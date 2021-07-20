@@ -22,9 +22,11 @@ import com.stripe.net.HttpContent;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.util.StringUtils;
+import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,10 +35,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * StripeServiceImpl
@@ -56,7 +54,6 @@ public class StripeServiceImpl implements StripeService {
     private String gateWayUrl;
 
     @Autowired
-    @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate;
 
     @Override
