@@ -55,6 +55,7 @@ public class StripeServiceImpl implements StripeService {
     @Value("${iais.inter.gateway.url}")
     private String gateWayUrl;
 
+    @Autowired
     @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate;
 

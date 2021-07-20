@@ -52,6 +52,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentAppGrpClient paymentAppGrpClient;
 
+    @Autowired
     @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate;
 
