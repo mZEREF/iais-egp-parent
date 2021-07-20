@@ -8,7 +8,7 @@
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Licensee Type</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.licenseeType}</td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.licenseeType}"/></td>
                     </tr>
                     <tr>
                         <td align="right">UEN</td>
