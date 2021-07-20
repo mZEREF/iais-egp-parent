@@ -55,7 +55,7 @@
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
          SELECT *
-            FROM (SELECT distinct
+            FROM (SELECT
                     app.id,
                     app.application_no,
                     app.has_submit_pref_date,
