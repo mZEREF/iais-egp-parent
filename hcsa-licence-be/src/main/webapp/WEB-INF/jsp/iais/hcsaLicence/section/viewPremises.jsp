@@ -442,8 +442,8 @@
                     </div>
                     <div class="col-md-4" style="padding-right: 0px">
                       <div class="col-md-6" style="padding: 0px">
-                      <span class="newVal" attr="${weeklyDto.selectAllDay}">
-                        <c:if test="${weeklyDto.selectAllDay}">
+                      <span class="newVal" attr="${weeklyDto.selectAllDay && not empty weeklyDto.selectValList}">
+                        <c:if test="${weeklyDto.selectAllDay && not empty weeklyDto.selectValList}">
                           <div class="form-check active">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                           </div>
@@ -451,8 +451,8 @@
                       </span>
                       </div>
                       <div class="col-md-6" style="padding: 0px">
-                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.selectAllDay}">
-                        <c:if test="${oldWeeklyDto.selectAllDay}">
+                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.selectAllDay && not empty oldWeeklyDto.selectValList}">
+                        <c:if test="${oldWeeklyDto.selectAllDay && not empty oldWeeklyDto.selectValList}">
                           <div class="form-check active">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                           </div>
@@ -532,8 +532,8 @@
 
                     <div class="col-md-4" style="padding-right: 0px">
                       <div class="col-md-6" style="padding: 0px" >
-                        <span class="newVal" attr="${op.selectAllDay}">
-                          <c:if test="${op.selectAllDay}">
+                        <span class="newVal" attr="${op.selectAllDay && not empty op.selectValList}">
+                          <c:if test="${op.selectAllDay && not empty op.selectValList}">
                             <div class="form-check active">
                               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                             </div>
@@ -541,8 +541,8 @@
                         </span>
                       </div>
                       <div class="col-md-6" style="padding: 0px">
-                        <span class="oldVal" style="display: none" attr="${oldOp.selectAllDay}">
-                           <c:if test="${oldOp.selectAllDay}">
+                        <span class="oldVal" style="display: none" attr="${oldOp.selectAllDay && not empty oldOp.selectValList}">
+                           <c:if test="${oldOp.selectAllDay && oldOp.selectValList}">
                              <div class="form-check active">
                               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                             </div>
