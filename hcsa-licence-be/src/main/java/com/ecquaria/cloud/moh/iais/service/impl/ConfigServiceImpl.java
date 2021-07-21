@@ -973,18 +973,19 @@ public class ConfigServiceImpl implements ConfigService {
     @Override
     public synchronized List<HcsaSvcRoutingStageDto> getHcsaSvcRoutingStageDtos() {
         if (hcsaSvcRoutingStageDtos == null) {
-            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
-            for (int i = 0; i < hcsaSvcRoutingStageDtos.size(); i++) {
-                String stageOrder = hcsaSvcRoutingStageDtos.get(i).getStageOrder();
+            List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDto = hcsaConfigClient.stagelist().getEntity();
+            for (int i = 0; i < hcsaSvcRoutingStageDto.size(); i++) {
+                String stageOrder = hcsaSvcRoutingStageDto.get(i).getStageOrder();
                 try {
                     if (Integer.parseInt(stageOrder) % 100 != 0) {
-                        hcsaSvcRoutingStageDtos.remove(i);
+                        hcsaSvcRoutingStageDto.remove(i);
                         i--;
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
             }
+            hcsaSvcRoutingStageDtos = hcsaSvcRoutingStageDto;
         }
         return hcsaSvcRoutingStageDtos;
     }
