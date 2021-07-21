@@ -133,6 +133,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     public List<String> compressFile(List<ProcessFileTrackDto> processFileTrackDtos) {
         InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
         String zipFile = inspRecJobFieldDto.getDownload();
+        log.debug(StringUtil.changeForLog("zipFile:" + zipFile));
+        JobLogger.log(StringUtil.changeForLog("zipFile:" + zipFile));
         List<String> reportIds = IaisCommonUtils.genNewArrayList();
         if(MiscUtil.generateFile(zipFile).isDirectory()){
             File[] files = MiscUtil.generateFile(zipFile).listFiles();
