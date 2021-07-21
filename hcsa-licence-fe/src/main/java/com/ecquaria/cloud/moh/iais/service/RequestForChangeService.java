@@ -105,4 +105,5 @@ public interface RequestForChangeService {
     void setRelatedInfoBaseServiceId(AppSubmissionDto appSubmissionDto);
     String baseSpecLicenceRelation(LicenceDto licenceDto,boolean flag);
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
+    LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
     }
