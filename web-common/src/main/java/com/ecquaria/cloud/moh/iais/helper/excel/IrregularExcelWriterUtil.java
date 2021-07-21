@@ -4,8 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -18,6 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
 import static com.ecquaria.cloud.moh.iais.helper.FileUtils.EXCEL_TYPE_XSSF;
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author yi chen
@@ -44,7 +44,7 @@ public class IrregularExcelWriterUtil {
         XSSFWorkbook workbook = null;
         String path = FileUtils.generationFileName("temp"+ System.currentTimeMillis(), EXCEL_TYPE_XSSF);
         File out = MiscUtil.generateFile(path);
-        try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
+        try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             Sheet sheet = workbook.getSheetAt(sheetAt);

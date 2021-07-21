@@ -37,7 +37,7 @@ public class WriteMessageAjaxController {
         if(blastManagementDto != null){
             long size = selectedFile.getSize()/1024;
             String fileName = selectedFile.getOriginalFilename();
-            if(fileName.indexOf('\\') > 0){
+            if(fileName != null && fileName.indexOf('\\') > 0){
                 fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
             }
             File toFile = FileUtils.multipartFileToFile(selectedFile);
