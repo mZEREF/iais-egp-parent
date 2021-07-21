@@ -101,6 +101,8 @@ public class InterInboxDelegator {
     @Autowired
     AppInboxClient appInboxClient;
 
+    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
+
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
             MessageConstants.MESSAGE_STATUS_UNREAD,
@@ -362,7 +364,9 @@ public class InterInboxDelegator {
             interInboxUserDto = initInboxDto(bpc);   // Walk around. No meaning.
         }
         SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
-        licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
+        if(interInboxUserDto != null) {
+            licParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(), true);
+        }
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
         MasterCodePair mcp_status = new MasterCodePair("lic.status", "LIC_STATUS_DESC", licStatus);
@@ -780,7 +784,8 @@ public class InterInboxDelegator {
                         });
                         if(!dtoList.isEmpty()){
                             bpc.request.getSession().setAttribute("bundleLicenceDtos",dtoList);
-                            bpc.request.setAttribute("draftByLicAppId","This following licences are bundled with this licence. Would you like to renew them as well:"+stringBuilder.toString());
+                            stringBuilder.append(twoSentences);
+                            bpc.request.setAttribute("draftByLicAppId", stringBuilder.toString());
                             bpc.request.setAttribute("isBundleShow","1");
                             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                             return;
