@@ -60,6 +60,11 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,10 +75,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * HalpAssessmentGuideDelegator
@@ -1948,20 +1949,19 @@ public class HalpAssessmentGuideDelegator {
         for (String item : licPremIdValue) {
             licIdValue.add(licenceInboxClient.getlicPremisesCorrelationsByPremises(item).getEntity().getLicenceId());
         }
+        String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
         for(String licId : licIdValue){
             LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
-                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                bpc.request.setAttribute("cessationError",cessationError);
+                bpc.request.setAttribute("cessationError",inbox_ack011);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
             }else {
                 if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                     if(!(migratedService.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                        cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                         ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                        bpc.request.setAttribute("cessationError",cessationError);
+                        bpc.request.setAttribute("cessationError",inbox_ack011);
                         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                         return ;
                     }
