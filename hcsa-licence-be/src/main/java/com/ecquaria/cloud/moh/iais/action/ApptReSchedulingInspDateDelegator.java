@@ -141,12 +141,8 @@ public class ApptReSchedulingInspDateDelegator {
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         apptInspectionDateDto.setActionValue(actionValue);
         apptInspectionDateDto = getValidateValue(apptInspectionDateDto, bpc);
-        ValidationResult validationResult;
-        if(processDec.equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
-            validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"specific");
-        } else {
-            validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"lead");
-        }
+        ValidationResult validationResult = WebValidationHelper.validateProperty(apptInspectionDateDto,"specific");
+
         if (validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
