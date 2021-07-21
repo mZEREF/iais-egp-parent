@@ -460,10 +460,17 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
         Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
         for(String licId : licIds){
-            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
                 map.put(licId,Boolean.FALSE);
                 return map;
+            }else {
+                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    if(!(AccessUtil.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                        map.put(licId,Boolean.FALSE);
+                        return map;
+                    }
+                }
             }
         }
         return appInboxClient.listCanCeased(licIds).getEntity();

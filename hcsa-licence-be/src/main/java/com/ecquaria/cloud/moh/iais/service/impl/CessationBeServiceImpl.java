@@ -189,7 +189,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             return appSpecifiedLicDtos;
         }
         for (String licId : licIds) {
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
                 List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
@@ -329,7 +329,7 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public boolean isGrpLicence(List<String> licIds) {
-        LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
+        LicenceDto entity = hcsaLicenceClient.getLicDtoById(licIds.get(0)).getEntity();
         return entity.isGrpLic();
     }
 

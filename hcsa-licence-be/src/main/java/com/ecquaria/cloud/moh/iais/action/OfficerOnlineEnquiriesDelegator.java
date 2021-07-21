@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -298,18 +300,23 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Boolean> licIds= cessationBeService.listResultCeased(licenceIds);
 
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
-            if(!"Inactive".equals(rfi.getLicenceStatus())){
-                try {
-                    if(rfi.getLicenceId()!=null){
-                        rfi.setIsCessation(licIds.get(rfi.getLicenceId())?1:0);
+            try {
+                if(rfi.getLicenceId()!=null){
+                    LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(rfi.getLicenceId()).getEntity();
+                    if(licIds.get(rfi.getLicenceId())){
+                        if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_ACTIVE)){
+                            rfi.setIsCessation(1);// can
+                        }else if(AccessUtil.isActiveMigrated()&&licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()!=0){
+                            rfi.setIsCessation(1);// can
+                        }else {
+                            rfi.setIsCessation(0);//not ACTIVE
+                        }
                     }else {
-                        rfi.setIsCessation(0);
+                        rfi.setIsCessation(2);// not can
                     }
-                }catch (NullPointerException e){
-                    rfi.setIsCessation(0);
                 }
-            }else {
-                rfi.setIsCessation(0);
+            }catch (Exception e){
+                rfi.setIsCessation(2);// not can
             }
         }
         String uenNo = ParamUtil.getString(request, "uen_no");
@@ -988,7 +995,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     String is = appIdSplit[1];
                     if(appIdSplit.length>2){
                         String isActive = appIdSplit[3];
-                        if ("1".equals(is)&&"Active".equals(isActive)) {
+                        if ("1".equals(is)) {
                             licIdsSet.add(appIdSplit[2]);
                         }
                         if ("Active".equals(isActive)) {
