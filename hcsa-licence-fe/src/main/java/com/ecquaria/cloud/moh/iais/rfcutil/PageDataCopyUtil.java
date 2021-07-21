@@ -356,9 +356,8 @@ public class PageDataCopyUtil {
                 appSvcChargesDto.setMaxAmount(v.getMaxAmount());
                 list.add(appSvcChargesDto);
             });
-            o.setGeneralChargesDtos(list);
+            o.setOtherChargesDtos(list);
         }
-
         return o;
     }
 
