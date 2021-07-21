@@ -154,7 +154,7 @@
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
-            $(this).find('.designation').trigger('change');
+            $(this).find('.designation').triggerHandler('change');
             checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
