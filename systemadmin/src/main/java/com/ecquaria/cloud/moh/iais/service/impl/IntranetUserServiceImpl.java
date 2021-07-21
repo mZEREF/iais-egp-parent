@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -35,12 +36,12 @@ import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.xml.sax.SAXException;
 
 /**
  * @author weilu
@@ -602,5 +603,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public List<OrganizationDto> getUenList() {
         return intranetUserClient.getUenList().getEntity();
+    }
+
+    @Override
+    public Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto) {
+        return intranetUserClient.workloadCalculation(workloadCalculationDto).getEntity();
     }
 }
