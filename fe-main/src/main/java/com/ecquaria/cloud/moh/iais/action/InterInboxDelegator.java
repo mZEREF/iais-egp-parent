@@ -57,6 +57,16 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -67,15 +77,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -103,6 +104,8 @@ public class InterInboxDelegator {
 
     @Autowired
     private MigratedService migratedService;
+
+    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
@@ -365,7 +368,9 @@ public class InterInboxDelegator {
             interInboxUserDto = initInboxDto(bpc);   // Walk around. No meaning.
         }
         SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
-        licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
+        if(interInboxUserDto != null) {
+            licParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(), true);
+        }
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
         MasterCodePair mcp_status = new MasterCodePair("lic.status", "LIC_STATUS_DESC", licStatus);
@@ -786,7 +791,8 @@ public class InterInboxDelegator {
                         });
                         if(!dtoList.isEmpty()){
                             bpc.request.getSession().setAttribute("bundleLicenceDtos",dtoList);
-                            bpc.request.setAttribute("draftByLicAppId","This following licences are bundled with this licence. Would you like to renew them as well:"+stringBuilder.toString());
+                            stringBuilder.append(twoSentences);
+                            bpc.request.setAttribute("draftByLicAppId", stringBuilder.toString());
                             bpc.request.setAttribute("isBundleShow","1");
                             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                             return;
@@ -827,20 +833,19 @@ public class InterInboxDelegator {
             for (String item : licIds) {
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
             }
+            String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
             for(String licId : licIdValue){
                 LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
                 if(licenceDto==null){
-                    cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                     ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                    bpc.request.setAttribute("cessationError",cessationError);
+                    bpc.request.setAttribute("cessationError",inbox_ack011);
                     ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                     return ;
                 }else {
                     if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                         if(!(migratedService.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
-                            cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                            bpc.request.setAttribute("cessationError",cessationError);
+                            bpc.request.setAttribute("cessationError",inbox_ack011);
                             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                             return ;
                         }
