@@ -78,7 +78,7 @@
                  join app_premises_correlation apc on apc.ID = apm.APP_PREM_CORRE_ID
                   JOIN application corr_app on corr_app.ID = apc.APPLICATION_ID and corr_app.STATUS not in ('APST009','APST050','APST006')
                  JOIN application base_app on base_app.APPLICATION_NO = corr_app.BASE_APPLICATION_NO
-                 where  apm.APPEAL_TYPE like 'APPEAL%'
+                 where  apm.APPEAL_TYPE in ('APPEAL001','APPEAL002','APPEAL006')
                 ) as misc  on misc.misc_id = app.id
                 union
                 select
