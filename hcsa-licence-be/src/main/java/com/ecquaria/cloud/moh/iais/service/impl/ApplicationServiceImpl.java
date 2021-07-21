@@ -1093,15 +1093,17 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
                     ) {
-
-                        vehicleFlag = (fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "")
-                                + InspectionConstants.SWITCH_ACTION_VIEW;
+                           return InspectionConstants.SWITCH_ACTION_VIEW;
                     }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
+                         if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(taskDto.getRoleId())){
+                             return  InspectionConstants.SWITCH_ACTION_VIEW;
+                         }
                         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                         if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
                             vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                         } else {
-                            vehicleFlag = InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_" + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
+                            vehicleFlag = prefix + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
                         }
                     }
                 }
