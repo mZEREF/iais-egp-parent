@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class AppSelectSvcDto implements Serializable {
 
-    private static final long serialVersionUID = -5042358390403799455L;
+    private static final long serialVersionUID = 1L;
 
 
 //    private List<String> baseSvcIds;
