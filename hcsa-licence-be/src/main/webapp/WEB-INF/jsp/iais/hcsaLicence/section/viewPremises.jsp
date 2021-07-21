@@ -542,7 +542,7 @@
                       </div>
                       <div class="col-md-6" style="padding: 0px">
                         <span class="oldVal" style="display: none" attr="${oldOp.selectAllDay && not empty oldOp.selectValList}">
-                           <c:if test="${oldOp.selectAllDay && oldOp.selectValList}">
+                           <c:if test="${oldOp.selectAllDay && not empty oldOp.selectValList}">
                              <div class="form-check active">
                               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                             </div>
