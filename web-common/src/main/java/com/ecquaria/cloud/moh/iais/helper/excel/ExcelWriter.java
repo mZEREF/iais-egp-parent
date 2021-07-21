@@ -8,8 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.sz.commons.util.DateUtil;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -25,6 +23,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
+
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 
 
 /**
@@ -71,7 +72,7 @@ public final class ExcelWriter {
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
         File out = MiscUtil.generateFile(fileName);
-        try (OutputStream fileOutputStream = new FileOutputStream(out)) {
+        try (OutputStream fileOutputStream = newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
             startInternal(workbook);
@@ -98,7 +99,7 @@ public final class ExcelWriter {
         String path = fileName;
         File out = MiscUtil.generateFile(path);
 
-        try (InputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
+        try (InputStream fileInputStream = newInputStream(file.toPath()); OutputStream outputStream = newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal(workbook);

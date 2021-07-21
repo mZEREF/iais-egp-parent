@@ -18,7 +18,7 @@ import java.util.List;
 
 @Slf4j
 public class SelectTag extends DivTagSupport {
-    private static final long serialVersionUID = -4091387584439337660L;
+    private static final long serialVersionUID = 6260848401352930720L;
     private static final String ENDOPTION  = "</option>";
     private String name;
     private String options;
