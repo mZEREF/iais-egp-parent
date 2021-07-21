@@ -115,8 +115,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     public void deleteUnZipFile() {
         InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
         String download = inspRecJobFieldDto.getDownload();
-        String compressPath = inspRecJobFieldDto.getDownload();
-        String zipFile = inspRecJobFieldDto.getDownload();
+        String compressPath = inspRecJobFieldDto.getCompressPath();
+        String zipFile = inspRecJobFieldDto.getZipFile();
         File downloadFile = MiscUtil.generateFile(download);
         File zipFiles = MiscUtil.generateFile(zipFile);
         File compressPathFile = MiscUtil.generateFile(compressPath);
@@ -234,7 +234,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     private String unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
         InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
-        String compressPath = inspRecJobFieldDto.getDownload();
+        String compressPath = inspRecJobFieldDto.getCompressPath();
         if(!zipEntry.getName().endsWith(File.separator)) {
             String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
             String reportFilePath = realPath.substring(realPath.lastIndexOf(File.separator,realPath.lastIndexOf(File.separator) - 1) + 1);
