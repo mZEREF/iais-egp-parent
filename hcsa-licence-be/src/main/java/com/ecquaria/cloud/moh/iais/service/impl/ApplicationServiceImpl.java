@@ -1103,7 +1103,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                             vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                         } else {
                             String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
-                            vehicleFlag = prefix + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            vehicleFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
                         }
                      }
                 }
