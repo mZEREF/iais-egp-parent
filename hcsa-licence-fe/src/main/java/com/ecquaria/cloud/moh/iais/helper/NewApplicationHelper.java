@@ -81,8 +81,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * NewApplicationHelper
@@ -93,6 +91,23 @@ import java.util.Set;
 
 @Slf4j
 public class NewApplicationHelper {
+
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, Boolean needNewLicNo, int selfAssMtFlag) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+            return;
+        }
+        if (Boolean.FALSE.equals(needNewLicNo)) {
+            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+        } else if (Boolean.TRUE.equals(needNewLicNo)) {
+            appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
+        }
+        appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
+            if (needNewLicNo != null) {
+                appGrpPremisesDto.setNeedNewLicNo(needNewLicNo);
+            }
+            appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
+        });
+    }
 
     public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
         Integer maxFileIndex = 0;
