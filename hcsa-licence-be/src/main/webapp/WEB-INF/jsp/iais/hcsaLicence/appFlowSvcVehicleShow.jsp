@@ -99,7 +99,7 @@
       if('other' == recommendation){
           $('.vehicle-approve').removeAttr("disabled","disabled");
           $('.vehicle-reject').removeAttr("disabled","disabled");
-      } else if('reject' == recommendation) {
+      } else if('reject' == recommendation || 'decisionReject' == recommendation) {
           $('.vehicle-approve').attr("disabled","disabled");
           $('.vehicle-reject').attr("disabled","disabled");
       }else{
