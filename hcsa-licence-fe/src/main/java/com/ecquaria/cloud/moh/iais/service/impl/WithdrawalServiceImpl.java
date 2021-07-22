@@ -168,7 +168,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             applicationFeClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
             h.setNewApplicationNo(applicationDtoList.get(0).getApplicationNo());
-            applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
             /**
              *
              */
@@ -217,11 +216,13 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(),e);
             }
             if (recallApplicationDto.getResult()){
-                List<ApplicationDto> updateWithdrawApp = IaisCommonUtils.genNewArrayList();
-                newApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-                updateWithdrawApp.add(newApplication);
-                applicationFeClient.updateApplicationList(updateWithdrawApp);
+                for (ApplicationDto app:newAppSubmissionDto.getApplicationDtos()
+                     ) {
+                    app.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                }
             }
+            newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
         }
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
@@ -480,7 +481,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
         setRiskToDto(appSubmissionDto);
     }
 
