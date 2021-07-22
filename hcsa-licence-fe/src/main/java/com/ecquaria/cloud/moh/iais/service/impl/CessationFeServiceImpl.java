@@ -298,14 +298,14 @@ public class CessationFeServiceImpl implements CessationFeService {
             return appSpecifiedLicDtos;
         }
         for (String licId : licIds) {
-            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            LicenceDto licenceDto = licenceClient.getLicDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
                 List<String> specLicIds = licenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     for (String specLicId : specLicIds) {
                         AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto specLicenceDto = licenceClient.getLicBylicId(specLicId).getEntity();
+                        LicenceDto specLicenceDto = licenceClient.getLicDtoById(specLicId).getEntity();
                         if (specLicenceDto != null) {
                             String specLicenceNo = specLicenceDto.getLicenceNo();
                             String specSvcName = specLicenceDto.getSvcName();
@@ -336,7 +336,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             List<String> specLicIds = licenceClient.getActSpecIdByActBaseId(licId).getEntity();
-            LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+            LicenceDto licenceDto = licenceClient.getLicDtoById(licId).getEntity();
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
