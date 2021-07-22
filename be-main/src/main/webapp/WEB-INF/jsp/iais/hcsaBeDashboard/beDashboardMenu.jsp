@@ -12,7 +12,7 @@
                   'PSO' eq iais_Login_User_Info_Attr.curRoleId}">
       <div class="dashboard-multiple">
         <div class="dashboard-tile-item dashboard-multiple">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'reply' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardApplicantReply()">
               <p class="dashboard-txt"> Tasks Pending Applicant's Reply</p>
               <p class="dashboard-txt" id="pendingApiNumDiv" style="font-size:18px;text-align:center"></p>
@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'kpi' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardKpiTask()">
               <p class="dashboard-txt"> New Application Tasks Exceeding x Days</p>
               <p class="dashboard-txt" id="kpiNumDiv" style="font-size:18px;text-align:center"></p>
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'renew' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardRenewalExpiry()">
               <p class="dashboard-txt"> Renewal Tasks Nearing Expiry Date</p>
               <p class="dashboard-txt" id="renewExpDiv" style="font-size:18px;text-align:center"></p>
@@ -36,7 +36,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'wait' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardWaitApproval()">
               <p class="dashboard-txt"> Tasks waiting for Approval</p>
               <p class="dashboard-txt" id="waitNumDiv" style="font-size:18px;text-align:center"></p>
@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'common' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardCommonPool()">
               <p class="dashboard-txt"> Tasks Not Assigned</p>
               <p class="dashboard-txt" id="commonNumDiv" style="font-size:18px;text-align:center"></p>
@@ -65,7 +65,7 @@
                     }">
       <div class="dashboard-multiple">
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'reply' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardApplicantReply()">
               <p class="dashboard-txt"> Tasks Pending Applicant's Reply</p>
               <p class="dashboard-txt" id="pendingApiNumDiv" style="font-size:18px;text-align:center"></p>
@@ -73,7 +73,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'kpi' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardKpiTask()">
               <p class="dashboard-txt"> New Application Tasks Exceeding x Days</p>
               <p class="dashboard-txt" id="kpiNumDiv" style="font-size:18px;text-align:center"></p>
@@ -81,7 +81,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'renew' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardRenewalExpiry()">
               <p class="dashboard-txt"> Renewal Tasks Nearing Expiry Date</p>
               <p class="dashboard-txt" id="renewExpDiv" style="font-size:18px;text-align:center"></p>
@@ -89,7 +89,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'wait' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardWaitApproval()">
               <p class="dashboard-txt"> Tasks waiting for Approval</p>
               <p class="dashboard-txt" id="waitNumDiv" style="font-size:18px;text-align:center"></p>
@@ -97,7 +97,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'common' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardCommonPool()">
               <p class="dashboard-txt"> Tasks Not Assigned</p>
               <p class="dashboard-txt" id="commonNumDiv" style="font-size:18px;text-align:center"></p>
@@ -105,7 +105,7 @@
           </div>
         </div>
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'group' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardSupervisorPool()">
               <p class="dashboard-txt"> Tasks Assigned to My Team</p>
               <p class="dashboard-txt" id="groupNumDiv" style="font-size:18px;text-align:center"></p>
@@ -117,7 +117,7 @@
     <c:when test="${'BROADCAST' eq iais_Login_User_Info_Attr.curRoleId}">
       <div class="dashboard-multiple">
         <div class="dashboard-tile-item">
-          <div class="dashboard-tile">
+          <div class="dashboard-tile" <c:if test="${'common' eq dashSwitchActionValue}">style="background:-webkit-linear-gradient(left, #C2E7FE 0%, #FFFFFF 100%)"</c:if>>
             <a data-tab="#" onclick="javascript:dashboardCommonPool()">
               <p class="dashboard-txt"> Tasks Not Assigned</p>
               <p class="dashboard-txt" id="commonNumDiv" style="font-size:18px;text-align:center"></p>
