@@ -133,6 +133,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -3758,5 +3759,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
         // CR: Licensee Details
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
+        // clear selectLicence
+        Enumeration<?> names = session.getAttributeNames();
+        if (names != null) {
+            while (names.hasMoreElements()) {
+                String name = (String) names.nextElement();
+                if (name.startsWith("selectLicence")) {
+                    session.removeAttribute(name);
+                }
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -38,6 +39,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
     private RequestForChangeService requestForChangeService;
     @Override
     public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
+        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setServiceEdit(true);
         appEditSelectDto.setPremisesEdit(false);
@@ -46,7 +48,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         if (appSvcRelatedInfoDto == null || oldAppSvcRelatedInfoDto == null) {
-            return null;
+            return appSubmissionDtoList;
         }
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
@@ -87,7 +89,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         licenceIdList.addAll(licenceId);
         licenceIdList.remove(appSubmissionDto.getLicenceId());
-        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         for (String string : licenceIdList) {
             AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
             if (appSubmissionDtoByLicenceId == null || appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList() == null) {
@@ -148,6 +149,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 }
             }
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
+            appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setPartPremise(false);
             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
@@ -156,12 +158,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAutoRfc(true);
             appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-            for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
-                appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                appGrpPremisesDto.setSelfAssMtFlag(4);
-            }
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+            appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, Boolean.FALSE,
+                    ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 
