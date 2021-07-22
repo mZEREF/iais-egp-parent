@@ -586,6 +586,7 @@
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             var selectValue = $("[name='decisionValues']").val();
+            appFlowVehicleShowRadio(selectValue);
             if(${isAppealType || isWithDrawal || isCessation}){
                 $('#appealRecommendation').addClass('hidden');
                 if("decisionApproval" == selectValue){
