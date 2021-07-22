@@ -199,8 +199,6 @@ public class CessationApplicationFeDelegator {
 
     public void valiant(BaseProcessClass bpc) throws IOException {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         if ("back".equals(action_type)) {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
@@ -264,6 +262,8 @@ public class CessationApplicationFeDelegator {
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_confirm","cessation");
