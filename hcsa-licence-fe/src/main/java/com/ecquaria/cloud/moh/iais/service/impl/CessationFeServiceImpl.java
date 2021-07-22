@@ -583,7 +583,7 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public boolean isGrpLicence(List<String> licIds) {
-        LicenceDto entity = licenceClient.getLicBylicId(licIds.get(0)).getEntity();
+        LicenceDto entity = licenceClient.getLicDtoById(licIds.get(0)).getEntity();
         return entity.isGrpLic();
     }
 
