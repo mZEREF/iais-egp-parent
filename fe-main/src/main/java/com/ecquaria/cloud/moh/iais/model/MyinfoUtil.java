@@ -222,9 +222,11 @@ public class MyinfoUtil {
 		return  map;
 	}
 
-	public static String getAuthoriseApiUrl(String authApiUrl,String clientId,String attributes,String purpose,String state,String redirectUrl){
-		String authoriseUrl = authApiUrl + "?client_id=" + clientId +
+	public static String getAuthoriseApiUrl(String authApiUrl,String nric,String clientId,String attributes,String spEsvcId,String purpose,String state,String redirectUrl){
+		String authoriseUrl = authApiUrl + "/" + nric + "/"+
+		         "?client_id=" + clientId +
 				"&attributes=" + attributes +
+				"&sp_esvcId=" + spEsvcId +
 				"&purpose=" + purpose +
 				"&state=" + state +
 				"&redirect_uri=" + redirectUrl;
@@ -247,7 +249,7 @@ public class MyinfoUtil {
 	}
 
 
-	public static  String generateAuthorizationHeaderForMyInfo(String method, String clientId, String attribute, String privateKeyPEM,String appId,String requestUrl,String takenType,String validToken){
+	public static  String generateAuthorizationHeaderForMyInfo(String method, String clientId, String attribute, String privateKeyPEM,String spEsvcId,String requestUrl,String takenType,String validToken){
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		String nonceValue;
 		try{
@@ -258,7 +260,7 @@ public class MyinfoUtil {
 			nonceValue = timestamp;
 		}
 		TreeMap<String, String> baseParams = new TreeMap<>();
-		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.SP_ESVCID + "=", spEsvcId);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
@@ -269,14 +271,15 @@ public class MyinfoUtil {
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
-		authHeaderParams.put(AcraConsts.APP_ID + "=", appId);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", spEsvcId);
 		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
 	}
 
-	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
-		TreeMap<String, String> baseParams = new TreeMap<>();
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri,String privateKeyContent){
+		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
+    	TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
 		baseParams.put(AcraConsts.CODE + "=", code);
 		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
@@ -291,9 +294,9 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
-	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri,String privateKeyContent){
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
-		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
+		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri,privateKeyContent);
 		ResponseEntity<MyInfoTakenDto> resEntity;
 		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
 		HttpStatus httpStatus;
