@@ -76,9 +76,10 @@
           </div>
 
           <div class="form-group">
-            <label class="col-xs-4 col-md-2 control-label" >Risk Level</label>
+            <label class="col-xs-4 col-md-2 control-label" >Status</label>
             <div class="col-xs-12 col-md-8 col-lg-9">
-              <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status"></iais:select>
+              <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                           firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004,DRAFT001"/>
             </div>
           </div>
 

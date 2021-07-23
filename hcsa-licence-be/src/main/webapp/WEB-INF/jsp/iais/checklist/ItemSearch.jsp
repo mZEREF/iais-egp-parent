@@ -20,7 +20,9 @@
   .col-md-10 {
     width: 100%;
   }
-
+  td {
+    word-wrap: break-word;
+  }
 </style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
@@ -73,7 +75,7 @@
             <iais:field value="Status" ></iais:field>
             <div class="col-xs-5 col-md-3">
               <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                           firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004" value="${status}"></iais:select>
+                           firstOption="Please Select" filterValue="CMSTAT002,CMSTAT004,DRAFT001" value="${status}"/>
             </div>
           </div>
 
