@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -75,7 +76,6 @@ public class InsReportDelegator {
     }
     public void clearSession(HttpServletRequest request ){
         ParamUtil.setSessionAttr(request, "insRepDto", null);
-        ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(request,"askType",null);
         ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,null);
         vehicleCommonController.clearVehicleInformationSession(request);
@@ -89,7 +89,7 @@ public class InsReportDelegator {
             taskId = ParamUtil.getMaskedString(request,"taskId");
         }catch(MaskAttackException e){
             log.error(e.getMessage(),e);
-            bpc.response.sendRedirect("https://"+request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            IaisEGPHelper.redirectUrl(bpc.response, "https://"+request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_REPORT);
         TaskDto taskDto = taskService.getTaskById(taskId);

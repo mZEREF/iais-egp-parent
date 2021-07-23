@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -1609,7 +1610,7 @@ public class HalpAssessmentGuideDelegator {
                         .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
                 if(StringUtil.isEmpty(renewErrorMessage.toString())){
@@ -1639,7 +1640,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
                     .append("?licenseView=").append(type);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }catch (Exception e){
             log.info(e.getMessage());
         }
@@ -1679,7 +1680,7 @@ public class HalpAssessmentGuideDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?entryType=assessment");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }catch (Exception e){
             log.info(e.getMessage());
         }
@@ -1714,7 +1715,7 @@ public class HalpAssessmentGuideDelegator {
                         .append("?licenceId=")
                         .append(MaskUtil.maskValue("licenceId",licIdValue));
                 String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             }
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
@@ -1995,7 +1996,7 @@ public class HalpAssessmentGuideDelegator {
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
     }
 
@@ -2040,7 +2041,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("&withdrawAppNo=")
                     .append(MaskUtil.maskValue("withdrawAppNo", appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
 
     }
@@ -2091,7 +2092,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }else if(InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -2099,7 +2100,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }else if(InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -2107,7 +2108,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
         else {
             StringBuilder url = new StringBuilder();
@@ -2116,7 +2117,7 @@ public class HalpAssessmentGuideDelegator {
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }
     }
 
@@ -2126,7 +2127,7 @@ public class HalpAssessmentGuideDelegator {
                 .append(bpc.request.getServerName())
                 .append(InboxConst.URL_MAIN_WEB_MODULE+"IaisSubmissionData").append("?selfAssessmentGuide=true");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void subDateMoh(BaseProcessClass bpc) throws IOException {
@@ -2176,7 +2177,7 @@ public class HalpAssessmentGuideDelegator {
                         .append("?personnelNo=")
                         .append(MaskUtil.maskValue("personnelNo", id));
                 String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl2);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl2);
             }
         }
         if(licIdValue != null){
@@ -2221,7 +2222,7 @@ public class HalpAssessmentGuideDelegator {
                             .append('=')
                             .append(MaskUtil.maskValue("licId"+hiddenIndex, licIdValue));
                     String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url3.toString(), bpc.request);
-                    bpc.response.sendRedirect(tokenUrl2);
+                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl2);
                 }
                 else{
                     StringBuilder url = new StringBuilder();
@@ -2231,7 +2232,7 @@ public class HalpAssessmentGuideDelegator {
                             .append("?licenceId=")
                             .append(MaskUtil.maskValue("licenceId",licIdValue));
                     String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                    bpc.response.sendRedirect(tokenUrl);
+                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
                 }
             }else{
                 if ("amendLic2".equals(action)){
@@ -2267,7 +2268,7 @@ public class HalpAssessmentGuideDelegator {
         url.append(InboxConst.URL_HTTPS).append(request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohFeAdminUserManagement");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void updateLicenceSort(BaseProcessClass bpc) {

@@ -143,6 +143,13 @@ public final class IaisEGPHelper extends EGPHelper {
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
 
     /**
+     * @author: Shicheng on 2021/07/16 15:03
+     */
+    public static void redirectUrl(HttpServletResponse response, String url) throws IOException {
+        response.sendRedirect(url);
+    }
+
+    /**
      * @author: Shicheng on 2020/11/03 13:49
      * @description: encryption Prs the signature
      */
@@ -289,19 +296,6 @@ public final class IaisEGPHelper extends EGPHelper {
         log.info(StringUtil.changeForLog("isLogin the  result is -->:"+result));
         log.info(StringUtil.changeForLog("Judge the if login end ..."));
         return result;
-    }
-
-
-
-    public static String getRootPath() {
-        String urlStr = IaisEGPHelper.class.getResource("").toString();
-        String serverPath = urlStr.substring(urlStr.lastIndexOf("file:/") + 6).replaceAll("%20", " ");
-        String path = "";
-        if (serverPath.lastIndexOf("WEB-INF") > 0) {
-            path = serverPath.substring(0, serverPath.lastIndexOf("WEB-INF"));
-        }
-
-        return path;
     }
 
     public static AuditTrailDto getCurrentAuditTrailDto() {
@@ -464,9 +458,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
     /**
     * @description: format date
-    * @param: 
-    * @return: 
-    * @author: yichen 
+    * @param:
+    * @return:
+    * @author: yichen
     */
     public static Date parseToDate(String val) {
         if(StringUtils.isEmpty(val)){
@@ -552,7 +546,7 @@ public final class IaisEGPHelper extends EGPHelper {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-            response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(response, tokenUrl);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -573,10 +567,10 @@ public final class IaisEGPHelper extends EGPHelper {
     public static void retrigerEicMethods(List<EicRequestTrackingDto> trackList) {
         trackList.forEach(e -> {
             try {
-                Class actCls = Class.forName(e.getActionClsName());
+                Class actCls = MiscUtil.getClassFromName(e.getActionClsName());
                 Object actObj = SpringContextHelper.getContext().getBean(actCls);
                 Method med = actCls.getMethod("aaaa");
-                Class dtoCls = Class.forName(e.getDtoClsName());
+                Class dtoCls = MiscUtil.getClassFromName(e.getDtoClsName());
                 Object dto = JsonUtil.parseToObject(e.getDtoObject(), dtoCls);
                 if (med != null) {
                     med.invoke(actObj, dto);

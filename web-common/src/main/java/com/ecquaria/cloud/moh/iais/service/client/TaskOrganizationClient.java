@@ -48,8 +48,8 @@ public interface TaskOrganizationClient {
     FeignResponseEntity<List<OrgUserDto>> getUsersByWorkGroupNameExceptLeader(@PathVariable(name = "workGroupId") String workGroupId,
                                                                   @PathVariable(name = "status") String staus);
 
-    @RequestMapping(path = "/iais-task/taskscores/{workGroupId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> getTaskScores(@PathVariable(name = "workGroupId") String workGroupId);
+    @RequestMapping(path = "/iais-task/taskscores/{workGroupId}/{days}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskScores(@PathVariable(name = "workGroupId") String workGroupId,@PathVariable(name = "days") String days);
 
     @GetMapping(value = "/iais-orgUserRole/user-by-id/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrgUserDto> getUserById(@PathVariable("userId") String userId);

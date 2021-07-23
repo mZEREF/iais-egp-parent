@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -226,5 +227,13 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     @Override
     public FeignResponseEntity<List<OrgUserDto>> searchInActiveBeUser() {
         return null;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> workloadCalculation(WorkloadCalculationDto workloadCalculationDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

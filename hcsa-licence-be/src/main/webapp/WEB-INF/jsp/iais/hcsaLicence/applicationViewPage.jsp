@@ -514,6 +514,9 @@
         recommendationRemoveRequired();
 
         loadTcuFunction();
+        //vehicle
+        var recommendation = $("[name='recommendation']").val();
+        appFlowVehicleShowRadio(recommendation);
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
@@ -583,6 +586,7 @@
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             var selectValue = $("[name='decisionValues']").val();
+            appFlowVehicleShowRadio(selectValue);
             if(${isAppealType || isWithDrawal || isCessation}){
                 $('#appealRecommendation').addClass('hidden');
                 if("decisionApproval" == selectValue){

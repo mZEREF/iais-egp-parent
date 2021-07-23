@@ -22,15 +22,14 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.lang.reflect.Field;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
 
 @Service
 @Slf4j
@@ -38,7 +37,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
 
     private final static String SYSTEM_PARAM_EDIT_OFFSET = "cache_system_param_edit_offset";
 
-    private HashMap<String, Long> propertiesBitIndex =  IaisCommonUtils.genNewHashMap();
+    private static final ConcurrentHashMap<String, Long> propertiesBitIndex =  new ConcurrentHashMap(10);
 
     @Autowired
     private SystemClient systemClient;
@@ -150,9 +149,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
                     if (StringUtil.isNotEmpty(propertyKey)){
                         propertyKey = propertyKey.replace("${", "").replace("}", "");
                         log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
-                        synchronized (this){
-                            propertiesBitIndex.put(propertyKey, index++);
-                        }
+                        propertiesBitIndex.put(propertyKey, index++);
                     }
                 }
             }

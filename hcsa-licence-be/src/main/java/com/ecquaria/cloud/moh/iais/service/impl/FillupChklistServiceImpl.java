@@ -1132,7 +1132,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public void getRateOfSpecCheckList(List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFillCheckListDto commonDto,InspectionFDtosDto serListDto, AdCheckListShowDto adchklDto) {
         getRateOfCheckList(serListDto,adchklDto,commonDto);
         if(serListDto == null) return;
-        int totalNcNum = serListDto.getGeneralNc();
+        int totalNcNum = serListDto.getTotalNcNum();
        if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
                 InspectionFDtosDto inspectionFDtosDto = MiscUtil.transferEntityDto(inspectionSpecServiceDto,InspectionFDtosDto.class);

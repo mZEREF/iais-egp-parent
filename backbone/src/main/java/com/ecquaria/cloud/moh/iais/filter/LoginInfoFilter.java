@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class LoginInfoFilter implements Filter {
                     && uri.indexOf("/INTERNET/Payment") < 0  && uri.indexOf("/INTERNET/InfoDo") < 0) {
                 if (loginContext == null) {
                     log.info(StringUtil.changeForLog("No Login Context ===> " + uri));
-                    ((HttpServletResponse) response).sendRedirect("https://" + request.getServerName() + "/main-web");
+                    IaisEGPHelper.redirectUrl((HttpServletResponse) response, "https://" + request.getServerName() + "/main-web");
                 }
             }
         }

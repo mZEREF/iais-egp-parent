@@ -173,7 +173,8 @@ public class MyInfoAjax {
 		String	clientId = ConfigHelper.getString("myinfo.taken.client.id");
 		String clientSecret =  ConfigHelper.getString("myinfo.taken.client.secret");
 		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
-		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
+		String privateKeyContent = ConfigHelper.getString("myinfo.taken.private.key.content");
+		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri,privateKeyContent);
 		return myInfoTakenDto;
 	}
 	public MyInfoDto getMyInfo(String NircNum, HttpServletRequest request){
@@ -320,17 +321,18 @@ public class MyInfoAjax {
 		String authApiUrl                   = ConfigHelper.getString("myinfo.authorise.url");
 		String	clientId 					= ConfigHelper.getString("myinfo.authorise.client.id");
 		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
-		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),purpose,nric,redirectUri);
+		String spEsvcId                     = ConfigHelper.getString("myinfo.authorise.sp.esvcId");
+		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,nric,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),spEsvcId,purpose,nric,redirectUri);
 	}
 
 	public MyInfoDto getMyInfoByTrue(String nric,String takenType,String taken){
 		log.info("-------getMyInfoByTrue start ---------");
 		String keyStore = ConfigHelper.getString("myinfo.person.priclientkey");
 		String	clientId = ConfigHelper.getString("myinfo.person.client.id");
-		String appid = ConfigHelper.getString("myinfo.application.id");
+		String spEsvcId = ConfigHelper.getString("myinfo.person.sp.esvcId");
 		String  uri = ConfigHelper.getString("myinfo.person.url")+nric+'/';
 		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
-		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,appid,uri,takenType,taken);
+		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,spEsvcId,uri,takenType,taken);
 		Map <String,Object> param = IaisCommonUtils.genNewHashMap();
 		param.put(AcraConsts.CLIENT_ID, clientId);
 		param.put(AcraConsts.ATTRIBUTE, attrs);

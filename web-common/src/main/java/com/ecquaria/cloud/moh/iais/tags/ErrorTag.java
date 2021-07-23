@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public final class ErrorTag extends DivTagSupport {
-    private static final long serialVersionUID = 2507648507715155034L;
+    private static final long serialVersionUID = 3664219808659283332L;
 
     private boolean canClose;
 

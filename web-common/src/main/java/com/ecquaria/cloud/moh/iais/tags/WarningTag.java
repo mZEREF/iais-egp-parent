@@ -13,8 +13,7 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public final class WarningTag extends DivTagSupport {
-
-    private static final long serialVersionUID = 2507648507715155034L;
+    private static final long serialVersionUID = 4188328389917618486L;
 
     private boolean canClose;
 

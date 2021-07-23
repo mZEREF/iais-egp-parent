@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,8 +35,11 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -46,12 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -249,10 +245,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         String randomStr = IaisEGPHelper.generateRandomString(6);
         String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
+        String chanQue = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
+        String chanAn = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
 
         clientUser.setPassword(pwd);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
+        clientUser.setPasswordChallengeQuestion(chanQue);
+        clientUser.setPasswordChallengeAnswer(chanAn);
 
         Date activeDate = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -324,8 +322,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
 
                 clientUser.setPassword(pwd);
-                clientUser.setPasswordChallengeQuestion("A");
-                clientUser.setPasswordChallengeAnswer("A");
+                String chanQue = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+                String chanAn = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
+                clientUser.setPasswordChallengeQuestion(chanQue);
+                clientUser.setPasswordChallengeAnswer(chanAn);
 
                 Date activeDate = new Date();
                 Calendar calendar = Calendar.getInstance();

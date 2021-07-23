@@ -12,7 +12,7 @@ import java.util.Map;
 public class AppDeclarationDocShowPageDto implements Serializable {
 
 
-    private static final long serialVersionUID = 8904579618361250024L;
+    private static final long serialVersionUID = 7257508164328788691L;
     private int fileMaxIndex;
     private Map<String,File> pageShowFileMap;
     private List<PageShowFileDto> pageShowFileDtos;

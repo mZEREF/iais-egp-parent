@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -145,7 +146,7 @@ public class AppealDelegator {
             url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             try {
-                bpc.response.sendRedirect(tokenUrl);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             } catch (IOException e) {
               log.error(e.getMessage(),e);
             }
@@ -195,7 +196,7 @@ public class AppealDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     public void start(BaseProcessClass bpc){

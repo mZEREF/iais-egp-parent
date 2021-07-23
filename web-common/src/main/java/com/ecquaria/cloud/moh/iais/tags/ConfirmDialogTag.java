@@ -17,7 +17,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 @Slf4j
 public class ConfirmDialogTag extends TagSupport {
-    private static final long serialVersionUID = -712640936845353103L;
+    private static final long serialVersionUID = 3589210932603820805L;
 
     private String msg;
     private String callBack;

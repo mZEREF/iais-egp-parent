@@ -1001,4 +1001,11 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppIdAndStatus(String licAppId, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

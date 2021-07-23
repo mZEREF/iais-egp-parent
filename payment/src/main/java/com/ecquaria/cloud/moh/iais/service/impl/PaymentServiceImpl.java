@@ -14,9 +14,9 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Date;
 
 /**
  * @author weilu
@@ -51,9 +49,6 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentClient paymentClient;
     @Autowired
     private PaymentAppGrpClient paymentAppGrpClient;
-
-    @Qualifier(value = "iaisRestTemplate")
-    private RestTemplate restTemplate=new RestTemplate();
 
     @Override
     public void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception {
@@ -143,6 +138,7 @@ public class PaymentServiceImpl implements PaymentService {
         headers.set("authorization-Secondary", signature2.authorization());
         HttpEntity<String> entity = new HttpEntity<String>(soapiToGW,
                 headers);
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response =
                 restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, String.class);
         log.info(StringUtil.changeForLog("S2S response status : " + response.getStatusCodeValue()));

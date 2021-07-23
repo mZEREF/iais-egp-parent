@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -113,7 +114,7 @@ public class CessationApplicationFeDelegator {
         } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
             try {
-                bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
                 return;
@@ -198,13 +199,11 @@ public class CessationApplicationFeDelegator {
 
     public void valiant(BaseProcessClass bpc) throws IOException {
         String action_type = ParamUtil.getRequestString(bpc.request, "crud_action_type");
-        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
-        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         if ("back".equals(action_type)) {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
@@ -263,6 +262,8 @@ public class CessationApplicationFeDelegator {
 
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
+        ParamUtil.setRequestAttr(bpc.request, "printFlag","Y");
+        ParamUtil.setRequestAttr(bpc.request, "viewPrint","Y");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_request","cessation");
         ParamUtil.setRequestAttr(bpc.request,"declaration_page_confirm","cessation");
@@ -304,7 +305,7 @@ public class CessationApplicationFeDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     /*

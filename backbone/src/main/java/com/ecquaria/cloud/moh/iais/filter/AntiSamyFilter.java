@@ -59,7 +59,7 @@ public class AntiSamyFilter implements Filter {
     private AntiSamy getAntiSamy(String policyFile) {
         AntiSamy as = null;
         try {
-            URL url = this.getClass().getClassLoader().getResource(policyFile);
+            URL url = Thread.currentThread().getContextClassLoader().getResource(policyFile);
             Policy policy = Policy.getInstance(url.getFile());
             as = new AntiSamy(policy);
         } catch (PolicyException e) {

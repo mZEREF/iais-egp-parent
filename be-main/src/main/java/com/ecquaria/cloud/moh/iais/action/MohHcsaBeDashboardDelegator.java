@@ -81,6 +81,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
@@ -528,7 +529,7 @@ public class MohHcsaBeDashboardDelegator {
     public void hcsaBeDashboardCommonPool(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the hcsaBeDashboardCommonPool start ...."));
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
-        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes())) {
+        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes(StandardCharsets.UTF_8))) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
         } else {
             String switchAction = ParamUtil.getRequestString(bpc.request, "switchAction");
@@ -681,7 +682,7 @@ public class MohHcsaBeDashboardDelegator {
         }catch (MaskAttackException e){
             log.error(e.getMessage(), e);
             try{
-                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe){
                 log.error(ioe.getMessage(), ioe);
                 return taskId;
@@ -872,46 +873,46 @@ public class MohHcsaBeDashboardDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         String dashSwitchActionValue = (String)ParamUtil.getSessionAttr(bpc.request, "dashSwitchActionValue");
         String dashActionValue = (String)ParamUtil.getRequestAttr(bpc.request, "dashActionValue");
-        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes())) {
+        if(!StringUtil.isEmpty(dashActionValue) && MessageDigest.isEqual(dashActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_BACK.getBytes(StandardCharsets.UTF_8))) {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
             SearchResult<DashComPoolQueryDto> searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
             SearchResult<DashKpiPoolQuery> searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
             SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchParam);
             SearchResult<DashWorkTeamQueryDto> searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashWorkTeamOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchParam);
             SearchResult<DashReplyQueryDto> searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashReplyOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchParam);
             SearchResult<DashWaitApproveQueryDto> searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashWaitApproveOtherData(searchResult);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
-        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes())) {
+        } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes(StandardCharsets.UTF_8))) {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchParam);
             SearchResult<DashRenewQueryDto> searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashRenewOtherData(searchResult);
@@ -1054,8 +1055,8 @@ public class MohHcsaBeDashboardDelegator {
                 log.info(StringUtil.changeForLog("The stageId is-->;"+ stageId));
                 if(appPremisesRoutingHistoryDto1 != null){
                     TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId, TaskConsts.TASK_TYPE_MAIN_FLOW,
-                            taskDto.getRefNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
-                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                            taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING,appPremisesRoutingHistoryDto1.getWrkGrpId(),
+                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                     //delete workgroup
@@ -1317,7 +1318,7 @@ public class MohHcsaBeDashboardDelegator {
         }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
+                taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING,wrkGpId, userId,new Date(),null,0,TaskUrl,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 

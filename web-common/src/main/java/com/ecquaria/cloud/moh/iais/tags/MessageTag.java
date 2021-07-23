@@ -20,7 +20,7 @@ import java.util.Objects;
  * @author      suocheng
  */
 public final class MessageTag extends DivTagSupport {
-    private static final long serialVersionUID = 4071660568914826715L;
+    private static final long serialVersionUID = 1768034612249219325L;
 
     private String key;
     private String params;
@@ -37,6 +37,7 @@ public final class MessageTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
+        super.init();
         setKey(null);
         setParams(null);
         setEscape(true);

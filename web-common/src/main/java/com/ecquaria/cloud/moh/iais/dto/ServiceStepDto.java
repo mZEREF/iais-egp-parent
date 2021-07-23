@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ServiceStepDto implements Serializable {
-    private static final long serialVersionUID = 2875642266190696635L;
+    private static final long serialVersionUID = -3451885830827572551L;
     private List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos;
     private HcsaServiceStepSchemeDto previousStep;
     private HcsaServiceStepSchemeDto currentStep;

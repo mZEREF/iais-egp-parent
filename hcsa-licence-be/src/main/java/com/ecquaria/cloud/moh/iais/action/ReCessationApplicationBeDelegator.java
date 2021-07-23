@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -101,7 +102,7 @@ public class ReCessationApplicationBeDelegator {
             taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
-            bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+            IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
         }
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_CESSATION, AuditTrailConsts.FUNCTION_CESSATION);
         TaskDto taskDto = taskService.getTaskById(taskId);
@@ -180,7 +181,7 @@ public class ReCessationApplicationBeDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries/1/check");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     /*

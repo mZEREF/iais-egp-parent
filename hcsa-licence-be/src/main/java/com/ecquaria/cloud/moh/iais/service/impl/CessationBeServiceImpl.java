@@ -635,8 +635,8 @@ public class CessationBeServiceImpl implements CessationBeService {
             if (!IaisCommonUtils.isEmpty(appPremisesCorrelations)) {
                 for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelations) {
                     TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(), HcsaConsts.ROUTING_STAGE_AO3, TaskConsts.TASK_TYPE_MAIN_FLOW,
-                            appPremisesCorrelationDto.getId(), workGroupId,
-                            userId, assignDate, score, TaskUrl, RoleConsts.USER_ROLE_AO3,
+                            appPremisesCorrelationDto.getId(),TaskConsts.TASK_STATUS_PENDING, workGroupId,
+                            userId, assignDate,null, score, TaskUrl, RoleConsts.USER_ROLE_AO3,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDtos.add(taskDto);
                     //create history

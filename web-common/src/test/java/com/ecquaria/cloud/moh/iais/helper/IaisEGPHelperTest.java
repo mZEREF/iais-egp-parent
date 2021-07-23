@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,12 +85,6 @@ public class IaisEGPHelperTest {
         when(MiscUtil.getCurrentRequest()).thenReturn(request);
         IaisEGPHelper.setAuditLoginUserInfo(dto);
         assertNotNull(dto);
-    }
-
-    @Test
-    public void testGetRootPath() throws MalformedURLException, NoSuchFieldException, IllegalAccessException {
-        String path = IaisEGPHelper.getRootPath();
-        assertNotNull(path);
     }
 
     @Test

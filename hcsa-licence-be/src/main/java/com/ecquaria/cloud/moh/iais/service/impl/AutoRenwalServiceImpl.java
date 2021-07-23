@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
@@ -83,7 +84,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     private InboxMsgService inboxMsgService;
     @Autowired
     private SystemBeLicClient systemBeLicClient;
-    private SimpleDateFormat simpleDateFormat =new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
     @Value("${iais.email.sender}")
     private String mailSender;
 
@@ -605,7 +605,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             for(String every:list){
             String address = every.substring(every.indexOf('/')+1);
             String substring = every.substring(0, every.indexOf('/'));
-            String format = simpleDateFormat.format(expiryDate);
+            String format = Formatter.formatDate(expiryDate);
            /* Map<String,Object> map =new HashMap();
             map.put("IAIS_URL","https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal?licenceId="+licenceDto.getId());
             map.put("NAME_OF_HCI",substring);
@@ -746,7 +746,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String hciName = every.substring(0, every.indexOf('/'));
                 String address = every.substring(every.indexOf('/') + 1);
                 Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
-                String format = simpleDateFormat.format(expiryDate);
+                String format = Formatter.formatDate(expiryDate);
                 map.put("Payment_Amount",total);
                 map.put("NAME_OF_HCI",hciName);
                 map.put("HCI_Address",address);

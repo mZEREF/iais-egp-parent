@@ -131,33 +131,26 @@
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
             var oldVal = $(this).attr('attr');
-            var newEle='';
-            if($(this).parent().children('.'+newValClass).length>0){
-                 newEle = $(this).parent().children('.'+newValClass);
-            }else {
+            var newEle = $(this).parent().children('.'+newValClass);
+            if (newEle.length <= 0) {
                 newEle = $(this).parent().prev().find('.' + newValClass);
             }
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if($('#oldAppSubmissionDto').val()=='false'){
+            if ($('#oldAppSubmissionDto').val() == 'false') {
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();
-                        var newHtml ;
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            newHtml= $(this).parent().children('.' + newValClass).html();
-                        }else {
-                            newHtml= $(this).parent().prev().find('.' + newValClass).html();
+                        var newHtml = '';
+                        if (newEle.length > 0) {
+                            newHtml = newEle.html();
                         }
                         var oldHtml=$(this).html();
                         $(this).html(newHtml);
-                        if($(this).parent().children('.'+newValClass).length>0){
-                            $(this).parent().children('.' + newValClass).html(oldHtml);
-                        }else {
-                            $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        if (newEle.length > 0) {
+                            newEle.html(oldHtml);
                         }
-
                         $(this).attr("class","newVal compareTdStyle");
-                    } else if(oldVal.length > 0 && newVal.length <= 0){
+                    } else {
                         $(this).hide();
                     }
                 }

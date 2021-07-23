@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuditLogDetailView implements Serializable {
-    private static final long serialVersionUID = -3363570425650129550L;
+    private static final long serialVersionUID = 3068079420979384332L;
 
     private ArrayList<AuditLogRecView> searchParam;
     private ArrayList<AuditLogRecView> beforeChange;
