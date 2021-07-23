@@ -66,41 +66,45 @@ public class HcsaApplicationAjaxController{
             //size
             long size = selectedFile.getSize();
             appIntranetDocDto.setDocSize(String.valueOf(size/1024));
-            //type
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-            String fileType = fileSplit[fileSplit.length - 1];
-            appIntranetDocDto.setDocType(fileType);
-            //name
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
-            appIntranetDocDto.setDocName(fileName);
-            //status
-            appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            //APP_PREM_CORRE_ID
-            TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
-            appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
-            //set audit
-            appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            appIntranetDocDto.setSubmitDt(new Date());
-            appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-            appIntranetDocDto.setSubmitDtString(Formatter.formatDateTime(appIntranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
-            appIntranetDocDto.setSubmitByName(appIntranetDocDto.getAuditTrailDto().getMohUserId());
-            if(StringUtil.isEmpty(remark)){
-                appIntranetDocDto.setDocDesc(fileName);
-            }else {
-                appIntranetDocDto.setDocDesc(remark);
-            }
-            FileRepoDto fileRepoDto = new FileRepoDto();
-            fileRepoDto.setFileName(fileName);
-            fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fileRepoDto.setRelativePath(AppConsts.FALSE);
+            if(selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
+                //type
+                String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+                String fileType = fileSplit[fileSplit.length - 1];
+                appIntranetDocDto.setDocType(fileType);
+                //name
+                String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
+                appIntranetDocDto.setDocName(fileName);
 
-            //save file to file DB
-            String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
-            appIntranetDocDto.setFileRepoId(repo_id);
-//            appIntranetDocDto.set
-            appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
-            String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
-            appIntranetDocDto.setId(id);
+                //status
+                appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                //APP_PREM_CORRE_ID
+                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
+                appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
+                //set audit
+                appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appIntranetDocDto.setSubmitDt(new Date());
+                appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+                appIntranetDocDto.setSubmitDtString(Formatter.formatDateTime(appIntranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
+                appIntranetDocDto.setSubmitByName(appIntranetDocDto.getAuditTrailDto().getMohUserId());
+                if(StringUtil.isEmpty(remark)){
+                    appIntranetDocDto.setDocDesc(fileName);
+                }else {
+                    appIntranetDocDto.setDocDesc(remark);
+                }
+                FileRepoDto fileRepoDto = new FileRepoDto();
+                fileRepoDto.setFileName(fileName);
+                fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                fileRepoDto.setRelativePath(AppConsts.FALSE);
+
+                //save file to file DB
+                String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
+                appIntranetDocDto.setFileRepoId(repo_id);
+    //            appIntranetDocDto.set
+                appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
+                String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
+                appIntranetDocDto.setId(id);
+            }
              // set appIntranetDocDto to seesion
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
             List<AppIntranetDocDto> appIntranetDocDtos;
@@ -117,14 +121,14 @@ public class HcsaApplicationAjaxController{
                 index++;
             }
             ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
-           String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
-           String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
-           try{
+            String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
+            String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
+            try{
                url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
                        replaceAll("interalFile.docName",URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString())).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
-           }catch (Exception e){
+            }catch (Exception e){
                log.error(e.getMessage(),e);
-           }
+            }
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
