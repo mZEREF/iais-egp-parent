@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/report/Ack.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/report/inspectorReportConfirm.jsp"%>
