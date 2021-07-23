@@ -184,7 +184,7 @@ public class HcsaChklConfigDelegator {
         }
 
         if (curSecName.contains(section)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "CHKL_ERR007"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("section", "CHKL_ERR007"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -503,8 +503,10 @@ public class HcsaChklConfigDelegator {
             List<ChecklistSectionDto> sectionDtos = conf.getSectionDtos();
             Iterator<ChecklistSectionDto> iter = sectionDtos.iterator();
             while (iter.hasNext()){
-                String sectionId = iter.next().getId();
+                ChecklistSectionDto dto = iter.next();
+                String sectionId = dto.getId();
                 if (value.equals(sectionId)){
+                    curSecName.remove(dto.getSection());
                     iter.remove();
                 }
             }
