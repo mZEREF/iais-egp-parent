@@ -216,7 +216,7 @@ public class CessationEffectiveDateBatchjob {
                                     if (effectiveDate.compareTo(date) <= 0) {
                                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                         String status = licenceDto.getStatus();
-                                        if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+                                        if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)||ApplicationConsts.LICENCE_STATUS_APPROVED.equals(status)) {
                                             applicationGroupDtosCesead.add(applicationGroupDto);
                                             licenceDtos.add(licenceDto);
                                             licGrpMap.put(originLicenceId, appGrpId);
