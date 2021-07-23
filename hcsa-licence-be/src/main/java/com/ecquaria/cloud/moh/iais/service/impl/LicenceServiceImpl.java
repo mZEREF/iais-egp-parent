@@ -228,7 +228,7 @@ public class LicenceServiceImpl implements LicenceService {
     public LicenceDto getLicenceDto(String licenceId) {
         LicenceDto result = null;
         if(!StringUtil.isEmpty(licenceId)){
-            result = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+            result = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         }
         return result;
     }

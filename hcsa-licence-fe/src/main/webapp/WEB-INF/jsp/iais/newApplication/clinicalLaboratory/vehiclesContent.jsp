@@ -237,6 +237,8 @@
         // display add more
         if (vehicleLength < '${vehicleConfigDto.maximumCount}') {
             $('.addVehicleDiv').removeClass('hidden');
+        }else{//hidden add more
+            $('.addVehicleDiv').addClass('hidden');
         }
         </c:if>
         if (vehicleLength <= 1) {
