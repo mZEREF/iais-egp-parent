@@ -210,7 +210,7 @@ try{
     node{
         docker.withServer(DOCKER_URL) {
             dependencyCheck()
-            dependencyTrack()
+            // dependencyTrack()
 
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
                 buildDockerImages()
