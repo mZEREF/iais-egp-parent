@@ -1603,46 +1603,49 @@ public class HcsaApplicationDelegator {
                 MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
                 CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
                 AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
-                //size
-                long size = selectedFile.getSize();
-                appIntranetDocDto.setDocSize(String.valueOf(size / 1024));
-                //type
-                String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-                String fileType = fileSplit[fileSplit.length - 1];
-                appIntranetDocDto.setDocType(fileType);
-                //name
-                String fileName = fileSplit[0];
-//            String fileName = UUID.randomUUID().toString();
-                appIntranetDocDto.setDocName(fileName);
+                if (selectedFile != null) {
+                    //size
+                    long size = selectedFile.getSize();
+                    appIntranetDocDto.setDocSize(String.valueOf(size / 1024));
+                    if (!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                        log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
+                        //type
+                        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+                        String fileType = fileSplit[fileSplit.length - 1];
+                        appIntranetDocDto.setDocType(fileType);
+                        //name
+                        String fileName = fileSplit[0];
+                        appIntranetDocDto.setDocName(fileName);
 
-                String fileRemark = ParamUtil.getString(bpc.request, "fileRemark");
-                if (StringUtil.isEmpty(fileRemark)) {
-                    fileRemark = fileName;
+                        String fileRemark = ParamUtil.getString(bpc.request, "fileRemark");
+                        if (StringUtil.isEmpty(fileRemark)) {
+                            fileRemark = fileName;
+                        }
+                        //set document
+                        appIntranetDocDto.setDocDesc(fileRemark);
+                        //status
+                        appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        //APP_PREM_CORRE_ID
+                        TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
+                        appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
+                        //set audit
+                        appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        appIntranetDocDto.setSubmitDt(new Date());
+                        appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setFileName(fileName);
+                        fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        fileRepoDto.setRelativePath(AppConsts.FALSE);
+
+                        //save file to file DB
+                        String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
+                        appIntranetDocDto.setFileRepoId(repo_id);
+                    }
                 }
-                //set document
-                appIntranetDocDto.setDocDesc(fileRemark);
-                //status
-                appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                //APP_PREM_CORRE_ID
-                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request, "taskDto");
-                appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
-                //set audit
-                appIntranetDocDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                appIntranetDocDto.setSubmitDt(new Date());
-                appIntranetDocDto.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-
-                FileRepoDto fileRepoDto = new FileRepoDto();
-                fileRepoDto.setFileName(fileName);
-                fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fileRepoDto.setRelativePath(AppConsts.FALSE);
-
-                //save file to file DB
-                String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
-                appIntranetDocDto.setFileRepoId(repo_id);
-//            appIntranetDocDto.set
                 String id = fillUpCheckListGetAppClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
                 appIntranetDocDto.setId(id);
-//                ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+                //ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
             }
         }
         log.debug(StringUtil.changeForLog("the do doDocument end ...."));
@@ -2731,7 +2734,7 @@ public class HcsaApplicationDelegator {
             if (ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if (returnFee == null || returnFee == 0d) {
+                if (returnFee == null || MiscUtil.doubleEquals(returnFee, 0d)) {
                     continue;
                 }
                 appReturnFeeDto.setStatus("paying");
@@ -3324,8 +3327,12 @@ public class HcsaApplicationDelegator {
                     if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
                        return;
                     }
+                    if( RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(loginContext.getCurRoleId())){
+                        applicationViewDto.setShowTcu(true);
+                        applicationViewDto.setEditTcu(true);
+                        return;
+                    }
                 }
-
                 applicationViewDto.setShowTcu(true);
                 applicationViewDto.setEditTcu(RoleConsts.USER_ROLE_PSO.equalsIgnoreCase(loginContext.getCurRoleId())|| RoleConsts.USER_ROLE_ASO.equalsIgnoreCase(loginContext.getCurRoleId()));
             }

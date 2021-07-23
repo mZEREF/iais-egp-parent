@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -151,7 +152,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     try {
                         boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                        if (withdrawReturnFee&&fee!=null&&fee!=0.0){
+                        if (withdrawReturnFee&&fee!=null&& !MiscUtil.doubleEquals(fee, 0.0)){
                             AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                             applicationService.saveAppReturnFee(appReturnFeeDto);
                         }
@@ -167,7 +168,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     msgInfoMap.put("S_LName", serviceName);
                     msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     msgInfoMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                    if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||fee==0.0||
+                    if (StringUtil.isEmpty(paymentMethod) || StringUtil.isEmpty(fee) ||MiscUtil.doubleEquals(fee, 0.0)||
                             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType1) || isCharity) {
                         msgInfoMap.put("paymentType", "2");
                         msgInfoMap.put("paymentMode", "");
