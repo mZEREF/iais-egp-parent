@@ -1139,21 +1139,22 @@ public class LicenceApproveBatchjob {
                 String applicationType = applicationDto.getApplicationType();
 
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
-                        originLicenceDto, applicationDto, null, false);
-                licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                superLicDto.setLicenceDto(licenceDto);
+                if(originLicenceDto != null) {
+                    LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
+                            originLicenceDto, applicationDto, null, false);
+                    licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    superLicDto.setLicenceDto(licenceDto);
 
-                originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
-                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
-                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                    if(originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
-                        log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:"+originLicenceDto.getStatus()));
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                    originLicenceDto = deleteOriginLicenceDto(originLicenceDto, applicationDto, licenceDto.getStatus());
+                    log.info(StringUtil.changeForLog("The applicationType is -->:" + ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                    if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)) {
+                        if (originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())) {
+                            log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:" + originLicenceDto.getStatus()));
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                        }
+                        superLicDto.setOriginLicenceDto(originLicenceDto);
                     }
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
-
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
