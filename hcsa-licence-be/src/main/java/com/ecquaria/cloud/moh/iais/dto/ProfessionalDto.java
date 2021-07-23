@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import lombok.Data;
-import org.springframework.boot.actuate.metrics.http.Outcome;
 
 import java.io.Serializable;
 
@@ -11,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 public class ProfessionalDto implements Serializable {
-    private static final long serialVersionUID = -858384537130346730L;
+    private static final long serialVersionUID = 1L;
 
     private String IndentificationNo;
 
