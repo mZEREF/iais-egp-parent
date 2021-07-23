@@ -75,7 +75,16 @@
         <div class="form-group">
           <label class="col-md-2" style="padding-top: 15px">Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
-            <iais:select name="svcSubType" id="svcSubType"   options = "checklist_config_subtype_select" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
+            <iais:select name="svcSubType" id="svcSubType" options = "checklist_config_subtype_select" firstOption="Please Select"
+                         value="${param.svcSubType}"></iais:select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2" style="padding-top: 15px">Inspection Entity &nbsp;</label>
+          <div class="col-md-5">
+            <iais:select name="inspectionEntity" id="inspectionEntity" codeCategory="CATE_ID_INSPECTION_ENTITY_TYPE"
+                         firstOption="Please Select" value="${param.inspectionEntity}"></iais:select>
           </div>
         </div>
 
