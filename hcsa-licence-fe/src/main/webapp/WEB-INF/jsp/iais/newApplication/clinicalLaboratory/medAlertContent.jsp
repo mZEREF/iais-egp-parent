@@ -541,12 +541,6 @@
             $mapContentEle.find('input[name="description"]').val(data.description);
         }
 
-
-        var $psnContentEle = $mapContentEle.find('div.medAlertPerson');
-        //add disabled not add input disabled style
-        personDisable($psnContentEle,'','Y');
-        var psnEditDto = data.psnEditDto;
-        setPsnDisabled($psnContentEle,psnEditDto);
         $mapContentEle.find('input[name="licPerson"]').val('1');
         $mapContentEle.find('input[name="existingPsn"]').val('1');
 
