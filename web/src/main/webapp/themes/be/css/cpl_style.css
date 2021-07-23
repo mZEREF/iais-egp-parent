@@ -5510,14 +5510,3 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 .datepicker {
   z-index:999 !important;
 }
-
-p, span {
-  word-wrap: break-word;
-}
-
-.word-wrap {
-  white-space: pre-line;
-  word-break: break-word;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
