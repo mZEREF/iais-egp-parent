@@ -523,6 +523,20 @@ public class InterInboxDelegator {
                 return;
             }
             List<AppPremiseMiscDto> entity = appInboxClient.getAppPremiseMiscDtoRelateId(licId).getEntity();
+            List<LicenceDto> baseOrSpecLicenceDtos=licenceInboxClient.getBaseOrSpecLicence(licId).getEntity();
+            if(IaisCommonUtils.isNotEmpty(baseOrSpecLicenceDtos)){
+                for (LicenceDto licBs:baseOrSpecLicenceDtos
+                     ) {
+                    List<AppPremiseMiscDto> entity2 = appInboxClient.getAppPremiseMiscDtoRelateId(licBs.getId()).getEntity();
+                    if(!entity2.isEmpty()){
+                        if(entity.isEmpty()){
+                            entity=entity2;
+                        }else {
+                            entity.addAll(entity2);
+                        }
+                    }
+                }
+            }
             if(!entity.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
                 ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
