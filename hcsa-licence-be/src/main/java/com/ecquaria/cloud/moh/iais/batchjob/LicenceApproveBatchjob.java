@@ -2006,7 +2006,7 @@ public class LicenceApproveBatchjob {
         }else if (applicationDto != null) {
                 applicationDtos1.add(applicationDto);
         }
-        if((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+        if(applicationDto != null && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
                 && migratedService.isActiveMigrated()
                 && originLicenceDto.isMigrated()){
