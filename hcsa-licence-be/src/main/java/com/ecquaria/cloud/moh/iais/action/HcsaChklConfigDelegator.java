@@ -258,6 +258,7 @@ public class HcsaChklConfigDelegator {
         String[] tcb = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
+        String inspectionEntity = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY);
 
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, mcb);
@@ -276,6 +277,10 @@ public class HcsaChklConfigDelegator {
 
         if(StringUtil.isNotEmpty(svcSubType)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
+        }
+
+        if(StringUtil.isNotEmpty(inspectionEntity)){
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, inspectionEntity, true);
         }
 
         if (Optional.ofNullable(mcb).isPresent()){
