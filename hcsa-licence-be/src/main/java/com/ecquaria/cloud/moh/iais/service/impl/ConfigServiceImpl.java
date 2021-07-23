@@ -638,6 +638,7 @@ public class ConfigServiceImpl implements ConfigService {
             if (StringUtil.isEmpty(psnType)) {
                 errorMap.put("psnType" + i, "CHKLMD001_ERR001");
             }
+            String generalErr0002 = MessageUtil.getMessageDesc("GENERAL_ERR0002");
             if (StringUtil.isEmpty(pageMandatoryCount)) {
                 errorMap.put("mandatoryCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Count","field"));
             }  else  {
@@ -645,10 +646,10 @@ public class ConfigServiceImpl implements ConfigService {
                     pageManFlag=true;
                     int i1 = Integer.parseInt(pageMandatoryCount);
                     if (i1<0){
-                        errorMap.put("mandatoryCount"+i, MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                        errorMap.put("mandatoryCount"+i, generalErr0002);
                     }
                 }else {
-                    errorMap.put("mandatoryCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                    errorMap.put("mandatoryCount"+i,generalErr0002);
                 }
             }
             if (StringUtil.isEmpty(pageMaximumCount)) {
@@ -658,10 +659,10 @@ public class ConfigServiceImpl implements ConfigService {
                     pageMaxFlag=true;
                     int i1 = Integer.parseInt(pageMaximumCount);
                     if(i1<0){
-                        errorMap.put("maximumCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                        errorMap.put("maximumCount"+i,generalErr0002);
                     }
                 }else {
-                    errorMap.put("maximumCount"+i,MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+                    errorMap.put("maximumCount"+i,generalErr0002);
                 }
             }
             if(pageManFlag&&pageMaxFlag){
