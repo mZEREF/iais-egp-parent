@@ -444,7 +444,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    log.info(file.getPath()+"-----zipFile---------");
+                    log.info(StringUtil.changeForLog(file.getPath()+"-----zipFile---------"));
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
                     os=new FileOutputStream(MiscUtil.generateFile(s));
                     bos=new BufferedOutputStream(os);
@@ -460,14 +460,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
 
                 }else {
-                    log.info(zipEntry.getName()+"------zipEntry.getName()------");
+                    log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
                     String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
                     if(s.endsWith(File.separator)){
                         s=s.substring(0,s.length()-1);
                     }
                     File file = MiscUtil.generateFile(s);
                     file.mkdirs();
-                    log.info(file.getPath()+"-----else  zipFile-----");
+                    log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
 
                 }
             }catch (IOException e){
