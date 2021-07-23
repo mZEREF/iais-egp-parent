@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -151,7 +152,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     try {
                         boolean withdrawReturnFee = applicationService.isWithdrawReturnFee(h.getApplicationNo(),h.getAppGrpId());
-                        if (withdrawReturnFee&&fee!=null&&fee!=0.0){
+                        if (withdrawReturnFee&&fee!=null&& !MiscUtil.doubleEquals(fee, 0.0)){
                             AppReturnFeeDto appReturnFeeDto = assembleReturn(h, fee);
                             applicationService.saveAppReturnFee(appReturnFeeDto);
                         }
