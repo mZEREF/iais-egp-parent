@@ -148,7 +148,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     private GenerateIdClient generateIdClient;
 
 
-    private final String[] appType=new String[]{
+    private static final String[] appType=new String[]{
             ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
             ApplicationConsts.APPLICATION_TYPE_RENEWAL,
             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
@@ -158,7 +158,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
             ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION
     };
-    private final String[] appStatus=new String[]{
+    private static final String[] appStatus=new String[]{
             ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION,
             //ApplicationConsts.APPLICATION_STATUS_RECALLED,
             ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING,
@@ -192,7 +192,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL,
             ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT
     };
-    private final String[] licStatus=new String[]{
+    private static final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
             ApplicationConsts.LICENCE_STATUS_IACTIVE,
             ApplicationConsts.LICENCE_STATUS_CEASED,

@@ -120,7 +120,6 @@
         showOtherSpecialty();
         profRegNoBlur();
         designationBindEvent();
-        specialityEvent();
         doEdite();
         assignSelectBindEvent();
         //rfc,renew,rfi
@@ -155,25 +154,12 @@
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
-            $(this).find('.designation').trigger('change');
+            $(this).find('.designation').triggerHandler('change');
             checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
         });
     });
-
-    var specialityEvent = function() {
-        $('.specialityField').unbind('DOMNodeInserted');
-        $('.specialityField').unbind('DOMNodeRemoved');
-        $('.specialityField').on('DOMNodeInserted', function() {
-            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
-            dateSpan.removeClass('hidden');
-        });
-        $('.specialityField').on('DOMNodeRemoved', function() {
-            var dateSpan = $(this).closest('div.clinicalDirectorContent').find('.specialtyGetDateLabel:first').find('.mandatory');
-            dateSpan.addClass('hidden');
-        });
-    }
 
     var holdCerByEMS = function() {
         $('.holdCerByEMS').unbind('click');
@@ -240,7 +226,6 @@
                         assignSelectBindEvent();
                         designationBindEvent();
                         profRegNoBlur();
-                        specialityEvent();
                         $('.date_picker').datepicker({
                             format:"dd/mm/yyyy",
                             autoclose:true,
@@ -567,6 +552,13 @@
             $prsLoadingEle.find('.currRegiDate').val(currRegiDate);
             $prsLoadingEle.find('.praCerEndDate').val(praCerEndDate);
             $prsLoadingEle.find('.typeOfRegister').val(typeOfRegister);
+
+            var dateSpan = $prsLoadingEle.find('.specialtyGetDateLabel').find('.mandatory');
+            if(data.regno == null || data.name == null || !isEmpty(specialty)){
+                dateSpan.removeClass('hidden');
+            }else {
+                dateSpan.addClass('hidden');
+            }
         },
         setEdit:function ($prsLoadingEle, propStyle, canEdit, needControlName) {
             var nameEle = $prsLoadingEle.find('.name');

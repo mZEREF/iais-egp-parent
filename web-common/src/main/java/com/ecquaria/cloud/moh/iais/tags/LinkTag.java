@@ -15,7 +15,7 @@ import javax.servlet.jsp.JspTagException;
  */
 public class LinkTag extends DivTagSupport {
 
-    private static final long serialVersionUID = -1053304240294924478L;
+    private static final long serialVersionUID = 2621389116711289110L;
     private static final String  ENDDIV = "</div>";
 
     private String icon;

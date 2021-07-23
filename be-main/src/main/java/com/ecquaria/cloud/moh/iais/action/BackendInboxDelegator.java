@@ -756,8 +756,8 @@ public class BackendInboxDelegator {
                 log.info(StringUtil.changeForLog("The stageId is-->;"+ stageId));
                 if(appPremisesRoutingHistoryDto1 != null){
                     TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
-                            taskDto.getRefNo(),appPremisesRoutingHistoryDto1.getWrkGrpId(),
-                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                            taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING,appPremisesRoutingHistoryDto1.getWrkGrpId(),
+                            appPremisesRoutingHistoryDto1.getActionby(),new Date(),null,0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                             IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                     //delete workgroup
@@ -778,7 +778,7 @@ public class BackendInboxDelegator {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
-                
+
                 if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
                     updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(), InspectionConstants.INSPECTION_STATUS_PENDING_AO2_RESULT);
                 }
@@ -1129,7 +1129,7 @@ public class BackendInboxDelegator {
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if(returnFee==null || returnFee == 0d){
+                if(returnFee==null || MiscUtil.doubleEquals(returnFee, 0d)){
                     continue;
                 }
                 appReturnFeeDto.setReturnAmount(returnFee);
@@ -1580,7 +1580,7 @@ public class BackendInboxDelegator {
         }
 
         TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
+                taskDto.getRefNo(),TaskConsts.TASK_STATUS_PENDING,wrkGpId, userId,new Date(),null,0,TaskUrl,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 

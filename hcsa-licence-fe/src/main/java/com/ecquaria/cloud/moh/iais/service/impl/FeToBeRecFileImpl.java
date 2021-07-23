@@ -52,12 +52,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class FeToBeRecFileImpl implements FeToBeRecFileService {
+    private static final String FILE_FORMAT = ".zip";
+
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
     @Value("${iais.sharedfolder.rectification.out}")
     private String sharedOutPath;
-    private String fileFormat = ".zip";
-    private String backups;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -86,11 +86,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @PostConstruct
     private void init() {
-        String outFolder = sharedOutPath;
-        if (!outFolder.endsWith(File.separator)) {
-            outFolder += File.separator;
-        }
-        this.backups = outFolder;
+        String outFolder = getOutFolder();
         log.info(StringUtil.changeForLog("backups = " + outFolder));
         JobLogger.log(StringUtil.changeForLog("backups = " + outFolder));
     }
@@ -137,8 +133,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             String fileId = appPremPreInspectionNcDocDto.getFileRepoId();
             byte[] fileByte = fileRepoClient.getFileFormDataBase(fileId).getEntity();
 
-            File backupsFile = MiscUtil.generateFile(backups + "backupsRec" + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
-            File groupBackPath = MiscUtil.generateFile(backups + "backupsRec" , fileId);
+            File backupsFile = MiscUtil.generateFile(getOutFolder() + "backupsRec" + File.separator + fileId, appPremPreInspectionNcDocDto.getDocName());
+            File groupBackPath = MiscUtil.generateFile(getOutFolder() + "backupsRec" , fileId);
             if(!groupBackPath.exists()){
                 groupBackPath.mkdirs();
             }
@@ -179,11 +175,11 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String compress(String fileId){
         long l = System.currentTimeMillis();
-        try (OutputStream is =  new FileOutputStream(MiscUtil.generateFile(backups , l + ".zip"));
+        try (OutputStream is =  new FileOutputStream(MiscUtil.generateFile(getOutFolder() , l + ".zip"));
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
-            File file = MiscUtil.generateFile(backups + "backupsRec" ,fileId);
+            File file = MiscUtil.generateFile(getOutFolder() + "backupsRec" ,fileId);
             MiscUtil.checkDirs(file);
             zipFile(zos, file, "backupsRec");
         } catch (IOException e) {
@@ -228,7 +224,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss, String appId)  {
-        File zipFile = MiscUtil.generateFile(backups);
+        File zipFile = MiscUtil.generateFile(getOutFolder());
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
                 if (name.endsWith(fileNamesss + ".zip")) {
@@ -247,7 +243,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     }
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile = MiscUtil.generateFile(backups, s + ".zip");
+                    File curFile = MiscUtil.generateFile(getOutFolder(), s + ".zip");
                     if (!curFile.exists()){
                         boolean createFlag = curFile.createNewFile();
                         if (!createFlag) {
@@ -259,7 +255,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                     if(reNameFlag) {
                         String s1 = saveFileName(s + ".zip", s + ".zip", appId);
                         if(!s1.equals(AppConsts.SUCCESS)){
-                            boolean fileDelStatus = MiscUtil.generateFile(backups , s + ".zip").delete();
+                            boolean fileDelStatus = MiscUtil.generateFile(getOutFolder() , s + ".zip").delete();
                             if(!fileDelStatus){
                                 log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
                                 JobLogger.log(StringUtil.changeForLog(file.getName() + "delete false"));
@@ -279,12 +275,12 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void deleteFile(){
-        File file = MiscUtil.generateFile(backups);
+        File file = MiscUtil.generateFile(getOutFolder());
         if(file.isDirectory()){
             File[] files = file.listFiles();
             for(File f:files){
                 if(f.exists()){
-                    if(!f.getName().endsWith(fileFormat)) {
+                    if(!f.getName().endsWith(FILE_FORMAT)) {
                         boolean fileStatus = deleteDir(f);
                         if (!fileStatus) {
                             log.debug(StringUtil.changeForLog(f.getName() + ": delete false"));
@@ -346,5 +342,14 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             return s;
         }
         return s;
+    }
+
+    private String getOutFolder() {
+        String outFolder = sharedOutPath;
+        if (!outFolder.endsWith(File.separator)) {
+            outFolder += File.separator;
+        }
+
+        return outFolder;
     }
 }

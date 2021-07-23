@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 public class PaginationHandler<T extends Serializable> implements Serializable {
-    private static final long serialVersionUID = 9007930371131074000L;
+    private static final long serialVersionUID = -3154926254704479685L;
 
     private static final String STARTLI =  "<li><a href=\"#\" onclick=\"javascript:";
     private static final String ENDTAG = "');\">";

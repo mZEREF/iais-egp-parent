@@ -2,15 +2,14 @@
 package com.ecquaria.egp.core.payment.api.util;
 
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
-
+import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 public class UtilDate {
 
-	private static final Random random = new Random();
+	private static final SecureRandom random = new SecureRandom();
 	
 	public  static String getOrderNum(){
 		Date date=new Date();

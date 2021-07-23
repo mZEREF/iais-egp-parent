@@ -12,18 +12,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-
 @Slf4j
 public final class CheckBoxTag extends DivTagSupport {
-    private static final long serialVersionUID = -130423270882193278L;
+    private static final long serialVersionUID = 4983787188588579959L;
 
     private String name;
     private String labelName;
@@ -176,7 +174,7 @@ public final class CheckBoxTag extends DivTagSupport {
                         }
 
                         //re display
-                        if (request != null && request instanceof HttpServletRequest){
+                        if (request != null){
                             String[] selectVal = (String[]) ParamUtil.getRequestAttr(request, name);
                             if (selectVal != null && selectVal.length > 0){
                                 for (String s : selectVal){

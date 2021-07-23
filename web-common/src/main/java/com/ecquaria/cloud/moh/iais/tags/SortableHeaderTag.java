@@ -11,7 +11,7 @@ import javax.servlet.jsp.JspTagException;
 import java.util.Map;
 @Slf4j
 public class SortableHeaderTag extends DivTagSupport {
-    private static final long serialVersionUID = 6803399323616533101L;
+    private static final long serialVersionUID = -2453501180181499171L;
     private static final String ACTIVE = " active";
     private String field;
     private String value;
@@ -29,6 +29,7 @@ public class SortableHeaderTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
+        super.init();
         setField("");
         setValue("");
         setParam("");

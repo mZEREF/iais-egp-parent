@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
+import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
@@ -80,8 +81,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * NewApplicationHelper
@@ -92,6 +91,50 @@ import java.util.Set;
 
 @Slf4j
 public class NewApplicationHelper {
+
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, Boolean needNewLicNo, int selfAssMtFlag) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+            return;
+        }
+        if (Boolean.FALSE.equals(needNewLicNo)) {
+            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+        } else if (Boolean.TRUE.equals(needNewLicNo)) {
+            appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
+        }
+        appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
+            if (needNewLicNo != null) {
+                appGrpPremisesDto.setNeedNewLicNo(needNewLicNo);
+            }
+            appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
+        });
+    }
+
+    public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
+        Integer maxFileIndex = 0;
+        if (checkGlobal && request != null) {
+            maxFileIndex = (Integer) ParamUtil.getSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
+        }
+        if (maxFileIndex != null && maxFileIndex > maxSeqNum) {
+            maxSeqNum = maxFileIndex;
+        }
+        if (checkGlobal && request != null) {
+            ParamUtil.setSessionAttr(request, HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR, maxSeqNum);
+        }
+        return maxSeqNum;
+    }
+
+    public static int getMaxFileIndex(int maxSeqNum) {
+        return getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+    }
+
+    public static void reSetMaxFileIndex(int maxSeqNum, HttpServletRequest request) {
+        getMaxFileIndex(maxSeqNum, true, request);
+    }
+
+    public static void reSetMaxFileIndex(int maxSeqNum) {
+        getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+    }
+
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
         int premCount = 0 ;
@@ -1150,6 +1193,7 @@ public class NewApplicationHelper {
                     }
                     person.setProfessionBoard(psnDto.getProfessionBoard());
                     person.setProfRegNo(psnDto.getProfRegNo());
+                    person.setSpeciality(psnDto.getSpeciality());
                     person.setSpecialtyGetDate(handleDate(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
                     person.setSpecialtyGetDateStr(handleDateString(psnDto.getSpecialtyGetDate(), psnDto.getSpecialtyGetDateStr()));
                     person.setTypeOfCurrRegi(psnDto.getTypeOfCurrRegi());

@@ -13,15 +13,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.role.Role;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import org.xml.sax.SAXException;
 
 /**
  * @author weilu
@@ -69,22 +70,24 @@ public interface IntranetUserService {
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 
     /**
-      * @author: shicheng
-      * @Date 2020/9/16
-      * @Param: xmlFile
-      * @return: Map<String, String>
-      * @Descripation: importRoleXmlValidation
-      */
+     * @author: shicheng
+     * @Date 2020/9/16
+     * @Param: xmlFile
+     * @return: Map<String, String>
+     * @Descripation: importRoleXmlValidation
+     */
     Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) throws DocumentException;
 
     /**
-      * @author: shicheng
-      * @Date 2020/9/16
-      * @Param: xmlFile
-      * @return: importRoleXml
-      * @Descripation: save role data
-      */
+     * @author: shicheng
+     * @Date 2020/9/16
+     * @Param: xmlFile
+     * @return: importRoleXml
+     * @Descripation: save role data
+     */
     List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException;
 
     List<OrganizationDto> getUenList();
+
+    Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto);
 }

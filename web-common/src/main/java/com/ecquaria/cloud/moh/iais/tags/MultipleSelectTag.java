@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 public class MultipleSelectTag extends DivTagSupport {
-    private static final long serialVersionUID = 3178008461063547760L;
+    private static final long serialVersionUID = -2982018372179262402L;
     private String name;
     private String options;
     private boolean needMask;
@@ -29,6 +29,7 @@ public class MultipleSelectTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
+        super.init();
         setId(null);
         setName("");
         setCssClass("");

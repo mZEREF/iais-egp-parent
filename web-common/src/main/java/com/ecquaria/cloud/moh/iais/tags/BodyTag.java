@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspException;
  * @author      suocheng
  */
 public final class BodyTag extends DivTagSupport {
-    private static final long serialVersionUID = 2507648507715155034L;
+    private static final long serialVersionUID = -8218339839292686460L;
 
     private boolean disabled;
 

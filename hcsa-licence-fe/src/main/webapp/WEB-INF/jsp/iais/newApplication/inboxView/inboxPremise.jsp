@@ -728,6 +728,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Email</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteEmail}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Operating Hours</span></p>
                                 </div>
                                 <div class="col-md-6">
@@ -975,7 +983,9 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Floor / Unit No.</span></p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span><c:out value="${appGrpPremDto.easMtsFloorNo}">-</c:out><c:out value="${appGrpPremDto.easMtsUnitNo}"></c:out></span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology">
+                                        <span><c:out value="${appGrpPremDto.easMtsFloorNo}"/>-<c:out value="${appGrpPremDto.easMtsUnitNo}"/></span>
+                                    </p>
                                 </div>
                             </div>
                             <c:forEach var="appPremisesOperationalUnit" items="${appGrpPremDto.appPremisesOperationalUnitDtos}">

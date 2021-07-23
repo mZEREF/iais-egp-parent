@@ -1210,10 +1210,19 @@ public class WithOutRenewalDelegator {
     private void updateDraftStatus(AppSubmissionDto appSubmissionDto){
         if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-            for(ApplicationSubDraftDto applicationSubDraftDto : entity){
-                String draftJson = applicationSubDraftDto.getDraftJson();
-                AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+            if(IaisCommonUtils.isEmpty(entity)){
+                entity = IaisCommonUtils.genNewArrayList();
+            }
+            List<ApplicationSubDraftDto> applicationSubDraftDtos = applicationFeClient.getDraftByLicAppIdAndStatus(appSubmissionDto.getLicenceId(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT).getEntity();
+            if(IaisCommonUtils.isNotEmpty(applicationSubDraftDtos)){
+                entity.addAll(applicationSubDraftDtos);
+            }
+            if(IaisCommonUtils.isNotEmpty(entity)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+                    String draftJson = applicationSubDraftDto.getDraftJson();
+                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                    applicationFeClient.deleteDraftByNo(appSubmissionDto1.getDraftNo());
+                }
             }
         }
     }
@@ -1282,7 +1291,7 @@ public class WithOutRenewalDelegator {
         StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
-        response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(response, tokenUrl);
     }
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc) throws Exception {
@@ -1538,7 +1547,7 @@ public class WithOutRenewalDelegator {
                 if(appSubmissionDtos != null && appSubmissionDtos.size() == 1){
                     appSubmissionService.updateDraftStatus(appSubmissionDtos.get(0).getDraftNo(),ApplicationConsts.DRAFT_STATUS_PENDING_PAYMENT);
                 }
-                bpc.response.sendRedirect(html);
+                IaisEGPHelper.redirectUrl(bpc.response, html);
                 bpc.request.setAttribute("paymentAmount", totalAmount);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

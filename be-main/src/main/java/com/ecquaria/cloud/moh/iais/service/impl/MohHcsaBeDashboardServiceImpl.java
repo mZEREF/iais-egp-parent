@@ -53,7 +53,6 @@ import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -1071,7 +1070,7 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                     Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
                     if(privilegeNo != null && privilegeNo.length > 0) {
                         //get Privilege
-                        long[] privilegeNoArr = Arrays.stream(privilegeNo).mapToLong(s -> Long.valueOf(s)).toArray();
+                        long[] privilegeNoArr = transferSmallLong(privilegeNo);
                         List<Privilege> privileges = privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity();
                         if(!IaisCommonUtils.isEmpty(privileges)) {
                             for(Privilege privilege : privileges) {
@@ -1085,6 +1084,14 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return AppConsts.FAIL;
+    }
+
+    private long[] transferSmallLong(Long[] privilegeNo) {
+        long[] privilegeNoArr = new long[privilegeNo.length];
+        for(int i = 0; i < privilegeNo.length; i++) {
+            privilegeNoArr[i] = privilegeNo[i];
+        }
+        return privilegeNoArr;
     }
 
     private List<DashStageCircleKpiDto> addSaveAllCountCircleKpiDto(List<DashStageCircleKpiDto> dashStageCircleKpiDtoList) {

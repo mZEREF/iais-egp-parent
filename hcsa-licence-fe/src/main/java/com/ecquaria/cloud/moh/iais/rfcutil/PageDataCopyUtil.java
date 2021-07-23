@@ -228,6 +228,7 @@ public class PageDataCopyUtil {
             svcPrincipalOfficersDto.setDescription(appSvcPrincipalOfficersDto.getDescription());
             list.add(svcPrincipalOfficersDto);
         }
+        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList)  {
@@ -244,6 +245,7 @@ public class PageDataCopyUtil {
             svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
             list.add(svcPrincipalOfficersDto);
         }
+        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
@@ -265,6 +267,7 @@ public class PageDataCopyUtil {
             cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
             list.add(cgoDto);
         }
+        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
         return list;
     }
     public static List<AppSvcChckListDto> copyAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDtos){
@@ -353,9 +356,8 @@ public class PageDataCopyUtil {
                 appSvcChargesDto.setMaxAmount(v.getMaxAmount());
                 list.add(appSvcChargesDto);
             });
-            o.setGeneralChargesDtos(list);
+            o.setOtherChargesDtos(list);
         }
-
         return o;
     }
 
@@ -387,6 +389,7 @@ public class PageDataCopyUtil {
             o.setEmailAddr(v.getEmailAddr());
             list.add(o);
         });
+        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
         return list;
     }
 

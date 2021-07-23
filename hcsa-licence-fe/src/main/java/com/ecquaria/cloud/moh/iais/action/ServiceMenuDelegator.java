@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -1310,7 +1311,7 @@ public class ServiceMenuDelegator {
                 .append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 
         log.info(StringUtil.changeForLog("back inbox end ..."));
     }
@@ -1429,7 +1430,7 @@ public class ServiceMenuDelegator {
 //            url.append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
 //            tokenUrl = tokenUrl + "&licenseView="+type;
-//            bpc.response.sendRedirect(tokenUrl);
+//            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 //        }catch (Exception e){
 //            log.info(e.getMessage());
 //        }

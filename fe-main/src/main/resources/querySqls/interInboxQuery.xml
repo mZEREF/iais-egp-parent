@@ -69,14 +69,21 @@
                     app.self_assmt_flag,
                     app.is_fast_tracking,
                     (select CREATED_DT from application_group as ag where ag.ID =  app.APP_GRP_ID) as created_dt,
-                    app.version
+                    app.version ,misc.misc_id misc_app_id
                 FROM APPLICATION AS app
                 join (select application_no,MAX(version) as version from application GROUP BY application_no) as app2
                 on app.APPLICATION_NO = app2.application_no and app.version = app2.version
+                LEFT join (select base_app.id misc_id  from
+                  app_premises_misc apm
+                 join app_premises_correlation apc on apc.ID = apm.APP_PREM_CORRE_ID
+                  JOIN application corr_app on corr_app.ID = apc.APPLICATION_ID and corr_app.STATUS not in ('APST009','APST050','APST006')
+                 JOIN application base_app on base_app.APPLICATION_NO = corr_app.BASE_APPLICATION_NO
+                 where  apm.APPEAL_TYPE in ('APPEAL001','APPEAL002','APPEAL006')
+                ) as misc  on misc.misc_id = app.id
                 union
                 select
                     A.ID as id,A.DRAFT_NO AS application_no,1 as has_submit_pref_date,A.app_grp_id,A.licensee_id,'PMTDF001',A.app_type,
-                    (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1
+                    (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1,null
                 from
                     app_grp_submission_draft AS A
                 where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B

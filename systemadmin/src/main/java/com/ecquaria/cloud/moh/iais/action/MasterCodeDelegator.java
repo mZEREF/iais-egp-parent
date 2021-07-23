@@ -196,7 +196,7 @@ public class MasterCodeDelegator {
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, "MasterCodeView");
         getCategoryValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
-            masterCodeDto.setVersion(1f);
+            masterCodeDto.setVersion(1d);
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
@@ -927,7 +927,7 @@ public class MasterCodeDelegator {
         MasterCodeDto masterCodeDto = (MasterCodeDto) CopyUtil.copyMutableObject(oldMasterCodeDto);
         getEditValueFromPage(masterCodeDto, request);
         if (StringUtil.isEmpty(masterCodeDto.getVersion())){
-            masterCodeDto.setVersion(1f);
+            masterCodeDto.setVersion(1d);
         }
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1054,17 +1054,17 @@ public class MasterCodeDelegator {
             syncMasterCodeList.add(oldMasterCodeDto);
             //create new
             masterCodeDto.setMasterCodeId(null);
-            Float version =  masterCodeDto.getVersion();
+            Double version =  masterCodeDto.getVersion();
             if (StringUtil.isEmpty(version)){
-                masterCodeDto.setVersion(1f);
+                masterCodeDto.setVersion(1d);
             }else{
                 //get max version ms
                 MasterCodeDto maxMsDto = masterCodeService.getMaxVersionMsDto(oldMasterCodeDto.getMasterCodeKey());
-                Float maxVersion = maxMsDto.getVersion();
+                Double maxVersion = maxMsDto.getVersion();
                 if (maxVersion != null){
                     masterCodeDto.setVersion(maxMsDto.getVersion() + 1);
                 }else{
-                    masterCodeDto.setVersion(1f);
+                    masterCodeDto.setVersion(1d);
                 }
             }
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
@@ -1144,7 +1144,7 @@ public class MasterCodeDelegator {
 
             }
         }
-        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
+        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Double.parseDouble(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
         masterCodeDto.setIsEditable(1);

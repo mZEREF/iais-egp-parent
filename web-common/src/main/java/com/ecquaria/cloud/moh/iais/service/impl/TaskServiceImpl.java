@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -76,6 +77,8 @@ public class TaskServiceImpl implements TaskService {
     private String mailSender;
     @Autowired
     private CommonEmailClient emailClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
 
 
@@ -172,8 +175,8 @@ public class TaskServiceImpl implements TaskService {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
             }
              result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                     correlationId,isSystemAdmin?null:workGroupId,
-                    userId, assignDate,score,TaskUrl,roleId,
+                     correlationId,TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
+                    userId, assignDate,null,score,TaskUrl,roleId,
                      IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.debug(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
@@ -194,7 +197,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDto> getTaskDtoScoresByWorkGroupId(String workGroupId) {
-        return taskOrganizationClient.getTaskScores(workGroupId).getEntity();
+        return taskOrganizationClient.getTaskScores(workGroupId,String.valueOf(systemParamConfig.getWorkloadCalculation())).getEntity();
     }
 
     @Override
@@ -270,8 +273,8 @@ public class TaskServiceImpl implements TaskService {
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
                             TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
-                                    appPremisesCorrelationDto.getId(),isSystemAdmin?null:workGroupId,
-                                    userId, assignDate,score,TaskUrl,roleId,
+                                    appPremisesCorrelationDto.getId(),TaskConsts.TASK_STATUS_PENDING,isSystemAdmin?null:workGroupId,
+                                    userId, assignDate,null,score,TaskUrl,roleId,
                                     auditTrailDto);
                             if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)){
                                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);

@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.WorkloadCalculationDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -221,7 +222,7 @@ public class MohIntranetUserDelegator {
         } catch (MaskAttackException e) {
             log.error(e.getMessage(), e);
             try {
-                bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe) {
                 log.error(ioe.getMessage(), ioe);
                 return;
@@ -322,7 +323,7 @@ public class MohIntranetUserDelegator {
             } catch (MaskAttackException e) {
                 log.error(e.getMessage(), e);
                 try {
-                    bpc.response.sendRedirect("https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
+                    IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
                 } catch (IOException ioe) {
                     log.error(ioe.getMessage(), ioe);
                     return;
@@ -818,6 +819,26 @@ public class MohIntranetUserDelegator {
 
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
+                for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
+                ) {
+                    List<String> roleIdList = IaisCommonUtils.genNewArrayList();
+                    roleIdList.add(ugc.getUserRoleId());
+                    List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
+                    if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
+                        WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
+                        workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
+                        workloadCalculationDto.setDays(days);
+                        workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
+                        workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
+                        workloadCalculationDto.setAuditTrailDto(auditTrailDto);
+                        intranetUserService.workloadCalculation(workloadCalculationDto);
+                    }
+
+
+
+                }
+
             }
         }
         List<String> existRoles = (List<String>) ParamUtil.getSessionAttr(bpc.request, "orgUserRoleDtos");
@@ -1402,9 +1423,13 @@ public class MohIntranetUserDelegator {
         clientUser.setEmail(email);
         String randomStr = IaisEGPHelper.generateRandomString(6);
         String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+        randomStr = IaisEGPHelper.generateRandomString(6);
+        String chanQue = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+        randomStr = IaisEGPHelper.generateRandomString(6);
+        String chanAns = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
         clientUser.setPassword(pwd);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
+        clientUser.setPasswordChallengeQuestion(chanQue);
+        clientUser.setPasswordChallengeAnswer(chanAns);
         intranetUserService.saveEgpUser(clientUser);
     }
 
@@ -1425,8 +1450,12 @@ public class MohIntranetUserDelegator {
             clientUser.setId(userId);
             clientUser.setDisplayName(displayName);
             clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-            clientUser.setPasswordChallengeQuestion("A");
-            clientUser.setPasswordChallengeAnswer("A");
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String chanQue = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+            randomStr = IaisEGPHelper.generateRandomString(6);
+            String chanAns = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
+            clientUser.setPasswordChallengeQuestion(chanQue);
+            clientUser.setPasswordChallengeAnswer(chanAns);
             clientUser.setAccountActivateDatetime(accountActivateDatetime);
             clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
             clientUser.setFirstName(firstName);

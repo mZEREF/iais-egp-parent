@@ -50,18 +50,22 @@
                                     </c:if>--%>
                                 <c:if test="${requestInformationConfig == null}">
                                     <td>
-                                        <c:choose>
-                                            <c:when test="${empty txnRefNo}">
-                                                N/A
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:out value="${txnRefNo}"/>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
+                                        <c:if test="${ackPageAppSubmission.amount!=null}">
+                                            <c:choose>
+                                                <c:when test="${empty txnRefNo}">
+                                                    N/A
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="${txnRefNo}"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:if>
                                     </td>
                                 </c:if>
                                 <td><c:out value="${txnDt}"/></td>
-                                <td><c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
+                                <td>
+                                    <c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
                                     <c:if test="${ackPageAppSubmission.amount!=null}">
                                         <c:out value="${ackPageAppSubmission.amountStr}"/>
                                     </c:if>

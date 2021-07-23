@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @date 2019/7/24 17:58
  */
 public class MessageCode implements Serializable {
-    private static final long serialVersionUID = 1971470358993800500L;
+    private static final long serialVersionUID = 1L;
 
     @Getter @Setter private String msgId;
     @Getter @Setter private String codeKey;
