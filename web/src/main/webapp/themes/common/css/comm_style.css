@@ -65,3 +65,10 @@ p, span {
     line-height: 1.42857143;
     margin: 0;
 }
+
+.word-wrap {
+    white-space: pre-line;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
