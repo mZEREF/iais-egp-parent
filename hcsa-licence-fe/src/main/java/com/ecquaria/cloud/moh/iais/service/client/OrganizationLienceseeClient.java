@@ -7,8 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * OrganizationLienceseeClient
@@ -76,4 +76,7 @@ public interface OrganizationLienceseeClient {
     FeignResponseEntity<OrgUserDto> retrieveOneOrgUserAccount(@PathVariable(value = "id") String user_id);
     @GetMapping(value = "/iais-internet-user/giro-account-info")
     FeignResponseEntity<List<OrgGiroAccountInfoDto>> getGiroAccByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId);
+
+    @GetMapping(value = "/iais-internet-user/organization/{uen}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> findOrganizationByUen(@PathVariable("uen") String uen);
 }

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -52,7 +53,6 @@ public class InsReportAoDelegator  {
     private VehicleCommonController vehicleCommonController;
 
 
-    private final static String OTHERS="Others";
     private final static String APPROVAL="Approval";
     private final static String REJECT="Reject";
     private final static String INSREPDTO="insRepDto";
@@ -65,6 +65,7 @@ public class InsReportAoDelegator  {
     }
 
     public void clearSession( HttpServletRequest request ){
+        ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,null);
         ParamUtil.setSessionAttr(request, INSREPDTO, null);
         ParamUtil.setSessionAttr(request, APPLICATIONVIEWDTO, null);
         vehicleCommonController.clearVehicleInformationSession(request);
@@ -162,12 +163,13 @@ public class InsReportAoDelegator  {
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(applicationDto.getStatus())){
             insRepService.routTaskToRoutBack(bpc,taskDto, applicationDto, appPremisesCorrelationId,historyRemarks);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            ParamUtil.setSessionAttr(bpc.request,"askType","Y");
+            ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,SystemAdminBaseConstants.YES);
             return;
         }
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationDto.getStatus())) {
             insRepService.routTaskToRoutBackAo3(bpc, taskDto, applicationDto, appPremisesCorrelationId, historyRemarks,true);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            ParamUtil.setSessionAttr(bpc.request,HcsaLicenceBeConstant.REPORT_ACK_CLARIFICATION_FLAG,SystemAdminBaseConstants.YES);
             return;
         }
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks,newCorrelationId);

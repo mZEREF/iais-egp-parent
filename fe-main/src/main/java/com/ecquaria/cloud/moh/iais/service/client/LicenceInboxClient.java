@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 
 /**
@@ -128,4 +129,7 @@ public interface LicenceInboxClient {
 
     @GetMapping(value = "/hcsa-licence/individual-sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SubLicenseeDto>> getIndividualSubLicensees(@RequestParam("orgId") String orgId);
+
+    @GetMapping(value = "/hcsa-licence/base-spec-licence",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getBaseOrSpecLicence(@RequestParam("licenceId") String licenceId);
 }

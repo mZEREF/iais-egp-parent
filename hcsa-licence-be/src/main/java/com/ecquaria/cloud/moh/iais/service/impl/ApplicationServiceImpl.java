@@ -1102,8 +1102,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                         if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
                             vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                         } else {
-                            String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
-                            vehicleFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            boolean aoRole =TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1.equalsIgnoreCase(taskDto.getProcessUrl());
+                            if(aoRole){
+                                return  InspectionConstants.SWITCH_ACTION_VIEW;
+                            }else {
+                                String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
+                                vehicleFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            }
                         }
                      }
                 }
