@@ -330,19 +330,19 @@ public class AppealApproveBatchjob {
         if(appPremisesRecommendationDto==null){
             log.error("=======appPremisesRecommendationDto is null =====");
         }else {
-            log.info("--------- appPremisesRecommendationDto is "+JsonUtil.parseToJson(appPremisesRecommendationDto));
+            log.info(StringUtil.changeForLog("--------- appPremisesRecommendationDto is "+JsonUtil.parseToJson(appPremisesRecommendationDto)));
         }
 
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
         if(newAppPremisesRecommendationDto==null){
             log.error("===== newAppPremisesRecommendationDto is null =====");
         }else {
-            log.info("------ newAppPremisesRecommendationDto is ----"+JsonUtil.parseToJson(newAppPremisesRecommendationDto));
+            log.info(StringUtil.changeForLog("------ newAppPremisesRecommendationDto is ----"+JsonUtil.parseToJson(newAppPremisesRecommendationDto)));
         }
         if(appealApplicationDto==null){
             log.error("======= appealApplicationDto is null =====");
         }else {
-            log.info("------- appealApplicationDto is---"+JsonUtil.parseToJson(appealApplicationDto));
+            log.info(StringUtil.changeForLog("------- appealApplicationDto is---"+JsonUtil.parseToJson(appealApplicationDto)));
         }
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
             String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
