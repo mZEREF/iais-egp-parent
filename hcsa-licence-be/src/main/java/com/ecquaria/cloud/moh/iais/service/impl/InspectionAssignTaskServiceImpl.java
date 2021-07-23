@@ -599,7 +599,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     private List<String> filterAppNoChecks(String[] appNoChecks) {
         List<String> appNoCheckList = IaisCommonUtils.genNewArrayList();
-        if(appNoChecks != null || appNoChecks.length > 0) {
+        if(appNoChecks != null && appNoChecks.length > 0) {
             for(int i = 0; i < appNoChecks.length; i++) {
                 if(!StringUtil.isEmpty(appNoChecks[i])) {
                     appNoCheckList.add(appNoChecks[i]);
