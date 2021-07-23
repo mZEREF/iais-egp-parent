@@ -95,6 +95,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,13 +112,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -1145,28 +1146,29 @@ public class LicenceApproveBatchjob {
 
                // LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
                 LicenceDto originLicenceDto = licenceService.getLicDtoById(originLicenceId);
-                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
-                        originLicenceDto, applicationDto, null, false);
-                licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                superLicDto.setLicenceDto(licenceDto);
+                if(originLicenceDto != null) {
+                    LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
+                            originLicenceDto, applicationDto, null, false);
+                    licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                    superLicDto.setLicenceDto(licenceDto);
 
-                originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationDto,licenceDto.getStatus());
-                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
-                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-                    if(originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())){
-                        log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:"+originLicenceDto.getStatus()));
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                    originLicenceDto = deleteOriginLicenceDto(originLicenceDto, applicationDto, licenceDto.getStatus());
+                    log.info(StringUtil.changeForLog("The applicationType is -->:" + ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                    if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)) {
+                        if (originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())) {
+                            log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:" + originLicenceDto.getStatus()));
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                        }
+                        superLicDto.setOriginLicenceDto(originLicenceDto);
                     }
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
-                }
 
-                if((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
-                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                        && migratedService.isActiveMigrated()
-                        && originLicenceDto.isMigrated()){
-                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                            && migratedService.isActiveMigrated()
+                            && originLicenceDto.isMigrated()) {
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    }
                 }
-
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
                 if(licSubLicenseeInfoDto != null){
