@@ -196,7 +196,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 if (!IaisCommonUtils.isEmpty(specLicIds)) {
                     for (String specLicId : specLicIds) {
                         AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
                         if (specLicenceDto != null) {
                             String specLicenceNo = specLicenceDto.getLicenceNo();
                             String licenceDtoId = specLicenceDto.getId();
@@ -226,7 +226,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 List<String> specIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
                 if (!IaisCommonUtils.isEmpty(specIds)) {
                     for (String specLicId : specIds) {
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
+                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
                         if (specLicenceDto != null) {
                             String licenceDtoId = specLicenceDto.getId();
                             specLicIds.add(licenceDtoId);
@@ -254,7 +254,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
