@@ -208,7 +208,10 @@ public final class CheckBoxTag extends DivTagSupport {
                 }
 
                 html.append("</div>");
-            }else {
+            } else {
+                if (request == null) {
+                    request = (HttpServletRequest) pageContext.getRequest();
+                }
                 //in <c:forEach> style
                 html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"')
                         .append("type=\"checkbox\"").append("value=").append('\"').append(MaskUtil.maskValue(name, value)).append('\"');
