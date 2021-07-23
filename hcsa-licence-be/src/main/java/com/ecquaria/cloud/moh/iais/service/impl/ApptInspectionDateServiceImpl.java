@@ -428,7 +428,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             taskDtoList.add(tDto);
         }
         taskService.createTasks(taskDtoList);
-        if(AppConsts.YES.equals(apptInspectionDateDto.getTcuAuditAnnouncedFlag())) {
+        if(AppConsts.YES.equals(apptInspectionDateDto.getTcuAuditAnnouncedFlag()) && taskDto != null) {
             //url
             String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
             String applicantId = getAppSubmitByWithLicId(applicationViewDto.getApplicationDto().getOriginLicenceId());
