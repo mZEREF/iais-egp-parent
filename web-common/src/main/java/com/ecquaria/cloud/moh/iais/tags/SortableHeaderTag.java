@@ -23,13 +23,17 @@ public class SortableHeaderTag extends DivTagSupport {
 
     public SortableHeaderTag() {
         super();
-        init();
+        clearValue();
     }
 
     // resets local state
     @Override
     protected void init() {
         super.init();
+        clearValue();
+    }
+
+    private void clearValue() {
         setField("");
         setValue("");
         setParam("");
