@@ -216,10 +216,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 log.error(e.getMessage(),e);
             }
             if (recallApplicationDto.getResult()){
-                for (ApplicationDto app:newAppSubmissionDto.getApplicationDtos()
+                for (ApplicationDto app:applicationDtoList
                 ) {
                     app.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
                 }
+                applicationFeClient.updateApplicationList(applicationDtoList);
             }
             newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
