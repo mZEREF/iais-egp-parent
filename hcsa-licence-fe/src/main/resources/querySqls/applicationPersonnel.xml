@@ -6,7 +6,11 @@
             from key_personnel as T1
             join lic_key_personnel T2 on T1.ID  = T2.PERSON_ID
             join licence T3 on t2.LICENCE_ID = t3.ID
-			AND t3.STATUS = 'LICEST001'
+			AND (t3.STATUS = 'LICEST001'
+            <#if activeMigrated?? && activeMigrated>
+             OR t3.STATUS = 'LICEST007' and t3.IS_MIGRATED = 1
+            </#if>
+			)
 			<#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
 			<#if personName??> AND charindex(:personName, T1.NAME)>0  </#if>
         ]]>

@@ -79,6 +79,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -626,6 +627,7 @@ public class RequestForChangeMenuDelegator {
             searchParam.addFilter("personName",  personName , true);
         }
         searchParam.addFilter("licenseeId", licenseeId, true);
+        searchParam.addParam("activeMigrated", IaisEGPHelper.isActiveMigrated());
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
         SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
 
@@ -646,7 +648,7 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "noRecord", "Y");
         }
         List<SelectOption> personelRoles = getPsnType();
-        Collections.sort(personelRoles,(s1,s2)->(s1.compareTo(s2)));
+        Collections.sort(personelRoles);
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
