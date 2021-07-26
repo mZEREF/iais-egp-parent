@@ -800,8 +800,8 @@ public class InterInboxDelegator {
                             }
                         });
                         if(!dtoList.isEmpty()){
+                            stringBuilder.insert(0,twoSentences);
                             bpc.request.getSession().setAttribute("bundleLicenceDtos",dtoList);
-                            stringBuilder.append(twoSentences);
                             bpc.request.setAttribute("draftByLicAppId", stringBuilder.toString());
                             bpc.request.setAttribute("isBundleShow","1");
                             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
