@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -9,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +34,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RequestForChangeAjaxController {
     @Autowired
     private ServiceConfigService serviceConfigService;
-
+    @Autowired
+    private RequestForChangeService requestForChangeService;
     @Autowired
     private LicenceViewService licenceViewService;
 
@@ -41,13 +46,19 @@ public class RequestForChangeAjaxController {
         String uen = ParamUtil.getString(request, "uen");
         log.info(StringUtil.changeForLog("uen is -->:"+uen));
         if (!StringUtil.isEmpty(uen)) {
-            ajaxResDto.setResCode("200");
-            Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
-            chargesTypeAttr.put("name", "subLicensee");
-            chargesTypeAttr.put("id", "subLicensee");
-            //chargesTypeAttr.put("style", "display: none;");
-            String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen), NewApplicationDelegator.FIRESTOPTION, null, false);
-            ajaxResDto.setResultJson(chargeTypeSelHtml);
+            //Judge the uen type;
+            ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
+            ajaxResDto.setResCode(licenseeDto.getLicenseeType());
+            log.info(StringUtil.changeForLog("licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
+            if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+                chargesTypeAttr.put("name", "subLicensee");
+                chargesTypeAttr.put("id", "subLicensee");
+                String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
+                        NewApplicationDelegator.FIRESTOPTION, null, false);
+                ajaxResDto.setResultJson(chargeTypeSelHtml);
+            }
         }
         log.info(StringUtil.changeForLog("the do checkUen end ...."));
         return ajaxResDto;

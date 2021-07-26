@@ -14,5 +14,7 @@ public class AjaxResDto implements Serializable {
 
     private String resCode;
 
+    private String type;
+
     private Object resultJson;
 }

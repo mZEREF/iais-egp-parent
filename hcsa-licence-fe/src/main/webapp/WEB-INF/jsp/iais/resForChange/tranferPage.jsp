@@ -1,4 +1,6 @@
-        <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
             <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
             <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
             <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -53,11 +55,12 @@
                                        </p>
                                      </iais:value>
                                  </iais:row>
-                                 <iais:row id = "uen">
+                                 <iais:row id = "subLicenseeRow">
                                        <iais:field width="5" mandatory="true" value="Please select the licensee to transfer to"/>
-                                       <iais:value width="7" id = "uenDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
+                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
                                          <iais:select name="subLicensee" firstOption="Please Select"
                                                        value=""/>
+                                         <span  class="error-msg" name="iaisErrorMsg" id="error_subLicenseeError"></span>
                                        </iais:value>
                                  </iais:row>
 
@@ -105,6 +108,7 @@
          }
 
             $(document).ready(function () {
+                $("#subLicenseeRow").hide();
                 $("#uen").change(function () {
                     var uen = $("#uen").val();
                     var data = {
@@ -117,9 +121,11 @@
                         'data':data,
                         'type':'POST',
                         'success':function (data) {
-                            if('200' == data.resCode){
-                                $("#uenDiv").html(data.resultJson + '');
-                                $("#subLicensee").niceSelect();
+                            if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                                if('<%=OrganizationConstants.LICENSEE_TYPE_CORPPASS%>' == data.type){
+                                    $("#subLicenseeDiv").html(data.resultJson + '');
+                                    $("#subLicensee").niceSelect();
+                                }
                             }
                         },
                         'error':function () {
