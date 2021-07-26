@@ -45,12 +45,21 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -60,15 +69,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /****
  *
@@ -87,8 +87,6 @@ public class RequestForChangeDelegator {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
-    @Autowired
-    private MigratedService migratedService;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -482,7 +480,7 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
-                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& migratedService.isActiveMigrated()){
+                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisCommonUtils.isActiveMigrated()){
                         amount=0.0;
                     }
                     appSubmissionDto.setAmount(amount);

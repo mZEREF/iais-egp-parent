@@ -69,7 +69,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -131,8 +130,6 @@ public class RequestForChangeMenuDelegator {
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
-    @Autowired
-    private MigratedService migratedService;
 
     /**
      * @param bpc
@@ -1720,7 +1717,7 @@ public class RequestForChangeMenuDelegator {
                     premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
                 }
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-                if(string.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&string.getMigrated()==1&& migratedService.isActiveMigrated()){
+                if(string.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&string.getMigrated()==1&& IaisCommonUtils.isActiveMigrated()){
                     total=0.0;
                 }
                 if (0 == total) {
