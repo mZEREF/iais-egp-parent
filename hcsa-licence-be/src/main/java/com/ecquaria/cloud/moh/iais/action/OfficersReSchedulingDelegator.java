@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -29,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +59,6 @@ public class OfficersReSchedulingDelegator {
 
     @Autowired
     private ApptInspectionDateService apptInspectionDateService;
-
-    @Autowired
-    private ApplicationClient applicationClient;
 
     @Autowired
     private OfficersReSchedulingDelegator(OfficersReSchedulingService officersReSchedulingService, ApptInspectionDateService apptInspectionDateService){
@@ -353,16 +348,8 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingAudit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingAudit start ...."));
-        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
         List<SelectOption> hours = apptInspectionDateService.getInspectionDateHours();
         List<SelectOption> endHours = apptInspectionDateService.getInspectionDateEndHours();
-        //task is tcu audit
-        String appNo = reschedulingOfficerDto.getAssignNo();
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(appNo).getEntity();
-        if(appPremisesCorrelationDto != null) {
-            String tcuAudit = apptInspectionDateService.getTcuAuditAnnouncedFlag(appPremisesCorrelationDto.getId());
-            ParamUtil.setSessionAttr(bpc.request, "tcuReApptAnnounced", tcuAudit);
-        }
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", (Serializable) hours);
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", (Serializable) endHours);
     }
@@ -383,13 +370,6 @@ public class OfficersReSchedulingDelegator {
         String endHours = ParamUtil.getRequestString(bpc.request, "endHours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
         List<SelectOption> endHoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "endHoursOption");
-        //set TcuAuditAnnouncedFlag
-        String[] tcuApptAnnouncedCheck = ParamUtil.getStrings(bpc.request, "tcuReApptAnnouncedCheck");
-        if(tcuApptAnnouncedCheck != null && tcuApptAnnouncedCheck.length > 0){
-            reschedulingOfficerDto.setTcuAuditAnnouncedFlag(AppConsts.YES);
-        } else {
-            reschedulingOfficerDto.setTcuAuditAnnouncedFlag(null);
-        }
         //combination date
         Date startDate = getSpecificDate(specificStartDate, hoursOption, startHours);
         Date endDate = getSpecificDate(specificEndDate, endHoursOption, endHours);
