@@ -157,7 +157,7 @@ public class AppealApproveBatchjob {
                             log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
                             switch(appealType){
                                 case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
-                                    appealApplicaiton(appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
+                                    appealApplicaiton(appPremiseMiscDtoList,appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
                                             appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,
                                             appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
                                             appealApproveDto);
@@ -233,21 +233,22 @@ public class AppealApproveBatchjob {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is end ..."));
     }
 
-    private void appealApplicaiton( List<ApplicationDto> appealApplicaiton,
-                                    List<ApplicationDto> rollBackApplication,
-                                    List<AppSvcKeyPersonnelDto> appealPersonnel,
-                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
-                                    List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
-                                    List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
-                                    List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
-                                    List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
-                                    List<ApplicationGroupDto> appealApplicationGroupDtos,
-                                    List<ApplicationGroupDto> rollBackApplicationGroupDtos,
-                                    AppealApproveDto appealApproveDto) {
+    private void appealApplicaiton(List<AppPremiseMiscDto> appPremiseMiscDtoList, List<ApplicationDto> appealApplicaiton,
+                                   List<ApplicationDto> rollBackApplication,
+                                   List<AppSvcKeyPersonnelDto> appealPersonnel,
+                                   List<AppSvcKeyPersonnelDto> rollBackPersonnel,
+                                   List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
+                                   List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
+                                   List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
+                                   List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
+                                   List<ApplicationGroupDto> appealApplicationGroupDtos,
+                                   List<ApplicationGroupDto> rollBackApplicationGroupDtos,
+                                   AppealApproveDto appealApproveDto) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is start ..."));
         ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         if(applicationDto!= null && appealDto != null){
+            appPremiseMiscDtoList.add(appealDto);
             String appealReason = appealDto.getReason();
             try {
                 switch(appealReason){
