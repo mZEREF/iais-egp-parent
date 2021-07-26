@@ -657,11 +657,13 @@ public class HcsaChklConfigDelegator {
                 return;
             }
 
+            /*
             List<String> unMarkList = IaisCommonUtils.genNewArrayList();
             for (String i : checked){
                 unMarkList.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
             }
-
+            */
+            List<String> unMarkList = checked.stream().collect(Collectors.toList());
             List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(unMarkList);
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);
