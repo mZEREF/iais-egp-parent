@@ -248,6 +248,7 @@ public class RequestForChangeMenuDelegator {
             searchParam.addFilter("type", doSearch, true);
             bpc.request.getSession().setAttribute("premiseDoSearch", doSearch);
         }
+        searchParam.addParam("activeMigrated", IaisEGPHelper.isActiveMigrated());
         QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
         SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
