@@ -258,6 +258,20 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" maxlength="2" type="text">
@@ -267,20 +281,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.pageMaximumCount}"  placeholder="maximum count">
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount2"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Clinical Director&nbsp;<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-clinical_director" maxlength="2" placeholder="minimum count" value="${CD.pageMandatoryCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount5"></span>
-          </div>
-          <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-clinical_director" maxlength="2" placeholder="maximum count" value="${CD.pageMaximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount5"></span>
           </div>
         </div>
       </div>
@@ -317,7 +317,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >General Conveyance Charges<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="man-charges" maxlength="2" placeholder="minimum count" value="${CHA.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount7"></span>
@@ -331,7 +331,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Other Charges / General Conveyance Charges<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label" >Medical Equipment and Other Charges<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="man-other-charges" maxlength="2" placeholder="minimum count" value="${CHAO.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount8"></span>
