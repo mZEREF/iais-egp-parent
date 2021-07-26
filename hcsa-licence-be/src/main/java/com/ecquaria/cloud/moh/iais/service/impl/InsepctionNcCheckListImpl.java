@@ -952,6 +952,10 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         for(AppPremisesPreInspectChklDto achk:serviceChklList){
             if(achk!=null){
                 String answerStr = achk.getAnswer();
+                if(StringUtil.isEmpty(answerStr)){
+                    log.info(StringUtil.changeForLog("------------ AppPremisesPreInspectChklDto corrId " + StringUtil.getNonNull(achk.getAppPremCorrId()) + " is error data." ));
+                    continue;
+                }
                 List<InspectionCheckListAnswerDto> answerDtoList = JsonUtil.parseToList(answerStr, InspectionCheckListAnswerDto.class);
                 if(!IaisCommonUtils.isEmpty(answerDtoList)){
                     getServiceNc(answerDtoList,ncAnswerDtoList);

@@ -375,7 +375,7 @@ public class InspectionPreDelegator {
         if (inspectionChecklist == null) {
             ApplicationViewDto appView = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
                     ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
-            boolean needVehicle = appView != null && IaisCommonUtils.isNotEmpty(appView.getAppSvcVehicleDtos());
+            boolean needVehicle = appView != null && fillupChklistService.checklistNeedVehicleSeparation(appView);
             inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto), needVehicle);
         }
         //generate self report
