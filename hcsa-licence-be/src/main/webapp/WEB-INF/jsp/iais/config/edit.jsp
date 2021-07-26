@@ -51,6 +51,7 @@
           </div>--%>
           <h2 class="col-xs-0 col-md-7 component-title">Edit HCSA Service</h2>
           <input type="text" style="display: none" name="serviceId" id="serviceId" value="${hcsaServiceDto.id}">
+          <input type="text" style="display: none" name="serviceSvcCode" id="serviceSvcCode" value="${hcsaServiceDto.svcCode}">
           <input type="text" style="display: none" name="serviceIsUse" value="${hcsaServiceDto.serviceIsUsed}">
         </div>
       </div>
@@ -395,6 +396,7 @@
                   <option <c:if test="${doc.dupForPerson=='CGO'}">selected</c:if> value="CGO">Clinical Governance Officer (CGO)</option>
                   <option <c:if test="${doc.dupForPerson=='SVCPSN'}">selected</c:if> value="SVCPSN">Service Personnel</option>
                   <option <c:if test="${doc.dupForPerson=='MAP'}">selected</c:if> value="MAP">MedAlert Person </option>
+                  <c:if test="${hcsaServiceDto.svcCode=='EAS' || hcsaServiceDto.svcCode=='MTS'}"><option <c:if test="${doc.dupForPerson=='CD'}">selected</c:if> value="CD">Clinical Director</option></c:if>
                 </select>
               </div>
               <div class="col-xs-12 col-md-5" style="margin-right: 2%">
@@ -1149,6 +1151,13 @@
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
         let number1 = parseInt(jQuery.length);
+        let svcCd=$('#serviceSvcCode').val();
+        let cd='';
+        let cd1='';
+        if(svcCd=='EAS'||svcCd=='MTS'){
+          cd="                   <option value=\"CD\">Clinical Director ?</option>\n";
+          cd1="     <li data-value=\"CD\" class=\"option\">Clinical Director </li>\n";
+        }
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
@@ -1176,6 +1185,7 @@
                     "                   <option value=\"CGO\">Clinical Governance Officer (CGO)?</option>\n" +
                     "                   <option value=\"SVCPSN\">Service Personnel ?</option>\n" +
                     "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +
+                    "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +cd+
                     "                 </select>\n" +
                     "  <div class=\"nice-select\" tabindex=\"0\">\n"+
                     "   <span class=\"current\">To duplicate for the personnel?</span>\n"+
@@ -1185,7 +1195,7 @@
                     "     <li data-value=\"DPO\" class=\"option\">Nominee</li>\n"+
                     "     <li data-value=\"CGO\" class=\"option\">Clinical Governance Officer (CGO)</li>\n"+
                     "     <li data-value=\"SVCPSN\" class=\"option\">Service Personnel</li>\n"+
-                    "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+
+                    "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+cd1+
                     "   </ul>\n"+
                     "  </div>\n"+
                     "              </div>\n" +
