@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
@@ -102,8 +101,6 @@ public class InboxServiceImpl implements InboxService {
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
-    @Autowired
-    private MigratedService migratedService;
     @Override
     public String getServiceNameById(String serviceId) {
         return configInboxClient.getServiceNameById(serviceId).getEntity();
@@ -333,7 +330,7 @@ public class InboxServiceImpl implements InboxService {
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!(migratedService.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                if(!(IaisCommonUtils.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
                     errorMap.put("errorMessage2",errorMsgEleven);
                 }
             }
@@ -433,7 +430,7 @@ public class InboxServiceImpl implements InboxService {
             if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                 isActive=true;
             }
-            if(migratedService.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+            if(IaisCommonUtils.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
                 isActive=true;
             }
         }
@@ -469,7 +466,7 @@ public class InboxServiceImpl implements InboxService {
                 return map;
             }else {
                 if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                    if(!(migratedService.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                    if(!(IaisCommonUtils.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
                         map.put(licId,Boolean.FALSE);
                         return map;
                     }
