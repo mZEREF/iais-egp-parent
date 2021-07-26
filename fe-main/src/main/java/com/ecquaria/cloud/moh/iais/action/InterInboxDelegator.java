@@ -853,7 +853,7 @@ public class InterInboxDelegator {
                     return ;
                 }else {
                     if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                        if(!(IaisCommonUtils.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                        if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
                             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                             bpc.request.setAttribute("cessationError",inbox_ack011);
                             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);

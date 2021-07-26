@@ -480,7 +480,7 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
-                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisCommonUtils.isActiveMigrated()){
+                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
                         amount=0.0;
                     }
                     appSubmissionDto.setAmount(amount);

@@ -1161,7 +1161,7 @@ public class LicenceApproveBatchjob {
 
                     if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                            && IaisCommonUtils.isActiveMigrated()
+                            && IaisEGPHelper.isActiveMigrated()
                             && originLicenceDto.isMigrated()) {
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                     }
@@ -2005,7 +2005,7 @@ public class LicenceApproveBatchjob {
         }
         if(applicationDto != null && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                && IaisCommonUtils.isActiveMigrated()
+                && IaisEGPHelper.isActiveMigrated()
                 && originLicenceDto.isMigrated()){
             licenceDto.setStatus(originLicenceDto.getStatus());
         }else{

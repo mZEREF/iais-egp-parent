@@ -330,7 +330,7 @@ public class InboxServiceImpl implements InboxService {
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!(IaisCommonUtils.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                if(!(IaisEGPHelper.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
                     errorMap.put("errorMessage2",errorMsgEleven);
                 }
             }
@@ -430,7 +430,7 @@ public class InboxServiceImpl implements InboxService {
             if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                 isActive=true;
             }
-            if(IaisCommonUtils.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+            if(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
                 isActive=true;
             }
         }
@@ -466,7 +466,7 @@ public class InboxServiceImpl implements InboxService {
                 return map;
             }else {
                 if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
-                    if(!(IaisCommonUtils.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
                         map.put(licId,Boolean.FALSE);
                         return map;
                     }

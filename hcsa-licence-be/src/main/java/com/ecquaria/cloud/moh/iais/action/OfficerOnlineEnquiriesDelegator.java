@@ -315,7 +315,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(licIds.get(rfi.getLicenceId())){
                         if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_ACTIVE)){
                             rfi.setIsCessation(1);// can
-                        }else if(IaisCommonUtils.isActiveMigrated()&&licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()!=0){
+                        }else if(IaisEGPHelper.isActiveMigrated()&&licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()!=0){
                             rfi.setIsCessation(1);// can
                         }else {
                             rfi.setIsCessation(0);//not ACTIVE

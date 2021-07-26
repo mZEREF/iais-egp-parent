@@ -2417,7 +2417,7 @@ public class NewApplicationDelegator {
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
-        if(licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceById.getMigrated()==1&& IaisCommonUtils.isActiveMigrated()){
+        if(licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceById.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
             amount=0.0;
         }
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
