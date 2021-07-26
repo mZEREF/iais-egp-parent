@@ -1143,7 +1143,6 @@ public class LicenceApproveBatchjob {
 
                // LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
                 LicenceDto originLicenceDto = licenceService.getLicDtoById(originLicenceId);
-                if(originLicenceDto != null) {
                     LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                             originLicenceDto, applicationDto, null, false);
                     licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -1165,7 +1164,6 @@ public class LicenceApproveBatchjob {
                             && originLicenceDto.isMigrated()) {
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                     }
-                }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
                 if(licSubLicenseeInfoDto != null){
