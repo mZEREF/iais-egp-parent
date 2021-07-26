@@ -1139,7 +1139,6 @@ public class LicenceApproveBatchjob {
                 String applicationType = applicationDto.getApplicationType();
 
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                if(originLicenceDto != null) {
                     LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                             originLicenceDto, applicationDto, null, false);
                     licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -1154,7 +1153,6 @@ public class LicenceApproveBatchjob {
                         }
                         superLicDto.setOriginLicenceDto(originLicenceDto);
                     }
-                }
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
