@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -99,8 +98,6 @@ public class OfficerOnlineEnquiriesDelegator {
     ApplicationClient applicationClient;
     @Autowired
     SystemParamConfig systemParamConfig;
-    @Autowired
-    private MigratedService migratedService;
 
     private static final String SEARCH_NO="searchNo";
     private static final String RFI_QUERY="ReqForInfoQuery";
@@ -318,7 +315,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(licIds.get(rfi.getLicenceId())){
                         if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_ACTIVE)){
                             rfi.setIsCessation(1);// can
-                        }else if(migratedService.isActiveMigrated()&&licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()!=0){
+                        }else if(IaisCommonUtils.isActiveMigrated()&&licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()!=0){
                             rfi.setIsCessation(1);// can
                         }else {
                             rfi.setIsCessation(0);//not ACTIVE

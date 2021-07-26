@@ -95,7 +95,6 @@ import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
 import com.ecquaria.cloud.moh.iais.rfi.impl.RfiLoadingCheckImplForRenew;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.StepColorService;
@@ -243,8 +242,6 @@ public class NewApplicationDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private DealSessionUtil dealSessionUtil;
-    @Autowired
-    private MigratedService migratedService;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -2420,7 +2417,7 @@ public class NewApplicationDelegator {
         }
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
-        if(licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceById.getMigrated()==1&& migratedService.isActiveMigrated()){
+        if(licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceById.getMigrated()==1&& IaisCommonUtils.isActiveMigrated()){
             amount=0.0;
         }
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));

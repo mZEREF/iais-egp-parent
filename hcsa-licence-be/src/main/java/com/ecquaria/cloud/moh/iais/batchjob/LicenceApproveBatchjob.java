@@ -84,7 +84,6 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.MigratedService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -151,8 +150,6 @@ public class LicenceApproveBatchjob {
     SystemBeLicClient systemBeLicClient;
     @Autowired
     private InspEmailService inspEmailService;
-    @Autowired
-    private MigratedService migratedService;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -1164,7 +1161,7 @@ public class LicenceApproveBatchjob {
 
                     if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                             ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                            && migratedService.isActiveMigrated()
+                            && IaisCommonUtils.isActiveMigrated()
                             && originLicenceDto.isMigrated()) {
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                     }
@@ -2008,7 +2005,7 @@ public class LicenceApproveBatchjob {
         }
         if(applicationDto != null && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                && migratedService.isActiveMigrated()
+                && IaisCommonUtils.isActiveMigrated()
                 && originLicenceDto.isMigrated()){
             licenceDto.setStatus(originLicenceDto.getStatus());
         }else{
