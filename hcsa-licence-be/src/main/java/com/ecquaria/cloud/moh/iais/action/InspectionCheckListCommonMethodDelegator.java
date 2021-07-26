@@ -505,7 +505,7 @@ public class InspectionCheckListCommonMethodDelegator {
     public void setSpecServiceCheckListData(HttpServletRequest request,InspectionSpecServiceDto originalInspectionSpecServiceDto,AdCheckListShowDto adchklDto,boolean beforeFinishList, List<OrgUserDto> orgUserDtoUsers,ApplicationViewDto applicationViewDto){
          if(checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
-             List<AppSvcVehicleDto> appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
+             List<AppSvcVehicleDto> appSvcVehicleDtos =  ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationViewDto.getApplicationDto().getApplicationType()) ? applicationViewDto.getVehicleRfcShowDtos() : applicationViewDto.getAppSvcVehicleDtos();
              if(IaisCommonUtils.isNotEmpty(appSvcVehicleDtos)){
                  List<InspectionSpecServiceDto> fDtosDtos = IaisCommonUtils.genNewArrayList();
                  for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
