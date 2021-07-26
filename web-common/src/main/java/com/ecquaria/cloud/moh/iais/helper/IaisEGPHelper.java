@@ -15,6 +15,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -817,5 +818,42 @@ public final class IaisEGPHelper extends EGPHelper {
             }
         }
         ParamUtil.setSessionAttr(request, redisplayName, set);
+    }
+
+    public static boolean isActiveMigrated() {
+        log.info(StringUtil.changeForLog("The isActiveMigrated start ..."));
+        SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
+        if (systemParamConfig == null) {
+            log.info(StringUtil.changeForLog("The systemParamConfig is null!"));
+            return false;
+        }
+        String startDateStr = systemParamConfig.getMigratedLicenceStart();
+        String endDateStr = systemParamConfig.getMigratedLicenceEnd();
+        Date nowDate = new Date();
+        log.info(StringUtil.changeForLog("The isActiveMigrated startDateStr -->:"+startDateStr));
+        log.info(StringUtil.changeForLog("The isActiveMigrated endDateStr -->:"+endDateStr));
+        log.info(StringUtil.changeForLog("The isActiveMigrated nowDate -->:"+nowDate));
+        boolean result = false;
+        try {
+            if(!StringUtil.isEmpty(endDateStr)){
+                SimpleDateFormat df = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+                Date endDate = df.parse(endDateStr);
+                if(nowDate.before(endDate)){
+                    result =  true;
+                }
+                log.info(StringUtil.changeForLog("The isActiveMigrated endDateStr result-->:"+result));
+                if(!StringUtil.isEmpty(startDateStr)&&result){
+                    Date startDate = df.parse(startDateStr);
+                    if(nowDate.before(startDate)){
+                        result = false;
+                    }
+                }
+                log.info(StringUtil.changeForLog("The isActiveMigrated startDate result-->:"+result));
+            }
+        } catch (ParseException e) {
+            log.error(e.getMessage(),e);
+        }
+        log.info(StringUtil.changeForLog("The isActiveMigrated end ..."));
+        return  result;
     }
 }
