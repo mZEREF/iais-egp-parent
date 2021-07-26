@@ -448,10 +448,12 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      * description: Verify that the added id already exists for the same section
      */
-        public void configToChecklist(BaseProcessClass bpc){
+    public void configToChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-        if (checked == null || checked.length == 0){
+        //String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+        LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request,
+                HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        if (checked == null || checked.size() == 0) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
