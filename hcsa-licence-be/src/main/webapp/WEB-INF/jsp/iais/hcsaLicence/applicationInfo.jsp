@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <div class="panel panel-default">
         <!-- Default panel contents -->
         <div class="panel-heading"><strong>Submission Details</strong></div>
@@ -70,26 +70,39 @@
                 <div class="table-gp">
                     <table class="table table-bordered" style="margin-bottom: 0">
                         <tbody>
-                        <tr>
-                            <td class="col-xs-6" align="right">HCI Code</td>
-                            <td class="col-xs-6" style="padding-left : 20px">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
-                        </tr>
-                        <tr>
-                            <td align="right">HCI Name</td>
-                            <td style="padding-left : 20px">${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
-                        </tr>
-                        <tr>
-                            <td align="right">HCI Address</td>
-                            <td style="padding-left : 20px">${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
-                        </tr>
-                        <tr>
-                            <td align="right">Telephone</td>
-                            <td style="padding-left : 20px">${applicationViewDto.telephone == null || applicationViewDto.telephone == "" ? '-' : applicationViewDto.telephone}</td>
-                        </tr>
-                        <%--                                                    <tr>--%>
-                        <%--                                                        <td align="right">Fax</td>--%>
-                        <%--                                                        <td>-</td>--%>
-                        <%--                                                    </tr>--%>
+                            <tr>
+                                <td class="col-xs-6" align="right">HCI Code</td>
+                                <td class="col-xs-6" style="padding-left : 20px">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">HCI Name</td>
+                                <td style="padding-left : 20px">${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">HCI Address</td>
+                                <td style="padding-left : 20px">${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
+                            </tr>
+                            <tr>
+                                <td align="right">Telephone</td>
+                                <td style="padding-left : 20px">${applicationViewDto.telephone == null || applicationViewDto.telephone == "" ? '-' : applicationViewDto.telephone}</td>
+                            </tr>
+                            <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId}">
+                                <tr>
+                                    <td align="right">Preferred Inspection Date</td>
+                                    <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate != null &&
+                                                applicationViewDto.applicationGroupDto.prefInspEndDate != null}">
+                                        <td style="padding-left : 20px">
+                                            <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspStartDate}' pattern='dd/MM/yyyy'/> - <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspEndDate}' pattern='dd/MM/yyyy'/>
+                                        </td>
+                                    </c:if>
+                                    <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate == null ||
+                                                applicationViewDto.applicationGroupDto.prefInspEndDate == null}">
+                                        <td style="padding-left : 20px">
+                                            <c:out value="-"></c:out>
+                                        </td>
+                                    </c:if>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                 </div>
