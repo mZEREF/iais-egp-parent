@@ -123,10 +123,19 @@
                         'success':function (data) {
                             if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
                                 if('<%=OrganizationConstants.LICENSEE_TYPE_CORPPASS%>' == data.type){
+                                    $("#error_uenError").html('');
                                     $("#subLicenseeDiv").html(data.resultJson + '');
                                     $("#subLicensee").niceSelect();
+                                    $("#subLicenseeRow").show();
                                 }
+                            }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                                $("#error_uenError").html(data.resultJson + '');
+                                $("#subLicenseeRow").hide();
+                            }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                                $("#error_uenError").html('');
+                                $("#subLicenseeRow").hide();
                             }
+
                         },
                         'error':function () {
 

@@ -7,7 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -29,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -45,21 +50,12 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -69,6 +65,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /****
  *
@@ -97,6 +104,67 @@ public class RequestForChangeDelegator {
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
 
+    @Autowired
+    private LicenceViewService licenceViewService;
+
+    @PostMapping(value = "/check-uen")
+    public @ResponseBody
+    AjaxResDto checkUen(HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("the do checkUen start ...."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        String uen = ParamUtil.getString(request, "uen");
+        log.info(StringUtil.changeForLog("uen is -->:"+uen));
+        String licenceId = (String) ParamUtil.getSessionAttr(request, RfcConst.LICENCEID);
+        log.info(StringUtil.changeForLog("licenceId is -->:"+licenceId));
+        if (!StringUtil.isEmpty(uen)) {
+            //Judge the uen type;
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
+            LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
+            //doValidateLojic();
+            if(licenseeDto == null){
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
+                ajaxResDto.setResultJson("uen failed");
+            }else{
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
+                ajaxResDto.setType(licenseeDto.getLicenseeType());
+                log.info(StringUtil.changeForLog("licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
+                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                    Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
+                    chargesTypeAttr.put("name", "subLicensee");
+                    chargesTypeAttr.put("id", "subLicensee");
+                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
+                            NewApplicationDelegator.FIRESTOPTION, null, false);
+                    ajaxResDto.setResultJson(chargeTypeSelHtml);
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("the do checkUen end ...."));
+        return ajaxResDto;
+    }
+    private List<SelectOption> getSelect(String uen){
+        log.info(StringUtil.changeForLog("the getSelect start ...."));
+        List<SelectOption> result = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(uen)){
+            OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
+            if(organizationDto != null){
+                List<SubLicenseeDto>  subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
+                if(!IaisCommonUtils.isEmpty(subLicenseeDtos)){
+                    for(SubLicenseeDto subLicenseeDto : subLicenseeDtos){
+                        result.add(new SelectOption(subLicenseeDto.getId(),subLicenseeDto.getDisplayName()));
+                    }
+                }else{
+                    log.error(StringUtil.changeForLog("This orgId can not find out the subLicenseeDtos -->:"+organizationDto.getId()));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("This uen can not OrganizationDto -->:" +uen));
+            }
+        }else {
+            log.info(StringUtil.changeForLog("The uen is null"));
+        }
+        result.add(new SelectOption("new","Add a new individual licensee"));
+        log.info(StringUtil.changeForLog("the getSelect end ...."));
+        return result;
+    }
     /**
      *
      * @param bpc
@@ -824,14 +892,13 @@ public class RequestForChangeDelegator {
         return isSelect;
     }
 
-    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email){
+    private  Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
             error.put("premisesError","RFC_ERR005");
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));
-
         }else{
             try{
                 feEicGatewayClient.getUenInfo(uen);
