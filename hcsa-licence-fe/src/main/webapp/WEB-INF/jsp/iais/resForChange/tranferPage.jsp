@@ -127,6 +127,9 @@
                                     $("#subLicenseeDiv").html(data.resultJson + '');
                                     $("#subLicensee").niceSelect();
                                     $("#subLicenseeRow").show();
+                                }else{
+                                    $("#error_uenError").html('');
+                                    $("#subLicenseeRow").hide();
                                 }
                             }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
                                 $("#error_uenError").html(data.resultJson + '');

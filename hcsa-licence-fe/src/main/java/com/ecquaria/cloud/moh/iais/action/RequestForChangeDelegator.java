@@ -116,15 +116,13 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("uen is -->:"+uen));
         String licenceId = (String) ParamUtil.getSessionAttr(request, RfcConst.LICENCEID);
         log.info(StringUtil.changeForLog("licenceId is -->:"+licenceId));
-        if (!StringUtil.isEmpty(uen)) {
+        Map<String,String> error = doValidateEmpty(uen,new String[]{"selectCheakboxs"},"Email");
+        if (error.isEmpty()) {
             //Judge the uen type;
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
-            //doValidateLojic();
-            if(licenseeDto == null){
-                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
-                ajaxResDto.setResultJson("uen failed");
-            }else{
+            doValidateLojic(uen,error,licenceDto,licenseeDto);
+            if(error.isEmpty()){
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 ajaxResDto.setType(licenseeDto.getLicenseeType());
                 log.info(StringUtil.changeForLog("licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
@@ -136,7 +134,13 @@ public class RequestForChangeDelegator {
                             NewApplicationDelegator.FIRESTOPTION, null, false);
                     ajaxResDto.setResultJson(chargeTypeSelHtml);
                 }
+            }else{
+                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
+                ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
             }
+        }else{
+            ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
+            ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
         }
         log.info(StringUtil.changeForLog("the do checkUen end ...."));
         return ajaxResDto;
@@ -541,6 +545,25 @@ public class RequestForChangeDelegator {
                 appSubmissionDto.setNewLicenseeId(newLicenseeId);
                 appSubmissionDto.setLicenseeId(licenceDto.getLicenseeId());
                 appSubmissionDto.setAutoRfc(false);
+                //sub licensee
+                SubLicenseeDto subLicenseeDto = null;
+                log.info(StringUtil.changeForLog("The licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
+                if(OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeDto.getLicenseeType())){
+                    OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
+                    if(organizationDto != null) {
+                        List<SubLicenseeDto> subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
+                        if (!IaisCommonUtils.isEmpty(subLicenseeDtos)) {
+                            subLicenseeDto =  subLicenseeDtos.get(0);
+                        }
+                    }
+                }else {
+
+                }
+                if(subLicenseeDto != null){
+                subLicenseeDto.setId(null);
+                subLicenseeDto.setUenNo(uen);
+                appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+
                 String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
                 log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
@@ -623,9 +646,14 @@ public class RequestForChangeDelegator {
                             .append(RfcConst.PAYMENTPROCESS);
                     String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                     IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+                 }
+                }else{
+                    log.error(StringUtil.changeForLog("this uen can not get the subLicenseeDto" + uen));
+                    error.put("uenError","Data Error !!!");
                 }
             }
-        }else{
+        }
+        if(!error.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
             ParamUtil.setRequestAttr(bpc.request,"email",email);
@@ -918,17 +946,20 @@ public class RequestForChangeDelegator {
             if(licenseeDto == null){
                 error.put("uenError","RFC_ERR002");
             }else{
-                List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
-                        getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
-                List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
-                boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
-                if(canTransfer){
-                    if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
-                        log.debug(StringUtil.changeForLog("This Uen can not get the licensee -->:"+uen));
-                        error.put("uenError","RFC_ERR021");
+                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                    if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                        List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
+                                getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
+                        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
+                        boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
+                        if(!canTransfer){
+                            error.put("uenError","RFC_ERR007");
+                        }
+                    }else{
+                        log.info(StringUtil.changeForLog("The same uen -->:"+uen));
                     }
                 }else{
-                    error.put("uenError","RFC_ERR007");
+                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
                 }
             }
         }
