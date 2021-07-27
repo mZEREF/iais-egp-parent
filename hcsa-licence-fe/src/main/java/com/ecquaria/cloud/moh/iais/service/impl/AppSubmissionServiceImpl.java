@@ -3717,6 +3717,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("viewPrint");
 
         //clear Session
+        session.removeAttribute(NewApplicationDelegator.ALL_SUBMISSION_DTOS);
         session.removeAttribute(NewApplicationDelegator.APPSUBMISSIONDTO);
         session.removeAttribute(NewApplicationDelegator.HCSASERVICEDTO);
         session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);

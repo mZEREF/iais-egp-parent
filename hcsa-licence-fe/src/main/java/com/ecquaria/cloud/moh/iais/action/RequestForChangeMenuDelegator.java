@@ -1681,7 +1681,9 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
 
+        boolean isAutoRfc = true;
         if (!isSame || !b || eqAddFloorNo) {
+            isAutoRfc = false;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
             }
@@ -1697,9 +1699,25 @@ public class RequestForChangeMenuDelegator {
         amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         Double total = feeDto.getTotal();
+        if (total == null) {
+            total = 0.0;
+        }
         //
         if (selectLicence != null) {
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setServiceEdit(false);
+            appEditSelectDto.setDocEdit(false);
+            appEditSelectDto.setPoEdit(false);
+            appEditSelectDto.setPremisesListEdit(true);
+            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setChangeHciName(!isSame);
+            appEditSelectDto.setChangeInLocation(b);
+            appEditSelectDto.setChangeAddFloorNo(eqAddFloorNo);
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
+            boolean isValid = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0), null,
+                    total, appGrpNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, bpc.request);
+            log.info(StringUtil.changeForLog("The affected data is valid - " + isValid));
+            /*
             for (LicenceDto string : selectLicence) {
                 LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
                 boolean grpLic = licenceDto.isGrpLic();
@@ -1812,7 +1830,7 @@ public class RequestForChangeMenuDelegator {
                 oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                 requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
-            }
+            }*/
         }
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         String submissionId = generateIdClient.getSeqId().getEntity();

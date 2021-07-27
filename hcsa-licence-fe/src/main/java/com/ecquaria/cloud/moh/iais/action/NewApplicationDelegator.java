@@ -127,6 +127,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -169,6 +170,7 @@ public class NewApplicationDelegator {
     public static final String APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
     public static final String PRIMARY_DOC_CONFIG = "primaryDocConfig";
     public static final String SVC_DOC_CONFIG = "svcDocConfig";
+    public static final String ALL_SUBMISSION_DTOS = "allSubmissionDtos";
 
     public static final String REQUESTINFORMATIONCONFIG = "requestInformationConfig";
     public static final String ACKSTATUS = "AckStatus";
@@ -2332,6 +2334,9 @@ public class NewApplicationDelegator {
                 NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, Boolean.FALSE,
                         ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
         }
+        appEditSelectDto.setChangeHciName(changeHciName);
+        appEditSelectDto.setChangeInLocation(changeInLocation);
+        appEditSelectDto.setChangeAddFloorNo(eqAddFloorNo);
         log.info(StringUtil.changeForLog("changeHciName: " + changeHciName + " - changeInLocation: " + changeInLocation + " - " +
                 "eqAddFloorNo: " + eqAddFloorNo + " - changeVehicles: " + changeVehicles + " - isAutoRfc: " + isAutoRfc));
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
@@ -2638,6 +2643,10 @@ public class NewApplicationDelegator {
 
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
+        List<AppSubmissionDto> allSubmissionDtos = IaisCommonUtils.genNewArrayList();
+        allSubmissionDtos.addAll(notAutoSaveAppsubmission);
+        allSubmissionDtos.addAll(autoSaveAppsubmission);
+        bpc.request.getSession().setAttribute("allSubmissionDtos",allSubmissionDtos);
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
@@ -2726,7 +2735,14 @@ public class NewApplicationDelegator {
             if (attribute == null) {
                 attribute = premisesDto.getLicenceDtos();
             }
+            boolean isValid = true;
             if (attribute != null) {
+                isValid = requestForChangeService.checkAffectedAppSubmissions(attribute, premisesDto, oldPremisesDtoList.get(i),
+                        amount, appGroupNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, request);
+                if (!isValid) {
+                    return isValid;
+                }
+                /*
                 for (LicenceDto string : attribute) {
                     HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(
                             string.getSvcName());
@@ -2866,7 +2882,7 @@ public class NewApplicationDelegator {
                     requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                     appSubmissionDtoByLicenceId.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                }
+                }*/
             }
         }
         return true;
@@ -3422,6 +3438,13 @@ public class NewApplicationDelegator {
             List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,RFI_REPLY_SVC_DTO);
             ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         }
+        List<AppSubmissionDto> allSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("allSubmissionDtos");
+        Set<String> set = new LinkedHashSet<>();
+        if (allSubmissionDtos != null) {
+            allSubmissionDtos.forEach(dto -> set.add(dto.getServiceName()));
+        }
+        bpc.request.setAttribute("allSvcNames", set);
+
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 

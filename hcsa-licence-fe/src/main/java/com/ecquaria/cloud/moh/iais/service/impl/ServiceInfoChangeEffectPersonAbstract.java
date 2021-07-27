@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -249,25 +250,25 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             }
             for (AppSvcPrincipalOfficersDto v : n) {
                 for (AppSvcPrincipalOfficersDto v1 : o) {
-                    if(v.getIdNo().equals(v1.getIdNo())){
-                        boolean b=    v.getProfessionBoard().equals(v1.getProfessionBoard())
-                                &&v.getProfRegNo().equals(v1.getProfRegNo())
-                                &&v.getSalutation().equals(v1.getSalutation())
-                                &&v.getName().equals(v1.getName())
-                                &&v.getIdType().equals(v1.getIdType())
-                                &&v.getDesignation().equals(v1.getDesignation())
-                                &&v.getSpeciality().equals(v1.getSpeciality())
-                                &&v.getSpecialtyGetDate().equals(v1.getSpecialtyGetDate())
-                                &&v.getTypeOfCurrRegi().equals(v1.getTypeOfCurrRegi())
-                                &&v.getCurrRegiDate().equals(v1.getCurrRegiDate())
-                                &&v.getPraCerEndDate().equals(v1.getPraCerEndDate())
-                                &&v.getTypeOfRegister().equals(v1.getTypeOfRegister())
-                                &&v.getRelevantExperience().equals(v1.getRelevantExperience())
-                                &&v.getHoldCerByEMS().equals(v1.getHoldCerByEMS())
-                                &&v.getAclsExpiryDate().equals(v1.getAclsExpiryDate())
-                                &&v.getMobileNo().equals(v1.getMobileNo())
-                                &&v.getEmailAddr().equals(v1.getEmailAddr());
-                        if(!b){
+                    if (v.getIdNo().equals(v1.getIdNo())) {
+                        boolean b = Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
+                                && Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
+                                && Objects.equals(v.getSalutation(), v1.getSalutation())
+                                && Objects.equals(v.getName(), v1.getName())
+                                && Objects.equals(v.getIdType(), v1.getIdType())
+                                && Objects.equals(v.getDesignation(), v1.getDesignation())
+                                && Objects.equals(v.getSpeciality(), v1.getSpeciality())
+                                && Objects.equals(v.getSpecialtyGetDate(), v1.getSpecialtyGetDate())
+                                && Objects.equals(v.getTypeOfCurrRegi(), v1.getTypeOfCurrRegi())
+                                && Objects.equals(v.getCurrRegiDate(), v1.getCurrRegiDate())
+                                && Objects.equals(v.getPraCerEndDate(), v1.getPraCerEndDate())
+                                && Objects.equals(v.getTypeOfRegister(), v1.getTypeOfRegister())
+                                && Objects.equals(v.getRelevantExperience(), v1.getRelevantExperience())
+                                && Objects.equals(v.getHoldCerByEMS(), v1.getHoldCerByEMS())
+                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())
+                                && Objects.equals(v.getMobileNo(), v1.getMobileNo())
+                                && Objects.equals(v.getEmailAddr(), v1.getEmailAddr());
+                        if (!b) {
                             ids.add(v.getIdNo());
                         }
                     }
