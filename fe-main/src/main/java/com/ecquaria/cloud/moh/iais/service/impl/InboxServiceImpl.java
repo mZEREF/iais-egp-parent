@@ -420,7 +420,7 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         boolean isActive = false;
         String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
