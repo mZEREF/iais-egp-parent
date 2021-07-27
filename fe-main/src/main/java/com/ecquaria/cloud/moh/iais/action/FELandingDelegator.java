@@ -34,6 +34,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class FELandingDelegator {
 	public static final String LOGIN_MODE_REAL 					= "Prod";
+	public static final String LOGIN_MODE_REAL_OIDC 			= "Prod.OIDC";
 	public static final String LOGIN_MODE_DUMMY_NOPASS 			= "Dummy.NoPass";
 	public static final String LOGIN_MODE_DUMMY_WITHPASS 	    = "Dummy.WithPass";
 	@Value("${jwt.interlogin.base64encodedpub}")
@@ -129,12 +130,17 @@ public class FELandingDelegator {
 		Claims claims = claimsFromToken.getBody();
 		String uenId = (String) claims.get("uen");
 		String nric = (String) claims.get("nric");
+		String iat = (String) claims.get("iat");
+
 		if (!StringUtil.isEmpty(uenId)) {
+			log.info(StringUtil.changeForLog("Uen Id ==> " + uenId));
 			bpc.request.setAttribute("ssoLoginType", "corpass");
 			bpc.request.setAttribute("ssoUen", uenId);
 		} else {
 			bpc.request.setAttribute("ssoLoginType", "singpass");
 		}
+		log.info(StringUtil.changeForLog("NRIC ==> " + nric));
+		log.info(StringUtil.changeForLog("Issue date ==> " + iat));
 		bpc.request.setAttribute("ssoNric", nric);
 		bpc.request.setAttribute("ssoLoginFlag", AppConsts.YES);
 	}
