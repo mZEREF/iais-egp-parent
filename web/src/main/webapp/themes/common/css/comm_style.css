@@ -47,7 +47,7 @@ p, span {
 }
 
 .min-row .form-group {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     line-height: 1.42857143;
 }
 
@@ -57,7 +57,7 @@ p, span {
 }
 
 .min-row .form-group label {
-    line-height: 1.42857143;
+    line-height: 1.42857143 !important;
     font-weight: normal;
 }
 

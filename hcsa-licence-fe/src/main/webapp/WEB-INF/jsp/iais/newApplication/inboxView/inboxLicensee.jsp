@@ -14,7 +14,7 @@
     </div>
     <div id="previewLicensee" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
-            <div class="panel-main-content form-horizontal">
+            <div class="panel-main-content form-horizontal min-row">
                 <iais:row>
                     <iais:value width="10">
                         <strong class="app-font-size-22 premHeader">Licensee Details</strong>
