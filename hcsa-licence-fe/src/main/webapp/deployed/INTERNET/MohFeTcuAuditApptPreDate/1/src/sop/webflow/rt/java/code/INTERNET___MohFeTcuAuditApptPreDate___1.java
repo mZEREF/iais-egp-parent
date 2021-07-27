@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohFeTcuAuditApptPreDate___1 extends BaseProcessClass {
@@ -41,6 +42,11 @@ public class INTERNET___MohFeTcuAuditApptPreDate___1 extends BaseProcessClass {
 	public void feTcuAuditApptPreDateVali_OnStepProcess_0() throws Exception {
 	// 		feTcuAuditApptPreDateVali->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "feTcuAuditApptPreDateVali", this);
+	}
+
+	public void feTcuAuditApptPreDateSubmit_OnStepProcess_0() throws Exception {
+	// 		feTcuAuditApptPreDateSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "feTcuAuditApptPreDateSubmit", this);
 	}
 
 }

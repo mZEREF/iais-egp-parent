@@ -37,6 +37,13 @@
     <JavaCode defClass="" executor="" methodName="feTcuAuditApptPreDateVali_OnStepProcess_0" name="feTcuAuditApptPreDateVali_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="feTcuAuditApptPreDateSubmit" x="800" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="feTcuAuditApptPreDateSubmit_OnStepProcess_0" name="feTcuAuditApptPreDateSubmit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="feTcuAuditApptPreDatePage" stageIndicator="" x="610" y="100">
@@ -45,7 +52,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="feTcuAuditApptPreDateSuccessPage" stageIndicator="" x="800" y="400">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="feTcuAuditApptPreDateSuccessPage" stageIndicator="" x="580" y="400">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -78,12 +85,15 @@
   <SynchronousLink destinationName="/Pages/WebPage/feTcuAuditApptPreDatePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(1110,420)(630,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/feTcuAuditApptPreDateSuccessPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/feTcuAuditApptPreDateSubmit" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
    <position>{(1110,420)(820,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/feTcuAuditApptPreDateSuccessPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/feTcuAuditApptPreDateSubmit" style="rectanular">
+   <position>{(820,420)(600,420)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/feTcuAuditApptPreDatePage" componentIfTrue="/Pages/WebPage/feTcuAuditApptPreDateSuccessPage" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="1090" y="400">
+  <Condition componentIfFalse="/Pages/WebPage/feTcuAuditApptPreDatePage" componentIfTrue="/Steps/AutomaticStep/feTcuAuditApptPreDateSubmit" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="1090" y="400">
    <Description/>
   </Condition>
  </Conditions>
