@@ -1717,6 +1717,9 @@ public class RequestForChangeMenuDelegator {
                     premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
                 }
                 appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                if(string.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&string.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
+                    total=0.0;
+                }
                 if (0 == total) {
                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
 

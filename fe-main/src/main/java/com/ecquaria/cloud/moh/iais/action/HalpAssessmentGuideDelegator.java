@@ -1948,12 +1948,21 @@ public class HalpAssessmentGuideDelegator {
         }
         for(String licId : licIdValue){
             LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
             if(licenceDto==null){
-                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                bpc.request.setAttribute("cessationError",cessationError);
+                bpc.request.setAttribute("cessationError",inbox_ack011);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
+            }else {
+                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                        ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                        bpc.request.setAttribute("cessationError",inbox_ack011);
+                        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                        return ;
+                    }
+                }
             }
         }
         Map<String, Boolean> resultMap = inboxService.listResultCeased(licIdValue);
