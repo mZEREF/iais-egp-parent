@@ -29,13 +29,17 @@ public class PaginationTag extends DivTagSupport {
     
     public PaginationTag() {
         super();
-        init();
+        clearFields();
     }
 
     // resets local state
     @Override
     protected void init() {
         super.init();
+        clearFields();
+    }
+
+    private void clearFields() {
         setParam(null);
         setResult(null);
         setJsFunc(null);
