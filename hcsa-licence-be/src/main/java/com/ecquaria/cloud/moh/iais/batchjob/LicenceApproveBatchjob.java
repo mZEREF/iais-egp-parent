@@ -1138,7 +1138,8 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 String applicationType = applicationDto.getApplicationType();
 
-                LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                //LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                LicenceDto originLicenceDto = licenceService.getLicDtoById(originLicenceId);
                     LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                             originLicenceDto, applicationDto, null, false);
                     licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -1153,6 +1154,12 @@ public class LicenceApproveBatchjob {
                         }
                         superLicDto.setOriginLicenceDto(originLicenceDto);
                     }
+                if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                        && IaisEGPHelper.isActiveMigrated()
+                        && originLicenceDto.isMigrated()) {
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                }
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
                 LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
@@ -1816,6 +1823,7 @@ public class LicenceApproveBatchjob {
             licenceDto.setGrpLic(originLicenceDto.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.getMigrated());
+            licenceDto.setMigratedDt(originLicenceDto.getMigratedDt());
             if (!applicationDto.isNeedNewLicNo()) {
                 licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
                 licenceDto.setVersion(originLicenceDto.getVersion() + 1);
@@ -1954,6 +1962,7 @@ public class LicenceApproveBatchjob {
                 }
                 licenceDto.setOriginLicenceId(originLicenceDto.getId());
                 licenceDto.setMigrated(originLicenceDto.getMigrated());
+                licenceDto.setMigratedDt(originLicenceDto.getMigratedDt());
             } else {
                 licenceDto.setMigrated(0);
             }
@@ -1967,8 +1976,15 @@ public class LicenceApproveBatchjob {
         }else if (applicationDto != null) {
                 applicationDtos1.add(applicationDto);
         }
-        //status
-        licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
+        if((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                && IaisEGPHelper.isActiveMigrated()
+                && originLicenceDto.isMigrated()){
+            licenceDto.setStatus(originLicenceDto.getStatus());
+        }else{
+            //status
+            licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
+        }
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
