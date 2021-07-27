@@ -116,7 +116,7 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("uen is -->:"+uen));
         String licenceId = (String) ParamUtil.getSessionAttr(request, RfcConst.LICENCEID);
         log.info(StringUtil.changeForLog("licenceId is -->:"+licenceId));
-        Map<String,String> error = doValidateEmpty(uen,new String[]{"selectCheakboxs"},"Email");
+        Map<String,String> error = doValidateEmpty(uen,new String[]{"selectCheakboxs"},"Email","subLicensee");
         if (error.isEmpty()) {
             //Judge the uen type;
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
@@ -495,7 +495,7 @@ public class RequestForChangeDelegator {
         String[] confirms = ParamUtil.getStrings(mulReq, "confirm");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
-        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email);
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email,"subLicensee");
         boolean isEmail = ValidationUtils.isEmail(email);
         if(!isEmail){
             error.put("emailError","GENERAL_ERR0014");
@@ -672,6 +672,7 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
+        String subLicensee = ParamUtil.getString(bpc.request, "subLicensee");
         String[] selectCheakboxs = null;
         if(appSubmissionDto.isGroupLic()){
              selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
@@ -686,23 +687,28 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
         LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
-        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email","subLicensee");
         if(error.isEmpty()){
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
-            if(licenseeDto != null && licenceDto != null){
-                String svcName = licenceDto.getSvcName();
-                log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
-                if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
-                        || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                    hcsaServiceDto.setSvcName(svcName);
-                    hcsaServiceDtos.add(hcsaServiceDto);
-                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                    if(!canCreateEasOrMts){
-                        error.put("uenError","RFC_ERR022");
+            if(error.isEmpty()){
+                if(licenseeDto != null && licenceDto != null){
+                    if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                        error = doValidateEmpty(uen,selectCheakboxs,"Email",subLicensee);
+                    }
+                    String svcName = licenceDto.getSvcName();
+                    log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
+                    if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
+                            || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
+                        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                        hcsaServiceDto.setSvcName(svcName);
+                        hcsaServiceDtos.add(hcsaServiceDto);
+                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                        log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                        if(!canCreateEasOrMts){
+                            error.put("uenError","RFC_ERR022");
+                        }
                     }
                 }
             }
@@ -920,10 +926,13 @@ public class RequestForChangeDelegator {
         return isSelect;
     }
 
-    private  Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email){
+    private  Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email,String subLicensee){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
             error.put("premisesError","RFC_ERR005");
+        }
+        if(StringUtil.isEmpty(subLicensee)){
+            error.put("subLicenseeError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));

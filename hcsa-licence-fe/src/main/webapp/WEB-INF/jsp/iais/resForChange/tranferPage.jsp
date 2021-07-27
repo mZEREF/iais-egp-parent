@@ -109,8 +109,15 @@
 
             $(document).ready(function () {
                 $("#subLicenseeRow").hide();
+                checkUen();
                 $("#uen").change(function () {
-                    var uen = $("#uen").val();
+                    checkUen();
+                })
+            });
+
+            function checkUen(){
+                var uen = $("#uen").val();
+                if(uen != ""){
                     var data = {
                         'uen':uen
                     };
@@ -138,14 +145,13 @@
                                 $("#error_uenError").html('');
                                 $("#subLicenseeRow").hide();
                             }
-
                         },
                         'error':function () {
 
                         }
                     });
                     dismissWaiting();
-                })
-            });
+                }
+            }
 
         </script>
