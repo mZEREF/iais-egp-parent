@@ -189,26 +189,26 @@ public class CessationBeServiceImpl implements CessationBeService {
             return appSpecifiedLicDtos;
         }
         for (String licId : licIds) {
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-                List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specLicIds)) {
-                    for (String specLicId : specLicIds) {
-                        AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String specLicenceNo = specLicenceDto.getLicenceNo();
-                            String licenceDtoId = specLicenceDto.getId();
-                            String specSvcName = specLicenceDto.getSvcName();
-                            appSpecifiedLicDto.setBaseLicNo(licenceNo);
-                            appSpecifiedLicDto.setBaseSvcName(svcName);
-                            appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
-                            appSpecifiedLicDto.setSpecSvcName(specSvcName);
-                            appSpecifiedLicDto.setSpecLicId(licenceDtoId);
-                            appSpecifiedLicDtos.add(appSpecifiedLicDto);
-                        }
+            List<String> specLicIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
+            if (!IaisCommonUtils.isEmpty(specLicIds)) {
+                for (String specLicId : specLicIds) {
+                    AppSpecifiedLicDto appSpecifiedLicDto = new AppSpecifiedLicDto();
+                    LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
+                    if (specLicenceDto != null) {
+                        String specLicenceNo = specLicenceDto.getLicenceNo();
+                        String licenceDtoId = specLicenceDto.getId();
+                        String specSvcName = specLicenceDto.getSvcName();
+                        appSpecifiedLicDto.setBaseLicNo(licenceNo);
+                        appSpecifiedLicDto.setBaseSvcName(svcName);
+                        appSpecifiedLicDto.setSpecLicNo(specLicenceNo);
+                        appSpecifiedLicDto.setSpecSvcName(specSvcName);
+                        appSpecifiedLicDto.setSpecLicId(licenceDtoId);
+                        appSpecifiedLicDtos.add(appSpecifiedLicDto);
                     }
+                }
             }
         }
         return appSpecifiedLicDtos;
@@ -223,17 +223,17 @@ public class CessationBeServiceImpl implements CessationBeService {
             return specLicIds;
         }
         for (String licId : licIds) {
-                List<String> specIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(specIds)) {
-                    for (String specLicId : specIds) {
-                        LicenceDto specLicenceDto = hcsaLicenceClient.getLicenceDtoById(specLicId).getEntity();
-                        if (specLicenceDto != null) {
-                            String licenceDtoId = specLicenceDto.getId();
-                            specLicIds.add(licenceDtoId);
-                        }
+            List<String> specIds = hcsaLicenceClient.getActSpecIdByActBaseId(licId).getEntity();
+            if (!IaisCommonUtils.isEmpty(specIds)) {
+                for (String specLicId : specIds) {
+                    LicenceDto specLicenceDto = hcsaLicenceClient.getLicDtoById(specLicId).getEntity();
+                    if (specLicenceDto != null) {
+                        String licenceDtoId = specLicenceDto.getId();
+                        specLicIds.add(licenceDtoId);
                     }
                 }
             }
+        }
         if (!IaisCommonUtils.isEmpty(specLicIds)) {
             for (String specId : specLicIds) {
                 if (licIds.contains(specId)) {
@@ -254,7 +254,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
-            LicenceDto licenceDto = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
+            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licId).getEntity();
             licIds.clear();
             licIds.add(licId);
             List<String> appIds = appIdPremisesMap.get(premiseId);
@@ -329,7 +329,7 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public boolean isGrpLicence(List<String> licIds) {
-        LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
+        LicenceDto entity = hcsaLicenceClient.getLicDtoById(licIds.get(0)).getEntity();
         return entity.isGrpLic();
     }
 
@@ -465,7 +465,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         taskService.createTasks(taskDtos);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-       //appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
+        //appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
         appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(ASO_WORKGROUPID);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
