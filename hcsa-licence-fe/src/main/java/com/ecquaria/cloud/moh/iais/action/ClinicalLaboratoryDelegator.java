@@ -2888,7 +2888,7 @@ public class ClinicalLaboratoryDelegator {
                 String idNo = ParamUtil.getString(request,"idNo"+i);
                 String designation = ParamUtil.getString(request,"designation"+i);
                 String otherDesignation = ParamUtil.getString(request, "otherDesignation"+i);
-                String specialty = ParamUtil.getString(request,"speciality"+i);
+//                String specialty = ParamUtil.getString(request,"speciality"+i);
 //                String specialityOther = ParamUtil.getString(request,"specialityOther"+i);
                 String specialtyGetDateStr = ParamUtil.getString(request,"specialtyGetDate"+i);
                 String typeOfCurrRegi = ParamUtil.getString(request,"typeOfCurrRegi"+i);
@@ -2951,7 +2951,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcClinicalDirectorDto.setOtherDesignation(null);
                 }
                 if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
-                    appSvcClinicalDirectorDto.setSpeciality(specialty);
+                    appSvcClinicalDirectorDto.setSpeciality(null);
                 }
                 if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);
