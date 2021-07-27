@@ -2399,4 +2399,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return appGrpPrimaryDocDto;
     }
 
+    @Override
+    public LicenceDto getLicenceDtoIncludeMigrated(String licenceId) {
+        return licenceClient.getLicBylicIdIncludeMigrated(licenceId).getEntity();
+    }
 }
