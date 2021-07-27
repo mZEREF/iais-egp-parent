@@ -23,10 +23,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -126,7 +126,7 @@ public class CessationEffectiveDateBatchjob {
                             if (statusSet.size() == 1 && statusSet.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE)) {
                                 String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                                if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())|| licenceDto != null &&AccessUtil.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())) {
+                                if (licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())|| licenceDto != null && IaisEGPHelper.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())) {
                                     if (!filterLicenceId.contains(licenceDto.getId())) {
                                         licenceDtos.add(licenceDto);
                                         filterLicenceId.add(licenceDto.getId());
@@ -217,7 +217,7 @@ public class CessationEffectiveDateBatchjob {
                                     if (effectiveDate.compareTo(date) <= 0) {
                                         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                         String status = licenceDto.getStatus();
-                                        if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)|| AccessUtil.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(status)) {
+                                        if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)|| IaisEGPHelper.isActiveMigrated()&&licenceDto.getMigrated()!=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(status)) {
                                             applicationGroupDtosCesead.add(applicationGroupDto);
                                             licenceDtos.add(licenceDto);
                                             licGrpMap.put(originLicenceId, appGrpId);
