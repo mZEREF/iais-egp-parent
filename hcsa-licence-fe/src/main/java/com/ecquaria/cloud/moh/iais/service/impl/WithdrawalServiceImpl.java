@@ -222,18 +222,15 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 applicationFeClient.updateApplicationList(applicationDtoList);
             }
             newAppSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+            List<WithdrawnDto> withdrawnDtos=IaisCommonUtils.genNewArrayList();
+            withdrawnDtos.add(h);
+            cessationClient.saveWithdrawn(withdrawnDtos).getEntity();
             applicationFeClient.saveApps(newAppSubmissionDto).getEntity();
-        }
-        List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
-        if (!IaisCommonUtils.isEmpty(withdrawnList)){
-            withdrawnDtoList.forEach(h -> {
-                ApplicationDto oldApplication = applicationFeClient.getApplicationById(h.getApplicationId()).getEntity();
-                boolean isRfc = false;
-                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
-                    isRfc = true;
-                }
-                sendNMS(h,isRfc,charity);
-            });
+            boolean isRfc = false;
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(oldApplication.getApplicationType())){
+                isRfc = true;
+            }
+            sendNMS(h,isRfc,charity);
         }
         return withdrawnDtoList;
     }
