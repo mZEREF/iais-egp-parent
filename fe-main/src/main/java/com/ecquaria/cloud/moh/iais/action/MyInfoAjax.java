@@ -169,11 +169,11 @@ public class MyInfoAjax {
 
 	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){
 		String grantType = ConfigHelper.getString("myinfo.taken.grant.type");
-		String   priclientkey = ConfigHelper.getString("myinfo.taken.priclientkey");
-		String	clientId = ConfigHelper.getString("myinfo.taken.client.id");
-		String clientSecret =  ConfigHelper.getString("myinfo.taken.client.secret");
+		String   priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
+		String	clientId = ConfigHelper.getString("myinfo.common.client.id");
+		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
 		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
-		String privateKeyContent = ConfigHelper.getString("myinfo.taken.private.key.content");
+		String privateKeyContent = ConfigHelper.getString("myinfo.common.private.key.content");
 		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri,privateKeyContent);
 		return myInfoTakenDto;
 	}
@@ -319,17 +319,18 @@ public class MyInfoAjax {
 
 	public String getAuthoriseApiUrl(String redirectUri,String nric){
 		String authApiUrl                   = ConfigHelper.getString("myinfo.authorise.url");
-		String	clientId 					= ConfigHelper.getString("myinfo.authorise.client.id");
+		String	clientId 					= ConfigHelper.getString("myinfo.common.client.id");
 		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
-		String spEsvcId                     = ConfigHelper.getString("myinfo.authorise.sp.esvcId");
+		String spEsvcId                     = ConfigHelper.getString("myinfo.common.sp.esvcId");
+		redirectUri                         = ConfigHelper.getString("myinfo.authorise.call.back.url",redirectUri);
 		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,nric,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),spEsvcId,purpose,nric,redirectUri);
 	}
 
 	public MyInfoDto getMyInfoByTrue(String nric,String takenType,String taken){
 		log.info("-------getMyInfoByTrue start ---------");
-		String keyStore = ConfigHelper.getString("myinfo.person.priclientkey");
-		String	clientId = ConfigHelper.getString("myinfo.person.client.id");
-		String spEsvcId = ConfigHelper.getString("myinfo.person.sp.esvcId");
+		String keyStore = ConfigHelper.getString("myinfo.common.priclientkey");
+		String	clientId = ConfigHelper.getString("myinfo.common.client.id");
+		String spEsvcId = ConfigHelper.getString("myinfo.common.sp.esvcId");
 		String  uri = ConfigHelper.getString("myinfo.person.url")+nric+'/';
 		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
 		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,spEsvcId,uri,takenType,taken);
