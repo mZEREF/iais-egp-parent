@@ -767,14 +767,6 @@ public class HcsaChklItemDelegator {
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
-
-            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-            if (IaisCommonUtils.isEmpty(checked)) {
-                FileUtils.writeFileResponseProcessContent(request, inputFile);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                return;
-            }
-
             if (inputFile.exists() && inputFile.isFile()) {
                 // write Inspection Entity
                 List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(
@@ -790,7 +782,16 @@ public class HcsaChklItemDelegator {
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
                             values.toArray(new String[values.size()]), excelConfigIndex);
                 }
+            }
 
+            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            if (IaisCommonUtils.isEmpty(checked)) {
+                FileUtils.writeFileResponseProcessContent(request, inputFile);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                return;
+            }
+
+            if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checked));
                 List<ChecklistConfigExcel> uploadTemplate = IaisCommonUtils.genNewArrayList();
 
