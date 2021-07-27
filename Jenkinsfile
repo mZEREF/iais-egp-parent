@@ -210,7 +210,7 @@ try{
     node{
         docker.withServer(DOCKER_URL) {
             dependencyCheck()
-            dependencyTrack()
+            // dependencyTrack()
 
             withEnv(['DOCKER_CERT_PATH=/var/jenkins_home/.docker']) {
                 buildDockerImages()
@@ -396,8 +396,8 @@ def sonarqube(){
                         mvn \
                             --no-transfer-progress \
                                 -Dmaven.repo.local="${env.WORKSPACE}/${MAVEN_LOCAL_REPO}" \
-                                -Dsonar.projectKey=iais-iais-egp-rel \
-                                -Dsonar.projectName=iais-iais-egp-rel \
+                                -Dsonar.projectKey=iais-iais-egp-sit \
+                                -Dsonar.projectName=iais-iais-egp-sit \
                                 -P "!sg-nexus,cicd-sg-nexus" \
                                 -s settings-cicd-sg.xml \
                                 -Dmoh.iais.nexus.username="$NEXUS_USERNAME" \
