@@ -44,4 +44,9 @@ public class INTERNET___MohFeTcuAuditApptPreDate___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "feTcuAuditApptPreDateVali", this);
 	}
 
+	public void feTcuAuditApptPreDateSubmit_OnStepProcess_0() throws Exception {
+	// 		feTcuAuditApptPreDateSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "feTcuAuditApptPreDateSubmit", this);
+	}
+
 }
