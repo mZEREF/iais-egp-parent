@@ -819,24 +819,36 @@ public class MohIntranetUserDelegator {
 
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
                 intranetUserService.addUserGroupId(userGroupCorrelationDtos);
-                String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
-                for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
-                     ) {
-                    List<String> roleIdList = IaisCommonUtils.genNewArrayList();
-                    roleIdList.add(ugc.getUserRoleId());
-                    List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
-                    if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
-                        WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
-                        workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
-                        workloadCalculationDto.setDays(days);
-                        workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
-                        workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
-                        workloadCalculationDto.setAuditTrailDto(auditTrailDto);
-                        intranetUserService.workloadCalculation(workloadCalculationDto);
+                try {
+                    String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
+                    for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
+                    ) {
+                        List<String> roleIdList = IaisCommonUtils.genNewArrayList();
+                        roleIdList.add(ugc.getUserRoleId());
+                        List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
+                        boolean hasNotLeadership=false;
+                        for (UserGroupCorrelationDto ugcd:userGroupCorrelationDtos
+                        ) {
+                            if(!ugcd.getId().equals(ugc.getId())&&ugc.getGroupId().equals(ugcd.getGroupId())&&ugcd.getIsLeadForGroup().equals(0)){
+                                hasNotLeadership=true;
+                            }
+                        }
+                        if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
+                            WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
+                            workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
+                            workloadCalculationDto.setDays(days);
+                            workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
+                            workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
+                            workloadCalculationDto.setAuditTrailDto(auditTrailDto);
+                            if(ugc.getIsLeadForGroup().equals(0)){
+                                intranetUserService.workloadCalculation(workloadCalculationDto);
+                            }else if(!hasNotLeadership){
+                                intranetUserService.workloadCalculation(workloadCalculationDto);
+                            }
+                        }
                     }
-
-
-
+                }catch (Exception e){
+                    log.info("Supplementary task failed");
                 }
 
             }
