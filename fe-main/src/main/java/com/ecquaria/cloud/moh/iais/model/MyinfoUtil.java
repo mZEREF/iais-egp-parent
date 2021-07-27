@@ -271,7 +271,7 @@ public class MyinfoUtil {
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
-		authHeaderParams.put(AcraConsts.APP_ID + "=", spEsvcId);
+		authHeaderParams.put(AcraConsts.APP_ID + "=", clientId);
 		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
@@ -279,6 +279,10 @@ public class MyinfoUtil {
 
 	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri,String privateKeyContent){
 		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
+		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
+		if(authlevel != "L2"){
+			return "";
+		}
     	TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
 		baseParams.put(AcraConsts.CODE + "=", code);
