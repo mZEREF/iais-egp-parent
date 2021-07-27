@@ -301,6 +301,10 @@ public class MyinfoUtil {
 	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri,String privateKeyContent){
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
 		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri,privateKeyContent);
+		if(StringUtil.isEmpty(authorizationHeader)){
+			log.info("--------getTakenCallMyInfo authorizationHeader is null-------------");
+			return null;
+		}
 		ResponseEntity<MyInfoTakenDto> resEntity;
 		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
 		HttpStatus httpStatus;
