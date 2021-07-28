@@ -144,7 +144,7 @@ public class BroadcastServiceImpl implements BroadcastService {
         if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
             if(applicationDto != null) {
                 String appType = applicationDto.getApplicationType();
-                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
                     EventBeLicenseDto eventBeLicenseDto = new EventBeLicenseDto();
                     eventBeLicenseDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     eventBeLicenseDto.setEventRefNo(evenRefNum);
