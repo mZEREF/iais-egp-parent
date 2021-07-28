@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12 col-md-12 ">
-                <div class="copyright">
+                <div class="footer-link text-right">
                     <ul class="list-inline">
                         <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>--%>
                         <li><a href="javascript:void(0);" >Contact Us</a></li>
@@ -13,7 +13,7 @@
                 </div>
             </div>
         </div>
-        <hr  style="color: #ffffff" />
+        <hr style="margin-top: 0; margin-bottom: 0" />
         <div class="row">
 <%--            <div class="col-xs-12" style="margin-bottom: 5px;">--%>
 <%--                <span style="color: #9a9a9a"> Best viewed using the current and previous release of Chrome and Safari  <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" title="" data-original-title="Chrome 87.0.4280.88 (Latest),<br> Chrome 86.0.4240.75 (2nd Latest),<br> Firefox 83.0 (Latest),<br> Firefox 82.0.3 (2nd Latest),<br> IE 11.0.19041.0 (Latest), <br>IE 11.0.18362.997 (2nd Latest),<br> Edge 87.0.664.57 (Latest),<br> Edge 87.0.664.55 (2nd Latest),<br> Safari 14.0.1 (Latest),<br> Safari 14.0 (2nd Latest)"><em  class="fa fa-question-circle"></em></a></span>--%>
