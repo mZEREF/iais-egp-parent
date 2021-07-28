@@ -37,6 +37,13 @@
                     </div>
                 </c:forEach>
             </c:when>
+            <c:when test="${not empty allSvcNames}"><%-- RFC --%>
+                <c:forEach items="${allSvcNames}" var="name">
+                    <div class="col-xs-12">
+                        <p>- <strong><c:out value="${name}"/></strong></p>
+                    </div>
+                </c:forEach>
+            </c:when>
             <c:when test="${menuRfc=='rfc'}">
 
                 <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">

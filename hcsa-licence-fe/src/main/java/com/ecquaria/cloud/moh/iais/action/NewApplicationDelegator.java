@@ -167,7 +167,7 @@ public class NewApplicationDelegator {
     public static final String APPGRPPRIMARYDOCERRMSGMAP = "appGrpPrimaryDocErrMsgMap";
     public static final String PRIMARY_DOC_CONFIG = "primaryDocConfig";
     public static final String SVC_DOC_CONFIG = "svcDocConfig";
-    public static final String ALL_SUBMISSION_DTOS = "allSubmissionDtos";
+    public static final String ALL_SVC_NAMES = "allSvcNames";
 
     public static final String REQUESTINFORMATIONCONFIG = "requestInformationConfig";
     public static final String ACKSTATUS = "AckStatus";
@@ -2121,6 +2121,7 @@ public class NewApplicationDelegator {
         //update message statusdo
         //appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+
             appSubmissionDto= appSubmissionService.submitRequestRfcRenewInformation(appSubmissionRequestInformationDto, bpc.process);
 /*
             appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();
@@ -2259,6 +2260,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
         // change edit
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setLicenseeEdit(true);
         appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setPremisesEdit(true);
         appEditSelectDto.setPremisesListEdit(false);
@@ -2551,7 +2553,7 @@ public class NewApplicationDelegator {
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
         }
-
+        log.info(StringUtil.changeForLog("------ Save Data Start ------"));
         String auto = generateIdClient.getSeqId().getEntity();
         String notAuto = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
@@ -2561,6 +2563,7 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         List<AppSubmissionDto> ackPageAppSubmissionDto=new ArrayList<>(2);
+        Set<String> svcNameSet = new LinkedHashSet<>();
         if (!notAutoSaveAppsubmission.isEmpty()) {
             // save submission (notAUto data)
             AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
@@ -2587,6 +2590,7 @@ public class NewApplicationDelegator {
                 ackPageAmount = ackPageAmount + amount1;
                 String s = Formatter.formatterMoney(amount1);
                 appSubmissionDto1.setAmountStr(s);
+                svcNameSet.add(appSubmissionDto1.getServiceName());
             }
             AppSubmissionDto o1 = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDtos1.get(0));
             o1.setAmount(ackPageAmount);
@@ -2628,6 +2632,7 @@ public class NewApplicationDelegator {
                 t=t+appSubmissionDto1.getAmount();
                 String s = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(s);
+                svcNameSet.add(appSubmissionDto1.getServiceName());
             }
             AppSubmissionDto o1 = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDtos1.get(0));
             o1.setAmount(t);
@@ -2637,13 +2642,11 @@ public class NewApplicationDelegator {
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
-
+        log.info(StringUtil.changeForLog("------ Save Data End ------"));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
         bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
-        List<AppSubmissionDto> allSubmissionDtos = IaisCommonUtils.genNewArrayList();
-        allSubmissionDtos.addAll(notAutoSaveAppsubmission);
-        allSubmissionDtos.addAll(autoSaveAppsubmission);
-        bpc.request.getSession().setAttribute("allSubmissionDtos",allSubmissionDtos);
+        bpc.request.getSession().setAttribute(ALL_SVC_NAMES, svcNameSet);
+
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
@@ -3435,13 +3438,6 @@ public class NewApplicationDelegator {
             List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,RFI_REPLY_SVC_DTO);
             ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         }
-        List<AppSubmissionDto> allSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("allSubmissionDtos");
-        Set<String> set = new LinkedHashSet<>();
-        if (allSubmissionDtos != null) {
-            allSubmissionDtos.forEach(dto -> set.add(dto.getServiceName()));
-        }
-        bpc.request.setAttribute("allSvcNames", set);
-
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 

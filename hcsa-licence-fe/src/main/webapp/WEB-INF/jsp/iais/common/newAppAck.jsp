@@ -1,24 +1,23 @@
 <div class="col-xs-12">
-    <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
+    <br/>
+    <p class="ack-font-20"><strong>Submission successful</strong></p>
 </div>
 
-<c:choose>
-    <c:when test="${not empty allSvcNames}">
-        <c:forEach items="${allSvcNames}" var="svcName">
-            <div class="col-xs-12">
-                <p class="ack-font-20">- <strong><c:out value="${svcName}"/> </strong></p>
-            </div>
-        </c:forEach>
-    </c:when>
-    <c:otherwise>
-        <c:forEach items="${hcsaServiceDtoList}" var="list">
-            <div class="col-xs-12">
-                <br/>
-                <p class="ack-font-20"><strong>Submission successful</strong></p>
-            </div>
-        </c:forEach>
-    </c:otherwise>
-</c:choose>
+<div class="col-xs-12">
+    <c:choose>
+        <c:when test="${not empty allSvcNames}"><%-- RFC --%>
+            <c:forEach items="${allSvcNames}" var="name">
+                <p class="ack-font-20">- <strong><c:out value="${name}"/> </strong></p>
+            </c:forEach>
+        </c:when>
+        <c:otherwise>
+            <c:forEach items="${hcsaServiceDtoList}" var="list">
+                <p class="ack-font-20">- <strong><c:out value="${list.svcName}"/> </strong></p>
+            </c:forEach>
+        </c:otherwise>
+    </c:choose>
+</div>
+
 <div class="ack-font-16">
     <div class="col-xs-12">
         A confirmation email will be sent to ${emailAddress}.

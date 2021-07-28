@@ -136,26 +136,16 @@ public class RequestForChangeMenuDelegator {
      * @Decription start
      */
     public void start(BaseProcessClass bpc) throws CloneNotSupportedException {
-        log.debug(StringUtil.changeForLog("the do start start ...."));
+        log.info(StringUtil.changeForLog("the do start start ...."));
+        appSubmissionService.clearSession(bpc.request);
+        removeSession(bpc);
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         HcsaServiceCacheHelper.flushServiceMapping();
         premiseFilterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
         premiseFilterParameter.setPageNo(1);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PREMISES_LIST);
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
-        ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
-        ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
-        ParamUtil.setSessionAttr(bpc.request, "createDate", null);
-        ParamUtil.setSessionAttr(bpc.request,"personListAmend", null);
-        removeSession(bpc);
         requestForInformation(bpc, appNo);
-        ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
-
-        log.debug(StringUtil.changeForLog("the do start end ...."));
+        log.info(StringUtil.changeForLog("the do start end ...."));
     }
 
     private void removeSession(BaseProcessClass bpc) {
@@ -165,6 +155,11 @@ public class RequestForChangeMenuDelegator {
         bpc.getSession().removeAttribute("doSearch");
         bpc.getSession().removeAttribute("personnelListDtos");
         bpc.getSession().removeAttribute("licenceDtoList");
+        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
+        ParamUtil.setSessionAttr(bpc.request, "createDate", null);
+        ParamUtil.setSessionAttr(bpc.request,"personListAmend", null);
+        ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
     }
 
     /**
@@ -172,18 +167,12 @@ public class RequestForChangeMenuDelegator {
      * @Decription personnleListStart
      */
     public void personnleListStart(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do personnleListStart start ...."));
+        log.info(StringUtil.changeForLog("the do personnleListStart start ...."));
+        appSubmissionService.clearSession(bpc.request);
+        removeSession(bpc);
         filterParameter.setPageSize(SystemParamUtil.getDefaultPageSize());
-        ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
-        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
-        ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
-        ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
-        ParamUtil.setSessionAttr(bpc.request, "emailAddress", null);
-        ParamUtil.setSessionAttr(bpc.request, "createDate", null);
-        ParamUtil.setSessionAttr(bpc.request,"personListAmend", "test");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_PERSONAL_LIST);
-        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        log.debug(StringUtil.changeForLog("the do personnleListStart end ...."));
+        log.info(StringUtil.changeForLog("the do personnleListStart end ...."));
     }
 
     /**

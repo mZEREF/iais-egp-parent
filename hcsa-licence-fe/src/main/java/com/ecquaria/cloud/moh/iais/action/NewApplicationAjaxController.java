@@ -874,7 +874,7 @@ public class NewApplicationAjaxController {
                 }
             }
             String speciality = person.getSpeciality();
-            if (!StringUtil.isEmpty(speciality)) {
+            if (!StringUtil.isEmpty(speciality) && selectOptionList != null) {
                 int i = 0;
                 for (SelectOption sp : selectOptionList) {
                     if (sp.getValue().equals(speciality)) {
