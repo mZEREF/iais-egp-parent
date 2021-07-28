@@ -70,6 +70,13 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 log.error(e.getMessage(), e);
                 sDate = new Date();
             }
+            Date eDate;
+            try {
+                eDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+            } catch (ParseException e) {
+                log.error(e.getMessage(), e);
+                eDate = new Date();
+            }
             StringBuilder nStr = new StringBuilder();
             StringBuilder eStr = new StringBuilder();
             int len = Math.min(eftStartDateStr.length, eftEndDateStr.length);
@@ -80,15 +87,57 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
-
+            int comparatorValue = endDate.compareTo(startDate);
+            if (comparatorValue < 0) {
+                errorMap.put("accountActivateDatetime", "USER_ERR006");
+            }
             if ("create".equals(user_action)) {
-                if(!(startDateStr.equals(todayStr) || sDate.after(today))) {
+                if( today.after(sDate)) {
                     errorMap.put("accountActivateDatetime", "USER_ERR007");
                 }
-            } else {
-                int comparatorValue = endDate.compareTo(startDate);
-                if (comparatorValue < 0) {
-                    errorMap.put("accountActivateDatetime", "USER_ERR006");
+                if( today.after(eDate)) {
+                    errorMap.put("accountDeactivateDatetime", "USER_ERR007");
+                }
+            }
+
+        }else {
+            if (!StringUtil.isEmpty(startDateStr) ) {
+                String[] eftStartDateStr = startDateStr.split("/");
+                Date today = new Date();
+                //get today string
+                String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+                //get start Date By request
+                Date sDate;
+                try {
+                    sDate = Formatter.parseDateTime(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+                } catch (ParseException e) {
+                    log.error(e.getMessage(), e);
+                    sDate = new Date();
+                }
+                if ("create".equals(user_action)) {
+                    if( today.after(sDate)) {
+                        errorMap.put("accountActivateDatetime", "USER_ERR007");
+                    }
+                }
+            }
+            if ( !StringUtil.isEmpty(endDateStr)) {
+                String[] eftEndDateStr = endDateStr.split("/");
+                Date today = new Date();
+                //get today string
+                String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
+                //get start Date By request
+                Date eDate;
+                try {
+                    eDate = Formatter.parseDateTime(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+                } catch (ParseException e) {
+                    log.error(e.getMessage(), e);
+                    eDate = new Date();
+                }
+
+                if ("create".equals(user_action)) {
+                    if( today.after(eDate)) {
+                        errorMap.put("accountDeactivateDatetime", "USER_ERR007");
+                    }
                 }
             }
         }
