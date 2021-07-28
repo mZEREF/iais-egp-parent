@@ -147,6 +147,7 @@ public class InterInboxDelegator {
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
         bpc.response.setHeader("authToken", jwtStr);
+        log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
         IaisEGPHelper.redirectUrl(bpc.response, elisUrl);
     }
 
