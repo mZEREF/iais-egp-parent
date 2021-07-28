@@ -2550,7 +2550,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         oldPremisesDtoList);
                 if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation() && !eqAddFloorNo1) {
                 */
-            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorNo()) {
+            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
                 isAutoRfc = false;
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()) {
