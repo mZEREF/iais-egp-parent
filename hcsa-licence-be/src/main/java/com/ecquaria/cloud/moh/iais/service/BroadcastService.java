@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBeLicenseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import sop.webflow.rt.api.Process;
@@ -36,4 +38,13 @@ public interface BroadcastService {
       * @Descripation: replySetVehicleByRole
       */
     BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/7/28
+      * @Param: appStatus(process decision), applicationDto, submissionId, evenRefNum
+      * @return:
+      * @Descripation:
+      */
+    EventBeLicenseDto saveEventBeLicenseDto(String appStatus, ApplicationDto applicationDto, String submissionId, String evenRefNum, Process process);
 }
