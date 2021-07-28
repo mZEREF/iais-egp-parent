@@ -43,18 +43,20 @@
                 </iais:section>
               </c:if>
               <c:if test="${'SUCCESS' ne tcuAuditApptPreDateFlag}">
+                <span id="error_dateError" name="iaisErrorMsg" class="error-msg"></span>
+                <br><br>
                 <iais:section title="" id = "tcu_audit_appt">
                   <iais:row>
                     <iais:field value="Preferred date for inspection (Start)"  required="true"/>
                     <iais:value width="18">
-                      <iais:datePicker id = "inspStartDate" name = "inspStartDate"  value="${inspStartDate}"></iais:datePicker>
+                      <iais:datePicker id = "inspStartDate" name = "inspStartDate" value="${inspStartDate}"></iais:datePicker>
                       <span id="error_inspStartDate" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Preferred date for inspection (End)" required="true"/>
                     <iais:value width="18">
-                      <iais:datePicker id = "inspEndDate" name = "inspEndDate"  value="${inspEndDate}"></iais:datePicker>
+                      <iais:datePicker id = "inspEndDate" name = "inspEndDate" value="${inspEndDate}"></iais:datePicker>
                       <span id="error_inspEndDate" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                   </iais:row>

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 
 import java.util.List;
 
@@ -114,4 +115,22 @@ public interface ApplicantConfirmInspDateService {
       * @Descripation: get AppPremCorrId By AppNo
       */
     String getAppPremCorrIdByAppNo(String applicationNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getTcuAuditApptPreDateFlag
+      */
+    String getTcuAuditApptPreDateFlag(InspSetMaskValueDto inspSetMaskValueDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getAppGroupIdByMaskValueDto
+      */
+    String getAppGroupIdByMaskValueDto(InspSetMaskValueDto inspSetMaskValueDto);
 }
