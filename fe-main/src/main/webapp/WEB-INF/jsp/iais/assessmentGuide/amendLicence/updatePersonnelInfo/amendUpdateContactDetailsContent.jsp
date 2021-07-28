@@ -9,9 +9,9 @@
         <table class="table">
             <thead>
             <tr >
-                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="ROLE" value="Role" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="T3.LICENCE_NO" value="Licence No." isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="T2.PSN_TYPE" value="Role" isFE="true"/>
             </tr>
             </thead>
             <tbody>

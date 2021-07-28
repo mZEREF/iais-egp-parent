@@ -224,7 +224,7 @@
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
         <![CDATA[
-            SELECT DISTINCT T3.ID
+            SELECT DISTINCT T3.ID,T3.SVC_NAME,T3.LICENCE_NO,T2.PSN_TYPE
                 FROM key_personnel T1
                 join lic_key_personnel T2 on T1.ID = T2.PERSON_ID
                 join licence T3 on t2.LICENCE_ID = t3.ID
