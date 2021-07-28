@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -616,6 +617,43 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     public String getAppPremCorrIdByAppNo(String applicationNo) {
         String appPremCorrId = applicationFeClient.getCorrelationByAppNo(applicationNo).getEntity().getId();
         return appPremCorrId;
+    }
+
+    @Override
+    public String getTcuAuditApptPreDateFlag(InspSetMaskValueDto inspSetMaskValueDto) {
+        String apptPreDateFlag = AppConsts.FAIL;
+        if(inspSetMaskValueDto != null) {
+            String appNo = inspSetMaskValueDto.getApplicationNo();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            if(applicationDto != null) {
+                if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationDto.getStatus())) {
+                    ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+                    if(applicationGroupDto != null) {
+                        if(applicationGroupDto.getPrefInspStartDate() != null && applicationGroupDto.getPrefInspEndDate() != null) {
+                            apptPreDateFlag = AppConsts.SUCCESS;
+                        }
+                    }
+                } else {
+                    apptPreDateFlag = AppConsts.SUCCESS;
+                }
+            }
+        }
+        return apptPreDateFlag;
+    }
+
+    @Override
+    public String getAppGroupIdByMaskValueDto(InspSetMaskValueDto inspSetMaskValueDto) {
+        if(inspSetMaskValueDto != null) {
+            String appNo = inspSetMaskValueDto.getApplicationNo();
+            ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(appNo).getEntity();
+            if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationDto.getStatus())) {
+                ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+                if(applicationGroupDto != null) {
+                    return applicationGroupDto.getId();
+                }
+            }
+        }
+        return null;
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
