@@ -1895,7 +1895,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public void setDraftNo(AppSubmissionDto appSubmissionDto) {
         String appType=null;
         if(appSubmissionDto!=null){
-            appType = appSubmissionDto.getAppType();
+             appType = appSubmissionDto.getAppType();
         }
         if(appType!=null){
             String draft = systemAdminClient.draftNumber(appType).getEntity();
@@ -3603,6 +3603,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("viewPrint");
 
         //clear Session
+        session.removeAttribute(NewApplicationDelegator.ALL_SVC_NAMES);
         session.removeAttribute(NewApplicationDelegator.APPSUBMISSIONDTO);
         session.removeAttribute(NewApplicationDelegator.HCSASERVICEDTO);
         session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);

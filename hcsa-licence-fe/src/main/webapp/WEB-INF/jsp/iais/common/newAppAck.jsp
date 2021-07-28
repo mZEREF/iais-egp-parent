@@ -60,7 +60,9 @@
                                     </c:if>--%>
                                 <c:if test="${requestInformationConfig == null}">
                                     <td>
-                                        <c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
+                                        <c:if test="${ackPageAppSubmission.amount==null || ackPageAppSubmission.amount == 0}">
+                                            N/A
+                                        </c:if>
                                         <c:if test="${ackPageAppSubmission.amount!=null}">
                                             <c:choose>
                                                 <c:when test="${empty txnRefNo}">
@@ -75,7 +77,9 @@
                                 </c:if>
                                 <td><c:out value="${txnDt}"/></td>
                                 <td>
-                                    <c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
+                                    <c:if test="${ackPageAppSubmission.amount==null || ackPageAppSubmission.amount == 0}">
+                                        N/A
+                                    </c:if>
                                     <c:if test="${ackPageAppSubmission.amount!=null}">
                                         <c:out value="${ackPageAppSubmission.amountStr}"/>
                                     </c:if>

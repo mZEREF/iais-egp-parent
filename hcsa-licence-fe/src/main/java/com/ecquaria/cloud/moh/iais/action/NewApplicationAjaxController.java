@@ -830,8 +830,7 @@ public class NewApplicationAjaxController {
      * @Designation
      */
     @GetMapping(value = "/person-info/svc-code")
-    public @ResponseBody
-    AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
+    public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
@@ -872,7 +871,7 @@ public class NewApplicationAjaxController {
                 }
             }
             String speciality = person.getSpeciality();
-            if (!StringUtil.isEmpty(speciality)) {
+            if (!StringUtil.isEmpty(speciality) && selectOptionList != null) {
                 int i = 0;
                 for (SelectOption sp : selectOptionList) {
                     if (sp.getValue().equals(speciality)) {
