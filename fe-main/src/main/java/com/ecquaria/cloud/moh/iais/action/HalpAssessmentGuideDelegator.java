@@ -2199,7 +2199,7 @@ public class HalpAssessmentGuideDelegator {
                 StringBuilder url2 = new StringBuilder();
                 url2.append(InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/preparePersonnelEdit")
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
                         .append("?personnelNo=")
                         .append(MaskUtil.maskValue("personnelNo", id));
                 String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);
