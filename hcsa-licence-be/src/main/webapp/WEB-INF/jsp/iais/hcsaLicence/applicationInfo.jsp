@@ -87,21 +87,23 @@
                                 <td style="padding-left : 20px">${applicationViewDto.telephone == null || applicationViewDto.telephone == "" ? '-' : applicationViewDto.telephone}</td>
                             </tr>
                             <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId}">
-                                <tr>
-                                    <td align="right">Preferred Inspection Date</td>
-                                    <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate != null &&
-                                                applicationViewDto.applicationGroupDto.prefInspEndDate != null}">
-                                        <td style="padding-left : 20px">
-                                            <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspStartDate}' pattern='dd/MM/yyyy'/> - <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspEndDate}' pattern='dd/MM/yyyy'/>
-                                        </td>
-                                    </c:if>
-                                    <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate == null ||
-                                                applicationViewDto.applicationGroupDto.prefInspEndDate == null}">
-                                        <td style="padding-left : 20px">
-                                            <c:out value="-"></c:out>
-                                        </td>
-                                    </c:if>
-                                </tr>
+                                <c:if test="${'APST003' eq applicationViewDto.applicationDto.status || 'APST058' eq applicationViewDto.applicationDto.status}">
+                                    <tr>
+                                        <td align="right">Preferred Inspection Date</td>
+                                        <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate != null &&
+                                                    applicationViewDto.applicationGroupDto.prefInspEndDate != null}">
+                                            <td style="padding-left : 20px">
+                                                <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspStartDate}' pattern='dd/MM/yyyy'/> - <fmt:formatDate value='${applicationViewDto.applicationGroupDto.prefInspEndDate}' pattern='dd/MM/yyyy'/>
+                                            </td>
+                                        </c:if>
+                                        <c:if test="${applicationViewDto.applicationGroupDto.prefInspStartDate == null ||
+                                                    applicationViewDto.applicationGroupDto.prefInspEndDate == null}">
+                                            <td style="padding-left : 20px">
+                                                <c:out value="-"></c:out>
+                                            </td>
+                                        </c:if>
+                                    </tr>
+                                </c:if>
                             </c:if>
                         </tbody>
                     </table>
