@@ -1946,9 +1946,9 @@ public class HalpAssessmentGuideDelegator {
         for (String item : licPremIdValue) {
             licIdValue.add(licenceInboxClient.getlicPremisesCorrelationsByPremises(item).getEntity().getLicenceId());
         }
+        String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
         for(String licId : licIdValue){
-            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
-            String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
+            LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 bpc.request.setAttribute("cessationError",inbox_ack011);
