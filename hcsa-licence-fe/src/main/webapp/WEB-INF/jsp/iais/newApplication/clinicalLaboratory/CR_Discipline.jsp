@@ -34,7 +34,10 @@
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
-    <fieldset class="fieldset-content" id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
+    <c:if test="${appGrpPremisesDto.rfiCanEdit}">
+        <c:set var="rfiNo" value="${status.index}"/>
+    </c:if>
+    <fieldset class="fieldset-content" id="fieldset-content${status.index}" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
         <legend></legend>
         <p><strong class="cgo-header">Mode of Service Delivery ${status.index+1}</strong></p>
         <p>
@@ -304,7 +307,7 @@
     var doEdit = function () {
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
-            $('.fieldset-content').prop('disabled',false);
+            $('#fieldset-content'+${rfiNo}).prop('disabled',false);
             $('#isEditHiddenVal').val('1');
         });
     };

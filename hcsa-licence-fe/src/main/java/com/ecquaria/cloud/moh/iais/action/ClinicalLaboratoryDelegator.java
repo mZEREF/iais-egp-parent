@@ -765,6 +765,10 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
+            //0068776
+            if (isRfi){
+                appSvcLaboratoryDisciplinesDtoList = currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList();
+            }
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String name = appGrpPremisesDto.getPremisesIndexNo() + "control--runtime--1";
@@ -798,6 +802,16 @@ public class ClinicalLaboratoryDelegator {
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
                     appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
+                    //0068776
+                    if (isRfi) {
+                        for (int j = appSvcLaboratoryDisciplinesDtoList.size() - 1; j >= 0; j--) {
+                            AppSvcLaboratoryDisciplinesDto item = appSvcLaboratoryDisciplinesDtoList.get(j);
+                            if (premisesType.equals(item.getPremiseType()) && premisesValue.equals(item.getPremiseVal()) &&
+                                    appGrpPremisesDto.getAddress().equals(item.getPremiseGetAddress())) {
+                                appSvcLaboratoryDisciplinesDtoList.remove(item);
+                            }
+                        }
+                    }
                     appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                 }
                 i++;
