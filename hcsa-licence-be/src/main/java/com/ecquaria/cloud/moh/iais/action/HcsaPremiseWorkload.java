@@ -58,6 +58,7 @@ public class HcsaPremiseWorkload {
         primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_ON_SITE,ApplicationConsts.PREMISES_TYPE_ON_SITE_SHOW));
         primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_OFF_SITE,ApplicationConsts.PREMISES_TYPE_OFF_SITE_SHOW));
         primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_CONVEYANCE_SHOW));
+        primiseSelection.add(new SelectOption(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE_SHOW));
         ParamUtil.setRequestAttr(bpc.request,"primiseType",primiseSelection);
     }
 
