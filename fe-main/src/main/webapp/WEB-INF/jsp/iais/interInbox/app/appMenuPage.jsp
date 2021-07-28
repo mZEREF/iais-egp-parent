@@ -70,6 +70,10 @@
                         </li>
                         <br/>
                         <li>
+                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=toElis">Go To eLis</a>
+                        </li>
+                        <br/>
+                        <li>
                             <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=toMOHAlert">Go To MOH Alert</a>
                         </li>
                         </ol>
