@@ -79,7 +79,6 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1712,7 +1711,7 @@ public class RequestForChangeMenuDelegator {
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setChangeHciName(!isSame);
             appEditSelectDto.setChangeInLocation(b);
-            appEditSelectDto.setChangeAddFloorNo(eqAddFloorNo);
+            appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             boolean isValid = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0), null,
                     total, appGrpNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, bpc.request);
