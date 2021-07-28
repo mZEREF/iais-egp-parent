@@ -192,5 +192,7 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence/sub-licensees", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<SubLicenseeDto>> getSubLicensees(@RequestParam("orgId") String orgId,
                                                                 @RequestParam(value = "licenseeType", required = false) String licenseeType) ;
+    @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
 
 }

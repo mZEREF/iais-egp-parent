@@ -65,4 +65,9 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     public List<SubLicenseeDto> getSubLicenseeDto(String orgId) {
         return licenceClient.getSubLicensees(orgId,null).getEntity();
     }
+
+    @Override
+    public SubLicenseeDto getSubLicenseesById(String id) {
+        return licenceClient.getSubLicenseesById(id).getEntity();
+    }
 }

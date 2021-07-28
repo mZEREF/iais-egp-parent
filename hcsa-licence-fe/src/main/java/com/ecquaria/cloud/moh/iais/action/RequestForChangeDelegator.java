@@ -130,8 +130,25 @@ public class RequestForChangeDelegator {
                     Map<String, String> chargesTypeAttr = IaisCommonUtils.genNewHashMap();
                     chargesTypeAttr.put("name", "subLicensee");
                     chargesTypeAttr.put("id", "subLicensee");
+
+                    List<String> checkedVals = IaisCommonUtils.genNewArrayList();
+                    String subLicensee = (String) ParamUtil.getSessionAttr(request, "subLicensee");
+                    if(!StringUtil.isEmpty(subLicensee)){
+                        checkedVals.add(subLicensee);
+                    }
+                    log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
                     String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
-                            NewApplicationDelegator.FIRESTOPTION, null, false);
+                            NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
+
+                    String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
+                    chargeTypeSelHtml = chargeTypeSelHtml + "<span  class=\"error-msg\" name=\"iaisErrorMsg\" id=\"error_subLicenseeError\">";
+                    if(!StringUtil.isEmpty(subLicenseeError)){
+                        subLicenseeError = MessageUtil.getMessageDesc(subLicenseeError);
+                        chargeTypeSelHtml = chargeTypeSelHtml +subLicenseeError;
+                    }
+                    ParamUtil.setSessionAttr(request,"subLicenseeError",null);
+                    log.info(StringUtil.changeForLog("subLicenseeError is -->:"+subLicenseeError));
+                    chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
                     ajaxResDto.setResultJson(chargeTypeSelHtml);
                 }
             }else{
@@ -288,6 +305,10 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
                 flag = true;
                 ParamUtil.setSessionAttr(bpc.request,"UEN",null);
+                ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+                ParamUtil.setSessionAttr(bpc.request,"subLicensee",null);
+                ParamUtil.setSessionAttr(bpc.request,"subLicenseeError",null);
+                ParamUtil.setSessionAttr(bpc.request,"subLicenseeDto",null);
                 ParamUtil.setSessionAttr(bpc.request,"premisesInput",null);
                 ParamUtil.setSessionAttr(bpc.request,"appPremisesSpecialDocDto",null);
             }else if(AppConsts.YES.equals(amendType)){
@@ -557,96 +578,96 @@ public class RequestForChangeDelegator {
                         }
                     }
                 }else {
-
+                    subLicenseeDto = (SubLicenseeDto)ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto");
                 }
                 if(subLicenseeDto != null){
-                subLicenseeDto.setId(null);
-                subLicenseeDto.setUenNo(uen);
-                appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
+                    subLicenseeDto.setId(null);
+                    subLicenseeDto.setUenNo(uen);
+                    appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
 
-                String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
-                log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
-                appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
-                boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
-                FeeDto feeDto = getTransferFee(isCharity);
-                if(feeDto != null){
-                    Double amount = feeDto.getTotal();
-                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
-                        amount=0.0;
-                    }
-                    appSubmissionDto.setAmount(amount);
-                    log.info(StringUtil.changeForLog("The amount.length is -->:"+amount));
-                    log.info(StringUtil.changeForLog("The selectCheakboxs.length is -->:"+selectCheakboxs.length));
-                    log.info(StringUtil.changeForLog("The appSubmissionDto.getAppGrpPremisesDtoList().size() is -->:"
-                            +appSubmissionDto.getAppGrpPremisesDtoList().size()));
-                    if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
-                        for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                            appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER);
+                    String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
+                    log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
+                    appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setBaseServiceId(baseServiceId);
+                    boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+                    FeeDto feeDto = getTransferFee(isCharity);
+                    if(feeDto != null){
+                        Double amount = feeDto.getTotal();
+                        if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
+                            amount=0.0;
                         }
-                    } else {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                            String premise = appGrpPremisesDto.getPremisesIndexNo();
-                            boolean isSelect  = isSelect(selectCheakboxs,premise);
-                            if(isSelect){
-                                appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
-                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
-                            }else {
+                        appSubmissionDto.setAmount(amount);
+                        log.info(StringUtil.changeForLog("The amount.length is -->:"+amount));
+                        log.info(StringUtil.changeForLog("The selectCheakboxs.length is -->:"+selectCheakboxs.length));
+                        log.info(StringUtil.changeForLog("The appSubmissionDto.getAppGrpPremisesDtoList().size() is -->:"
+                                +appSubmissionDto.getAppGrpPremisesDtoList().size()));
+                        if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
+                            for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_All_TRANSFER);
+                            }
+                        } else {
+                            for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+                                String premise = appGrpPremisesDto.getPremisesIndexNo();
+                                boolean isSelect  = isSelect(selectCheakboxs,premise);
+                                if(isSelect){
+                                    appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
+                                    appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
+                                }else {
+                                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                                    appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+                                }
                             }
                         }
-                    }
-                    String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                    log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
-                    appSubmissionDto.setAppGrpNo(grpNo);
-                    List<String> serviceNames = IaisCommonUtils.genNewArrayList();
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
-                        serviceNames.add(appSvcRelatedInfoDto.getServiceName());
-                    }
-                    List<HcsaServiceDto> hcsaServiceDtos = serviceConfigService.getHcsaServiceByNames(serviceNames);
-                    ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
-                    NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
-                    appSubmissionService.setRiskToDto(appSubmissionDto);
+                        String grpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                        log.info(StringUtil.changeForLog("The grpNo is -->:"+grpNo));
+                        appSubmissionDto.setAppGrpNo(grpNo);
+                        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+                        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+                            serviceNames.add(appSvcRelatedInfoDto.getServiceName());
+                        }
+                        List<HcsaServiceDto> hcsaServiceDtos = serviceConfigService.getHcsaServiceByNames(serviceNames);
+                        ParamUtil.setRequestAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, hcsaServiceDtos);
+                        NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
+                        appSubmissionService.setRiskToDto(appSubmissionDto);
 
-                    String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
-                    log.info(StringUtil.changeForLog("the draftNo -->:"+ draftNo) );
-                    appSubmissionDto.setDraftNo(draftNo);
+                        String draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+                        log.info(StringUtil.changeForLog("the draftNo -->:"+ draftNo) );
+                        appSubmissionDto.setDraftNo(draftNo);
 
-                    //file
-                    List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
-                    if(!IaisCommonUtils.isEmpty(appPremisesSpecialDocDtos)){
-                        log.info(StringUtil.changeForLog("the appPremisesSpecialDocDtos size is -->:" + appPremisesSpecialDocDtos.size()));
-                        appPremisesSpecialDocDtoList.addAll(appPremisesSpecialDocDtos);
-                        appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
-                    }
-                    //save the email to the app_group_misc
-                    List<AppGroupMiscDto> appGroupMiscDtoList = IaisCommonUtils.genNewArrayList();
-                    if(!StringUtil.isEmpty(email)){
-                        AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
-                        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_EMAIL);
-                        appGroupMiscDto.setMiscValue(email);
-                        appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        appGroupMiscDtoList.add(appGroupMiscDto);
-                    }
-                    if(!StringUtil.isEmpty(reason)){
-                        AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
-                        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_REASON);
-                        appGroupMiscDto.setMiscValue(reason);
-                        appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                        appGroupMiscDtoList.add(appGroupMiscDto);
-                    }
-                    appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
+                        //file
+                        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
+                        if(!IaisCommonUtils.isEmpty(appPremisesSpecialDocDtos)){
+                            log.info(StringUtil.changeForLog("the appPremisesSpecialDocDtos size is -->:" + appPremisesSpecialDocDtos.size()));
+                            appPremisesSpecialDocDtoList.addAll(appPremisesSpecialDocDtos);
+                            appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
+                        }
+                        //save the email to the app_group_misc
+                        List<AppGroupMiscDto> appGroupMiscDtoList = IaisCommonUtils.genNewArrayList();
+                        if(!StringUtil.isEmpty(email)){
+                            AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+                            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_EMAIL);
+                            appGroupMiscDto.setMiscValue(email);
+                            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            appGroupMiscDtoList.add(appGroupMiscDto);
+                        }
+                        if(!StringUtil.isEmpty(reason)){
+                            AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+                            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_REASON);
+                            appGroupMiscDto.setMiscValue(reason);
+                            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            appGroupMiscDtoList.add(appGroupMiscDto);
+                        }
+                        appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
 
-                    AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
-                    ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                    ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
-                    StringBuilder url = new StringBuilder();
-                    url.append("https://").append(bpc.request.getServerName())
-                            .append(RfcConst.PAYMENTPROCESS);
-                    String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                    IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-                 }
+                        AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
+                        ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
+                        ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
+                        StringBuilder url = new StringBuilder();
+                        url.append("https://").append(bpc.request.getServerName())
+                                .append(RfcConst.PAYMENTPROCESS);
+                        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+                     }
                 }else{
                     log.error(StringUtil.changeForLog("this uen can not get the subLicenseeDto" + uen));
                     error.put("uenError","Data Error !!!");
@@ -683,9 +704,11 @@ public class RequestForChangeDelegator {
         }
 
         ParamUtil.setSessionAttr(bpc.request,"UEN",uen);
+        ParamUtil.setSessionAttr(bpc.request, "subLicensee", subLicensee);
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
+        log.info(StringUtil.changeForLog("The doValidate subLicensee is -->:"+subLicensee));
         LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email","subLicensee");
         if(error.isEmpty()){
@@ -695,25 +718,44 @@ public class RequestForChangeDelegator {
                 if(licenseeDto != null && licenceDto != null){
                     if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                         error = doValidateEmpty(uen,selectCheakboxs,"Email",subLicensee);
+                        if(error.isEmpty()) {
+                            if(subLicensee.equals(licenceDto.getSubLicenseeId())){
+                                error.put("subLicenseeError","RFC_ERR021");
+                            }
+                        }
+                        if(error.isEmpty()) {
+                            SubLicenseeDto subLicenseeDto = licenceViewService.getSubLicenseesById(subLicensee);
+                            if (subLicenseeDto != null) {
+                                ParamUtil.setSessionAttr(bpc.request, "hasSubLicensee", true);
+                                ParamUtil.setSessionAttr(bpc.request, "subLicenseeDto", subLicenseeDto);
+                            }else{
+                                log.error(StringUtil.changeForLog("This id can not get th subLicensee -->:"+subLicensee));
+                            }
+                        }
                     }
-                    String svcName = licenceDto.getSvcName();
-                    log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
-                    if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
-                            || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                        hcsaServiceDto.setSvcName(svcName);
-                        hcsaServiceDtos.add(hcsaServiceDto);
-                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                        log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                        if(!canCreateEasOrMts){
-                            error.put("uenError","RFC_ERR022");
+                    if(error.isEmpty()){
+                        String svcName = licenceDto.getSvcName();
+                        log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
+                        if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
+                                || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
+                            List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                            HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                            hcsaServiceDto.setSvcName(svcName);
+                            hcsaServiceDtos.add(hcsaServiceDto);
+                            boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                            log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                            if(!canCreateEasOrMts){
+                                error.put("uenError","RFC_ERR022");
+                            }
                         }
                     }
                 }
             }
         }
-
+        String  subLicenseeError = error.get("subLicenseeError");
+        if(!StringUtil.isEmpty(subLicenseeError)){
+            ParamUtil.setSessionAttr(bpc.request,"subLicenseeError",subLicenseeError);
+        }
         ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
         ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
         log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));

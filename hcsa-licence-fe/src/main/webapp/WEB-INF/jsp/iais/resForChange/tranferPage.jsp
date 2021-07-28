@@ -60,7 +60,6 @@
                                        <iais:value width="10" id = "subLicenseeDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
                                          <iais:select name="subLicensee" firstOption="Please Select"
                                                        value=""/>
-                                         <span  class="error-msg" name="iaisErrorMsg" id="error_subLicenseeError"></span>
                                        </iais:value>
                                  </iais:row>
 
@@ -115,6 +114,7 @@
                 })
             });
 
+
             function checkUen(){
                 var uen = $("#uen").val();
                 if(uen != ""){
@@ -145,6 +145,7 @@
                                 $("#error_uenError").html('');
                                 $("#subLicenseeRow").hide();
                             }
+                           // setValue();
                         },
                         'error':function () {
 

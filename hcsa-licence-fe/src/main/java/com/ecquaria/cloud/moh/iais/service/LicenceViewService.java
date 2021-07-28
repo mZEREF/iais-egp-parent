@@ -22,4 +22,5 @@ public interface LicenceViewService {
     public List<LicenceDto> getLicenceDtoByLicenseeId(String licenseeId);
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
     public List<SubLicenseeDto> getSubLicenseeDto(String orgId);
+    public SubLicenseeDto getSubLicenseesById(String id);
 }

@@ -44,11 +44,22 @@
           <iais:field width="7" value="UEN of Licensee to transfer licence to"></iais:field>
           <iais:value width="10">
             <p>
-              <input type="text" name="UEN" value="${UEN}" maxlength="10" disabled>
+                ${UEN}
               <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
             </p>
           </iais:value>
         </iais:row>
+          <c:if test="${hasSubLicensee}">
+          <iais:row>
+            <iais:field width="7" value="Licensee to transfer to"></iais:field>
+            <iais:value width="10">
+              <p>
+                  ${subLicenseeDto.getDisplayName()}
+                <span  class="error-msg" name="iaisErrorMsg" id="error_subLicenseeError"></span>
+              </p>
+            </iais:value>
+          </iais:row>
+          </c:if>
          <iais:row>
             <iais:field width="7" value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
