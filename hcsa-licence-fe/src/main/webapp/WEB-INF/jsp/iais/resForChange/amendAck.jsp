@@ -10,7 +10,8 @@
 <webui:setLayout name="iais-internet"/>
 
 <%@include file="dashboard.jsp" %>
-<%@include file="../common/dashboard.jsp" %>
+<c:set var="showUserMenu" value="true"/>
+<%@include file="amendDashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <style>
     .ack-font-14{
