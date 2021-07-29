@@ -420,8 +420,8 @@ public class AppealServiceImpl implements AppealService {
                         }
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setFileName(appPremisesSpecialDocDtoOne.getDocName());
-                        pageShowFileDto.setIndex(index);
-                        pageShowFileDto.setFileMapId("selectedFileDiv"+index);
+                        pageShowFileDto.setIndex(e);
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+indexInt);
                         pageShowFileDto.setSize(appPremisesSpecialDocDtoOne.getDocSize());
                         pageShowFileDto.setMd5Code(appPremisesSpecialDocDtoOne.getMd5Code());
                         pageShowFileDto.setFileUploadUrl(appPremisesSpecialDocDtoOne.getFileRepoId());
