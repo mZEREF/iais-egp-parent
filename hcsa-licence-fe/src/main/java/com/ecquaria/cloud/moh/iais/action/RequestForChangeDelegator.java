@@ -559,6 +559,8 @@ public class RequestForChangeDelegator {
                 String newLicenseeId="";
                 if(licenseeDto!=null){
                     newLicenseeId = licenseeDto.getId();
+                }else{
+                    return;
                 }
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
                 appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
@@ -583,6 +585,7 @@ public class RequestForChangeDelegator {
                 if(subLicenseeDto != null){
                     subLicenseeDto.setId(null);
                     subLicenseeDto.setUenNo(uen);
+                    subLicenseeDto.setOrgId(licenseeDto.getOrganizationId());
                     appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
 
                     String baseServiceId = requestForChangeService.baseSpecLicenceRelation(licenceDto,false);
@@ -723,7 +726,7 @@ public class RequestForChangeDelegator {
                                 error.put("subLicenseeError","RFC_ERR021");
                             }
                         }
-                        if(error.isEmpty()) {
+                        if(error.isEmpty() && !"new".equals(subLicensee)) {
                             SubLicenseeDto subLicenseeDto = licenceViewService.getSubLicenseesById(subLicensee);
                             if (subLicenseeDto != null) {
                                 ParamUtil.setSessionAttr(bpc.request, "hasSubLicensee", true);
@@ -783,7 +786,25 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do submitPayment end ...."));
 
     }
+    /**
+     *
+     * @param bpc
+     * @Decription prepareAddLicensee
+     */
+    public void prepareAddLicensee(BaseProcessClass bpc){
 
+    }
+    /**
+     *
+     * @param bpc
+     * @Decription prepareCond
+     */
+    public void prepareCond(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("The prepareCond  start..."));
+        log.info(StringUtil.changeForLog("The prepareCond  isValidate is -->"+
+                ParamUtil.getRequestAttr(bpc.request,"isValidate")));
+        log.info(StringUtil.changeForLog("The prepareCond  end..."));
+    }
     private void init(BaseProcessClass bpc, String licenceId) throws Exception {
         HcsaServiceCacheHelper.flushServiceMapping();
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);

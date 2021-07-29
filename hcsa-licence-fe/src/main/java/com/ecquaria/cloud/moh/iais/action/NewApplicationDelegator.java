@@ -423,40 +423,45 @@ public class NewApplicationDelegator {
             dto.setAssignSelect(assignSelect);
             dto.setLicenseeType(licenseeType);
         } else {
-            String idType = ParamUtil.getString(request, "idType");
-            String idNumber = ParamUtil.getString(request, "idNumber");
-            String licenseeName = ParamUtil.getString(request, "licenseeName");
-            String postalCode = ParamUtil.getString(request, "postalCode");
-            String addrType = ParamUtil.getString(request, "addrType");
-            String blkNo = ParamUtil.getString(request, "blkNo");
-            String floorNo = ParamUtil.getString(request, "floorNo");
-            String unitNo = ParamUtil.getString(request, "unitNo");
-            String streetName = ParamUtil.getString(request, "streetName");
-            String buildingName = ParamUtil.getString(request, "buildingName");
-            String telephoneNo = ParamUtil.getString(request, "telephoneNo");
-            String emailAddr = ParamUtil.getString(request, "emailAddr");
-
-            dto = new SubLicenseeDto();
+            dto = getSubLicenseeDtoDetailFromPage(request);
             dto.setAssignSelect(assignSelect);
             dto.setLicenseeType(licenseeType);
-            dto.setIdType(idType);
-            dto.setIdNumber(idNumber);
-            dto.setLicenseeName(licenseeName);
-            dto.setPostalCode(postalCode);
-            dto.setAddrType(addrType);
-            dto.setBlkNo(blkNo);
-            dto.setFloorNo(floorNo);
-            dto.setUnitNo(unitNo);
-            dto.setStreetName(streetName);
-            dto.setBuildingName(buildingName);
-            dto.setTelephoneNo(telephoneNo);
-            dto.setEmailAddr(emailAddr);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
                 dto.setOrgId(loginContext.getOrgId());
                 dto.setUenNo(loginContext.getUenNo());
             }
         }
+        return dto;
+    }
+
+    public static SubLicenseeDto getSubLicenseeDtoDetailFromPage(HttpServletRequest request) {
+        String idType = ParamUtil.getString(request, "idType");
+        String idNumber = ParamUtil.getString(request, "idNumber");
+        String licenseeName = ParamUtil.getString(request, "licenseeName");
+        String postalCode = ParamUtil.getString(request, "postalCode");
+        String addrType = ParamUtil.getString(request, "addrType");
+        String blkNo = ParamUtil.getString(request, "blkNo");
+        String floorNo = ParamUtil.getString(request, "floorNo");
+        String unitNo = ParamUtil.getString(request, "unitNo");
+        String streetName = ParamUtil.getString(request, "streetName");
+        String buildingName = ParamUtil.getString(request, "buildingName");
+        String telephoneNo = ParamUtil.getString(request, "telephoneNo");
+        String emailAddr = ParamUtil.getString(request, "emailAddr");
+
+        SubLicenseeDto dto = new SubLicenseeDto();
+        dto.setIdType(idType);
+        dto.setIdNumber(idNumber);
+        dto.setLicenseeName(licenseeName);
+        dto.setPostalCode(postalCode);
+        dto.setAddrType(addrType);
+        dto.setBlkNo(blkNo);
+        dto.setFloorNo(floorNo);
+        dto.setUnitNo(unitNo);
+        dto.setStreetName(streetName);
+        dto.setBuildingName(buildingName);
+        dto.setTelephoneNo(telephoneNo);
+        dto.setEmailAddr(emailAddr);
         return dto;
     }
 

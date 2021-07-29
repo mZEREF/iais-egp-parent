@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="32" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="disable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="jump_OnStepProcess_0" name="jump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doValidate" x="620" y="540">
+  <AutomaticStep defClass="" executor="" icon="" name="doValidate" x="600" y="540">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -78,18 +78,38 @@
     <JavaCode defClass="" executor="" methodName="prepareDraft_OnStepProcess_0" name="prepareDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doTransfer" x="1110" y="540">
+  <AutomaticStep defClass="" executor="" icon="" name="doTransfer" x="1160" y="530">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doTransfer_OnStepProcess_0" name="doTransfer_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePage" x="1010" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePage" x="1080" y="380">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareAddLicensee" x="580" y="620">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAddLicensee_OnStepProcess_0" name="prepareAddLicensee_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="addLicensee" processname="MohRfcAddIndividualLicensee" project="INTERNET" version="-1" x="670" y="670">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCond" x="720" y="600">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCond_OnStepProcess_0" name="prepareCond_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -118,7 +138,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="validateSuccess" stageIndicator="" x="940" y="540">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="validateSuccess" stageIndicator="" x="890" y="530">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -167,7 +187,7 @@
    <position>{(570,400)(510,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doValidate" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/tranferPage" style="rectanular">
-   <position>{(510,560)(640,560)}</position>
+   <position>{(510,560)(620,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,370)(430,560)}</position>
@@ -193,27 +213,36 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFirstView" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(300,600)(250,440)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doValidate" style="rectanular">
-   <position>{(640,560)(820,560)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/validateSuccess" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(820,560)(960,560)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doTransfer" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/validateSuccess" style="rectanular">
-   <position>{(960,560)(1130,560)}</position>
+   <position>{(910,550)(1180,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(820,560)(570,400)}</position>
+   <position>{(760,540)(570,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doTransfer" style="oblique">
-   <position>{(1130,560)(1030,440)}</position>
+   <position>{(1180,550)(1100,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/validateSuccess" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePage" style="oblique">
-   <position>{(1030,440)(960,560)}</position>
+   <position>{(1100,400)(910,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/addLicensee" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareAddLicensee" style="oblique">
+   <position>{(600,640)(690,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAddLicensee" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doValidate" style="rectanular">
+   <position>{(620,560)(600,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/validateSuccess" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(760,540)(910,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCond" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/addLicensee" style="oblique">
+   <position>{(690,690)(740,620)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareCond" style="rectanular">
+   <position>{(740,620)(760,540)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/prepareTranfer" componentIfTrue="/Pages/WebPage/validateSuccess" defClass="" executor="" icon="" leftOperand="isValidate" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="800" y="540">
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareTranfer" componentIfTrue="/Pages/WebPage/validateSuccess" defClass="" executor="" icon="" leftOperand="isValidate" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="740" y="520">
    <Description/>
   </Condition>
  </Conditions>

@@ -71,4 +71,14 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preparePage", this);
 	}
 
+	public void prepareAddLicensee_OnStepProcess_0() throws Exception {
+	// 		PrepareAddLicensee->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareAddLicensee", this);
+	}
+
+	public void prepareCond_OnStepProcess_0() throws Exception {
+	// 		PrepareCond->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareCond", this);
+	}
+
 }
