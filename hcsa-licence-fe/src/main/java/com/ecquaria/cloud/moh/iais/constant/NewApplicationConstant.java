@@ -25,4 +25,7 @@ public class NewApplicationConstant {
 
     public static final String ACK_TITLE = "title";
     public static final String ACK_SMALL_TITLE = "smallTitle";
+
+    public static final String TITLE_MODE_OF_SVCDLVY = "Mode of Service Delivery";
+
 }

@@ -2265,7 +2265,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }else{
                                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
                                     appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
-                                    handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    // handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    newPrimaryDocList.add(appGrpPrimaryDocDto);
                                 }
                             }
                             break;
