@@ -1111,24 +1111,19 @@ public class InsRepServiceImpl implements InsRepService {
                 grpLicIds.add(appGrpId);
                 try {
                     String corrId = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity().getId();
-                    String serviceId = applicationDto.getServiceId();
                     String applicationNo = applicationDto.getApplicationNo();
-                    String wrkGrpId = null;
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-                    String categoryId = hcsaServiceDto.getCategoryId();
-                    List<HcsaSvcCateWrkgrpCorrelationDto> entity = hcsaConfigClient.getHcsaSvcCateWrkgrpCorrelationDtoBySvcCateId(categoryId).getEntity();
-                    for (HcsaSvcCateWrkgrpCorrelationDto dto : entity) {
-                        String stageId = dto.getStageId();
-                        if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
-                            wrkGrpId = dto.getWrkGrpId();
-                            break;
-                        }
-                    }
+                    HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+                    hcsaSvcStageWorkingGroupDto.setServiceId(StringUtil.isEmpty(applicationDto.getBaseServiceId()) ? applicationDto.getServiceId() : applicationDto.getBaseServiceId());
+                    hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+                    hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+                    hcsaSvcStageWorkingGroupDto.setOrder(1);
+                    HcsaSvcStageWorkingGroupDto hsswgDto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+                    String workGroupId =hsswgDto != null ? hsswgDto.getGroupId() : "";
                     TaskDto taskDto = new TaskDto();
                     taskDto.setApplicationNo(applicationNo);
                     taskDto.setRefNo(corrId);
                     taskDto.setPriority(0);
-                    taskDto.setWkGrpId(wrkGrpId);
+                    taskDto.setWkGrpId(workGroupId);
                     taskDto.setAuditTrailDto(auditTrailDto);
                     taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
                     taskDto.setDateAssigned(new Date());
@@ -1144,7 +1139,7 @@ public class InsRepServiceImpl implements InsRepService {
                     taskDto.setEventRefNo(corrId);
                     //history
                     createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null, auditTrailDto);
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, wrkGrpId, null, auditTrailDto);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, workGroupId, null, auditTrailDto);
                     taskDtos.add(taskDto);
                 } catch (Exception e) {
                     log.info(e.getMessage());
