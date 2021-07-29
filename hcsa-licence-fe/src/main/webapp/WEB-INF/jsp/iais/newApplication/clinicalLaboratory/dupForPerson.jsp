@@ -19,6 +19,10 @@
         <!--SVCPSN -->
         <c:set var="psnList" value="${AppSvcPersonnelDtoList}"/>
     </c:when>
+    <c:when test="${'32' == config.dupForPerson}">
+        <!--CD -->
+        <c:set var="psnList" value="${clinicalDirectorDtoList}"/>
+    </c:when>
 </c:choose>
 
 <c:choose>
