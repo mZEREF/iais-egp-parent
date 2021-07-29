@@ -76,6 +76,18 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -91,17 +103,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
 
 /**
  * @author Wenkang
@@ -419,8 +420,8 @@ public class AppealServiceImpl implements AppealService {
                         }
                         PageShowFileDto pageShowFileDto =new PageShowFileDto();
                         pageShowFileDto.setFileName(appPremisesSpecialDocDtoOne.getDocName());
-                        pageShowFileDto.setIndex(index);
-                        pageShowFileDto.setFileMapId("selectedFileDiv"+index);
+                        pageShowFileDto.setIndex(e);
+                        pageShowFileDto.setFileMapId("selectedFileDiv"+indexInt);
                         pageShowFileDto.setSize(appPremisesSpecialDocDtoOne.getDocSize());
                         pageShowFileDto.setMd5Code(appPremisesSpecialDocDtoOne.getMd5Code());
                         pageShowFileDto.setFileUploadUrl(appPremisesSpecialDocDtoOne.getFileRepoId());
