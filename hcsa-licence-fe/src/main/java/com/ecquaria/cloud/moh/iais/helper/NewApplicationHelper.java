@@ -2810,6 +2810,11 @@ public class NewApplicationHelper {
                     }
                 }
                 break;
+            case ApplicationConsts.DUP_FOR_PERSON_CD:
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList())){
+                    psnDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+                }
+                break;
             default:
                 break;
         }
@@ -2931,6 +2936,7 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
             ParamUtil.setRequestAttr(request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
             ParamUtil.setRequestAttr(request,"AppSvcPersonnelDtoList",appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+            ParamUtil.setRequestAttr(request,"clinicalDirectorDtoList",appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
         }
     }
 
@@ -2992,6 +2998,9 @@ public class NewApplicationHelper {
                     break;
                 case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                     psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_CD:
+                    psnType = ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR;
                     break;
                 default:
                     break;
@@ -3821,6 +3830,9 @@ public class NewApplicationHelper {
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                 psnName = "Service Personnel";
+                break;
+            case ApplicationConsts.DUP_FOR_PERSON_CD:
+                psnName = "Clinical Director";
                 break;
             default:
                 break;
