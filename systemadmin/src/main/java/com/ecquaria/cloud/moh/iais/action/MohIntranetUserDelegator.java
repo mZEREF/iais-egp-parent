@@ -848,7 +848,7 @@ public class MohIntranetUserDelegator {
                         }
                     }
                 }catch (Exception e){
-                    log.info("Supplementary task failed");
+                    log.error(e.getMessage());
                 }
 
             }
