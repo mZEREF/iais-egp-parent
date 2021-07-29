@@ -76,6 +76,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: Hc
@@ -539,9 +540,21 @@ public class InterInboxDelegator {
                 }
             }
             if(!entity.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
-                ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
-                return;
+                Set<String> appStatus=IaisCommonUtils.genNewHashSet();
+                appStatus.add(ApplicationConsts.APPLICATION_STATUS_DELETED);
+                appStatus.add(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                appStatus.add(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
+                appStatus.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                for (AppPremiseMiscDto apc:entity
+                ) {
+                    ApplicationDto applicationDto=appInboxClient.getApplicationByCorreId(apc.getAppPremCorreId()).getEntity();
+                    if (!appStatus.contains(applicationDto.getStatus())){
+                        ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
+                        ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+                        return;
+                    }
+
+                }
             }
         }
         List<LicenceDto> licenceDtos = licenceInboxClient.isNewLicence(licId).getEntity();
