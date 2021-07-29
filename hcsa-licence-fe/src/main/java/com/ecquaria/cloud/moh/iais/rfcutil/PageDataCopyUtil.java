@@ -76,6 +76,8 @@ public class PageDataCopyUtil {
             copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
 
             copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
+
+            copy.setOffSiteEmail(appGrpPremisesDto.getOffSiteEmail());
         } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
             //EASMTS
             copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
@@ -105,6 +107,8 @@ public class PageDataCopyUtil {
 
             copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
             copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
+
+            copy.setConveyanceEmail(appGrpPremisesDto.getConveyanceEmail());
         }
 
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList = copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
