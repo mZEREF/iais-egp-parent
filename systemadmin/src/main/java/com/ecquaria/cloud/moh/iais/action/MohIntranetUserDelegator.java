@@ -818,16 +818,16 @@ public class MohIntranetUserDelegator {
             }
 
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                List<UserGroupCorrelationDto> userGroupCorrelationDtoList=intranetUserService.addUserGroupId(userGroupCorrelationDtos);
                 try {
                     String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
-                    for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
+                    for (UserGroupCorrelationDto ugc:userGroupCorrelationDtoList
                     ) {
                         List<String> roleIdList = IaisCommonUtils.genNewArrayList();
                         roleIdList.add(ugc.getUserRoleId());
                         List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
                         boolean hasNotLeadership=false;
-                        for (UserGroupCorrelationDto ugcd:userGroupCorrelationDtos
+                        for (UserGroupCorrelationDto ugcd:userGroupCorrelationDtoList
                         ) {
                             if(!ugcd.getId().equals(ugc.getId())&&ugc.getGroupId().equals(ugcd.getGroupId())&&ugcd.getIsLeadForGroup().equals(0)){
                                 hasNotLeadership=true;
@@ -848,7 +848,7 @@ public class MohIntranetUserDelegator {
                         }
                     }
                 }catch (Exception e){
-                    log.info("Supplementary task failed");
+                    log.error(e.getMessage());
                 }
 
             }
