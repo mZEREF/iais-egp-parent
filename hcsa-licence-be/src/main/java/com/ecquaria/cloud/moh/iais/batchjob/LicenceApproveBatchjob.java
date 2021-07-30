@@ -77,7 +77,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -93,6 +92,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -102,13 +109,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -1309,6 +1309,12 @@ public class LicenceApproveBatchjob {
             premisesGroupDto.setHasError(false);
             boolean isNewHciCode = false;
             //premises
+            String premisesId = appGrpPremisesEntityDto.getId();
+            String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
+            String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremCorrecId).getEntity();
+            if (!StringUtil.isEmpty(licHciCode)){
+                appGrpPremisesEntityDto.setHciCode(licHciCode);
+            }
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
             if (StringUtil.isEmpty(hciCode)) {
@@ -1388,8 +1394,7 @@ public class LicenceApproveBatchjob {
             premisesDto.setEventDtos(licEventDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
-            String premisesId = appGrpPremisesEntityDto.getId();
-            String appPremCorrecId = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
+//            String premisesId = appGrpPremisesEntityDto.getId();
             if (StringUtil.isEmpty(appPremCorrecId)) {
                 continue;
             }
