@@ -58,12 +58,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.text.ParseException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +66,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -713,7 +714,7 @@ private RequestForChangeService requestForChangeService;
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA);
         AppDeclarationMessageDto appDeclarationMessageDto = appCessationDtos.get(0).getAppDeclarationMessageDto();
         List<AppDeclarationDocDto> appDeclarationDocDtoList = appCessationDtos.get(0).getAppDeclarationDocDtoList();
         if (appDeclarationMessageDto != null){
@@ -790,7 +791,7 @@ private RequestForChangeService requestForChangeService;
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_GET_DATA);
         setRiskToDto(appSubmissionDto);
 
         AppSubmissionDto entity = applicationFeClient.saveSubmision(appSubmissionDto).getEntity();
