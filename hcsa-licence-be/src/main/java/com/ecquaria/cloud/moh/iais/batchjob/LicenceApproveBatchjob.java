@@ -1331,6 +1331,12 @@ public class LicenceApproveBatchjob {
             premisesGroupDto.setHasError(false);
             boolean isNewHciCode = false;
             //premises
+            String premisesId = appGrpPremisesEntityDto.getId();
+            AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
+            String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremisesCorrelationDto.getId()).getEntity();
+            if (StringUtil.isEmpty(licHciCode)){
+                appGrpPremisesEntityDto.setHciCode(licHciCode);
+            }
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
             if (StringUtil.isEmpty(hciCode)) {
@@ -1410,8 +1416,7 @@ public class LicenceApproveBatchjob {
             premisesDto.setEventDtos(licEventDtos);
             premisesGroupDto.setPremisesDto(premisesDto);
             //create lic_premises
-            String premisesId = appGrpPremisesEntityDto.getId();
-            AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
+            //String premisesId = appGrpPremisesEntityDto.getId();
             if (appPremisesCorrelationDto == null) {
                 continue;
             }
