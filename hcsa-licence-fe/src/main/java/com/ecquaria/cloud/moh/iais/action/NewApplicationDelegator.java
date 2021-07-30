@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.PersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
@@ -127,6 +128,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -2038,15 +2040,28 @@ public class NewApplicationDelegator {
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDtoByServiceId(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos, String serviceId,
             String appNo) {
         Optional<AppSvcRelatedInfoDto> optional = appSvcRelatedInfoDtos.stream()
-                .filter(dto -> serviceId.equalsIgnoreCase(dto.getServiceId())
-                        && (appNo == null || appNo.equals(dto.getAppNo())))
+                .filter(dto -> Objects.equals(serviceId, dto.getServiceId())
+                        && Objects.equals(appNo, dto.getAppNo()))
                 .findAny();
         if (!optional.isPresent()) {
             optional = appSvcRelatedInfoDtos.stream()
-                    .filter(dto -> serviceId.equalsIgnoreCase(dto.getServiceId()))
+                    .filter(dto -> Objects.equals(appNo, dto.getAppNo()))
+                    .findAny();
+        }
+        if (!optional.isPresent()) {
+            optional = appSvcRelatedInfoDtos.stream()
+                    .filter(dto -> Objects.equals(serviceId, dto.getServiceId()))
                     .findAny();
         }
         return optional.orElseGet(() -> appSvcRelatedInfoDtos.get(0));
+    }
+
+    private List<AppSvcRelatedInfoDto> getOtherAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            String serviceId, String appNo) {
+        return appSvcRelatedInfoDtos.stream()
+                .filter(dto -> Objects.equals(serviceId, dto.getServiceId())
+                        && !Objects.equals(appNo, dto.getAppNo()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -4546,6 +4561,7 @@ public class NewApplicationDelegator {
             }
 
             if (appSubmissionDto != null) {
+                svcRelatedInfoRFI(appSubmissionDto, appNo);
                 //set max file index into session
                 Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
                 if(maxFileIndex == null){
@@ -4648,6 +4664,69 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, "test");
         }
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
+    }
+
+    private void svcRelatedInfoRFI(AppSubmissionDto appSubmissionDto, String appNo) {
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                null, appNo);
+        if (appSvcRelatedInfoDto == null) {
+            return;
+        }
+        String serviceId = appSvcRelatedInfoDto.getServiceId();
+        List<AppSvcRelatedInfoDto> otherList = getOtherAppSvcRelatedInfoDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                serviceId, appNo);
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
+        appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+        if (otherList != null && !otherList.isEmpty()) {
+            otherList.forEach(dto -> {
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
+                    appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
+                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+                }
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+                if (appSvcDisciplineAllocationDtoList != null && dto.getAppSvcDisciplineAllocationDtoList() != null) {
+                    appSvcDisciplineAllocationDtoList.addAll(dto.getAppSvcDisciplineAllocationDtoList());
+                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
+                }
+
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> otherAppSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+                if (otherAppSvcDocDtoLit != null && appSvcDocDtoLit != null) {
+                    otherAppSvcDocDtoLit.forEach(doc -> {
+                        if (doc.getAppSvcPersonId() != null || doc.getAppGrpPersonId() != null) {
+                            doc.setPsnIndexNo(getNewPsnIndexNo(dto.getPersonnels(), appSvcRelatedInfoDto.getPersonnels(), doc.getPsnIndexNo()));
+                            appSvcDocDtoLit.add(doc);
+                        }
+                    });
+                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
+                }
+            });
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            appSvcRelatedInfoDtos.removeAll(otherList);
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        }
+    }
+
+    private String getNewPsnIndexNo(List<PersonnelDto> srcPersonnels, List<PersonnelDto> tarPersonnels, String srcPsnIndexNo) {
+        String psnIndexNo = srcPsnIndexNo;
+        if (srcPersonnels == null || tarPersonnels == null) {
+            return psnIndexNo;
+        }
+        Optional<PersonnelDto> any = srcPersonnels.stream().filter(
+                dto -> Objects.equals(srcPsnIndexNo, dto.getPsnIndexNo())).findAny();
+        if (any.isPresent()) {
+            PersonnelDto p = any.get();
+            psnIndexNo = tarPersonnels.stream()
+                    .filter(dto -> Objects.equals(p.getIdType(), dto.getIdType())
+                    && Objects.equals(p.getIdNo(),dto.getIdNo())
+                    && Objects.equals(p.getName(), dto.getName()))
+                    .findAny().map(dto -> dto.getPsnIndexNo()).orElseGet(() -> srcPsnIndexNo);
+        }
+        return psnIndexNo;
     }
 
     private boolean loadingServiceConfig(BaseProcessClass bpc) throws CloneNotSupportedException {
