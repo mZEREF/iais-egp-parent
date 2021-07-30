@@ -199,7 +199,8 @@ public class RequestForChangeDelegator {
         }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
-            if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+            if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status) &&
+                    !(ApplicationConsts.LICENCE_STATUS_APPROVED.equals(status) && IaisEGPHelper.isActiveMigrated())) {
                 String errMsg = "licence status is not active";
                 ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", errMsg);
                 flag = false;
