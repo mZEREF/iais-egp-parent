@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -47,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -119,6 +122,8 @@ public class AppealApproveBatchjob {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         AuditTrailHelper.setupBatchJobAuditTrail(this);
         jobExecute();
@@ -363,6 +368,18 @@ public class AppealApproveBatchjob {
                 appwalAppPremisesRecommendationDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                 appwalAppPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                 appealAppPremisesRecommendationDtos.add(appwalAppPremisesRecommendationDto);
+                if(oldApplication!=null){
+                    HcsaServiceDto serviceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(oldApplication.getServiceId()).getEntity();
+                    if(serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)){
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appealApproveDto.getAppPremiseMiscDto().getAppPremCorreId()).getEntity();
+                        for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
+                            appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
+                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ONCHANGE);
+                        }
+                        appSvcVehicleBeClient.createAppSvcVehicleDtoList(appSvcVehicleDtoList);
+                    }
+                }
+
             }
 
         }else{
@@ -586,6 +603,7 @@ public class AppealApproveBatchjob {
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto,String reason) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
+        appPremiseMiscDtoList.add(appPremiseMiscDto);
         if(ApplicationConsts.APPEAL_REASON_OTHER.equals(reason)){
             return;
         }
@@ -644,7 +662,6 @@ public class AppealApproveBatchjob {
                 }
                 appealLicence.addAll(entity);
                 appealLicenceDto.setExpiryDate(expiryDate);
-                appPremiseMiscDtoList.add(appPremiseMiscDto);
                 appealLicence.add(appealLicenceDto);
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
