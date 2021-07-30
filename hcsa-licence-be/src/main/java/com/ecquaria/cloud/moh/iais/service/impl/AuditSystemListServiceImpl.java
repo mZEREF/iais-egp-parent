@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -39,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
@@ -46,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
@@ -63,14 +66,19 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
 import com.google.common.collect.Maps;
-
-import java.util.*;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -117,8 +125,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
-    /* @Autowired
-    private  ApptInspectionDateService apptInspectionDateService;*/
+    @Autowired
+    private ApptInspectionDateService apptInspectionDateService;
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Autowired
     private AppointmentClient appointmentClient;
@@ -250,6 +258,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
                 if (temp.isSelectedForAudit()) {
+                    if(!StringUtil.isEmpty(temp.getAnnouncedFlag())) {
+                        temp = setOrgUserDtoForSendMsgEmail(temp);
+                    }
                     assignTask(temp);
                 }
             }
@@ -270,6 +281,21 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
     }
+
+    public AuditTaskDataFillterDto setOrgUserDtoForSendMsgEmail(AuditTaskDataFillterDto auditTaskDataFillterDto) {
+        if(auditTaskDataFillterDto != null) {
+            String licenceId = auditTaskDataFillterDto.getLicId();
+            String submitById = apptInspectionDateService.getAppSubmitByWithLicId(licenceId);
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(submitById).getEntity();
+            if(orgUserDto != null) {
+                String applicantName = orgUserDto.getDisplayName();
+                log.info(StringUtil.changeForLog("Tcu Audit Appt Preferred Date User Display Name : " + applicantName));
+                auditTaskDataFillterDto.setOrgUserDto(orgUserDto);
+            }
+        }
+        return auditTaskDataFillterDto;
+    }
+
     private void assignTask(AuditTaskDataFillterDto temp) {
         String submitId = generateIdClient.getSeqId().getEntity();
         //create auditType data  and create grop info
@@ -317,8 +343,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     saveAppForAuditToFe(appSubmissionForAuditDto,false);
                 }
                 log.info("========create TaskCall is start.");
-                createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
+                TaskDto taskDto = createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
                 sendEmailByCreateAuditTaskDataFillterDto( auditCombinationDto.getAuditTaskDataFillterDto(),auditCombinationDto.getEventRefNo());
+                AuditTaskDataFillterDto auditTaskDataFillterDto = auditCombinationDto.getAuditTaskDataFillterDto();
+                try{
+                    //tcu audit announced Appointment Pre date send msg email sms
+                    sendTcuAuditApptEmailMsgSms(auditTaskDataFillterDto, taskDto, appSubmissionForAuditDto);
+                } catch (Exception e) {
+                    log.info(e.getMessage(), e);
+                }
             }else {
                 log.info(StringUtil.changeForLog("---------- auditCombinationDto is null, eventRefNum : " + eventRefNum +"-----------------------------"));
             }
@@ -327,7 +360,51 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             log.info("========createTaskCallBack  submissionList is null.");
         }
     }
-    public void createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto,String eventRefNum){
+
+    private void sendTcuAuditApptEmailMsgSms(AuditTaskDataFillterDto auditTaskDataFillterDto, TaskDto taskDto, AppSubmissionForAuditDto appSubmissionForAuditDto) {
+        if(auditTaskDataFillterDto != null && taskDto != null) {
+            String appNo = taskDto.getApplicationNo();
+            log.info(StringUtil.changeForLog("Tcu Audit Appt Date Send Email Start" + appNo));
+            if (!StringUtil.isEmpty(auditTaskDataFillterDto.getAnnouncedFlag())) {
+                OrgUserDto orgUserDto = auditTaskDataFillterDto.getOrgUserDto();
+                if(orgUserDto != null) {
+                    //set svc code
+                    List<String> serviceCodes = getSvcCodeForEmail(appSubmissionForAuditDto.getApplicationDtos());
+                    //FE Submit user name
+                    String applicantName = orgUserDto.getDisplayName();
+                    log.info(StringUtil.changeForLog("Tcu Audit Appt Date Send Email submitByName =======" + applicantName));
+                    //create mask value map
+                    HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                    maskParams.put("applicationNo", appNo);
+                    //fe url
+                    String emailLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+                    String msgLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_TCU_AUDIT_APPT_PRE_DATE + appNo;
+                    //set template value
+                    Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+                    map.put("ApplicantName", applicantName);
+
+
+                }
+            }
+        }
+    }
+
+    private List<String> getSvcCodeForEmail(List<ApplicationDto> applicationDtos) {
+        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(applicationDtos)) {
+            for(ApplicationDto applicationDto : applicationDtos) {
+                String serviceId = applicationDto.getServiceId();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                if(hcsaServiceDto != null) {
+                    String serviceCode = hcsaServiceDto.getSvcCode();
+                    serviceCodes.add(serviceCode);
+                }
+            }
+        }
+        return serviceCodes;
+    }
+
+    public TaskDto createTask(AuditTaskDataFillterDto temp,String submitId,AuditCombinationDto auditCombinationDto,String eventRefNum){
         TaskDto taskDto = new TaskDto();
         taskDto.setId(generateIdClient.getSeqId().getEntity());
         taskDto.setUserId(temp.getInspectorId());
@@ -366,7 +443,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }else {
             log.info("=============== group id is null.==========");
-            return;
+            return null;
 
         }
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
@@ -378,6 +455,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        return taskDto;
     }
 
     private void  createAuditAppLic(String licId, String appId , AuditTrailDto auditTrailDto,String eventRefNum,String submissionId,String corrId,String licPremId){

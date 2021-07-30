@@ -6,7 +6,7 @@
                 <div class="footer-link text-right">
                     <ul class="list-inline">
                         <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>--%>
-                        <li><a href="javascript:void(0);" >Contact Us</a></li>
+                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS023"/>')">Contact Us</a></li>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS021"/>')">Feedback</a></li>
                         <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS013"/>')">Share your views @ Reach</a></li>
                     </ul>

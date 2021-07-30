@@ -32,11 +32,18 @@
                                     <th>Address</th>
                                     <th>Service Name</th>
                                     <th>Audit Type</th>
-                                    <c:if test="${ISTUC}"> <th>
-                                        TCU Audit Due Date
-                                    </th></c:if>
+                                    <c:if test="${ISTUC}">
+                                        <th>
+                                            TCU Audit Due Date
+                                        </th>
+                                    </c:if>
                                     <th>Assign task to Inspector</th>
                                     <th>Select for Audit</th>
+                                    <c:if test="${ISTUC}">
+                                        <th>
+                                            Announced Audit
+                                        </th>
+                                    </c:if>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -68,6 +75,11 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
+                                            <c:if test="${ISTUC}">
+                                                <td>
+                                                    <input type="checkbox" name = "announced${status.index}" value = "announced"/>
+                                                </td>
+                                            </c:if>
                                         </tr>
                                     </c:if>
                                 </c:forEach>

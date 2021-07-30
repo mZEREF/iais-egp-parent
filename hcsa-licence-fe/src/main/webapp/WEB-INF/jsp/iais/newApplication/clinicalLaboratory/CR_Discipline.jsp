@@ -32,6 +32,7 @@
 </c:if>
 
 <c:set value="${reloadLaboratoryDisciplines}" var="reloadData"/>
+<c:set var="rfiNo" value="0"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
     <c:if test="${appGrpPremisesDto.rfiCanEdit}">
@@ -307,7 +308,8 @@
     var doEdit = function () {
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
-            $('#fieldset-content'+${rfiNo}).prop('disabled',false);
+            var rfiNo = '${rfiNo}';
+            $('#fieldset-content'+rfiNo).prop('disabled',false);
             $('#isEditHiddenVal').val('1');
         });
     };
