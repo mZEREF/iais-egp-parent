@@ -74,6 +74,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -1884,6 +1885,10 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().forEach(obj -> {
+                    // Don't add current service vehicles
+                    if (Objects.equals(obj.getServiceId(), currSvcId)) {
+                        return;
+                    }
                     if (!IaisCommonUtils.isEmpty(obj.getAppSvcVehicleDtoList())) {
                         appSvcVehicleDtos.addAll(obj.getAppSvcVehicleDtoList());
                     }
