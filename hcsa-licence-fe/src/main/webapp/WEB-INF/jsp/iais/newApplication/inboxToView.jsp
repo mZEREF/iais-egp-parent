@@ -60,8 +60,9 @@
                                                         <%@include file="inboxView/inboxPremise.jsp" %>
                                                         <%@include file="inboxView/inboxPrimary.jsp" %>
                                                         <%@include file="inboxView/viewForm.jsp" %>
+                                                        <c:if test="${AppSubmissionDto.appType != 'APTY009'}">
                                                         <%@include file="../common/declarations.jsp"%>
-
+                                                        </c:if>
                                                     </c:if>
                                                 </div>
                                             </div>

@@ -187,6 +187,7 @@ public class FePrintViewDelegator {
             ParamUtil.setSessionAttr(bpc.request, "ReloadDeputyPrincipalOfficers",(Serializable) deputyPrincipalOfficersDtos);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcMedAlertPsn",(Serializable) medAlertPsnDtos);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPersonnelDtoList", (Serializable)appSvcPersonnelDtos);
+            ParamUtil.setRequestAttr(bpc.request,"appTypeForPrintDec",appSubmissionDto.getAppType());
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");
