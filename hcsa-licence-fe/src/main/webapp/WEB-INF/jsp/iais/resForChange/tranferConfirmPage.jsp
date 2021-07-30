@@ -60,6 +60,104 @@
             </iais:value>
           </iais:row>
           </c:if>
+          <c:if test="${hasNewSubLicensee}">
+            <iais:row>
+              <iais:field width="7" value="Add a new licensee"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getIdNumber()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="ID No."></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getIdNumber()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Licensee Name"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getLicenseeName()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Postal Code"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getPostalCode()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Address Type"></iais:field>
+              <iais:value width="10">
+                <p>
+                  <iais:code code="${subLicenseeDto.getAddrType()}" />
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Block / House No."></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getBlkNo()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Floor No."></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getFloorNo()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Unit No."></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getUnitNo()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Street Name"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getStreetName()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Building Name"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getBuildingName()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Mobile No."></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getTelephoneNo()}
+                </p>
+              </iais:value>
+            </iais:row>
+            <iais:row>
+              <iais:field width="7" value="Email Address"></iais:field>
+              <iais:value width="10">
+                <p>
+                    ${subLicenseeDto.getEmailAddr()}
+                </p>
+              </iais:value>
+            </iais:row>
+          </c:if>
          <iais:row>
             <iais:field width="7" value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
