@@ -1457,7 +1457,7 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
                 switch2 = "ack";
 
-                //update status
+                //update status for transfor payment
                 String appGrpId = appSubmissionDto.getAppGrpId();
                 if (!appGrpIds.contains(appGrpId)) {
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();

@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
@@ -665,7 +666,13 @@ public class RequestForChangeDelegator {
 
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                        ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
+                        if (amount == null || MiscUtil.doubleEquals(amount, 0.0)) {
+                            List<AppSubmissionDto> ackPageAppSubmission=new ArrayList<>(1);
+                            ackPageAppSubmission.add(appSubmissionDto);
+                            bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmission);
+                        } else {
+                            bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
+                        }
                         StringBuilder url = new StringBuilder();
                         url.append("https://").append(bpc.request.getServerName())
                                 .append(RfcConst.PAYMENTPROCESS);
