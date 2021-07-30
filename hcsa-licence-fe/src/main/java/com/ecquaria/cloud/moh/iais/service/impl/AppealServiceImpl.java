@@ -427,8 +427,8 @@ public class AppealServiceImpl implements AppealService {
                         pageShowFileDto.setFileUploadUrl(appPremisesSpecialDocDtoOne.getFileRepoId());
                         pageShowFileDto.setVersion(appPremisesSpecialDocDtoOne.getVersion());
                         pageShowFileDtos.add(pageShowFileDto);
-                        map.put("selectedFile"+index,null);
-                        pageShowFileHashMap.put("selectedFile"+index, pageShowFileDto);
+                        map.put(index,null);
+                        pageShowFileHashMap.put(index, pageShowFileDto);
                     }
                     request.getSession().setAttribute("pageShowFileHashMap",pageShowFileHashMap);
                     request.getSession().setAttribute("seesion_files_map_ajax_feselectedFile",map);
