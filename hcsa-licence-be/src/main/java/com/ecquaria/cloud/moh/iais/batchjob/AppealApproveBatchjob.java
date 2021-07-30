@@ -374,7 +374,6 @@ public class AppealApproveBatchjob {
                         List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appealApproveDto.getAppPremiseMiscDto().getAppPremCorreId()).getEntity();
                         for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
-                            appSvcVehicleDto.setActCode(ApplicationConsts.VEHICLE_ACTION_CODE_ONCHANGE);
                         }
                         appSvcVehicleBeClient.createAppSvcVehicleDtoList(appSvcVehicleDtoList);
                     }
