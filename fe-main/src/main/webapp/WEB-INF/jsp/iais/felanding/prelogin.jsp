@@ -186,7 +186,7 @@
 
   function landing() {
     <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
-    if ("prod".equalsIgnoreCase(testMode)){%>
+    if (testMode.toUpperCase().startsWith("PROD")){%>
     var prd = "<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>";
     <%}else{%>
     var prd = "";
