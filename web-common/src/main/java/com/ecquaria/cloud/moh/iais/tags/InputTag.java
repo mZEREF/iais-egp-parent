@@ -25,13 +25,17 @@ public class InputTag extends DivTagSupport{
 
     public InputTag() {
         super();
-        init();
+        cleanFields();
     }
 
     // resets local state
     @Override
     protected void init() {
         super.init();
+        cleanFields();
+    }
+
+    private void cleanFields() {
         setType(null);
         setName(null);
         setValue(null);

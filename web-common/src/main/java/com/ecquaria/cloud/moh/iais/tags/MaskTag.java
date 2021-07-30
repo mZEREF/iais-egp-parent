@@ -15,19 +15,23 @@ import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
  */
 @Slf4j
 public class MaskTag extends DivTagSupport {
-    private static final long serialVersionUID = 5007708962749332573L;
+    private static final long serialVersionUID = -4491768109985975380L;
 
     private String value;
     private String name;
 
     public MaskTag() {
         super();
-        init();
+        clearFields();
     }
 
     @Override
     protected void init() {
         super.init();
+        clearFields();
+    }
+
+    private void clearFields() {
         try {
             setValue("");
         } catch (JspException e) {
@@ -38,7 +42,6 @@ public class MaskTag extends DivTagSupport {
         } catch (JspException e) {
             log.info(e.getMessage(),e);
         }
-
     }
 
     // Releases any resources we may have (or inherit)
