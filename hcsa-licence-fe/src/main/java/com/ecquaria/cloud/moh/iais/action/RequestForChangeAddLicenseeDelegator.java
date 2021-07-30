@@ -85,7 +85,7 @@ public class RequestForChangeAddLicenseeDelegator {
     public void addLIcensee(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator addLIcensee start..."));
         SubLicenseeDto subLicenseeDto = (SubLicenseeDto)ParamUtil.getRequestAttr(bpc.request,"dto");
-        ParamUtil.setSessionAttr(bpc.request, "hasSubLicensee", true);
+        ParamUtil.setSessionAttr(bpc.request, "hasNewSubLicensee", true);
         ParamUtil.setSessionAttr(bpc.request, "subLicenseeDto", subLicenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"isValidate","Y");
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator addLIcensee end..."));

@@ -306,6 +306,7 @@ public class RequestForChangeDelegator {
                 flag = true;
                 ParamUtil.setSessionAttr(bpc.request,"UEN",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+                ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicenseeError",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicenseeDto",null);
@@ -736,22 +737,6 @@ public class RequestForChangeDelegator {
                             }
                         }
                     }
-                    if(error.isEmpty()){
-                        String svcName = licenceDto.getSvcName();
-                        log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
-                        if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
-                                || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                            List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                            HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                            hcsaServiceDto.setSvcName(svcName);
-                            hcsaServiceDtos.add(hcsaServiceDto);
-                            boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                            log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                            if(!canCreateEasOrMts){
-                                error.put("uenError","RFC_ERR022");
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -1018,6 +1003,21 @@ public class RequestForChangeDelegator {
             if(licenseeDto == null){
                 error.put("uenError","RFC_ERR002");
             }else{
+                String svcName = licenceDto.getSvcName();
+                log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
+                if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
+                        || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
+                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                    hcsaServiceDto.setSvcName(svcName);
+                    hcsaServiceDtos.add(hcsaServiceDto);
+                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                    if(!canCreateEasOrMts){
+                        error.put("uenError","RFC_ERR022");
+                        return error;
+                    }
+                }
                 if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                     if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
