@@ -141,13 +141,13 @@ public class InterInboxDelegator {
         Claims claims = Jwts.claims();
         claims.put("uid", loginContext.getLoginId());
         claims.put("uen", loginContext.getUenNo());
-        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.ISO_8601);
-        iso8601ExpDateString = iso8601ExpDateString.substring(0, 22) + ":" +iso8601ExpDateString.substring(22);
+        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(), Formatter.DATE_ELIS);
         claims.put("iat", iso8601ExpDateString);
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
         bpc.response.setHeader("authToken", jwtStr);
+        log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
         IaisEGPHelper.redirectUrl(bpc.response, elisUrl);
     }
@@ -160,13 +160,14 @@ public class InterInboxDelegator {
         Claims claims = Jwts.claims();
         claims.put("uid", loginContext.getLoginId());
         claims.put("uen", loginContext.getUenNo());
-        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.ISO_8601);
-        iso8601ExpDateString = iso8601ExpDateString.substring(0, 22) + ":" +iso8601ExpDateString.substring(22);
+        String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.DATE_ELIS);
         claims.put("iat", iso8601ExpDateString);
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String alertUrl = ConfigHelper.getString("moh.mohAlert.url");
         bpc.response.setHeader("authToken", jwtStr);
+        log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
+        log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
         IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
     }
 
