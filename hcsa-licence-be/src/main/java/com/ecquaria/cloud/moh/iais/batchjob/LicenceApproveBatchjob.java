@@ -1334,7 +1334,7 @@ public class LicenceApproveBatchjob {
             String premisesId = appGrpPremisesEntityDto.getId();
             AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
             String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremisesCorrelationDto.getId()).getEntity();
-            if (StringUtil.isEmpty(licHciCode)){
+            if (!StringUtil.isEmpty(licHciCode)){
                 appGrpPremisesEntityDto.setHciCode(licHciCode);
             }
             String hciCode = appGrpPremisesEntityDto.getHciCode();
