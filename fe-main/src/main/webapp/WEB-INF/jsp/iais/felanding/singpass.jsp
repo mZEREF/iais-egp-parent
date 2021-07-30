@@ -81,11 +81,58 @@
       </form>
     </div>
   </c:when>
+  <c:when test="${'Prod.OIDC' eq openTestMode}">
+    <webui:setLayout name="none"/>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+    <title>SingPass QRcode</title>
+    <%
+      String nonce = UUID.randomUUID().toString();
+      String state = UUID.randomUUID().toString();
+      ParamUtil.setSessionAttr(request, "qrcode_state", state);
+      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
+      String qrjsUrl = ConfigHelper.getString("singpass.oidc.js.url");
+      request.setAttribute("qrjsUrl", qrjsUrl);
+    %>
+    <script src="<%=qrjsUrl%>"></script>
+    <script language="JavaScript">
+        async function initQrCode(){
+            const authParamsSupplier = async () => {
+                return {state:'<%=state%>' , nonce:'<%=nonce%>'}
+            };
+
+            const onError = (errorId, message) => {
+                alert('An unexpected error has occurred.Please try again later or contact MOE Customer Service Centre for assistance.');
+            }
+
+            const initAuthSessionResponse = window.NDI.initAuthSession (
+                'ndi-qr',
+                {
+                    clientId: '<%= StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.clientId"))%>',
+                    redirectUri: '<%= StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.redirectUrl"))%>',
+                    scope: 'openid',
+                    responseType: 'code'
+                },
+                authParamsSupplier,
+                onError
+            );
+        }
+    </script>
+    </head>
+    <body onload="initQrCode()">
+    <div id="ndi-qr"></div>
+    </body>
+    </html>
+
+  </c:when>
   <c:otherwise>
     <%@ page import="com.ncs.secureconnect.sim.lite.SIMUtil" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
     <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+    <%@ page import="java.security.SecureRandom" %>
+    <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+    <%@ page import="java.util.UUID" %>
     <%!
       static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("singpass.jsp");
     %>
@@ -100,7 +147,7 @@
     %>
   </c:otherwise>
 </c:choose>
-
+<c:if test="${'Prod.OIDC' ne openTestMode}">
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
   function submitSingPass() {
@@ -114,3 +161,4 @@
   }
 
 </script>
+</c:if>
