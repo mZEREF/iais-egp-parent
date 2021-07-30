@@ -964,6 +964,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("conveyanceBuildingName" + i, general_err0041);
                         }
 
+                        String email = appGrpPremisesDtoList.get(i).getConveyanceEmail();
+                        if(!ValidationUtils.isEmail(email)){
+                            errorMap.put("conveyanceEmail"+i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                        }
+
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
                         validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
 
@@ -1235,6 +1240,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
                             String general_err0041=NewApplicationHelper.repLength("Building Name","66");
                             errorMap.put("offSiteBuildingName" + i, general_err0041);
+                        }
+
+                        String email = appGrpPremisesDtoList.get(i).getOffSiteEmail();
+                        if(!ValidationUtils.isEmail(email)){
+                            errorMap.put("offSiteEmail"+i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
                         }
 
                         String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();

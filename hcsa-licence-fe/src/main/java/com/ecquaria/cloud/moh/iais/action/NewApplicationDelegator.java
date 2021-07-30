@@ -3592,6 +3592,7 @@ public class NewApplicationDelegator {
         String[] conFloorNo = ParamUtil.getStrings(request, "conveyanceFloorNo");
         String[] conUnitNo = ParamUtil.getStrings(request, "conveyanceUnitNo");
         String[] conBuildingName = ParamUtil.getStrings(request, "conveyanceBuildingName");
+        String[] conEmail = ParamUtil.getStrings(request, "conveyanceEmail");
         String[] conSiteAddressType = ParamUtil.getStrings(request, "conveyanceAddrType");
         //offSite
         String[] offSiteHciName = ParamUtil.getStrings(request, "offSiteHciName");
@@ -3602,6 +3603,7 @@ public class NewApplicationDelegator {
         String[] offSiteFloorNo = ParamUtil.getStrings(request, "offSiteFloorNo");
         String[] offSiteUnitNo = ParamUtil.getStrings(request, "offSiteUnitNo");
         String[] offSiteBuildingName = ParamUtil.getStrings(request, "offSiteBuildingName");
+        String[] offSiteEmail = ParamUtil.getStrings(request, "offSiteEmail");
         String[] offSiteSiteAddressType = ParamUtil.getStrings(request, "offSiteAddrType");
 
         String[] easMtsPremisesSelect = ParamUtil.getStrings(request, "easMtsSelect");
@@ -3898,6 +3900,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setConveyanceFloorNo(conFloorNo[i]);
                 appGrpPremisesDto.setConveyanceUnitNo(conUnitNo[i]);
                 appGrpPremisesDto.setConveyanceBuildingName(conBuildingName[i]);
+                appGrpPremisesDto.setConveyanceEmail(conEmail[i]);
+                appGrpPremisesDto.setEasMtsPubEmail(conEmail[i]);
                 appGrpPremisesDto.setConveyanceAddressType(conSiteAddressType[i]);
 
                 //weekly
@@ -3996,6 +4000,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setOffSiteFloorNo(offSiteFloorNo[i]);
                 appGrpPremisesDto.setOffSiteUnitNo(offSiteUnitNo[i]);
                 appGrpPremisesDto.setOffSiteBuildingName(offSiteBuildingName[i]);
+                appGrpPremisesDto.setOffSiteEmail(offSiteEmail[i]);
+                appGrpPremisesDto.setEasMtsPubEmail(offSiteEmail[i]);
                 appGrpPremisesDto.setOffSiteAddressType(offSiteSiteAddressType[i]);
                 //weekly
                 String premVal = premValue[i];

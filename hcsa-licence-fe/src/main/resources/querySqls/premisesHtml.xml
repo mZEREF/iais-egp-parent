@@ -493,6 +493,14 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="conveyanceEmail" name="conveyanceEmail"
+                               class="conveyanceEmail" maxlength="66" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
 
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
@@ -767,6 +775,14 @@
                     <div class=" col-xs-11 col-sm-7 col-md-5 ">
                         <input type="text" id="offSiteBuildingName" name="offSiteBuildingName"
                                class="offSiteBuildingName" maxlength="66" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="offSiteEmail" name="offSiteEmail"
+                               class="offSiteEmail" maxlength="66" autocomplete="off">
                     </div>
                     <div class="clear"></div>
                 </div>
