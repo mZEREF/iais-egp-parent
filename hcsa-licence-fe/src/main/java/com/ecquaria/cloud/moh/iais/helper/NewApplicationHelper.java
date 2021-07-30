@@ -2835,7 +2835,7 @@ public class NewApplicationHelper {
                     reloadMap.put(configId,appGrpPrimaryDocDtos1);
                 }else if("1".equals(dupForPrem)){
                     int premCount = 1;
-                    String premTitleTemplate = "Premises ${premCount}: ${configTitle}";
+                    String premTitleTemplate = NewApplicationConstant.TITLE_MODE_OF_SVCDLVY + " ${premCount}: ${configTitle}";
                     for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo());
                         String displayTitle = premTitleTemplate.replace("${premCount}",String.valueOf(premCount)).replace("${configTitle}",configTitle);
@@ -2908,18 +2908,20 @@ public class NewApplicationHelper {
     }
 
     //for single premises
-    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos){
-        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for(HcsaSvcDocConfigDto config:hcsaSvcDocConfigDtos){
-                if("1".equals(config.getDupForPrem())){
-                    List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,config.getId());
-                    if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
-                        String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
-                        String premType = appGrpPremisesDtos.get(0).getPremisesType();
-                        for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
-                            appSvcDocDto.setPremisesType(premType);
-                            appSvcDocDto.setPremisesVal(premIndex);
-                        }
+    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        if (IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) || IaisCommonUtils.isEmpty(appSvcDocDtos)
+                || IaisCommonUtils.isEmpty(appGrpPremisesDtos) || appGrpPremisesDtos.size() != 1) {
+            return;
+        }
+        for (HcsaSvcDocConfigDto config : hcsaSvcDocConfigDtos) {
+            if ("1".equals(config.getDupForPrem())) {
+                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, config.getId());
+                if (!IaisCommonUtils.isEmpty(appSvcDocDtoList)) {
+                    String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                    String premType = appGrpPremisesDtos.get(0).getPremisesType();
+                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtoList) {
+                        appSvcDocDto.setPremisesType(premType);
+                        appSvcDocDto.setPremisesVal(premIndex);
                     }
                 }
             }
@@ -3846,7 +3848,7 @@ public class NewApplicationHelper {
         String titleTemplate = "${prem}${psn}"+configTitle;
         String reloadKey;
         if("1".equals(dupForPrem)){
-            titleTemplate = titleTemplate.replace("${prem}","Premises "+premCount+": ");
+            titleTemplate = titleTemplate.replace("${prem}", NewApplicationConstant.TITLE_MODE_OF_SVCDLVY + " " + premCount + ": ");
             reloadKey = premIndex + configId;
         }else{
             titleTemplate = titleTemplate.replace("${prem}","");

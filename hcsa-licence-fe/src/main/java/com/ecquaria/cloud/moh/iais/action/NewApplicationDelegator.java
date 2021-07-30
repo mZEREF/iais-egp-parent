@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.PersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
@@ -116,7 +117,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -127,9 +127,11 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -1651,7 +1653,7 @@ public class NewApplicationDelegator {
                      * preview
                      */
                     if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
-                        svcRelatedInfoView(appSubmissionDto,bpc.request,applicationDto.getServiceId());
+                        svcRelatedInfoView(appSubmissionDto,bpc.request,applicationDto.getServiceId(), appNo);
                         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                                 ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                                 || ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appSubmissionDto.getAppType())){
@@ -1707,39 +1709,45 @@ public class NewApplicationDelegator {
                 filtrationAppGrpPremisesDtos(applicationDto,appSubmissionDto,newPremisesDtos);
                 appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
                 String svcId = applicationDto.getServiceId();
-                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                if (!StringUtil.isEmpty(svcId)) {
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = filterPrimaryDocs(appSubmissionDto.getAppGrpPrimaryDocDtos(),
+                        newPremisesDtos);
+                if (!StringUtil.isEmpty(svcId) && !StringUtil.isEmpty(applicationDto.getApplicationNo())) {
                     List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                     //set doc name
                     List<HcsaSvcDocConfigDto> primaryDocConfig = null;
                     if (appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0) {
                         primaryDocConfig = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
                     }
-
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                        if (svcId.equals(appSvcRelatedInfoDto.getServiceId())) {
-                            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                            appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                            appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
-                            List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                            List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
-                            NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
-                            ParamUtil.setSessionAttr(request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
-                            //set dupForPsn attr
-                            NewApplicationHelper.setDupForPersonAttr(request,appSvcRelatedInfoDto);
-                            //svc doc add align for dup for prem
-                            NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,newPremisesDtos);
-                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                            //set svc doc title
-                            Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,newPremisesDtos,appSvcRelatedInfoDto);
-                            appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
-                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
-                            newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                            break;
-                        }
+                    Optional<AppSvcRelatedInfoDto> optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
+                            .filter(dto -> applicationDto.getApplicationNo().equals(dto.getAppNo()))
+                            .findAny();
+                    if (!optional.isPresent()) {
+                        optional = appSubmissionDto.getAppSvcRelatedInfoDtoList().stream()
+                                .filter(dto -> svcId.equals(dto.getServiceId()))
+                                .findAny();
                     }
+                    if (optional.isPresent()) {
+                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = optional.get();
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                        appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                        appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                        appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+                        List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                        List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+                        NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                        ParamUtil.setSessionAttr(request,NewApplicationDelegator.SVC_DOC_CONFIG, (Serializable) svcDocConfig);
+                        //set dupForPsn attr
+                        NewApplicationHelper.setDupForPersonAttr(request,appSvcRelatedInfoDto);
+                        //svc doc add align for dup for prem
+                        NewApplicationHelper.addPremAlignForSvcDoc(svcDocConfig,appSvcDocDtos,newPremisesDtos);
+                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        //set svc doc title
+                        Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,newPremisesDtos,appSvcRelatedInfoDto);
+                        appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
+                        appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                        newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                    }
+
                     NewApplicationHelper.addPremAlignForPrimaryDoc(primaryDocConfig,appGrpPrimaryDocDtos,newPremisesDtos);
                     //set primary doc title
                     Map<String,List<AppGrpPrimaryDocDto>> reloadPrimaryDocMap = NewApplicationHelper.genPrimaryDocReloadMap(primaryDocConfig,newPremisesDtos,appGrpPrimaryDocDtos);
@@ -1758,6 +1766,18 @@ public class NewApplicationDelegator {
             }
         }
     }
+
+    private List<AppGrpPrimaryDocDto> filterPrimaryDocs(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,
+            List<AppGrpPremisesDto> newPremisesDtos) {
+        if (appGrpPrimaryDocDtos == null || newPremisesDtos == null) {
+            return appGrpPrimaryDocDtos;
+        }
+        return appGrpPrimaryDocDtos.stream()
+                .filter(dto -> dto.getAppGrpPremId() == null ||
+                        newPremisesDtos.stream().anyMatch(premise -> dto.getAppGrpPremId().equals(premise.getId())))
+                .collect(Collectors.toList());
+    }
+
     private void filtrationAppGrpPremisesDtos( ApplicationDto applicationDto,AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> newPremisesDtos){
         AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(applicationDto.getApplicationNo());
         if (rfiPremises != null) {
@@ -1795,8 +1815,9 @@ public class NewApplicationDelegator {
     }
 
 
-    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto,HttpServletRequest request,String serviceId){
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),serviceId);
+    private void svcRelatedInfoView(AppSubmissionDto appSubmissionDto, HttpServletRequest request, String serviceId, String appNo) {
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                serviceId, appNo);
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
             String svcId = appSvcRelatedInfoDto.getServiceId();
@@ -1854,13 +1875,31 @@ public class NewApplicationDelegator {
         return appSvcDisciplineAllocationDtos;
     }
 
-    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDtoByServiceId( List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,String serviceId){
-        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos){
-            if(serviceId.equalsIgnoreCase(appSvcRelatedInfoDto.getServiceId())){
-                return appSvcRelatedInfoDto;
-            }
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfoDtoByServiceId(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos, String serviceId,
+            String appNo) {
+        Optional<AppSvcRelatedInfoDto> optional = appSvcRelatedInfoDtos.stream()
+                .filter(dto -> Objects.equals(serviceId, dto.getServiceId())
+                        && Objects.equals(appNo, dto.getAppNo()))
+                .findAny();
+        if (!optional.isPresent()) {
+            optional = appSvcRelatedInfoDtos.stream()
+                    .filter(dto -> Objects.equals(appNo, dto.getAppNo()))
+                    .findAny();
         }
-        return appSvcRelatedInfoDtos.get(0);
+        if (!optional.isPresent()) {
+            optional = appSvcRelatedInfoDtos.stream()
+                    .filter(dto -> Objects.equals(serviceId, dto.getServiceId()))
+                    .findAny();
+        }
+        return optional.orElseGet(() -> appSvcRelatedInfoDtos.get(0));
+    }
+
+    private List<AppSvcRelatedInfoDto> getOtherAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            String serviceId, String appNo) {
+        return appSvcRelatedInfoDtos.stream()
+                .filter(dto -> Objects.equals(serviceId, dto.getServiceId())
+                        && !Objects.equals(appNo, dto.getAppNo()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -4298,6 +4337,7 @@ public class NewApplicationDelegator {
             }
 
             if (appSubmissionDto != null) {
+                svcRelatedInfoRFI(appSubmissionDto, appNo);
                 //set max file index into session
                 Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
                 if(maxFileIndex == null){
@@ -4400,6 +4440,69 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG, "test");
         }
         log.info(StringUtil.changeForLog("the do requestForInformationLoading end ...."));
+    }
+
+    private void svcRelatedInfoRFI(AppSubmissionDto appSubmissionDto, String appNo) {
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                null, appNo);
+        if (appSvcRelatedInfoDto == null) {
+            return;
+        }
+        String serviceId = appSvcRelatedInfoDto.getServiceId();
+        List<AppSvcRelatedInfoDto> otherList = getOtherAppSvcRelatedInfoDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                serviceId, appNo);
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
+        appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+        if (otherList != null && !otherList.isEmpty()) {
+            otherList.forEach(dto -> {
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
+                    appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
+                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+                }
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+                if (appSvcDisciplineAllocationDtoList != null && dto.getAppSvcDisciplineAllocationDtoList() != null) {
+                    appSvcDisciplineAllocationDtoList.addAll(dto.getAppSvcDisciplineAllocationDtoList());
+                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
+                }
+
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> otherAppSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+                if (otherAppSvcDocDtoLit != null && appSvcDocDtoLit != null) {
+                    otherAppSvcDocDtoLit.forEach(doc -> {
+                        if (doc.getAppSvcPersonId() != null || doc.getAppGrpPersonId() != null) {
+                            doc.setPsnIndexNo(getNewPsnIndexNo(dto.getPersonnels(), appSvcRelatedInfoDto.getPersonnels(), doc.getPsnIndexNo()));
+                            appSvcDocDtoLit.add(doc);
+                        }
+                    });
+                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
+                }
+            });
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            appSvcRelatedInfoDtos.removeAll(otherList);
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        }
+    }
+
+    private String getNewPsnIndexNo(List<PersonnelDto> srcPersonnels, List<PersonnelDto> tarPersonnels, String srcPsnIndexNo) {
+        String psnIndexNo = srcPsnIndexNo;
+        if (srcPersonnels == null || tarPersonnels == null) {
+            return psnIndexNo;
+        }
+        Optional<PersonnelDto> any = srcPersonnels.stream().filter(
+                dto -> Objects.equals(srcPsnIndexNo, dto.getPsnIndexNo())).findAny();
+        if (any.isPresent()) {
+            PersonnelDto p = any.get();
+            psnIndexNo = tarPersonnels.stream()
+                    .filter(dto -> Objects.equals(p.getIdType(), dto.getIdType())
+                    && Objects.equals(p.getIdNo(),dto.getIdNo())
+                    && Objects.equals(p.getName(), dto.getName()))
+                    .findAny().map(dto -> dto.getPsnIndexNo()).orElseGet(() -> srcPsnIndexNo);
+        }
+        return psnIndexNo;
     }
 
     private boolean loadingServiceConfig(BaseProcessClass bpc) throws CloneNotSupportedException {

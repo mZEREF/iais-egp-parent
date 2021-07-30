@@ -1160,7 +1160,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 onlySpecifiedSvc = true;
             }
         }
-        if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+       if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
@@ -1251,7 +1251,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         boolean hadMts = false;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtosAll=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
+             appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             String hciCode = appGrpPremisesDtos.get(0).getHciCode();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
@@ -2161,7 +2161,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }else{
                                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
                                     appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
-                                    handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    // handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    newPrimaryDocList.add(appGrpPrimaryDocDto);
                                 }
                             }
                             break;
@@ -2560,7 +2561,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
      * update to version 2 id is B
      * -------------------------
      * change licnece XXX (version 1 ) subtype id A -> B
-     */
+    */
     @Override
     public void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName start ..."));
