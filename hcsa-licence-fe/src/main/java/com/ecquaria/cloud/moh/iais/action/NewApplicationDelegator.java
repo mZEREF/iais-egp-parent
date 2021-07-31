@@ -4497,9 +4497,10 @@ public class NewApplicationDelegator {
         if (any.isPresent()) {
             PersonnelDto p = any.get();
             psnIndexNo = tarPersonnels.stream()
-                    .filter(dto -> Objects.equals(p.getIdType(), dto.getIdType())
-                    && Objects.equals(p.getIdNo(),dto.getIdNo())
-                    && Objects.equals(p.getName(), dto.getName()))
+                    .filter(dto -> Objects.equals(p.getPersonType(), dto.getPersonType())
+                            && Objects.equals(p.getIdType(), dto.getIdType())
+                            && Objects.equals(p.getIdNo(), dto.getIdNo())
+                            && Objects.equals(p.getName(), dto.getName()))
                     .findAny().map(dto -> dto.getPsnIndexNo()).orElseGet(() -> srcPsnIndexNo);
         }
         return psnIndexNo;
