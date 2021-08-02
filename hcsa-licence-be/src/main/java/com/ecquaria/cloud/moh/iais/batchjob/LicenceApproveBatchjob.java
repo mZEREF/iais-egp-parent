@@ -1141,29 +1141,29 @@ public class LicenceApproveBatchjob {
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 String applicationType = applicationDto.getApplicationType();
 
-               // LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                // LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
                 LicenceDto originLicenceDto = licenceService.getLicDtoById(originLicenceId);
-                    LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
-                            originLicenceDto, applicationDto, null, false);
-                    licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                    superLicDto.setLicenceDto(licenceDto);
+                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
+                        originLicenceDto, applicationDto, null, false);
+                licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                superLicDto.setLicenceDto(licenceDto);
 
-                    originLicenceDto = deleteOriginLicenceDto(originLicenceDto, applicationDto, licenceDto.getStatus());
-                    log.info(StringUtil.changeForLog("The applicationType is -->:" + ApplicationConsts.APPLICATION_TYPE_RENEWAL));
-                    if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)) {
-                        if (originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())) {
-                            log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:" + originLicenceDto.getStatus()));
-                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
-                        }
-                        superLicDto.setOriginLicenceDto(originLicenceDto);
+                originLicenceDto = deleteOriginLicenceDto(originLicenceDto, applicationDto, licenceDto.getStatus());
+                log.info(StringUtil.changeForLog("The applicationType is -->:" + ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                if (!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)) {
+                    if (originLicenceDto != null && ApplicationConsts.LICENCE_STATUS_REVOKED.equals(originLicenceDto.getStatus())) {
+                        log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:" + originLicenceDto.getStatus()));
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
                     }
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                }
 
-                    if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
-                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                            && IaisEGPHelper.isActiveMigrated()
-                            && originLicenceDto.isMigrated()) {
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                    }
+                if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                        && IaisEGPHelper.isActiveMigrated()
+                        && originLicenceDto != null && originLicenceDto.isMigrated()) {
+                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
                 if(licSubLicenseeInfoDto != null){
@@ -1333,9 +1333,11 @@ public class LicenceApproveBatchjob {
             //premises
             String premisesId = appGrpPremisesEntityDto.getId();
             AppPremisesCorrelationDto appPremisesCorrelationDto = getAppPremCorrecId(appPremisesCorrelationDtos, premisesId);
-            String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremisesCorrelationDto.getId()).getEntity();
-            if (!StringUtil.isEmpty(licHciCode)){
-                appGrpPremisesEntityDto.setHciCode(licHciCode);
+            if(appPremisesCorrelationDto != null) {
+                String licHciCode = hcsaLicenceClient.getHciCodeByCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                if (!StringUtil.isEmpty(licHciCode)) {
+                    appGrpPremisesEntityDto.setHciCode(licHciCode);
+                }
             }
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
@@ -1766,7 +1768,7 @@ public class LicenceApproveBatchjob {
     private AppPremisesCorrelationDto getAppPremCorrecId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, String premisesId) {
         AppPremisesCorrelationDto result = null;
         if (appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0 || StringUtil.isEmpty(premisesId)) {
-            return result;
+            return null;
         }
         for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
             if (premisesId.equals(appPremisesCorrelationDto.getAppGrpPremId())) {
