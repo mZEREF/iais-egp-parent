@@ -45,7 +45,7 @@
           <iais:field width="7" value="UEN of Licensee to transfer licence to"></iais:field>
           <iais:value width="10">
             <p>
-                ${UEN}
+            <c:out value="${UEN}"></c:out>
               <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
             </p>
           </iais:value>
@@ -55,7 +55,7 @@
             <iais:field width="7" value="Licensee to transfer to"></iais:field>
             <iais:value width="10">
               <p>
-                  ${subLicenseeDto.getDisplayName()}
+            <c:out value="${subLicenseeDto.getDisplayName()}"></c:out>
                 <span  class="error-msg" name="iaisErrorMsg" id="error_subLicenseeError"></span>
               </p>
             </iais:value>
@@ -66,7 +66,7 @@
               <iais:field width="7" value="Add a new licensee"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getIdNumber()}
+                  <c:out value="${subLicenseeDto.getIdNumber()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -74,7 +74,7 @@
               <iais:field width="7" value="ID No."></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getIdNumber()}
+                  <c:out value="${subLicenseeDto.getIdNumber()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -82,7 +82,7 @@
               <iais:field width="7" value="Licensee Name"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getLicenseeName()}
+                  <c:out value="${subLicenseeDto.getLicenseeName()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -90,7 +90,7 @@
               <iais:field width="7" value="Postal Code"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getPostalCode()}
+                  <c:out value="${subLicenseeDto.getPostalCode()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -106,7 +106,7 @@
               <iais:field width="7" value="Block / House No."></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getBlkNo()}
+                  <c:out value="${subLicenseeDto.getBlkNo()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -114,7 +114,7 @@
               <iais:field width="7" value="Floor No."></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getFloorNo()}
+                  <c:out value="${subLicenseeDto.getFloorNo()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -122,7 +122,7 @@
               <iais:field width="7" value="Unit No."></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getUnitNo()}
+                  <c:out value="${subLicenseeDto.getUnitNo()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -130,7 +130,7 @@
               <iais:field width="7" value="Street Name"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getStreetName()}
+                  <c:out value="${subLicenseeDto.getStreetName()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -138,7 +138,7 @@
               <iais:field width="7" value="Building Name"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getBuildingName()}
+                  <c:out value="${subLicenseeDto.getBuildingName()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -146,7 +146,7 @@
               <iais:field width="7" value="Mobile No."></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getTelephoneNo()}
+                  <c:out value="${subLicenseeDto.getTelephoneNo()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
@@ -154,7 +154,7 @@
               <iais:field width="7" value="Email Address"></iais:field>
               <iais:value width="10">
                 <p>
-                    ${subLicenseeDto.getEmailAddr()}
+                  <c:out value="${subLicenseeDto.getEmailAddr()}"></c:out>
                 </p>
               </iais:value>
             </iais:row>
