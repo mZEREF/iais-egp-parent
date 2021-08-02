@@ -141,8 +141,8 @@ public class BroadcastServiceImpl implements BroadcastService {
     @Override
     public EventBeLicenseDto saveEventBeLicenseDto(String appStatus, ApplicationDto applicationDto, String submissionId, String evenRefNum,
                                                    Process process) {
-        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
-            if(applicationDto != null) {
+        if(applicationDto != null) {
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
                 String appType = applicationDto.getApplicationType();
                 if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
                     EventBeLicenseDto eventBeLicenseDto = new EventBeLicenseDto();
