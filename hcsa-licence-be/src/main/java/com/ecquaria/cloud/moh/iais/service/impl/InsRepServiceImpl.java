@@ -1138,8 +1138,7 @@ public class InsRepServiceImpl implements InsRepService {
                     taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     taskDto.setEventRefNo(corrId);
                     //history
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null, auditTrailDto);
-                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_INSPECTIOR, workGroupId, null, auditTrailDto);
+                    createPostRoutingHistory(applicationNo, applicationDto.getStatus(), HcsaConsts.ROUTING_STAGE_INS, null, null, RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN, null, null, auditTrailDto);
                     taskDtos.add(taskDto);
                 } catch (Exception e) {
                     log.info(e.getMessage());
