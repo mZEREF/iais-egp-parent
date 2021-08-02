@@ -63,10 +63,10 @@ public class HcsaApplicationAjaxController{
             return  JsonUtil.parseToJson(appIntranetDocDto);
         }else{
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
-            //size
-            long size = selectedFile.getSize();
-            appIntranetDocDto.setDocSize(String.valueOf(size/1024));
             if(selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                //size
+                long size = selectedFile.getSize();
+                appIntranetDocDto.setDocSize(String.valueOf(size/1024));
                 log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
                 //type
                 String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
