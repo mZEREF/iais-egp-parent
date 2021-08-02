@@ -211,13 +211,13 @@ public class InspecUserRecUploadDelegator {
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
             errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file, inspSetMaskValueDto);
-            if(errorMap != null && !(errorMap.isEmpty())){
+            if (errorMap != null && !(errorMap.isEmpty())) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
-                if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
+                if (file != null && InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setFileName(file.getOriginalFilename());
                     fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
