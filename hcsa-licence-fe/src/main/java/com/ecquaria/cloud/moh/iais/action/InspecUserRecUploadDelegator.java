@@ -210,24 +210,22 @@ public class InspecUserRecUploadDelegator {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
-            if(file != null) {
-                errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file, inspSetMaskValueDto);
-                if (errorMap != null && !(errorMap.isEmpty())) {
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-                    ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-                } else {
-                    if (InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setFileName(file.getOriginalFilename());
-                        fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        fileRepoDto.setRelativePath(AppConsts.FALSE);
-                        String auditTrailStr = JsonUtil.parseToJson(fileRepoDto);
-                        inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr, file);
-                    }
-                    ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file, inspSetMaskValueDto);
+            if (errorMap != null && !(errorMap.isEmpty())) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                if (file != null && InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue)) {
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setFileName(file.getOriginalFilename());
+                    fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fileRepoDto.setRelativePath(AppConsts.FALSE);
+                    String auditTrailStr = JsonUtil.parseToJson(fileRepoDto);
+                    inspecUserRecUploadDto = inspecUserRecUploadService.saveFileReportGetFileId(inspecUserRecUploadDto, auditTrailStr, file);
                 }
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
             }
         } else if(InspectionConstants.SWITCH_ACTION_CANCEL.equals(actionValue)){
             //remove new add file
