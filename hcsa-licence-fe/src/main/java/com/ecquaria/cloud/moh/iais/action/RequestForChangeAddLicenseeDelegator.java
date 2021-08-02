@@ -9,10 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Map;
 
 /**
  * RequestForChangeAddLicenseeDelegator
@@ -85,7 +86,7 @@ public class RequestForChangeAddLicenseeDelegator {
     public void addLIcensee(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator addLIcensee start..."));
         SubLicenseeDto subLicenseeDto = (SubLicenseeDto)ParamUtil.getRequestAttr(bpc.request,"dto");
-        ParamUtil.setSessionAttr(bpc.request, "hasNewSubLicensee", true);
+        ParamUtil.setSessionAttr(bpc.request, "hasNewSubLicensee", Boolean.TRUE);
         ParamUtil.setSessionAttr(bpc.request, "subLicenseeDto", subLicenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"isValidate","Y");
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator addLIcensee end..."));
