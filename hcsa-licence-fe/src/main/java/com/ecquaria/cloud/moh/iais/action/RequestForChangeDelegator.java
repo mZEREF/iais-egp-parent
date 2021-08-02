@@ -57,16 +57,6 @@ import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +67,17 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -123,7 +124,7 @@ public class RequestForChangeDelegator {
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
-            if(error.isEmpty()){
+            if(error.isEmpty() && licenseeDto != null){
                 ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_SUCCESS);
                 ajaxResDto.setType(licenseeDto.getLicenseeType());
                 log.info(StringUtil.changeForLog("licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
@@ -1069,11 +1070,12 @@ public class RequestForChangeDelegator {
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
             error.put("premisesError","RFC_ERR005");
         }
+        String msgGenError006 = MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field");
         if(StringUtil.isEmpty(subLicensee)){
-            error.put("subLicenseeError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));
+            error.put("subLicenseeError", msgGenError006);
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
-            error.put("uenError",MessageUtil.replaceMessage("GENERAL_ERR0006","UEN of Licensee to transfer licence to","field"));
+            error.put("uenError", msgGenError006);
         }else{
             try{
                 feEicGatewayClient.getUenInfo(uen);
