@@ -158,7 +158,7 @@ public class InterInboxDelegator {
         String privateKey = ConfigHelper.getString("halp.mohAlert.private.key");
         LoginContext loginContext = AccessUtil.getLoginUser(request);
         Claims claims = Jwts.claims();
-        claims.put("uid", loginContext.getLoginId());
+        claims.put("uid", loginContext.getNricNum());
         claims.put("uen", loginContext.getUenNo());
         String iso8601ExpDateString  = Formatter.formatDateTime(new Date(),Formatter.DATE_ELIS);
         claims.put("iat", iso8601ExpDateString);
