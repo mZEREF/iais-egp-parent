@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="4" minorVersion="0" name="MohRequestForChange" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="130" y="50">
@@ -78,14 +78,14 @@
     <JavaCode defClass="" executor="" methodName="prepareDraft_OnStepProcess_0" name="prepareDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doTransfer" x="1160" y="530">
+  <AutomaticStep defClass="" executor="" icon="" name="doTransfer" x="980" y="520">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doTransfer_OnStepProcess_0" name="doTransfer_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePage" x="1080" y="380">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePage" x="920" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -110,6 +110,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareCond_OnStepProcess_0" name="prepareCond_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doSubmit" x="1280" y="520">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -138,7 +145,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="validateSuccess" stageIndicator="" x="890" y="530">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="validateSuccess" stageIndicator="" x="850" y="530">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="confirmPage" stageIndicator="" x="1180" y="520">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -214,16 +227,13 @@
    <position>{(300,600)(250,440)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doTransfer" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/validateSuccess" style="rectanular">
-   <position>{(910,550)(1180,550)}</position>
+   <position>{(870,550)(1000,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareTranfer" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(760,540)(570,400)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doTransfer" style="oblique">
-   <position>{(1180,550)(1100,400)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/validateSuccess" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePage" style="oblique">
-   <position>{(1100,400)(910,550)}</position>
+   <position>{(940,430)(870,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/addLicensee" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareAddLicensee" style="oblique">
    <position>{(600,640)(690,690)}</position>
@@ -232,13 +242,28 @@
    <position>{(620,560)(600,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/validateSuccess" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
-   <position>{(760,540)(910,550)}</position>
+   <position>{(760,540)(870,550)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCond" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/addLicensee" style="oblique">
    <position>{(690,690)(740,620)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareCond" style="rectanular">
    <position>{(740,620)(760,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSubmit" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/confirmPage" style="rectanular">
+   <position>{(1200,540)(1300,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="rectanular">
+   <position>{(1300,540)(940,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doTransfer" style="rectanular">
+   <position>{(1000,540)(1090,540)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(1090,540)(940,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/confirmPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(1090,540)(1200,540)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -259,6 +284,11 @@
    <SwitchCase component="/Steps/InvokeStep/MohNewApplication" value="&quot;doEdit&quot;"/>
    <SwitchCase component="/Merges/Merge/toChoosePage" value="&quot;prepare&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareFirstView" value="&quot;prepareFirstView&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_confirm" name="Switch3" x="1070" y="520">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePage" value="&quot;validate&quot;"/>
+   <SwitchCase component="/Pages/WebPage/confirmPage" value="&quot;confirm&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

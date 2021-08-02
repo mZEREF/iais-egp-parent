@@ -11,6 +11,7 @@
 <br/>
 <%@include file="../common/dashboard.jsp" %>
 <form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
+  <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="maxFile" id ="maxFile" value="${maxFile}">
   <div class="row">
     <div class="container">
@@ -162,8 +163,7 @@
             <iais:field width="7" value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
               <p>
-                <textarea  name="reason" maxlength="300" cols="45" >${reason}</textarea>
-                <span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
+                  ${reason}
               </p>
             </iais:value>
          </iais:row>
@@ -171,8 +171,7 @@
             <iais:field width="7" value="Email address of transferee" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
-                <input type="text" name="email" value="${email}" maxlength="66">
-                <span  class="error-msg" name="iaisErrorMsg" id="error_emailError"></span>
+                  ${email}
               </p>
             </iais:value>
           </iais:row>
@@ -180,24 +179,9 @@
             <iais:field width="7" value="Letter of Undertaking" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
-              <div class="file-upload-gp">
-                <div class="col-xs-12" >
-                  <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto">
-                    <div id="${pageShowFileDto.fileMapId}">
-                      <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
-                      <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selectedFile',${pageShowFileDto.index});">
-                        Delete</button>  <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selectedFile',${pageShowFileDto.index},'mainForm');">
-                      ReUpload</button>
-                    </div>
-
-                  </c:forEach>
-                  <span  name="selectedFileShowId" id="selectedFileShowId">
-                </span>
-                </div>
-                <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" onclick="fileClicked(event)" onchange="fileChangedTransfer(event)" style="display: none;" aria-label="selectedFile" >
-                <a class="btn btn-file-upload btn-secondary" href="javascript:void(0);" onclick="clearFlagValueFEFile()">Upload</a>
-              </div>
-              <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
+              <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto">
+                  <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
+              </c:forEach>
               </p>
             </iais:value>
           </iais:row>
@@ -205,7 +189,7 @@
            <iais:message key="RFC_ERR0018"></iais:message>
           </iais:row>
           <div class="form-check">
-            <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
+            <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1" checked="checked" disabled="disabled">
             <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
             <p><span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span></p>
           </div>
@@ -248,10 +232,5 @@
             css: {width: '25%', border: '1px solid #aaa'},
             overlayCSS: {opacity: 0.2}});
     }
-
-    function fileChangedTransfer(event) {
-        ajaxCallUpload('mainForm','selectedFile');
-    }
-
 
 </script>

@@ -307,6 +307,8 @@ public class RequestForChangeDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "doTranfer");
                 flag = true;
                 ParamUtil.setSessionAttr(bpc.request,"UEN",null);
+                ParamUtil.setSessionAttr(bpc.request,"email",null);
+                ParamUtil.setSessionAttr(bpc.request,"reason",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicensee",null);
@@ -506,7 +508,6 @@ public class RequestForChangeDelegator {
     public void doTransfer(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
         log.info(StringUtil.changeForLog("The compareChangePercentage start ..."));
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
         String[] selectCheakboxs = null;
@@ -526,6 +527,87 @@ public class RequestForChangeDelegator {
         }
         if(confirms == null || confirms.length == 0){
             error.put("confirmError","RFC_ERR004");
+        }
+
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
+        List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtos = IaisCommonUtils.genNewArrayList();
+        if(map == null || map.size()==0){
+            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
+        }
+        if(error.isEmpty()){
+            LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
+            doValidateLojic(uen,error,licenceDto,licenseeDto);
+            if(error.isEmpty()){
+                WebValidationHelper.saveAuditTrailForNoUseResult(licenceDto,error);
+                String newLicenseeId="";
+                if(licenseeDto!=null){
+                    newLicenseeId = licenseeDto.getId();
+                }else{
+                    return;
+                }
+                log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
+                //sub licensee
+                SubLicenseeDto subLicenseeDto = null;
+                log.info(StringUtil.changeForLog("The licenseeDto.getLicenseeType() is -->:"+licenseeDto.getLicenseeType()));
+                if(OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeDto.getLicenseeType())){
+                    OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
+                    if(organizationDto != null) {
+                        List<SubLicenseeDto> subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
+                        if (!IaisCommonUtils.isEmpty(subLicenseeDtos)) {
+                            subLicenseeDto =  subLicenseeDtos.get(0);
+                        }
+                    }
+                }else {
+                    subLicenseeDto = (SubLicenseeDto)ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto");
+                }
+                if(subLicenseeDto == null){
+                    log.error(StringUtil.changeForLog("this uen can not get the subLicenseeDto" + uen));
+                    error.put("uenError","Data Error !!!");
+                }
+            }
+        }
+        if(!error.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
+            ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
+            ParamUtil.setRequestAttr(bpc.request,"email",email);
+            ParamUtil.setRequestAttr(bpc.request,"reason",reason);
+            log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
+            ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
+            ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","validate");
+        }else{
+            List<PageShowFileDto> pageShowFileDtos = SingeFileUtil.getInstance().transForFileMapToPageShowFileDto(map);
+            ParamUtil.setRequestAttr(bpc.request, "pageShowFileDtos", pageShowFileDtos);
+            ParamUtil.setSessionAttr(bpc.request,"email",email);
+            ParamUtil.setSessionAttr(bpc.request,"reason",reason);
+            ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","confirm");
+        }
+        log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
+    }
+
+    /**
+     * @param bpc
+     * @Decription doTransfer
+     */
+    public void doSubmit(BaseProcessClass bpc)throws CloneNotSupportedException,IOException{
+        log.info(StringUtil.changeForLog("The doSubmit start ..."));
+        //MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
+        String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
+        String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
+        String[] selectCheakboxs = null;
+
+        selectCheakboxs =  (String[])ParamUtil.getSessionAttr(bpc.request,"premisesInput");
+
+        String email = (String)ParamUtil.getSessionAttr(bpc.request,"email");
+        String reason = (String)ParamUtil.getSessionAttr(bpc.request,"reason");
+
+        log.info(StringUtil.changeForLog("The doSubmit licenceId is -->:"+licenceId));
+        log.info(StringUtil.changeForLog("The doSubmit uen is -->:"+uen));
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email,"subLicensee");
+        boolean isEmail = ValidationUtils.isEmail(email);
+        if(!isEmail){
+            error.put("emailError","GENERAL_ERR0014");
         }
 
         Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + "selectedFile");
@@ -679,7 +761,7 @@ public class RequestForChangeDelegator {
                                 .append(RfcConst.PAYMENTPROCESS);
                         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-                     }
+                    }
                 }else{
                     log.error(StringUtil.changeForLog("this uen can not get the subLicenseeDto" + uen));
                     error.put("uenError","Data Error !!!");
@@ -694,7 +776,7 @@ public class RequestForChangeDelegator {
             log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
             ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
         }
-        log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
+        log.info(StringUtil.changeForLog("The doSubmit end ..."));
     }
     /**
      * @param bpc

@@ -81,4 +81,9 @@ public class INTERNET___MohRequestForChange___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareCond", this);
 	}
 
+	public void doSubmit_OnStepProcess_0() throws Exception {
+	// 		doSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
+	}
+
 }
