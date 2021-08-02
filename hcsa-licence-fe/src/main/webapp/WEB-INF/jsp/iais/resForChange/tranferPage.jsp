@@ -13,6 +13,7 @@
             <br/>
             <%@include file="../common/dashboard.jsp" %>
              <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+               <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                 <div class="row">
                     <div class="container">
                  <div class="col-xs-12">
