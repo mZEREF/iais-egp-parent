@@ -122,7 +122,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
-    @PostMapping(value = "/getAllLicenseeIdName", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-licensee/getAllLicenseeIdName", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> getAllLicenseeIdName(@RequestBody Set<String> licenseeIdList);
 
     @GetMapping(value = "/iais-licensee/licensee-overtime/{days}")
