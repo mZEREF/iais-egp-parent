@@ -108,8 +108,8 @@ public class FESingpassLandingDelegator {
             String nonce = (String) ParamUtil.getSessionAttr(request, "qrcode_nonce");
             if (sessionState == null || !sessionState.equals(state)) {
                 //validate fail, not continue
-                log.info("session state[" + sessionState + "]");
-                log.info("request parameter state[" + state + "]");
+                log.info(StringUtil.changeForLog("session state[" + sessionState + "]"));
+                log.info(StringUtil.changeForLog("request parameter state[" + state + "]"));
                 return;
             }
             String token = ConfigHelper.getString("singpass.oidc.token");
