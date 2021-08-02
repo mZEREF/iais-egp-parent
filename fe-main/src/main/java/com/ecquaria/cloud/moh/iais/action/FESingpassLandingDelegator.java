@@ -147,7 +147,10 @@ public class FESingpassLandingDelegator {
             return;
         }
 
-        String identityNoUpper = identityNo.toUpperCase();
+        String identityNoUpper = "";
+        if(identityNo != null) {
+            identityNoUpper = identityNo.toUpperCase();
+        }
         String idType = IaisEGPHelper.checkIdentityNoType(identityNoUpper);
 
         ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNoUpper);
