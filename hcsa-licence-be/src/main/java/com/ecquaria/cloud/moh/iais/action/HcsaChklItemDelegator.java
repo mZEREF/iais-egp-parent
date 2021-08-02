@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExce
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -45,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,9 @@ public class HcsaChklItemDelegator {
 
     @Autowired
     private SystemParamConfig paramConfig;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     /**
      * StartStep: startStep
@@ -778,6 +783,19 @@ public class HcsaChklItemDelegator {
                     for (MasterCodeView view : masterCodes) {
                         values.add(view.getCodeValue());
                         excelConfigIndex.put(i++, Collections.singletonList(3));
+                    }
+                    inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
+                            values.toArray(new String[values.size()]), excelConfigIndex);
+                }
+                // write service name
+                List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+                if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                    List<String> values = IaisCommonUtils.genNewArrayList(hcsaServiceDtos.size());
+                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(hcsaServiceDtos.size());
+                    int i = 1;
+                    for (HcsaServiceDto view : hcsaServiceDtos) {
+                        values.add(view.getSvcName());
+                        excelConfigIndex.put(i++, Collections.singletonList(5));
                     }
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
                             values.toArray(new String[values.size()]), excelConfigIndex);
