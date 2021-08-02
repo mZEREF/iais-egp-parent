@@ -59,6 +59,17 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -77,16 +88,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -798,17 +799,18 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
                     String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
+                    String premisesAddress = appGrpPremisesDto.getAddress();
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
-                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(premisesAddress);
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                     //0068776
                     if (isRfi) {
                         for (int j = appSvcLaboratoryDisciplinesDtoList.size() - 1; j >= 0; j--) {
                             AppSvcLaboratoryDisciplinesDto item = appSvcLaboratoryDisciplinesDtoList.get(j);
                             if (premisesType.equals(item.getPremiseType()) && premisesValue.equals(item.getPremiseVal()) &&
-                                    appGrpPremisesDto.getAddress().equals(item.getPremiseGetAddress())) {
+                                    premisesAddress.equals(item.getPremiseGetAddress())) {
                                 appSvcLaboratoryDisciplinesDtoList.remove(item);
                             }
                         }
