@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -1272,7 +1273,7 @@ public class RequestForChangeMenuDelegator {
     private void updateGroupStatus(List<AppSubmissionDto> appSubmissionDtos){
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             Double amount = appSubmissionDto.getAmount();
-            if (0.0 == amount && appSubmissionDto.isAutoRfc()) {
+            if (MiscUtil.doubleEquals(amount, 0.0) && appSubmissionDto.isAutoRfc()) {
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if (entity != null && !entity.isEmpty()) {
@@ -1285,7 +1286,7 @@ public class RequestForChangeMenuDelegator {
                     applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                     applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 }
-            } else if (0.0 == amount && !appSubmissionDto.isAutoRfc()) {
+            } else if (MiscUtil.doubleEquals(amount, 0.0) && !appSubmissionDto.isAutoRfc()) {
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if (entity != null && !entity.isEmpty()) {
@@ -1407,7 +1408,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setPaymentMethod(payMethod);
         }
         bpc.request.getSession().setAttribute("payMethod", payMethod);
-        if (0.0 == appSubmissionDtos.get(0).getAmount()) {
+        if (MiscUtil.doubleEquals(appSubmissionDtos.get(0).getAmount(), 0.0)) {
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
@@ -1967,7 +1968,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("noNeedPayment:" + noNeedPayment));
         String action = ParamUtil.getString(bpc.request, "crud_action_additional");
         if ("next".equals(action)) {
-            if (0.0 != appSubmissionDtos.get(0).getAmount()) {
+            if (!MiscUtil.doubleEquals(appSubmissionDtos.get(0).getAmount(), 0.0)) {
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                 if (StringUtil.isEmpty(payMethod)) {
                     errorMap.put("pay", MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
