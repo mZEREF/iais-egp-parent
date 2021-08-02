@@ -798,17 +798,18 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
                     String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
+                    String premisesAddress = appGrpPremisesDto.getAddress();
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
-                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(premisesAddress);
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
                     //0068776
                     if (isRfi) {
                         for (int j = appSvcLaboratoryDisciplinesDtoList.size() - 1; j >= 0; j--) {
                             AppSvcLaboratoryDisciplinesDto item = appSvcLaboratoryDisciplinesDtoList.get(j);
                             if (premisesType.equals(item.getPremiseType()) && premisesValue.equals(item.getPremiseVal()) &&
-                                    appGrpPremisesDto.getAddress().equals(item.getPremiseGetAddress())) {
+                                    premisesAddress.equals(item.getPremiseGetAddress())) {
                                 appSvcLaboratoryDisciplinesDtoList.remove(item);
                             }
                         }
