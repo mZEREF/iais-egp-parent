@@ -99,6 +99,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -1034,7 +1035,20 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("cession error"+e.getMessage()));
             }
-
+            if(onSubmitTaskList.size()!=0){
+                HashMap<String,TaskDto> tempMap = new HashMap<String,TaskDto>();
+                for (TaskDto c : onSubmitTaskList) {
+                    String key = c.getRefNo();
+                    if(!tempMap.containsKey(key)){
+                        tempMap.put(key, c);
+                    }
+                }
+                List<TaskDto> tempList = new ArrayList<TaskDto>();
+                for(String key : tempMap.keySet()){
+                    tempList.add(tempMap.get(key));
+                }
+                onSubmitTaskList=tempList;
+            }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
