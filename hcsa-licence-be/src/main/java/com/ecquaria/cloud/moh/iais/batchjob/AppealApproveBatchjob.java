@@ -220,7 +220,11 @@ public class AppealApproveBatchjob {
                   appealService.createAppealApplicationDto(appealApplicationDto);
 
                   if(IaisCommonUtils.isNotEmpty(licPremisesDto)){
-                      hcsaLicenceClient.savePremises(licPremisesDto);
+                      licPremisesDto=hcsaLicenceClient.savePremises(licPremisesDto).getEntity();
+                      HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                      HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                      beEicGatewayClient.savePremises(licPremisesDto, signature.date(), signature.authorization(),
+                              signature2.date(), signature2.authorization()).getEntity();
                   }
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();

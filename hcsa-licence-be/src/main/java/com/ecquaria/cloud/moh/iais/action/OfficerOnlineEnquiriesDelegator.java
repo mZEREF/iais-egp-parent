@@ -557,7 +557,6 @@ public class OfficerOnlineEnquiriesDelegator {
 
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
-        List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
