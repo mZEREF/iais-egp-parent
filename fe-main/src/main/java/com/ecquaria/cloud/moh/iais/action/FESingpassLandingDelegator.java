@@ -28,10 +28,6 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import ecq.commons.exception.BaseException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +41,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
@@ -108,8 +109,8 @@ public class FESingpassLandingDelegator {
             String nonce = (String) ParamUtil.getSessionAttr(request, "qrcode_nonce");
             if (sessionState == null || !sessionState.equals(state)) {
                 //validate fail, not continue
-                log.info("session state[" + sessionState + "]");
-                log.info("request parameter state[" + state + "]");
+                log.info(StringUtil.changeForLog("session state[" + sessionState + "]"));
+                log.info(StringUtil.changeForLog("request parameter state[" + state + "]"));
                 return;
             }
             String token = ConfigHelper.getString("singpass.oidc.token");
