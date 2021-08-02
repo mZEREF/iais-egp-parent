@@ -63,10 +63,10 @@ public class HcsaApplicationAjaxController{
             return  JsonUtil.parseToJson(appIntranetDocDto);
         }else{
             AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
-            //size
-            long size = selectedFile.getSize();
-            appIntranetDocDto.setDocSize(String.valueOf(size/1024));
             if(selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                //size
+                long size = selectedFile.getSize();
+                appIntranetDocDto.setDocSize(String.valueOf(size/1024));
                 log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
                 //type
                 String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
@@ -121,14 +121,14 @@ public class HcsaApplicationAjaxController{
                 index++;
             }
             ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
-           String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
-           String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
-           try{
-               url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                       replaceAll("interalFile.docName",URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString())).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
-           }catch (Exception e){
-               log.error(e.getMessage(),e);
-           }
+            String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
+            String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
+            try{
+                url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                        replaceAll("interalFile.docName",URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString())).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             appIntranetDocDto.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
@@ -168,7 +168,7 @@ public class HcsaApplicationAjaxController{
                 }
             }
             if(appIntranetDocDe!= null)
-            appIntranetDocDtos.remove( appIntranetDocDe);
+                appIntranetDocDtos.remove( appIntranetDocDe);
             boolean isUpload = false;
             for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
                 if(appIntranetDocDto.getIsUpload() != null && appIntranetDocDto.getIsUpload()){
