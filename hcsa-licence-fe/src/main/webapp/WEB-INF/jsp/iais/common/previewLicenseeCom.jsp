@@ -1,5 +1,17 @@
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
+<c:set var="soloType" value="LICT002" />
+
+<c:if test="${subLicenseeDto.licenseeType == companyType}">
+    <c:set var="telephoneLabel" value="Office Telephone No." />
+</c:if>
+<c:if test="${subLicenseeDto.licenseeType == individualType}">
+    <c:set var="telephoneLabel" value="Mobile No." />
+</c:if>
+<c:if test="${subLicenseeDto.licenseeType == soloType}">
+    <c:set var="telephoneLabel" value="Telephone No." />
+</c:if>
+
 <div class="licensee-com">
     <iais:row cssClass="company-no ${subLicenseeDto.licenseeType == companyType ? '' : 'hidden'}">
         <iais:field width="5" value="UEN No."/>
@@ -16,6 +28,13 @@
     </iais:row>
     <iais:row cssClass="ind-no ${subLicenseeDto.licenseeType == individualType ? '' : 'hidden'}">
         <iais:field width="5" value="ID No."/>
+        <iais:value width="7" display="true">
+            <c:out value="${subLicenseeDto.idNumber}" />
+        </iais:value>
+    </iais:row>
+
+    <iais:row cssClass="solo-no ${subLicenseeDto.licenseeType == soloType ? '' : 'hidden'}">
+        <iais:field width="5" value="NRIC/FIN"/>
         <iais:value width="7" display="true">
             <c:out value="${subLicenseeDto.idNumber}" />
         </iais:value>
@@ -75,7 +94,7 @@
     <%-- Address end --%>
 
     <iais:row>
-        <iais:field value="${subLicenseeDto.licenseeType == companyType ? 'Office Telephone No.' : 'Mobile No.'}" width="5"/>
+        <iais:field value="${telephoneLabel}" width="5"/>
         <iais:value width="7" display="true">
             <c:out value="${subLicenseeDto.telephoneNo}" />
         </iais:value>

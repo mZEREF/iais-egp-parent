@@ -62,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
@@ -761,7 +762,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
                 subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
             } else {
-                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
+                List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
+                String idNo = null;
+                if (feUserDtos != null) {
+                    idNo = feUserDtos.stream()
+                            .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
+                                    uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
+                            .findAny().map(FeUserDto::getIdNumber).orElseGet(() ->"");
+                }
+                subLicenseeDto.setIdNumber(idNo);
+                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
             }
         }
         return subLicenseeDto;
@@ -782,55 +792,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             map = result.retrieveAll();
         }
 
-        if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
-            String assignSelect = subLicenseeDto.getAssignSelect();
-            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
-                map.put("assignSelect", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-        }
-
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
-            String idType = subLicenseeDto.getIdType();
-            String idNumber = subLicenseeDto.getIdNumber();
-            if (StringUtil.isEmpty(idType)) {
-                map.put("idType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            if (StringUtil.isEmpty(idNumber)) {
-                map.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            String mobileNo = subLicenseeDto.getTelephoneNo();
-            if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
-                map.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
-            }
-        }
-
-        if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(subLicenseeDto.getAddrType())) {
-            String blkNo = subLicenseeDto.getBlkNo();
-            String floorNo = subLicenseeDto.getFloorNo();
-            String unitNo = subLicenseeDto.getUnitNo();
-            if (StringUtil.isEmpty(blkNo)) {
-                map.put("blkNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            if (StringUtil.isEmpty(floorNo)) {
-                map.put("floorNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            if (StringUtil.isEmpty(unitNo)) {
-                map.put("unitNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-        }
-
-        if (map.isEmpty() && "newOfficer".equals(subLicenseeDto.getAssignSelect())) {
-            // validate the current licensee whether he / she been registered or not
-            Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
-                    NewApplicationDelegator.LICENSEE_MAP);
-            String idType = subLicenseeDto.getIdType();
-            String idNo = subLicenseeDto.getIdNumber();
-            if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNo)) != null) {
-                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("{ID No.}", idNo);
-                map.put("idNumber", errMsg);
-            }
-        }
         // add log
         if (!map.isEmpty()) {
             log.info(StringUtil.changeForLog("Error Message : " + map + " For the Sub Licensee - " +

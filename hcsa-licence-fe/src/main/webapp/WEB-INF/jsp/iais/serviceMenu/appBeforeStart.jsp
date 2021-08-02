@@ -46,6 +46,7 @@
             <li><span><iais:service value="${specifiedItem}"></iais:service></span> (Special Licensable Healthcare Services)</li>
           </c:forEach>
         </ul>
+        <%--
         <div class="gray-content-box">
           <div class="h3-with-desc">
             <h3>Licensee and Key Personnel</h3>
@@ -76,6 +77,7 @@
 
           </div>
         </div>
+        --%>
         <h3>Before You Begin</h3>
         <ul class="">
           <li>

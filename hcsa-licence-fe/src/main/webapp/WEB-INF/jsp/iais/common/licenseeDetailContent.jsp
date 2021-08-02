@@ -81,7 +81,7 @@
   <iais:row>
     <iais:field value="Email Address" mandatory="true" width="5"/>
     <iais:value width="7">
-      <iais:input type="text" name="emailAddr" maxLength="66" value="${dto.emailAddr}"/>
+      <iais:input type="text" name="emailAddr" maxLength="320" value="${dto.emailAddr}"/>
     </iais:value>
   </iais:row>
 </div>
