@@ -280,7 +280,7 @@ public class MyinfoUtil {
 	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri,String privateKeyContent){
 		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
 		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
-		if(authlevel != "L2"){
+		if(!authlevel .equalsIgnoreCase("L2")){
 			return "";
 		}
     	TreeMap<String, String> baseParams = new TreeMap<>();
