@@ -245,8 +245,19 @@ public class OfficerOnlineEnquiriesDelegator {
             QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
             if (appParam != null) {
                 SearchResult<ApplicationLicenceQueryDto> appResult = requestForInformationService.appLicenceDoQuery(appParam);
-                Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
+                Set<String> resultLicesee=IaisCommonUtils.genNewHashSet();
                 if(appResult.getRowCount()!=0){
+                    for (ApplicationLicenceQueryDto queryDto:appResult.getRows()) {
+                        if (queryDto.getLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getLicenseeId());
+                        }
+                        if(queryDto.getAppLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getAppLicenseeId());
+                        }
+                    }
+                }
+                if(appResult.getRowCount()!=0){
+                    Map<String,String> licesee=organizationClient.getAllLicenseeIdName(resultLicesee).getEntity();
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
@@ -786,9 +797,19 @@ public class OfficerOnlineEnquiriesDelegator {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceQuery",appParam);
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
-                Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
-
+                Set<String> resultLicesee=IaisCommonUtils.genNewHashSet();
                 if(appResult.getRowCount()!=0){
+                    for (ApplicationLicenceQueryDto queryDto:appResult.getRows()) {
+                        if (queryDto.getLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getLicenseeId());
+                        }
+                        if(queryDto.getAppLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getAppLicenseeId());
+                        }
+                    }
+                }
+                if(appResult.getRowCount()!=0){
+                    Map<String,String> licesee=organizationClient.getAllLicenseeIdName(resultLicesee).getEntity();
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
@@ -1293,9 +1314,19 @@ public class OfficerOnlineEnquiriesDelegator {
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
 
-                Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
-
-                if (appResult.getRowCount() != 0) {
+                Set<String> resultLicesee=IaisCommonUtils.genNewHashSet();
+                if(appResult.getRowCount()!=0){
+                    for (ApplicationLicenceQueryDto queryDto:appResult.getRows()) {
+                        if (queryDto.getLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getLicenseeId());
+                        }
+                        if(queryDto.getAppLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getAppLicenseeId());
+                        }
+                    }
+                }
+                if(appResult.getRowCount()!=0){
+                    Map<String,String> licesee=organizationClient.getAllLicenseeIdName(resultLicesee).getEntity();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos = IaisCommonUtils.genNewArrayList();
 
@@ -1551,9 +1582,19 @@ public class OfficerOnlineEnquiriesDelegator {
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
                 }
 
-                Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
-
-                if (appResult.getRowCount() != 0) {
+                Set<String> resultLicesee=IaisCommonUtils.genNewHashSet();
+                if(appResult.getRowCount()!=0){
+                    for (ApplicationLicenceQueryDto queryDto:appResult.getRows()) {
+                        if (queryDto.getLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getLicenseeId());
+                        }
+                        if(queryDto.getAppLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getAppLicenseeId());
+                        }
+                    }
+                }
+                if(appResult.getRowCount()!=0){
+                    Map<String,String> licesee=organizationClient.getAllLicenseeIdName(resultLicesee).getEntity();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos = IaisCommonUtils.genNewArrayList();
 
@@ -1846,9 +1887,19 @@ public class OfficerOnlineEnquiriesDelegator {
                     appResult = requestForInformationService.appLicenceDoQuery(appParam);
 
                 }
-                Map<String,String> licesee=organizationClient.getAllLicenseeIdName().getEntity();
-
-                if (appResult.getRowCount() != 0) {
+                Set<String> resultLicesee=IaisCommonUtils.genNewHashSet();
+                if(appResult.getRowCount()!=0){
+                    for (ApplicationLicenceQueryDto queryDto:appResult.getRows()) {
+                        if (queryDto.getLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getLicenseeId());
+                        }
+                        if(queryDto.getAppLicenseeId()!=null){
+                            resultLicesee.add(queryDto.getAppLicenseeId());
+                        }
+                    }
+                }
+                if(appResult.getRowCount()!=0){
+                    Map<String,String> licesee=organizationClient.getAllLicenseeIdName(resultLicesee).getEntity();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos = IaisCommonUtils.genNewArrayList();
 

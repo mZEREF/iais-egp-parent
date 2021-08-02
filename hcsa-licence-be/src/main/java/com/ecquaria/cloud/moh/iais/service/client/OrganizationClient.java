@@ -20,11 +20,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +30,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Wenkang
@@ -121,8 +122,8 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
-    @GetMapping(path = "/iais-licensee/getAllLicenseeIdName",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, String>> getAllLicenseeIdName();
+    @PostMapping(value = "/iais-licensee/getAllLicenseeIdName", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String>> getAllLicenseeIdName(@RequestBody Set<String> licenseeIdList);
 
     @GetMapping(value = "/iais-licensee/licensee-overtime/{days}")
     FeignResponseEntity<List<LicenseeDto>> getLicenseeDtoOvertime (@PathVariable("days") String days);
