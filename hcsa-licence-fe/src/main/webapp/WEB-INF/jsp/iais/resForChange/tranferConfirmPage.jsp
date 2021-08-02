@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -180,7 +182,8 @@
             <iais:value width="10">
               <p>
               <c:forEach items="${pageShowFileDtos}" var="pageShowFileDto">
-                  <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
+                  <a href="/hcsa-licence-web/download-session-file?fileAppendIdDown=selectedFile&fileIndexDown=${pageShowFileDto.index}" title="Download" class="downloadFile" style="text-decoration:none;">
+                     <c:out value="${pageShowFileDto.fileName}"></c:out></a>
               </c:forEach>
               </p>
             </iais:value>
