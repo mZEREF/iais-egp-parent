@@ -59,6 +59,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
+    public static final String TITLE_MODE_OF_SVCDLVY = "Mode of Service Delivery";
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -228,15 +229,17 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                             case "4" :   appSupDocDtos.get(i).setFile("Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "8" :   appSupDocDtos.get(i).setFile("MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "32":   appSupDocDtos.get(i).setFile("Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
                     }else if(docTitleList.get(j).getDupForPerson()!=null && "1".equals(docTitleList.get(j).getDupForPrem())){
                         switch (docTitleList.get(j).getDupForPerson()){
-                            case "1" :   appSupDocDtos.get(i).setFile("Premises 1: Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "2" :   appSupDocDtos.get(i).setFile(" Premises 1: Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "4" :   appSupDocDtos.get(i).setFile("Premises 1: Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
-                            case "8" :   appSupDocDtos.get(i).setFile("Premises 1: MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "1" :   appSupDocDtos.get(i).setFile(TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officer "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "2" :   appSupDocDtos.get(i).setFile(TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "4" :   appSupDocDtos.get(i).setFile(TITLE_MODE_OF_SVCDLVY + " 1: Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "8" :   appSupDocDtos.get(i).setFile(TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "32":   appSupDocDtos.get(i).setFile(TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
                     }else if(docTitleList.get(j).getDupForPerson()==null && "1".equals(docTitleList.get(j).getDupForPrem())){
