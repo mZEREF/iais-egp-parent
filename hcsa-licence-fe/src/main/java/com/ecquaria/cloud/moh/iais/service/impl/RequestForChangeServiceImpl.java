@@ -2545,21 +2545,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
                 appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
             }
-               /* boolean eqAddFloorNo1 = EqRequestForChangeSubmitResultChange.eqAddFloorNo(
-                        appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList(),
-                        oldPremisesDtoList);
-                if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation() && !eqAddFloorNo1) {
-                */
             if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
                 isAutoRfc = false;
-                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()) {
-                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
-                }
-            } else {
                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()) {
                     appGrpPremisesDto1.setNeedNewLicNo(Boolean.TRUE);
+                }
+            } else {
+                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
+                for (AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()) {
+                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
                 }
             }
             appSubmissionDtoByLicenceId.setAutoRfc(isAutoRfc);
