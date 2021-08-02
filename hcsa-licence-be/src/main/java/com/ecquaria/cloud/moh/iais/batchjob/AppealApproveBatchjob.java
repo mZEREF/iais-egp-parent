@@ -371,7 +371,8 @@ public class AppealApproveBatchjob {
                 if(oldApplication!=null){
                     HcsaServiceDto serviceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(oldApplication.getServiceId()).getEntity();
                     if(serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||serviceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)){
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appealApproveDto.getAppPremiseMiscDto().getAppPremCorreId()).getEntity();
+                        AppPremisesCorrelationDto appPremisesCorrelationDto=applicationClient.getAppPremisesCorrelationDtosByAppId(oldApplication.getId()).getEntity();
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appPremisesCorrelationDto.getId()).getEntity();
                         for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
                             appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
                         }
