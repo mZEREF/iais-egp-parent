@@ -131,7 +131,7 @@ public class FESingpassLandingDelegator {
             HttpEntity entity = new HttpEntity(oad, header);
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<OidcAuthResponDto> respon = restTemplate.exchange(postUrl, HttpMethod.POST, entity, OidcAuthResponDto.class);
-            if (HttpStatus.OK.equals(respon.getStatusCode())) {
+            if (HttpStatus.OK == respon.getStatusCode()) {
                 OidcAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
                     identityNo = oiRepon.getUserInfo().getNricFin();
