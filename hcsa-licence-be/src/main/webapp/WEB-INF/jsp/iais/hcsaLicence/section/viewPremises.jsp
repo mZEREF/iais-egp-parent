@@ -323,20 +323,22 @@
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-6">
-                Email
-              </div>
-              <div class="col-md-6">
-                <div class="col-md-12">
-                  <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">${appGrpPremDto.easMtsPubEmail}</span>
-                  <br>
-                  <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail }</span>
+            <c:if test="${'OFFSITE'==appGrpPremDto.premisesType || 'CONVEYANCE'==appGrpPremDto.premisesType}">
+              <div class="row">
+                <div class="col-md-6">
+                  Email
                 </div>
                 <div class="col-md-6">
+                  <div class="col-md-12">
+                    <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">${appGrpPremDto.easMtsPubEmail}</span>
+                    <br>
+                    <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail }</span>
+                  </div>
+                  <div class="col-md-6">
+                  </div>
                 </div>
               </div>
-            </div>
+            </c:if>
 
             <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
               <div class="row">
