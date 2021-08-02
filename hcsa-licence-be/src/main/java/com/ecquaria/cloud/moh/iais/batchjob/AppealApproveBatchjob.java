@@ -26,7 +26,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -145,6 +148,7 @@ public class AppealApproveBatchjob {
                   List<LicenceDto> appealLicence = IaisCommonUtils.genNewArrayList();
                   List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
                   List<LicenceDto> rollBackLicence = IaisCommonUtils.genNewArrayList();
+                  List<PremisesDto> licPremisesDto = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
                   List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
                   List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
@@ -163,7 +167,7 @@ public class AppealApproveBatchjob {
                           switch(appealType){
                               case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
                                   appealApplicaiton(appPremiseMiscDtoList,appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
-                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,
+                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,licPremisesDto,
                                           appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
                                           appealApproveDto);
                                   break;
@@ -214,6 +218,10 @@ public class AppealApproveBatchjob {
                   appealApplicationDto.setAppealAppPremisesRecommendationDtos(appealAppPremisesRecommendationDtos);
                   appealApplicationDto.setRollBackAppPremisesRecommendationDtos(rollBackAppPremisesRecommendationDtos);
                   appealService.createAppealApplicationDto(appealApplicationDto);
+
+                  if(IaisCommonUtils.isNotEmpty(licPremisesDto)){
+                      hcsaLicenceClient.savePremises(licPremisesDto);
+                  }
                   for (AppealApproveDto appealApproveDto: appealApproveDtos){
                       ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
                       AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
@@ -244,6 +252,7 @@ public class AppealApproveBatchjob {
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
                                    List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
                                    List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
+                                   List<PremisesDto> licPremisesDto,
                                    List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos,
                                    List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos,
                                    List<ApplicationGroupDto> appealApplicationGroupDtos,
@@ -269,7 +278,7 @@ public class AppealApproveBatchjob {
                         applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
                         break;
                     case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
-                        applicationChangeHciName(appealApplicaiton,appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto,appealApplicationGroupDtos);
+                        applicationChangeHciName(appealApplicaiton,appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,licPremisesDto,appealApproveDto,appealApplicationGroupDtos);
                         break;
                     default:break;
                 }
@@ -476,7 +485,7 @@ public class AppealApproveBatchjob {
     }
     //sync hciName
     public void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,
-                                         List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
+                                         List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,List<PremisesDto> licPremisesDto,
                                          AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -503,6 +512,31 @@ public class AppealApproveBatchjob {
                 ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
                 List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
                 appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
+                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)){
+                    for (AppGrpPremisesEntityDto appPrem:appealAppGrpPremisesDto
+                         ) {
+                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.getPremCorrDtoByAppGroupId(appPrem.getAppGrpId()).getEntity();
+                        if(appPremisesCorrelationDtos!=null){
+                            for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos
+                            ) {
+                                LicAppPremCorrelationDto licAppPremCorrelationDto=hcsaLicenceClient.getLicAppPremCorrelationDtoByCorrId(apc.getId()).getEntity();
+                                if(licAppPremCorrelationDto!=null){
+                                    List<LicPremisesDto> licPremisesDtos= hcsaLicenceClient.getlicPremisesCorrelationsByPremises(licAppPremCorrelationDto.getLicPremId()).getEntity();
+                                    if(licPremisesDtos!=null){
+                                        for (LicPremisesDto lp:licPremisesDtos
+                                        ) {
+                                            PremisesDto premisesDto=hcsaLicenceClient.getLicPremisesDtoById(lp.getPremisesId()).getEntity();
+                                            if(premisesDto!=null){
+                                                premisesDto.setHciName(hciName);
+                                                licPremisesDto.add(premisesDto);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
                 //save eic record
@@ -526,7 +560,7 @@ public class AppealApproveBatchjob {
         }
         ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
-        o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        //o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
         String appId = o.getId();
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
         List<ApplicationDto> applicationDtos = applicationClient.getApplicationDto(entity).getEntity();
@@ -538,7 +572,7 @@ public class AppealApproveBatchjob {
             addOtherChangeHciNameApp(applicationDtos,appealApplicaiton);
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
             ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
-            a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            //a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
             appealApplicationGroupDtos.add(a);
         }else {
             //if licence no generate to do

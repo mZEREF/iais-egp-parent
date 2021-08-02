@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppPremCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceAppRiskInfoDto;
@@ -274,4 +275,10 @@ public interface HcsaLicenceClient {
 
     @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
+
+    @GetMapping(path= "/hcsa-licence/licence-appCorrId/licAppPremCorrelationDto", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicAppPremCorrelationDto> getLicAppPremCorrelationDtoByCorrId(@RequestParam(name = "corrId") String corrId);
+
+    @PostMapping(value = "/hcsa-premises/modification/premises",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PremisesDto>> savePremises(@RequestBody List<PremisesDto> premisesDtos);
 }
