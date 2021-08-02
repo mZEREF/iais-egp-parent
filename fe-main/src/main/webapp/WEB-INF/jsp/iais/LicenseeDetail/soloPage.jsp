@@ -35,6 +35,7 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
+                                    <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
                                     <iais:row>
                                         <iais:field value="Name" width="11"/>
                                         <iais:field value="${licensee.getName()}" width="11"/>
@@ -91,7 +92,7 @@
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                    <a class="btn btn-primary save" id="reLoadMyInfo">Refresh And Save Data</a>
+                                                    <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +113,11 @@
         $('#mainForm').submit();
     })
 
-    $("#reLoadMyInfo").click(function () {
+    $("#reLoadMyInfoSave").click(function () {
+        $("[name='crud_action_type']").val('refreshSave');
+        $('#mainForm').submit();
+    })
+    function reLoadMyInfoTodo() {
         if(verifyTaken()){
             $("[name='crud_action_type']").val('refresh');
             $('#mainForm').submit();
@@ -121,5 +126,5 @@
             showWaiting();
             callAuthoriseApi();
         }
-    })
+    }
 </script>

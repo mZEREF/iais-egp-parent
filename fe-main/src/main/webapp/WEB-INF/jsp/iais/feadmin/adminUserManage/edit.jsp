@@ -35,6 +35,9 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
+                                    <c:if test="${iais_Login_User_Info_Attr.nricNum == inter_user_attr.idNumber}">
+                                        <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                    </c:if>
                                     <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                     <c:choose>
                                         <c:when test="${isAdmin.equals('1')}">
@@ -71,9 +74,6 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                <c:if test="${iais_Login_User_Info_Attr.nricNum == inter_user_attr.idNumber}">
-                                                <a class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</a>
-                                                </c:if>
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
