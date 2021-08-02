@@ -1157,7 +1157,7 @@ public class LicenceApproveBatchjob {
                 if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
                         && IaisEGPHelper.isActiveMigrated()
-                        && originLicenceDto.isMigrated()) {
+                        && originLicenceDto != null && originLicenceDto.isMigrated()) {
                     originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                 }
                 //create the lic_app_correlation
@@ -1742,7 +1742,7 @@ public class LicenceApproveBatchjob {
     private String getAppPremCorrecId(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, String premisesId) {
         String result = null;
         if (appPremisesCorrelationDtos == null || appPremisesCorrelationDtos.size() == 0 || StringUtil.isEmpty(premisesId)) {
-            return result;
+            return null;
         }
         for (AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos) {
             if (premisesId.equals(appPremisesCorrelationDto.getAppGrpPremId())) {
