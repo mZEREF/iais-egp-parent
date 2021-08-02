@@ -11,18 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.sz.commons.util.JsonUtil;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,6 +21,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangyu
@@ -103,23 +102,25 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-        //name
-        String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
-        String CSRF = ParamUtil.getString(request,"OWASP_CSRFTOKEN");
-        String url ="<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-        fileName = url + fileName +"</a>";
-        stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                append( fileName.replace("pageContext.request.contextPath","/hcsa-licence-web")
-                        .replace("replaceFileAppendIdDown",fileAppendId)
-                        .replace("replaceFileIndexDown",String.valueOf(size)).replace("replaceCsrf",CSRF))
-                .append(' ').append(deleteButtonString.replace("replaceForDelete",fileAppendId).
-                                      replace("indexReplace",String.valueOf(size)))
-                .append( reUploadButtonString.replace("replaceForUploadForm",uploadFormId).
-                        replace("replaceForUpload",fileAppendId).
-                        replace("indexReplace",String.valueOf(size))
-                ).append("</Div>")
-        ;
+        if(selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+            //name
+            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+            String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+            fileName = url + fileName + "</a>";
+            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                            .replace("replaceFileAppendIdDown", fileAppendId)
+                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", CSRF))
+                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
+                    replace("indexReplace", String.valueOf(size)))
+                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
+                            replace("replaceForUpload", fileAppendId).
+                            replace("indexReplace", String.valueOf(size))
+                    ).append("</Div>")
+            ;
+        }
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
         return JsonUtil.toJson(messageCode);
@@ -129,7 +130,6 @@ public class HcsaFileAjaxController {
         if(selectedFile.isEmpty()){
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
         }
-        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
         int maxSize = systemParamConfig.getUploadFileLimit();
         String fileTypesString = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
         List<String> fileTypes = Arrays.asList(fileTypesString.split(","));
@@ -147,9 +147,12 @@ public class HcsaFileAjaxController {
         }
 
         //name
-        String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit)+"."+fileSplit[fileSplit.length-1];
-        if(fileName.length() > 100){
-            return  MessageUtil.getMessageDesc("GENERAL_ERR0022");
+        if(!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+            if (fileName.length() > 100) {
+                return MessageUtil.getMessageDesc("GENERAL_ERR0022");
+            }
         }
         return "";
     }
