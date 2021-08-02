@@ -279,6 +279,6 @@ public interface HcsaLicenceClient {
     @GetMapping(path= "/hcsa-licence/licence-appCorrId/licAppPremCorrelationDto", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicAppPremCorrelationDto> getLicAppPremCorrelationDtoByCorrId(@RequestParam(name = "corrId") String corrId);
 
-    @PostMapping(value = "/hcsa-premises/modification/premises",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/lic-common/modification/premises",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> savePremises(@RequestBody List<PremisesDto> premisesDtos);
 }
