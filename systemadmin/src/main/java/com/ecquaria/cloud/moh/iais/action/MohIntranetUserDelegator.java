@@ -925,7 +925,7 @@ public class MohIntranetUserDelegator {
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
-        File file = File.createTempFile("temp", "xml");
+        File file = MiscUtil.generateFileInTempFolder("temp.xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         List<OrgUserDto> orgUserDtos = importXML(xmlFile);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", (Serializable) orgUserDtos);
@@ -1144,7 +1144,7 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
         int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
-        File file = File.createTempFile("temp", "xml");
+        File file = MiscUtil.generateFileInTempFolder("temp.xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         //validate xml file
         List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
