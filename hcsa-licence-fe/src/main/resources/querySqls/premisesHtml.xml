@@ -497,7 +497,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Email </label>
                     <div class=" col-xs-11 col-sm-7 col-md-5 ">
                         <input type="text" id="conveyanceEmail" name="conveyanceEmail"
-                               class="conveyanceEmail" maxlength="66" autocomplete="off">
+                               class="conveyanceEmail" maxlength="320" autocomplete="off">
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -782,7 +782,7 @@
                     <label class="col-xs-12 col-md-4 control-label">Email </label>
                     <div class=" col-xs-11 col-sm-7 col-md-5 ">
                         <input type="text" id="offSiteEmail" name="offSiteEmail"
-                               class="offSiteEmail" maxlength="66" autocomplete="off">
+                               class="offSiteEmail" maxlength="320" autocomplete="off">
                     </div>
                     <div class="clear"></div>
                 </div>
