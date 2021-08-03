@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -164,8 +163,8 @@ public class ValidateClincalDirector implements ValidateFlow {
                 }else {
                     if(!ValidationUtils.isEmail(emailAddr)){
                         map.put("emailAddr"+i, "GENERAL_ERR0014");
-                    }else if(emailAddr.length()>66){
-                        String general_err0041= NewApplicationHelper.repLength("Email Address","66");
+                    }else if(emailAddr.length()>320){
+                        String general_err0041= NewApplicationHelper.repLength("Email Address","320");
                         map.put("emailAddr" + i, general_err0041);
                     }
                 }
