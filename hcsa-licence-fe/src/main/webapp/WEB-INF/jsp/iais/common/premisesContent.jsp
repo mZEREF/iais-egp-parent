@@ -397,7 +397,7 @@
                                             </div>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_floorUnit${premValue}${opStat.index}"></span>
                                         </iais:value>
-                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                             <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                         </div>
                                         <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -953,7 +953,7 @@
                                         </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -1487,7 +1487,7 @@
                                         </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -2027,7 +2027,7 @@
                                                 </div>
                                                 <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
                                             </iais:value>
-                                            <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                                 <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                             </div>
                                             <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
