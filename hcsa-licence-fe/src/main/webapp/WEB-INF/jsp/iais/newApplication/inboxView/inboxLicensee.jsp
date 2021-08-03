@@ -1,9 +1,6 @@
-<style>
-    span{
-        word-wrap: break-word;
-    }
-</style>
+<c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -20,12 +17,14 @@
                         <strong class="app-font-size-22 premHeader">Licensee Details</strong>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Licensee Type"/>
-                    <iais:value width="7" display="true">
-                        <iais:code code="${subLicenseeDto.licenseeType}" />
-                    </iais:value>
-                </iais:row>
+                <c:if test="${subLicenseeDto.licenseeType ne soloType}">
+                    <iais:row>
+                        <iais:field width="5" value="Licensee Type"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${subLicenseeDto.licenseeType}" />
+                        </iais:value>
+                    </iais:row>
+                </c:if>
 
                 <%@include file="/WEB-INF/jsp/iais/common/previewLicenseeCom.jsp"%>
             </div>

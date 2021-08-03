@@ -761,7 +761,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             subLicenseeDto.setUenNo(uenNo);
             if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
                 subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
-            } else {
+            } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
                 List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
                 String idNo = null;
                 if (feUserDtos != null) {
@@ -770,6 +770,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
                             .findAny().map(FeUserDto::getIdNumber).orElseGet(() ->"");
                 }
+                subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
                 subLicenseeDto.setIdNumber(idNo);
                 subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
             }
@@ -2276,14 +2277,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         StringBuilder sB = new StringBuilder(40);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         // sub licensee (licensee details)
-        /*
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (validateSubLicenseeDto(previewAndSubmitMap, subLicenseeDto, bpc.request)) {
             coMap.put("licensee", "licensee");
         } else {
             coMap.put("licensee", "");
         }
-         */
         // premises
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");

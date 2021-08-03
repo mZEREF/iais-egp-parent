@@ -24,6 +24,8 @@ import java.util.Map;
  */
 public class SubLicenseeValidator implements CustomizeValidator {
 
+    private static final String MANDATORY_MSG = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+
     @Override
     public Map<String, String> validate(Object obj, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -38,22 +40,30 @@ public class SubLicenseeValidator implements CustomizeValidator {
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
             String assignSelect = subLicenseeDto.getAssignSelect();
             if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
-                errorMap.put("assignSelect", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
-            }
-            if (StringUtil.isEmpty(idType)) {
-                errorMap.put("idType", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("assignSelect", MANDATORY_MSG);
             }
 
             if (StringUtil.isEmpty(idNumber)) {
-                errorMap.put("idNumber", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("idNumber", MANDATORY_MSG);
             } else if (!validateIdNo(idType, idNumber)) {
                 errorMap.put("idNumber", MessageUtil.getMessageDesc("RFC_ERR0012"));
             }
         }
 
         if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            if (StringUtil.isEmpty(idType)) {
+                errorMap.put("idType", MANDATORY_MSG);
+            }
+
             String mobileNo = subLicenseeDto.getTelephoneNo();
             if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
+                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+            }
+        }
+
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            String telephoneNo = subLicenseeDto.getTelephoneNo();
+            if (telephoneNo != null && !CommonValidator.isTelephoneNo(telephoneNo)) {
                 errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
@@ -63,13 +73,13 @@ public class SubLicenseeValidator implements CustomizeValidator {
             String floorNo = subLicenseeDto.getFloorNo();
             String unitNo = subLicenseeDto.getUnitNo();
             if (StringUtil.isEmpty(blkNo)) {
-                errorMap.put("blkNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("blkNo", MANDATORY_MSG);
             }
             if (StringUtil.isEmpty(floorNo)) {
-                errorMap.put("floorNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("floorNo", MANDATORY_MSG);
             }
             if (StringUtil.isEmpty(unitNo)) {
-                errorMap.put("unitNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                errorMap.put("unitNo", MANDATORY_MSG);
             }
         }
 
@@ -78,9 +88,7 @@ public class SubLicenseeValidator implements CustomizeValidator {
             Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                     NewApplicationDelegator.LICENSEE_MAP);
             if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {
-                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("{ID No.}", idNumber);
-                errorMap.put("idNumber", errMsg);
+                errorMap.put("idNumber", MessageUtil.replaceMessage("NEW_ERR0006", idNumber, "{ID No.}"));
             }
         }
 

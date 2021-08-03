@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -67,6 +68,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private LicenseeClient licenseeClient;
+
+    @Autowired
+    private LicenceInboxClient licenceClient;
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
@@ -169,6 +173,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void refreshLicensee(LicenseeDto licenseeDto){
         feAdminClient.updateLicence(licenseeDto);
+    }
+
+    private void refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
+        licenceClient.refreshSubLicenseeInfo(licenseeDto);
+    }
+    private void refreshBeSubLicenseeInfo(LicenseeDto licenseeDto) {
+        eicGatewayFeMainClient.refreshSubLicenseeInfo(licenseeDto);
     }
 
     @Override
@@ -380,18 +391,18 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
             licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
         }
-      if( myInfoDto != null){
-          feUserDto.setEmail(myInfoDto.getEmail());
-          feUserDto.setMobileNo(myInfoDto.getMobileNo());
-          feUserDto.setDisplayName(myInfoDto.getUserName());
-          licenseeDto.setName(myInfoDto.getUserName());
-          licenseeDto.setFloorNo(myInfoDto.getFloor());
-          licenseeDto.setPostalCode(myInfoDto.getPostalCode());
-          licenseeDto.setUnitNo(myInfoDto.getUnitNo());
-          licenseeDto.setBlkNo(myInfoDto.getBlockNo());
-          licenseeDto.setBuildingName(myInfoDto.getBuildingName());
-          licenseeDto.setStreetName(myInfoDto.getStreetName());
-      }
+        if (myInfoDto != null) {
+            feUserDto.setEmail(myInfoDto.getEmail());
+            feUserDto.setMobileNo(myInfoDto.getMobileNo());
+            feUserDto.setDisplayName(myInfoDto.getUserName());
+            licenseeDto.setName(myInfoDto.getUserName());
+            licenseeDto.setFloorNo(myInfoDto.getFloor());
+            licenseeDto.setPostalCode(myInfoDto.getPostalCode());
+            licenseeDto.setUnitNo(myInfoDto.getUnitNo());
+            licenseeDto.setBlkNo(myInfoDto.getBlockNo());
+            licenseeDto.setBuildingName(myInfoDto.getBuildingName());
+            licenseeDto.setStreetName(myInfoDto.getStreetName());
+        }
         //fe user
         FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
         feUserDto.setId(feUserDtoCreate.getId());
@@ -428,6 +439,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
             refreshLicensee(licenseeDto);
+            refreshSubLicenseeInfo(licenseeDto);
+            refreshBeSubLicenseeInfo(licenseeDto);
         }
         return licenseeDto;
     }

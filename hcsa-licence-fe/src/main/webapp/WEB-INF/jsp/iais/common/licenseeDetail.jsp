@@ -1,5 +1,10 @@
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
+<c:set var="soloType" value="LICT002" />
+
+<c:set var="isRfi" value="${requestInformationConfig != null}" />
+<c:set var="isNew" value="${'APTY002' ==AppSubmissionDto.appType}" />
+
 <div class="row form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6">
@@ -15,22 +20,27 @@
         </iais:value>
     </iais:row>
 
-    <iais:row cssClass="assignSelectRow">
-        <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
-        <iais:value width="7">
-            <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
-        </iais:value>
-    </iais:row>
+    <c:if test="${subLicenseeDto.licenseeType ne soloType}">
+        <iais:row cssClass="assignSelectRow ${!isNew && isRfi ? 'hidden' : ''}">
+            <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
+            <iais:value width="7">
+                <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
+            </iais:value>
+        </iais:row>
 
-    <iais:row cssClass="licenseeType">
-        <iais:field width="5" mandatory="true" value="Licensee Type"/>
-        <iais:value width="7">
-            <iais:select name="licenseeType" firstOption="Please Select" codeCategory="CATE_ID_LICENSEE_SUB_TYPE"
-                         cssClass="not-disabled" value="${dto.licenseeType}"/>
-        </iais:value>
-    </iais:row>
-    <%-- License Detail Content --%>
-    <%@include file="licenseeDetailContent.jsp"%>
+        <iais:row cssClass="licenseeType">
+            <iais:field width="5" mandatory="true" value="Licensee Type"/>
+            <iais:value width="7">
+                <iais:select name="licenseeType" firstOption="Please Select" codeCategory="CATE_ID_LICENSEE_SUB_TYPE"
+                             cssClass="not-disabled" value="${dto.licenseeType}"/>
+            </iais:value>
+        </iais:row>
+        <%-- License Detail Content --%>
+        <%@include file="licenseeDetailContent.jsp"%>
+    </c:if>
+    <c:if test="${subLicenseeDto.licenseeType eq soloType}">
+        <iais:input cssClass="not-clear" type="hidden" name="licenseeType" value="${soloType}"/>
+    </c:if>
     <%@include file="previewLicenseeCom.jsp"%>
 </div>
 
@@ -38,8 +48,10 @@
               popupOrder="postalCodePop" needEscapHtml="false" needFungDuoJi="false" />
 <script type="text/javascript">
     $(document).ready(function() {
-        // init page
-        initLicenseePage();
+        if ($('#licenseeType').length > 0) {
+            // init page
+            initLicenseePage();
+        }
 
         // bind event
         $('#assignSelect').on('change', function() {
@@ -58,23 +70,8 @@
 
         $('#addrType').on('change', checkAddressManatory);
 
-
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
         disableContent('div.licenseeContent');
-        </c:if>
-        <c:if test="${!isSpecial}">
-        /*
-        var type = $('#licenseeType').val();
-        if (type == '${companyType}') {
-            $('div.licenseeContent').find(':input').each(function(i, ele) {
-                var val = $(ele).val(), $input = $(ele);
-                if (!$input.hasClass('not-disabled') && !isEmpty(val) && val != '-' && val != '-1') {
-                    disableContent($input);
-                }
-            });
-            $('div.licenseeContent').find('div.licensee-detail').removeClass('hidden');
-        }
-        */
         </c:if>
     });
 
@@ -144,11 +141,13 @@
 
     function editContent() {
         $('#isEditHiddenVal').val('1');
-        <c:if test="${!isNewApp && not empty dto.licenseeType}">
-            unDisableContent('div.licensee-detail');
+        <c:if test="${isNewApp && not empty dto.licenseeType}">
+        unDisableContent('div.licensee-detail');
         </c:if>
-        <c:if test="${!isNewApp && empty dto.licenseeType || isNewApp}">
-            unDisableContent('div.licenseeContent');
+        <c:if test="${!isNewApp && not empty dto.licenseeType}">
+        unDisableContent('div.licensee-detail');
+        disableContent('div.ind-no');
+        disableContent('#licenseeName');
         </c:if>
     }
 

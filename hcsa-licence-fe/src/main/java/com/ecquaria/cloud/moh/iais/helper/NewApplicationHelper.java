@@ -82,6 +82,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -3219,20 +3221,20 @@ public class NewApplicationHelper {
         return appSvcDocDtos;
     }
 
-    private static List<AppSvcBusinessDto> removeEmptyAlignBusiness(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+    private static List<AppSvcBusinessDto> removeEmptyAlignBusiness(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
-            List<AppSvcBusinessDto> newBusinessDtos = IaisCommonUtils.genNewArrayList();
-            for(AppSvcBusinessDto appSvcBusinessDto:newBusinessDtos){
+        List<AppSvcBusinessDto> newBusinessDtos = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
+            for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    if (appGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDto.getPremisesIndexNo())) {
+                    if (Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), appSvcBusinessDto.getPremIndexNo())){
                         newBusinessDtos.add(appSvcBusinessDto);
                         break;
                     }
                 }
             }
         }
-        return appSvcBusinessDtos;
+        return newBusinessDtos;
     }
 
     private static List<SelectOption> getPremisesSel(String appType){
@@ -3917,6 +3919,31 @@ public class NewApplicationHelper {
         riskLevelResult.add(so2);
         riskLevelResult.add(so3);
         return riskLevelResult;
+    }
+
+    public static boolean canLicenseeEdit(AppSubmissionDto appSubmissionDto, boolean isRFI) {
+        if (appSubmissionDto == null || appSubmissionDto.getSubLicenseeDto() == null) {
+            return false;
+        }
+        String licenseeType = appSubmissionDto.getSubLicenseeDto().getLicenseeType();
+        String appType = appSubmissionDto.getAppType();
+        boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
+                .map(dto -> dto.isLicenseeEdit())
+                .orElseGet(() -> false);
+        return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
+    }
+
+    public static boolean canLicenseeEdit(String licenseeType, String appType, boolean oldLicenseeEdit, boolean isRFI) {
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            return false;
+        }
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            return !isRFI || oldLicenseeEdit;
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            return oldLicenseeEdit;
+        }
+        return false;
     }
 
     public static List<SelectOption> genSubLicessOption(List<SubLicenseeDto> subLicenseeDtoList) {

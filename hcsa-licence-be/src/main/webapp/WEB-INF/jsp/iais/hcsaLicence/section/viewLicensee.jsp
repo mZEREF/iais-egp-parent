@@ -6,6 +6,18 @@
 
 <c:set var="companyType" value="LICTSUB001" />
 <c:set var="individualType" value="LICTSUB002" />
+<c:set var="soloType" value="LICT002" />
+
+<c:if test="${curDto.licenseeType == companyType}">
+    <c:set var="telephoneLabel" value="Office Telephone No." />
+</c:if>
+<c:if test="${curDto.licenseeType == individualType}">
+    <c:set var="telephoneLabel" value="Mobile No." />
+</c:if>
+<c:if test="${curDto.licenseeType == soloType}">
+    <c:set var="telephoneLabel" value="Telephone No." />
+</c:if>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -31,158 +43,181 @@
                         <label>Licensee Details</label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">Licensee Type</div>
-                    <div class="col-md-6">
+                <%-- company / individual --%>
+                <c:if test="${curDto.licenseeType ne soloType && oldDto.licenseeType ne soloType}">
+                    <div class="row">
+                        <div class="col-md-6">Licensee Type</div>
                         <div class="col-md-6">
-                            <span class="newVal" attr="${curDto.licenseeType}">
-                                <iais:code code="${curDto.licenseeType}" />
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <span class="oldVal" attr="${oldDto.licenseeType}">
-                                <iais:code code="${oldDto.licenseeType}" />
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row img-show" cssClass="company-no" style="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
-                            '' : 'display: none;'}">
-                    <div class="col-md-6">UEN No.</div>
-                    <div class="col-md-6">
-                        <div class="col-md-6">
-                            <span class="newVal" attr="${curDto.uenNo}">
-                                <c:out value="${curDto.uenNo}" />
-                                <c:if test="${empty hashMap[curDto.uenNo]}">
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                </c:if>
-                                <c:if test="${not empty hashMap[curDto.uenNo]}">
-                                    <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                </c:if>
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <span class="oldVal" attr="${oldDto.uenNo}">
-                                <c:out value="${oldDto.uenNo}" />
-                                <c:if test="${empty hashMap[oldDto.uenNo]}">
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                </c:if>
-                                <c:if test="${not empty hashMap[oldDto.uenNo]}">
-                                    <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                </c:if>
-                            </span>
+                            <div class="col-md-6">
+                                <span class="newVal" attr="${curDto.licenseeType}">
+                                    <iais:code code="${curDto.licenseeType}" />
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="oldVal" attr="${oldDto.licenseeType}">
+                                    <iais:code code="${oldDto.licenseeType}" />
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <c:if test="${not empty hashMap[curDto.uenNo]}">
-                    <div class="row new-img-show" style="display: none">
-                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                            <div class="table-responsive">
-                                <table border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                    <tr>
-                                        <td>Indentification No.</td>
-                                        <td>Case No.</td>
-                                        <td>Case Type Description</td>
-                                        <td>Case Status Description</td>
-                                        <td>Offence Description</td>
-                                        <td>Outcome Description</td>
-                                        <td>Outcome Issue Date</td>
-                                        <td>Prosecution Outcome Description</td>
-                                        <td>Created Date</td>
-                                        <td>Update Date</td>
-                                    </tr>
-                                    <c:forEach items="${hashMap[curDto.uenNo]}" var="map">
+                    <div class="row img-show" cssClass="company-no" style="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
+                                '' : 'display: none;'}">
+                        <div class="col-md-6">UEN No.</div>
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <span class="newVal" attr="${curDto.uenNo}">
+                                    <c:out value="${curDto.uenNo}" />
+                                    <c:if test="${empty hashMap[curDto.uenNo]}">
+                                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    </c:if>
+                                    <c:if test="${not empty hashMap[curDto.uenNo]}">
+                                        <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                    </c:if>
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="oldVal" attr="${oldDto.uenNo}">
+                                    <c:out value="${oldDto.uenNo}" />
+                                    <c:if test="${empty hashMap[oldDto.uenNo]}">
+                                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    </c:if>
+                                    <c:if test="${not empty hashMap[oldDto.uenNo]}">
+                                        <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
+                                    </c:if>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <c:if test="${not empty hashMap[curDto.uenNo]}">
+                        <div class="row new-img-show" style="display: none">
+                            <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                <div class="table-responsive">
+                                    <table border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                         <tr>
-                                            <td>${map.identificationNo}</td>
-                                            <td>${map.caseNo}</td>
-                                            <td>${map.caseType}</td>
+                                            <td>Indentification No.</td>
+                                            <td>Case No.</td>
+                                            <td>Case Type Description</td>
                                             <td>Case Status Description</td>
-                                            <td>${map.offenceDesc}</td>
-                                            <td>${map.outcome}</td>
-                                            <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            <td>${map.prosecutionOutcome}</td>
-                                            <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                            <td>Offence Description</td>
+                                            <td>Outcome Description</td>
+                                            <td>Outcome Issue Date</td>
+                                            <td>Prosecution Outcome Description</td>
+                                            <td>Created Date</td>
+                                            <td>Update Date</td>
                                         </tr>
-                                    </c:forEach>
-                                    <tr></tr>
-                                </table>
+                                        <c:forEach items="${hashMap[curDto.uenNo]}" var="map">
+                                            <tr>
+                                                <td>${map.identificationNo}</td>
+                                                <td>${map.caseNo}</td>
+                                                <td>${map.caseType}</td>
+                                                <td>Case Status Description</td>
+                                                <td>${map.offenceDesc}</td>
+                                                <td>${map.outcome}</td>
+                                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                <td>${map.prosecutionOutcome}</td>
+                                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                            </tr>
+                                        </c:forEach>
+                                        <tr></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty hashMap[oldDto.uenNo]}">
+                        <div class="row old-img-show" style="display: none">
+                            <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                <div class="table-responsive">
+                                    <table border="1px"
+                                           style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
+                                        <tr>
+                                            <td>Indentification No.</td>
+                                            <td>Case No.</td>
+                                            <td>Case Type Description</td>
+                                            <td>Case Status Description</td>
+                                            <td>Offence Description</td>
+                                            <td>Outcome Description</td>
+                                            <td>Outcome Issue Date</td>
+                                            <td>Prosecution Outcome Description</td>
+                                            <td>Created Date</td>
+                                            <td>Update Date</td>
+                                        </tr>
+                                        <c:forEach items="${hashMap[oldDto.uenNo]}" var="map">
+                                            <tr>
+                                                <td>${map.identificationNo}</td>
+                                                <td>${map.caseNo}</td>
+                                                <td>${map.caseType}</td>
+                                                <td>Case Status Description</td>
+                                                <td>${map.offenceDesc}</td>
+                                                <td>${map.outcome}</td>
+                                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                <td>${map.prosecutionOutcome}</td>
+                                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                            </tr>
+                                        </c:forEach>
+                                        <tr></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </c:if>
+                    <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                        <div class="col-md-6">ID Type</div>
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <span class="newVal" attr="${curDto.idType}">
+                                    <iais:code code="${curDto.idType}" />
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="oldVal" attr="${oldDto.idType}">
+                                    <iais:code code="${oldDto.idType}" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                        <div class="col-md-6">ID No.</div>
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <span class="newVal" attr="${curDto.idNumber}">
+                                    <c:out value="${curDto.idNumber}" />
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="oldVal" attr="${oldDto.idNumber}">
+                                    <c:out value="${oldDto.idNumber}" />
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                </span>
                             </div>
                         </div>
                     </div>
                 </c:if>
-                <c:if test="${not empty hashMap[oldDto.uenNo]}">
-                    <div class="row old-img-show" style="display: none">
-                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                            <div class="table-responsive">
-                                <table border="1px"
-                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                    <tr>
-                                        <td>Indentification No.</td>
-                                        <td>Case No.</td>
-                                        <td>Case Type Description</td>
-                                        <td>Case Status Description</td>
-                                        <td>Offence Description</td>
-                                        <td>Outcome Description</td>
-                                        <td>Outcome Issue Date</td>
-                                        <td>Prosecution Outcome Description</td>
-                                        <td>Created Date</td>
-                                        <td>Update Date</td>
-                                    </tr>
-                                    <c:forEach items="${hashMap[oldDto.uenNo]}" var="map">
-                                        <tr>
-                                            <td>${map.identificationNo}</td>
-                                            <td>${map.caseNo}</td>
-                                            <td>${map.caseType}</td>
-                                            <td>Case Status Description</td>
-                                            <td>${map.offenceDesc}</td>
-                                            <td>${map.outcome}</td>
-                                            <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            <td>${map.prosecutionOutcome}</td>
-                                            <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                        </tr>
-                                    </c:forEach>
-                                    <tr></tr>
-                                </table>
+                <%-- SOLO --%>
+                <c:if test="${curDto.licenseeType eq soloType || oldDto.licenseeType eq soloType}">
+                    <div class="row">
+                        <div class="col-md-6">NRIC/FIN</div>
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <span class="newVal" attr="${curDto.idNumber}">
+                                    <c:out value="${curDto.idNumber}" />
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="oldVal" attr="${oldDto.idNumber}">
+                                    <c:out value="${oldDto.idNumber}" />
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                </span>
                             </div>
                         </div>
                     </div>
                 </c:if>
-                <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
-                    <div class="col-md-6">ID Type</div>
-                    <div class="col-md-6">
-                        <div class="col-md-6">
-                            <span class="newVal" attr="${curDto.idType}">
-                                <iais:code code="${curDto.idType}" />
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <span class="oldVal" attr="${oldDto.idType}">
-                                <iais:code code="${oldDto.idType}" />
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
-                    <div class="col-md-6">ID No.</div>
-                    <div class="col-md-6">
-                        <div class="col-md-6">
-                            <span class="newVal" attr="${curDto.idNumber}">
-                                <c:out value="${curDto.idNumber}" />
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <span class="oldVal" attr="${oldDto.idNumber}">
-                                <c:out value="${oldDto.idNumber}" />
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </span>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-md-6">Licensee Name</div>
                     <div class="col-md-6">
@@ -304,7 +339,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">${curDto.licenseeType == companyType ? 'Office Telephone No.' : 'Mobile No.'}</div>
+                    <div class="col-md-6">${telephoneLabel}</div>
                     <div class="col-md-6">
                         <div class="col-md-6">
                             <span class="newVal" attr="<c:out value="${curDto.telephoneNo}" />">
