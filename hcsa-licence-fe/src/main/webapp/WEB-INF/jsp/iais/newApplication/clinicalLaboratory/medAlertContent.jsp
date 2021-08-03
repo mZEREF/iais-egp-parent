@@ -187,7 +187,7 @@
                                     <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-4 col-md-7">
-                                    <iais:input maxLength="66" type="text" name="emailAddress" value="${medAlertPsn.emailAddr}"></iais:input>
+                                    <iais:input maxLength="320" type="text" name="emailAddress" value="${medAlertPsn.emailAddr}"></iais:input>
                                     <span class="error-msg" id="error_emailAddr${status.index}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
