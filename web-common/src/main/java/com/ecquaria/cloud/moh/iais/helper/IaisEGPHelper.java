@@ -823,10 +823,6 @@ public final class IaisEGPHelper extends EGPHelper {
     public static boolean isActiveMigrated() {
         log.info(StringUtil.changeForLog("The isActiveMigrated start ..."));
         SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
-        if (systemParamConfig == null) {
-            log.info(StringUtil.changeForLog("The systemParamConfig is null!"));
-            return false;
-        }
         String startDateStr = systemParamConfig.getMigratedLicenceStart();
         String endDateStr = systemParamConfig.getMigratedLicenceEnd();
         Date nowDate = new Date();
