@@ -124,8 +124,9 @@ public class HcsaApplicationAjaxController{
             String  mask =MaskUtil.maskValue("fileRo"+index, appIntranetDocDto.getFileRepoId());
             String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
             try{
-               url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                       replaceAll("interalFile.docName",URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString())).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+                String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
+                url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                       replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
             }catch (Exception e){
                log.error(e.getMessage(),e);
             }

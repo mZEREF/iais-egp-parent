@@ -1158,9 +1158,8 @@ public class LicenceApproveBatchjob {
                     superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
 
-                if ((ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                if ( IaisEGPHelper.isActiveMigrated() && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                        && IaisEGPHelper.isActiveMigrated()
                         && originLicenceDto != null && originLicenceDto.isMigrated()) {
                     if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
