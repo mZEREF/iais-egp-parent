@@ -403,6 +403,7 @@
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }
+        $('#declarations').collapse('show');
     });
 
     function submit(action) {
