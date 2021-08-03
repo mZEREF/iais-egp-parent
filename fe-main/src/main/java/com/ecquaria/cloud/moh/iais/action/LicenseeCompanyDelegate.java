@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -52,7 +53,6 @@ public class LicenseeCompanyDelegate {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-        myInfoAjax.noTakenCallMyInfo(bpc,"MohLicenseeCompanyDetail/Prepare");
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohLicenseeCompanyDetail/Prepare");
     }
 
@@ -93,7 +93,7 @@ public class LicenseeCompanyDelegate {
                             orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
                         }
                     }else {
-                        ParamUtil.setRequestAttr(bpc.request,"myinfoServiceDown", "Y");
+                        ParamUtil.setRequestAttr(bpc.request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
                     }
                 }else {
                     log.info("------- Illegal operation get Myinfo ---------");

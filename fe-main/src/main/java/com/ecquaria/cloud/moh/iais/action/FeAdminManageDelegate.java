@@ -58,7 +58,6 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
-        myInfoAjax.noTakenCallMyInfo(bpc,"MohFeAdminUserManagement/preparePage");
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/preparePage");
     }
 
@@ -266,7 +265,7 @@ public class FeAdminManageDelegate {
                     ParamUtil.setSessionAttr(request, "inter_user_attr", feUserDto);
                     ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum(),myInfoDto);
                 }else {
-                    ParamUtil.setRequestAttr(request,"myinfoServiceDown", "Y");
+                    ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
                 }
             }
             if (myInfoDto != null && !myInfoDto.isServiceDown()) {

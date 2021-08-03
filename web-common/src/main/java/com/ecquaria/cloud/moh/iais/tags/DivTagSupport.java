@@ -10,14 +10,19 @@ public class DivTagSupport extends BodyTagSupport {
 
     public DivTagSupport() {
         super();
-        init();
+        cleanVals();
     }
 
     protected void init() {
+        cleanVals();
+    }
+
+    private void cleanVals() {
         setId(null);
         setCssClass(null);
         setStyle(null);
     }
+
     @Override
     public void release() {
         super.release();

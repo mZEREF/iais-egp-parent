@@ -481,7 +481,7 @@ public class MassEmailDelegator {
     }
 
     private boolean isScienceNum(String str){
-        String regEx = "^[0-9]+.[0-9]+E[0-9]+$";
+        String regEx = "^[0-9]{1,5}.[0-9]{1,5}E[0-9]{1,5}$";
         Pattern pattern = Pattern.compile(regEx);
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();

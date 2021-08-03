@@ -36,56 +36,7 @@
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
                                     <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
-                                    <iais:row>
-                                        <iais:field value="Name" width="11"/>
-                                        <iais:field value="${licensee.getName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID Type" width="11"/>
-                                        <label class="col-xs-11 col-md-4 control-label">
-                                            <iais:code code="${licensee.getLicenseeIndividualDto().getIdType()}"/>
-                                        </label>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID No." width="11"/>
-                                        <iais:field value="${licensee.getLicenseeIndividualDto().getIdNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Postal Code" width="11"/>
-                                        <iais:field value="${licensee.getPostalCode()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Address Type" width="11"/>
-                                        <iais:field value="${licensee.getAddrType()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Block / House No." width="11"/>
-                                        <iais:field value="${licensee.getBlkNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Floor No." width="11"/>
-                                        <iais:field value="${licensee.getFloorNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit No." width="11"/>
-                                        <iais:field value="${licensee.getUnitNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Street Name" width="11"/>
-                                        <iais:field value="${licensee.getStreetName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Building Name" width="11"/>
-                                        <iais:field value="${licensee.getBuildingName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Mobile No." width="11"/>
-                                        <iais:field value="${licensee.getLicenseeIndividualDto().getMobileNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Email Address" width="11"/>
-                                        <iais:field value="${licensee.getEmilAddr()}" width="11"/>
-                                    </iais:row>
+                                    <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-2 col-md-2">
