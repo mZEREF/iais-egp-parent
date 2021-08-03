@@ -125,7 +125,7 @@ public class FELandingDelegator {
 		log.info(StringUtil.changeForLog("-------Init SSO-------"));
 		HttpServletRequest request = bpc.request;
 		JwtVerify verifier = new JwtVerify();
-		String jwtt = (String) request.getAttribute("encryptJwtt");
+		String jwtt = (String) request.getHeader("authToken");
 		Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
 		Claims claims = claimsFromToken.getBody();
 		String uenId = (String) claims.get("uen");
