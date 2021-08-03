@@ -342,11 +342,11 @@ public class NewApplicationDelegator {
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if (!StringUtil.isEmpty(licenseeId)) {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
-            log.info("----------- licAppGrpPremisesDtoMap ----->"+ licAppGrpPremisesDtoMap.size());
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
+                log.info(StringUtil.changeForLog("----------- licAppGrpPremisesDtoMap ----->"+ licAppGrpPremisesDtoMap.size()));
                 //remove premise info when pending premises hci same
-//                List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
+                //List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
                 List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId, hcsaServiceDtoList);
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
 
@@ -397,7 +397,7 @@ public class NewApplicationDelegator {
                     licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
                 }
 
-                log.info("--------> newLicAppGrpPremisesDtoMap size --->"+newLicAppGrpPremisesDtoMap.size());
+                log.info(StringUtil.changeForLog("--------> newLicAppGrpPremisesDtoMap size --->"+newLicAppGrpPremisesDtoMap.size()));
             }
         } else {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -1279,7 +1279,7 @@ public class NewApplicationDelegator {
                         appGrp.setGroupNo(appSubmissionDto1.getAppGrpNo());
                         appGrp.setAutoRfc(appSubmissionDto1.isAutoRfc());
                         Double amount = appSubmissionDto1.getAmount();
-                        if (amount != null && 0.0 != amount) {
+                        if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
                             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                             appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
                         } else {
@@ -2347,7 +2347,7 @@ public class NewApplicationDelegator {
         }
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
-        if (0.0 == amount) {
+        if (MiscUtil.doubleEquals(0.0, amount)) {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
 
@@ -2630,7 +2630,7 @@ public class NewApplicationDelegator {
         log.debug(StringUtil.changeForLog("noNeedPayment:"+noNeedPayment));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         if("next".equals(action)){
-            if(0.0 != totalAmount && StringUtil.isEmpty(noNeedPayment)){
+            if(!MiscUtil.doubleEquals(0.0, totalAmount) && StringUtil.isEmpty(noNeedPayment)){
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                 if (StringUtil.isEmpty(payMethod)) {
                     errorMap.put("pay",MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));
@@ -2870,14 +2870,14 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
-                if(appSubmissionDto1.getAmount() != 0.0){
+                if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request,"ackPageAppSubmissionDto", (Serializable) ackPageAppSubmissionDto);
         }
         Double totalAmount = appSubmissionDto.getAmount();
-        if (totalAmount == 0.0) {
+        if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
             if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
                 String appGrpId = appSubmissionDto.getAppGrpId();
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
@@ -3024,7 +3024,7 @@ public class NewApplicationDelegator {
                 for(AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto){
                     Double amount = appSubmissionDto1.getAmount();
                     boolean autoRfc = appSubmissionDto1.isAutoRfc();
-                    if(0.0==amount && autoRfc){
+                    if(MiscUtil.doubleEquals(0.0, amount) && autoRfc){
                         String appGrpNo = appSubmissionDto1.getAppGrpNo();
                         List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                         if(entity!=null &&!entity.isEmpty()){
@@ -3039,7 +3039,7 @@ public class NewApplicationDelegator {
                             applicationFeClient.saveApplicationDtos(entity);
                             applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                         }
-                    }else if(0.0==amount && !autoRfc){
+                    }else if(MiscUtil.doubleEquals(0.0, amount) && !autoRfc){
                         String appGrpNo = appSubmissionDto1.getAppGrpNo();
                         List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                         if(entity!=null &&!entity.isEmpty()){
