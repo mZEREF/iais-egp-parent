@@ -1954,7 +1954,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailMap.put("Online_PAY", "true");
                 }
             }
-            if(0.0==a){
+            if(MiscUtil.doubleEquals(0.0, a)){
                 emailMap.remove("GIRO_PAY");
                 emailMap.remove("Online_PAY");
             }
@@ -2091,7 +2091,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 emailMap.put("Online_PAY", "true");
             }
         }
-        if(0.0==a){
+        if(MiscUtil.doubleEquals(0.0, a)){
             emailMap.remove("GIRO_PAY");
             emailMap.remove("Online_PAY");
         }
@@ -2573,7 +2573,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 draftNo = appSubmissionDtoByLicenceId.getDraftNo();
             }
             appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            if (0.0 == total) {
+            if (MiscUtil.doubleEquals(0.0, total)) {
                 appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             }
             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
