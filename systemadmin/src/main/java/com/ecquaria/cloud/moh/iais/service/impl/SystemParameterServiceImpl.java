@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterQueryDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -73,10 +72,26 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     @Autowired
     private RedisCacheHelper redisCacheHelper;
 
+    static {
+        Long index = 0L;
+        Class clz = SystemParamConfig.class;
+        Field[] fields = clz.getDeclaredFields();
+        for (Field f : fields){
+            Value value = f.getAnnotation(Value.class);
+            if (value != null){
+                String propertyKey = value.value();
+                if (StringUtil.isNotEmpty(propertyKey)){
+                    propertyKey = propertyKey.replace("${", "").replace("}", "");
+                    log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
+                    propertiesBitIndex.put(propertyKey, index++);
+                }
+            }
+        }
+    }
+
     @Override
     @SearchTrack(catalog = "systemAdmin",key = "querySystemParam")
     public SearchResult<SystemParameterQueryDto> doQuery(SearchParam param) {
-        initPropertyKeyOffset();
         return systemClient.doQuery(param).getEntity();
     }
 
@@ -137,26 +152,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     }
 
     @Override
-    public void initPropertyKeyOffset() {
-        if (IaisCommonUtils.isEmpty(propertiesBitIndex)){
-            Long index = 0L;
-            Class clz = SystemParamConfig.class;
-            Field[] fields = clz.getDeclaredFields();
-            for (Field f : fields){
-                Value value = f.getAnnotation(Value.class);
-                if (value != null){
-                    String propertyKey = value.value();
-                    if (StringUtil.isNotEmpty(propertyKey)){
-                        propertyKey = propertyKey.replace("${", "").replace("}", "");
-                        log.debug(StringUtil.changeForLog("offset PropertyKey" + propertyKey));
-                        propertiesBitIndex.put(propertyKey, index++);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean getPropertyOffsetStatus(String propertyKey) {
         if (propertyKey == null || StringUtil.isEmpty(propertyKey)){
             throw new NullPointerException();
@@ -187,4 +182,5 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             log.error(e.getMessage(), e);
         }
     }
+
 }
