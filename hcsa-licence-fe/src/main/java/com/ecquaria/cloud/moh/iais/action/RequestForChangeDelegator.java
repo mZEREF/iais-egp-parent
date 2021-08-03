@@ -821,7 +821,7 @@ public class RequestForChangeDelegator {
                         if(error.isEmpty() && !"new".equals(subLicensee)) {
                             SubLicenseeDto subLicenseeDto = licenceViewService.getSubLicenseesById(subLicensee);
                             if (subLicenseeDto != null) {
-                                ParamUtil.setSessionAttr(bpc.request, "hasSubLicensee", true);
+                                ParamUtil.setSessionAttr(bpc.request, "hasSubLicensee", Boolean.TRUE);
                                 ParamUtil.setSessionAttr(bpc.request, "subLicenseeDto", subLicenseeDto);
                             }else{
                                 log.error(StringUtil.changeForLog("This id can not get th subLicensee -->:"+subLicensee));
