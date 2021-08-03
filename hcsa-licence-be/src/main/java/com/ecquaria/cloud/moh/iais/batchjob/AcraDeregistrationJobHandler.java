@@ -55,7 +55,6 @@ public class AcraDeregistrationJobHandler extends IJobHandler {
         //get all out expire date + outdatemonth licence
         //org => licensee
         List<String> licenseeList = licenceService.getLicenceOutDate(OUTDATEMONTH);
-        log.info(StringUtil.changeForLog("Licensee List size ==> " + licenseeList.size()));
         if(licenseeList != null && licenseeList.size() > 0){
             //disabel all licensee and org be and acra api
             acraUenBeClient.acraDeregister(licenseeList);
