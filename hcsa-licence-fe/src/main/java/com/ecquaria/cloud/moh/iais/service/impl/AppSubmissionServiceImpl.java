@@ -2518,9 +2518,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             } else {
                 errorMap.put("otherAppSvcChargesPageDto", "other appSvcChargesPageDto is null");
             }
-        } else if (ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)) {
-            validatePersonMandatoryCount(Collections.singletonList(dto.getAppSvcVehicleDtoList()), errorMap, psnType,
-                    mandatoryCount, serviceId, sB);
         }
     }
 
