@@ -317,7 +317,7 @@
                                     </div>
                                     <div class="col-sm-4 col-md-7">
                                       <div class="">
-                                        <iais:input maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
+                                        <iais:input maxLength="320" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}"></span>
                                       </div>
                                     </div>

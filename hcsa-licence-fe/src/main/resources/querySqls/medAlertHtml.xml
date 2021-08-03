@@ -101,7 +101,7 @@
                                 <span class="mandatory">*</span>
                             </div>
                             <div class="col-sm-4 col-md-7">
-                                <input name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" autocomplete="off">
+                                <input name="emailAddress" maxlength="320" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="" autocomplete="off">
                             </div>
                         </div>
                     </div>

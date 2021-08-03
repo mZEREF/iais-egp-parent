@@ -38,7 +38,7 @@
                     <div class="form-group">
                       <label class="col-xs-12 col-md-4 control-label" >Email Address.</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="formfill1" type="text">
+                        <input id="formfill1" maxlength="320" type="text">
                       </div>
                     </div>
                   </div>
