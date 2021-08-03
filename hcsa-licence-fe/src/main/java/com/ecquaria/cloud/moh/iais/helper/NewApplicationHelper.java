@@ -349,15 +349,13 @@ public class NewApplicationHelper {
 
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
-                }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if(emailAddr.length() > 66){
-                        String general_err0041=repLength("Email Address","66");
+                }else {
+                    if(emailAddr.length() > 320){
+                        String general_err0041=repLength("Email Address","320");
                         errMap.put("emailAddr" + i, general_err0041);
                     }
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "GENERAL_ERR0014");
-                    }else if(emailAddr.length()>66) {
-                        errMap.put("emailAddr"+i, "Length is too long");
                     }
                 }
 
@@ -559,8 +557,8 @@ public class NewApplicationHelper {
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!  ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("emailAddr"+poIndex, "GENERAL_ERR0014");
-                        }else if(emailAddr.length()>66){
-                            String general_err0041=repLength("Email Address","66");
+                        }else if(emailAddr.length()>320){
+                            String general_err0041=repLength("Email Address","320");
                             oneErrorMap.put("emailAddr" + poIndex, general_err0041);
                         }
                     }else {
@@ -698,14 +696,12 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(emailAddr)){
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }else {
-                        if(emailAddr.length() > 66){
-                            String general_err0041=repLength("Email Address","66");
+                        if(emailAddr.length() > 320){
+                            String general_err0041=repLength("Email Address","320");
                             oneErrorMap.put("deputyEmailAddr" + dpoIndex, general_err0041);
                         }
                         if (!ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
-                        }else if(emailAddr.length()>66){
-
                         }
                     }
                 }
@@ -1099,8 +1095,8 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if(mobileNo.length()>66){
-                        String general_err0041=repLength("Email Address","66");
+                    if(emailAddr.length()>320){
+                        String general_err0041=repLength("Email Address","320");
                         errMap.put("emailAddr" + i, general_err0041);
                     }
                     if (! ValidationUtils.isEmail(emailAddr)) {
