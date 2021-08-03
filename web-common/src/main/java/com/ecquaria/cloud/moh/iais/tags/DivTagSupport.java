@@ -10,14 +10,14 @@ public class DivTagSupport extends BodyTagSupport {
 
     public DivTagSupport() {
         super();
-        cleanFields();
+        cleanVals();
     }
 
     protected void init() {
-        cleanFields();
+        cleanVals();
     }
 
-    private void cleanFields() {
+    private void cleanVals() {
         setId(null);
         setCssClass(null);
         setStyle(null);
