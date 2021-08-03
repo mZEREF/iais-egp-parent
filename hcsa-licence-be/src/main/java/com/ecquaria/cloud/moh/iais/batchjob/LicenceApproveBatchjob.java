@@ -1157,7 +1157,12 @@ public class LicenceApproveBatchjob {
                 if ( IaisEGPHelper.isActiveMigrated() && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
                         && originLicenceDto != null && originLicenceDto.isMigrated()) {
-                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    }else{
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                    }
+
                 }
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
