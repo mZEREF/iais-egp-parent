@@ -157,7 +157,6 @@ public class FESingpassLandingDelegator {
         ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNoUpper);
         ParamUtil.setRequestAttr(request, UserConstants.ID_TYPE, idType);
         ParamUtil.setRequestAttr(request, UserConstants.LOGIN_SCP, scp);
-        myInfoAjax.noTakenCallMyInfo(bpc,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(request,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] END ...." + "nric : " + identityNoUpper));
     }

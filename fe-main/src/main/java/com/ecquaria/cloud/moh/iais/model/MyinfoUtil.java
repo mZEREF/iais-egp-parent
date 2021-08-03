@@ -62,6 +62,8 @@ public class MyinfoUtil {
 	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
 
 	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "CALL_MYINFO_PROCESS_SESSION_NAME";
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "CALL_MYINFO_PROCESS_SESSION_NAME_NRIC";
+	public static final  String CALL_MYINFO_DTO_SEESION                     = "CALL_MYINFO_DTO_SEESION";
 	/**
      * Retrieves Person data from MyInfo
      *

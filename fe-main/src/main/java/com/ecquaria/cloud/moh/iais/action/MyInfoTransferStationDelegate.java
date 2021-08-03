@@ -2,11 +2,17 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * FeAdminManageDelegate
@@ -41,6 +47,23 @@ public class MyInfoTransferStationDelegate {
     public void transmit(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
-
+        HttpServletRequest request = bpc.request;
+        String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
+        if(StringUtil.isNotEmpty(nric)){
+             String callPrcoessUrl =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC+"_"+ nric);
+             MyInfoDto myInfoDto = myInfoAjax.noTakenCallMyInfo(bpc,callPrcoessUrl,nric);
+             if(myInfoDto != null && !myInfoDto.isServiceDown()){
+                 ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,myInfoDto);
+             }else {
+                 ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,null);
+             }
+            try{
+                IaisEGPHelper.redirectUrl(bpc.response,"https://"+request.getServerName()+"/eservice/INTERNET/"+ callPrcoessUrl);
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(),ioe);
+            }
+        }else {
+            log.info("-----------------------------call back nric is null-------------------");
+        }
     }
 }

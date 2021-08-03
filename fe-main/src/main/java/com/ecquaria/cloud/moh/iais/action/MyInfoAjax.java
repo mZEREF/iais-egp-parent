@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
@@ -87,6 +89,8 @@ public class MyInfoAjax {
 		nric = getNric(nric, request);
 		if(StringUtil.isNotEmpty(nric)){
 			String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC,nric);
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME+"_"+nric,redirectUriPostfix);
 			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric));
 			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
 			if(takenStartTime == null){
@@ -356,4 +360,21 @@ public class MyInfoAjax {
         return null;
 	}
 
+	public MyInfoDto getMyInfoData(HttpServletRequest request){
+		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
+			String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
+			MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric);
+			if( myInfoDto != null ){
+				if(myInfoDto.isServiceDown()){
+					ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
+				}else {
+
+				}
+			}
+			return myInfoDto;
+		}else {
+			return null;
+		}
+	}
 }
