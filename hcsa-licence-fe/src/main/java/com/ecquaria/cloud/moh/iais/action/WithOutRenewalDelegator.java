@@ -651,11 +651,11 @@ public class WithOutRenewalDelegator {
                         if(appSvcPrincipalOfficersDtoList!=null){
                             List<AppSvcPrincipalOfficersDto> poList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
                             List<AppSvcPrincipalOfficersDto> dpoList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
-                            for(AppSvcPrincipalOfficersDto var : appSvcPrincipalOfficersDtoList){
-                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(var.getPsnType())){
-                                    dpoList.add(var);
-                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(var.getPsnType())){
-                                    poList.add(var);
+                            for(AppSvcPrincipalOfficersDto aspoDto : appSvcPrincipalOfficersDtoList){
+                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(aspoDto.getPsnType())){
+                                    dpoList.add(aspoDto);
+                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(aspoDto.getPsnType())){
+                                    poList.add(aspoDto);
                                 }
                             }
                             appSvcRelatedInfoDto.setPoList(poList);
@@ -1177,7 +1177,7 @@ public class WithOutRenewalDelegator {
                 continue;
             }else if("gradualFee".equals(targetLaterFeeType)){
                 Double amount = laterFeeDetail.getAmount();
-                if(amount != null && amount != 0d){
+                if(amount != null && !MiscUtil.doubleEquals(amount, 0d)){
                     gradualFeeList.add(laterFeeDetail);
                 }
                 continue;
