@@ -1162,7 +1162,12 @@ public class LicenceApproveBatchjob {
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
                         && IaisEGPHelper.isActiveMigrated()
                         && originLicenceDto != null && originLicenceDto.isMigrated()) {
-                    originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    }else{
+                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                    }
+
                 }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
