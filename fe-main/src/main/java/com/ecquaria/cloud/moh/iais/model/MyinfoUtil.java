@@ -60,6 +60,8 @@ public class MyinfoUtil {
 	public static  final String KEY_TAKEN_TYPE ="token_type";
 	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
 	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
+
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "CALL_MYINFO_PROCESS_SESSION_NAME";
 	/**
      * Retrieves Person data from MyInfo
      *

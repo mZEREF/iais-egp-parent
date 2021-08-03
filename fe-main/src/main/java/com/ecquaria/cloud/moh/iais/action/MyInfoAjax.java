@@ -87,8 +87,7 @@ public class MyInfoAjax {
 		nric = getNric(nric, request);
 		if(StringUtil.isNotEmpty(nric)){
 			String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
-
-			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric)); ;
+			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric));
 			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
 			if(takenStartTime == null){
 				ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
