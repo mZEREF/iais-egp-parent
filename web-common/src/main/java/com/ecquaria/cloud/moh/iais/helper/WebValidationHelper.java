@@ -324,9 +324,13 @@ public class WebValidationHelper {
             CustomizeValidator cv = (CustomizeValidator) obj;
             HttpServletRequest request = MiscUtil.getCurrentRequest();
             if (request != null) {
-                errorMap.putAll(cv.validate(request));
+                if(cv.validate(request) != null) {
+                    errorMap.putAll(cv.validate(request));
+                }
             }
-            errorMap.putAll(cv.validate(target, request));
+            if(cv.validate(target, request) != null) {
+                errorMap.putAll(cv.validate(target, request));
+            }
         } catch (InstantiationException | IllegalAccessException e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
