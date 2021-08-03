@@ -1694,6 +1694,8 @@ public class LicenceViewServiceDelegator {
                     result = "MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("16".equals(dupForPerson)){
                     result = "Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
+                }else if("32".equals(dupForPerson)){
+                    result = "Clinical Director "+num+": "+appSvcDocDto.getUpFileName();
                 }
             }else if(dupForPerson!=null &&"1".equals(dupForPrem)){
                 if("1".equals(dupForPerson)){
@@ -1706,6 +1708,8 @@ public class LicenceViewServiceDelegator {
                     result = "Premises 1:MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
                 }else if("16".equals(dupForPerson)){
                     result = "Premises 1:Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
+                }else if("32".equals(dupForPerson)){
+                    result = "Premises 1:Clinical Director "+num+": "+appSvcDocDto.getUpFileName();
                 }
 
             }else if(dupForPerson==null && "1".equals(dupForPrem)){
@@ -2680,6 +2684,7 @@ public class LicenceViewServiceDelegator {
             case ApplicationConsts.PERSONNEL_PSN_TYPE_PO:
             case ApplicationConsts.PERSONNEL_PSN_TYPE_DPO:
             case ApplicationConsts.PERSONNEL_PSN_TYPE_MAP:
+            case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
                 return 1;
             case ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL:
                 return 2;
