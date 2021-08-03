@@ -21,9 +21,10 @@
 
 
   </div>
-  <input style="display: none" value="${message}" id="message">
-  <label class="complete" style="margin-left: 1%"></label>
+  <%--<input style="display: none" value="${message}" id="message">--%>
+  <%--<label class="complete" style="margin-left: 1%"></label>--%>
 
+  <iais:message key="${message}"></iais:message>
   <div class="application-tab-footer">
     <div class="row">
       <div class="col-xs-12 col-sm-10">
@@ -40,9 +41,9 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function () {
-      $("#message +label").html($('#message').val());
-  });
+  // $(document).ready(function () {
+  //     $("#message +label").html($('#message').val());
+  // });
 
   $('#cancel').click(function () {
       SOP.Crud.cfxSubmit("mainForm", "cancel");
