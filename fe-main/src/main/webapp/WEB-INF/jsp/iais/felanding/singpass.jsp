@@ -83,6 +83,7 @@
   </c:when>
   <c:when test="${'Prod.OIDC' eq openTestMode}">
     <webui:setLayout name="none"/>
+    <!DOCTYPE html>
     <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
     <title>SingPass QRcode</title>
