@@ -381,9 +381,35 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     String msgLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_TCU_AUDIT_APPT_PRE_DATE + appNo;
                     //set template value
                     Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-                    map.put("ApplicantName", applicantName);
-
-
+                    map.put("applicant", applicantName);
+                    map.put("systemLink", emailLoginUrl);
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_EMAIL);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(appNo);
+                    emailParam.setReqRefNum(appNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(appNo);
+                    notificationHelper.sendNotification(emailParam);
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_SMS);
+                    smsParam.setSubject("MOH HALP - Audit Inspection Preferred Date");
+                    smsParam.setQueryCode(appNo);
+                    smsParam.setReqRefNum(appNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(appNo);
+                    notificationHelper.sendNotification(smsParam);
+                    map.put("systemLink", msgLoginUrl);
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_MSG);
+                    msgParam.setTemplateContent(map);
+                    msgParam.setQueryCode(appNo);
+                    msgParam.setReqRefNum(appNo);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                    msgParam.setRefId(appNo);
+                    msgParam.setMaskParams(maskParams);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    notificationHelper.sendNotification(msgParam);
                 }
             }
         }
