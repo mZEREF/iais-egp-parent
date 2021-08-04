@@ -1036,14 +1036,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info(StringUtil.changeForLog("cession error"+e.getMessage()));
             }
             if(onSubmitTaskList.size()!=0){
-                HashMap<String,TaskDto> tempMap = new HashMap<>();
+                HashMap<String,TaskDto> tempMap = IaisCommonUtils.genNewHashMap();
                 for (TaskDto c : onSubmitTaskList) {
                     String key = c.getRefNo();
                     if(!tempMap.containsKey(key)){
                         tempMap.put(key, c);
                     }
                 }
-                List<TaskDto> tempList = new ArrayList<>();
+                List<TaskDto> tempList = IaisCommonUtils.genNewArrayList();
                 for(Map.Entry<String,TaskDto> entry : tempMap.entrySet()){
                     tempList.add(entry.getValue());
                 }
