@@ -104,7 +104,6 @@ public class HcsaApplicationAjaxController{
                 appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
                 String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
                 appIntranetDocDto.setId(id);
-            }
             // set appIntranetDocDto to seesion
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
             List<AppIntranetDocDto> appIntranetDocDtos;
@@ -147,7 +146,7 @@ public class HcsaApplicationAjaxController{
             String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(appIntranetDocDto);
             data = appIntranetDocDtoJsonStr;
             ParamUtil.setRequestAttr(request, "doDocument", "Y");
-//            request.setAttribute("doDocument","Y");
+            }
         }
         return data;
     }

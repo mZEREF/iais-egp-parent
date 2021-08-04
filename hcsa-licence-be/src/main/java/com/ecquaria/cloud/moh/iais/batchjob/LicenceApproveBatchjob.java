@@ -1154,9 +1154,11 @@ public class LicenceApproveBatchjob {
                         }
                         superLicDto.setOriginLicenceDto(originLicenceDto);
                     }
-                if ( IaisEGPHelper.isActiveMigrated() && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                if ( IaisEGPHelper.isActiveMigrated() && originLicenceDto != null
+                        && originLicenceDto.isMigrated()
+                        && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                        && originLicenceDto != null && originLicenceDto.isMigrated()) {
+                       ) {
                     if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
                     }else{
