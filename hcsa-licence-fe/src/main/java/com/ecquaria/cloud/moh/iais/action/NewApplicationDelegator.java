@@ -341,7 +341,8 @@ public class NewApplicationDelegator {
         }
         SubLicenseeDto orgLicensee = appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(),
                 loginContext.getUenNo());
-        if (!OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
+                || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(orgLicensee.getLicenseeType())) {
             subLicenseeDto = (SubLicenseeDto) CopyUtil.copyMutableObject(orgLicensee);
             appSubmissionDto.setSubLicenseeDto(subLicenseeDto);
         }
@@ -440,6 +441,18 @@ public class NewApplicationDelegator {
         } else {
             String assignSelect = ParamUtil.getString(request, "assignSelect");
             dto = getSubLicenseeDtoDetailFromPage(request);
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                SubLicenseeDto old = appSubmissionDto.getSubLicenseeDto();
+                if (old != null) {
+                    dto.setIdType(old.getIdType());
+                    dto.setIdNumber(old.getIdNumber());
+                    dto.setLicenseeName(old.getLicenseeName());
+                }
+            }
+            if (dto == null) {
+                dto = new SubLicenseeDto();
+            }
             dto.setAssignSelect(assignSelect);
             dto.setLicenseeType(licenseeType);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -465,17 +478,10 @@ public class NewApplicationDelegator {
         String telephoneNo = ParamUtil.getString(request, "telephoneNo");
         String emailAddr = ParamUtil.getString(request, "emailAddr");
 
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        SubLicenseeDto dto = appSubmissionDto.getSubLicenseeDto();
-        if (dto == null) {
-            dto = new SubLicenseeDto();
-        }
-        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) ||
-            StringUtil.isEmpty(appSubmissionDto.getAppType())) {
-            dto.setIdType(idType);
-            dto.setIdNumber(idNumber);
-            dto.setLicenseeName(licenseeName);
-        }
+        SubLicenseeDto dto = new SubLicenseeDto();
+        dto.setIdType(idType);
+        dto.setIdNumber(idNumber);
+        dto.setLicenseeName(licenseeName);
         dto.setPostalCode(postalCode);
         dto.setAddrType(addrType);
         dto.setBlkNo(blkNo);
