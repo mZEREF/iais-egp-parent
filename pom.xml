@@ -33,16 +33,17 @@
     </properties>
 
     <modules>
+        <module>web</module>
+        <module>web-common</module>
+        <module>backbone</module>
         <module>hcsa-licence-fe</module>
         <module>demo-app</module>
-        <module>backbone</module>
         <module>systemadmin</module>
-        <module>web-common</module>
-        <module>web</module>
         <module>fe-main</module>
         <module>hcsa-licence-be</module>
         <module>payment</module>
         <module>be-main</module>
+        <module>bsb-fe</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -297,6 +298,9 @@
     <profiles>
         <profile>
             <id>sz-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <repositories>
                 <repository>
                     <id>nexus-repo</id>
@@ -314,7 +318,7 @@
         <profile>
             <id>sg-nexus</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <repositories>
                 <repository>
