@@ -103,11 +103,11 @@
                     onclick="javascript:landing();" />
                   <label class="form-check-label" for="newSystem">
                     <span class="check-square"></span>
-                    <b>Clinical Support Licences</b>
+                    <strong>Clinical Support Licences</strong>
                   </label>
                 </div>
                 <div>
-                  <p><b>Include:</b></p>
+                  <p><strong>Include:</strong></p>
                   <div class="col-xs-4 col-md-4 col-sm-4">Clinical Laboratory</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Blood Banking</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Nuclear Medicine</div>
@@ -120,10 +120,10 @@
                 <div class="form-check">
                   <input class="form-check-input" id="oldSystem" type="checkbox" name="serviceGroup" aria-invalid="false" value="0"
                     onclick="javascript:landing();">
-                  <label class="form-check-label" for="oldSystem"><span class="check-square"></span><b>Other Licences</b></label>
+                  <label class="form-check-label" for="oldSystem"><span class="check-square"></span><strong>Other Licences</strong></label>
                 </div>
                 <div>
-                  <p><b>Include:</b></p>
+                  <p><strong>Include:</strong></p>
                   <div class="col-xs-4 col-md-4 col-sm-4">Hospital Licences</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Nursing Home Licences</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Medical Clinic Licences</div>

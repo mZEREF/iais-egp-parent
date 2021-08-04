@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table aria-describedby="" class="table table-bordered">
                         <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">Name</td>
@@ -89,7 +89,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table aria-describedby="" class="table table-bordered">
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
@@ -154,7 +154,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table aria-describedby="" class="table table-bordered">
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
@@ -231,7 +231,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table table-bordered">
+                    <table aria-describedby="" class="table table-bordered">
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
