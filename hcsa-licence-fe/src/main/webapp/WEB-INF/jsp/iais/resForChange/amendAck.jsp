@@ -14,10 +14,11 @@
 <%@include file="amendDashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <style>
-    .ack-font-14{
-        font-size: 14px;
+    .ack-font-16 {
+        font-size: 16px;
     }
-    .margin-bottom-10{
+
+    .margin-bottom-10 {
         margin-bottom:10px;
     }
 </style>

@@ -76,7 +76,7 @@
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
                                                     <%@include file="../common/declarations.jsp"%>
-                                                    <  </c:if>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
