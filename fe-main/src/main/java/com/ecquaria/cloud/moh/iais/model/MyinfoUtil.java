@@ -61,9 +61,13 @@ public class MyinfoUtil {
 	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
 	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
 
-	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "CALL_MYINFO_PROCESS_SESSION_NAME";
-	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "CALL_MYINFO_PROCESS_SESSION_NAME_NRIC";
-	public static final  String CALL_MYINFO_DTO_SEESION                     = "CALL_MYINFO_DTO_SEESION";
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "call_myinfo_process_session_name";
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "call_myinfo_process_session_name_nric";
+	public static final  String CALL_MYINFO_DTO_SEESION                     = "call_myinfo_dto_seesion";
+	public static final  String SOLO_DTO_SEESION = "myinfo_solo_dto_seesion";
+	public static final  String SOLO_DTO_SEESION_ACTION = "saveSoleAction";
+	public static final  String MYINFO_TRANSFER_CALL_BACK = "myinfo_transfer_call_back";
+
 	/**
      * Retrieves Person data from MyInfo
      *

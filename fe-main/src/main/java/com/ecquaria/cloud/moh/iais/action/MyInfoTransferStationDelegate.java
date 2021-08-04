@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -54,9 +55,8 @@ public class MyInfoTransferStationDelegate {
              MyInfoDto myInfoDto = myInfoAjax.noTakenCallMyInfo(bpc,callPrcoessUrl,nric);
              if(myInfoDto != null && !myInfoDto.isServiceDown()){
                  ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,myInfoDto);
-             }else {
-                 ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,null);
              }
+            ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK,AppConsts.YES);
             try{
                 IaisEGPHelper.redirectUrl(bpc.response,"https://"+request.getServerName()+"/eservice/INTERNET/"+ callPrcoessUrl);
             } catch (IOException ioe){

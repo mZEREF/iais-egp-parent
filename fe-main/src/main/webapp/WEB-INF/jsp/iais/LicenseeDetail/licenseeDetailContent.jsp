@@ -46,7 +46,7 @@
   <iais:row>
     <iais:field value="Mobile No." mandatory="true" width="11"/>
     <iais:value width="11">
-      <iais:input type="text" name="telephoneNo" maxLength="8" value="${licensee.officeTelNo}"/>
+      <iais:input type="text" name="telephoneNo" maxLength="8" value="${licensee.mobileNo}"/>
     </iais:value>
   </iais:row>
 

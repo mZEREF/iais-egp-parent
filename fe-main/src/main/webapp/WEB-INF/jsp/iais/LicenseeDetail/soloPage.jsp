@@ -44,6 +44,7 @@
                                             </div>
                                             <div class="text-right col-xs-9 col-md-9">
                                                     <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
+                                                <input type="hidden" id="saveDataSolo" name="saveDataSolo" >
                                             </div>
                                         </div>
                                     </div>
@@ -57,6 +58,7 @@
     </div>
     <input hidden value="${backtype}" id="backtype">
     <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
@@ -65,7 +67,8 @@
     })
 
     $("#reLoadMyInfoSave").click(function () {
-        $("[name='crud_action_type']").val('refreshSave');
+        $("[name='crud_action_type']").val('refresh');
+        $("#saveDataSolo").val("saveDataSolo");
         $('#mainForm').submit();
     })
     function reLoadMyInfoTodo() {
@@ -78,4 +81,22 @@
             callAuthoriseApi();
         }
     }
+
+    $('#addrType').on('change',checkAddressManatory);
+
+    function checkAddressManatory() {
+        var addrType = $('#addrType').val();
+        if ('ADDTY001' == addrType) {
+            $('.blkNoLabel').append('<span class="mandatory">*</span>');
+            $('.floorUnitLabel').append('<span class="mandatory">*</span>');
+        } else {
+            $('.blkNoLabel .mandatory').remove();
+            $('.floorUnitLabel .mandatory').remove();
+        }
+    }
+
+    $(document).ready(function() {
+        checkAddressManatory();
+    });
+
 </script>

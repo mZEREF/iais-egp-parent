@@ -325,7 +325,7 @@ public class MyInfoAjax {
 		String	clientId 					= ConfigHelper.getString("myinfo.common.client.id");
 		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
 		String spEsvcId                     = ConfigHelper.getString("myinfo.common.sp.esvcId");
-		redirectUri                         = ConfigHelper.getString("myinfo.authorise.call.back.url",redirectUri);
+		redirectUri                         = ConfigHelper.getString("myinfo.common.call.back.url",redirectUri);
 		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,nric,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),spEsvcId,purpose,nric,redirectUri);
 	}
 
@@ -368,10 +368,10 @@ public class MyInfoAjax {
 			if( myInfoDto != null ){
 				if(myInfoDto.isServiceDown()){
 					ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
-				}else {
-
 				}
 			}
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,null);
+			ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK,null);
 			return myInfoDto;
 		}else {
 			return null;

@@ -143,6 +143,7 @@ public class FeAdminManageDelegate {
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
         ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
+        repalceFeUserDtoByMyinfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
         ParamUtil.setSessionAttr(bpc.request,"title", "Edit");
@@ -255,8 +256,8 @@ public class FeAdminManageDelegate {
         log.info("---- relaod feuesr start --------- ");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, "inter_user_attr");
-        if(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber())){
-            MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),request);
+        if(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ||(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber()))){
+            MyInfoDto myInfoDto = AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ? myInfoAjax.getMyInfoData(request) : myInfoAjax.getMyInfo(loginContext.getNricNum(),request);
             if(myInfoDto != null){
                 if(!myInfoDto.isServiceDown()){
                     feUserDto.setEmail(myInfoDto.getEmail());
