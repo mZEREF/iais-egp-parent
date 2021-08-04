@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicBaseSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -77,6 +76,12 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.validate.impl.ValidateEasmts;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
@@ -91,12 +96,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static java.util.regex.Pattern.compile;
 
@@ -1954,7 +1953,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     emailMap.put("Online_PAY", "true");
                 }
             }
-            if(0.0==a){
+            if(MiscUtil.doubleEquals(0.0, a)){
                 emailMap.remove("GIRO_PAY");
                 emailMap.remove("Online_PAY");
             }
@@ -2091,7 +2090,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 emailMap.put("Online_PAY", "true");
             }
         }
-        if(0.0==a){
+        if(MiscUtil.doubleEquals(0.0, a)){
             emailMap.remove("GIRO_PAY");
             emailMap.remove("Online_PAY");
         }
@@ -2573,7 +2572,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 draftNo = appSubmissionDtoByLicenceId.getDraftNo();
             }
             appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            if (0.0 == total) {
+            if (MiscUtil.doubleEquals(0.0, total)) {
                 appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             }
             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
