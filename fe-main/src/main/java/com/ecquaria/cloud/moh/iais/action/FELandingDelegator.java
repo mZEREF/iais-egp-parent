@@ -129,7 +129,7 @@ public class FELandingDelegator {
 		Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
 		Claims claims = claimsFromToken.getBody();
 		String uenId = (String) claims.get("uen");
-		String nric = (String) claims.get("nric");
+		String nric = (String) claims.get("uid");
 		String iat = (String) claims.get("iat");
 
 		if (!StringUtil.isEmpty(uenId)) {
