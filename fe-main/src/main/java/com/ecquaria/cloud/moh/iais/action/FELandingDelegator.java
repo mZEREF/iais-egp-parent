@@ -142,10 +142,14 @@ public class FELandingDelegator {
 			throw new IaisRuntimeException("Access Denied");
 		}
 		Date issueDate = Formatter.parseDateTime(iat, Formatter.DATE_ELIS);
-		int min = ConfigHelper.getInt("jwt.interlogin.valid.minutes", 30);
+		int min = ConfigHelper.getInt("jwt.interlogin.valid.seconds", 30);
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MINUTE, -30);
-		if (issueDate.getTime() < cal.getTimeInMillis()) {
+		cal.add(Calendar.SECOND, -30);
+		long minTime = cal.getTimeInMillis();
+		cal = Calendar.getInstance();
+		cal.add(Calendar.SECOND, 30);
+		long maxTime = cal.getTimeInMillis();
+		if (issueDate.getTime() < minTime || issueDate.getTime() > maxTime) {
 			throw new IaisRuntimeException("Access Denied");
 		}
 		if (!StringUtil.isEmpty(uenId)) {
