@@ -29,7 +29,7 @@
 
       </div>
       <div class="table-gp">
-        <table class="table" border="1px" >
+        <table aria-describedby="" class="table" border="1px" >
           <tr>
             <c:if test="${type=='licence'}"> <td style="text-align: center">Licence No.</td></c:if>
             <c:if test="${type=='application'}"> <td style="text-align: center">Application No.</td></c:if>

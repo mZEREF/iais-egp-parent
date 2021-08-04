@@ -23,7 +23,7 @@
 
     <br>
     <center>
-        <table class="session-missing">
+        <table aria-describedby="" class="session-missing">
             <tbody>
             <tr><td>
                 <form name="redirectForm" action="/main-web" method="post">

@@ -4,7 +4,7 @@
     <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
         <div id="control--runtime--0" class="page control control-area  container-p-1">
             <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-            <table class="control-grid columns1" style="width:100%;">
+            <table aria-describedby="" class="control-grid columns1" style="width:100%;">
                 <tbody>
                 <tr height="1">
                     <td class="first last" style="width: 100%;">
@@ -78,7 +78,7 @@
                                     <c:if test="${AppSvcPersonnelDtoList != null && AppSvcPersonnelDtoList.size()>0}">
                                         <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                                     </c:if>
-                                    <table class="personnel-content" id="personnelRemoveId${status.index}">
+                                    <table aria-describedby="" class="personnel-content" id="personnelRemoveId${status.index}">
                                         <input type="hidden" name="cgoIndexNo" value="${appSvcPersonnelDto.cgoIndexNo}"/>
                                         <tbody>
                                         <tr height="1" class="personnel-header">
@@ -117,7 +117,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="new-svc-personnel-form">
-                                                    <table class="control-grid" style="width:100%;">
+                                                    <table aria-describedby="" class="control-grid" style="width:100%;">
                                                         <tbody>
                                                         <tr height="1" class="">
                                                             <td class="">

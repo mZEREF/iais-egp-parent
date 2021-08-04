@@ -46,7 +46,7 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
-                                                    <table class="table table-bordered">
+                                                    <table aria-describedby="" class="table table-bordered">
                                                         <thead>
                                                         <tr>
                                                             <td class="col-xs-2"><strong>Licence No.</strong></td>

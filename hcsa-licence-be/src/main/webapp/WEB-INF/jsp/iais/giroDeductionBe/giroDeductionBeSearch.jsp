@@ -86,7 +86,7 @@
                   <span>Search Results</span>
                 </h3>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">

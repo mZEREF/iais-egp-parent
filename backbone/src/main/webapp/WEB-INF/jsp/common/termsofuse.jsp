@@ -17,7 +17,7 @@
     <h1>Terms of Use</h1>
   </div>
   <div class="module alt">
-    <table class="table" border="0" >
+    <table aria-describedby="" class="table" border="0" >
       <tbody><tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">

@@ -73,7 +73,7 @@
                 </iais:section>
                 <iais:pagination  param="inspReSchSearchParam" result="inspReSchSearchResult"/>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>

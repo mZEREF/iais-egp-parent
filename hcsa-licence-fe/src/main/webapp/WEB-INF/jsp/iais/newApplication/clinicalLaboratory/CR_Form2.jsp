@@ -19,7 +19,7 @@
     <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
         <div id="control--runtime--0" class="page control control-area  container-p-1">
             <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-            <table class="control-grid columns1 " style="width: 100%;">
+            <table aria-describedby="" class="control-grid columns1 " style="width: 100%;">
                 <tbody>
                 <tr height="1">
                     <td class="first last" style="width: 100%;">
@@ -32,7 +32,7 @@
                 <tr>
                     <td class="first last" style="width: 100%;">
                         <div class="section control  container-s-1">
-                            <table class="assignContent control-grid">
+                            <table aria-describedby="" class="assignContent control-grid">
                                 <tbody>
                                 <tr height="1">
                                     <td class="first last" style="width: 100%;">
@@ -101,7 +101,7 @@
                                     <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                                     <c:set value="${status.index}" var="suffix"/>
                                     <div class="cgo-content">
-                                        <table class="assignContent control-grid" style="width:100%;">
+                                        <table aria-describedby="" class="assignContent control-grid" style="width:100%;">
                                             <input type="hidden" name="isPartEdit" value="0"/>
                                             <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
                                             <input type="hidden" name="existingPsn" value="0"/>
@@ -229,7 +229,7 @@
                                                     </c:choose>
                                                     <div class="profile-info-gp hidden"></div>
                                                     <div id="newOfficer" class="new-officer-form hidden">
-                                                        <table class="control-grid">
+                                                        <table aria-describedby="" class="control-grid">
                                                             <tbody>
                                                             <tr height="1">
                                                                 <td class="first last" style="width: 100%;">
@@ -777,7 +777,7 @@
 
     $('.addListBtn').click(function () {
         /*var assignContent = $('.assignContent:last').html();
-        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+        var appendHtml = '<hr/> <table aria-describedby="" class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         showWaiting();
         $('.hideen-div').addClass('hidden');

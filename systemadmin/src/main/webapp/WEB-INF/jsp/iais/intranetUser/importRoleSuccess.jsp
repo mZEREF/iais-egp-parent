@@ -26,7 +26,7 @@
             <h2 class="component-title">Import Users</h2>
             <span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadError"></span>
             <div class="table-gp">
-              <table class="table application-group">
+              <table aria-describedby="" class="table application-group">
                 <thead>
                   <tr>
                     <th style="width:10%;">No.</th>

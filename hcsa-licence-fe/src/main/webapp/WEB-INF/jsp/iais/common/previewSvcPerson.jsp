@@ -16,7 +16,7 @@
                                     test="${currentPreviewSvcInfo.appSvcPersonnelDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong>
                             </p>
                         </div>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
                             <c:choose>
                                 <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                                     <tr>
