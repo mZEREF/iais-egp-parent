@@ -204,7 +204,7 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                            <iais:input cssClass="needDisableI" maxLength="320" type="text"
                                                         name="emailAddrShow"
                                                         value="${personnelEditDto.emailAddr}"
                                                         needDisabled="true"></iais:input>
@@ -281,7 +281,7 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="66" type="text" name="emailAddr"
+                                            <iais:input maxLength="320" type="text" name="emailAddr"
                                                         value="${personnelEditDto.emailAddr}"></iais:input>
                                         </iais:value>
                                     </iais:row>
@@ -364,7 +364,7 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="66" type="text" name="emailAddr1"
+                                            <iais:input maxLength="320" type="text" name="emailAddr1"
                                                         value="${newPerson.emailAddr}"></iais:input>
                                         </iais:value>
                                     </iais:row>
@@ -439,7 +439,7 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                            <iais:input cssClass="needDisableI" maxLength="320" type="text"
                                                         name="emailAddr2"
                                                         value="${newPerson.emailAddr}"></iais:input>
                                         </iais:value>
