@@ -6,7 +6,7 @@
     <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
     <iais:pagination  param="amendUpdateContactSearchParam" result="amendUpdateContactSearchResult"/>
     <div class="table-gp">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr >
                 <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>

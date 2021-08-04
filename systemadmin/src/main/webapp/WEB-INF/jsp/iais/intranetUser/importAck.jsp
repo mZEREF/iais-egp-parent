@@ -16,12 +16,12 @@
                 <div class="form-horizontal">
                     <div class="tab-content">
                         <h2 class="component-title">Import Users</h2>
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>User ID</th>
-                                <th>Status</th>
+                                <th scope="col" >No.</th>
+                                <th scope="col" >User ID</th>
+                                <th scope="col" >Status</th>
                             </tr>
                             </thead>
                             <tbody>

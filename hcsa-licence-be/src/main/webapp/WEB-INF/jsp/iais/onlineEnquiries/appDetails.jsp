@@ -232,7 +232,7 @@
                                                 <div class="panel-heading"><strong>Allocation</strong></div>
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <table class="table">
+                                                        <table aria-describedby="" class="table">
                                                             <thead >
                                                             <tr >
                                                                 <th  style="text-align: center">Mode of Service Delivery</th>

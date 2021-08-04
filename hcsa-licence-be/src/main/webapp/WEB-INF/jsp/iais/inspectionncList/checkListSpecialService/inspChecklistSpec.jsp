@@ -19,19 +19,19 @@
     <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
         <br/>
         <h4><c:out value="${section.sectionName}"></c:out></h4>
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr>
-                <th>No.</th>
-                <th>Regulation Clause Number</th>
+                <th scope="col" >No.</th>
+                <th scope="col" >Regulation Clause Number</th>
                 <th  width="30%">Item</th>
                 <th class="text-center">Yes</th>
                 <th class="text-center">No</th>
                 <th class="text-center">N/A</th>
-                <th>Findings/NCs</th>
-                <th>Actions Required</th>
+                <th scope="col" >Findings/NCs</th>
+                <th scope="col" >Actions Required</th>
                 <th class="text-center">Rectified</th>
-                <th></th>
+                <th scope="col" ></th>
             </tr>
             </thead>
             <tbody>

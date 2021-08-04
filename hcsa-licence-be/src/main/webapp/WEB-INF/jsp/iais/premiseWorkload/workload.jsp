@@ -29,12 +29,12 @@
                     </h3>
 
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th>S/N</th>
-                                <th>Routing Stages</th>
-                                <th>Workload Manhours</th>
+                                <th scope="col" >S/N</th>
+                                <th scope="col" >Routing Stages</th>
+                                <th scope="col" >Workload Manhours</th>
                             </tr>
                             </thead>
                             <tbody>

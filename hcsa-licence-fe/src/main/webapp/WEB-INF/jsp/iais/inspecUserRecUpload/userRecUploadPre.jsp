@@ -41,17 +41,17 @@
                   <iais:section title="" id = "upload_Rectification">
                     <span class="error-msg" name="iaisErrorMsg" id="error_subFlag"></span>
                     <div class="table-responsive">
-                      <table class="table">
+                      <table aria-describedby="" class="table">
                         <thead>
                         <tr align="center">
-                          <th>No</th>
-                          <th>Vehicle Number</th>
-                          <th>NC Clause</th>
-                          <th>Checklist Question</th>
-                          <th>Findings/Non-Compliances</th>
-                          <th>Action Required</th>
-                          <th>Actions</th>
-                          <th>Rectification Uploaded?</th>
+                          <th scope="col" >No</th>
+                          <th scope="col" >Vehicle Number</th>
+                          <th scope="col" >NC Clause</th>
+                          <th scope="col" >Checklist Question</th>
+                          <th scope="col" >Findings/Non-Compliances</th>
+                          <th scope="col" >Action Required</th>
+                          <th scope="col" >Actions</th>
+                          <th scope="col" >Rectification Uploaded?</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -42,9 +42,9 @@
                       <table class="apptApp table">
                         <thead>
                         <tr align="center">
-                          <th>Application No</th>
-                          <th>Application Status</th>
-                          <th>MOH Officer(s)</th>
+                          <th scope="col" >Application No</th>
+                          <th scope="col" >Application Status</th>
+                          <th scope="col" >MOH Officer(s)</th>
                         </tr>
                         </thead>
                         <tbody>

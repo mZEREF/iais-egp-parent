@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <tr>
                         <td class="col-xs-4">
                             <p>Licence No.</p>
@@ -115,7 +115,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -203,7 +203,7 @@
                 <div class="text">
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -216,7 +216,7 @@
                 <div class="text">
                     <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                 </div>
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <tr>
                         <td class="col-xs-4">
                             <p>Remarks</p>
@@ -252,14 +252,14 @@
                         </td>
                         <td colspan="2" class="col-xs-8">
                             <c:if test="${insRepDto.ncRegulation != null && not empty insRepDto.ncRegulation}">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th>SN</th>
-                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
-                                        <th>Checklist Item</th>
-                                        <th>Regulation Clause</th>
-                                        <th>Findings/NCs</th>
+                                        <th scope="col" >SN</th>
+                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th scope="col" >Vehicle Name</th></c:if>
+                                        <th scope="col" >Checklist Item</th>
+                                        <th scope="col" >Regulation Clause</th>
+                                        <th scope="col" >Findings/NCs</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -321,21 +321,21 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
                         </td>
                         <td colspan="2" class="col-xs-8">
                             <c:if test="${insRepDto.ncRectification != null}">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th>SN</th>
-                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th>Vehicle Name</th></c:if>
-                                        <th>Checklist Item</th>
-                                        <th>Findings/NCs</th>
-                                        <th>Rectified?</th>
+                                        <th scope="col" >SN</th>
+                                        <c:if test="${specialServiceForChecklistDecide == '1'}"><th scope="col" >Vehicle Name</th></c:if>
+                                        <th scope="col" >Checklist Item</th>
+                                        <th scope="col" >Findings/NCs</th>
+                                        <th scope="col" >Rectified?</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -404,7 +404,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                         <tr>
                             <td class="col-xs-4">
                                 <p>Recommendation</p>
@@ -427,7 +427,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action</p>
@@ -486,7 +486,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action</p>

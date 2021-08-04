@@ -47,7 +47,7 @@
                             <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
                         </c:if>
                         <div class="table-gp">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                    <c:if test="${empty auditTaskDataDtos || (not empty auditTaskDataDtos && roleIdsForAuditSelect != 'APO')}">
                        <tr>
@@ -55,9 +55,9 @@
                            <th >HCI Name</th>
                            <th >Address</th>
                            <th >Service Name</th>
-                           <th>Audit Type</th>
+                           <th scope="col" >Audit Type</th>
                            <c:if test="${ISTUC}">
-                               <th>TCU Audit Due Date </th>
+                               <th scope="col" >TCU Audit Due Date </th>
                            </c:if>
                            <th >Assign task to Inspector</th>
                            <th >Select for Audit</th>
@@ -71,7 +71,7 @@
                                     <th width="10%">Service Name</th>
                                     <th width="19%">Audit Type</th>
                                     <c:if test="${ISTUC}">
-                                        <th>TCU Audit Due Date  </th>
+                                        <th scope="col" >TCU Audit Due Date  </th>
                                     </c:if>
                                     <th width="19%">Assign task to Inspector</th>
                                     <th width="6%">Select for Audit</th>

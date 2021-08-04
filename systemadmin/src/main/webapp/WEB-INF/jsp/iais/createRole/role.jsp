@@ -132,15 +132,15 @@
             </div>
             <!------------------------------>
             <div class="table-gp">
-              <table class="table">
+              <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                  <th>No.</th>
-                  <th>Role No</th>
-                  <th>Role Name</th>
-                  <th>remakes</th>
-                  <th>tag</th>
-                  <th>option</th>
+                  <th scope="col" >No.</th>
+                  <th scope="col" >Role No</th>
+                  <th scope="col" >Role Name</th>
+                  <th scope="col" >remakes</th>
+                  <th scope="col" >tag</th>
+                  <th scope="col" >option</th>
                 </tr>
                 </thead>
                 <tbody>

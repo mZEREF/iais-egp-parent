@@ -43,17 +43,17 @@
                         <c:if test="${dAmount!='$0.0'}">
                             <p class="ack-font-14">Transactional details:</p>
                             <div class="table-responsive">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th>Application No.</th>
+                                        <th scope="col" >Application No.</th>
                                             <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
-                                                <th>Transactional No.</th>
+                                                <th scope="col" >Transactional No.</th>
                                             </c:if>--%>
-                                        <th>Transactional No.</th>
-                                        <th>Date & Time</th>
-                                        <th>Amount Deducted</th>
-                                        <th>Payment Method</th>
+                                        <th scope="col" >Transactional No.</th>
+                                        <th scope="col" >Date & Time</th>
+                                        <th scope="col" >Amount Deducted</th>
+                                        <th scope="col" >Payment Method</th>
                                     </tr>
                                     </thead>
                                     <tbody>

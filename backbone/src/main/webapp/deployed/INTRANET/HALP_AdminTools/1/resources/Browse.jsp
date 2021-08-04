@@ -1222,7 +1222,7 @@ else if (request.getParameter("file") != null) {
 <body>
 <h2>Content of <%=conv2Html(f.getName())%></h2><br />
 <table class="filelist" cellspacing="1px" cellpadding="0px">
-    <th>Name</th><th>Uncompressed size</th><th>Compressed size</th><th>Compr. ratio</th><th>Date</th>
+    <th scope="col" >Name</th><th scope="col" >Uncompressed size</th><th scope="col" >Compressed size</th><th scope="col" >Compr. ratio</th><th scope="col" >Date</th>
     <%
         long size = 0;
         int fileCount = 0;
@@ -1746,7 +1746,7 @@ else if (request.getParameter("editfile") != null) {
             int[] sort = new int[] {1, 2, 3, 4};
             for (int i = 0; i < sort.length; i++)
                 if (sort[i] == sortMode) sort[i] = -sort[i];
-            out.print("<tr><th>&nbsp;</th><th title=\"Sort files by name\" align=left><a href=\""
+            out.print("<tr><th scope="col" >&nbsp;</th><th title=\"Sort files by name\" align=left><a href=\""
                     + cmd + "&amp;sort=" + sort[0] + "\">Name</a></th>"
                     + "<th title=\"Sort files by size\" align=\"right\"><a href=\"" + cmd
                     + "&amp;sort=" + sort[1] + "\">Size</a></th>"
@@ -1754,8 +1754,8 @@ else if (request.getParameter("editfile") != null) {
                     + "&amp;sort=" + sort[3] + "\">Type</a></th>"
                     + "<th title=\"Sort files by date\" align=\"left\"><a href=\"" + cmd
                     + "&amp;sort=" + sort[2] + "\">Date</a></th>"
-                    + "<th>&nbsp;</th>");
-            if (!READ_ONLY) out.print ("<th>&nbsp;</th>");
+                    + "<th scope="col" >&nbsp;</th>");
+            if (!READ_ONLY) out.print ("<th scope="col" >&nbsp;</th>");
             out.println("</tr>");
             char trenner = File.separatorChar;
             // Output the Root-Dirs, without FORBIDDEN_DRIVES

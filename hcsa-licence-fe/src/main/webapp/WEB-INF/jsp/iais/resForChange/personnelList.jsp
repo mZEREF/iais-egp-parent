@@ -48,7 +48,7 @@
                     <div id="personPagDiv"></div>
                     <div class="col-sx-12">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead style="align-content: center">
                                 <tr>
                                     <th style="width: 15%">Name</th>

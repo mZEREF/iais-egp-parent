@@ -4,7 +4,7 @@
     <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
 
     <div class="table-gp">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr >
                 <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>

@@ -23,18 +23,18 @@
                 <div class="col-xs-12">
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th>HCI Code</th>
-                                <th>HCI Name</th>
-                                <th>Address</th>
-                                <th>Service Name</th>
-                                <th>Audit Type</th>
-                                <th>Assigned Inspector</th>
-                                <th>Reasons for Cancellation</th>
-                                <th>Select for Cancellation</th>
-                                <!--% <th>Reason</th> -->
+                                <th scope="col" >HCI Code</th>
+                                <th scope="col" >HCI Name</th>
+                                <th scope="col" >Address</th>
+                                <th scope="col" >Service Name</th>
+                                <th scope="col" >Audit Type</th>
+                                <th scope="col" >Assigned Inspector</th>
+                                <th scope="col" >Reasons for Cancellation</th>
+                                <th scope="col" >Select for Cancellation</th>
+                                <!--% <th scope="col" >Reason</th> -->
                             </tr>
                             </thead>
                             <tbody>

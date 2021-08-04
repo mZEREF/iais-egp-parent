@@ -11,15 +11,15 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                        <th>Licence No.</th>
-                        <th>Type <span class="sort"></span></th>
-                        <th>Status <span class="sort"></span></th>
-                        <th>Mode of Service Delivery <span class="sort"></span></th>
-                        <th>Start Date <span class="desc"></span></th>
-                        <th>Expiry Date <span class="sort"></span></th>
+                        <th scope="col" >Licence No.</th>
+                        <th scope="col" >Type <span class="sort"></span></th>
+                        <th scope="col" >Status <span class="sort"></span></th>
+                        <th scope="col" >Mode of Service Delivery <span class="sort"></span></th>
+                        <th scope="col" >Start Date <span class="desc"></span></th>
+                        <th scope="col" >Expiry Date <span class="sort"></span></th>
                     </tr>
                     </thead>
                     <tbody>

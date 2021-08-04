@@ -1504,7 +1504,7 @@ public class NewApplicationAjaxController {
                 paramMap.put("dateColumn",StringUtil.viewHtml("Date & Time"));
                 //rfi
                 if(!isRfi){
-                    paramMap.put("txnRefNoColumn","<th>Transactional No.</th>");
+                    paramMap.put("txnRefNoColumn","<th scope="col" >Transactional No.</th>");
                     if(StringUtil.isEmpty(txnRefNo)){
                         paramMap.put("txnRefNo",StringUtil.viewHtml(emptyStr));
                     }else{

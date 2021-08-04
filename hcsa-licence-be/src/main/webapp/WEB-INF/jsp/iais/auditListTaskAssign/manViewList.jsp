@@ -25,19 +25,19 @@
                         <h2>Search Results - HCIs and Services</h2>
                         <iais:pagination param="auditTaskDataDtos_pram" result="auditTaskDataDtosResult"/>
                         <div class="table-gp">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>Service Name</th>
-                                    <th>Postal Code</th>
-                                    <th>Last Inspection done before(Start) </th>
-                                    <th>Last Inspection done before(End) </th>
-                                    <th>Results of last Compliance</th>
-                                    <th>HCSA Service Code</th>
-                                    <th>HCI Code</th>
-                                    <th>Mode of Service Delivery</th>
-                                    <th>Type of Risk</th>
+                                    <th scope="col" ></th>
+                                    <th scope="col" >Service Name</th>
+                                    <th scope="col" >Postal Code</th>
+                                    <th scope="col" >Last Inspection done before(Start) </th>
+                                    <th scope="col" >Last Inspection done before(End) </th>
+                                    <th scope="col" >Results of last Compliance</th>
+                                    <th scope="col" >HCSA Service Code</th>
+                                    <th scope="col" >HCI Code</th>
+                                    <th scope="col" >Mode of Service Delivery</th>
+                                    <th scope="col" >Type of Risk</th>
                                 </tr>
                                 </thead>
                                 <tbody>

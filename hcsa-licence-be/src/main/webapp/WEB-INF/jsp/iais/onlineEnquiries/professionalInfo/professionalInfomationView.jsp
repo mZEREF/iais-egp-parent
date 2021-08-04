@@ -152,7 +152,7 @@
                             </h3>
                             <iais:pagination param="professionalInfoSearch" result="professionalInfoResult"/>
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
                                         <td></td>

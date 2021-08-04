@@ -26,7 +26,7 @@
                     <div class="instruction-content center-content">
                         <h2>${modulename}</h2>
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
                                         <th width="10%">HCI Code</th>

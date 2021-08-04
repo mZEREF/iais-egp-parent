@@ -238,7 +238,7 @@
                             '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="commonPoolAllCheckBox(' + divid + ')" </th>';
+                        html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="commonPoolAllCheckBox(' + divid + ')" </th>';
                         html += '<th width="15%">Application No.</th>' +
                             '<th width="15%">Service</th>' +
                             '<th width="15%">Licence Expiry Date</th>' +

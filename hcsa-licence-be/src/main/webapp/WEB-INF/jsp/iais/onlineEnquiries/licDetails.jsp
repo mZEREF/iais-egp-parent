@@ -60,15 +60,15 @@
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <table class="table">
+                                                            <table aria-describedby="" class="table">
                                                                 <thead>
                                                                 <tr>
-                                                                    <th>&nbsp;SN</th>
-                                                                    <th>Inspection Report</th>
-                                                                    <th>Risk Tagging</th>
-                                                                    <th>Compliance Tagging</th>
-                                                                    <th>Inspection Type</th>
-                                                                    <th>Date of Inspection</th>
+                                                                    <th scope="col" >&nbsp;SN</th>
+                                                                    <th scope="col" >Inspection Report</th>
+                                                                    <th scope="col" >Risk Tagging</th>
+                                                                    <th scope="col" >Compliance Tagging</th>
+                                                                    <th scope="col" >Inspection Type</th>
+                                                                    <th scope="col" >Date of Inspection</th>
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>

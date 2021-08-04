@@ -11,7 +11,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="table-gp">
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
                     <th width="30%">Document</th>
@@ -79,7 +79,7 @@
                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
                 </p>
             </div>
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
                     <th width="30%">Document</th>

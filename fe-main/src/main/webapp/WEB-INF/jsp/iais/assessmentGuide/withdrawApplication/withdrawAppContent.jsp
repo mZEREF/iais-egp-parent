@@ -2,7 +2,7 @@
 <p class="form-check-title">Please select an application to withdraw:</p>
 <iais:pagination param="withdrawAppParam" result="withdrawAppResult"/>
 <div class="table-gp">
-    <table class="table">
+    <table aria-describedby="" class="table">
         <thead>
         <tr >
             <th width="2%"></th>

@@ -320,7 +320,7 @@
                     '<thead>' +
                     '<tr>';
                 if (hastaskList == "true") {
-                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                 }
 
                 html += '<th width="15%">Application No.</th>' +

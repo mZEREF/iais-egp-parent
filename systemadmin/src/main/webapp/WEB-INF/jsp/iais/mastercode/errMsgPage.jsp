@@ -28,12 +28,12 @@
                 <c:when test="${empty ERR_CONTENT}">
                 </c:when>
                 <c:otherwise>
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                         <thead>
                         <tr>
-                            <th>S/N</th>
-                            <th>Code Value</th>
-                            <th>Status</th>
+                            <th scope="col" >S/N</th>
+                            <th scope="col" >Code Value</th>
+                            <th scope="col" >Status</th>
                         </tr>
                         </thead>
                         <tbody>

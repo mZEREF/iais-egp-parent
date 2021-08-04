@@ -30,13 +30,13 @@
                                     Total amount due:
                                     <c:out value="${tranferPayment.amountStr}"></c:out>
                                 </p>
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service</th>
-                                        <th>Application Type</th>
-                                        <th>Application No.</th>
-                                        <th>Amount</th>
+                                        <th scope="col" >Service</th>
+                                        <th scope="col" >Application Type</th>
+                                        <th scope="col" >Application No.</th>
+                                        <th scope="col" >Amount</th>
                                     </tr>
                                     </thead>
                                     <tbody>

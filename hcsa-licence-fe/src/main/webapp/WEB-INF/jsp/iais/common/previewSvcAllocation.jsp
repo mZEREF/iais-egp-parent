@@ -19,9 +19,9 @@
                             <table class="table discipline-table">
                                 <thead style="text-decoration: none">
                                 <tr>
-                                    <th>Mode of Service Delivery</th>
-                                    <th>${svcScopePageName}</th>
-                                    <th>Clinical Governance Officers</th>
+                                    <th scope="col" >Mode of Service Delivery</th>
+                                    <th scope="col" >${svcScopePageName}</th>
+                                    <th scope="col" >Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
                                 <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">

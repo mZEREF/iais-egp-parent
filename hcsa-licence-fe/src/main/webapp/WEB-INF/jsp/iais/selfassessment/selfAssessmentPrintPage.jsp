@@ -49,7 +49,7 @@
                                 <div class="panel-body">
                                     <c:forEach var="sqMap" items="${selfAssessmentConfig.sqMap}">
                                         <c:forEach var="item" items="${sqMap.value}">
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
                                                     <th width="25%">Regulation Clause Number</th>

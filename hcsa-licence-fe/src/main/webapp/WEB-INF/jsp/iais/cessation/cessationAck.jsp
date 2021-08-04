@@ -18,7 +18,7 @@
                 <div class="col-lg-12 col-xs-12 cesform-box">
                         <p><iais:message key="CESS_ACK001"/></p>
                     <div class="table-responsive">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
                                 <th style="text-align:center">Application No.</th>

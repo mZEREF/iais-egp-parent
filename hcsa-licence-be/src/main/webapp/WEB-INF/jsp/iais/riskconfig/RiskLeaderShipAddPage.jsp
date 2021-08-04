@@ -30,17 +30,17 @@
                     <div class="instruction-content center-content">
                         <h2>Leadership and Governance Risk Configuration</h2>
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
                                         <th  width="10%" >Service Name</th>
                                         <th  width="10%">Threshold  (X Years)</th>
-                                        <th>Source</th>
-                                        <th>Effective Start Date</th>
-                                        <th>Effective End Date</th>
+                                        <th scope="col" >Source</th>
+                                        <th scope="col" >Effective Start Date</th>
+                                        <th scope="col" >Effective End Date</th>
                                         <th  width="8%">Minimum Number of Cases</th>
                                         <th width="8%">Maximum Number of Cases</th>
-                                        <th>Risk Rating</th>
+                                        <th scope="col" >Risk Rating</th>
                                     </tr>
                                     </thead>
                                     <tbody>

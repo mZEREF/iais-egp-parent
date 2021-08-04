@@ -156,14 +156,14 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
+                                                    <th scope="col" >Document</th>
+                                                    <th scope="col" >File</th>
+                                                    <th scope="col" >Size</th>
+                                                    <th scope="col" >Submitted By</th>
+                                                    <th scope="col" >Date Submitted</th>
                                                 </tr>
                                                 </thead>
 
@@ -198,15 +198,15 @@
                                                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
                                                 </p>
                                             </div>
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
-                                                    <th>Action</th>
+                                                    <th scope="col" >Document</th>
+                                                    <th scope="col" >File</th>
+                                                    <th scope="col" >Size</th>
+                                                    <th scope="col" >Submitted By</th>
+                                                    <th scope="col" >Date Submitted</th>
+                                                    <th scope="col" >Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -330,14 +330,14 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Username</th>
-                                                    <th>Working Group</th>
-                                                    <th>Status Update</th>
-                                                    <th>Remarks</th>
-                                                    <th>Last Updated</th>
+                                                    <th scope="col" >Username</th>
+                                                    <th scope="col" >Working Group</th>
+                                                    <th scope="col" >Status Update</th>
+                                                    <th scope="col" >Remarks</th>
+                                                    <th scope="col" >Last Updated</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>

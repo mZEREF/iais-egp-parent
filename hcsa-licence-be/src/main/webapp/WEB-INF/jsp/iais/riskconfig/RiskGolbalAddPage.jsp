@@ -30,7 +30,7 @@
                     <div class="instruction-content center-content">
                         <h2>Global Risk Configuration</h2>
                         <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
                                 <th  width ="5%"><span>Service Name</span></th>
