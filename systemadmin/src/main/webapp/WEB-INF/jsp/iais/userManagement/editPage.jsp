@@ -106,7 +106,7 @@
                                     <iais:row>
                                         <iais:field value="Email" width="11" required="true"/>
                                         <iais:value width="11">
-                                            <iais:input type="text" name="email" id="email" maxLength="66" value="${inter_user_attr.email}"/>
+                                            <iais:input type="text" name="email" id="email" maxLength="320" value="${inter_user_attr.email}"/>
                                             <span class="error-msg" name="errorMsg" id="error_email"></span>
                                         </iais:value>
                                     </iais:row>
