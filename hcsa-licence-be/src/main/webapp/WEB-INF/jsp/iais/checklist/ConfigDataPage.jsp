@@ -106,7 +106,7 @@
         </h3>
         <iais:pagination  param="checklistConfigSearch" result="checklistConfigResult"/>
         <div class="table-gp">
-          <table class="table">
+          <table aria-describedby="" class="table">
             <thead>
             <tr>
               <iais:sortableHeader needSort="false" style="width:1%; " field="" value="No."></iais:sortableHeader>

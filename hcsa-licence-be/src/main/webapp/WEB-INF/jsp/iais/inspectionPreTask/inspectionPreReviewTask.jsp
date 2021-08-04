@@ -80,19 +80,19 @@
                           <div class="row">
                             <div class="col-xs-12">
                               <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                   <thead>
                                   <tr>
-                                    <th>S/N</th>
-                                    <th>HCI Code</th>
-                                    <th>HCI Name / Address</th>
-                                    <th>Service Name</th>
-                                    <th>Licence Period</th>
-                                    <th>Last Inspection Date</th>
-                                    <th>Compliance and Risk Assessment</th>
-                                    <th>Inspector Lead</th>
-                                    <th>Inspector</th>
-                                    <th>Remarks</th>
+                                    <th scope="col" >S/N</th>
+                                    <th scope="col" >HCI Code</th>
+                                    <th scope="col" >HCI Name / Address</th>
+                                    <th scope="col" >Service Name</th>
+                                    <th scope="col" >Licence Period</th>
+                                    <th scope="col" >Last Inspection Date</th>
+                                    <th scope="col" >Compliance and Risk Assessment</th>
+                                    <th scope="col" >Inspector Lead</th>
+                                    <th scope="col" >Inspector</th>
+                                    <th scope="col" >Remarks</th>
                                   </tr>
                                   </thead>
                                   <tbody>

@@ -100,7 +100,7 @@
 <div class="row" style="padding-bottom: 115px;">
     <div class="col-xs-12">
         <div class="table-gp">
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"

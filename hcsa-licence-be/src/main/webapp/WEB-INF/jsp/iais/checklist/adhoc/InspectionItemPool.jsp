@@ -32,7 +32,7 @@
   <div class="components">
     <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
     <div class="table-gp">
-      <table class="table">
+      <table aria-describedby="" class="table">
         <thead>
         <tr>
           <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>

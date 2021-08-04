@@ -11,7 +11,7 @@
                         <iais:pagination param="SearchParam" result="SearchResult"/>
                         <div class="table-responsive">
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr align="center">
                                         <c:if test="${cease==1}">

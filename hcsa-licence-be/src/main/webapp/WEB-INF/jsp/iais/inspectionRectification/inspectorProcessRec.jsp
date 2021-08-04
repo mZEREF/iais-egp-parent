@@ -85,14 +85,14 @@
                                 <iais:field value="Rectifications submitted by Applicant"/>
                               </iais:row>
                               <div class="table-gp" id = "processRec">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                   <thead>
                                   <tr align="center">
-                                    <th>Vehicle Number</th>
-                                    <th>NC Clause</th>
-                                    <th>Checklist Question</th>
-                                    <th>Remarks</th>
-                                    <th>Documents</th>
+                                    <th scope="col" >Vehicle Number</th>
+                                    <th scope="col" >NC Clause</th>
+                                    <th scope="col" >Checklist Question</th>
+                                    <th scope="col" >Remarks</th>
+                                    <th scope="col" >Documents</th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -131,16 +131,16 @@
                                 <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
                               </div>
                               <div class="table-gp" id = "processRecRfi">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                   <thead>
                                   <tr align="center">
-                                    <th><input type="checkbox" name="allNcItemCheck" id="allNcItemCheck" <c:if test="${'check' eq allNcItemCheck}">checked</c:if>
+                                    <th scope="col" ><input type="checkbox" name="allNcItemCheck" id="allNcItemCheck" <c:if test="${'check' eq allNcItemCheck}">checked</c:if>
                                                onchange="javascript:doInspectorProRecCheckAll()" value="<c:out value="${allNcItemCheck}"/>"/></th>
-                                    <th>Vehicle Number</th>
-                                    <th>NC Clause</th>
-                                    <th>Checklist Question</th>
-                                    <th>Remarks</th>
-                                    <th>Documents</th>
+                                    <th scope="col" >Vehicle Number</th>
+                                    <th scope="col" >NC Clause</th>
+                                    <th scope="col" >Checklist Question</th>
+                                    <th scope="col" >Remarks</th>
+                                    <th scope="col" >Documents</th>
                                   </tr>
                                   </thead>
                                   <tbody>

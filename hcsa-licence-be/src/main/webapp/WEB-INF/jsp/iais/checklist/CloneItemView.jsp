@@ -41,7 +41,7 @@
             <div class="components">
               <h2 class="component-title">Clone &amp; Result</h2>
               <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                   <thead>
                   <tr>
                     <iais:sortableHeader needSort="false"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>

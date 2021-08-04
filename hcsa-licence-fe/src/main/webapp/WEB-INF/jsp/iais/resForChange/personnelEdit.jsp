@@ -41,12 +41,12 @@
                                 </div>
                                 <span class="error-msg" name="iaisErrorMsg" id="error_licenceStatus"></span>
                                 <br/>
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr style="font-size: 2rem">
-                                        <th>Licence</th>
-                                        <th>Licence No.</th>
-                                        <th>Roles</th>
+                                        <th scope="col" >Licence</th>
+                                        <th scope="col" >Licence No.</th>
+                                        <th scope="col" >Roles</th>
                                     </tr>
                                     </thead>
                                     <tbody>

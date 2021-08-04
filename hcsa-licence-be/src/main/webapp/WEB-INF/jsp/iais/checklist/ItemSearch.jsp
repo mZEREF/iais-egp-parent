@@ -104,7 +104,7 @@
                 </h3>
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                 <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <colgroup>
                       <col style="width: 1%;"/>
                       <col style="width: 3%;"/>

@@ -65,7 +65,7 @@
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
                 <br><br>
                 <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                         <thead>
                         <tr>
                             <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>

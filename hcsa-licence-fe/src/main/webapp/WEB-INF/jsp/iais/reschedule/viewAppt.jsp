@@ -24,7 +24,7 @@
                     <br>
                     <div class="table-responsive">
 
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
                                 <th class="form-check" >

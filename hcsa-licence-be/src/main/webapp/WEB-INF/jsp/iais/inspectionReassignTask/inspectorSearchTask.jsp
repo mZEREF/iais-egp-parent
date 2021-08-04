@@ -118,7 +118,7 @@
                 </h3>
                 <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
                 <div class="table-gp">
-                  <table class="table">
+                  <table aria-describedby="" class="table">
                     <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
@@ -246,13 +246,13 @@
                             '<thead>' +
                             '<tr>';
 
-                        html += '<th>Application No.</th>' +
-                            '<th>Application Status</th>' +
-                            '<th>HCI Code</th>' +
-                            '<th>HCI Name / Address</th>' +
-                            '<th>Licence Expiry Date</th>' +
-                            '<th>Inspection Date</th>' +
-                            '<th>' + memberName + '</th>' +
+                        html += '<th scope="col" >Application No.</th>' +
+                            '<th scope="col" >Application Status</th>' +
+                            '<th scope="col" >HCI Code</th>' +
+                            '<th scope="col" >HCI Name / Address</th>' +
+                            '<th scope="col" >Licence Expiry Date</th>' +
+                            '<th scope="col" >Inspection Date</th>' +
+                            '<th scope="col" >' + memberName + '</th>' +
                             '</tr>' +
                             '</thead>' +
                             '<tbody>';

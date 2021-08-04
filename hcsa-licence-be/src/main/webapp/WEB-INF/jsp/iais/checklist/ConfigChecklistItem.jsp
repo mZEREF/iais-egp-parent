@@ -90,15 +90,15 @@
             <div class="col-xs-12">
               <div class="components">
                 <div class="table-gp">
-                  <table class="table">
+                  <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                      <th>Regulation Clause Number</th>
-                      <th>Regulations</th>
-                      <th>Checklist Item</th>
-                      <th>Service</th>
-                      <th>Risk Level</th>
-                      <th>Status</th>
+                      <th scope="col" >Regulation Clause Number</th>
+                      <th scope="col" >Regulations</th>
+                      <th scope="col" >Checklist Item</th>
+                      <th scope="col" >Service</th>
+                      <th scope="col" >Risk Level</th>
+                      <th scope="col" >Status</th>
                     </tr>
                     </thead>
                     <tbody>

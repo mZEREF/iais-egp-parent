@@ -26,7 +26,7 @@
                     </div>
                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                         <div class="panel-body">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
                                     <th width="15%">Regulation Clause Number</th>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                     <div class="panel-body">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
                                 <th width="50%">Checklist Item</th>

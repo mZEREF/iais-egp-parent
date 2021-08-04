@@ -72,10 +72,10 @@
                     <iais:pagination param="feAdminSearchParam" result="feAdmin"/>
 
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th></th>
+                                <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:5%"/>
                                 <iais:sortableHeader needSort="true" field="ID_NO" value="ID No." style="width:12%"/>
                                 <iais:sortableHeader needSort="true" field="ID_TYPE" value="ID Type" style="width:12%"/>

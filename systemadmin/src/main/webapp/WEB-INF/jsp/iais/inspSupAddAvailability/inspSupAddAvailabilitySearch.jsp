@@ -81,7 +81,7 @@
                 <span>Search Result</span>
               </h3>
               <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                   <thead>
                   <tr align="center">
                     <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>

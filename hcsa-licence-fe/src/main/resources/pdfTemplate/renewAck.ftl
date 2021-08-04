@@ -44,7 +44,7 @@
                 Transactional details:
             </div>
             <div class="col-xs-12">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
                         <th>Transactional No.</th>

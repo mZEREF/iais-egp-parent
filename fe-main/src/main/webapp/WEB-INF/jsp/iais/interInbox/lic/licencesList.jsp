@@ -109,7 +109,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>

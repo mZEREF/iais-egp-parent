@@ -17,7 +17,7 @@
       <iais:field value="Vehicle Recommendations" required="true"/>
       <iais:value width="7">
         <div class="table-gp" id = "processRecRfi">
-          <table class="table">
+          <table aria-describedby="" class="table">
             <thead>
               <tr align="center">
                 <th width="5%">S/N</th>
@@ -57,7 +57,7 @@
       <iais:field value="Vehicle Recommendations"/>
       <iais:value width="7">
         <div class="table-gp" id = "processRecRfi">
-          <table class="table">
+          <table aria-describedby="" class="table">
             <thead>
             <tr align="center">
               <th width="5%">S/N</th>

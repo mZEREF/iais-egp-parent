@@ -95,7 +95,7 @@
                 </colgroup>
                 <thead>
                 <tr>
-                    <th><input type="checkbox" id="allEntitiesCb1" name="allEntitiesCb1" onclick="sopCrud1.setAllCheckBox(this.checked)"></th>
+                    <th scope="col" ><input type="checkbox" id="allEntitiesCb1" name="allEntitiesCb1" onclick="sopCrud1.setAllCheckBox(this.checked)"></th>
                     <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="user_id" value="User Id"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true"   field="NRIC_NO" value="Nuic Num"></iais:sortableHeader>

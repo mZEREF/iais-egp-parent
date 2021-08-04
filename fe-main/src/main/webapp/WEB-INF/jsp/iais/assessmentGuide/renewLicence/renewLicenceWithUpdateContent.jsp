@@ -2,10 +2,10 @@
     <p class="form-check-title">Please select the licence(s) to renew:</p>
     <iais:pagination  param="renewLicUpdateSearchParam" result="renewLicUpdateSearchResult"/>
     <div class="table-gp">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <th></th>
+                <th scope="col" ></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%" isFE="true"/>

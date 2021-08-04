@@ -34,19 +34,19 @@
     </div>
     <div class="col-xs-12">
         <div class="table-responsive">
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th>Application No.</th>
+                    <th scope="col" >Application No.</th>
                     <%--<c:if test="${'Credit'==AppSubmissionDto.paymentMethod or 'NETS'==AppSubmissionDto.paymentMethod}">
-                        <th>Transactional No.</th>
+                        <th scope="col" >Transactional No.</th>
                     </c:if>--%>
                     <c:if test="${requestInformationConfig == null}">
-                        <th>Transactional No.</th>
+                        <th scope="col" >Transactional No.</th>
                     </c:if>
-                    <th>Date & Time</th>
-                    <th>Amount Deducted</th>
-                    <th>Payment Method</th>
+                    <th scope="col" >Date & Time</th>
+                    <th scope="col" >Amount Deducted</th>
+                    <th scope="col" >Payment Method</th>
                 </tr>
                 </thead>
                 <tbody>

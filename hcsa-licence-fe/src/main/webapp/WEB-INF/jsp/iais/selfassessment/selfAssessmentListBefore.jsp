@@ -35,10 +35,10 @@
                             <table class="table" border="1">
                                 <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Mode of Service Delivery</th>
-                                    <th>Service</th>
-                                    <th>Action</th>
+                                    <th scope="col" >No</th>
+                                    <th scope="col" >Mode of Service Delivery</th>
+                                    <th scope="col" >Service</th>
+                                    <th scope="col" >Action</th>
                                 </tr>
                                 <tbody>
                                 <c:forEach var="selfAssessment" items="${selfAssessmentMap}" varStatus="status">

@@ -41,7 +41,7 @@
                     <h3>Common</h3>
                   </c:if>
                   <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                       <thead>
                       <tr>
                         <th width="10%">No.</th>
@@ -69,7 +69,7 @@
                   <c:forEach var ="cdto" items ="${serListDto123}">
                     <h3>${cdto.svcName}</h3>
                     <div class="table-gp">
-                      <table class="table">
+                      <table aria-describedby="" class="table">
                         <thead>
                         <tr>
                           <th width="10%">No.</th>

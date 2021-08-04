@@ -102,7 +102,7 @@
               <div class="components">
                 <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
                 <div class="table-gp">
-                  <table class="table">
+                  <table aria-describedby="" class="table">
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false"    field="index" value="No."></iais:sortableHeader>

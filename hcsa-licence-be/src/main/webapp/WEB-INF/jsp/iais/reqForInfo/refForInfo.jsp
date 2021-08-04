@@ -37,7 +37,7 @@
                                 <button class="btn btn-primary" type="button"  onclick="SOP.Crud.cfxSubmit('mainForm', 'search');">Search</button>
                             </label>
                         </iais:row>
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>

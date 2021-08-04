@@ -48,7 +48,7 @@
                         <h2>Licence Tenure Configuration</h2>
 
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr style="border-style: hidden;">
                                         <th width="10%" rowspan="2">Service Name</th>

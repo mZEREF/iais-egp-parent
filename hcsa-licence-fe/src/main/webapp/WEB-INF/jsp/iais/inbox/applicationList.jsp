@@ -41,15 +41,15 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                        <th>Application No.</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Service</th>
-                        <th>Date Submitted <span class="sort"></span></th>
-                        <th>Actions</th>
+                        <th scope="col" >Application No.</th>
+                        <th scope="col" >Type</th>
+                        <th scope="col" >Status</th>
+                        <th scope="col" >Service</th>
+                        <th scope="col" >Date Submitted <span class="sort"></span></th>
+                        <th scope="col" >Actions</th>
                     </tr>
                     </thead>
                     <tbody>

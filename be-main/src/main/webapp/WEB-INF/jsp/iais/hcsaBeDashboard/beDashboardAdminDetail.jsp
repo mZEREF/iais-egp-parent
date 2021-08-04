@@ -138,7 +138,7 @@
                                                                 <div class="col-xs-12">
                                                                     <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
                                                                     <div class="table-gp">
-                                                                        <table class="table application-group" style="border-collapse:collapse;">
+                                                                        <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                                                             <thead>
                                                                             <tr>
                                                                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
@@ -262,7 +262,7 @@
                         '<thead>' +
                         '<tr>';
                     if ("true" == dashSupportFlag) {
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                        html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                     }
 
                     html += '<th width="15%">Application No.</th>' +

@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="<%=EngineHelper.getResourcePath() %>/_statics/login/css/screen.css" type="text/css"/>
     <link rel="shortcut icon" href="<%=EngineHelper.getResourcePath() %>/_statics/images/ecq.gif" type="image/x-icon" />
-    <html>
+    <html lang="en" aria-describedby="">
     <head>
         <meta http-equiv="Cache-Control" content="no-cache, no-store">
         <meta http-equiv="Pragma" content="no-cache">
@@ -24,6 +24,11 @@
     <br>
     <center>
         <table class="session-missing">
+            <thead>
+            <tr>
+                <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody>
             <tr><td>
                 <form name="redirectForm" action="/main-web" method="post">
