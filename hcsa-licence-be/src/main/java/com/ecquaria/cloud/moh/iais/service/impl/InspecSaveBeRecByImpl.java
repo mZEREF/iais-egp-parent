@@ -89,6 +89,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private GenerateIdClient generateIdClient;
 
+    public static final int THRESHOLD_ENTRIES = 10000;
+    public static final int THRESHOLD_SIZE = 1000000000; // 1 GB
+    public static final double THRESHOLD_RATIO = 10;
+
     private InspRecJobFieldDto getInspRecJobFieldDto() {
         InspRecJobFieldDto inspRecJobFieldDto = new InspRecJobFieldDto();
         String compressPath = sharedPath + "recUnZipFile";
@@ -162,8 +166,16 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         if(appIds.contains(pDto.getRefId())){
                             if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
                                 try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
+                                    int totalEntryArchive = 0;
                                     for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
                                         ZipEntry zipEntry = entries.nextElement();
+                                        totalEntryArchive ++;
+
+                                        // too much entries in this archive, can lead to inodes exhaustion of the system
+                                        if(totalEntryArchive > THRESHOLD_ENTRIES) {
+                                            break;
+                                        }
+                                        //un zip
                                         String reportId = unzipFile(zipEntry, unZipFile);
                                         if (!StringUtil.isEmpty(reportId)) {
                                             reportIds.add(reportId);
@@ -262,6 +274,16 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
 
                 byte[] b = new byte[1024];
+                // the uncompressed data size is too much for the application resource capacity
+                int totalSizeArchive = is.read(b);
+                if(totalSizeArchive > THRESHOLD_SIZE) {
+                    return null;
+                }
+                // ratio between compressed and uncompressed data is highly suspicious, looks like a Zip Bomb Attack
+                double compressionRatio = totalSizeArchive / zipEntry.getCompressedSize();
+                if(compressionRatio > THRESHOLD_RATIO) {
+                    return null;
+                }
                 int count = cos.read(b);
                 while(count != -1){
                     bos.write(b,0, count);
