@@ -166,7 +166,7 @@
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            $('div.nice-select').removeClass('disabled');
+            $('div.${RfiPremiseId}').removeClass('disabled');
         });
     }
 </script>

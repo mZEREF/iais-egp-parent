@@ -399,6 +399,14 @@ public class ClinicalLaboratoryDelegator {
         sb.append("Please ensure that a clinical governance officer is assigned to each ")
                 .append(svcScopePageName.toLowerCase());
         ParamUtil.setRequestAttr(bpc.request,"CURR_STEP_NAME_LABLE",sb.toString());
+        //71688
+        String rfiPremiseId = "nice-select";
+        for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
+            if (appGrpPremisesDto.isRfiCanEdit()){
+                rfiPremiseId = appGrpPremisesDto.getId();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "RfiPremiseId", rfiPremiseId);
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
