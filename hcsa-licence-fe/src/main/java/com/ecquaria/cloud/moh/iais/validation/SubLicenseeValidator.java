@@ -38,11 +38,6 @@ public class SubLicenseeValidator implements CustomizeValidator {
         String idNumber = subLicenseeDto.getIdNumber();
         String licenseeType = subLicenseeDto.getLicenseeType();
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
-            String assignSelect = subLicenseeDto.getAssignSelect();
-            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
-                errorMap.put("assignSelect", MANDATORY_MSG);
-            }
-
             if (StringUtil.isEmpty(idNumber)) {
                 errorMap.put("idNumber", MANDATORY_MSG);
             } else if (!validateIdNo(idType, idNumber)) {
@@ -50,11 +45,17 @@ public class SubLicenseeValidator implements CustomizeValidator {
             }
         }
 
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType) || StringUtil.isEmpty(licenseeType)) {
+            String assignSelect = subLicenseeDto.getAssignSelect();
+            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
+                errorMap.put("assignSelect", MANDATORY_MSG);
+            }
+
             if (StringUtil.isEmpty(idType)) {
                 errorMap.put("idType", MANDATORY_MSG);
             }
-
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
             String mobileNo = subLicenseeDto.getTelephoneNo();
             if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
                 errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));

@@ -3,7 +3,7 @@
 <c:set var="soloType" value="LICT002" />
 
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
-<c:set var="isNew" value="${'APTY002' ==AppSubmissionDto.appType}" />
+<c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 
 <div class="row form-horizontal licenseeContent">
     <iais:row>
@@ -21,12 +21,17 @@
     </iais:row>
 
     <c:if test="${subLicenseeDto.licenseeType ne soloType}">
-        <iais:row cssClass="assignSelectRow ${!isNew && isRfi ? 'hidden' : ''}">
-            <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
-            <iais:value width="7">
-                <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
-            </iais:value>
-        </iais:row>
+        <c:if test="${isNew}">
+            <iais:row cssClass="assignSelectRow">
+                <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
+                <iais:value width="7">
+                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
+                </iais:value>
+            </iais:row>
+        </c:if>
+        <c:if test="${isNew}">
+            <iais:input cssClass="not-clear" type="hidden" name="assignSelect" value="${dto.assignSelect}"/>
+        </c:if>
 
         <iais:row cssClass="licenseeType">
             <iais:field width="5" mandatory="true" value="Licensee Type"/>

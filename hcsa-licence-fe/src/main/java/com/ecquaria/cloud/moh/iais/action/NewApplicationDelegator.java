@@ -2591,6 +2591,12 @@ public class NewApplicationDelegator {
                 changeSelectDto.setPoEdit(false);
                 dto.setChangeSelectDto(changeSelectDto);
                 dto.setAppGrpNo(groupNo);
+                dto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                dto.setAmount(0.0);
+                dto.setIsNeedNewLicNo(AppConsts.NO);
+                for (AppGrpPremisesDto appGrpPremisesDto1 : dto.getAppGrpPremisesDtoList()) {
+                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                }
             });
             addToAuto(licenseeAffectedList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }
