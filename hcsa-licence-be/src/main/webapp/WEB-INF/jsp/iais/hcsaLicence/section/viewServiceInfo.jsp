@@ -748,7 +748,7 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
@@ -824,7 +824,7 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
@@ -957,7 +957,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
                 <tr>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -1487,7 +1487,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:if test="${reloadDisciplineAllocationMap_size>0}">
-                <table class="table discipline-table" border="1px">
+                <table aria-describedby="" class="table discipline-table" border="1px">
                   <thead>
                   <tr>
                     <th style="text-align: center">Mode of Service Delivery</th>
@@ -1586,7 +1586,7 @@
                         test="${fn:length(currentPreviewSvcInfo.appSvcPersonnelDtoList)>1}">${status.index+1}</c:if>:</strong>
                 </p>
                 <span class="col-xs-6"></span>
-                <table class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
                   <c:choose>
                     <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                       <tr>
@@ -2299,7 +2299,7 @@
                           test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
                   <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                 </c:if>
-                <table class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -2584,7 +2584,7 @@
                       test="${fn:length(currentPreviewSvcInfo.appSvcMedAlertPersonList)>1}">${status.index+1}</c:if>:</strong>
               </p>
               <span class="col-xs-6"></span>
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
 
                 <tr>
                   <td class="col-xs-6">
@@ -2814,7 +2814,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
                 <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
                   <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                   <tr>

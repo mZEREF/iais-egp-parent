@@ -48,7 +48,7 @@
     <div class="col-xs-12">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
         <div class="table-responsive">
-          <table class="table " style="margin-right: 20%">
+          <table aria-describedby="" class="table " style="margin-right: 20%">
             <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
             <thead style="align-content: center">
             <tr>

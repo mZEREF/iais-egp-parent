@@ -23,7 +23,7 @@
 
     <br>
     <center>
-        <table class="session-missing">
+        <table aria-describedby="" class="session-missing">
             <thead>
             <tr>
                 <th scope="col" ></th>

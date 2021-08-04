@@ -66,14 +66,14 @@
                         <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
                             <div id="control--runtime--0" class="page control control-area  container-p-1">
                                 <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-                                <table class="control-grid"><tbody><tr height="100%"><td class="first last" style="width: 100%;"><div id="control--runtime--1" class="control control-caption-horizontal">
+                                <table aria-describedby="" class="control-grid"><tbody><tr height="100%"><td class="first last" style="width: 100%;"><div id="control--runtime--1" class="control control-caption-horizontal">
                                     <div class="control-label-span control-set-alignment">
                                         <label id="control--runtime--1--label" class="control-label control-set-font control-font-label"></label>
                                         <span class="upload_controls"></span>
                                     </div>
                                     <div class="control-input-span control-set-alignment">
                                         <div class="normal-indicator">
-                                            <table class="check-${premIndexNo}">
+                                            <table aria-describedby="" class="check-${premIndexNo}">
                                                 <tbody>
                                                 <c:forEach var="levelOneList" items="${HcsaSvcSubtypeOrSubsumedDto}" varStatus="levelOne">
                                                     <c:set var="checkIndexNo1" value="${premIndexNo};${levelOneList.name};${levelOneList.code};${levelOneList.parentId}"/>

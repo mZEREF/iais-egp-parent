@@ -104,7 +104,7 @@
                 </h3>
                 <iais:pagination  param="regulationSearch" result="regulationResult"/>
                 <div class="table-gp">
-                <table class="table word-wrap">
+                <table aria-describedby="" class="table word-wrap">
                     <thead>
                     <tr>
                         <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="" value="No."/>

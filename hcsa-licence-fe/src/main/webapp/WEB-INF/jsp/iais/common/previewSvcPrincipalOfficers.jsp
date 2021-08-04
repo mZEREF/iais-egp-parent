@@ -35,7 +35,7 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Nominee<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
                             <c:choose>
                                 <c:when test="${po.psnType=='PO'}">
 

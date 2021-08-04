@@ -307,7 +307,7 @@
                                                     their
                                                     underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                             </div>
-                                            <table class="table-gp tablebox">
+                                            <table aria-describedby="" class="table-gp tablebox">
                                                 <tr>
                                                     <th style="width: 1%">S/N</th>
                                                     <th style="width: 25%"><iais:code code="CDN003"/>

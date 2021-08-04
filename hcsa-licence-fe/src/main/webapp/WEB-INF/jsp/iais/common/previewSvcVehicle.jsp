@@ -20,7 +20,7 @@
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Vehicle<c:if test="${currentPreviewSvcInfo.appSvcVehicleDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
                         </div>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>

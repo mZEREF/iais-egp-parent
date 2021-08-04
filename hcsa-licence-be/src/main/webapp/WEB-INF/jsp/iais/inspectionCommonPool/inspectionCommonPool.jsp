@@ -93,7 +93,7 @@
                 </h3>
                 <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
@@ -235,7 +235,7 @@
                         var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                             '<td colspan="6" style="padding: 0px 8px !important;">' +
                             '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
                         html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="commonPoolAllCheckBox(' + divid + ')" </th>';

@@ -465,7 +465,7 @@
 
     $('.addListBtn').click(function () {
         /*var assignContent = $('.assignContent:last').html();
-        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+        var appendHtml = '<hr/> <table aria-describedby="" class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         $('.hideen-div').addClass('hidden');
         $('.addListBtn').addClass('hidden');

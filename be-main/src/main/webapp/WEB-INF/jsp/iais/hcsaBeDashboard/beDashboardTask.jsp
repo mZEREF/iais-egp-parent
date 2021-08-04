@@ -162,7 +162,7 @@
             </h3>
             <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
             <div class="table-gp">
-              <table class="table application-group" style="border-collapse:collapse;">
+              <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                 <thead>
                 <tr>
                   <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>

@@ -58,7 +58,7 @@
            </div>
 
   <div >
-    <table class="table"  border="1px" style="border-collapse: collapse;">
+    <table aria-describedby="" class="table"  border="1px" style="border-collapse: collapse;">
 
       <tr>
         <td rowspan="9" width="20%" style="text-align:center;vertical-align:middle;" >Processing Time for different stages</td>

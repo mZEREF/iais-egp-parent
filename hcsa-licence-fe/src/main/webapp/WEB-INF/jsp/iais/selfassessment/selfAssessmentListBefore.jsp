@@ -32,7 +32,7 @@
                             <span id="hasSubmitted" name="hasSubmitted" class="error-msg"><c:out value="${hasSubmittedMsg}"></c:out></span>
                         </c:if>
 
-                            <table class="table" border="1">
+                            <table aria-describedby="" class="table" border="1">
                                 <thead>
                                 <tr>
                                     <th scope="col" >No</th>

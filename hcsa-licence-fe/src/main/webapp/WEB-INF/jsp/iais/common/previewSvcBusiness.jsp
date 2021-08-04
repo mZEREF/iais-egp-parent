@@ -20,7 +20,7 @@
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}</p>
                         </div>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>
