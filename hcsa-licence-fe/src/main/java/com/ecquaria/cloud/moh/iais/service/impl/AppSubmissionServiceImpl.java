@@ -756,24 +756,25 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         fieldMap.put("organizationId", "orgId");
         fieldMap.put("officeTelNo", "telephoneNo");
         fieldMap.put("emilAddr", "emailAddr");
-        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class,fieldMap);
-        if (subLicenseeDto != null) {
-            subLicenseeDto.setUenNo(uenNo);
-            if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
-                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
-            } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
-                List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
-                String idNo = null;
-                if (feUserDtos != null) {
-                    idNo = feUserDtos.stream()
-                            .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
-                                    uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
-                            .findAny().map(FeUserDto::getIdNumber).orElseGet(() ->"");
-                }
-                subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
-                subLicenseeDto.setIdNumber(idNo);
-                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
+        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class, fieldMap);
+        if (subLicenseeDto == null) {
+            subLicenseeDto = new SubLicenseeDto();
+        }
+        subLicenseeDto.setUenNo(uenNo);
+        if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
+        } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+            List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
+            String idNo = null;
+            if (feUserDtos != null) {
+                idNo = feUserDtos.stream()
+                        .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
+                                uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
+                        .findAny().map(FeUserDto::getIdNumber).orElseGet(() -> "");
             }
+            subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
+            subLicenseeDto.setIdNumber(idNo);
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
         }
         return subLicenseeDto;
     }

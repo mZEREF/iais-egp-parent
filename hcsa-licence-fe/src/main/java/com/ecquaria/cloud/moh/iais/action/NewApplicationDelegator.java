@@ -450,9 +450,6 @@ public class NewApplicationDelegator {
                     dto.setLicenseeName(old.getLicenseeName());
                 }
             }
-            if (dto == null) {
-                dto = new SubLicenseeDto();
-            }
             dto.setAssignSelect(assignSelect);
             dto.setLicenseeType(licenseeType);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -464,6 +461,7 @@ public class NewApplicationDelegator {
         return dto;
     }
 
+    // This is a common method, only do that get data from page
     public static SubLicenseeDto getSubLicenseeDtoDetailFromPage(HttpServletRequest request) {
         String idType = ParamUtil.getString(request, "idType");
         String idNumber = ParamUtil.getString(request, "idNumber");

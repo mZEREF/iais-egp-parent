@@ -59,16 +59,13 @@
             assignSelect(this, $(this).closest('div.licenseeContent').find('div.licensee-detail'));
         });
         $('#edit').on('click', editContent);
-
+        $('#licenseeType').change(checkLicenseeType);
+        $('#addrType').on('change', checkAddressManatory);
         $('.retrieveAddr').click(function() {
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
             var postalCode = $postalCodeEle.find('.postalCode').val();
             retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
         });
-
-        $('#licenseeType').change(checkLicenseeType);
-
-        $('#addrType').on('change', checkAddressManatory);
 
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
         disableContent('div.licenseeContent');
@@ -142,6 +139,8 @@
     function editContent() {
         $('#isEditHiddenVal').val('1');
         <c:if test="${isNewApp && not empty dto.licenseeType}">
+        unDisableContent('div.assignSelectRow');
+        unDisableContent('div.licenseeType');
         unDisableContent('div.licensee-detail');
         </c:if>
         <c:if test="${!isNewApp && not empty dto.licenseeType}">
@@ -149,6 +148,7 @@
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
+        $(this).closest('div').addClass('hidden');
     }
 
     var loadCompanyLicensee = function ($target) {
