@@ -217,7 +217,14 @@
   <div class="row">
     <div class="container">
       <div class="col-xs-12 col-md-6 text-left">
-        <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareTranfer"><em class="fa fa-angle-left"></em> Back</a>
+        <c:choose>
+          <c:when test="${hasNewSubLicensee}">
+            <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/PrepareAddLicensee?subLicensee=new"><em class="fa fa-angle-left"></em> Back</a>
+          </c:when>
+          <c:otherwise>
+            <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/prepareTranfer"><em class="fa fa-angle-left"></em> Back</a>
+          </c:otherwise>
+        </c:choose>
       </div>
       <div class="col-xs-12 col-md-6 text-right">
         <a class="btn btn-primary next premiseId" id="Next" href="javascript:void(0);">Next</a>

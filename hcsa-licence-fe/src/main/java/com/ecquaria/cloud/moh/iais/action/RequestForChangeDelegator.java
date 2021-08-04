@@ -311,6 +311,7 @@ public class RequestForChangeDelegator {
                 ParamUtil.setSessionAttr(bpc.request,"email",null);
                 ParamUtil.setSessionAttr(bpc.request,"reason",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+                ParamUtil.setSessionAttr(bpc.request,"dto",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicenseeError",null);
@@ -785,6 +786,9 @@ public class RequestForChangeDelegator {
      */
     public void doValidate(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
         log.info(StringUtil.changeForLog("The doValidate start ..."));
+        ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+        ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
+        ParamUtil.setSessionAttr(bpc.request,"subLicenseeDto",null);
         AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");

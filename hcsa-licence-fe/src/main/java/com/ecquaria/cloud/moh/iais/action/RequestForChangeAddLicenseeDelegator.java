@@ -47,8 +47,14 @@ public class RequestForChangeAddLicenseeDelegator {
         log.info(StringUtil.changeForLog("The RequestForChangeAddLicenseeDelegator prepare start..."));
         String subLicensee = ParamUtil.getString(bpc.request, "subLicensee");
         if("new".equals(subLicensee)){
-            SubLicenseeDto subLicenseeDto = new SubLicenseeDto();
-            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
+            SubLicenseeDto subLicenseeDto = null;
+            if(ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto")==null){
+                subLicenseeDto = new SubLicenseeDto();
+                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
+            }else{
+                subLicenseeDto = (SubLicenseeDto) ParamUtil.getSessionAttr(bpc.request,"subLicenseeDto");
+            }
+
             ParamUtil.setRequestAttr(bpc.request,"dto",subLicenseeDto);
           ParamUtil.setRequestAttr(bpc.request,"crud_action_type_switch1","addNew");
         }else{
