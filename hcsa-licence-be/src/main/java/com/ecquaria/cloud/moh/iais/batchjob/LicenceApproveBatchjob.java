@@ -1240,6 +1240,7 @@ public class LicenceApproveBatchjob {
         if(!IaisCommonUtils.isEmpty(subLicenseeDtos)){
             SubLicenseeDto subLicenseeDto = subLicenseeDtos.get(0);
             result = MiscUtil.transferEntityDto(subLicenseeDto,LicSubLicenseeInfoDto.class);
+            result.setId(null);
         }
         log.info(StringUtil.changeForLog("The getLicSubLicenseeInfoDto end ..."));
         return result;
