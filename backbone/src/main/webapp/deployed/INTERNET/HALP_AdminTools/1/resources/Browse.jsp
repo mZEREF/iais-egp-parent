@@ -1754,8 +1754,8 @@ else if (request.getParameter("editfile") != null) {
                     + "&amp;sort=" + sort[3] + "\">Type</a></th>"
                     + "<th title=\"Sort files by date\" align=\"left\"><a href=\"" + cmd
                     + "&amp;sort=" + sort[2] + "\">Date</a></th>"
-                    + "<th scope="col" >&nbsp;</th>");
-            if (!READ_ONLY) out.print ("<th scope="col" >&nbsp;</th>");
+                    + "<th  >&nbsp;</th>");
+            if (!READ_ONLY) out.print ("<th  >&nbsp;</th>");
             out.println("</tr>");
             char trenner = File.separatorChar;
             // Output the Root-Dirs, without FORBIDDEN_DRIVES

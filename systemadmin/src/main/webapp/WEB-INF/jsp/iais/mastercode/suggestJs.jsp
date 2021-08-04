@@ -413,7 +413,7 @@
                     if (!inEffectiveFields(field, options)) return;
 
                     html.push(
-                        "<th scope="col" >",
+                        "<th  >",
                         options.effectiveFieldsAlias[field] || field,
                         index === 0 ? "(" + len + ")" : "", // 表头第一列记录总数
                         "</th>"
