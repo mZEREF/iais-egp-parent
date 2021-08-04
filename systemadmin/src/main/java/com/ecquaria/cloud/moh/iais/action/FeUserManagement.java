@@ -132,9 +132,9 @@ public class FeUserManagement {
 
     public void delete(BaseProcessClass bpc){
         String[] userId =  ParamUtil.getMaskedStrings(bpc.request, "userId");
-        for (String item:userId
-             ) {
-            if (!StringUtil.isEmpty(item)){
+        log.info(StringUtil.changeForLog("The deleted user: " + userId));
+        for (String item : userId) {
+            if (!StringUtil.isEmpty(item)) {
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                 orgUserDto.setIdentityNo(orgUserDto.getIdNumber());
