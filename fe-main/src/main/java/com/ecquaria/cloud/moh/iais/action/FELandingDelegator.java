@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -17,6 +20,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -121,7 +127,8 @@ public class FELandingDelegator {
 	 * Step: InitSso
 	 * @param bpc
 	 */
-	public void initSso(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void initSso(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,
+			ParseException {
 		log.info(StringUtil.changeForLog("-------Init SSO-------"));
 		HttpServletRequest request = bpc.request;
 		JwtVerify verifier = new JwtVerify();
@@ -129,9 +136,18 @@ public class FELandingDelegator {
 		Jws<Claims> claimsFromToken = verifier.parseVerifyJWT(jwtt, base64encodedPub + "\r\n");
 		Claims claims = claimsFromToken.getBody();
 		String uenId = (String) claims.get("uen");
-		String nric = (String) claims.get("nric");
+		String nric = (String) claims.get("uid");
 		String iat = (String) claims.get("iat");
-
+		if (iat == null) {
+			throw new IaisRuntimeException("Access Denied");
+		}
+		Date issueDate = Formatter.parseDateTime(iat, Formatter.DATE_ELIS);
+		int min = ConfigHelper.getInt("jwt.interlogin.valid.minutes", 30);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, -30);
+		if (issueDate.getTime() < cal.getTimeInMillis()) {
+			throw new IaisRuntimeException("Access Denied");
+		}
 		if (!StringUtil.isEmpty(uenId)) {
 			log.info(StringUtil.changeForLog("Uen Id ==> " + uenId));
 			bpc.request.setAttribute("ssoLoginType", "corpass");
