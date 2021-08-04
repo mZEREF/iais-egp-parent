@@ -197,6 +197,23 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
+          <div class="cl-xs-12 col-md-4">
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
+              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
+            </div>
+            <div class="col-xs-12 col-md-6 form-check">
+              <input  type="radio" <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
+              <label class="form-check-label" ><span class="check-circle"></span>No</label>
+            </div>
+            <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.pageMandatoryCount}">
@@ -223,22 +240,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-9">
-          <label class="col-xs-12 col-md-7 control-label" >Business Name<span class="mandatory">*</span></label>
-          <div class="cl-xs-12 col-md-4">
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" <c:if test="${businessName=='1'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="1" >
-              <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
-            </div>
-            <div class="col-xs-12 col-md-6 form-check">
-              <input  type="radio" <c:if test="${businessName=='0'}"> checked</c:if> class="form-check-input other-lic co-location" name="business-name"  value="0">
-              <label class="form-check-label" ><span class="check-circle"></span>No</label>
-            </div>
-            <span class="error-msg" class="form-check-input other-lic co-location" name="iaisErrorMsg" id="error_businessName"></span>
-          </div>
-        </div>
-      </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
