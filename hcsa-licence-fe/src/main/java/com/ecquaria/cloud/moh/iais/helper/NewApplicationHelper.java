@@ -3928,8 +3928,8 @@ public class NewApplicationHelper {
         String licenseeType = appSubmissionDto.getSubLicenseeDto().getLicenseeType();
         String appType = appSubmissionDto.getAppType();
         boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
-                .map(dto -> dto.isLicenseeEdit())
-                .orElseGet(() -> false);
+                .map(AppEditSelectDto::isLicenseeEdit)
+                .orElseGet(() -> Boolean.FALSE);
         return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
     }
 
