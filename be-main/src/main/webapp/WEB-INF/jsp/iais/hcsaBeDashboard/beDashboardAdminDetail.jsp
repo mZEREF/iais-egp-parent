@@ -138,7 +138,7 @@
                                                                 <div class="col-xs-12">
                                                                     <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
                                                                     <div class="table-gp">
-                                                                        <table class="table application-group" style="border-collapse:collapse;">
+                                                                        <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                                                             <thead>
                                                                             <tr>
                                                                                 <th scope="col" style="text-align:center;width: 0%">S/N</th>
@@ -258,7 +258,7 @@
                         let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                                 '<td colspan="7" style="padding: 0px 8px !important;">' +
                                 '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                                '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                                '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                                 '<thead>' +
                                 '<tr>';
                         if ("true" == dashSupportFlag) {

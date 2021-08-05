@@ -21,7 +21,7 @@
             </div>
             <div class="lic-approved-info">
               <div class="table-responsive">
-                <table class="table" width = "100%">
+                <table aria-describedby="" class="table" width = "100%">
                   <thead>
                   <tr>
                     <th width = "10%"></th>

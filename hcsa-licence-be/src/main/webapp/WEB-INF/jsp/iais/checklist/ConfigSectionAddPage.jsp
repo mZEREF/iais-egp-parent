@@ -101,7 +101,7 @@
                         <p class="text-right"><a onclick="javascript:routeToItemProcess('<iais:mask name="currentValidateId" value="${chklsec.id}"/>');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
 
 
-                        <table id="resultTable" class="table">
+                        <table aria-describedby="" id="resultTable" class="table">
                           <thead>
                           <tr>
                             <th scope="col" >Regulation Clause Number</th>

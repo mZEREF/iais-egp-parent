@@ -110,7 +110,7 @@
             <thead>
             <tr>
               <iais:sortableHeader needSort="false" style="width:1%; " field="" value="No."></iais:sortableHeader>
-              <td></td>
+              <th scope="col"></th>
               <iais:sortableHeader  style="width:8%" needSort="true"   field="is_common" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
               <iais:sortableHeader  needSort="true"   field="module" value="Module"></iais:sortableHeader>
