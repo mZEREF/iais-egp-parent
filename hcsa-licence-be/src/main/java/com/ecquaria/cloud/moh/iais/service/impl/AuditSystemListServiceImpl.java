@@ -401,6 +401,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     String msgLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_TCU_AUDIT_APPT_PRE_DATE + appNo;
                     //set template value
                     Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+                    map.put("appNo", appNo);
                     map.put("applicant", applicantName);
                     map.put("systemLink", emailLoginUrl);
                     sendTcuAuditApptEmailSms(orgUserDto, map, appNo);
@@ -423,7 +424,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     private void sendTcuAuditApptEmailSms(OrgUserDto orgUserDto, Map<String, Object> map, String appNo) {
         //email
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY).getEntity();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_EMAIL).getEntity();
         if(msgTemplateDto != null){
             int emailFlag = systemParamConfig.getEgpEmailNotifications();
             if (0 == emailFlag) {
