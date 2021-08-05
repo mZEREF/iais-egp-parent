@@ -264,8 +264,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         if (accurate < 0) {
             throw new RuntimeException("The accuracy parameter must be a positive integer or zero");
         }
-        BigDecimal b1 = new BigDecimal(a);
-        BigDecimal b2 = new BigDecimal(b);
+        BigDecimal b1 = BigDecimal.valueOf(a);
+        BigDecimal b2 = BigDecimal.valueOf(b);
         return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
