@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -214,7 +215,9 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                                                     totalSizeEntry += nBytes;
                                                     totalSizeArchive += nBytes;
 
-                                                    double compressionRatio = totalSizeEntry / zipEntry.getCompressedSize();
+                                                    double compressionRatio = division(totalSizeEntry, zipEntry.getCompressedSize(), 0);
+                                                    log.debug(StringUtil.changeForLog("totalSizeEntry:" + totalSizeEntry));
+                                                    JobLogger.log(StringUtil.changeForLog("totalSizeEntry:" + totalSizeEntry));
                                                     log.debug(StringUtil.changeForLog("compressionRatio:" + compressionRatio));
                                                     JobLogger.log(StringUtil.changeForLog("compressionRatio:" + compressionRatio));
                                                     if(compressionRatio > THRESHOLD_RATIO) {
@@ -255,6 +258,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         return reportIds;
+    }
+
+    private double division(double a, double b, int accurate) {
+        if (accurate < 0) {
+            throw new RuntimeException("The accuracy parameter must be a positive integer or zero");
+        }
+        BigDecimal b1 = new BigDecimal(a);
+        BigDecimal b2 = new BigDecimal(b);
+        return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private List<String> filterAppDocSizeFileSize(List<String> appIds, List<ProcessFileTrackDto> processFileTrackDtos) {
