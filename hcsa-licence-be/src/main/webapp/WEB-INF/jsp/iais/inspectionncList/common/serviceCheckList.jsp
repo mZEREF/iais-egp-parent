@@ -21,7 +21,7 @@
                         <th class="text-center">No</th>
                         <th class="text-center">N/A</th>
                         <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
-                            <th >Self-assessment Answer</th>
+                            <th scope="col">Self-assessment Answer</th>
                         </c:if>
                         <th scope="col" >Findings/NCs</th>
                         <th scope="col" >Actions Required</th>
