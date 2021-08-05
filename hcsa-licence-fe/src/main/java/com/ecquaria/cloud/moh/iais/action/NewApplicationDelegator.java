@@ -4371,7 +4371,10 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, "hasDetail", "Y");
             ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            if (RfcConst.EDIT_PREMISES.equals(currentEdit)) {
+            if (RfcConst.EDIT_LICENSEE.equals(currentEdit)) {
+                appEditSelectDto.setLicenseeEdit(true);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
+            } else if (RfcConst.EDIT_PREMISES.equals(currentEdit)) {
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "premises");
             } else if (RfcConst.EDIT_PRIMARY_DOC.equals(currentEdit)) {

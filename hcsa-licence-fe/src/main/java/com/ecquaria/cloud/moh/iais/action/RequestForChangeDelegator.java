@@ -430,7 +430,10 @@ public class RequestForChangeDelegator {
         String switchVal = "prepareFirstView";
         if(!StringUtil.isEmpty(editValue)){
             switchVal = "doEdit";
-            if(RfcConst.EDIT_PREMISES.equals(editValue)){
+            if(RfcConst.EDIT_LICENSEE.equals(editValue)) {
+                appEditSelectDto.setLicenseeEdit(true);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_LICENSEE);
+            }else if(RfcConst.EDIT_PREMISES.equals(editValue)){
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
             }else if(RfcConst.EDIT_PRIMARY_DOC.equals(editValue)){

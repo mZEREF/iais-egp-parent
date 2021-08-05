@@ -99,6 +99,12 @@
 
     });
 
+    $('#subLicenseeEdit').click(function () {
+        showWaiting();
+        $('#EditValue').val('licensee');
+        $('#menuListForm').submit();
+    });
+
     $('#premisesEdit').click(function () {
         showWaiting();
         $('#EditValue').val('premises');
