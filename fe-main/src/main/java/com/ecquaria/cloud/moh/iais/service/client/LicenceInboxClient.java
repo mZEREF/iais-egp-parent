@@ -137,7 +137,8 @@ public interface LicenceInboxClient {
     @GetMapping(value = "/hcsa-licence/base-spec-licence",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getBaseOrSpecLicence(@RequestParam("licenceId") String licenceId);
 
-    @PutMapping(value = "/lic-common/refresh-sub-licensee", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> refreshSubLicenseeInfo(@RequestBody LicenseeDto licenseeDto);
+    @PutMapping(value = "/lic-common/refresh-sub-licensee", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> refreshSubLicenseeInfo(@RequestBody LicenseeDto licenseeDto);
 
 }

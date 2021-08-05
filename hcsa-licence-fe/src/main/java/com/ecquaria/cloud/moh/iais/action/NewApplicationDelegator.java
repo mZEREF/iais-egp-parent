@@ -2580,24 +2580,7 @@ public class NewApplicationDelegator {
         // check app submission affected by sub licensee
         if (licenseeChange) {
             SubLicenseeDto oldSublicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
-            List<AppSubmissionDto> licenseeAffectedList =
-                    licenceClient.getAppSubmissionDtosBySubLicensee(oldSublicenseeDto).getEntity();
-            licenseeAffectedList.stream().forEach(dto -> {
-                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
-                changeSelectDto.setLicenseeEdit(true);
-                changeSelectDto.setServiceEdit(false);
-                changeSelectDto.setPremisesEdit(false);
-                changeSelectDto.setDocEdit(false);
-                changeSelectDto.setPoEdit(false);
-                dto.setChangeSelectDto(changeSelectDto);
-                dto.setAppGrpNo(groupNo);
-                dto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                dto.setAmount(0.0);
-                dto.setIsNeedNewLicNo(AppConsts.NO);
-                for (AppGrpPremisesDto appGrpPremisesDto1 : dto.getAppGrpPremisesDtoList()) {
-                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
-                }
-            });
+            List<AppSubmissionDto> licenseeAffectedList = checkAffectedBySubLicensee(groupNo, oldSublicenseeDto);
             addToAuto(licenseeAffectedList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }
 
@@ -2727,6 +2710,28 @@ public class NewApplicationDelegator {
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+    }
+
+    private List<AppSubmissionDto> checkAffectedBySubLicensee(String groupNo, SubLicenseeDto oldSublicenseeDto) {
+        List<AppSubmissionDto> licenseeAffectedList = licenceClient.getAppSubmissionDtosBySubLicensee(oldSublicenseeDto).getEntity();
+        if (licenseeAffectedList == null) {
+            return licenseeAffectedList;
+        }
+        licenseeAffectedList.stream().forEach(dto -> {
+            AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+            changeSelectDto.setLicenseeEdit(true);
+            changeSelectDto.setServiceEdit(false);
+            changeSelectDto.setPremisesEdit(false);
+            changeSelectDto.setDocEdit(false);
+            changeSelectDto.setPoEdit(false);
+            dto.setChangeSelectDto(changeSelectDto);
+            dto.setAppGrpNo(groupNo);
+            dto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            dto.setAmount(0.0);
+            NewApplicationHelper.reSetAdditionalFields(dto, false, ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
+            requestForChangeService.setRelatedInfoBaseServiceId(dto);
+        });
+        return licenseeAffectedList;
     }
 
     private void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,

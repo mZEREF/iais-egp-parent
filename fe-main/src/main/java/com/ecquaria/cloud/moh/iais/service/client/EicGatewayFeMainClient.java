@@ -138,12 +138,12 @@ public class EicGatewayFeMainClient {
                 signature2.date(), signature2.authorization(), HcsaSvcRoutingStageDto.class);
     }
 
-    public FeignResponseEntity<Void> refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
+    public FeignResponseEntity<String> refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "v1/sync-sub-licensee", HttpMethod.PUT, licenseeDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), Void.class);
+                signature2.date(), signature2.authorization(), String.class);
     }
 
 }
