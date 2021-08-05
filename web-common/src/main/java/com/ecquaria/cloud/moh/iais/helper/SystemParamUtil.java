@@ -13,8 +13,7 @@ import org.springframework.context.ApplicationContext;
 public final class SystemParamUtil {
 
     public static int getFileMaxLimit(){
-       SystemParamConfig spc = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
-       return spc.getUploadFileLimit();
+       return SpringContextHelper.getContext().getBean(SystemParamConfig.class).getUploadFileLimit();
     }
 
     public static int getAuditTrailSearchWeek() {
