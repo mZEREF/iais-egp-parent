@@ -65,16 +65,16 @@
                    </c:if>
                     <c:if test="${not empty auditTaskDataDtos && roleIdsForAuditSelect eq 'APO'}">
                                 <tr>
-                                    <th width="10%">HCI Code</th>
-                                    <th width="10%">HCI Name</th>
-                                    <th width="26%">Address</th>
-                                    <th width="10%">Service Name</th>
-                                    <th width="19%">Audit Type</th>
+                                    <th scope="col" width="10%">HCI Code</th>
+                                    <th scope="col" width="10%">HCI Name</th>
+                                    <th scope="col" width="26%">Address</th>
+                                    <th scope="col" width="10%">Service Name</th>
+                                    <th scope="col" width="19%">Audit Type</th>
                                     <c:if test="${ISTUC}">
                                         <th scope="col" >TCU Audit Due Date  </th>
                                     </c:if>
-                                    <th width="19%">Assign task to Inspector</th>
-                                    <th width="6%">Select for Audit</th>
+                                    <th scope="col" width="19%">Assign task to Inspector</th>
+                                    <th scope="col" width="6%">Select for Audit</th>
                                 </tr>
                     </c:if>
                                 </thead>

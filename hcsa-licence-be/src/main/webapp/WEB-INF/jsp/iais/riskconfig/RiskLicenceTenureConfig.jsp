@@ -51,17 +51,17 @@
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr style="border-style: hidden;">
-                                        <th width="10%" rowspan="2">Service Name</th>
-                                        <th width="22%" rowspan="2">Effective Start Date</th>
-                                        <th width="22%" rowspan="2">Effective End Date</th>
-                                        <th width="8%" rowspan="2">Minimum Risk Score (greater than)</th>
-                                        <th width="8%" rowspan="2">Maximum Risk Score (less than or equal to)</th>
-                                        <th width="20%" colspan="2">Licence Tenure</th>
-                                        <th width="5%" rowspan="2">Action</th>
+                                        <th scope="col" width="10%" rowspan="2">Service Name</th>
+                                        <th scope="col" width="22%" rowspan="2">Effective Start Date</th>
+                                        <th scope="col" width="22%" rowspan="2">Effective End Date</th>
+                                        <th scope="col" width="8%" rowspan="2">Minimum Risk Score (greater than)</th>
+                                        <th scope="col" width="8%" rowspan="2">Maximum Risk Score (less than or equal to)</th>
+                                        <th scope="col" width="20%" colspan="2">Licence Tenure</th>
+                                        <th scope="col" width="5%" rowspan="2">Action</th>
                                     </tr>
                                     <tr style="border-style: hidden;">
-                                    <th width="10%">Year(s)</th>
-                                    <th width="10%">Month(s)</th>
+                                    <th scope="col" width="10%">Year(s)</th>
+                                    <th scope="col" width="10%">Month(s)</th>
                                     </tr>
                                     <tr/>
                                     </thead>

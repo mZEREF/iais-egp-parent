@@ -42,9 +42,9 @@
                     <table aria-describedby="" class="table">
                         <thead>
                         <tr>
-                            <th style="text-align:center">Application No.</th>
-                            <th style="text-align:center">Service Name</th>
-                            <th style="text-align:center">HCI Name</th>
+                            <th scope="col" style="text-align:center">Application No.</th>
+                            <th scope="col" style="text-align:center">Service Name</th>
+                            <th scope="col" style="text-align:center">HCI Name</th>
                         </tr>
                         </thead>
                         <tbody>

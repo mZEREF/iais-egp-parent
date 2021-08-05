@@ -5,7 +5,7 @@
     <table aria-describedby="" class="table">
         <thead>
         <tr >
-            <th width="2%"></th>
+            <th scope="col" width="2%"></th>
             <iais:sortableHeader needSort="true" field="APPLICATION_NO" value="Application Number" style="width:20%" isFE="true"/>
             <iais:sortableHeader needSort="true" field="app_type" value="Type" style="width:20%" isFE="true"/>
             <iais:sortableHeader needSort="true" field="service_id" value="Service" style="width:20%" isFE="true"/>

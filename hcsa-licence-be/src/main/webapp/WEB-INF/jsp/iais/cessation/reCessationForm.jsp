@@ -278,12 +278,12 @@
                                     </div>
                                     <table aria-describedby="" class="table-gp tablebox">
                                         <tr style="text-align:center">
-                                            <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
+                                            <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                         </tr>
                                         <c:forEach items="${map.value}" var="spec" varStatus="index">
                                             <tr style="text-align:center">

@@ -33,13 +33,13 @@
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th width="10%">Service Name</th>
-                                        <th width="10%">Threshold (X Years)</th>
+                                        <th scope="col" width="10%">Service Name</th>
+                                        <th scope="col" width="10%">Threshold (X Years)</th>
                                         <th scope="col" >Source</th>
                                         <th scope="col" >Effective Start Date</th>
                                         <th scope="col" >Effective End Date</th>
-                                        <th width="8%">Minimum Number of Cases</th>
-                                        <th width="8%">Maximum Number of Cases</th>
+                                        <th scope="col" width="8%">Minimum Number of Cases</th>
+                                        <th scope="col" width="8%">Maximum Number of Cases</th>
                                         <th scope="col" >Risk Rating</th>
                                     </tr>
                                     </thead>
