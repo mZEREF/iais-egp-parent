@@ -38,7 +38,7 @@
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"><br/></p>
-                      <p>${hciName}</p>
+                      <p>${businessName}</p>
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"><br/></p>
