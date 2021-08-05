@@ -59,7 +59,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ApplicationViewServiceImp implements ApplicationViewService {
-    public static final String TITLE_MODE_OF_SVCDLVY = "Mode of Service Delivery";
+    public static final String TITLE_MODE_OF_SVCDLVY = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
@@ -224,22 +224,22 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     String psnIndex = StringUtil.nullToEmpty(integer);
                     if ("0".equals(entity.getDupForPrem()) && entity.getDupForPerson() != null) {
                         switch (entity.getDupForPerson()) {
-                            case "1":
+                            case ApplicationConsts.DUP_FOR_PERSON_CGO:
                                 appSupDocDto.setFile("Clinical Governance Officer " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "2":
+                            case ApplicationConsts.DUP_FOR_PERSON_PO:
                                 appSupDocDto.setFile("Principal Officers " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "4":
+                            case ApplicationConsts.DUP_FOR_PERSON_DPO:
                                 appSupDocDto.setFile("Nominee " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "8":
+                            case ApplicationConsts.DUP_FOR_PERSON_MAP:
                                 appSupDocDto.setFile("MedAlert Person " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "16":
+                            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                                 appSupDocDto.setFile("Service Personnel " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "32":
+                            case ApplicationConsts.DUP_FOR_PERSON_CD:
                                 appSupDocDto.setFile("Clinical Director " + psnIndex + ": " + entity.getDocTitle());
                                 break;
                             default:
@@ -247,25 +247,25 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         }
                     } else if (entity.getDupForPerson() != null && "1".equals(entity.getDupForPrem())) {
                         switch (entity.getDupForPerson()) {
-                            case "1":
+                            case ApplicationConsts.DUP_FOR_PERSON_CGO:
                                 appSupDocDto.setFile(
                                         TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officer " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "2":
+                            case ApplicationConsts.DUP_FOR_PERSON_PO:
                                 appSupDocDto.setFile(
                                         TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "4":
+                            case ApplicationConsts.DUP_FOR_PERSON_DPO:
                                 appSupDocDto.setFile(TITLE_MODE_OF_SVCDLVY + " 1: Nominee " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "8":
+                            case ApplicationConsts.DUP_FOR_PERSON_MAP:
                                 appSupDocDto.setFile(
                                         TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "16":
+                            case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                                 appSupDocDto.setFile("Service Personnel " + psnIndex + ": " + entity.getDocTitle());
                                 break;
-                            case "32":
+                            case ApplicationConsts.DUP_FOR_PERSON_CD:
                                 appSupDocDto.setFile(
                                         TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + psnIndex + ": " + entity.getDocTitle());
                                 break;
