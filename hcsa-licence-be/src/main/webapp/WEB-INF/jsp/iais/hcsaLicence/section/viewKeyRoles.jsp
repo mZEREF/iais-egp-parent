@@ -71,16 +71,16 @@
                                             <div class="table-responsive">
                                                 <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                                     <tr>
-                                                        <td>Indentification No.</td>
-                                                        <td>Case No.</td>
-                                                        <td>Case Type Description</td>
-                                                        <td>Case Status Description</td>
-                                                        <td>Offence Description</td>
-                                                        <td>Outcome Description</td>
-                                                        <td>Outcome Issue Date</td>
-                                                        <td>Prosecution Outcome Description</td>
-                                                        <td>Created Date</td>
-                                                        <td>Update Date</td>
+                                                        <th scope="col">Indentification No.</th>
+                                                        <th scope="col">Case No.</th>
+                                                        <th scope="col">Case Type Description</th>
+                                                        <th scope="col">Case Status Description</th>
+                                                        <th scope="col">Offence Description</th>
+                                                        <th scope="col">Outcome Description</th>
+                                                        <th scope="col">Outcome Issue Date</th>
+                                                        <th scope="col">Prosecution Outcome Description</th>
+                                                        <th scope="col">Created Date</th>
+                                                        <th scope="col">Update Date</th>
                                                     </tr>
                                                     <c:forEach items="${hashMap[newLicenceDto.uenNo]}" var="map">
                                                         <tr>
@@ -110,16 +110,16 @@
                                                 <table aria-describedby="" border="1px"
                                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                                     <tr>
-                                                        <td>Indentification No.</td>
-                                                        <td>Case No.</td>
-                                                        <td>Case Type Description</td>
-                                                        <td>Case Status Description</td>
-                                                        <td>Offence Description</td>
-                                                        <td>Outcome Description</td>
-                                                        <td>Outcome Issue Date</td>
-                                                        <td>Prosecution Outcome Description</td>
-                                                        <td>Created Date</td>
-                                                        <td>Update Date</td>
+                                                        <th scope="col">Indentification No.</th>
+                                                        <th scope="col">Case No.</th>
+                                                        <th scope="col">Case Type Description</th>
+                                                        <th scope="col">Case Status Description</th>
+                                                        <th scope="col">Offence Description</th>
+                                                        <th scope="col">Outcome Description</th>
+                                                        <th scope="col">Outcome Issue Date</th>
+                                                        <th scope="col">Prosecution Outcome Description</th>
+                                                        <th scope="col">Created Date</th>
+                                                        <th scope="col">Update Date</th>
                                                     </tr>
                                                     <c:forEach items="${hashMap[oldLicenceDto.uenNo]}" var="map">
                                                         <tr>

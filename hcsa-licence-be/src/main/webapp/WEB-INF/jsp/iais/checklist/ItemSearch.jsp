@@ -118,7 +118,7 @@
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false" field=""  value="No."></iais:sortableHeader>
-                      <td></td>
+                      <th scope="col"></th>
                       <iais:sortableHeader needSort="true" field="CLAUSE_NO"
                                            value="Regulation Clause Number"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true" field="CLAUSE"

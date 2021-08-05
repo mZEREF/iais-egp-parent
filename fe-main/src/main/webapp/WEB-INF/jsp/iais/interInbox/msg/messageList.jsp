@@ -48,6 +48,7 @@
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                        <th scope="col" style="display: none"></th>
                         <C:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "/>
                         </C:if>

@@ -103,6 +103,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
+                    <th scope="col" style="display: none"></th>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"
                                          value="Application No." isFE="true"  style="width:20%"/>
                     <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type" isFE="true"  style="width:13%"/>

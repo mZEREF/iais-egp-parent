@@ -111,7 +111,7 @@
             <div class="table-gp">
                 <table aria-describedby="" class="table">
                     <thead>
-                    <tr>
+                    <tr><th scope="col" style="display: none"></th>
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
                                              value="Licence No." style="width:15%;" isFE="true"/>

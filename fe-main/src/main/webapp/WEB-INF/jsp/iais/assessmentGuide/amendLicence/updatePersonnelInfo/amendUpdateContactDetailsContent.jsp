@@ -9,6 +9,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
+                <th scope="col" style="display: none"></th>
                 <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="T3.LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="false"  field="T2.PSN_TYPE" value="Role" isFE="true"/>

@@ -44,6 +44,7 @@
                 <table aria-describedby="" class="table">
                   <thead>
                   <tr>
+                    <th scope="col" style="display: none"></th>
                     <iais:sortableHeader needSort="false"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
                     <iais:sortableHeader needSort="false"   field="regulationClause" value="Regulations"></iais:sortableHeader>
                     <iais:sortableHeader needSort="false"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>

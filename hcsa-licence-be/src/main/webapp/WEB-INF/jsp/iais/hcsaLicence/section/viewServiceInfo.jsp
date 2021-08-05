@@ -33,6 +33,11 @@
           </p>
           <span class="col-xs-6"></span>
           <table aria-describedby="" class="col-xs-12">
+            <thead style="display: none">
+            <tr>
+              <th scope="col"></th>
+            </tr>
+            </thead>
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
@@ -157,7 +162,12 @@
                         class="col-xs-4 col-md-4"></span>
                 </p>
                 <span class="col-xs-6"></span>
-                <table  class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
+                  <thead style="display: none">
+                  <tr>
+                    <th scope="col"></th>
+                  </tr>
+                  </thead>
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
@@ -215,16 +225,16 @@
                             <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
-                                <td>Professional Regn. No.</td>
-                                <td>Complaints</td>
-                                <td>Final Outcome</td>
-                                <td>Fine Amounts</td>
-                                <td>Restrictive Practice Start Date</td>
-                                <td>Restrictive Practice End Date</td>
-                                <td>Suspension Start Date</td>
-                                <td>Suspension End Date</td>
-                                <td>Other disciplinary action Start Date</td>
-                                <td>Other Disciplinary action End Date</td>
+                                <th scope="col">Professional Regn. No.</th>
+                                <th scope="col">Complaints</th>
+                                <th scope="col">Final Outcome</th>
+                                <th scope="col">Fine Amounts</th>
+                                <th scope="col">Restrictive Practice Start Date</th>
+                                <th scope="col">Restrictive Practice End Date</th>
+                                <th scope="col">Suspension Start Date</th>
+                                <th scope="col">Suspension End Date</th>
+                                <th scope="col">Other disciplinary action Start Date</th>
+                                <th scope="col">Other Disciplinary action End Date</th>
                               </tr>
                               <c:forEach items="${listHashMap[appSvcClinicalDirectorDto.profRegNo]}" var="list">
                                 <tr>
