@@ -565,7 +565,7 @@
       <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-      <table border="1px" style="text-align: center" valign="middle">
+      <table aria-describedby="" border="1px" style="text-align: center" valign="middle">
         <tr>
           <th style="width: 10% ;height: 40px;text-align: center">Application Type&nbsp;<span class="mandatory">*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory">*</span></th>

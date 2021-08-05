@@ -30,7 +30,7 @@
     <div>
 <br>
     <div  class="col-lg-12 col-xs-10">
-      <table border="1px">
+      <table aria-describedby="" border="1px">
         <tr>
           <td style="width: 25%;text-align: center"><strong>Service Name</strong></td>
           <td style="width: 15%;text-align: center"><strong>Usage</strong></td>

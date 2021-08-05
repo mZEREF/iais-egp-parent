@@ -212,7 +212,7 @@
                             </label>
                             <span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X&nbsp;</span>
                             <div class="table-responsive">
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Professional Regn. No.</td>
@@ -255,7 +255,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               PRS</label><span style="position: absolute;right: 0px;color: black"
                                                onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Professional Regn. No.</td>
@@ -421,7 +421,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -463,7 +463,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
                               <tr>
                                 <td>Indentification No.</td>
@@ -1017,7 +1017,7 @@
                           <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                           </label><span style="position: absolute;right: 0px;color: black"
                                         onclick="closeThis(this)">X</span>
-                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                             <tr>
                               <td>${proHashMap[cgo.profRegNo].name}</td>
                             </tr>
@@ -1031,7 +1031,7 @@
                           <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                           </label><span style="position: absolute;right: 0px;color: black"
                                         onclick="closeThis(this)">X</span>
-                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                             <tr>
                               <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name}</td>
                             </tr>
@@ -1105,7 +1105,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
@@ -1147,7 +1147,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
                             <tr>
                               <td>Indentification No.</td>
@@ -1285,7 +1285,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Professional Regn. No.</td>
@@ -1327,7 +1327,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Professional Regn. No.</td>
@@ -1645,7 +1645,7 @@
                                 <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                                 </label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                                   <tr>
                                     <td>${proHashMap[appSvcPersonnelDtoList.profRegNo].name}</td>
                                   </tr>
@@ -1659,7 +1659,7 @@
                                 <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                                   </label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                                   <tr>
                                     <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name}</td>
                                   </tr>
@@ -1707,7 +1707,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -1749,7 +1749,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2125,7 +2125,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2167,7 +2167,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2387,7 +2387,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -2431,7 +2431,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -2674,7 +2674,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
@@ -2716,7 +2716,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
