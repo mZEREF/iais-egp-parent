@@ -25,12 +25,12 @@
                 <th scope="col" >No.</th>
                 <th scope="col" >Regulation Clause Number</th>
                 <th  width="30%">Item</th>
-                <th class="text-center">Yes</th>
-                <th class="text-center">No</th>
-                <th class="text-center">N/A</th>
+                <th scope="col" class="text-center">Yes</th>
+                <th scope="col" class="text-center">No</th>
+                <th scope="col" class="text-center">N/A</th>
                 <th scope="col" >Findings/NCs</th>
                 <th scope="col" >Actions Required</th>
-                <th class="text-center">Rectified</th>
+                <th scope="col" class="text-center">Rectified</th>
                 <th scope="col" ></th>
             </tr>
             </thead>
