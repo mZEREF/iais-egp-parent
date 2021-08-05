@@ -131,7 +131,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 List<ApplicationDto> value = entry.getValue();
                 boolean isExistFlag = false;
                 for (String appNo:appNos
-                     ) {
+                ) {
                     log.debug(StringUtil.changeForLog(" appNo is" + appNo));
                     log.debug(StringUtil.changeForLog(" key is" + key));
                     log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
@@ -203,6 +203,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                         || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())
                 ){
                     result = true;
                     break;
@@ -650,7 +651,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         for (String item:roleIds
-             ) {
+        ) {
             add(roleIds, item,selectOptionArrayList,roles);
         }
         return selectOptionArrayList;
