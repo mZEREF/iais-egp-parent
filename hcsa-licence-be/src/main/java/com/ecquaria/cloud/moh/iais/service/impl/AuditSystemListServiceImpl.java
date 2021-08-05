@@ -401,6 +401,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     String msgLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_TCU_AUDIT_APPT_PRE_DATE + appNo;
                     //set template value
                     Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+                    map.put("appNo", appNo);
                     map.put("applicant", applicantName);
                     map.put("systemLink", emailLoginUrl);
                     sendTcuAuditApptEmailSms(orgUserDto, map, appNo);
