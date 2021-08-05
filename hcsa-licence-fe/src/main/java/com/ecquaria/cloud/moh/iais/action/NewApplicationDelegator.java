@@ -4157,6 +4157,7 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(appNo) && !StringUtil.isEmpty(msgId)) {
 //            appNo = "AN210511010651A-01";
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+            appSubmissionDto.setAmountStr("N/A");
             if (appSubmissionDto != null) {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     rfiLoadingCheckImplForRenew.checkPremiseInfo(appSubmissionDto,appNo);
