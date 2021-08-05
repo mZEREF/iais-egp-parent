@@ -42,7 +42,7 @@
                                             </c:if>
                                             <th class="premises-info">Mode of Service Delivery</th>
                                             <th scope="col" >Start Date</th>
-                                            <th style="white-space: nowrap;">Expires On</th>
+                                            <th scope="col" style="white-space: nowrap;">Expires On</th>
                                         </tr>
                                         </thead>
                                         <tbody>

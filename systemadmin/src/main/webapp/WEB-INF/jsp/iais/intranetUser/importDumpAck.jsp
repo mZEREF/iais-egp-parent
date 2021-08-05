@@ -22,9 +22,9 @@
                         <table  style="width: 50%;border-collapse:separate;border-spacing:10px;border: 1px solid #151515">
                             <thead>
                             <tr>
-                                <th style="width: 20%"></th>
-                                <th style="width: 10%"></th>
-                                <th style="width: 1%"></th>
+                                <th scope="col" style="width: 20%"></th>
+                                <th scope="col" style="width: 10%"></th>
+                                <th scope="col" style="width: 1%"></th>
                             </tr>
                             </thead>
                             <tbody>

@@ -32,7 +32,7 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table  class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
@@ -1490,9 +1490,9 @@
                 <table aria-describedby="" class="table discipline-table" border="1px">
                   <thead>
                   <tr>
-                    <th style="text-align: center">Mode of Service Delivery</th>
-                    <th style="text-align: center">${stepNameMap['SVST001']}</th>
-                    <th style="text-align: center">Clinical Governance Officers</th>
+                    <th scope="col" style="text-align: center">Mode of Service Delivery</th>
+                    <th scope="col" style="text-align: center">${stepNameMap['SVST001']}</th>
+                    <th scope="col" style="text-align: center">Clinical Governance Officers</th>
                   </tr>
                   </thead>
                   <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">

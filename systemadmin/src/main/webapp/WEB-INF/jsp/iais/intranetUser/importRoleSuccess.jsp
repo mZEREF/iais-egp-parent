@@ -29,11 +29,11 @@
               <table aria-describedby="" class="table application-group">
                 <thead>
                   <tr>
-                    <th style="width:10%;">No.</th>
-                    <th style="width:30%;">User ID</th>
-                    <th style="width:30%;">Role ID</th>
-                    <th style="width:30%;">Group ID</th>
-                    <th style="width:30%;">Status</th>
+                    <th scope="col" style="width:10%;">No.</th>
+                    <th scope="col" style="width:30%;">User ID</th>
+                    <th scope="col" style="width:30%;">Role ID</th>
+                    <th scope="col" style="width:30%;">Group ID</th>
+                    <th scope="col" style="width:30%;">Status</th>
                   </tr>
                 </thead>
                 <tbody>
