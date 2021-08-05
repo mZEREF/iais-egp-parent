@@ -51,16 +51,16 @@
                                 <thead>
                    <c:if test="${empty auditTaskDataDtos || (not empty auditTaskDataDtos && roleIdsForAuditSelect != 'APO')}">
                        <tr>
-                           <th >HCI Code</th>
-                           <th >HCI Name</th>
-                           <th >Address</th>
-                           <th >Service Name</th>
+                           <th scope="col">HCI Code</th>
+                           <th scope="col">HCI Name</th>
+                           <th scope="col">Address</th>
+                           <th scope="col">Service Name</th>
                            <th scope="col" >Audit Type</th>
                            <c:if test="${ISTUC}">
                                <th scope="col" >TCU Audit Due Date </th>
                            </c:if>
-                           <th >Assign task to Inspector</th>
-                           <th >Select for Audit</th>
+                           <th scope="col">Assign task to Inspector</th>
+                           <th scope="col">Select for Audit</th>
                        </tr>
                    </c:if>
                     <c:if test="${not empty auditTaskDataDtos && roleIdsForAuditSelect eq 'APO'}">
