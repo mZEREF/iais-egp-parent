@@ -95,7 +95,7 @@ public class AdhocWriteMultipartFileAjaxController {
             }
             if(doc.isPassDocValidate()){
                 String fileName = selectedFile.getOriginalFilename();
-                if(fileName.indexOf('\\') > 0){
+                if(fileName!=null&&fileName.indexOf('\\') > 0){
                     fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
                 }
                 File toFile = FileUtils.multipartFileToFile(selectedFile);

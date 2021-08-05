@@ -24,10 +24,10 @@
                 <table aria-describedby="" class="table" width = "100%">
                   <thead>
                   <tr>
-                    <th width = "10%"></th>
-                    <th width = "30%" align = "left">Business Name</th>
-                    <th width = "30%" align = "left">Licensed Premises</th>
-                    <th width = "30%" align = "left">Licensed Conveyances(Vehicle No.)</th>
+                   <th scope="col" width = "10%"></th>
+                   <th scope="col" width = "30%" align = "left">Business Name</th>
+                   <th scope="col" width = "30%" align = "left">Licensed Premises</th>
+                   <th scope="col" width = "30%" align = "left">Licensed Conveyances(Vehicle No.)</th>
                   </tr>
                   </thead>
                   <tbody>
