@@ -423,7 +423,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     private void sendTcuAuditApptEmailSms(OrgUserDto orgUserDto, Map<String, Object> map, String appNo) {
         //email
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY).getEntity();
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_EMAIL).getEntity();
         if(msgTemplateDto != null){
             int emailFlag = systemParamConfig.getEgpEmailNotifications();
             if (0 == emailFlag) {
