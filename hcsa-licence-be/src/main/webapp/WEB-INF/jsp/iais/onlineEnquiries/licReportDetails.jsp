@@ -88,6 +88,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Licence No.</p>
@@ -212,6 +217,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Date of Inspection</p>
@@ -311,6 +321,11 @@
                                                                 </p>
                                                             </div>
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Checklist Used</p>
@@ -327,6 +342,11 @@
                                                             </div>
                                                             <div class="table-gp">
                                                                 <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                     <tr>
                                                                         <td class="col-xs-4">
                                                                             <p>&nbsp;Remarks</p>
@@ -441,6 +461,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Rectified</p>
@@ -526,6 +551,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Recommendation </p>
@@ -551,6 +581,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tr>
                                                                     <td class="col-xs-4">
                                                                         <p>&nbsp;Follow up Action</p>

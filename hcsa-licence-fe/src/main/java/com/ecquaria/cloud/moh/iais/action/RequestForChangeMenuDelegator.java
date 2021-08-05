@@ -661,7 +661,7 @@ public class RequestForChangeMenuDelegator {
             personnelEditDto = personnelList.stream().filter(dto -> finalIdNo.equals(dto.getIdNo())).findAny().orElseGet(() -> null);
         }
         log.info(StringUtil.changeForLog("personnelEditDto: " +
-                Optional.ofNullable(personnelEditDto).map(dto -> dto.getIdNo()).orElseGet(() -> null)));
+                Optional.ofNullable(personnelEditDto).map(PersonnelListDto::getIdNo).orElseGet(() -> null)));
         ParamUtil.setSessionAttr(bpc.request, "oldPersonnelDto", transferDto(personnelEditDto));
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
     }

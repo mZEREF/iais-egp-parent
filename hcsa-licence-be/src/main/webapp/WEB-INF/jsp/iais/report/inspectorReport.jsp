@@ -23,6 +23,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Licence No.</p>
@@ -129,6 +134,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -216,6 +226,11 @@
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -231,6 +246,11 @@
                 </div>
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Remarks</p>
@@ -337,6 +357,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
@@ -420,6 +445,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <c:if test="${appType!='APTY005' && appType!='APTY006' && appType!='APTY008' && appType!='APTY001'}">
                             <tr>
                                 <td class="col-xs-4">
@@ -494,6 +524,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
@@ -546,6 +581,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>

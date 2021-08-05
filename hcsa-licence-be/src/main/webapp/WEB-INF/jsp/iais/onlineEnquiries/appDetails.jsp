@@ -50,6 +50,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Application No</td>
@@ -102,6 +107,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">HCI Code</td>
@@ -140,6 +150,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Licensee Name (Company)</td>
@@ -203,6 +218,11 @@
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
                                                             <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Service Name</td>
@@ -235,9 +255,9 @@
                                                         <table aria-describedby="" class="table">
                                                             <thead >
                                                             <tr >
-                                                                <th  style="text-align: center">Mode of Service Delivery</th>
-                                                                <th  style="text-align: center">Service / Granular Service</th>
-                                                                <th  style="text-align: center">Clinical Governance Officers</th>
+                                                                <th scope="col" style="text-align: center">Mode of Service Delivery</th>
+                                                                <th scope="col" style="text-align: center">Service / Granular Service</th>
+                                                                <th scope="col" style="text-align: center">Clinical Governance Officers</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>

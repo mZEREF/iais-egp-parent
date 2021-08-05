@@ -117,6 +117,7 @@
                     <table aria-describedby="" class="table application-group">
                       <thead>
                       <tr align="center">
+                        <th scope="col" style="display: none"></th>
                         <iais:sortableHeader needSort="false" field = "" value="S/N"></iais:sortableHeader>
                         <iais:sortableHeader needSort="false" field = "GROUP_NO" value="Application No."></iais:sortableHeader>
                         <iais:sortableHeader needSort="false" field = "APP_TYPE" value="Application Type"></iais:sortableHeader>

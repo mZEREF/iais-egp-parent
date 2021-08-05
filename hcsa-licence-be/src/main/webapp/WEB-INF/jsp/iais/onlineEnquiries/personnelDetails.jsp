@@ -10,6 +10,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">Name</td>
@@ -90,6 +95,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
@@ -155,6 +165,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
@@ -232,6 +247,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
@@ -282,7 +302,12 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="table-gp">
-                    <table  class="table table-bordered">
+                    <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
