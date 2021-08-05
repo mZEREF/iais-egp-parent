@@ -1158,17 +1158,19 @@ public class LicenceApproveBatchjob {
                     superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
 
-                if ( IaisEGPHelper.isActiveMigrated() && originLicenceDto != null
-                        && originLicenceDto.isMigrated()
-                        && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
-                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                       ) {
-                    if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                    }else{
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
-                    }
+                if(originLicenceDto != null){
+                    if (originLicenceDto.isMigrated()
+                            && IaisEGPHelper.isActiveMigrated()
+                            && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                            ) {
+                        if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                        }else{
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                        }
 
+                    }
                 }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
