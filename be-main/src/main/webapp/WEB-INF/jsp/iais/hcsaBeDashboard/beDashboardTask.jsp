@@ -165,7 +165,7 @@
               <table class="table application-group" style="border-collapse:collapse;">
                 <thead>
                 <tr>
-                  <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                  <th scope="col" style="text-align:center;width: 0%">S/N</th>
                   <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>

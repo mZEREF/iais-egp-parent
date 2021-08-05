@@ -15,7 +15,7 @@
                                     <thead>
                                     <tr align="center">
                                         <c:if test="${cease==1}">
-                                            <th class="form-check">
+                                            <th scope="col" class="form-check">
                                                 <c:if test="${!empty SearchResult.rows}">
                                                     <input class="form-check-input licenceCheck"
                                                            type="checkbox" name="userUids"
