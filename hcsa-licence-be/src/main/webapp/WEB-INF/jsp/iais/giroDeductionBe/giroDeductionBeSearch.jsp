@@ -90,7 +90,7 @@
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
                     <tr align="center">
-                      <th style="padding-bottom: 27px">
+                      <th scope="col" style="padding-bottom: 27px">
                         <input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if> onclick="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/>
                       </th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>

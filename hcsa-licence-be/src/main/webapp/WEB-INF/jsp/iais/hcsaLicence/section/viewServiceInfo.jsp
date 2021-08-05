@@ -1490,9 +1490,9 @@
                 <table aria-describedby="" class="table discipline-table" border="1px">
                   <thead>
                   <tr>
-                    <th style="text-align: center">Mode of Service Delivery</th>
-                    <th style="text-align: center">${stepNameMap['SVST001']}</th>
-                    <th style="text-align: center">Clinical Governance Officers</th>
+                    <th scope="col" style="text-align: center">Mode of Service Delivery</th>
+                    <th scope="col" style="text-align: center">${stepNameMap['SVST001']}</th>
+                    <th scope="col" style="text-align: center">Clinical Governance Officers</th>
                   </tr>
                   </thead>
                   <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
