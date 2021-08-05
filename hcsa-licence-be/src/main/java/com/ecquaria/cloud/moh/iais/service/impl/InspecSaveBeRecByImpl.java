@@ -167,7 +167,8 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                             if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
                                 try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
                                     int totalEntryArchive = 0;
-                                    for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
+                                    Enumeration<? extends ZipEntry> entries = unZipFile.entries();
+                                    while(entries.hasMoreElements()) {
                                         ZipEntry zipEntry = entries.nextElement();
                                         totalEntryArchive ++;
 
