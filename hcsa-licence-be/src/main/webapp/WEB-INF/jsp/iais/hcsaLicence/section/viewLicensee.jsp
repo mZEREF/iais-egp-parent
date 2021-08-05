@@ -60,7 +60,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row img-show" cssClass="company-no" style="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
+                    <div class="row img-show" style="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
                                 '' : 'display: none;'}">
                         <div class="col-md-6">UEN No.</div>
                         <div class="col-md-6">
@@ -90,7 +90,8 @@
                     </div>
                     <c:if test="${not empty hashMap[curDto.uenNo]}">
                         <div class="row new-img-show" style="display: none">
-                            <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                            <div class="col-xs-12 col-md-12"
+                                 style="position: absolute;z-index: 100;background-color: #F5F5F5;width:85%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <div class="table-responsive">
                                     <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
@@ -128,7 +129,8 @@
                     </c:if>
                     <c:if test="${not empty hashMap[oldDto.uenNo]}">
                         <div class="row old-img-show" style="display: none">
-                            <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                            <div class="col-xs-12 col-md-12"
+                                 style="position: absolute;z-index: 100;background-color: #F5F5F5;width:85%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                                 <div class="table-responsive">
                                     <table aria-describedby="" border="1px"
@@ -165,7 +167,7 @@
                             </div>
                         </div>
                     </c:if>
-                    <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                    <div class="row" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
                         <div class="col-md-6">ID Type</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
@@ -180,7 +182,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" cssClass="ind-no" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                    <div class="row" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
                         <div class="col-md-6">ID No.</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
