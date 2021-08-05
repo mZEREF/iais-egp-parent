@@ -11,7 +11,7 @@
                 <tr>
                     <th scope="col" >No.</th>
                     <th scope="col" >Regulation Clause Number</th>
-                    <th  width="30%">Item</th>
+                    <th scope="col" width="30%">Item</th>
                     <th scope="col" class="text-center">Yes</th>
                     <th scope="col" class="text-center">No</th>
                     <th scope="col" class="text-center">N/A</th>
@@ -106,7 +106,7 @@
             <thead>
             <tr>
                 <th scope="col" >No.</th>
-                <th  width="35%">Item</th>
+                <th scope="col" width="35%">Item</th>
                 <th scope="col" class="text-center">Yes</th>
                 <th scope="col" class="text-center">No</th>
                 <th scope="col" class="text-center">N/A</th>

@@ -40,7 +40,7 @@
                                             <c:if test="${isSingle == 'Y'}">
                                                 <th scope="col" >Licensee</th>
                                             </c:if>
-                                            <th class="premises-info">Mode of Service Delivery</th>
+                                            <th scope="col" class="premises-info">Mode of Service Delivery</th>
                                             <th scope="col" >Start Date</th>
                                             <th scope="col" style="white-space: nowrap;">Expires On</th>
                                         </tr>

@@ -121,7 +121,7 @@
                   <table aria-describedby="" class="table">
                     <thead>
                     <tr align="center">
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                      <th scope="col" style="text-align:center;width: 0%">S/N</th>
                       <iais:sortableHeader needSort="false" field="GROUP_NO"
                                            value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="APP_TYPE"
