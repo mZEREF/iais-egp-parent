@@ -14,11 +14,11 @@
                             <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
-                                    <th width="25%">Regulation Clause Number</th>
-                                    <th width="40%">Item</th>
-                                    <th width="5%">Yes</th>
-                                    <th width="5%">No</th>
-                                    <th width="5%">N/A</th>
+                                    <th scope="col" width="25%">Regulation Clause Number</th>
+                                    <th scope="col" width="40%">Item</th>
+                                    <th scope="col" width="5%">Yes</th>
+                                    <th scope="col" width="5%">No</th>
+                                    <th scope="col" width="5%">N/A</th>
                                 </tr>
                                 </thead>
                                 <tbody>

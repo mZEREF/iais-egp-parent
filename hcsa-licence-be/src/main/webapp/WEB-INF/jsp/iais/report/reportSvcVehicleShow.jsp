@@ -18,10 +18,10 @@
     <table aria-describedby="" class="table">
       <thead>
       <tr align="center">
-        <th width="5%">S/N</th>
-        <th width="25%">Vehicle</th>
-        <th width="35%">Recommendation</th>
-        <th width="35%">Remarks</th>
+        <th scope="col" width="5%">S/N</th>
+        <th scope="col" width="25%">Vehicle</th>
+        <th scope="col" width="35%">Recommendation</th>
+        <th scope="col" width="35%">Remarks</th>
       </tr>
       </thead>
       <tbody>

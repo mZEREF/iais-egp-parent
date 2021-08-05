@@ -39,7 +39,7 @@
                                         <th scope="col" >Effective Start Date</th>
                                         <th scope="col" >Effective End Date</th>
                                         <th  width="8%">Minimum Number of Cases</th>
-                                        <th width="8%">Maximum Number of Cases</th>
+                                        <th scope="col" width="8%">Maximum Number of Cases</th>
                                         <th scope="col" >Risk Rating</th>
                                     </tr>
                                     </thead>

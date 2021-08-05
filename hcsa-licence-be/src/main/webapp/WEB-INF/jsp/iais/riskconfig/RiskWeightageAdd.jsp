@@ -38,8 +38,8 @@
                                         <th scope="col" >Financial Scheme Audit</th>
                                         <th scope="col" >Leadership And Governance</th>
                                         <th scope="col" >Legislative Breaches</th>
-                                        <th width="15%">Effective Start Date</th>
-                                        <th width="15%">Effective End Date</th>
+                                        <th scope="col" width="15%">Effective Start Date</th>
+                                        <th scope="col" width="15%">Effective End Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
