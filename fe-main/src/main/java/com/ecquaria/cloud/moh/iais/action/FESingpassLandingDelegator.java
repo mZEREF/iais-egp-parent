@@ -144,11 +144,6 @@ public class FESingpassLandingDelegator {
             scp = ParamUtil.getString(request, UserConstants.LOGIN_SCP);
         }
 
-        if (StringUtil.isEmpty(identityNo)){
-            log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            return;
-        }
-
         String identityNoUpper = "";
         if(identityNo != null) {
             identityNoUpper = identityNo.toUpperCase();
