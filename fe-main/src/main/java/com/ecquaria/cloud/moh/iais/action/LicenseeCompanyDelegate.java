@@ -190,6 +190,9 @@ public class LicenseeCompanyDelegate {
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
     private void setLicByMyInfo(HttpServletRequest request, MyInfoDto myInfoDto,LicenseeDto licenseeDto){
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
+        licenseeDto.setMobileNo(feUserDto.getMobileNo());
         if(myInfoDto != null){
             licenseeDto.setName(myInfoDto.getUserName());
             licenseeDto.setFloorNo(myInfoDto.getFloor());
@@ -198,6 +201,8 @@ public class LicenseeCompanyDelegate {
             licenseeDto.setBlkNo(myInfoDto.getBlockNo());
             licenseeDto.setBuildingName(myInfoDto.getBuildingName());
             licenseeDto.setStreetName(myInfoDto.getStreetName());
+        }else {
+            ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
         }
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.NO);

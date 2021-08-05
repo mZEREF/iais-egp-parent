@@ -51,8 +51,8 @@ public class MyInfoTransferStationDelegate {
         HttpServletRequest request = bpc.request;
         String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
         if(StringUtil.isNotEmpty(nric)){
-             String callPrcoessUrl ="https://"+request.getServerName()+"/eservice/INTERNET/";
-             callPrcoessUrl += (String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC+"_"+ nric);
+             String callPrcoessUrl ="https://"+request.getServerName()+"/main-web/eservice/INTERNET/";
+             callPrcoessUrl += (String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME+"_"+ nric);
              MyInfoDto myInfoDto = myInfoAjax.noTakenCallMyInfo(bpc,callPrcoessUrl,nric);
              if(myInfoDto != null && !myInfoDto.isServiceDown()){
                  ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,myInfoDto);

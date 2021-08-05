@@ -58,7 +58,7 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
-        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/preparePage");
+        myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
     }
 
     /**
@@ -131,6 +131,10 @@ public class FeAdminManageDelegate {
     public void edit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("*******************edit"));
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        if(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK))){
+            repalceFeUserDtoByMyinfo(bpc.request);
+            return;
+        }
         String userId ;
         String isAdmin ;
         if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
@@ -143,7 +147,6 @@ public class FeAdminManageDelegate {
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
         ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
-        repalceFeUserDtoByMyinfo(bpc.request);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
         ParamUtil.setSessionAttr(bpc.request,"title", "Edit");
@@ -256,7 +259,7 @@ public class FeAdminManageDelegate {
         log.info("---- relaod feuesr start --------- ");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, "inter_user_attr");
-        if(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ||(!StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber()))){
+        if(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ||("getMyInfo".equalsIgnoreCase(ParamUtil.getString(request,"action")) && !StringUtil.isEmpty(loginContext.getNricNum()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber()))){
             MyInfoDto myInfoDto = AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ? myInfoAjax.getMyInfoData(request) : myInfoAjax.getMyInfo(loginContext.getNricNum(),request);
             if(myInfoDto != null){
                 if(!myInfoDto.isServiceDown()){
@@ -268,6 +271,8 @@ public class FeAdminManageDelegate {
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
                 }
+            }else {
+                ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
             }
             if (myInfoDto != null && !myInfoDto.isServiceDown()) {
                 ParamUtil.setRequestAttr(request,"fromMyinfo", "Y");
