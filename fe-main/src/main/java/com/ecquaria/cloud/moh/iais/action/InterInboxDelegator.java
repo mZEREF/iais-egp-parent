@@ -149,7 +149,7 @@ public class InterInboxDelegator {
         bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, elisUrl);
+        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
