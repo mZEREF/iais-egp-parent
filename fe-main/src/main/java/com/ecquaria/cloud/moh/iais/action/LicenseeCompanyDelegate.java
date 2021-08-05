@@ -51,6 +51,8 @@ public class LicenseeCompanyDelegate {
 
     @Autowired
     private LicenceInboxClient licenceClient;
+    @Autowired
+    SoloEditValidator soloEditValidator;
     /**
      * StartStep: doStart
      *
@@ -144,7 +146,7 @@ public class LicenseeCompanyDelegate {
         if(AppConsts.YES.equalsIgnoreCase(saveSoleAction) || AppConsts.NO.equalsIgnoreCase(saveSoleAction)){
             LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION);
             if(AppConsts.YES.equalsIgnoreCase(saveSoleAction)){
-                Map<String,String> errorMap =  new SoloEditValidator().validate(request);
+                Map<String,String> errorMap = soloEditValidator.validate(request);
                 if(!errorMap.isEmpty()){
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }else {

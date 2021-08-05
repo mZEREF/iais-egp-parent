@@ -135,7 +135,7 @@ public class MyInfoAjax {
 				//Assembly data acquisition get taken
 				nric = getNric(nric,request);
 				if(StringUtil.isNotEmpty(nric)){
-					String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
+				    String redirectUri = ConfigHelper.getString("myinfo.common.call.back.url",redirectUriPostfix);;
 					MyInfoTakenDto accessTokenDto =  getTakenCallMyInfo(code,nric,redirectUri);
 					if(accessTokenDto != null){
 						setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(nric,accessTokenDto.getToken_type(),accessTokenDto.getAccess_token()),request);

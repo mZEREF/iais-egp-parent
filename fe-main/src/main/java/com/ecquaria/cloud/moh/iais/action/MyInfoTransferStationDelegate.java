@@ -51,14 +51,15 @@ public class MyInfoTransferStationDelegate {
         HttpServletRequest request = bpc.request;
         String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
         if(StringUtil.isNotEmpty(nric)){
-             String callPrcoessUrl =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC+"_"+ nric);
+             String callPrcoessUrl ="https://"+request.getServerName()+"/eservice/INTERNET/";
+             callPrcoessUrl += (String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC+"_"+ nric);
              MyInfoDto myInfoDto = myInfoAjax.noTakenCallMyInfo(bpc,callPrcoessUrl,nric);
              if(myInfoDto != null && !myInfoDto.isServiceDown()){
                  ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,myInfoDto);
              }
             ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK,AppConsts.YES);
             try{
-                IaisEGPHelper.redirectUrl(bpc.response,"https://"+request.getServerName()+"/eservice/INTERNET/"+ callPrcoessUrl);
+                IaisEGPHelper.redirectUrl(bpc.response,callPrcoessUrl);
             } catch (IOException ioe){
                 log.error(ioe.getMessage(),ioe);
             }
