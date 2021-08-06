@@ -3929,7 +3929,7 @@ public class NewApplicationHelper {
         String appType = appSubmissionDto.getAppType();
         boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
                 .map(AppEditSelectDto::isLicenseeEdit)
-                .orElseGet(() -> Boolean.FALSE);
+                .orElseGet(() -> Boolean.TRUE);
         return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
     }
 

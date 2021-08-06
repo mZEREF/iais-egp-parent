@@ -367,8 +367,9 @@ public class RequestForChangeDelegator {
                 }
             }
         }
+        // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
-        //set doc info
+        // set doc info
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){

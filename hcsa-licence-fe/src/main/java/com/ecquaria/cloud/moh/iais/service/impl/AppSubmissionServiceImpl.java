@@ -2822,6 +2822,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setLicenseeEdit(NewApplicationHelper.canLicenseeEdit(appSubmissionDto, false));
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setDocEdit(true);
             appEditSelectDto.setServiceEdit(true);

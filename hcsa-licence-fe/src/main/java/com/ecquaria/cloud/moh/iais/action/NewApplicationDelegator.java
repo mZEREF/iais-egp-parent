@@ -447,10 +447,17 @@ public class NewApplicationDelegator {
                     dto.setIdType(old.getIdType());
                     dto.setIdNumber(old.getIdNumber());
                     dto.setLicenseeName(old.getLicenseeName());
+                    dto.setLicenseeType(old.getLicenseeType());
                 }
+                if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(dto.getLicenseeType())) {
+                    dto.setAssignSelect(NewApplicationHelper.getPersonKey(dto.getIdType(), dto.getIdNumber()));
+                } else {
+                    dto.setAssignSelect(NewApplicationConstant.NEW_PSN);
+                }
+            } else {
+                dto.setAssignSelect(assignSelect);
+                dto.setLicenseeType(licenseeType);
             }
-            dto.setAssignSelect(assignSelect);
-            dto.setLicenseeType(licenseeType);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
                 dto.setOrgId(loginContext.getOrgId());
@@ -1045,18 +1052,10 @@ public class NewApplicationDelegator {
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
-//        String action = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-
-//        if ("back".equals(action) || RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
-//            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "jump");
-//            return;
-//        }
-
         String isEdit = ParamUtil.getString(bpc.request, IS_EDIT);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
-//        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
         if (isGetDataFromPage) {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);

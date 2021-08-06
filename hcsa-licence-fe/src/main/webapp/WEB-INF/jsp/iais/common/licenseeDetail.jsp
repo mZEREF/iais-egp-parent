@@ -10,7 +10,7 @@
         <iais:value width="6">
             <strong class="app-font-size-22 premHeader">Licensee Details</strong>
         </iais:value>
-        <iais:value width="6" cssClass="text-right">
+        <iais:value width="6" cssClass="text-right editDiv">
             <c:if test="${canEdit}">
                 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                 <a id="edit" class="text-right app-font-size-16">
@@ -29,7 +29,7 @@
                 </iais:value>
             </iais:row>
         </c:if>
-        <c:if test="${isNew}">
+        <c:if test="${!isNew}">
             <iais:input cssClass="not-clear" type="hidden" name="assignSelect" value="${dto.assignSelect}"/>
         </c:if>
 
@@ -53,10 +53,8 @@
               popupOrder="postalCodePop" needEscapHtml="false" needFungDuoJi="false" />
 <script type="text/javascript">
     $(document).ready(function() {
-        if ($('#licenseeType').length > 0) {
-            // init page
-            initLicenseePage();
-        }
+        // init page
+        initLicenseePage();
 
         // bind event
         $('#assignSelect').on('change', function() {
@@ -79,15 +77,6 @@
 
     function initLicenseePage() {
         checkLicenseeType();
-        var assignSel = $('#assignSelect').val();
-        var type = $('#licenseeType').val();
-        console.info(assignSel + " --- " + type);
-        if (('-1' == assignSel || isEmpty(assignSel)) && type != '${companyType}') {
-            $('.licenseeType').addClass('hidden');
-            $('.licensee-detail').addClass('hidden');
-        } else {
-            $('.licenseeType').removeClass('hidden');
-        }
         checkAddressManatory();
         var $postalCode = $('div.postalCodeDiv').find('.postalCode');
         if ($postalCode.length > 0) {
@@ -96,11 +85,14 @@
     }
 
     function checkLicenseeType() {
-        var type = $('#licenseeType').val();
+        var type = "-1";
+        if ($('#licenseeType').length > 0) {
+            type = $('#licenseeType').val();
+        }
         $('.assignSelectLabel .mandatory').remove();
         if (type == '${companyType}') {
-            $('.company-no').removeClass('hidden');
-            $('.ind-no').addClass('hidden');
+            $('.company-no').show();
+            $('.ind-no').hide();
             $('.retrieveAddr').addClass('hidden');
             //loadCompanyLicensee($('div.licenseeContent'));
             $('.licensee-com').show();
@@ -112,18 +104,22 @@
                 clearFields('.licensee-detail');
             }
         } else if (type == '${individualType}') {
-            $('.company-no').addClass('hidden');
-            $('.ind-no').removeClass('hidden');
+            $('.company-no').hide();
+            $('.ind-no').show();
             $('.retrieveAddr').removeClass('hidden');
             //unDisableContent('div.licenseeContent');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
+        } else if (type == '-1' || type == '${soloType}') {
+            $('.licensee-com').show();
+            $('.editDiv').remove();
         } else {
-            $('.company-no').addClass('hidden');
-            $('.ind-no').addClass('hidden');
+            $('.licenseeType').hide();
+            $('.licensee-detail').hide();
+            $('.company-no').hide();
+            $('.ind-no').hide();
             $('.retrieveAddr').removeClass('hidden');
-            //unDisableContent('div.licenseeContent');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
@@ -153,7 +149,7 @@
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
-        $(this).closest('div').addClass('hidden');
+        $(this).closest('div').hide();
     }
 
     var loadCompanyLicensee = function ($target) {
@@ -181,23 +177,23 @@
         var $content = $(targetSelector);
         // init
         unDisableContent(targetSelector);
-        $('.retrieveAddr').removeClass('hidden');
+        $('.retrieveAddr').show();
         if('-1' == assignSelVal) {
-            $content.addClass('hidden');
+            $content.hide();
             clearFields(targetSelector);
             clearFields('.licenseeType');
             initLicenseePage();
         } else if('newOfficer' == assignSelVal) {
-            $content.removeClass('hidden');
+            $content.show();
             clearFields(targetSelector);
             clearFields('.licenseeType');
             initLicenseePage();
         } else {
-            $content.removeClass('hidden');
+            $content.show();
             var arr = assignSelVal.split(',');
             var idType = arr[0];
             var idNo = arr[1];
-            $('.retrieveAddr').addClass('hidden');
+            $('.retrieveAddr').hide();
             loadSelectLicensee($content, idType, idNo, fillLicensee);
         }
     }
