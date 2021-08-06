@@ -149,7 +149,9 @@ public class InterInboxDelegator {
         bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+//        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+        ParamUtil.setRequestAttr(request, "ssoToElisUrl",
+                elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
 
     }
 
