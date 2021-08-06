@@ -70,7 +70,7 @@ public class BroadcastMainServiceImpl implements BroadcastMainService {
                                                                 String appStatus, String appType) {
         if(applicationViewDto != null) {
             List<AppSvcVehicleDto> appSvcVehicleDtos;
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
                 appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
             } else {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
