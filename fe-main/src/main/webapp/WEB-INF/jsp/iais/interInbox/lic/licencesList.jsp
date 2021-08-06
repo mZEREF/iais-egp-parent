@@ -128,7 +128,7 @@
                     <c:choose>
                         <c:when test="${empty licResult.rows}">
                             <tr>
-                                <td colspan="6">
+                                <td colspan="8">
                                     <iais:message key="GENERAL_ACK018" escape="true"/>
                                 </td>
                             </tr>
@@ -136,6 +136,9 @@
                         <c:otherwise>
                             <c:forEach var="licenceQuery" items="${licResult.rows}" varStatus="status">
                                 <tr>
+                                    <td style="display: none;">
+                                        <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
+                                    </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
@@ -145,9 +148,6 @@
                                                     class="check-square"></span>
                                             </label>
                                         </div>
-                                    </td>
-                                    <td style="display: none;">
-                                        <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
                                     </td>
                                     <td>
                                         <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
