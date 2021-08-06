@@ -60,7 +60,7 @@ public class SoloEditValidator implements CustomizeValidator {
             valCol("unitNo",3,unitNo,map);
         }
         valCol("streetName",32,licenseeDto.getStreetName(),map);
-        valCol("buildingName",66,licenseeDto.getBuildingName(),map);
+        valCol("buildingName",66,licenseeDto.getBuildingName(),map,false);
         String mobileNo = licenseeDto.getMobileNo();
         boolean verifyMobEor = valCol("telephoneNo",8,mobileNo,map);
         if (!verifyMobEor && !CommonValidator.isMobile(mobileNo)) {
@@ -74,11 +74,16 @@ public class SoloEditValidator implements CustomizeValidator {
     }
 
     private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map){
-        if(StringUtil.isEmpty(code)){
+        valCol(showEorArea, maxLength, code, map,true);
+        return false;
+    }
+
+    private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map,boolean needVerEmpty){
+        if(needVerEmpty && StringUtil.isEmpty(code)){
             String MANDATORY_MSG = MessageUtil.getMessageDesc("GENERAL_ERR0006");
             map.put(showEorArea, MANDATORY_MSG);
             return true;
-        }else if(maxLength >0 && code.length() > maxLength){
+        }else if(StringUtil.isNotEmpty(code) && maxLength >0 && code.length() > maxLength){
             map.put(showEorArea, MessageUtil.replaceMessage("GENERAL_ERR0041",String.valueOf(maxLength),"maxlength"));
             return true;
         }
