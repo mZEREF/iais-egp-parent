@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -101,7 +103,8 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
-
+    @Autowired
+    AssessmentGuideService assessmentGuideService;
     public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     private static String msgStatus[] = {
@@ -1186,6 +1189,21 @@ public class InterInboxDelegator {
                 licenceDtos.add(entity);
             }
         }*/
+        //EAS and MTS licence only one active/approve licence
+        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+            hcsaServiceDtos.add(hcsaServiceDto);
+        }
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+            boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
+            if(!canCreateEasOrMts){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
+                ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                return;
+            }
+        }
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));

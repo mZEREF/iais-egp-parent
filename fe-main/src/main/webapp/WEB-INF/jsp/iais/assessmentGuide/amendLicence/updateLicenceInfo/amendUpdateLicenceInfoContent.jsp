@@ -9,8 +9,8 @@
             <thead>
             <tr >
                 <th scope="col" ></th>
-                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="HCI Name" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" isFE="true"/>

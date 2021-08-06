@@ -154,6 +154,8 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, null);
@@ -1796,6 +1798,54 @@ public class HalpAssessmentGuideDelegator {
         log.info("****end ******");
     }
 
+    public void amendLic5(BaseProcessClass bpc) throws IOException {
+        log.info("****start ******");
+        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+//        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if(!StringUtil.isEmpty(licIdValue)){
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }
+        }
+        SearchParam amendUpdateVehiclesSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        amendUpdateVehiclesSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendUpdateVehiclesSearchParam.addFilter("premisesType", ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendUpdateVehiclesSearchParam);
+        SearchResult<SelfPremisesListQueryDto> amendUpdateVehiclesSearchResult = requestForChangeService.searchPreInfo(amendUpdateVehiclesSearchParam);
+        if (amendUpdateVehiclesSearchResult != null && amendUpdateVehiclesSearchResult.getRowCount() > 0) {
+            amendUpdateVehiclesSearchResult.getRows().forEach(h -> {
+                List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+                List<String> addressList = IaisCommonUtils.genNewArrayList();
+                for (PremisesDto premisesDto:premisesDtoList
+                ) {
+                    addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                    h.setPremisesDtoList(addressList);
+                }
+            });
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM, amendUpdateVehiclesSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_RESULT, amendUpdateVehiclesSearchResult);
+            ArrayList<PremisesListQueryDto> newList = IaisCommonUtils.genNewArrayList(amendUpdateVehiclesSearchResult.getRowCount());
+            for (SelfPremisesListQueryDto se : amendUpdateVehiclesSearchResult.getRows()) {
+                newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
+            }
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, newList);
+        }
+        log.info("****end ******");
+    }
+
     public void amendLic3_1(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
@@ -2180,6 +2230,16 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
+    public void amendUpdateVehiclesPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
+    }
+
+    public void amendUpdateVehiclesSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
     public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
@@ -2279,6 +2339,9 @@ public class HalpAssessmentGuideDelegator {
                 }
                 else if("amendLic7".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
+                }
+                else if("amendLic8".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend5");
                 }
                 if (!flag){
                     ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);

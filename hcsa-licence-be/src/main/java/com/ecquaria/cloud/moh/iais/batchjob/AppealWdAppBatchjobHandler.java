@@ -41,6 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -87,6 +88,8 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    private ApplicationViewService applicationViewService;
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
@@ -159,6 +162,26 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }catch (Exception e){
                         log.error("Withdraw application return is failed");
                         log.error(e.getMessage(), e);
+                    }
+                    try {
+                        List<ApplicationDto> applicationDtoAllList = applicationService.getApplicaitonsByAppGroupId(oldApplication.getAppGrpId());
+
+                        applicationDtoAllList = removeFastTrackingAndTransfer(applicationDtoAllList);
+
+                        boolean needUpdateGroupStatus = applicationService.isOtherApplicaitonSubmit(applicationDtoAllList, oldApplication.getApplicationNo(),
+                                ApplicationConsts.APPLICATION_STATUS_APPROVED, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                        if (needUpdateGroupStatus ) {
+                            //update application Group status
+                            boolean appStatusIsAllRejected = checkAllStatus(applicationDtoAllList, ApplicationConsts.APPLICATION_STATUS_REJECTED);
+                            if (appStatusIsAllRejected) {
+                                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
+                            } else {
+                                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                            }
+                            applicationClient.updateApplication(applicationGroupDto);
+                        }
+                    }catch (Exception e){
+                        log.error(e.getMessage());
                     }
                     Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                     msgInfoMap.put("Applicant", applicantName);
@@ -379,5 +402,35 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             }
         }
         return applicationDtoList;
+    }
+    private boolean checkAllStatus(List<ApplicationDto> applicationDtoList, String status) {
+        boolean flag = false;
+        if (!IaisCommonUtils.isEmpty(applicationDtoList) && !StringUtil.isEmpty(status)) {
+            int index = 0;
+            for (ApplicationDto applicationDto : applicationDtoList) {
+                if (status.equals(applicationDto.getStatus())) {
+                    index++;
+                }
+            }
+            if (index == applicationDtoList.size()) {
+                flag = true;
+            }
+        }
+
+        return flag;
+    }
+    private List<ApplicationDto> removeFastTrackingAndTransfer(List<ApplicationDto> applicationDtos) {
+        List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                if (ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())) {
+                    continue;
+                }
+                if (!applicationDto.isFastTracking()) {
+                    result.add(applicationDto);
+                }
+            }
+        }
+        return result;
     }
 }
