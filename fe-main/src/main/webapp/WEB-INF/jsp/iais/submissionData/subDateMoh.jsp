@@ -127,7 +127,6 @@
     </div>
     <input hidden name="id" value="${user.id}">
     <input hidden name="action" id="action" value="">
-    <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <style>

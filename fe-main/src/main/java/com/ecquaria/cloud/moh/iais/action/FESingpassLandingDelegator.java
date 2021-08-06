@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
@@ -151,7 +152,6 @@ public class FESingpassLandingDelegator {
         ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNoUpper);
         ParamUtil.setRequestAttr(request, UserConstants.ID_TYPE, idType);
         ParamUtil.setRequestAttr(request, UserConstants.LOGIN_SCP, scp);
-        myInfoAjax.noTakenCallMyInfo(bpc,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(request,"FE_Singpass_Landing/receiveUserInfo",identityNoUpper);
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] END ...." + "nric : " + identityNoUpper));
     }
@@ -222,6 +222,7 @@ public class FESingpassLandingDelegator {
 
         log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(userSession)));
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
+        reLoadMyInfoData(request);
         log.info(StringUtil.changeForLog("SingPass Login service [receiveUserInfo] END ...."));
     }
 
@@ -270,10 +271,10 @@ public class FESingpassLandingDelegator {
 
     public boolean reLoadMyInfoData( HttpServletRequest request){
         log.info(StringUtil.changeForLog("------------------reLoadMyInfoData start -----------"));
-        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
+        if(AppConsts.YES .equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) || AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
             FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String identityNo = userSession.getIdentityNo();
-            Optional<MyInfoDto> infoOpt = Optional.ofNullable(myInfoAjax.getMyInfo(identityNo,request));
+            Optional<MyInfoDto> infoOpt = Optional.ofNullable(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ? myInfoAjax.getMyInfoData(request) :myInfoAjax.getMyInfo(identityNo,request));
             if (infoOpt.isPresent()){
                 MyInfoDto myInfo = infoOpt.get();
                 if(!myInfo.isServiceDown()){
@@ -293,6 +294,8 @@ public class FESingpassLandingDelegator {
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
                 }
+            }else {
+                ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
             }
 
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
