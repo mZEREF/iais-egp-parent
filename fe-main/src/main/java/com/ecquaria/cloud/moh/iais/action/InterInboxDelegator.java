@@ -146,10 +146,11 @@ public class InterInboxDelegator {
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
-        bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+//        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+        ParamUtil.setRequestAttr(request, "ssoToElisUrl",
+                elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
@@ -168,7 +169,8 @@ public class InterInboxDelegator {
         bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
+//        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
+        ParamUtil.setRequestAttr(request, "ssoToAlertUrl", alertUrl);
     }
 
     /**
