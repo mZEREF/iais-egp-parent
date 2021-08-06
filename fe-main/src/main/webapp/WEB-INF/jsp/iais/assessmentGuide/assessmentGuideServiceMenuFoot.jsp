@@ -103,6 +103,10 @@
         forwordMain("amendLic4_2");
     });
 
+    $("#amendLicence5").click(function(){
+        forwordMain("amendLic5");
+    });
+
     $("#submitDataMoh").click(function(){
         forwordMain("subDateMoh");
     });

@@ -127,25 +127,22 @@
 
   </c:when>
   <c:otherwise>
-    <%@ page import="com.ncs.secureconnect.sim.lite.SIMUtil" %>
-    <%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
     <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
-    <%@ page import="java.security.SecureRandom" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
     <%@ page import="java.util.UUID" %>
+    <%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
     <%!
       static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("singpass.jsp");
     %>
-    <%
+    <script>
       try {
-        SIMUtil.doSingPassLogin(request, response);
-      } catch (Exception e) {
-        logger.error(e.getMessage(),e);
-        out.println("<br><b>Error initializing Login </b></br>");
-        IaisEGPHelper.sendRedirect(request, response, FeLoginHelper.MAIN_WEB_URL);
+        location.href=<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>;
+      }catch ( e){
+        console.log('Error initializing Login');
+        location.href=<%=FeLoginHelper.MAIN_WEB_URL%>;
       }
-    %>
+    </script>
   </c:otherwise>
 </c:choose>
 <c:if test="${'Prod.OIDC' ne openTestMode}">
