@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -88,6 +89,10 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Autowired
     private GenerateIdClient generateIdClient;
+
+    public static final int THRESHOLD_ENTRIES = 10000;
+    public static final int THRESHOLD_SIZE = 1000000000; // 1 GB
+    public static final double THRESHOLD_RATIO = 10;
 
     private InspRecJobFieldDto getInspRecJobFieldDto() {
         InspRecJobFieldDto inspRecJobFieldDto = new InspRecJobFieldDto();
@@ -162,9 +167,82 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                         if(appIds.contains(pDto.getRefId())){
                             if (fil.getName().endsWith(".zip") && fil.getName().equals(pDto.getFileName())) {
                                 try (ZipFile unZipFile = new ZipFile(zipFile + pDto.getFilePath())) {
-                                    for (Enumeration<? extends ZipEntry> entries = unZipFile.entries(); entries.hasMoreElements(); ) {
+                                    int totalEntryArchive = 0;
+                                    int totalSizeArchive = 0;
+                                    Enumeration<? extends ZipEntry> entries = unZipFile.entries();
+                                    while(entries.hasMoreElements()) {
                                         ZipEntry zipEntry = entries.nextElement();
-                                        String reportId = unzipFile(zipEntry, unZipFile);
+                                        totalEntryArchive ++;
+
+                                        // too much entries in this archive, can lead to inodes exhaustion of the system
+                                        if(totalEntryArchive > THRESHOLD_ENTRIES) {
+                                            break;
+                                        }
+                                        //get report Id
+                                        String reportId = null;
+                                        String compressPath = inspRecJobFieldDto.getCompressPath();
+                                        if(!zipEntry.getName().endsWith(File.separator)) {
+                                            String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
+                                            String reportFilePath = realPath.substring(realPath.lastIndexOf(File.separator,realPath.lastIndexOf(File.separator) - 1) + 1);
+                                            reportId = reportFilePath.substring(0, reportFilePath.lastIndexOf(File.separator));
+                                            String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
+
+                                            log.debug(StringUtil.changeForLog("realPath:" + realPath));
+                                            log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
+                                            log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
+                                            log.debug(StringUtil.changeForLog("zipFileName:" + unZipFile.getName()));
+                                            log.debug(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
+                                            log.debug(StringUtil.changeForLog("reportId:" + reportId));
+
+                                            JobLogger.log(StringUtil.changeForLog("realPath:" + realPath));
+                                            JobLogger.log(StringUtil.changeForLog("saveFileName:" + saveFileName));
+                                            JobLogger.log(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
+                                            JobLogger.log(StringUtil.changeForLog("zipFileName:" + unZipFile.getName()));
+                                            JobLogger.log(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
+                                            JobLogger.log(StringUtil.changeForLog("reportId:" + reportId));
+
+                                            File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
+                                            try(OutputStream os = Files.newOutputStream(uploadRecFile.toPath());
+                                                BufferedOutputStream bos = new BufferedOutputStream(os);
+                                                InputStream is = unZipFile.getInputStream(zipEntry);
+                                                BufferedInputStream bis = new BufferedInputStream(is);
+                                                CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
+
+                                                byte[] b = new byte[1024];
+                                                int nBytes = is.read(b);
+                                                int totalSizeEntry = 0;
+                                                while(nBytes > 0) { // Compliant
+                                                    totalSizeEntry += nBytes;
+                                                    totalSizeArchive += nBytes;
+
+                                                    double compressionRatio = division(totalSizeEntry, zipEntry.getCompressedSize(), 0);
+                                                    log.debug(StringUtil.changeForLog("totalSizeEntry:" + totalSizeEntry));
+                                                    JobLogger.log(StringUtil.changeForLog("totalSizeEntry:" + totalSizeEntry));
+                                                    log.debug(StringUtil.changeForLog("compressionRatio:" + compressionRatio));
+                                                    JobLogger.log(StringUtil.changeForLog("compressionRatio:" + compressionRatio));
+                                                    if(compressionRatio > THRESHOLD_RATIO) {
+                                                        // ratio between compressed and uncompressed data is highly suspicious, looks like a Zip Bomb Attack
+                                                        break;
+                                                    }
+                                                }
+                                                // the uncompressed data size is too much for the application resource capacity
+                                                log.debug(StringUtil.changeForLog("totalSizeArchive:" + totalSizeArchive));
+                                                JobLogger.log(StringUtil.changeForLog("totalSizeArchive:" + totalSizeArchive));
+                                                if(totalSizeArchive > THRESHOLD_SIZE) {
+                                                    break;
+                                                }
+                                                int count = cos.read(b);
+                                                while(count != -1){
+                                                    bos.write(b,0, count);
+                                                    count = cos.read(b);
+                                                }
+                                            }catch (IOException e){
+                                                log.error(e.getMessage(), e);
+                                                JobLogger.log(e.getMessage(), e);
+                                            }
+                                        } else {
+                                            MiscUtil.generateFile(compressPath ,zipEntry.getName()).mkdirs();
+                                        }
                                         if (!StringUtil.isEmpty(reportId)) {
                                             reportIds.add(reportId);
                                         }
@@ -180,6 +258,15 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         return reportIds;
+    }
+
+    private double division(double a, double b, int accurate) {
+        if (accurate < 0) {
+            throw new RuntimeException("The accuracy parameter must be a positive integer or zero");
+        }
+        BigDecimal b1 = BigDecimal.valueOf(a);
+        BigDecimal b2 = BigDecimal.valueOf(b);
+        return b1.divide(b2, accurate, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private List<String> filterAppDocSizeFileSize(List<String> appIds, List<ProcessFileTrackDto> processFileTrackDtos) {
@@ -230,53 +317,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             }
         }
         return fileSize;
-    }
-
-    private String unzipFile(ZipEntry zipEntry, ZipFile zipFile)  {
-        InspRecJobFieldDto inspRecJobFieldDto = getInspRecJobFieldDto();
-        String compressPath = inspRecJobFieldDto.getCompressPath();
-        if(!zipEntry.getName().endsWith(File.separator)) {
-            String realPath = compressPath + File.separator + zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator) + 1);
-            String reportFilePath = realPath.substring(realPath.lastIndexOf(File.separator,realPath.lastIndexOf(File.separator) - 1) + 1);
-            String reportId = reportFilePath.substring(0, reportFilePath.lastIndexOf(File.separator));
-            String saveFileName = zipEntry.getName().substring(zipEntry.getName().lastIndexOf(File.separator) + 1);
-            log.debug(StringUtil.changeForLog("realPath:" + realPath));
-            log.debug(StringUtil.changeForLog("saveFileName:" + saveFileName));
-            log.debug(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
-            log.debug(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
-            log.debug(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
-            log.debug(StringUtil.changeForLog("reportId:" + reportId));
-
-            JobLogger.log(StringUtil.changeForLog("realPath:" + realPath));
-            JobLogger.log(StringUtil.changeForLog("saveFileName:" + saveFileName));
-            JobLogger.log(StringUtil.changeForLog("zipEntryName:" + zipEntry.getName()));
-            JobLogger.log(StringUtil.changeForLog("zipFileName:" + zipFile.getName()));
-            JobLogger.log(StringUtil.changeForLog("reportFilePath:" + reportFilePath));
-            JobLogger.log(StringUtil.changeForLog("reportId:" + reportId));
-
-            File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
-            try(OutputStream os = Files.newOutputStream(uploadRecFile.toPath());
-                BufferedOutputStream bos = new BufferedOutputStream(os);
-                InputStream is = zipFile.getInputStream(zipEntry);
-                BufferedInputStream bis = new BufferedInputStream(is);
-                CheckedInputStream cos = new CheckedInputStream(bis, new CRC32())) {
-
-                byte[] b = new byte[1024];
-                int count = cos.read(b);
-                while(count != -1){
-                    bos.write(b,0, count);
-                    count = cos.read(b);
-                }
-
-            }catch (IOException e){
-                log.error(e.getMessage(), e);
-                JobLogger.log(e.getMessage(), e);
-            }
-            return reportId;
-        } else {
-            MiscUtil.generateFile(compressPath ,zipEntry.getName()).mkdirs();
-        }
-        return null;
     }
 
     @Override

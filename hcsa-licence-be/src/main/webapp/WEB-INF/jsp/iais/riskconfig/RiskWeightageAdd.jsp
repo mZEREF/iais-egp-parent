@@ -29,17 +29,17 @@
                     <div class="instruction-content center-content">
                         <h2>Risk Weightage Configuration</h2>
                             <div class="table-gp">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th>Service Name</th>
-                                        <th>Last Inspection</th>
-                                        <th>Second Last Inspection</th>
-                                        <th>Financial Scheme Audit</th>
-                                        <th>Leadership And Governance</th>
-                                        <th>Legislative Breaches</th>
-                                        <th width="15%">Effective Start Date</th>
-                                        <th width="15%">Effective End Date</th>
+                                        <th scope="col" >Service Name</th>
+                                        <th scope="col" >Last Inspection</th>
+                                        <th scope="col" >Second Last Inspection</th>
+                                        <th scope="col" >Financial Scheme Audit</th>
+                                        <th scope="col" >Leadership And Governance</th>
+                                        <th scope="col" >Legislative Breaches</th>
+                                        <th scope="col" width="15%">Effective Start Date</th>
+                                        <th scope="col" width="15%">Effective End Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>

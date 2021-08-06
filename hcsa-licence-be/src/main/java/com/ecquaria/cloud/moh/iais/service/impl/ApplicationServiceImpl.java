@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -57,7 +56,18 @@ import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -855,23 +865,19 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean closeTaskWhenWhAppApprove(String appId) {
         boolean result = false;
-        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-        if (premiseMiscDto != null){
-            String oldApplicationId = premiseMiscDto.getRelateRecId();
-            if (!StringUtil.isEmpty(oldApplicationId)){
-                List<String> applicationList = IaisCommonUtils.genNewArrayList();
-                applicationList.add(oldApplicationId);
-                ApplicationDto applicationDto = applicationClient.getApplicationById(oldApplicationId).getEntity();
-                if (applicationDto != null){
-                    List<TaskDto> taskDtoList = taskOrganizationClient.getTaskbyApplicationNo(applicationDto.getApplicationNo()).getEntity();
-                    if (taskDtoList != null && taskDtoList.size()>0){
-                        taskDtoList.forEach(c -> {
-                            c.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                            taskOrganizationClient.updateTask(c).getEntity();
-                        });
-                    }
-                    result = true;
+        if (!StringUtil.isEmpty(appId)){
+            List<String> applicationList = IaisCommonUtils.genNewArrayList();
+            applicationList.add(appId);
+            ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            if (applicationDto != null){
+                List<TaskDto> taskDtoList = taskOrganizationClient.getTaskbyApplicationNo(applicationDto.getApplicationNo()).getEntity();
+                if (taskDtoList != null && taskDtoList.size()>0){
+                    taskDtoList.forEach(c -> {
+                        c.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                        taskOrganizationClient.updateTask(c).getEntity();
+                    });
                 }
+                result = true;
             }
         }
         return result;
@@ -1102,8 +1108,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                         if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationDto.getStatus())) {
                             vehicleFlag = InspectionConstants.SWITCH_ACTION_EDIT;
                         } else {
-                            String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
-                            vehicleFlag = prefix + (ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR.equalsIgnoreCase(taskDto.getRoleId()) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            boolean aoRole =TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1.equalsIgnoreCase(taskDto.getProcessUrl());
+                            if(aoRole){
+                                return  InspectionConstants.SWITCH_ACTION_VIEW;
+                            }else {
+                                String prefix =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null ? (InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT + "_") : "";
+                                vehicleFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
+                            }
                         }
                     }
                 }

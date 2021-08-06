@@ -15,13 +15,13 @@
   <tr>
     <td class="col-xs-4"><p>Vehicle Recommendations <c:if test="${'RETYPE007_edit' eq appVehicleFlag}"> <strong style="color:#ff0000;"> *</strong></c:if></p></td>
     <td class="col-xs-4"><div class="table-gp" >
-    <table class="table">
+    <table aria-describedby="" class="table">
       <thead>
       <tr align="center">
-        <th width="5%">S/N</th>
-        <th width="25%">Vehicle</th>
-        <th width="35%">Recommendation</th>
-        <th width="35%">Remarks</th>
+        <th scope="col" width="5%">S/N</th>
+        <th scope="col" width="25%">Vehicle</th>
+        <th scope="col" width="35%">Recommendation</th>
+        <th scope="col" width="35%">Remarks</th>
       </tr>
       </thead>
       <tbody>

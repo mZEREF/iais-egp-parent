@@ -35,63 +35,16 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
-                                    <iais:row>
-                                        <iais:field value="Name" width="11"/>
-                                        <iais:field value="${licensee.getName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID Type" width="11"/>
-                                        <label class="col-xs-11 col-md-4 control-label">
-                                            <iais:code code="${licensee.getLicenseeIndividualDto().getIdType()}"/>
-                                        </label>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID No." width="11"/>
-                                        <iais:field value="${licensee.getLicenseeIndividualDto().getIdNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Postal Code" width="11"/>
-                                        <iais:field value="${licensee.getPostalCode()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Address Type" width="11"/>
-                                        <iais:field value="${licensee.getAddrType()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Block / House No." width="11"/>
-                                        <iais:field value="${licensee.getBlkNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Floor No." width="11"/>
-                                        <iais:field value="${licensee.getFloorNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit No." width="11"/>
-                                        <iais:field value="${licensee.getUnitNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Street Name" width="11"/>
-                                        <iais:field value="${licensee.getStreetName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Building Name" width="11"/>
-                                        <iais:field value="${licensee.getBuildingName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Mobile No." width="11"/>
-                                        <iais:field value="${licensee.getLicenseeIndividualDto().getMobileNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Email Address" width="11"/>
-                                        <iais:field value="${licensee.getEmilAddr()}" width="11"/>
-                                    </iais:row>
+                                    <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                    <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                                    <a class="btn btn-primary save" id="reLoadMyInfo">Refresh And Save Data</a>
+                                                    <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
+                                                <input type="hidden" id="saveDataSolo" name="saveDataSolo" >
                                             </div>
                                         </div>
                                     </div>
@@ -105,6 +58,7 @@
     </div>
     <input hidden value="${backtype}" id="backtype">
     <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
+    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
@@ -112,7 +66,12 @@
         $('#mainForm').submit();
     })
 
-    $("#reLoadMyInfo").click(function () {
+    $("#reLoadMyInfoSave").click(function () {
+        $("[name='crud_action_type']").val('refresh');
+        $("#saveDataSolo").val("saveDataSolo");
+        $('#mainForm').submit();
+    })
+    function reLoadMyInfoTodo() {
         if(verifyTaken()){
             $("[name='crud_action_type']").val('refresh');
             $('#mainForm').submit();
@@ -121,5 +80,23 @@
             showWaiting();
             callAuthoriseApi();
         }
-    })
+    }
+
+    $('#addrType').on('change',checkAddressManatory);
+
+    function checkAddressManatory() {
+        var addrType = $('#addrType').val();
+        if ('ADDTY001' == addrType) {
+            $('.blkNoLabel').append('<span class="mandatory">*</span>');
+            $('.floorUnitLabel').append('<span class="mandatory">*</span>');
+        } else {
+            $('.blkNoLabel .mandatory').remove();
+            $('.floorUnitLabel .mandatory').remove();
+        }
+    }
+
+    $(document).ready(function() {
+        checkAddressManatory();
+    });
+
 </script>

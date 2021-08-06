@@ -25,22 +25,22 @@
         <c:forEach var ="section" items ="${commonDto.sectionDtoList}" varStatus="one">
             <br/>
             <h4><c:out value="${section.sectionName}"></c:out></h4>
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th>No.</th>
-                    <th>Regulation Clause Number</th>
-                    <th  width="30%">Item</th>
-                    <th class="text-center">Yes</th>
-                    <th class="text-center">No</th>
-                    <th class="text-center">N/A</th>
+                    <th scope="col" >No.</th>
+                    <th scope="col" >Regulation Clause Number</th>
+                    <th scope="col" width="30%">Item</th>
+                    <th scope="col" class="text-center">Yes</th>
+                    <th scope="col" class="text-center">No</th>
+                    <th scope="col" class="text-center">N/A</th>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
-                        <th>Self-assessment Answer</th>
+                        <th scope="col" >Self-assessment Answer</th>
                     </c:if>
-                    <th>Findings/NCs</th>
-                    <th>Actions Required</th>
-                    <th class="text-center">Rectified</th>
-                    <th></th>
+                    <th scope="col" >Findings/NCs</th>
+                    <th scope="col" >Actions Required</th>
+                    <th scope="col" class="text-center">Rectified</th>
+                    <th scope="col" ></th>
                 </tr>
                 </thead>
                 <tbody>

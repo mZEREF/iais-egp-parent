@@ -91,6 +91,7 @@
              <#if svcName??> and hcsa.svc_name = :svcName</#if>
              <#if common??> and svc.is_common = :common</#if>
              <#if svcSubType??> and svc.svc_subtype_name = :svcSubType</#if>
+             <#if inspectionEntity??> and svc.INSPECTION_ENTITY = :inspectionEntity</#if>
              <#if module??> and ${module} </#if>
              <#if type??> and ${type} </#if>
         ]]>

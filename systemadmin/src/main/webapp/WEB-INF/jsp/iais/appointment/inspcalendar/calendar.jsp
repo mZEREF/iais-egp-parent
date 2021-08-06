@@ -119,7 +119,7 @@
 
                     <iais:pagination  param="inspectorCalenDarQueryAttr" result="inspectorCalenDarResultAttr"/>
                     <div class="table-gp">
-                      <table class="table">
+                      <table aria-describedby="" class="table">
                         <thead>
                         <tr>
                           <iais:sortableHeader needSort="false"  style="width:1%" field="index" value="No."></iais:sortableHeader>

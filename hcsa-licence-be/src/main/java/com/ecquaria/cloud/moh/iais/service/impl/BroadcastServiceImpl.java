@@ -6,11 +6,15 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBeLicenseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -132,5 +136,37 @@ public class BroadcastServiceImpl implements BroadcastService {
             }
         }
         return broadcastApplicationDto;
+    }
+
+    @Override
+    public EventBeLicenseDto saveEventBeLicenseDto(String appStatus, ApplicationDto applicationDto, String submissionId, String evenRefNum,
+                                                   Process process) {
+        if(applicationDto != null) {
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)) {
+                String appType = applicationDto.getApplicationType();
+                if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+                    EventBeLicenseDto eventBeLicenseDto = new EventBeLicenseDto();
+                    eventBeLicenseDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    eventBeLicenseDto.setEventRefNo(evenRefNum);
+                    //set dto
+                    LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
+                    licAppCorrelationDto.setLicenceId(applicationDto.getOriginLicenceId());
+                    licAppCorrelationDto.setApplicationId(applicationDto.getId());
+                    //set roll back
+                    LicAppCorrelationDto rollBackLicAppCorrelationDto = new LicAppCorrelationDto();
+                    rollBackLicAppCorrelationDto.setApplicationId(applicationDto.getId());
+                    rollBackLicAppCorrelationDto.setLicenceId(applicationDto.getOriginLicenceId());
+
+                    //save
+                    SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBeLicenseDto, submissionId,
+                            EventBusConsts.SERVICE_NAME_LICENCESAVE,
+                            EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                            evenRefNum, process);
+
+                    return eventBeLicenseDto;
+                }
+            }
+        }
+        return null;
     }
 }

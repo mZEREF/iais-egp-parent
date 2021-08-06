@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExce
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemExcel;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -45,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +87,9 @@ public class HcsaChklItemDelegator {
 
     @Autowired
     private SystemParamConfig paramConfig;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     /**
      * StartStep: startStep
@@ -448,10 +453,12 @@ public class HcsaChklItemDelegator {
      * @throws IllegalAccessException
      * description: Verify that the added id already exists for the same section
      */
-        public void configToChecklist(BaseProcessClass bpc){
+    public void configToChecklist(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-        if (checked == null || checked.length == 0){
+        //String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+        LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request,
+                HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+        if (checked == null || checked.size() == 0) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return;
         }
@@ -765,14 +772,6 @@ public class HcsaChklItemDelegator {
 
         try {
             File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Upload_Template.xlsx");
-
-            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
-            if (IaisCommonUtils.isEmpty(checked)) {
-                FileUtils.writeFileResponseProcessContent(request, inputFile);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-                return;
-            }
-
             if (inputFile.exists() && inputFile.isFile()) {
                 // write Inspection Entity
                 List<MasterCodeView> masterCodes = MasterCodeUtil.retrieveByCategory(
@@ -788,7 +787,29 @@ public class HcsaChklItemDelegator {
                     inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
                             values.toArray(new String[values.size()]), excelConfigIndex);
                 }
+                // write service name
+                List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+                if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                    List<String> values = IaisCommonUtils.genNewArrayList(hcsaServiceDtos.size());
+                    Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(hcsaServiceDtos.size());
+                    int i = 1;
+                    for (HcsaServiceDto view : hcsaServiceDtos) {
+                        values.add(view.getSvcName());
+                        excelConfigIndex.put(i++, Collections.singletonList(5));
+                    }
+                    inputFile = IrregularExcelWriterUtil.writerToExcelByIndex(inputFile, 2,
+                            values.toArray(new String[values.size()]), excelConfigIndex);
+                }
+            }
 
+            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            if (IaisCommonUtils.isEmpty(checked)) {
+                FileUtils.writeFileResponseProcessContent(request, inputFile);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+                return;
+            }
+
+            if (inputFile.exists() && inputFile.isFile()) {
                 List<ChecklistItemDto> item = hcsaChklService.listChklItemByItemId(new ArrayList<>(checked));
                 List<ChecklistConfigExcel> uploadTemplate = IaisCommonUtils.genNewArrayList();
 

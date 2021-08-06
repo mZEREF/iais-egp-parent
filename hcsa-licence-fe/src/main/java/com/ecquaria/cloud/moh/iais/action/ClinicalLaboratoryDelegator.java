@@ -74,6 +74,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -397,6 +398,14 @@ public class ClinicalLaboratoryDelegator {
         sb.append("Please ensure that a clinical governance officer is assigned to each ")
                 .append(svcScopePageName.toLowerCase());
         ParamUtil.setRequestAttr(bpc.request,"CURR_STEP_NAME_LABLE",sb.toString());
+        //71688
+        String rfiPremiseId = "nice-select";
+        for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
+            if (appGrpPremisesDto.isRfiCanEdit()){
+                rfiPremiseId = appGrpPremisesDto.getId();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "RfiPremiseId", rfiPremiseId);
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
@@ -765,6 +774,10 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
+            //0068776
+            if (isRfi){
+                appSvcLaboratoryDisciplinesDtoList = currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList();
+            }
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String name = appGrpPremisesDto.getPremisesIndexNo() + "control--runtime--1";
@@ -793,11 +806,22 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String premisesType = appGrpPremisesDto.getPremisesType();
                     String premisesValue = appGrpPremisesDto.getPremisesIndexNo();
+                    String premisesAddress = appGrpPremisesDto.getAddress();
                     appSvcLaboratoryDisciplinesDto = new AppSvcLaboratoryDisciplinesDto();
                     appSvcLaboratoryDisciplinesDto.setPremiseType(premisesType);
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
-                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                    appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(premisesAddress);
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
+                    //0068776
+                    if (isRfi) {
+                        for (int j = appSvcLaboratoryDisciplinesDtoList.size() - 1; j >= 0; j--) {
+                            AppSvcLaboratoryDisciplinesDto item = appSvcLaboratoryDisciplinesDtoList.get(j);
+                            if (premisesType.equals(item.getPremiseType()) && premisesValue.equals(item.getPremiseVal()) &&
+                                    premisesAddress.equals(item.getPremiseGetAddress())) {
+                                appSvcLaboratoryDisciplinesDtoList.remove(item);
+                            }
+                        }
+                    }
                     appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                 }
                 i++;
@@ -1870,6 +1894,10 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcVehicleDto> appSvcVehicleDtos =IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().stream().forEach(obj -> {
+                    // Don't add current service vehicles
+                    if (Objects.equals(obj.getServiceId(), currSvcId)) {
+                        return;
+                    }
                     if (!IaisCommonUtils.isEmpty(obj.getAppSvcVehicleDtoList())) {
                         appSvcVehicleDtos.addAll(obj.getAppSvcVehicleDtoList());
                     }
@@ -2949,6 +2977,9 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }else{
                     appSvcClinicalDirectorDto.setOtherDesignation(null);
+                }
+                if (canSetValue(appPsnEditDto.isSpeciality(), isNewOfficer, partEdit)) {
+                    appSvcClinicalDirectorDto.setSpeciality(null);
                 }
                 if (canSetValue(appPsnEditDto.isTypeOfRegister(), isNewOfficer, partEdit)) {
                     appSvcClinicalDirectorDto.setTypeOfRegister(typeOfRegister);

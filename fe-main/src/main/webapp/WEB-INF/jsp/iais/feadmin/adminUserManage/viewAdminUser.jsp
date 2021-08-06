@@ -47,17 +47,17 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
-                                    <th>ID No.</th>
-                                    <th>ID Type</th>
-                                    <th>Salutation</th>
-                                    <th>Name</th>
-                                    <th>Designation</th>
-                                    <th>Is Administrator</th>
-                                    <th>Is Active</th>
-                                    <th>Action</th>
+                                    <th scope="col" >ID No.</th>
+                                    <th scope="col" >ID Type</th>
+                                    <th scope="col" >Salutation</th>
+                                    <th scope="col" >Name</th>
+                                    <th scope="col" >Designation</th>
+                                    <th scope="col" >Is Administrator</th>
+                                    <th scope="col" >Is Active</th>
+                                    <th scope="col" >Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>

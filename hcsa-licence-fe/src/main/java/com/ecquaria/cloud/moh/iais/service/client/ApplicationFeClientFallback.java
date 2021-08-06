@@ -138,6 +138,14 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
+    public FeignResponseEntity<AppSubmissionDto> saveWithdrawnApps(Map<String, Object> map) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppSubmissionDto> saveReqeustInformationSubmision( AppSubmissionRequestInformationDto appSubmissionRequestInformationDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

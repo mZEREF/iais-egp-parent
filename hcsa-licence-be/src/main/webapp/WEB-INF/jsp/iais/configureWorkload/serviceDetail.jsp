@@ -19,12 +19,12 @@
                     </h3>
 
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th>S/N</th>
-                                <th>Service</th>
-                                <th>Workload Manhours<br>(For illustration only)</th>
+                                <th scope="col" >S/N</th>
+                                <th scope="col" >Service</th>
+                                <th scope="col" >Workload Manhours<br>(For illustration only)</th>
                             </tr>
                             </thead>
                             <tbody>

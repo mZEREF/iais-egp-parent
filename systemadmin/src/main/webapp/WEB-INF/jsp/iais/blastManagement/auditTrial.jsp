@@ -26,37 +26,37 @@
                     </h3>
                     <iais:pagination param="auditSearchParam" result="searchResult"/>
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <c:choose>
                                 <c:when test="${'Email'.equals(mode)}">
                                     <tr align="center">
-                                        <th>S/N</th>
-                                        <th>Recipient</th>
-                                        <th>Subject</th>
-                                        <th>Content</th>
-                                        <th>Number of attempts</th>
-                                        <th>Log message</th>
-                                        <th>Sent date time</th>
-                                        <th>Created By</th>
-                                        <th>Created Date</th>
-                                        <th>Modified By</th>
-                                        <th>Modified Date</th>
+                                        <th scope="col" >S/N</th>
+                                        <th scope="col" >Recipient</th>
+                                        <th scope="col" >Subject</th>
+                                        <th scope="col" >Content</th>
+                                        <th scope="col" >Number of attempts</th>
+                                        <th scope="col" >Log message</th>
+                                        <th scope="col" >Sent date time</th>
+                                        <th scope="col" >Created By</th>
+                                        <th scope="col" >Created Date</th>
+                                        <th scope="col" >Modified By</th>
+                                        <th scope="col" >Modified Date</th>
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
                                     <tr align="center">
-                                        <th>S/N</th>
-                                        <th>Recipient</th>
-                                        <th>Header</th>
-                                        <th>Text</th>
-                                        <th>Number of attempts</th>
-                                        <th>Log message</th>
-                                        <th>Sent date time</th>
-                                        <th>Created By</th>
-                                        <th>Created Date</th>
-                                        <th>Modified By</th>
-                                        <th>Modified Date</th>
+                                        <th scope="col" >S/N</th>
+                                        <th scope="col" >Recipient</th>
+                                        <th scope="col" >Header</th>
+                                        <th scope="col" >Text</th>
+                                        <th scope="col" >Number of attempts</th>
+                                        <th scope="col" >Log message</th>
+                                        <th scope="col" >Sent date time</th>
+                                        <th scope="col" >Created By</th>
+                                        <th scope="col" >Created Date</th>
+                                        <th scope="col" >Modified By</th>
+                                        <th scope="col" >Modified Date</th>
                                     </tr>
                                 </c:otherwise>
                             </c:choose>

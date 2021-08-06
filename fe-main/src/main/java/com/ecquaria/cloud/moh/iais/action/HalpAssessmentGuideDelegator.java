@@ -1872,6 +1872,23 @@ public class HalpAssessmentGuideDelegator {
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+        String idNo = ParamUtil.getString(bpc.request,"personnelOptions");
+        if (idNo != null && !"Please Select".equals(idNo)){
+            List<String> idNos = IaisCommonUtils.genNewArrayList();
+            String id = idNo.split(",")[1];
+            idNos.add(id);
+            if (idNos.size() >0){
+                amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
+                amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+                amendDetailsSearchParam.addFilter("idNo",idNos,true);
+                QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
+                SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
+                if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
+                    ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, amendDetailsSearchParam);
+                    ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
+                }
+            }
+        }
         QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
         ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
         log.info("****end ******");
@@ -1946,14 +1963,23 @@ public class HalpAssessmentGuideDelegator {
         for (String item : licPremIdValue) {
             licIdValue.add(licenceInboxClient.getlicPremisesCorrelationsByPremises(item).getEntity().getLicenceId());
         }
+        String inbox_ack011 = MessageUtil.getMessageDesc("INBOX_ACK011");
         for(String licId : licIdValue){
-            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
-                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                bpc.request.setAttribute("cessationError",cessationError);
+                bpc.request.setAttribute("cessationError",inbox_ack011);
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
+            }else {
+                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                        ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                        bpc.request.setAttribute("cessationError",inbox_ack011);
+                        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                        return ;
+                    }
+                }
             }
         }
         Map<String, Boolean> resultMap = inboxService.listResultCeased(licIdValue);
@@ -2173,7 +2199,7 @@ public class HalpAssessmentGuideDelegator {
                 StringBuilder url2 = new StringBuilder();
                 url2.append(InboxConst.URL_HTTPS)
                         .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/preparePersonnelEdit")
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/initPsnEditInfo")
                         .append("?personnelNo=")
                         .append(MaskUtil.maskValue("personnelNo", id));
                 String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);

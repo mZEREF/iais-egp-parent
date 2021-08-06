@@ -110,10 +110,10 @@
                                         </div>
                                     </div>
                                     <div id="withdrawPagDiv"></div>
-                                    <table class="table">
+                                    <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
-                                            <th></th>
+                                            <th scope="col" ></th>
                                         </tr>
                                         </thead>
                                         <tbody id="withdrawBodyDiv"></tbody>

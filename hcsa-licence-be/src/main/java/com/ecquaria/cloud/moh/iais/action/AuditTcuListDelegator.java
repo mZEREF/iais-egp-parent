@@ -155,10 +155,32 @@ public class AuditTcuListDelegator {
         log.debug(StringUtil.changeForLog("the confirm start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = (List<AuditTaskDataFillterDto>) ParamUtil.getSessionAttr(request, HcsaLicenceBeConstant.SEARCH_PRAM_FOR_AUDIT_LIST_RESULT);
+        //send msg email sms when tcu audit
+        auditTaskDataDtos = sendForFeApptPreDateByCheck(auditTaskDataDtos, bpc);
+        //save data and create task
         auditSystemListService.setTcuAuditFlag(auditTaskDataDtos);
         auditSystemListService.doSubmit(auditTaskDataDtos);
         ParamUtil.setRequestAttr(request, SUBMIT_MESSAGE_SUCCESS,MessageUtil.getMessageDesc("AUDIT_ACK001"));
         ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
+    }
+
+    private List<AuditTaskDataFillterDto> sendForFeApptPreDateByCheck(List<AuditTaskDataFillterDto> auditTaskDataDtos, BaseProcessClass bpc) {
+        if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            for(int i = 0; i < auditTaskDataDtos.size(); i++) {
+                AuditTaskDataFillterDto auditTaskDataFillterDto = auditTaskDataDtos.get(i);
+                if(auditTaskDataFillterDto != null) {
+                    if(auditTaskDataFillterDto.isSelectedForAudit()) {
+                        String announcedCheck = ParamUtil.getRequestString(bpc.request, "announced" + i);
+                        if(!StringUtil.isEmpty(announcedCheck)) {
+                            auditTaskDataFillterDto.setAnnouncedFlag(announcedCheck);
+                        } else {
+                            auditTaskDataFillterDto.setAnnouncedFlag(null);
+                        }
+                    }
+                }
+            }
+        }
+        return auditTaskDataDtos;
     }
 
     public void cancelTask(BaseProcessClass bpc) {
@@ -191,7 +213,7 @@ public class AuditTcuListDelegator {
             ParamUtil.setRequestAttr(request, MAIN_URL, "MohAduitTcuList");
             AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT_INSPECTION, AuditTrailConsts.FUNCTION_CANCEL_AUDIT_INSP);
             // save cancel task
-             auditSystemListService.doCancel(auditTaskDataDtos);
+            auditSystemListService.doCancel(auditTaskDataDtos);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
         }

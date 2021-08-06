@@ -27,6 +27,9 @@ import java.util.Map;
 @Slf4j
 public class InspectionCheckListValidation extends CheckListCommonValidate implements CustomizeValidator{
 
+    private static String PLACEHOLDER =  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    private static String MESSAGE_ERROR_TIME = PLACEHOLDER + MessageUtil.getMessageDesc("UC_INSTA004_ERR005");
+    private static String MESSAGE_ERROR_TIME_LATTER = PLACEHOLDER + MessageUtil.getMessageDesc("UC_INSTA004_ERR006");
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -219,10 +222,10 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
         if(StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
             return 0;
         }else if(!StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
-            errMap.put("sTime","UC_INSTA004_ERR005");
+            errMap.put("sTime",MESSAGE_ERROR_TIME);
             return 1;
         }else if(StringUtil.isEmpty(startHour)&&!StringUtil.isEmpty(startMin)){
-            errMap.put("sTime","UC_INSTA004_ERR005");
+            errMap.put("sTime",MESSAGE_ERROR_TIME);
             return 1;
         }else{
           /* if("13".equalsIgnoreCase(startHour) ||"18".equalsIgnoreCase(startHour)){
@@ -240,10 +243,10 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
         if(StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
             return 0;
         }else if(!StringUtil.isEmpty(startHour)&&StringUtil.isEmpty(startMin)){
-            errMap.put("eTime","UC_INSTA004_ERR005");
+            errMap.put("eTime",MESSAGE_ERROR_TIME);
             return 1;
         }else if(StringUtil.isEmpty(startHour)&&!StringUtil.isEmpty(startMin)){
-            errMap.put("eTime","UC_INSTA004_ERR005");
+            errMap.put("eTime",MESSAGE_ERROR_TIME);
             return 1;
         }else{
           /*  if(("13".equalsIgnoreCase(startHour) && !"00".equalsIgnoreCase(startMin)) ||("18".equalsIgnoreCase(startHour) && !"00".equalsIgnoreCase(startMin))){
@@ -266,9 +269,9 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
             int eh = Integer.parseInt(endHour);
             int em = Integer.parseInt(endMin);
             if(sh>eh){
-                errMap.put("timevad","UC_INSTA004_ERR006");
+                errMap.put("timevad",MESSAGE_ERROR_TIME_LATTER);
             } else if(sh==eh&&sm>em){
-                errMap.put("timevad","UC_INSTA004_ERR006");
+                errMap.put("timevad",MESSAGE_ERROR_TIME_LATTER);
             }
         }catch (Exception e){
             log.debug(e.toString());
@@ -290,12 +293,12 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
             if(sh>=0&&sh<=24&&sm>=0&&sm<=60){
             }else{
                 flagNum++;
-                errMap.put("sTime","UC_INSTA004_ERR005");
+                errMap.put("sTime",MESSAGE_ERROR_TIME);
             }
         }catch (Exception e){
             log.debug(e.toString());
             flagNum++;
-            errMap.put("sTime","UC_INSTA004_ERR005");
+            errMap.put("sTime",MESSAGE_ERROR_TIME);
         }
         try {
             int sh = Integer.parseInt(endHour);
@@ -303,12 +306,12 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
             if(sh>=0&&sh<=24&&sm>=0&&sh<=60){
             }else{
                 flagNum++;
-                errMap.put("eTime","UC_INSTA004_ERR005");
+                errMap.put("eTime",MESSAGE_ERROR_TIME);
             }
         }catch (Exception e){
             log.debug(e.toString());
             flagNum++;
-            errMap.put("eTime","UC_INSTA004_ERR005");
+            errMap.put("eTime",MESSAGE_ERROR_TIME);
         }
         if(flagNum==0){
             return true;

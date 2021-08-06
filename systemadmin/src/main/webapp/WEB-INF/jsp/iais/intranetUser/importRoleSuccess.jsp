@@ -26,14 +26,14 @@
             <h2 class="component-title">Import Users</h2>
             <span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadError"></span>
             <div class="table-gp">
-              <table class="table application-group">
+              <table aria-describedby="" class="table application-group">
                 <thead>
                   <tr>
-                    <th style="width:10%;">No.</th>
-                    <th style="width:30%;">User ID</th>
-                    <th style="width:30%;">Role ID</th>
-                    <th style="width:30%;">Group ID</th>
-                    <th style="width:30%;">Status</th>
+                    <th scope="col" class="text-center"10%;">No.</th>
+                    <th scope="col" class="text-center"30%;">User ID</th>
+                    <th scope="col" class="text-center"30%;">Role ID</th>
+                    <th scope="col" class="text-center"30%;">Group ID</th>
+                    <th scope="col" class="text-center"30%;">Status</th>
                   </tr>
                 </thead>
                 <tbody>

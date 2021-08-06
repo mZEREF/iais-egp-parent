@@ -493,6 +493,14 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="conveyanceEmail" name="conveyanceEmail"
+                               class="conveyanceEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
 
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
@@ -770,6 +778,14 @@
                     </div>
                     <div class="clear"></div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email </label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="offSiteEmail" name="offSiteEmail"
+                               class="offSiteEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
 
                 <div class="form-group">
                     <div class="col-md-12 col-xs-12">
@@ -1031,7 +1047,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                     </div>
                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">

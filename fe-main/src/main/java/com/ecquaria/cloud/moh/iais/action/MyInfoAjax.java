@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
@@ -87,8 +89,9 @@ public class MyInfoAjax {
 		nric = getNric(nric, request);
 		if(StringUtil.isNotEmpty(nric)){
 			String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
-
-			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric)); ;
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC,nric);
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME+"_"+nric,redirectUriPostfix);
+			ParamUtil.setSessionAttr(request,"callAuthoriseApiUri",getAuthoriseApiUrl(redirectUri,nric));
 			String takenStartTime = (String) ParamUtil.getSessionAttr(request,MyinfoUtil.KEY_MYINFO_TAKEN_START_TIME+nric);
 			if(takenStartTime == null){
 				ParamUtil.setSessionAttr(request,"verifyTakenConfiguration","-1");
@@ -132,7 +135,7 @@ public class MyInfoAjax {
 				//Assembly data acquisition get taken
 				nric = getNric(nric,request);
 				if(StringUtil.isNotEmpty(nric)){
-					String redirectUri = "https://"+request.getServerName()+"/eservice/INTERNET/"+redirectUriPostfix;
+				    String redirectUri = ConfigHelper.getString("myinfo.common.call.back.url",redirectUriPostfix);;
 					MyInfoTakenDto accessTokenDto =  getTakenCallMyInfo(code,nric,redirectUri);
 					if(accessTokenDto != null){
 						setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(nric,accessTokenDto.getToken_type(),accessTokenDto.getAccess_token()),request);
@@ -322,7 +325,7 @@ public class MyInfoAjax {
 		String	clientId 					= ConfigHelper.getString("myinfo.common.client.id");
 		String 	purpose 					= ConfigHelper.getString("myinfo.authorise.purpose");
 		String spEsvcId                     = ConfigHelper.getString("myinfo.common.sp.esvcId");
-		redirectUri                         = ConfigHelper.getString("myinfo.authorise.call.back.url",redirectUri);
+		redirectUri                         = ConfigHelper.getString("myinfo.common.call.back.url",redirectUri);
 		return MyinfoUtil.getAuthoriseApiUrl(authApiUrl,nric,clientId,MyinfoUtil.getAttrsStringByListAttrs(getAttrList()),spEsvcId,purpose,nric,redirectUri);
 	}
 
@@ -357,4 +360,21 @@ public class MyInfoAjax {
         return null;
 	}
 
+	public MyInfoDto getMyInfoData(HttpServletRequest request){
+		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
+		if(AppConsts.YES.equalsIgnoreCase( myinfoOpen)){
+			String nric =(String) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_PROCESS_SESSION_NAME_NRIC);
+			MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric);
+			if( myInfoDto != null ){
+				if(myInfoDto.isServiceDown()){
+					ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
+				}
+			}
+			ParamUtil.setSessionAttr(request,MyinfoUtil.CALL_MYINFO_DTO_SEESION+"_"+ nric,null);
+			ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK,null);
+			return myInfoDto;
+		}else {
+			return null;
+		}
+	}
 }

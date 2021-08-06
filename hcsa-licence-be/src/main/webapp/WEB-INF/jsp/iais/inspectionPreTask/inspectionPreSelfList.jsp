@@ -41,15 +41,15 @@
                     <h3>Common</h3>
                   </c:if>
                   <div class="table-gp">
-                    <table class="table">
+                    <table aria-describedby="" class="table">
                       <thead>
                       <tr>
-                        <th width="10%">No.</th>
-                        <th width="36%">Regulation Clause Number</th>
-                        <th width="36%">Item</th>
-                        <th width="6%">Yes</th>
-                        <th width="6%">No</th>
-                        <th width="6%">N/A</th>
+                        <th scope="col" width="10%">No.</th>
+                        <th scope="col" width="36%">Regulation Clause Number</th>
+                        <th scope="col" width="36%">Item</th>
+                        <th scope="col" width="6%">Yes</th>
+                        <th scope="col" width="6%">No</th>
+                        <th scope="col" width="6%">N/A</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -69,15 +69,15 @@
                   <c:forEach var ="cdto" items ="${serListDto123}">
                     <h3>${cdto.svcName}</h3>
                     <div class="table-gp">
-                      <table class="table">
+                      <table aria-describedby="" class="table">
                         <thead>
                         <tr>
-                          <th width="10%">No.</th>
-                          <th width="36%">Regulation Clause Number</th>
-                          <th width="36%">Item</th>
-                          <th width="6%">Yes</th>
-                          <th width="6%">No</th>
-                          <th width="6%">N/A</th>
+                          <th scope="col" width="10%">No.</th>
+                          <th scope="col" width="36%">Regulation Clause Number</th>
+                          <th scope="col" width="36%">Item</th>
+                          <th scope="col" width="6%">Yes</th>
+                          <th scope="col" width="6%">No</th>
+                          <th scope="col" width="6%">N/A</th>
                         </tr>
                         </thead>
                         <tbody>

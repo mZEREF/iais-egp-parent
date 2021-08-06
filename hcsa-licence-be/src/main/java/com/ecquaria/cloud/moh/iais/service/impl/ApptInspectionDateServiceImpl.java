@@ -391,12 +391,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto1 : taskDtos) {
             String appPremCorrId = taskDto1.getRefNo();
             //add application
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-            applicationDtos.add(applicationDto);
             //save
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
@@ -428,17 +426,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             taskDtoList.add(tDto);
         }
         taskService.createTasks(taskDtoList);
-        if(AppConsts.YES.equals(apptInspectionDateDto.getTcuAuditAnnouncedFlag())) {
-            //url
-            String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
-            String applicantId = getAppSubmitByWithLicId(applicationViewDto.getApplicationDto().getOriginLicenceId());
-            //send email
-            String urlId = taskDto.getRefNo();
-            Map<String, Object> map = inspectionDateSendEmail(saveDate, loginUrl, applicantId, applicationViewDto, urlId, applicationDtos);
-            //send msg
-            String applicationNo = taskDto.getApplicationNo();
-            createMessage(loginUrl, applicationNo, map, applicationDtos);
-        }
     }
 
     @Override

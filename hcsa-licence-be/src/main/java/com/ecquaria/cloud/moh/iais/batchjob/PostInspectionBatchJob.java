@@ -82,6 +82,7 @@ public class PostInspectionBatchJob {
         map.forEach((insGrpId, licIds) -> {
             List<String> insGrpIds = IaisCommonUtils.genNewArrayList();
             List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+            //generate grpNo
             String grpNo = beEicGatewayClient.getAppNo(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION, signature.date(), signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for (AppSubmissionDto entity : appSubmissionDtoList) {

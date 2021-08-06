@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
@@ -199,7 +200,8 @@ public class RequestForChangeDelegator {
         }
         if(licenceDto != null && UNID==null) {
             String status = licenceDto.getStatus();
-            if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
+            if (!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status) &&
+                    !(ApplicationConsts.LICENCE_STATUS_APPROVED.equals(status) && IaisEGPHelper.isActiveMigrated())) {
                 String errMsg = "licence status is not active";
                 ParamUtil.setRequestAttr(bpc.request, "ErrorMsg", errMsg);
                 flag = false;
@@ -457,7 +459,7 @@ public class RequestForChangeDelegator {
             }
         }
         if(error.isEmpty()){
-            LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+            LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
             doValidateLojic(uen,error,licenceDto,licenseeDto);
             if(error.isEmpty()){
@@ -479,6 +481,9 @@ public class RequestForChangeDelegator {
                 FeeDto feeDto = getTransferFee(isCharity);
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
+                    if(licenceDto.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&licenceDto.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
+                        amount=0.0;
+                    }
                     appSubmissionDto.setAmount(amount);
                     log.info(StringUtil.changeForLog("The amount.length is -->:"+amount));
                     log.info(StringUtil.changeForLog("The selectCheakboxs.length is -->:"+selectCheakboxs.length));
@@ -545,7 +550,13 @@ public class RequestForChangeDelegator {
 
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
-                    ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
+                    if (amount == null || MiscUtil.doubleEquals(amount, 0.0)) {
+                        List<AppSubmissionDto> ackPageAppSubmission=new ArrayList<>(1);
+                        ackPageAppSubmission.add(appSubmissionDto);
+                        bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmission);
+                    } else {
+                        bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
+                    }
                     StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
                             .append(RfcConst.PAYMENTPROCESS);
@@ -585,7 +596,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"premisesInput",selectCheakboxs);
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
-        LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
+        LicenceDto licenceDto = requestForChangeService.getLicDtoById(licenceId);
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
         if(error.isEmpty()){
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);

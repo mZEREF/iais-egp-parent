@@ -521,9 +521,6 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
                 apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
                 cancelOrConfirmApptDate(apptCalendarStatusDto);
-                if(AppConsts.YES.equals(reschedulingOfficerDto.getTcuAuditAnnouncedFlag())) {
-                    sendEmailToApplicant(reschedulingOfficerDto);
-                }
             }
         }
     }

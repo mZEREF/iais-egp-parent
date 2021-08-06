@@ -1,30 +1,24 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.RequestForChangeMenuDelegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcClinicalDirectorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceInfoChangeEffectPerson;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -71,7 +65,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         set.addAll(list2);
         set.addAll(list3);
         list.addAll(set);
-        Set<String> set1=new HashSet<>(list4);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
         for (String string : list) {
             List<String> personnelDtoByIdNo = requestForChangeService.getPersonnelIdsByIdNo(string);
@@ -249,25 +242,25 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             }
             for (AppSvcPrincipalOfficersDto v : n) {
                 for (AppSvcPrincipalOfficersDto v1 : o) {
-                    if(v.getIdNo().equals(v1.getIdNo())){
-                        boolean b=    v.getProfessionBoard().equals(v1.getProfessionBoard())
-                                &&v.getProfRegNo().equals(v1.getProfRegNo())
-                                &&v.getSalutation().equals(v1.getSalutation())
-                                &&v.getName().equals(v1.getName())
-                                &&v.getIdType().equals(v1.getIdType())
-                                &&v.getDesignation().equals(v1.getDesignation())
-                                &&v.getSpeciality().equals(v1.getSpeciality())
-                                &&v.getSpecialtyGetDate().equals(v1.getSpecialtyGetDate())
-                                &&v.getTypeOfCurrRegi().equals(v1.getTypeOfCurrRegi())
-                                &&v.getCurrRegiDate().equals(v1.getCurrRegiDate())
-                                &&v.getPraCerEndDate().equals(v1.getPraCerEndDate())
-                                &&v.getTypeOfRegister().equals(v1.getTypeOfRegister())
-                                &&v.getRelevantExperience().equals(v1.getRelevantExperience())
-                                &&v.getHoldCerByEMS().equals(v1.getHoldCerByEMS())
-                                &&v.getAclsExpiryDate().equals(v1.getAclsExpiryDate())
-                                &&v.getMobileNo().equals(v1.getMobileNo())
-                                &&v.getEmailAddr().equals(v1.getEmailAddr());
-                        if(!b){
+                    if (v.getIdNo().equals(v1.getIdNo())) {
+                        boolean b = Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
+                                && Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
+                                && Objects.equals(v.getSalutation(), v1.getSalutation())
+                                && Objects.equals(v.getName(), v1.getName())
+                                && Objects.equals(v.getIdType(), v1.getIdType())
+                                && Objects.equals(v.getDesignation(), v1.getDesignation())
+                                && Objects.equals(v.getSpeciality(), v1.getSpeciality())
+                                && Objects.equals(v.getSpecialtyGetDate(), v1.getSpecialtyGetDate())
+                                && Objects.equals(v.getTypeOfCurrRegi(), v1.getTypeOfCurrRegi())
+                                && Objects.equals(v.getCurrRegiDate(), v1.getCurrRegiDate())
+                                && Objects.equals(v.getPraCerEndDate(), v1.getPraCerEndDate())
+                                && Objects.equals(v.getTypeOfRegister(), v1.getTypeOfRegister())
+                                && Objects.equals(v.getRelevantExperience(), v1.getRelevantExperience())
+                                && Objects.equals(v.getHoldCerByEMS(), v1.getHoldCerByEMS())
+                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())
+                                && Objects.equals(v.getMobileNo(), v1.getMobileNo())
+                                && Objects.equals(v.getEmailAddr(), v1.getEmailAddr());
+                        if (!b) {
                             ids.add(v.getIdNo());
                         }
                     }

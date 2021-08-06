@@ -125,19 +125,19 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
                     licEicClient.updateStatus(licList);
                 }
 
-                if (!IaisCommonUtils.isEmpty(licmList)) {
+                if (licmList!=null&&!licmList.isEmpty()) {
                     keepOn = true;
                     licmList.forEach(ert -> reTrigger(ert, auditTrailDto));
                     licmEicClient.updateStatus(licmList);
                 }
 
-                if (!IaisCommonUtils.isEmpty(orgList)) {
+                if (orgList!=null&&!orgList.isEmpty()) {
                     keepOn = true;
                     orgList.forEach(ert -> reTrigger(ert, auditTrailDto));
                     orgEicClient.updateStatus(orgList);
                 }
 
-                if (!IaisCommonUtils.isEmpty(sysList)) {
+                if (sysList!=null&&!sysList.isEmpty()) {
                     keepOn = true;
                     sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
                     eicClient.updateStatus(sysList);

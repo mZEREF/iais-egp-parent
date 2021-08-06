@@ -257,13 +257,13 @@
                         <c:if test="${specLicInfo !=null}">
                             <div><h4>The following specified healthcare services will also be ceased as their
                                 underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4></div>
-                            <table class="table-gp tablebox">
+                            <table aria-describedby="" class="table-gp tablebox">
                                 <tr style="text-align:center">
-                                    <th style="text-align:center;width: 0%">S/N</th>
-                                    <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.</th>
-                                    <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
-                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
-                                    <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
+                                    <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.</th>
+                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                    <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                 </tr>
                                 <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
                                     <tr style="text-align:center">

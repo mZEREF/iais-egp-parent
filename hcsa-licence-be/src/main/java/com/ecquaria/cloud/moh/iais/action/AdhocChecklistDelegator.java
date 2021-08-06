@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,8 @@ public class AdhocChecklistDelegator {
 
     @Autowired
     private HcsaChklService hcsaChklService;
+    @Autowired
+    private FillupChklistService fillupChklistService;
 
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(CheckItemQueryDto.class)
@@ -90,12 +93,12 @@ public class AdhocChecklistDelegator {
         TaskDto task = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         if (Optional.ofNullable(task).isPresent()) {
             String refNo = task.getRefNo();
-            ApplicationViewDto appView = applicationViewService.searchByCorrelationIdo(refNo);
+            ApplicationViewDto appView = applicationViewService.getApplicationViewDtoByCorrId(refNo);
             if (Optional.ofNullable(appView).isPresent()) {
                 ApplicationDto applicationDto = appView.getApplicationDto();
                 AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION,
                         AuditTrailConsts.FUNCTION_ADHOC_CHECKLIST, applicationDto.getApplicationNo());
-                boolean needVehicle = IaisCommonUtils.isNotEmpty(appView.getAppSvcVehicleDtos());
+                boolean needVehicle = fillupChklistService.checklistNeedVehicleSeparation(appView);
                 inspectionChecklist = Optional.ofNullable(inspectionChecklist).orElseGet(() -> adhocChecklistService.getInspectionChecklist(applicationDto,
                         needVehicle));
             }

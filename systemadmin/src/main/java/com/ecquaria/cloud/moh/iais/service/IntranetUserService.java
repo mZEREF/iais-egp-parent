@@ -50,7 +50,7 @@ public interface IntranetUserService {
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRoleByAccount(String accountId);
-    void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
+    List<UserGroupCorrelationDto> addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
     String getWrkGrpById(String groupId);
     void deleteUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -178,7 +179,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         BigDecimal leaInpBig = new BigDecimal(leaInp.toString());
         BigDecimal legInpBig = new BigDecimal(legInp.toString());
         BigDecimal result = lastBig.add(seclastInpBig).add(finInpBig).add(leaInpBig).add(legInpBig);
-        if(result.doubleValue()!=1.0D){
+        if(!MiscUtil.doubleEquals(result.doubleValue(), 1.0D)){
             errMap.put(temp.getServiceCode()+"totalw", "RSM_ERR002");
         }
     }

@@ -307,18 +307,18 @@
                                                     their
                                                     underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                             </div>
-                                            <table class="table-gp tablebox">
+                                            <table aria-describedby="" class="table-gp tablebox">
                                                 <tr>
-                                                    <th style="width: 1%">S/N</th>
-                                                    <th style="width: 25%"><iais:code code="CDN003"/>
+                                                    <th scope="col" class="text-center" 1%">S/N</th>
+                                                    <th scope="col" class="text-center" 25%"><iais:code code="CDN003"/>
                                                         Licence No.
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN003"/>
+                                                    <th scope="col" class="text-center" 25%"><iais:code code="CDN003"/>
                                                         Name
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN001"/> Licence No.
+                                                    <th scope="col" class="text-center" 25%"><iais:code code="CDN001"/> Licence No.
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN001"/> Name</th>
+                                                    <th scope="col" class="text-center" 25%"><iais:code code="CDN001"/> Name</th>
                                                 </tr>
                                                 <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                     <tr>

@@ -32,9 +32,10 @@
   <div class="components">
     <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
     <div class="table-gp">
-      <table class="table">
+      <table aria-describedby="" class="table">
         <thead>
         <tr>
+          <th scope="col" style="display: none"></th>
           <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
           <iais:sortableHeader needSort="false"  field="" value=" "></iais:sortableHeader>
           <iais:sortableHeader needSort="true"   field="CLAUSE_NO" value="Regulation Clause Number"></iais:sortableHeader>

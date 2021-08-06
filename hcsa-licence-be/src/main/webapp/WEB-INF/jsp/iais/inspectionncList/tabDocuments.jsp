@@ -11,15 +11,15 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="table-gp">
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="30%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="10%">Size</th>
-                    <th width="20%">Version</th>
-                    <th width="10%">Submitted By</th>
-                    <th width="10%">Date Submitted</th>
+                    <th scope="col" width="30%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="10%">Size</th>
+                    <th scope="col" width="20%">Version</th>
+                    <th scope="col" width="10%">Submitted By</th>
+                    <th scope="col" width="10%">Date Submitted</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -79,15 +79,15 @@
                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
                 </p>
             </div>
-            <table class="table">
+            <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="30%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="10%">Size</th>
-                    <th width="20%">Submitted By</th>
-                    <th width="10%">Date Submitted</th>
-                    <th width="10%">Action</th>
+                    <th scope="col" width="30%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="10%">Size</th>
+                    <th scope="col" width="20%">Submitted By</th>
+                    <th scope="col" width="10%">Date Submitted</th>
+                    <th scope="col" width="10%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">

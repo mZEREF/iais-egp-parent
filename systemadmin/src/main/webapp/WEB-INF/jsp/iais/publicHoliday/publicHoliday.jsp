@@ -78,11 +78,11 @@
                         <iais:pagination param="holidaySearchParam" result="HolidaySearchResult"/>
 
                         <div class="table-gp">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                                     <tr align="center">
                                         <iais:sortableHeader needSort="false" field="" value=" "/>
-                                        <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                        <th scope="col" style="text-align:center;width: 0%">S/N</th>
                                         <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
                                         <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
                                         <iais:sortableHeader needSort="true"  field="PH_DESC" value="Holiday Description"/>

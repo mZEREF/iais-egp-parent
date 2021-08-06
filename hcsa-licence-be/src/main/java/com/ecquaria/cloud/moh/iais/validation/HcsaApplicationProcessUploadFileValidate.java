@@ -24,7 +24,7 @@ public class HcsaApplicationProcessUploadFileValidate implements CustomizeValida
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
 
-        if(commonsMultipartFile.isEmpty()){
+        if(commonsMultipartFile != null && commonsMultipartFile.isEmpty()){
             errMap.put("selectedFile","The file cannot be empty.");
         }else{
 //            if(commonsMultipartFile.getSize() > FileMaxLength * 1024 * 1024){

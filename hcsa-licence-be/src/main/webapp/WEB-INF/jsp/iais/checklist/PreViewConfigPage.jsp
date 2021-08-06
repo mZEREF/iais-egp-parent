@@ -54,13 +54,13 @@
                                     <div class="panel-collapse collapse in" id="collapsePremise${status.index}" role="tabpanel"
                                          aria-labelledby="headingPremise">
                                         <div class="panel-body">
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Regulation Clause Number</th>
-                                                    <th>Regulations</th>
-                                                    <th>Checklist Item</th>
-                                                    <th>Risk Level</th>
+                                                    <th scope="col" >Regulation Clause Number</th>
+                                                    <th scope="col" >Regulations</th>
+                                                    <th scope="col" >Checklist Item</th>
+                                                    <th scope="col" >Risk Level</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>

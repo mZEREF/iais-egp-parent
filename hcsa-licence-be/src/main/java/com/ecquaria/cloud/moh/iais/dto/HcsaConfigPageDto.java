@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Data
 public class HcsaConfigPageDto implements Serializable {
-    private static final long serialVersionUID = 1184219139394029281L;
+    private static final long serialVersionUID = 1L;
     private String routingSchemeId;
     private String routingSchemeName;
     private String workloadId;

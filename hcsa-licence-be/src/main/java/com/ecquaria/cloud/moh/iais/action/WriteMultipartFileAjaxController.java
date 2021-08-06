@@ -92,24 +92,26 @@ public class WriteMultipartFileAjaxController {
             }
             if(doc.isPassDocValidate()){
                 String fileName = selectedFile.getOriginalFilename();
-                if(fileName.indexOf('\\') > 0){
-                    fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
+                if(fileName!=null) {
+                    if (fileName.indexOf('\\') > 0) {
+                        fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
+                    }
+                    File toFile = FileUtils.multipartFileToFile(selectedFile);
+                    byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
+                    AttachmentDto attachmentDto = new AttachmentDto();
+                    attachmentDto.setData(fileToByteArray);
+                    attachmentDto.setDocName(fileName);
+                    attachmentDto.setDocSize(Long.toString(size));
+                    attachmentDto.setId(UUID.randomUUID().toString());
+                    if (IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())) {
+                        List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+                        attachmentDtos.add(attachmentDto);
+                        blastManagementDto.setAttachmentDtos(attachmentDtos);
+                    } else {
+                        blastManagementDto.getAttachmentDtos().add(attachmentDto);
+                    }
+                    ParamUtil.setSessionAttr(request, "giroAcctFileDto", blastManagementDto);
                 }
-                File toFile = FileUtils.multipartFileToFile(selectedFile);
-                byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
-                AttachmentDto attachmentDto = new AttachmentDto();
-                attachmentDto.setData(fileToByteArray);
-                attachmentDto.setDocName(fileName);
-                attachmentDto.setDocSize(Long.toString(size));
-                attachmentDto.setId(UUID.randomUUID().toString());
-                if(IaisCommonUtils.isEmpty(blastManagementDto.getAttachmentDtos())){
-                    List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
-                    attachmentDtos.add(attachmentDto);
-                    blastManagementDto.setAttachmentDtos(attachmentDtos);
-                }else{
-                    blastManagementDto.getAttachmentDtos().add(attachmentDto);
-                }
-                ParamUtil.setSessionAttr(request,"giroAcctFileDto",blastManagementDto);
             }
             data = setHtmlValue(request,blastManagementDto.getAttachmentDtos(),errUploadFile);
         }
@@ -189,7 +191,7 @@ public class WriteMultipartFileAjaxController {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null&&blastManagementDto.getAttachmentDtos()!=null){
             for (AttachmentDto att:blastManagementDto.getAttachmentDtos()
-                 ) {
+            ) {
                 if(att.getId().equals(fileRepoId)){
                     byte[] fileData =att.getData();
                     if(fileData != null){

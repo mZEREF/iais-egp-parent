@@ -48,14 +48,14 @@
                     <div id="personPagDiv"></div>
                     <div class="col-sx-12">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead style="align-content: center">
                                 <tr>
-                                    <th style="width: 15%">Name</th>
-                                    <th style="width: 15%">Email</th>
-                                    <th style="width: 15%">Mobile</th>
-                                    <th style="width: 30%">Licence</th>
-                                    <th style="width: 25%">Roles</th>
+                                    <th scope="col" style="width: 15%">Name</th>
+                                    <th scope="col" style="width: 15%">Email</th>
+                                    <th scope="col" style="width: 15%">Mobile</th>
+                                    <th scope="col" style="width: 30%">Licence</th>
+                                    <th scope="col" style="width: 25%">Roles</th>
                                 </tr>
                                 </thead>
                                 <c:choose>

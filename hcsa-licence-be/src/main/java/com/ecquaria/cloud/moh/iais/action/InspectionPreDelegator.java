@@ -106,7 +106,7 @@ public class InspectionPreDelegator {
         }catch (MaskAttackException e){
             log.error(e.getMessage(), e);
             try{
-                IaisEGPHelper.redirectUrl(bpc.response, "https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                IaisEGPHelper.redirectUrl(bpc.response, "https://" + bpc.request.getServerName() + "/hcsa-licence-web/CsrfErrorPage.jsp");
             } catch (IOException ioe){
                 log.error(ioe.getMessage(), ioe);
                 return;
@@ -156,39 +156,41 @@ public class InspectionPreDelegator {
             //set Application RFI Info
             applicationViewDto = inspectionPreTaskService.setApplicationRfiInfo(applicationViewDto);
         }
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appStatus = applicationDto.getStatus();
-        inspectionPreTaskDto.setAppStatus(appStatus);
-        //get process decision
-        List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto);
-        //Audit application doesn't do back and rfi
-        if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
-            if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
-                //route back set stage and userId map
-                inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationViewDto, inspectionPreTaskDto);
-                List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
-                inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
-                ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
+        if(applicationViewDto != null) {
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            String appStatus = applicationDto.getStatus();
+            inspectionPreTaskDto.setAppStatus(appStatus);
+            //get process decision
+            List<SelectOption> processDecOption = inspectionPreTaskService.getProcessDecOption(applicationDto);
+            //Audit application doesn't do back and rfi
+            if(!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationDto.getApplicationType())) {
+                if (!ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationDto.getApplicationType())) {
+                    //route back set stage and userId map
+                    inspectionPreTaskDto = inspectionPreTaskService.getPreInspRbOption(applicationViewDto, inspectionPreTaskDto);
+                    List<SelectOption> preInspRbOption = inspectionPreTaskDto.getPreInspRbOption();
+                    inspectionPreTaskDto.setPreInspRbOption(preInspRbOption);
+                    ParamUtil.setSessionAttr(bpc.request, "preInspRbOption", (Serializable) preInspRbOption);
+                }
+                //get Request For Information
+                List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption(applicationDto.getApplicationType());
+                inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
             }
-            //get Request For Information
-            List<SelectOption> rfiCheckOption = inspectionPreTaskService.getRfiCheckOption(applicationDto.getApplicationType());
-            inspectionPreTaskDto.setPreInspRfiOption(rfiCheckOption);
+            //adhocChecklist
+            boolean needVehicle = fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto);
+            List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto, needVehicle);
+            //Self-Checklist
+            List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
+            setPreInspSelfChecklistInfo(selfAssessments, bpc);
+            //Inspection history
+            List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId(), applicationDto.getId());
+            ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
+            ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
+            ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
+            ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
+            ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
+            ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
+            ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
         }
-        //adhocChecklist
-        boolean needVehicle = IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos());
-        List<ChecklistConfigDto> inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto, needVehicle);
-        //Self-Checklist
-        List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(taskDto.getRefNo());
-        setPreInspSelfChecklistInfo(selfAssessments, bpc);
-        //Inspection history
-        List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId(), applicationDto.getId());
-        ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
-        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
-        ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
-        ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
-        ParamUtil.setSessionAttr(bpc.request, "processDecOption", (Serializable) processDecOption);
-        ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONDTO, applicationDto);
-        ParamUtil.setSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO, applicationViewDto);
     }
 
     private void setPreInspSelfChecklistInfo(List<SelfAssessment> selfAssessments, BaseProcessClass bpc) {
@@ -375,8 +377,8 @@ public class InspectionPreDelegator {
         if (inspectionChecklist == null) {
             ApplicationViewDto appView = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request,
                     ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
-            boolean needVehicle = appView != null && IaisCommonUtils.isNotEmpty(appView.getAppSvcVehicleDtos());
-            inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto), needVehicle);
+            boolean needVehicle = appView != null && fillupChklistService.checklistNeedVehicleSeparation(appView);
+            inspectionChecklist = adhocChecklistService.getInspectionChecklist(applicationDto, needVehicle);
         }
         //generate self report
         if(taskDto != null) {

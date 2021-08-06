@@ -6,63 +6,38 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
 
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="dashboard.jsp" %>
+<%@include file="amendDashboard.jsp" %>
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_additional" value=""/>
     <input type="hidden" name="psnSwitch" value="">
     <input type="hidden" name="eqHciCode" value="${eqHciCode}">
-    <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-    <div class="container">
-        <div class="navigation-gp">
-            <div class="row">
-                <c:choose>
-                    <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
-                        <div class="col-xs-12"><h1>${DashboardTitle}</h1></div>
-                    </c:when>
-                    <c:otherwise>
-                        <c:choose>
-                            <c:when test="${'APTY005' == AppSubmissionDto.appType}">
-                                <%@include file="../resForChange/amendHeaderNotLic.jsp"%>
-                            </c:when>
-                            <c:when test="${'APTY004' == AppSubmissionDto.appType}">
-                                <%@include file="../withoutrenewal/renewalHeader.jsp"%>
-                            </c:when>
-                        </c:choose>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-    </div>
-    </div>
-    <br/>
     <div class="main-content">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="tab-gp steps-tab">
+                    <div class="tab-gp">
                         <div class="tab-content">
-
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <br/>
                                 <h2>Payment Summary</h2>
                                 <%--<p >--%>
-                                    <%--Total amount due: ${dAmount}--%>
+                                <%--Total amount due: ${dAmount}--%>
                                 <%--</p>--%>
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
-                                            <th>Service</th>
-                                            <th>Application Type</th>
-                                            <th>Application No.</th>
-                                            <th>Amount</th>
+                                            <th scope="col" >Service</th>
+                                            <th scope="col" >Application Type</th>
+                                            <th scope="col" >Application No.</th>
+                                            <th scope="col" >Amount</th>
                                         </tr>
                                         </thead>
                                         <tbody>

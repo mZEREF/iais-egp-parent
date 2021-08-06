@@ -39,12 +39,12 @@
                 <iais:section title="" id = "reSchOfficerDate">
                   <c:if test="${not empty reschedulingOfficerDto.newInspDates}">
                     <div class="table-gp">
-                      <table class="apptApp table">
+                      <table aria-describedby="" class="apptApp table">
                         <thead>
                         <tr align="center">
-                          <th>Application No</th>
-                          <th>Application Status</th>
-                          <th>MOH Officer(s)</th>
+                          <th scope="col" >Application No</th>
+                          <th scope="col" >Application Status</th>
+                          <th scope="col" >MOH Officer(s)</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 @Slf4j
 public class MasterCodeTag extends DivTagSupport {
-    private static final long serialVersionUID = -4185228153000504522L;
+    private static final long serialVersionUID = 8838025778803558930L;
 
     private String code;
     private boolean empty;
@@ -26,13 +26,17 @@ public class MasterCodeTag extends DivTagSupport {
 
     public MasterCodeTag() {
         super();
-        init();
+        cleanFields();
     }
 
     // resets local state
     @Override
     protected void init() {
         super.init();
+        cleanFields();
+    }
+
+    private void cleanFields() {
         try {
             setCode("");
         } catch (JspException e) {
@@ -43,11 +47,13 @@ public class MasterCodeTag extends DivTagSupport {
     }
 
     // Releases any resources we may have (or inherit)
+    @Override
     public void release() {
         super.release();
         init();
     }
 
+    @Override
     public int doStartTag() throws JspException {
         String description = MasterCodeUtil.getCodeDesc(code);
 

@@ -10,7 +10,7 @@
         <div class="form-check-gp">
             <div class="row">
                 <div class="col-xs-12">
-                    <table class="col-xs-12">
+                    <table aria-describedby="" class="col-xs-12">
                         <%--<c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
                             <tr>
                                 <td>

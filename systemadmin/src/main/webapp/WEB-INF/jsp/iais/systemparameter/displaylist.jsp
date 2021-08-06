@@ -91,7 +91,7 @@
                             <div class="components">
                                 <div >
                                     <div class="table-gp">
-                                    <table class="table">
+                                    <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
                                             <iais:sortableHeader needSort="false" style="width:5%; " field="" value="No."></iais:sortableHeader>

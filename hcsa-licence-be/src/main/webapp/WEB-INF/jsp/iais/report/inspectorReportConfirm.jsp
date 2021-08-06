@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -13,10 +14,10 @@
                 <div class="intranet-content">
                     <div class="bg-title">
                         <c:if test="${askType!='Y'}">
-                            <h2>The inspection report has been submitted.</h2>
+                            <h2><iais:message key="LOLEV_ACK036"/></h2>
                         </c:if>
                         <c:if test="${askType=='Y'}">
-                            <h2>You have successfully given clarification.</h2>
+                            <h2><iais:message key="UC_INSP_ACK005"/></h2>
                         </c:if>
                     </div>
                 </div>

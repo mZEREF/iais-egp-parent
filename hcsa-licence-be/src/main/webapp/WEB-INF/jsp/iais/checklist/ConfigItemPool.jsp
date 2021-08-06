@@ -70,7 +70,8 @@
           <div class="form-group">
             <label class="col-xs-4 col-md-2 control-label" >Status</label>
             <div class="col-xs-12 col-md-8 col-lg-9">
-              <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Select Status"></iais:select>
+              <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
+                           firstOption="Select Status" filterValue="CMSTAT002,CMSTAT004,DRAFT001"/>
             </div>
           </div>
         </div>
@@ -82,11 +83,11 @@
             <div class="col-xs-12">
               <div class="components">
                 <div class="table-gp">
-                  <table class="table">
+                  <table aria-describedby="" class="table">
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                      <td></td>
+                      <th scope="col"></th>
                       <iais:sortableHeader needSort="true"   field="regulationClauseNo" value="Regulation Clause Number"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="regulationClause" value="Regulations"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="checklistItem" value="Checklist Item"></iais:sortableHeader>

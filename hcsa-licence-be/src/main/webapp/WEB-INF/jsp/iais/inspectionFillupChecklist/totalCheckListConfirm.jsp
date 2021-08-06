@@ -50,7 +50,12 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <table class="table table-bordered">
+                                                <table aria-describedby="" class="table table-bordered">
+                                                    <thead style="display: none">
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                    </thead>
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)</td>
@@ -93,7 +98,12 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <table class="table table-bordered">
+                                                <table aria-describedby="" class="table table-bordered">
+                                                    <thead style="display: none">
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                    </thead>
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">HCI Code</td>
@@ -134,14 +144,14 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="table-gp">
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
+                                                    <th scope="col" >Document</th>
+                                                    <th scope="col" >File</th>
+                                                    <th scope="col" >Size</th>
+                                                    <th scope="col" >Submitted By</th>
+                                                    <th scope="col" >Date Submitted</th>
                                                 </tr>
                                                 </thead>
 
@@ -174,15 +184,15 @@
                                             <div  class="text ">
                                                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
                                             </div>
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>Document</th>
-                                                    <th>File</th>
-                                                    <th>Size</th>
-                                                    <th>Submitted By</th>
-                                                    <th>Date Submitted</th>
-                                                    <th>Action</th>
+                                                    <th scope="col" >Document</th>
+                                                    <th scope="col" >File</th>
+                                                    <th scope="col" >Size</th>
+                                                    <th scope="col" >Submitted By</th>
+                                                    <th scope="col" >Date Submitted</th>
+                                                    <th scope="col" >Action</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -208,17 +218,17 @@
                                             <c:forEach var ="section" items ="${commonDto.sectionDtoList}">
                                                 <br/>
                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                <table class="table">
+                                                <table aria-describedby="" class="table">
                                                     <thead>
                                                     <tr>
-                                                        <th>No.</th>
-                                                        <th>Regulation Clause Number</th>
-                                                        <th>Item</th>
-                                                        <th>Yes</th>
-                                                        <th>No</th>
-                                                        <th>N/A</th>
-                                                        <th>Remark</th>
-                                                        <th>Rectified</th>
+                                                        <th scope="col" >No.</th>
+                                                        <th scope="col" >Regulation Clause Number</th>
+                                                        <th scope="col" >Item</th>
+                                                        <th scope="col" >Yes</th>
+                                                        <th scope="col" >No</th>
+                                                        <th scope="col" >N/A</th>
+                                                        <th scope="col" >Remark</th>
+                                                        <th scope="col" >Rectified</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -248,17 +258,17 @@
                                             <c:forEach var ="section" items ="${fillCheckListDto.sectionDtoList}">
                                                 <br/>
                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                <table class="table">
+                                                <table aria-describedby="" class="table">
                                                     <thead>
                                                     <tr>
-                                                        <th>No.</th>
-                                                        <th>Regulation Clause Number</th>
-                                                        <th>Item</th>
-                                                        <th>Yes</th>
-                                                        <th>No</th>
-                                                        <th>N/A</th>
-                                                        <th>Remark</th>
-                                                        <th>Rectified</th>
+                                                        <th scope="col" >No.</th>
+                                                        <th scope="col" >Regulation Clause Number</th>
+                                                        <th scope="col" >Item</th>
+                                                        <th scope="col" >Yes</th>
+                                                        <th scope="col" >No</th>
+                                                        <th scope="col" >N/A</th>
+                                                        <th scope="col" >Remark</th>
+                                                        <th scope="col" >Rectified</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -285,16 +295,16 @@
                                             <h3>Adhoc</h3>
                                             <br/>
                                             <h4></h4>
-                                            <table class="table">
+                                            <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>No.</th>
-                                                    <th>Item</th>
-                                                    <th>Yes</th>
-                                                    <th>No</th>
-                                                    <th>N/A</th>
-                                                    <th>Remark</th>
-                                                    <th>Rectified</th>
+                                                    <th scope="col" >No.</th>
+                                                    <th scope="col" >Item</th>
+                                                    <th scope="col" >Yes</th>
+                                                    <th scope="col" >No</th>
+                                                    <th scope="col" >N/A</th>
+                                                    <th scope="col" >Remark</th>
+                                                    <th scope="col" >Rectified</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>

@@ -14,7 +14,7 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                         <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>
                             <tr>

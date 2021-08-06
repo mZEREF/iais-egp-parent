@@ -32,17 +32,17 @@
                                     <p>Your licences to renew are listed below:</p>
                                 </c:if>
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
-                                            <th>Licence No.</th>
-                                            <th>Type</th>
+                                            <th scope="col" >Licence No.</th>
+                                            <th scope="col" >Type</th>
                                             <c:if test="${isSingle == 'Y'}">
-                                                <th>Licensee</th>
+                                                <th scope="col" >Licensee</th>
                                             </c:if>
-                                            <th class="premises-info">Mode of Service Delivery</th>
-                                            <th>Start Date</th>
-                                            <th style="white-space: nowrap;">Expires On</th>
+                                            <th scope="col" class="premises-info">Mode of Service Delivery</th>
+                                            <th scope="col" >Start Date</th>
+                                            <th scope="col" style="white-space: nowrap;">Expires On</th>
                                         </tr>
                                         </thead>
                                         <tbody>

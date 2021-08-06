@@ -26,12 +26,12 @@
                         </div>
                         <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                             <div class="panel-body">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th width="50%"><p>Checklist Item</p></th>
-                                        <th width="40%"><p>Answer Type</p></th>
-                                        <th width="10%"><p>Risk Level</p></th>
+                                        <th scope="col" width="50%"><p>Checklist Item</p></th>
+                                        <th scope="col" width="40%"><p>Answer Type</p></th>
+                                        <th scope="col" width="10%"><p>Risk Level</p></th>
                                     </tr>
                                     </thead>
                                     <tbody>

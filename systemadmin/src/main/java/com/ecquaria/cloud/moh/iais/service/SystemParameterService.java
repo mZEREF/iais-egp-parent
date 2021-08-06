@@ -15,8 +15,6 @@ public interface SystemParameterService {
 
     OrgUserDto retrieveOrgUserAccountById(String userId);
 
-    void initPropertyKeyOffset();
-
     boolean getPropertyOffsetStatus(String propertiesKey);
 
     void setPropertyOffset(String propertiesKey, boolean flag);

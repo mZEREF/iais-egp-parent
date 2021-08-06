@@ -67,10 +67,10 @@
                                             <iais:pagination param="searchGiroAccountParam" result="searchGiroDtoResult"/>
                                             <div class="table-responsive">
                                                 <div class="table-gp">
-                                                    <table class="table">
+                                                    <table aria-describedby="" class="table">
                                                         <thead>
                                                         <tr align="center">
-                                                            <th style="width:2%">
+                                                            <th scope="col" class="text-center"2%">
 
                                                             </th>
 <%--                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"--%>
