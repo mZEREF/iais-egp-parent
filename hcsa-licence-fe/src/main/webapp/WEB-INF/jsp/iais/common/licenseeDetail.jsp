@@ -77,6 +77,15 @@
 
     function initLicenseePage() {
         checkLicenseeType();
+        var assignSel = $('#assignSelect').val();
+        var type = $('#licenseeType').val();
+        console.info(assignSel + " --- " + type);
+        if ( $('#licenseeType').length > 0 && ('-1' == assignSel || isEmpty(assignSel)) && type != '${companyType}') {
+            $('.licenseeType').addClass('hidden');
+            $('.licensee-detail').hide();
+        } else {
+            $('.licenseeType').removeClass('hidden');
+        }
         checkAddressManatory();
         var $postalCode = $('div.postalCodeDiv').find('.postalCode');
         if ($postalCode.length > 0) {
@@ -91,10 +100,9 @@
         }
         $('.assignSelectLabel .mandatory').remove();
         if (type == '${companyType}') {
-            $('.company-no').show();
-            $('.ind-no').hide();
+            $('.company-no').removeClass('hidden');
+            $('.ind-no').addClass('hidden');
             $('.retrieveAddr').addClass('hidden');
-            //loadCompanyLicensee($('div.licenseeContent'));
             $('.licensee-com').show();
             $('.licensee-detail').hide();
             // init data
@@ -104,10 +112,9 @@
                 clearFields('.licensee-detail');
             }
         } else if (type == '${individualType}') {
-            $('.company-no').hide();
-            $('.ind-no').show();
+            $('.company-no').addClass('hidden');
+            $('.ind-no').removeClass('hidden');
             $('.retrieveAddr').removeClass('hidden');
-            //unDisableContent('div.licenseeContent');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
@@ -115,10 +122,8 @@
             $('.licensee-com').show();
             $('.editDiv').remove();
         } else {
-            $('.licenseeType').hide();
-            $('.licensee-detail').hide();
-            $('.company-no').hide();
-            $('.ind-no').hide();
+            $('.company-no').addClass('hidden');
+            $('.ind-no').addClass('hidden');
             $('.retrieveAddr').removeClass('hidden');
             $('.licensee-com').hide();
             $('.licensee-detail').show();
@@ -179,10 +184,18 @@
         unDisableContent(targetSelector);
         $('.retrieveAddr').show();
         if('-1' == assignSelVal) {
+            var type = "";
+            if ($('#licenseeType').length > 0) {
+                type = $('#licenseeType').val();
+            }
             $content.hide();
             clearFields(targetSelector);
             clearFields('.licenseeType');
             initLicenseePage();
+            if (type == '${individualType}') {
+                $('#licenseeType').val(type);
+                $('#licenseeType').niceSelect("update");
+            }
         } else if('newOfficer' == assignSelVal) {
             $content.show();
             clearFields(targetSelector);

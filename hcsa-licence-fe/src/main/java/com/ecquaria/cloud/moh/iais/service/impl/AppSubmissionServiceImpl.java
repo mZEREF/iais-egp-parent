@@ -765,15 +765,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
         } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
             List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
-            String idNo = null;
+            FeUserDto feUserDto = null;
             if (feUserDtos != null) {
-                idNo = feUserDtos.stream()
+                feUserDto = feUserDtos.stream()
                         .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
                                 uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
-                        .findAny().map(FeUserDto::getIdNumber).orElseGet(() -> "");
+                        .findAny().orElseGet(FeUserDto::new);
             }
             subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
-            subLicenseeDto.setIdNumber(idNo);
+            if (feUserDto != null) {
+                subLicenseeDto.setIdType(feUserDto.getIdType());
+                subLicenseeDto.setIdNumber(feUserDto.getIdNumber());
+            }
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
         }
         return subLicenseeDto;
