@@ -62,7 +62,7 @@
                   </iais:row>
                   <br>
                   <iais:action>
-                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptFirstConFirmInspDateRej()">Submit</button>
+                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:tcuAuditApptPreDateVali()">Submit</button>
                   </iais:action>
                 </iais:section>
               </c:if>
