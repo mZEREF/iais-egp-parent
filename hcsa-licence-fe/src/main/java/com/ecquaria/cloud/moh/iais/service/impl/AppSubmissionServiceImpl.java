@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -764,19 +765,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
         } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
-            List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
-            FeUserDto feUserDto = null;
-            if (feUserDtos != null) {
-                feUserDto = feUserDtos.stream()
-                        .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
-                                uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
-                        .findAny().orElseGet(FeUserDto::new);
-            }
             subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
-            if (feUserDto != null) {
-                subLicenseeDto.setIdType(feUserDto.getIdType());
-                subLicenseeDto.setIdNumber(feUserDto.getIdNumber());
-            }
+            LicenseeIndividualDto licenseeIndividualDto = Optional.ofNullable(licenseeDto)
+                    .map(dto -> dto.getLicenseeIndividualDto())
+                    .orElseGet(LicenseeIndividualDto::new);
+            subLicenseeDto.setIdType(licenseeIndividualDto.getIdType());
+            subLicenseeDto.setIdNumber(licenseeIndividualDto.getIdNo());
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
         }
         return subLicenseeDto;
