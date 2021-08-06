@@ -80,10 +80,10 @@
         var assignSel = $('#assignSelect').val();
         var type = $('#licenseeType').val();
         console.info(assignSel + " --- " + type);
-        if ( $('#licenseeType').length > 0 && ('-1' == assignSel || isEmpty(assignSel)) && type != '${companyType}') {
+        if ($('#assignSelect').length > 0 && ('-1' == assignSel || isEmpty(assignSel)) && type != '${companyType}') {
             $('.licenseeType').addClass('hidden');
             $('.licensee-detail').hide();
-        } else {
+        } else if ($('.licenseeType').length > 0) {
             $('.licenseeType').removeClass('hidden');
         }
         checkAddressManatory();
