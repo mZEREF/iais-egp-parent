@@ -2728,6 +2728,7 @@ public class NewApplicationDelegator {
             dto.setAmount(0.0);
             NewApplicationHelper.reSetAdditionalFields(dto, Boolean.FALSE, ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
             requestForChangeService.setRelatedInfoBaseServiceId(dto);
+            requestForChangeService.premisesDocToSvcDoc(dto);
         });
         return licenseeAffectedList;
     }
@@ -3385,16 +3386,20 @@ public class NewApplicationDelegator {
         }
         if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)) {
             AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+            AppSubmissionDto oldDto = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
             AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
             AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
+            if (appEditSelectDto.isLicenseeEdit()) {
+                appSubmissionDto.setSubLicenseeDto(oldDto.getSubLicenseeDto());
+            }
             if (appEditSelectDto.isPremisesEdit()) {
-                appSubmissionDto.setAppGrpPremisesDtoList(oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                appSubmissionDto.setAppGrpPremisesDtoList(oldDto.getAppGrpPremisesDtoList());
             }
             if (appEditSelectDto.isDocEdit()) {
-                appSubmissionDto.setAppGrpPrimaryDocDtos(oldAppSubmissionDto.getAppGrpPrimaryDocDtos());
+                appSubmissionDto.setAppGrpPrimaryDocDtos(oldDto.getAppGrpPrimaryDocDtos());
             }
             if (appEditSelectDto.isServiceEdit()) {
-                appSubmissionDto.setAppSvcRelatedInfoDtoList(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(oldDto.getAppSvcRelatedInfoDtoList());
             }
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
         }
@@ -4395,30 +4400,6 @@ public class NewApplicationDelegator {
             bpc.request.getSession().setAttribute("coMap", coMap);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
-    }
-
-    private void renewLicence(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do renewLicence start ...."));
-        String licenceId = ParamUtil.getString(bpc.request, "licenceId");
-        String type = ParamUtil.getString(bpc.request, "type");
-        log.info(StringUtil.changeForLog("The type is -->:" + type));
-        if (!StringUtil.isEmpty(licenceId) && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)) {
-            AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
-            if (appSubmissionDto != null) {
-                appSubmissionDto.setNeedEditController(true);
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setPremisesEdit(true);
-                appEditSelectDto.setDocEdit(true);
-                appEditSelectDto.setPoEdit(true);
-                appEditSelectDto.setDocEdit(true);
-                appEditSelectDto.setServiceEdit(true);
-                appEditSelectDto.setMedAlertEdit(true);
-                appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-            }
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        }
-        log.info(StringUtil.changeForLog("the do renewLicence end ...."));
     }
 
     private void requestForInformationLoading(BaseProcessClass bpc, String appNo) throws CloneNotSupportedException {

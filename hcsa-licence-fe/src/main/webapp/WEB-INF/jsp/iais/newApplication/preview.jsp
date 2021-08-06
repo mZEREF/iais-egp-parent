@@ -244,6 +244,14 @@
             submit('premises',null,null);
         });
         </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.licenseeEdit}">
+        $('#docEdit').unbind();
+        $('.doSvcEdit').unbind();
+        $('#Back').unbind();
+        $('#Back').click(function(){
+            submit('licensee',null,null);
+        });
+        </c:if>
         <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
         $('#premisesEdit').unbind();
         $('.doSvcEdit').unbind();

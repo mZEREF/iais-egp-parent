@@ -2819,7 +2819,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setLicenseeEdit(NewApplicationHelper.canLicenseeEdit(appSubmissionDto, false));
+            boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(dto -> dto.getLicenseeType())
+                    .filter(licenseeType -> StringUtil.isEmpty(licenseeType) ||
+                            OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
+                    .isPresent();
+            appEditSelectDto.setLicenseeEdit(licenseeEdit);
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setDocEdit(true);
             appEditSelectDto.setServiceEdit(true);

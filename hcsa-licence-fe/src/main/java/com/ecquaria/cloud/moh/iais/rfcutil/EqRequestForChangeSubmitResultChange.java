@@ -615,7 +615,7 @@ public class EqRequestForChangeSubmitResultChange {
     }
 
     public static boolean isChangeSubLicensee(SubLicenseeDto subLicenseeDto, SubLicenseeDto oldSbLicenseeDto) {
-        return Objects.equals(subLicenseeDto, oldSbLicenseeDto);
+        return !Objects.equals(subLicenseeDto, oldSbLicenseeDto);
     }
 
 }
