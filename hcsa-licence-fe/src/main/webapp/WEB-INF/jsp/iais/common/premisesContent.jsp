@@ -91,7 +91,7 @@
             <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                 <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                     <div class="form-check col-sm-12" >
-                        <table class="impactedLic">
+                        <table aria-describedby="" class="impactedLic">
                             <tr>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </td>
                                 <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
@@ -397,7 +397,7 @@
                                             </div>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_floorUnit${premValue}${opStat.index}"></span>
                                         </iais:value>
-                                        <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                        <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                             <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                         </div>
                                         <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -953,7 +953,7 @@
                                         </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_ConvFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -983,6 +983,13 @@
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBuildingName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Email " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="320" cssClass="conveyanceEmail" type="text" name="conveyanceEmail" id="conveyanceEmail" value="${appGrpPremisesDto.conveyanceEmail}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceEmail${status.index}"></span>
                         </iais:value>
                     </iais:row>
 
@@ -1480,7 +1487,7 @@
                                         </div>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
                                     </iais:value>
-                                    <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                    <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                         <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                     </div>
                                     <div class=" col-xs-7 col-sm-4 col-md-1 text-center">
@@ -1510,6 +1517,13 @@
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="offSiteBuildingName" type="text" name="offSiteBuildingName" id="offSiteBuildingName" value="${appGrpPremisesDto.offSiteBuildingName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBuildingName${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="Email " width="12"/>
+                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                            <iais:input maxLength="320" cssClass="offSiteEmail" type="text" name="offSiteEmail" id="offSiteEmail" value="${appGrpPremisesDto.offSiteEmail}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteEmail${status.index}"></span>
                         </iais:value>
                     </iais:row>
 
@@ -2013,7 +2027,7 @@
                                                 </div>
                                                 <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
                                             </iais:value>
-                                            <div class=" col-xs-7 col-sm-4 col-md-1 ">
+                                            <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                                 <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
                                             </div>
                                             <div class=" col-xs-7 col-sm-4 col-md-1 text-center">

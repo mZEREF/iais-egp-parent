@@ -7,12 +7,12 @@
                 </h3>
                 <iais:pagination param="IntranetUserSearchParam" result="IntranetUserSearchResult"/>
                 <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
                         <c:choose>
                             <c:when test="${empty IntranetUserSearchResult.rows}">
-                                <th>
+                                <th scope="col" >
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll"
                                                onchange="javascirpt:checkAll();" hidden/>
@@ -22,7 +22,7 @@
                                 </th>
                             </c:when>
                             <c:otherwise>
-                                <th>
+                                <th scope="col" >
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll"
                                                onchange="javascirpt:checkAll();"/>
@@ -32,11 +32,11 @@
                                 </th>
                             </c:otherwise>
                         </c:choose>
-                        <th style="padding-bottom:16px">No.</th>
+                        <th scope="col" style="padding-bottom:16px">No.</th>
                         <iais:sortableHeader needSort="true" field="USER_ID" value="User ID"/>
                         <iais:sortableHeader needSort="true" field="EMAIL_ADDR" value="Email address"/>
                         <iais:sortableHeader needSort="true" field="STATUS" value="Account Status"/>
-                        <th style="padding-bottom:16px">Action</th>
+                        <th scope="col" style="padding-bottom:16px">Action</th>
                     </tr>
                     </thead>
                     <tbody>

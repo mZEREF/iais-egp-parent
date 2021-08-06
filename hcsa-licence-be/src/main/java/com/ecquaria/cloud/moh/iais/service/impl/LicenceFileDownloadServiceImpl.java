@@ -99,6 +99,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -444,7 +445,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    log.info(file.getPath()+"-----zipFile---------");
+                    log.info(StringUtil.changeForLog(file.getPath()+"-----zipFile---------"));
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
                     os=new FileOutputStream(MiscUtil.generateFile(s));
                     bos=new BufferedOutputStream(os);
@@ -460,14 +461,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
 
             }else {
-                log.info(zipEntry.getName()+"------zipEntry.getName()------");
+                log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
                 String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
                 if(s.endsWith(File.separator)){
                     s=s.substring(0,s.length()-1);
                 }
                 File file = MiscUtil.generateFile(s);
                 file.mkdirs();
-                log.info(file.getPath()+"-----else  zipFile-----");
+                log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
 
             }
         }catch (IOException e){
@@ -1034,7 +1035,20 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("cession error"+e.getMessage()));
             }
-
+            if(onSubmitTaskList.size()!=0){
+                HashMap<String,TaskDto> tempMap = IaisCommonUtils.genNewHashMap();
+                for (TaskDto c : onSubmitTaskList) {
+                    String key = c.getRefNo();
+                    if(!tempMap.containsKey(key)){
+                        tempMap.put(key, c);
+                    }
+                }
+                List<TaskDto> tempList = IaisCommonUtils.genNewArrayList();
+                for(Map.Entry<String,TaskDto> entry : tempMap.entrySet()){
+                    tempList.add(entry.getValue());
+                }
+                onSubmitTaskList=tempList;
+            }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);

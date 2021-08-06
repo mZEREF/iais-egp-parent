@@ -30,14 +30,14 @@
     <div>
 <br>
     <div  class="col-lg-12 col-xs-10">
-      <table border="1px">
+      <table aria-describedby="" border="1px">
         <tr>
-          <td style="width: 25%;text-align: center"><strong>Service Name</strong></td>
-          <td style="width: 15%;text-align: center"><strong>Usage</strong></td>
-          <td style="width: 20%;text-align: center"><strong>Effective Start Date</strong></td>
-          <td style="width: 20%;text-align: center"><strong>Effective End Date</strong></td>
-          <td style="width: 5%;text-align: center"><strong>Version</strong></td>
-          <td style="width: 30%;text-align: center"><strong>Actions</strong></td>
+          <th scope="col" style="width: 25%;text-align: center"><strong>Service Name</strong></th>
+          <th scope="col" style="width: 15%;text-align: center"><strong>Usage</strong></th>
+          <th scope="col" style="width: 20%;text-align: center"><strong>Effective Start Date</strong></th>
+          <th scope="col" style="width: 20%;text-align: center"><strong>Effective End Date</strong></th>
+          <th scope="col" style="width: 5%;text-align: center"><strong>Version</strong></th>
+          <th scope="col" style="width: 30%;text-align: center"><strong>Actions</strong></th>
         </tr>
         <c:forEach items="${hcsaServiceDtos}"  var="hcsaServiceDto">
       <tr>

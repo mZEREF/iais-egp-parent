@@ -131,14 +131,12 @@ public class ValidateCgo implements ValidateServiceInfo {
         if(StringUtil.isEmpty(emailAddr)){
             map.put("emailAddr"+index,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
         }else if (!StringUtil.isEmpty(emailAddr)) {
-            if(emailAddr.length() > 66){
-                String general_err0041=NewApplicationHelper.repLength("Email Address","66");
+            if(emailAddr.length() > 320){
+                String general_err0041=NewApplicationHelper.repLength("Email Address","320");
                 map.put("emailAddr" + index, general_err0041);
             }
             if (! ValidationUtils.isEmail(emailAddr)) {
                 map.put("emailAddr"+index, "GENERAL_ERR0014");
-            }else if(emailAddr.length()>66) {
-                map.put("emailAddr"+index, "Length is too long");
             }
         }
     }

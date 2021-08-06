@@ -6,12 +6,13 @@
     <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
     <iais:pagination  param="amendUpdateContactSearchParam" result="amendUpdateContactSearchResult"/>
     <div class="table-gp">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="ROLE" value="Role" isFE="true"/>
+                <th scope="col" style="width: 0"></th>
+                <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="T3.LICENCE_NO" value="Licence No." isFE="true"/>
+                <iais:sortableHeader needSort="false"  field="T2.PSN_TYPE" value="Role" isFE="true"/>
             </tr>
             </thead>
             <tbody>
@@ -26,6 +27,7 @@
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
                         <tr>
+                            <td></td>
                             <td>
                                 <p class="visible-xs visible-sm table-row-title">Type</p>
                                     ${pool.svcName}</td>

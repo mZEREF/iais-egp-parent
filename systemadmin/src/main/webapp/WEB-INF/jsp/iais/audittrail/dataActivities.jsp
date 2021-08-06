@@ -32,9 +32,9 @@
                             <c:when test="${!empty auditLogDetailView.searchParam}">
                                 <div class="table-responsive col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
-                                            <tr><th>Field</th><th>Value</th></tr>
+                                            <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="msg" items="${auditLogDetailView.searchParam}">
@@ -61,9 +61,9 @@
                             <c:when test="${!empty auditLogDetailView.beforeChange}">
                                 <div class="table-responsive col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
-                                            <tr><th>Field</th><th>Value</th></tr>
+                                            <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="msg" items="${auditLogDetailView.beforeChange}">
@@ -90,9 +90,9 @@
                             <c:when test="${!empty auditLogDetailView.afterChange}">
                                 <div class="table-responsive col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
-                                            <tr><th>Field</th><th>Value</th></tr>
+                                            <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="msg" items="${auditLogDetailView.afterChange}">
@@ -119,9 +119,9 @@
                             <c:when test="${!empty auditLogDetailView.errorMsg}">
                                 <div class="table-responsive col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
-                                            <tr><th>Field</th><th>Value</th></tr>
+                                            <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
                                             </thead>
                                             <tbody>
                                             <c:forEach var="msg" items="${auditLogDetailView.errorMsg}">

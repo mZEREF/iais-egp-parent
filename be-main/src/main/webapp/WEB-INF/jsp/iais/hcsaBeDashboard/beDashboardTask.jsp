@@ -162,10 +162,10 @@
             </h3>
             <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
             <div class="table-gp">
-              <table class="table application-group" style="border-collapse:collapse;">
+              <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                 <thead>
                 <tr>
-                  <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                  <th scope="col" style="text-align:center;width: 0%">S/N</th>
                   <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
@@ -310,11 +310,11 @@
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="7" style="padding: 0px 8px !important;">' +
                         '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
                     if ("true" == dashSupportFlag) {
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                        html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                     }
 
                     html += '<th width="15%">Application No.</th>' +

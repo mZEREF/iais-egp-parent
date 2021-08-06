@@ -43,17 +43,17 @@
                                                                        items="${commonDto.sectionDtoList}">
                                                                 <br/>
                                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                                <table class="table">
+                                                                <table aria-describedby="" class="table">
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>No.</th>
-                                                                        <th>Regulation Clause Number</th>
-                                                                        <th>Item</th>
-                                                                        <th>Yes</th>
-                                                                        <th>No</th>
-                                                                        <th>N/A</th>
-                                                                        <th>Remark</th>
-                                                                        <th>Rectified</th>
+                                                                        <th scope="col" >No.</th>
+                                                                        <th scope="col" >Regulation Clause Number</th>
+                                                                        <th scope="col" >Item</th>
+                                                                        <th scope="col" >Yes</th>
+                                                                        <th scope="col" >No</th>
+                                                                        <th scope="col" >N/A</th>
+                                                                        <th scope="col" >Remark</th>
+                                                                        <th scope="col" >Rectified</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -108,17 +108,17 @@
                                                                        items="${fillCheckListDto.sectionDtoList}">
                                                                 <br/>
                                                                 <h4><c:out value="${section.sectionName}"></c:out></h4>
-                                                                <table class="table">
+                                                                <table aria-describedby="" class="table">
                                                                     <thead>
                                                                     <tr>
-                                                                        <th>No.</th>
-                                                                        <th>Regulation Clause Number</th>
-                                                                        <th>Item</th>
-                                                                        <th>Yes</th>
-                                                                        <th>No</th>
-                                                                        <th>N/A</th>
-                                                                        <th>Remark</th>
-                                                                        <th>Rectified</th>
+                                                                        <th scope="col" >No.</th>
+                                                                        <th scope="col" >Regulation Clause Number</th>
+                                                                        <th scope="col" >Item</th>
+                                                                        <th scope="col" >Yes</th>
+                                                                        <th scope="col" >No</th>
+                                                                        <th scope="col" >N/A</th>
+                                                                        <th scope="col" >Remark</th>
+                                                                        <th scope="col" >Rectified</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>

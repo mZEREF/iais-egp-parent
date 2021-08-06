@@ -62,6 +62,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -184,7 +185,7 @@ public class HcsaChklConfigDelegator {
         }
 
         if (curSecName.contains(section)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("sectionName", "CHKL_ERR007"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("section", "CHKL_ERR007"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -258,6 +259,7 @@ public class HcsaChklConfigDelegator {
         String[] tcb = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CONFIG_TYPE_CHECKBOX);
         String svcName = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE);
         String svcSubType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE);
+        String inspectionEntity = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY);
 
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE, common);
         ParamUtil.setRequestAttr(request, HcsaChecklistConstants.PARAM_CONFIG_MODULE_CHECKBOX, mcb);
@@ -276,6 +278,10 @@ public class HcsaChklConfigDelegator {
 
         if(StringUtil.isNotEmpty(svcSubType)){
             searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_SERVICE_SUB_TYPE, svcSubType, true);
+        }
+
+        if(StringUtil.isNotEmpty(inspectionEntity)){
+            searchParam.addFilter(HcsaChecklistConstants.PARAM_CONFIG_INSPECTION_ENTITY, inspectionEntity, true);
         }
 
         if (Optional.ofNullable(mcb).isPresent()){
@@ -498,8 +504,10 @@ public class HcsaChklConfigDelegator {
             List<ChecklistSectionDto> sectionDtos = conf.getSectionDtos();
             Iterator<ChecklistSectionDto> iter = sectionDtos.iterator();
             while (iter.hasNext()){
-                String sectionId = iter.next().getId();
+                ChecklistSectionDto dto = iter.next();
+                String sectionId = dto.getId();
                 if (value.equals(sectionId)){
+                    curSecName.remove(dto.getSection());
                     iter.remove();
                 }
             }
@@ -643,16 +651,19 @@ public class HcsaChklConfigDelegator {
     public void addChecklistItemNextAction(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         try {
-            String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
-            if(checked == null || checked.length <= 0){
+            // String[] checked = ParamUtil.getStrings(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX);
+            LinkedHashSet<String> checked = (LinkedHashSet<String>) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECK_BOX_REDISPLAY);
+            if (checked == null || checked.size() <= 0) {
                 return;
             }
 
+            /*
             List<String> unMarkList = IaisCommonUtils.genNewArrayList();
             for (String i : checked){
                 unMarkList.add(MaskUtil.unMaskValue(HcsaChecklistConstants.PARAM_CHKL_ITEM_CHECKBOX, i));
             }
-
+            */
+            List<String> unMarkList = checked.stream().collect(Collectors.toList());
             List<ChecklistItemDto> necessary = hcsaChklService.listChklItemByItemId(unMarkList);
             ChecklistConfigDto disposition = (ChecklistConfigDto) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR);
             String currentValidateId = (String) ParamUtil.getSessionAttr(request, HcsaChecklistConstants.PARAM_PAGE_INDEX);

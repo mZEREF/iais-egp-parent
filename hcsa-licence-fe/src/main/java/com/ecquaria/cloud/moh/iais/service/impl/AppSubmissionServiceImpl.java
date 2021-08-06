@@ -1160,7 +1160,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 onlySpecifiedSvc = true;
             }
         }
-        if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+       if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
@@ -1251,7 +1251,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         boolean hadMts = false;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtosAll=IaisCommonUtils.genNewArrayList();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
-            appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
+             appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             String hciCode = appGrpPremisesDtos.get(0).getHciCode();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
@@ -1895,7 +1895,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public void setDraftNo(AppSubmissionDto appSubmissionDto) {
         String appType=null;
         if(appSubmissionDto!=null){
-            appType = appSubmissionDto.getAppType();
+             appType = appSubmissionDto.getAppType();
         }
         if(appType!=null){
             String draft = systemAdminClient.draftNumber(appType).getEntity();
@@ -2161,7 +2161,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }else{
                                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
                                     appGrpPrimaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
-                                    handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    // handlerDupPremDoc(dupPrem,appGrpPrimaryDocDto,appGrpPremisesDtos,newPrimaryDocList);
+                                    newPrimaryDocList.add(appGrpPrimaryDocDto);
                                 }
                             }
                             break;
@@ -2442,9 +2443,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             } else {
                 errorMap.put("otherAppSvcChargesPageDto", "other appSvcChargesPageDto is null");
             }
-        } else if (ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)) {
-            validatePersonMandatoryCount(Collections.singletonList(dto.getAppSvcVehicleDtoList()), errorMap, psnType,
-                    mandatoryCount, serviceId, sB);
         }
     }
 
@@ -2560,7 +2558,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
      * update to version 2 id is B
      * -------------------------
      * change licnece XXX (version 1 ) subtype id A -> B
-     */
+    */
     @Override
     public void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("do changeSvcScopeIdByConfigName start ..."));
@@ -3603,6 +3601,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("viewPrint");
 
         //clear Session
+        session.removeAttribute(NewApplicationDelegator.ALL_SVC_NAMES);
         session.removeAttribute(NewApplicationDelegator.APPSUBMISSIONDTO);
         session.removeAttribute(NewApplicationDelegator.HCSASERVICEDTO);
         session.removeAttribute(RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);

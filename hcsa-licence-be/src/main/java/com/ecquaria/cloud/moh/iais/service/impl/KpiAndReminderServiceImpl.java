@@ -90,7 +90,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
             parameter.setAuditTrailDto(currentAuditTrailDto);
             hcsaConfigClient.saveKpiAndReminder(parameter);
         }
-        request.setAttribute("message","PM_ACK001");
+        request.setAttribute("message",MessageUtil.getMessageDesc("PM_ACK001"));
         request.setAttribute("crud_action_type","submit");
     }
     static String[] code={ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,ApplicationConsts.APPLICATION_TYPE_RENEWAL,ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL,ApplicationConsts.APPLICATION_TYPE_CESSATION};

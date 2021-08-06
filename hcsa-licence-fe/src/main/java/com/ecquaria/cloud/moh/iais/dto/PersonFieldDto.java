@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class PersonFieldDto implements Serializable {
-    private static final long serialVersionUID = -5327342580937859116L;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String salutation;

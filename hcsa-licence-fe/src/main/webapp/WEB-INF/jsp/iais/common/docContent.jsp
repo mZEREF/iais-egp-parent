@@ -18,6 +18,9 @@
                 <c:when test="${'16' == config.dupForPerson}">
                     Service Personnel&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
+                <c:when test="${'32' == config.dupForPerson}">
+                    Clinical Director&nbsp;${psnStat.index+1}:&nbsp;
+                </c:when>
             </c:choose>
         </c:if>
         ${config.docTitle}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if>

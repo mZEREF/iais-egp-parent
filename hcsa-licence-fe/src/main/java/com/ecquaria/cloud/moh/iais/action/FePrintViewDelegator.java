@@ -131,6 +131,7 @@ public class FePrintViewDelegator {
             List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcPersonnelDto> appSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     String svcId = appSvcRelatedInfoDto.getServiceId();
@@ -177,6 +178,10 @@ public class FePrintViewDelegator {
                     if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos1)){
                         appSvcPersonnelDtos.addAll(appSvcPersonnelDtos1);
                     }
+                    List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos1 = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+                    if (!IaisCommonUtils.isEmpty(appSvcClinicalDirectorDtos1)){
+                        appSvcClinicalDirectorDtos.addAll(appSvcClinicalDirectorDtos1);
+                    }
                     appSvcRelatedInfoDto.setSvcDocConfig(svcDocConfig);
                     Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appSubmissionDto.getAppGrpPremisesDtoList(),appSvcRelatedInfoDto);
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
@@ -187,6 +192,8 @@ public class FePrintViewDelegator {
             ParamUtil.setSessionAttr(bpc.request, "ReloadDeputyPrincipalOfficers",(Serializable) deputyPrincipalOfficersDtos);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcMedAlertPsn",(Serializable) medAlertPsnDtos);
             ParamUtil.setSessionAttr(bpc.request, "AppSvcPersonnelDtoList", (Serializable)appSvcPersonnelDtos);
+            ParamUtil.setRequestAttr(bpc.request,"appTypeForPrintDec",appSubmissionDto.getAppType());
+            ParamUtil.setRequestAttr(bpc.request,"clinicalDirectorDtoList", appSvcClinicalDirectorDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");

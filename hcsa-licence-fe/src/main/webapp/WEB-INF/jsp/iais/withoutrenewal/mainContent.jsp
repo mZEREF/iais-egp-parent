@@ -46,7 +46,7 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
-                                                    <table class="table table-bordered">
+                                                    <table aria-describedby="" class="table table-bordered">
                                                         <thead>
                                                         <tr>
                                                             <td class="col-xs-2"><strong>Licence No.</strong></td>
@@ -117,13 +117,13 @@
                                                             Total amount due:
                                                             <c:out value="${AppSubmissionDto.amountStr}"></c:out>
                                                         </p>
-                                                        <table class="table">
+                                                        <table aria-describedby="" class="table">
                                                             <thead>
                                                             <tr>
-                                                                <th>Service</th>
-                                                                <th>Application Type</th>
-                                                                <th>Application No.</th>
-                                                                <th>Amount</th>
+                                                                <th scope="col" >Service</th>
+                                                                <th scope="col" >Application Type</th>
+                                                                <th scope="col" >Application No.</th>
+                                                                <th scope="col" >Amount</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>

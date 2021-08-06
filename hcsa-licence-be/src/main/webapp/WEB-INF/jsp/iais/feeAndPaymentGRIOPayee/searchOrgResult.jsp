@@ -93,10 +93,10 @@
                                             <iais:pagination param="orgPremParam" result="orgPremResult"/>
                                             <div class="table-responsive">
                                                 <div class="table-gp">
-                                                    <table class="table">
+                                                    <table aria-describedby="" class="table">
                                                         <thead>
                                                         <tr align="center">
-                                                            <th style="width:2%">&nbsp;</th>
+                                                            <th scope="col" class="text-center"2%">&nbsp;</th>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="UEN_NO"
                                                                                  value="UEN"/>

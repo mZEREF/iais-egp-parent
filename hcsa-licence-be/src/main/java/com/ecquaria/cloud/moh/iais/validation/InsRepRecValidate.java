@@ -65,6 +65,9 @@ public class InsRepRecValidate implements CustomizeValidator {
                 }
             }
         }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationType)){
+            recommendation  = ParamUtil.getRequestString(httpServletRequest, "recommendationRfc");
+        }
         verifyVehicleEasMtsReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
         return errorMap;
     }

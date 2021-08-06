@@ -131,7 +131,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                 List<ApplicationDto> value = entry.getValue();
                 boolean isExistFlag = false;
                 for (String appNo:appNos
-                     ) {
+                ) {
                     log.debug(StringUtil.changeForLog(" appNo is" + appNo));
                     log.debug(StringUtil.changeForLog(" key is" + key));
                     log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
@@ -203,6 +203,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                         || ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus())
                         || ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())
+                        || ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())
                 ){
                     result = true;
                     break;
@@ -356,6 +357,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                             case "4" :   appSupDocDtos.get(i).setFile("Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "8" :   appSupDocDtos.get(i).setFile("MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "32":   appSupDocDtos.get(i).setFile("Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
                     }else if(docTitleList.get(j).getDupForPerson()!=null && "1".equals(docTitleList.get(j).getDupForPrem())){
@@ -365,6 +367,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
                             case "4" :   appSupDocDtos.get(i).setFile("Premises 1: Nominee "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "8" :   appSupDocDtos.get(i).setFile("Premises 1: MedAlert Person "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             case "16":   appSupDocDtos.get(i).setFile("Service Personnel "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
+                            case "32":   appSupDocDtos.get(i).setFile("Premises 1: Clinical Director "+ psnIndex +": "+docTitleList.get(j).getDocTitle());break;
                             default:     appSupDocDtos.get(i).setFile(docTitleList.get(j).getDocTitle());
                         }
                     }else if(docTitleList.get(j).getDupForPerson()==null && "1".equals(docTitleList.get(j).getDupForPrem())){
@@ -648,7 +651,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
         List<Role> roles = getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         for (String item:roleIds
-             ) {
+        ) {
             add(roleIds, item,selectOptionArrayList,roles);
         }
         return selectOptionArrayList;

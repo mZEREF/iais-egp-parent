@@ -2,10 +2,10 @@
     <p class="form-check-title">Please select the business to amend:</p>
     <iais:pagination  param="amendHCISearchParam" result="amendHCISearchResult"/>
     <div class="table-gp">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <th></th>
+                <th scope="col" ></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="Name" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" isFE="true"/>

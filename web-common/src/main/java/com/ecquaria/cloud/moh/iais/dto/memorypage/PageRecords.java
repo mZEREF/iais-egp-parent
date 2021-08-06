@@ -12,7 +12,7 @@ import lombok.Setter;
  * @date 2020/7/10 9:08
  */
 public class PageRecords<T extends Serializable> implements Serializable {
-    private static final long serialVersionUID = 6569658713599202573L;
+    private static final long serialVersionUID = -2785944170548238787L;
 
     @Getter @Setter
     private boolean checked;

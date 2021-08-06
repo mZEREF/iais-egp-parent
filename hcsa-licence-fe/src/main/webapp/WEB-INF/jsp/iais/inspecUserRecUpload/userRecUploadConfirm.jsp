@@ -35,14 +35,14 @@
                 <iais:body >
                   <iais:section title="" id = "upload_Rectification">
                     <div class="table-responsive">
-                      <table class="table">
+                      <table aria-describedby="" class="table">
                         <thead>
                         <tr align="center">
-                          <th>Vehicle Number</th>
-                          <th>NC Clause</th>
-                          <th>Checklist Question</th>
-                          <th>Findings/Non-Compliances</th>
-                          <th>Action Required</th>
+                          <th scope="col" >Vehicle Number</th>
+                          <th scope="col" >NC Clause</th>
+                          <th scope="col" >Checklist Question</th>
+                          <th scope="col" >Findings/Non-Compliances</th>
+                          <th scope="col" >Action Required</th>
                         </tr>
                         </thead>
                         <tbody>

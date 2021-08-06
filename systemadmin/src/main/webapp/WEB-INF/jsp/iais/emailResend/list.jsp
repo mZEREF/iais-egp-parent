@@ -58,16 +58,16 @@
                     </h3>
                     <iais:pagination param="resendSearchParam" result="resendSearchResult"/>
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th>Sender's Email</th>
-                                <th>Subject</th>
-                                <th>Recipients' List Email</th>
-                                <th>Sent Date / Time</th>
-                                <th>Status</th>
-                                <th>Reason for Failure</th>
-                                <th>Action</th>
+                                <th scope="col" >Sender's Email</th>
+                                <th scope="col" >Subject</th>
+                                <th scope="col" >Recipients' List Email</th>
+                                <th scope="col" >Sent Date / Time</th>
+                                <th scope="col" >Status</th>
+                                <th scope="col" >Reason for Failure</th>
+                                <th scope="col" >Action</th>
                             </tr>
                             </thead>
                             <tbody>

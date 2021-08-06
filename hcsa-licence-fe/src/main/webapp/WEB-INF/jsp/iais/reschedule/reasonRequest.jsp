@@ -23,7 +23,7 @@
                     <br>
                     <div class="table-responsive">
 
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <tr >
                                 <td class="sorting"><strong>S/N</strong></td>
                                 <td class="sorting"><strong>Mode of Service Delivery</strong></td>

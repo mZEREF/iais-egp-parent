@@ -241,7 +241,7 @@
                                                             <span class="mandatory">*</span>
                                                         </div>
                                                         <div class="col-sm-4 col-md-8">
-                                                            <input autocomplete="off" name="emailAddress" maxlength="66" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
+                                                            <input autocomplete="off" name="emailAddress" maxlength="320" type="text" id="emailAdress" class="form-control control-input control-set-font control-font-normal" value="${principalOfficer.emailAddr}" >
                                                             <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}" ></span>
                                                         </div>
                                                     </div>
@@ -548,7 +548,7 @@
                                                             <span class="mandatory">*</span>
                                                         </div>
                                                         <div class="col-sm-4 col-md-8">
-                                                            <input autocomplete="off" name="deputyEmailAddr" maxlength="66" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
+                                                            <input autocomplete="off" name="deputyEmailAddr" maxlength="320" type="text" class="form-control control-input control-set-font control-font-normal" value="${deputy.emailAddr}" size="30">
                                                             <span class="error-msg" name="iaisErrorMsg"  id="error_deputyEmailAddr${status.index}" ></span>
                                                         </div>
                                                     </div>

@@ -24,10 +24,10 @@
                     <br>
                     <div class="table-responsive">
 
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th class="form-check" >
+                                <th scope="col" class="form-check" >
 
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" ></iais:sortableHeader>

@@ -32,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
@@ -70,9 +69,6 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Autowired
-    private FillupChklistService fillupChklistService;
 
     @Autowired
     private ApplicationViewService applicationViewService;

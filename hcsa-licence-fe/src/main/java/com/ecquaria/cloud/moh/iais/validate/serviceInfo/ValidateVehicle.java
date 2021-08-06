@@ -42,8 +42,6 @@ public class ValidateVehicle implements ValidateFlow {
         List<String> vehicleNameList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> chassisNumList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> engineNumNumList = new ArrayList<>(appSvcVehicleDtos.size());
-        List<String> validateVehicleName = new ArrayList<>(appSvcVehicleDtos.size());
-        Map<Integer, String> indexMap = new HashMap<>(appSvcVehicleDtos.size());
         for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
             AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
             String vehicleName = currentDto.getVehicleName();
@@ -91,16 +89,14 @@ public class ValidateVehicle implements ValidateFlow {
             }
         }
         // validate for other services and existed db
-        if (map.isEmpty()) {
-            for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
-                AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
-                validateCurrentVehicle(map, VEHICLE_NAME, currentDto, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, CHASSIS_NAME, currentDto, i, appSvcVehicleDtoAlls);
-                validateCurrentVehicle(map, ENGINE_NAME, currentDto, i, appSvcVehicleDtoAlls);
-                validateExistVehicle(map, VEHICLE_NAME, currentDto, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, CHASSIS_NAME, currentDto, i, oldAppSvcVehicleDto);
-                validateExistVehicle(map, ENGINE_NAME, currentDto, i, oldAppSvcVehicleDto);
-            }
+        for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
+            AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
+            validateCurrentVehicle(map, VEHICLE_NAME, currentDto, i, appSvcVehicleDtoAlls);
+            validateCurrentVehicle(map, CHASSIS_NAME, currentDto, i, appSvcVehicleDtoAlls);
+            validateCurrentVehicle(map, ENGINE_NAME, currentDto, i, appSvcVehicleDtoAlls);
+            validateExistVehicle(map, VEHICLE_NAME, currentDto, i, oldAppSvcVehicleDto);
+            validateExistVehicle(map, CHASSIS_NAME, currentDto, i, oldAppSvcVehicleDto);
+            validateExistVehicle(map, ENGINE_NAME, currentDto, i, oldAppSvcVehicleDto);
         }
         log.info(StringUtil.changeForLog("Validate Vehicles ->" + JsonUtil.parseToJson(map)));
         errorMap.putAll(map);

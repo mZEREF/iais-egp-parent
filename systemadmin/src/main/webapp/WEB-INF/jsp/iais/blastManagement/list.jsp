@@ -84,10 +84,10 @@
                     <iais:pagination param="blastSearchParam" result="blastSearchResult"/>
 
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th></th>
+                                <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" style="width:1%"/>
                                 <iais:sortableHeader needSort="true" field="SUBJECT" value="Email Subject" style="width:14%"/>
                                 <iais:sortableHeader needSort="true" field="MSG_NAME" value="Message Name" style="width:14%"/>

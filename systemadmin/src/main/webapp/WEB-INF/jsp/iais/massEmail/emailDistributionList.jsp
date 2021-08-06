@@ -80,10 +80,10 @@
                     </h3>
                     <iais:pagination param="distributionSearchParam" result="distributionSearchResult"/>
                     <div class="table-gp">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr align="center">
-                                <th></th>
+                                <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
                                 <iais:sortableHeader needSort="true" field="SERVICE_CODE" value="Service"/>

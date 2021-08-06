@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Setter
 public class PmtReturnUrlDto implements Serializable {
 
-    private static final long serialVersionUID = 7594813731835300579L;
+    private static final long serialVersionUID = 1L;
 
     private String creditRetUrl;
 

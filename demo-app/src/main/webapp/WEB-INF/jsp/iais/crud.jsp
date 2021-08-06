@@ -38,7 +38,7 @@
                     <div class="form-group">
                       <label class="col-xs-12 col-md-4 control-label" >Email Address.</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
-                        <input id="formfill1" type="text">
+                        <input id="formfill1" maxlength="320" type="text">
                       </div>
                     </div>
                   </div>
@@ -85,19 +85,19 @@
             </div>
             <!------------------------------>
             <div class="table-gp">
-              <table class="table">
+              <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                  <th>No.</th>
-                  <th>RN No</th>
-                  <th>Status</th>
-                  <th>HCI Code</th>
-                  <th>HCI Name/ Address</th>
-                  <th>Service Name</th>
-                  <th>Submission Date </th>
-                  <th>Licence End Date </th>
-                  <th>Application Status</th>
-                  <th>Payment Status</th>
+                  <th scope="col" >No.</th>
+                  <th scope="col" >RN No</th>
+                  <th scope="col" >Status</th>
+                  <th scope="col" >HCI Code</th>
+                  <th scope="col" >HCI Name/ Address</th>
+                  <th scope="col" >Service Name</th>
+                  <th scope="col" >Submission Date </th>
+                  <th scope="col" >Licence End Date </th>
+                  <th scope="col" >Application Status</th>
+                  <th scope="col" >Payment Status</th>
                 </tr>
                 </thead>
                 <tbody>

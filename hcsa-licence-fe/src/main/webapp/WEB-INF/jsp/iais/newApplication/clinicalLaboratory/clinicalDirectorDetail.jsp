@@ -351,7 +351,7 @@
                     <span class="mandatory">*</span>
                 </div>
                 <div class="col-md-7 col-xs-12">
-                    <iais:input maxLength="66" type="text" cssClass="emailAddr" name="emailAddr${index}" value="${clinicalDirectorDto.emailAddr}"></iais:input>
+                    <iais:input maxLength="320" type="text" cssClass="emailAddr" name="emailAddr${index}" value="${clinicalDirectorDto.emailAddr}"></iais:input>
                 </div>
             </div>
         </div>

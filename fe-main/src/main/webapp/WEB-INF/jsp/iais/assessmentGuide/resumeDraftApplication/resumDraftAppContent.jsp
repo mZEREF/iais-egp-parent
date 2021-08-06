@@ -2,10 +2,10 @@
 <p class="form-check-title">Please select a draft application to resume</p>
 <iais:pagination param="draftAppSearchParam" result="draftAppSearchResult"/>
 <div class="table-gp">
-    <table class="table">
+    <table aria-describedby="" class="table">
         <thead>
         <tr >
-            <th></th>
+            <th scope="col" ></th>
             <iais:sortableHeader needSort="true" field="APPLICATION_NO" value="Application Number" isFE="true"/>
             <iais:sortableHeader needSort="true" field="app_type" value="Type" isFE="true"/>
             <iais:sortableHeader needSort="true" field="code" value="Service" isFE="true"/>

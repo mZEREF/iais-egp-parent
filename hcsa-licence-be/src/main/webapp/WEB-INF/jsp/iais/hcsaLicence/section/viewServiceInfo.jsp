@@ -32,7 +32,12 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table  class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
+            <thead style="display: none">
+            <tr>
+              <th scope="col"></th>
+            </tr>
+            </thead>
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
@@ -157,7 +162,12 @@
                         class="col-xs-4 col-md-4"></span>
                 </p>
                 <span class="col-xs-6"></span>
-                <table  class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
+                  <thead style="display: none">
+                  <tr>
+                    <th scope="col"></th>
+                  </tr>
+                  </thead>
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
@@ -212,19 +222,19 @@
                             </label>
                             <span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
                             <div class="table-responsive">
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
-                                <td>Professional Regn. No.</td>
-                                <td>Complaints</td>
-                                <td>Final Outcome</td>
-                                <td>Fine Amounts</td>
-                                <td>Restrictive Practice Start Date</td>
-                                <td>Restrictive Practice End Date</td>
-                                <td>Suspension Start Date</td>
-                                <td>Suspension End Date</td>
-                                <td>Other disciplinary action Start Date</td>
-                                <td>Other Disciplinary action End Date</td>
+                                <th scope="col">Professional Regn. No.</th>
+                                <th scope="col">Complaints</th>
+                                <th scope="col">Final Outcome</th>
+                                <th scope="col">Fine Amounts</th>
+                                <th scope="col">Restrictive Practice Start Date</th>
+                                <th scope="col">Restrictive Practice End Date</th>
+                                <th scope="col">Suspension Start Date</th>
+                                <th scope="col">Suspension End Date</th>
+                                <th scope="col">Other disciplinary action Start Date</th>
+                                <th scope="col">Other Disciplinary action End Date</th>
                               </tr>
                               <c:forEach items="${listHashMap[appSvcClinicalDirectorDto.profRegNo]}" var="list">
                                 <tr>
@@ -255,7 +265,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               PRS</label><span style="position: absolute;right: 0px;color: black"
                                                onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Professional Regn. No.</td>
@@ -421,7 +431,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -463,7 +473,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
                               <tr>
                                 <td>Indentification No.</td>
@@ -748,7 +758,7 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
@@ -824,7 +834,7 @@
                   class="col-xs-4 col-md-4"></span>
           </p>
           <span class="col-xs-6"></span>
-          <table class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
@@ -921,7 +931,7 @@
             <strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}
           </div>
           <span class="col-xs-6"></span>
-          <table  class="col-xs-12">
+          <table aria-describedby="" class="col-xs-12">
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>
@@ -957,7 +967,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
                 <tr>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -1017,7 +1027,7 @@
                           <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                           </label><span style="position: absolute;right: 0px;color: black"
                                         onclick="closeThis(this)">X</span>
-                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                             <tr>
                               <td>${proHashMap[cgo.profRegNo].name}</td>
                             </tr>
@@ -1031,7 +1041,7 @@
                           <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                           </label><span style="position: absolute;right: 0px;color: black"
                                         onclick="closeThis(this)">X</span>
-                          <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                             <tr>
                               <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name}</td>
                             </tr>
@@ -1105,7 +1115,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
@@ -1147,7 +1157,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
                             <tr>
                               <td>Indentification No.</td>
@@ -1285,7 +1295,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Professional Regn. No.</td>
@@ -1327,7 +1337,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             PRS</label><span style="position: absolute;right: 0px;color: black"
                                              onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Professional Regn. No.</td>
@@ -1487,12 +1497,12 @@
           <div class="row">
             <div class="col-xs-12">
               <c:if test="${reloadDisciplineAllocationMap_size>0}">
-                <table class="table discipline-table" border="1px">
+                <table aria-describedby="" class="table discipline-table" border="1px">
                   <thead>
                   <tr>
-                    <th style="text-align: center">Mode of Service Delivery</th>
-                    <th style="text-align: center">${stepNameMap['SVST001']}</th>
-                    <th style="text-align: center">Clinical Governance Officers</th>
+                    <th scope="col" style="text-align: center">Mode of Service Delivery</th>
+                    <th scope="col" style="text-align: center">${stepNameMap['SVST001']}</th>
+                    <th scope="col" style="text-align: center">Clinical Governance Officers</th>
                   </tr>
                   </thead>
                   <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -1586,7 +1596,7 @@
                         test="${fn:length(currentPreviewSvcInfo.appSvcPersonnelDtoList)>1}">${status.index+1}</c:if>:</strong>
                 </p>
                 <span class="col-xs-6"></span>
-                <table class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
                   <c:choose>
                     <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                       <tr>
@@ -1645,7 +1655,7 @@
                                 <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                                 </label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                                   <tr>
                                     <td>${proHashMap[appSvcPersonnelDtoList.profRegNo].name}</td>
                                   </tr>
@@ -1659,7 +1669,7 @@
                                 <label style="font-weight: normal">The name of this personnel as listed in PRS is:
                                   </label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                                <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                                   <tr>
                                     <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name}</td>
                                   </tr>
@@ -1707,7 +1717,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -1749,7 +1759,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2125,7 +2135,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2167,7 +2177,7 @@
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
                                   PRS</label><span style="position: absolute;right: 0px;color: black"
                                                    onclick="closeThis(this)">X</span>
-                                <table border="1px"
+                                <table aria-describedby="" border="1px"
                                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                   <tr>
                                     <td>Professional Regn. No.</td>
@@ -2299,7 +2309,7 @@
                           test="${DPO_SIZE>1}">${dpoIndex}</c:if>:</strong></p>
                   <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
                 </c:if>
-                <table class="col-xs-12">
+                <table aria-describedby="" class="col-xs-12">
                   <tr>
                     <td class="col-xs-6">
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -2387,7 +2397,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -2431,7 +2441,7 @@
                             <label style="font-weight: normal">The Professional has existing disciplinary records in
                               HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                   onclick="closeThis(this)">X</span>
-                            <table border="1px"
+                            <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                               <tr>
                                 <td>Indentification No.</td>
@@ -2584,7 +2594,7 @@
                       test="${fn:length(currentPreviewSvcInfo.appSvcMedAlertPersonList)>1}">${status.index+1}</c:if>:</strong>
               </p>
               <span class="col-xs-6"></span>
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
 
                 <tr>
                   <td class="col-xs-6">
@@ -2674,7 +2684,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
@@ -2716,7 +2726,7 @@
                           <label style="font-weight: normal">The Professional has existing disciplinary records in
                             HERIMS</label><span style="position: absolute;right: 0px;color: black"
                                                 onclick="closeThis(this)">X</span>
-                          <table border="1px"
+                          <table aria-describedby="" border="1px"
                                  style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                             <tr>
                               <td>Indentification No.</td>
@@ -2814,7 +2824,7 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
-              <table class="col-xs-12">
+              <table aria-describedby="" class="col-xs-12">
                 <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
                   <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                   <tr>

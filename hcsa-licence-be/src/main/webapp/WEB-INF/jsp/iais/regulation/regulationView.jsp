@@ -18,14 +18,52 @@
         margin: 4px 0 10px
     }
 
+    @media only screen and (min-width : 1201px) {
+        td {
+            max-width: 550px;
+        }
+    }
+
+    @media only screen and (max-width : 1200px) {
+        td {
+            max-width: 400px;
+        }
+    }
+
+    @media only screen and (max-width : 992px) {
+        td {
+            max-width: 400px;
+        }
+    }
+
+    @media  only screen and (max-width: 767px) {
+        td {
+            max-width: 350px;
+        }
+    }
+
+    @media only screen and (max-width: 370px) and (min-width: 320px) {
+        td {
+            max-width: 240px;
+        }
+    }
+
+    @media only screen and (min-width : 768px) {
+        td:nth-of-type(3), th:nth-of-type(3) {
+            width: 25%;
+        }
+        td:nth-of-type(4), th:nth-of-type(4) {
+            width: 40%;
+        }
+    }
 
 </style>
-<div class="main-content">
-    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input hidden="hidden" id="regulationId" name="regulationId" value="">
+<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input hidden="hidden" id="regulationId" name="regulationId" value="">
+    <div class="main-content">
+        <div class="center-content col-xs-12 col-md-12">
         <div class="bg-title"><h2>Regulation Management</h2></div>
-
         <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
 
         <iais:section title="">
@@ -66,17 +104,15 @@
                 </h3>
                 <iais:pagination  param="regulationSearch" result="regulationResult"/>
                 <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table word-wrap">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="" value="No."></iais:sortableHeader>
-                        <td></td>
-                        <iais:sortableHeader needSort="true" style="width:15%" field="CLAUSE_NO"
-                                             value="Regulation Clause Number"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" style="width:10%"  field="CLAUSE"
-                                             value="Regulations"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" style="width:10%"  field="status" value="Status"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="action" value="Action"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="" value="No."/>
+                        <th scope="col" ></th>
+                        <iais:sortableHeader needSort="true" field="CLAUSE_NO" value="Regulation Clause Number"/>
+                        <iais:sortableHeader needSort="true" field="CLAUSE" value="Regulations"/>
+                        <iais:sortableHeader needSort="true" field="status" value="Status"/>
+                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="action" value="Action"/>
                     </tr>
                     </thead>
                     <tbody>
@@ -91,10 +127,16 @@
                         <c:otherwise>
                             <c:forEach var="item" items="${regulationResult.rows}" varStatus="status">
                                 <tr>
-                                    <td class="row_no">${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}</td>
-                                    <td><iais:checkbox name="regulation_itemCheckbox" checkboxId="regulation_itemCheckbox" request="${pageContext.request}"  value="${item.id}" forName="regulation_item_CheckboxReDisplay"></iais:checkbox></td>
-                                    <td style="width: 25%;" >${item.clauseNo}</td>
-                                    <td style="width: 60%;" >${item.clause}</td>
+                                    <td class="row_no">
+                                        ${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}
+                                    </td>
+                                    <td>
+                                        <iais:checkbox name="regulation_itemCheckbox" checkboxId="regulation_itemCheckbox"
+                                                       request="${pageContext.request}"  value="${item.id}"
+                                                       forName="regulation_item_CheckboxReDisplay"/>
+                                    </td>
+                                    <td>${item.clauseNo}</td>
+                                    <td>${item.clause}</td>
                                     <td><iais:code code="${item.status}"></iais:code></td>
                                     <td>
                                         <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','preUpdate', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Edit</button>
@@ -134,8 +176,9 @@
             </div>
         </div>
 
-    </form>
-</div>
+        </div>
+    </div>
+</form>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

@@ -341,15 +341,13 @@ public class NewApplicationHelper {
 
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
-                }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if(emailAddr.length() > 66){
-                        String general_err0041=repLength("Email Address","66");
+                }else {
+                    if(emailAddr.length() > 320){
+                        String general_err0041=repLength("Email Address","320");
                         errMap.put("emailAddr" + i, general_err0041);
                     }
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "GENERAL_ERR0014");
-                    }else if(emailAddr.length()>66) {
-                        errMap.put("emailAddr"+i, "Length is too long");
                     }
                 }
 
@@ -551,8 +549,8 @@ public class NewApplicationHelper {
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!  ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("emailAddr"+poIndex, "GENERAL_ERR0014");
-                        }else if(emailAddr.length()>66){
-                            String general_err0041=repLength("Email Address","66");
+                        }else if(emailAddr.length()>320){
+                            String general_err0041=repLength("Email Address","320");
                             oneErrorMap.put("emailAddr" + poIndex, general_err0041);
                         }
                     }else {
@@ -690,14 +688,12 @@ public class NewApplicationHelper {
                     if(StringUtil.isEmpty(emailAddr)){
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }else {
-                        if(emailAddr.length() > 66){
-                            String general_err0041=repLength("Email Address","66");
+                        if(emailAddr.length() > 320){
+                            String general_err0041=repLength("Email Address","320");
                             oneErrorMap.put("deputyEmailAddr" + dpoIndex, general_err0041);
                         }
                         if (!ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
-                        }else if(emailAddr.length()>66){
-
                         }
                     }
                 }
@@ -1091,8 +1087,8 @@ public class NewApplicationHelper {
                 if(StringUtil.isEmpty(emailAddr)){
                     errMap.put("emailAddr"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
-                    if(mobileNo.length()>66){
-                        String general_err0041=repLength("Email Address","66");
+                    if(emailAddr.length()>320){
+                        String general_err0041=repLength("Email Address","320");
                         errMap.put("emailAddr" + i, general_err0041);
                     }
                     if (! ValidationUtils.isEmail(emailAddr)) {
@@ -1916,7 +1912,7 @@ public class NewApplicationHelper {
 
     public static AppSvcPrincipalOfficersDto getPsnInfoFromLic(HttpServletRequest request,String personKey) {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-        Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         String svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         if (personMap != null) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
@@ -1924,7 +1920,7 @@ public class NewApplicationHelper {
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             }else{
-                personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+                personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 if(personMap != null){
                     AppSvcPersonAndExtDto personAndExtDto = personMap.get(personKey);
                     AppSvcPrincipalOfficersDto personDto = genAppSvcPrincipalOfficersDto(personAndExtDto,svcCode,true);
@@ -2810,6 +2806,11 @@ public class NewApplicationHelper {
                     }
                 }
                 break;
+            case ApplicationConsts.DUP_FOR_PERSON_CD:
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList())){
+                    psnDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+                }
+                break;
             default:
                 break;
         }
@@ -2830,7 +2831,7 @@ public class NewApplicationHelper {
                     reloadMap.put(configId,appGrpPrimaryDocDtos1);
                 }else if("1".equals(dupForPrem)){
                     int premCount = 1;
-                    String premTitleTemplate = "Premises ${premCount}: ${configTitle}";
+                    String premTitleTemplate = NewApplicationConstant.TITLE_MODE_OF_SVCDLVY + " ${premCount}: ${configTitle}";
                     for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
                         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos1 = getAppGrpPrimaryDocDtoByConfigId(appGrpPrimaryDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo());
                         String displayTitle = premTitleTemplate.replace("${premCount}",String.valueOf(premCount)).replace("${configTitle}",configTitle);
@@ -2903,18 +2904,20 @@ public class NewApplicationHelper {
     }
 
     //for single premises
-    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos){
-        if(!IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) && !IaisCommonUtils.isEmpty(appSvcDocDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for(HcsaSvcDocConfigDto config:hcsaSvcDocConfigDtos){
-                if("1".equals(config.getDupForPrem())){
-                    List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,config.getId());
-                    if(!IaisCommonUtils.isEmpty(appSvcDocDtoList) && appGrpPremisesDtos != null && appGrpPremisesDtos.size() > 0){
-                        String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
-                        String premType = appGrpPremisesDtos.get(0).getPremisesType();
-                        for(AppSvcDocDto appSvcDocDto:appSvcDocDtoList){
-                            appSvcDocDto.setPremisesType(premType);
-                            appSvcDocDto.setPremisesVal(premIndex);
-                        }
+    public static void addPremAlignForSvcDoc(List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos,List<AppSvcDocDto> appSvcDocDtos,List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        if (IaisCommonUtils.isEmpty(hcsaSvcDocConfigDtos) || IaisCommonUtils.isEmpty(appSvcDocDtos)
+                || IaisCommonUtils.isEmpty(appGrpPremisesDtos) || appGrpPremisesDtos.size() != 1) {
+            return;
+        }
+        for (HcsaSvcDocConfigDto config : hcsaSvcDocConfigDtos) {
+            if ("1".equals(config.getDupForPrem())) {
+                List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, config.getId());
+                if (!IaisCommonUtils.isEmpty(appSvcDocDtoList)) {
+                    String premIndex = appGrpPremisesDtos.get(0).getPremisesIndexNo();
+                    String premType = appGrpPremisesDtos.get(0).getPremisesType();
+                    for (AppSvcDocDto appSvcDocDto : appSvcDocDtoList) {
+                        appSvcDocDto.setPremisesType(premType);
+                        appSvcDocDto.setPremisesVal(premIndex);
                     }
                 }
             }
@@ -2931,6 +2934,7 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
             ParamUtil.setRequestAttr(request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
             ParamUtil.setRequestAttr(request,"AppSvcPersonnelDtoList",appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
+            ParamUtil.setRequestAttr(request,"clinicalDirectorDtoList",appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
         }
     }
 
@@ -2992,6 +2996,9 @@ public class NewApplicationHelper {
                     break;
                 case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                     psnType = ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_CD:
+                    psnType = ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR;
                     break;
                 default:
                     break;
@@ -3822,6 +3829,9 @@ public class NewApplicationHelper {
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
                 psnName = "Service Personnel";
                 break;
+            case ApplicationConsts.DUP_FOR_PERSON_CD:
+                psnName = "Clinical Director";
+                break;
             default:
                 break;
         }
@@ -3834,7 +3844,7 @@ public class NewApplicationHelper {
         String titleTemplate = "${prem}${psn}"+configTitle;
         String reloadKey;
         if("1".equals(dupForPrem)){
-            titleTemplate = titleTemplate.replace("${prem}","Premises "+premCount+": ");
+            titleTemplate = titleTemplate.replace("${prem}", NewApplicationConstant.TITLE_MODE_OF_SVCDLVY + " " + premCount + ": ");
             reloadKey = premIndex + configId;
         }else{
             titleTemplate = titleTemplate.replace("${prem}","");

@@ -41,3 +41,41 @@
 .del-size-36::before{
     font-size:36px;
 }
+
+p, span {
+    word-wrap: break-word;
+}
+
+.min-row .form-group {
+    margin-bottom: 0;
+    line-height: 1.42857143;
+}
+
+.min-row .form-group strong, .min-row .form-group h3 {
+    margin-bottom: 1%;
+    line-height: 36px;
+}
+
+.min-row .form-group label {
+    line-height: 1.42857143;
+    font-weight: normal;
+}
+
+.min-row .form-group p {
+    line-height: 1.42857143;
+    margin: 0;
+}
+
+.word-wrap {
+    white-space: pre-line;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.word-wrap {
+    white-space: pre-line;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}

@@ -34,7 +34,12 @@
                                             </div>
                                             <div class="tab-pane " id="tabLetter" role="tabpanel">
                                                 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-                                                <table class="table">
+                                                <table aria-describedby="" class="table">
+                                                    <thead style="display: none">
+                                                    <tr>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                    </thead>
                                                     <tbody>
                                                     <tr height="1">
                                                         <td class="col-xs-2">

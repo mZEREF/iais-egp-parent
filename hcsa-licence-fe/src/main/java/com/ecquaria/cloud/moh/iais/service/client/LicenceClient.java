@@ -182,4 +182,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence/inactive-licence-app-correlations", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getInactiveLicAppCorrelations();
+
+    @RequestMapping(path= "/hcsa-licence-rfc/licence-bylicence-byid-include-migrated/{licenceId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicBylicIdIncludeMigrated(@RequestParam(value = "licenceId") String licenceId);
 }

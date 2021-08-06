@@ -2,7 +2,7 @@
 <div class="col-xs-12">
     <input type="hidden" value="${transfer}" name="transfer" id="transfer">
     <h1>Amendment</h1>
-    <c:if test="${AppSubmissionDto.licenceNo ne null}">
+    <c:if test="${not empty AppSubmissionDto.licenceNo}">
         <c:if test="${empty SvcName}">
             <c:set var="SvcName" value="${AppSubmissionDto.serviceName}" />
         </c:if>

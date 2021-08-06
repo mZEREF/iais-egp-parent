@@ -208,8 +208,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
 
     @Override
-    public void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
-        intranetUserClient.createUserGroupCorrelation(userGroupCorrelationDtos);
+    public List<UserGroupCorrelationDto> addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
+        return intranetUserClient.createUserGroupCorrelation(userGroupCorrelationDtos).getEntity();
     }
 
     @Override

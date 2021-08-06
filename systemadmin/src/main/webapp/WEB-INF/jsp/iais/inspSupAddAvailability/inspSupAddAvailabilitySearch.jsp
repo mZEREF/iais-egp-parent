@@ -81,10 +81,10 @@
                 <span>Search Result</span>
               </h3>
               <div class="table-gp">
-                <table class="table">
+                <table aria-describedby="" class="table">
                   <thead>
                   <tr align="center">
-                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                    <th scope="col" style="text-align:center;width: 0%">S/N</th>
                     <iais:sortableHeader needSort="true" field="" value="User ID"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date Start"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date End"></iais:sortableHeader>

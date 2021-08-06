@@ -26,13 +26,13 @@
                     </div>
                     <div class="panel-collapse collapse in" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
                         <div class="panel-body">
-                            <table class="table">
+                            <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
-                                    <th width="15%">Regulation Clause Number</th>
-                                    <th width="40%">Regulations</th>
-                                    <th width="40%">Checklist Item</th>
-                                    <th width="10%">Risk Level</th>
+                                    <th scope="col" width="15%">Regulation Clause Number</th>
+                                    <th scope="col" width="40%">Regulations</th>
+                                    <th scope="col" width="40%">Checklist Item</th>
+                                    <th scope="col" width="10%">Risk Level</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -66,14 +66,14 @@
                 </div>
                 <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingPremise">
                     <div class="panel-body">
-                        <table class="table">
+                        <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th width="50%">Checklist Item</th>
-                                <th width="40%">Answer Type</th>
-                                <th width="10%">Risk Level</th>
+                                <th scope="col" width="50%">Checklist Item</th>
+                                <th scope="col" width="40%">Answer Type</th>
+                                <th scope="col" width="10%">Risk Level</th>
                                 <c:if test="${adhocActionFlag == 'Y'}">
-                                    <th width="10%">Action</th>
+                                    <th scope="col" width="10%">Action</th>
                                 </c:if>
                             </tr>
                             </thead>

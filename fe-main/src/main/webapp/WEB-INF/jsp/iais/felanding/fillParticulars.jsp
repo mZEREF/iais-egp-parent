@@ -20,6 +20,9 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%
+    String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
+%>
 <webui:setLayout name="iais-internet"/>
 
 <style>
@@ -41,6 +44,7 @@
                                 <div class="col-xs-12">
                                     <h2>Authorised Person Particulars Form</h2>
                                         <div class="form-horizontal">
+                                            <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
                                                 <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                         </div>
                                     </div>
@@ -57,7 +61,6 @@
                                    <%-- <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
                                     <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
-                                    <a class="btn btn-primary save" id="reLoadMyInfo" onclick="javascript:reLoadMyInfoTodo()">Refresh Data</a>
                                     <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                                 </div>

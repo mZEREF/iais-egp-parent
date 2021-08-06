@@ -3232,9 +3232,9 @@ span.error-msg {
   color: #333333;
   flex-basis: 100%;
   position: relative;
-  padding-left: 0;
   text-align: center;
   padding: 0 10px;
+  padding-left: 0;
 }
 .progress-tracker li:before {
   content: "";

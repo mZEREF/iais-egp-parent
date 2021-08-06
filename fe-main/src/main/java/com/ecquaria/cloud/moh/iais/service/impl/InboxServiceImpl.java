@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -37,14 +36,21 @@ import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -94,6 +100,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
+
     @Override
     public String getServiceNameById(String serviceId) {
         return configInboxClient.getServiceNameById(serviceId).getEntity();
@@ -183,7 +190,7 @@ public class InboxServiceImpl implements InboxService {
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-                ) {
+        ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);
@@ -214,12 +221,12 @@ public class InboxServiceImpl implements InboxService {
     public List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos) {
         List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
         for (RecallApplicationDto h:recallApplicationDtos
-             ) {
+        ) {
             String appId = h.getAppId();
             List<String> refNoList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-                    ) {
+            ) {
                 refNoList.add(appPremisesCorrelationDto.getId());
             }
             h.setRefNo(refNoList);
@@ -264,7 +271,7 @@ public class InboxServiceImpl implements InboxService {
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-             ) {
+        ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);
@@ -316,17 +323,14 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
-        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String nowDateStr=df.format(new Date());
 
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                if(!(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
+                if(!(IaisEGPHelper.isActiveMigrated()&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceStatus)&&licenceDto.getMigrated()!=0)){
                     errorMap.put("errorMessage2",errorMsgEleven);
                 }
             }
@@ -420,16 +424,13 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         boolean isActive = false;
-        String periodDateStr = ConfigHelper.getString("period.approved.migrated.licence");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String nowDateStr=df.format(new Date());
         if(licenceDto != null ){
             if( ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
                 isActive=true;
             }
-            if(nowDateStr.compareTo(periodDateStr)<=0&&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
+            if(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0){
                 isActive=true;
             }
         }
@@ -459,10 +460,17 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
         Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
         for(String licId : licIds){
-            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
             if(licenceDto==null){
                 map.put(licId,Boolean.FALSE);
                 return map;
+            }else {
+                if( !ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus())){
+                    if(!(IaisEGPHelper.isActiveMigrated() &&ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus())&&licenceDto.getMigrated()!=0)){
+                        map.put(licId,Boolean.FALSE);
+                        return map;
+                    }
+                }
             }
         }
         return appInboxClient.listCanCeased(licIds).getEntity();
@@ -544,7 +552,7 @@ public class InboxServiceImpl implements InboxService {
         try {
             hcsaSvcRoutingStageDtos = eicGatewayFeMainClient.getHcsaSvcRoutingStageDtoByStageId(HcsaConsts.ROUTING_STAGE_INS).getEntity();
         }catch (Exception e){
-         log.error(e.getMessage(),e);
+            log.error(e.getMessage(),e);
         }
         Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isNotEmpty(hcsaSvcRoutingStageDtos)){

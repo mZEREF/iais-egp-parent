@@ -15,14 +15,14 @@
 <div class="row">
     <div class="col-xs-12 col-md-7">
         <div class="table-responsive">
-        <table class="table">
+        <table aria-describedby="" class="table">
             <thead>
             <tr style="font-size: 16px;">
-                <td></td>
-                <td><strong>Licence No.</strong></td>
-                <td><strong>Type</strong></td>
-                <td><strong>Mode of Service Delivery</strong></td>
-                <td style="width:17%;"><strong>Expires on</strong></td>
+                <th scope="col"></th>
+                <th scope="col"><strong>Licence No.</strong></th>
+                <th scope="col"><strong>Type</strong></th>
+                <th scope="col"><strong>Mode of Service Delivery</strong></th>
+                <th scope="col" style="width:17%;"><strong>Expires on</strong></th>
             </tr>
             </thead>
             <tbody id="licBodyDiv"></tbody>

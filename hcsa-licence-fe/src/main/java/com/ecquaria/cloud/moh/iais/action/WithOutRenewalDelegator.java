@@ -651,11 +651,11 @@ public class WithOutRenewalDelegator {
                         if(appSvcPrincipalOfficersDtoList!=null){
                             List<AppSvcPrincipalOfficersDto> poList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
                             List<AppSvcPrincipalOfficersDto> dpoList=new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
-                            for(AppSvcPrincipalOfficersDto var : appSvcPrincipalOfficersDtoList){
-                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(var.getPsnType())){
-                                    dpoList.add(var);
-                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(var.getPsnType())){
-                                    poList.add(var);
+                            for(AppSvcPrincipalOfficersDto aspoDto : appSvcPrincipalOfficersDtoList){
+                                if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(aspoDto.getPsnType())){
+                                    dpoList.add(aspoDto);
+                                }else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(aspoDto.getPsnType())){
+                                    poList.add(aspoDto);
                                 }
                             }
                             appSvcRelatedInfoDto.setPoList(poList);
@@ -1177,7 +1177,7 @@ public class WithOutRenewalDelegator {
                 continue;
             }else if("gradualFee".equals(targetLaterFeeType)){
                 Double amount = laterFeeDetail.getAmount();
-                if(amount != null && amount != 0d){
+                if(amount != null && !MiscUtil.doubleEquals(amount, 0d)){
                     gradualFeeList.add(laterFeeDetail);
                 }
                 continue;
@@ -1398,23 +1398,8 @@ public class WithOutRenewalDelegator {
                     return;
                 }
                 if(appSubmissionDtos.size()==1){
-                    String licenceId = appSubmissionDto.getLicenceId();
-                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
-                    if(licenceById.getSvcName()!=null){
-                        HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
-                        List<String> serviceIds=IaisCommonUtils.genNewArrayList();
-                        if(hcsaServiceDto!=null){
-                            serviceIds.add(hcsaServiceDto.getId());
-                            for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
-                                boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
-                                if(!configIsChange){
-                                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
-                                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
-                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                    return;
-                                }
-                            }
-                        }
+                    if(goGolicenceReview(bpc.request,appSubmissionDto,oldAppSubmissionDtoAppGrpPremisesDtoList,rfc_err020)){
+                        return;
                     }
                     boolean flag =EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList,
                             oldAppSubmissionDtoAppGrpPremisesDtoList);
@@ -1462,24 +1447,9 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }else {
-                    String licenceId = appSubmissionDto.getLicenceId();
-                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
-                    if(licenceById.getSvcName()!=null){
-                        HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
-                        List<String> serviceIds=IaisCommonUtils.genNewArrayList();
-                        if(hcsaServiceDto!=null){
-                            serviceIds.add(hcsaServiceDto.getId());
-                            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                                boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
-                                if(!configIsChange){
-                                    rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
-                                    bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
-                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                    return;
-                                }
-                            }
-                        }
-                    }
+                   if(goGolicenceReview(bpc.request,appSubmissionDto,appGrpPremisesDtoList,rfc_err020)){
+                       return;
+                   }
                 }
                 requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDto);
                 String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
@@ -1495,6 +1465,27 @@ public class WithOutRenewalDelegator {
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
     }
 
+    private boolean goGolicenceReview(HttpServletRequest request,AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtoList,String rfc_err020){
+        String licenceId = appSubmissionDto.getLicenceId();
+        LicenceDto licenceById = requestForChangeService.getLicenceDtoIncludeMigrated(licenceId);
+        if(licenceById.getSvcName()!=null){
+            HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(licenceById.getSvcName());
+            List<String> serviceIds=IaisCommonUtils.genNewArrayList();
+            if(hcsaServiceDto!=null){
+                serviceIds.add(hcsaServiceDto.getId());
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
+                    if(!configIsChange){
+                        rfc_err020=rfc_err020.replace("{ServiceName}",licenceById.getSvcName());
+                        request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
+                        ParamUtil.setRequestAttr(request, PAGE_SWITCH, PAGE2);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     //doPayment
     public void doPayment(BaseProcessClass bpc) throws Exception {
         PaymentValidate paymentValidate = new PaymentValidate();

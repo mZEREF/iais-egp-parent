@@ -118,10 +118,10 @@
                 </h3>
                 <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
                 <div class="table-gp">
-                  <table class="table">
+                  <table aria-describedby="" class="table">
                     <thead>
                     <tr align="center">
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                      <th scope="col" style="text-align:center;width: 0%">S/N</th>
                       <iais:sortableHeader needSort="false" field="GROUP_NO"
                                            value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="APP_TYPE"
@@ -242,17 +242,17 @@
                         var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                             '<td colspan="6" style="padding: 0px 8px !important;">' +
                             '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                            '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<table aria-describedby="" class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
 
-                        html += '<th>Application No.</th>' +
-                            '<th>Application Status</th>' +
-                            '<th>HCI Code</th>' +
-                            '<th>HCI Name / Address</th>' +
-                            '<th>Licence Expiry Date</th>' +
-                            '<th>Inspection Date</th>' +
-                            '<th>' + memberName + '</th>' +
+                        html += '<th scope="col" >Application No.</th>' +
+                            '<th scope="col" >Application Status</th>' +
+                            '<th scope="col" >HCI Code</th>' +
+                            '<th scope="col" >HCI Name / Address</th>' +
+                            '<th scope="col" >Licence Expiry Date</th>' +
+                            '<th scope="col" >Inspection Date</th>' +
+                            '<th scope="col" >' + memberName + '</th>' +
                             '</tr>' +
                             '</thead>' +
                             '<tbody>';

@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 @CustomValidate(impClass = "com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation")
 public class CheckListVadlidateDto implements Serializable {
-    private static final long serialVersionUID = 2291544600420550312L;
+    private static final long serialVersionUID = 1L;
 }
 
 

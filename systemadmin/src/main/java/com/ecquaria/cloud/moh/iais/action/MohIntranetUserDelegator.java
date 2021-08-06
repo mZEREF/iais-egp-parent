@@ -818,25 +818,37 @@ public class MohIntranetUserDelegator {
             }
 
             if (!IaisCommonUtils.isEmpty(userGroupCorrelationDtos)) {
-                intranetUserService.addUserGroupId(userGroupCorrelationDtos);
-                String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
-                for (UserGroupCorrelationDto ugc:userGroupCorrelationDtos
-                ) {
-                    List<String> roleIdList = IaisCommonUtils.genNewArrayList();
-                    roleIdList.add(ugc.getUserRoleId());
-                    List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
-                    if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
-                        WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
-                        workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
-                        workloadCalculationDto.setDays(days);
-                        workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
-                        workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
-                        workloadCalculationDto.setAuditTrailDto(auditTrailDto);
-                        intranetUserService.workloadCalculation(workloadCalculationDto);
+                List<UserGroupCorrelationDto> userGroupCorrelationDtoList=intranetUserService.addUserGroupId(userGroupCorrelationDtos);
+                try {
+                    String days = String.valueOf(systemParamConfig.getWorkloadCalculation());
+                    for (UserGroupCorrelationDto ugc:userGroupCorrelationDtoList
+                    ) {
+                        List<String> roleIdList = IaisCommonUtils.genNewArrayList();
+                        roleIdList.add(ugc.getUserRoleId());
+                        List<OrgUserRoleDto> orgUserRoleDtoList1 = intranetUserService.getOrgUserRoleDtoById(roleIdList);
+                        boolean hasNotLeadership=false;
+                        for (UserGroupCorrelationDto ugcd:userGroupCorrelationDtoList
+                        ) {
+                            if(!ugcd.getId().equals(ugc.getId())&&ugc.getGroupId().equals(ugcd.getGroupId())&&ugcd.getIsLeadForGroup().equals(0)){
+                                hasNotLeadership=true;
+                            }
+                        }
+                        if(IaisCommonUtils.isNotEmpty(orgUserRoleDtoList1)){
+                            WorkloadCalculationDto workloadCalculationDto=new WorkloadCalculationDto();
+                            workloadCalculationDto.setWorkGroupId(ugc.getGroupId());
+                            workloadCalculationDto.setDays(days);
+                            workloadCalculationDto.setUserId(orgUserRoleDtoList1.get(0).getUserAccId());
+                            workloadCalculationDto.setRoleId(orgUserRoleDtoList1.get(0).getRoleName());
+                            workloadCalculationDto.setAuditTrailDto(auditTrailDto);
+                            if(ugc.getIsLeadForGroup().equals(0)){
+                                intranetUserService.workloadCalculation(workloadCalculationDto);
+                            }else if(!hasNotLeadership){
+                                intranetUserService.workloadCalculation(workloadCalculationDto);
+                            }
+                        }
                     }
-
-
-
+                }catch (Exception e){
+                    log.error(e.getMessage());
                 }
 
             }
@@ -913,7 +925,7 @@ public class MohIntranetUserDelegator {
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
-        File file = File.createTempFile("temp", "xml");
+        File file = MiscUtil.generateFileInTempFolder("temp.xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         List<OrgUserDto> orgUserDtos = importXML(xmlFile);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", (Serializable) orgUserDtos);
@@ -1132,7 +1144,7 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
         int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
-        File file = File.createTempFile("temp", "xml");
+        File file = MiscUtil.generateFileInTempFolder("temp.xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         //validate xml file
         List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();

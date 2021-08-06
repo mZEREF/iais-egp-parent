@@ -31,21 +31,25 @@ public class HcsaServiceTag extends DivTagSupport{
 
 	public HcsaServiceTag() {
 		super();
-		init();
+		cleanFields();
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		setValue(null);
-		setMaskValue(Boolean.FALSE);
-		setIsSvcCode(Boolean.FALSE);
+		cleanFields();
 	}
 
 	@Override
 	public void release() {
 		super.release();
 		init();
+	}
+
+	private void cleanFields() {
+		setValue(null);
+		setMaskValue(Boolean.FALSE);
+		setIsSvcCode(Boolean.FALSE);
 	}
 
 	@Override

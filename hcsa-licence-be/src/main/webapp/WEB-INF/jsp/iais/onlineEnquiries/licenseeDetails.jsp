@@ -4,7 +4,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered">
+                <table aria-describedby="" class="table table-bordered">
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Licensee Type</td>
@@ -32,7 +37,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" >
+                <table aria-describedby="" class="table table-bordered" >
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Company Name</td>
@@ -77,7 +87,12 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="table-gp">
-                        <table class="table table-bordered">
+                        <table aria-describedby="" class="table table-bordered">
+                            <thead style="display: none">
+                            <tr>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             <tr>
                                 <td class="col-xs-6" align="right">Name</td>
@@ -118,7 +133,12 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="table-gp">
-                        <table class="table table-bordered">
+                        <table aria-describedby="" class="table table-bordered">
+                            <thead style="display: none">
+                            <tr>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             <tr>
                                 <td class="col-xs-6" align="right">Name</td>
@@ -159,7 +179,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered">
+                <table aria-describedby="" class="table table-bordered">
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Name</td>

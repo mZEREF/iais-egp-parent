@@ -67,12 +67,12 @@
                                   </div>
                                 </c:if>
                               </c:if>
-                              <table class="table discipline-table">
+                              <table aria-describedby="" class="table discipline-table">
                                 <thead>
                                 <tr>
-                                  <th>Mode of Service Delivery</th>
-                                  <th>${svcScopePageName}</th>
-                                  <th>Clinical Governance Officers</th>
+                                  <th scope="col" >Mode of Service Delivery</th>
+                                  <th scope="col" >${svcScopePageName}</th>
+                                  <th scope="col" >Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
                                 <c:set var="row_count" value="0"></c:set>
@@ -167,7 +167,7 @@
         $('#edit').click(function () {
             $('#edit-content').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            $('div.nice-select').removeClass('disabled');
+            $('div.${RfiPremiseId}').removeClass('disabled');
         });
     }
 </script>

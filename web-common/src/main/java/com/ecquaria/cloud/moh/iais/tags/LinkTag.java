@@ -14,9 +14,9 @@ import javax.servlet.jsp.JspTagException;
  * @author      suocheng
  */
 public class LinkTag extends DivTagSupport {
-
     private static final long serialVersionUID = 2621389116711289110L;
     private static final String  ENDDIV = "</div>";
+
 
     private String icon;
     private String onclick;
@@ -24,17 +24,22 @@ public class LinkTag extends DivTagSupport {
 
     public LinkTag() {
         super();
-        init();
+        cleanFields();
     }
 
     // resets local state
     @Override
     protected void init() {
         super.init();
+        cleanFields();
+    }
+
+    private void cleanFields() {
         setIcon(null);
         setOnclick(null);
         setTitle(null);
     }
+
     @Override
     public void release() {
         super.release();
