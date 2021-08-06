@@ -137,7 +137,7 @@ public class EicSelfRecoveJobHandler extends IJobHandler {
                     orgEicClient.updateStatus(orgList);
                 }
 
-                if (orgList!=null&&!orgList.isEmpty()) {
+                if (sysList!=null&&!sysList.isEmpty()) {
                     keepOn = true;
                     sysList.forEach(ert -> reTrigger(ert, auditTrailDto));
                     eicClient.updateStatus(sysList);
