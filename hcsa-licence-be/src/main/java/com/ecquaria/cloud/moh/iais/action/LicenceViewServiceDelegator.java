@@ -575,8 +575,6 @@ public class LicenceViewServiceDelegator {
         professionalParameterDto.setTimestamp(format);
         professionalParameterDto.setSignature("2222");
         List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
-        List<ProfessionalResponseDto> professionalResponseDtos = null;
-        HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
         if(!list.isEmpty()){
             try {
                 disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
@@ -584,8 +582,12 @@ public class LicenceViewServiceDelegator {
                 log.error(e.getMessage(),e);
                 request.setAttribute("beEicGatewayClient","PRS mock server down !");
             }
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<ProfessionalResponseDto> professionalResponseDtos = null;
+        HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
+        if(!list.isEmpty()){
             try {
                 professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
@@ -1704,57 +1706,59 @@ public class LicenceViewServiceDelegator {
     }
 
 
-    private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num){
+    private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num) {
         log.info(StringUtil.changeForLog("The dealWithSvcDoc start ..."));
-            String result = null;
-            String svcDocId = appSvcDocDto.getSvcDocId();
-            String upFileName = appSvcDocDto.getUpFileName();
-            HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-            String dupForPrem = entity.getDupForPrem();
-            if(upFileName==null){
-                appSvcDocDto.setUpFileName(entity.getDocTitle());
+        String result = null;
+        String svcDocId = appSvcDocDto.getSvcDocId();
+        String upFileName = appSvcDocDto.getUpFileName();
+        HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+        String dupForPrem = entity.getDupForPrem();
+        if (upFileName == null) {
+            appSvcDocDto.setUpFileName(entity.getDocTitle());
+        }
+        String dupForPerson = entity.getDupForPerson();
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc svcDocId -->:" + svcDocId));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:" + dupForPrem));
+        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:" + dupForPerson));
+        if (dupForPerson == null && "0".equals(dupForPrem)) {
+            result = appSvcDocDto.getUpFileName();
+        } else if (dupForPerson != null && "0".equals(dupForPrem)) {
+            if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
+                result = "Clinical Governance Officer " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
+                result = "Principal Officer(s) " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
+                result = "Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
+                result = "MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
+                result = "Service Personnel " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
+                result = "Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
             }
-            String dupForPerson = entity.getDupForPerson();
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc svcDocId -->:"+svcDocId));
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:"+dupForPrem));
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:"+dupForPerson));
-            if(dupForPerson==null && "0".equals(dupForPrem)){
-                result =  appSvcDocDto.getUpFileName() ;
-            }else if(dupForPerson!=null&&"0".equals(dupForPrem)){
-                if("1".equals(dupForPerson)){
-                    result = "Clinical Governance Officer "+num+": "+appSvcDocDto.getUpFileName();
-                  }else if("2".equals(dupForPerson)){
-                    result = "Principal Officer(s) "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("4".equals(dupForPerson)){
-                    result = "Nominee "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("8".equals(dupForPerson)){
-                    result = "MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("16".equals(dupForPerson)){
-                    result = "Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("32".equals(dupForPerson)){
-                    result = "Clinical Director "+num+": "+appSvcDocDto.getUpFileName();
-                }
-            }else if(dupForPerson!=null &&"1".equals(dupForPrem)){
-                if("1".equals(dupForPerson)){
-                    result = "Premises 1:Clinical Governance Officers "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("2".equals(dupForPerson)){
-                    result = "Premises 1:Principal Officers "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("4".equals(dupForPerson)){
-                    result = "Premises 1:Nominee "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("8".equals(dupForPerson)){
-                    result = "Premises 1:MedAlert Person "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("16".equals(dupForPerson)){
-                    result = "Premises 1:Service Personnel "+num+": "+appSvcDocDto.getUpFileName();
-                }else if("32".equals(dupForPerson)){
-                    result = "Premises 1:Clinical Director "+num+": "+appSvcDocDto.getUpFileName();
-                }
+        } else if (dupForPerson != null && "1".equals(dupForPrem)) {
+            if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officers " + num + ": "
+                        + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1:Service Personnel " + num + ": " + appSvcDocDto.getUpFileName();
+            } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
+            }
 
-            }else if(dupForPerson==null && "1".equals(dupForPrem)){
-                result = "Premises 1:"+appSvcDocDto.getUpFileName();
-            }
+        } else if (dupForPerson == null && "1".equals(dupForPrem)) {
+            result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + "  1: " + appSvcDocDto.getUpFileName();
+        }
         log.info(StringUtil.changeForLog("The dealWithSvcDoc end..."));
-          return  result;
+        return result;
     }
+
     private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){
         List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(key);
         if(appSvcDocDtos==null){

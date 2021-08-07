@@ -100,11 +100,11 @@ public class HcsaApplicationAjaxController{
                 //save file to file DB
                 String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
                 appIntranetDocDto.setFileRepoId(repo_id);
-                //            appIntranetDocDto.set
+    //            appIntranetDocDto.set
                 appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
                 String id = uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
                 appIntranetDocDto.setId(id);
-            // set appIntranetDocDto to seesion
+             // set appIntranetDocDto to seesion
             ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
             List<AppIntranetDocDto> appIntranetDocDtos;
             if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
@@ -125,9 +125,9 @@ public class HcsaApplicationAjaxController{
             try{
                 String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
                 url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                        replaceAll("interalFile.docName",docName).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+                       replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
             }catch (Exception e){
-                log.error(e.getMessage(),e);
+               log.error(e.getMessage(),e);
             }
             appIntranetDocDto.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");

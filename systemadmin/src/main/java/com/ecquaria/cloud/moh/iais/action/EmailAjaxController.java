@@ -102,14 +102,14 @@ public class EmailAjaxController {
                 }
             }
         }else{
-            selectOptions.add(new SelectOption("Licensee","Licensee"));
-            selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
-            selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
-            selectOptions.add(new SelectOption("Nominee","Nominee"));
-            selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
-            selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
-            selectOptions.add(new SelectOption("MedAlert","MedAlert"));
-            selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
+        selectOptions.add(new SelectOption("Licensee","Licensee"));
+        selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
+        selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
+        selectOptions.add(new SelectOption("Nominee","Nominee"));
+        selectOptions.add(new SelectOption("Clinical Governance Officer","Clinical Governance Officer"));
+        selectOptions.add(new SelectOption("Service Personnel","Service Personnel"));
+        selectOptions.add(new SelectOption("MedAlert","MedAlert"));
+        selectOptions.add(new SelectOption("Clinical Director","Clinical Director"));
         }
         doSortSelOption(selectOptions);
         Map<String, String> result = new HashMap<>();

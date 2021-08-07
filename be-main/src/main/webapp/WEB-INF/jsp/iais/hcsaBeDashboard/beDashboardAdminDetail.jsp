@@ -248,19 +248,44 @@
     var groupAjax = function (applicationGroupId, divid) {
         dividajaxlist.push(divid);
         $.post(
-                '/main-web/hcsa/intranet/dashboard/dashSysDetail.do',
-                {groupId: applicationGroupId},
-                function (data) {
-                    let dashSupportFlag = data.dashSupportFlag;
-                    let result = data.result;
-                    if('Success' == result) {
-                        let res = data.ajaxResult;
-                        let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                                '<td colspan="7" style="padding: 0px 8px !important;">' +
-                                '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                                '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                                '<thead>' +
-                                '<tr>';
+            '/main-web/hcsa/intranet/dashboard/dashSysDetail.do',
+            {groupId: applicationGroupId},
+            function (data) {
+                let dashSupportFlag = data.dashSupportFlag;
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="7" style="padding: 0px 8px !important;">' +
+                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<thead>' +
+                        '<tr>';
+                    if ("true" == dashSupportFlag) {
+                        html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }
+
+                    html += '<th width="15%">Application No.</th>' +
+                        '<th width="15%">Application Type</th>' +
+                        '<th width="15%">Service Licence</th>' +
+                        '<th width="15%">Officer Assigned</th>' +
+                        '<th width="15%">Days at Current Stage</th>' +
+                        '<th width="10%">Target TAT at Current Stage</th>' +
+                        '<th width="10%">Total Days Taken for Application</th>' +
+                        '<th width="10%">Total TAT for Application</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.rowCount; i++) {
+                        var color = "black";
+                        if ("black" == res.rows[i].kpiColor) {
+                            color = "black";
+                        } else if ("red" == res.rows[i].kpiColor) {
+                            color = "red";
+                        } else if ("amber" == res.rows[i].kpiColor) {
+                            color = "#DD9C00";
+                        }
+                        html += '<tr style = "color : ' + color + ';">';
                         if ("true" == dashSupportFlag) {
                             html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                         }

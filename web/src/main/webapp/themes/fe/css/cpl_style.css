@@ -5799,5 +5799,14 @@ section.logo img {
   }
 }*/
 
+p, span {
+    word-wrap: break-word;
+}
+
+.container-footer {
+    margin-top: 15px;
+    padding-top: 30px;
+    border-top: 1px solid #BABABA;
+}
 
 

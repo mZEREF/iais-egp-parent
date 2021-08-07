@@ -68,36 +68,37 @@
                                     <div class="row new-img-show" style="display: none">
                                         <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
                                             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                            <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                                <tr>
-                                                    <th scope="col">Indentification No.</th>
-                                                    <th scope="col">Case No.</th>
-                                                    <th scope="col">Case Type Description</th>
-                                                    <th scope="col">Case Status Description</th>
-                                                    <th scope="col">Offence Description</th>
-                                                    <th scope="col">Outcome Description</th>
-                                                    <th scope="col">Outcome Issue Date</th>
-                                                    <th scope="col">Prosecution Outcome Description</th>
-                                                    <th scope="col">Created Date</th>
-                                                    <th scope="col">Update Date</th>
-                                                </tr>
-                                                <c:forEach items="${hashMap[newLicenceDto.uenNo]}" var="map">
+                                            <div class="table-responsive">
+                                                <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                                     <tr>
-                                                        <td>${map.identificationNo}</td>
-                                                        <td>${map.caseNo}</td>
-                                                        <td>${map.caseType}</td>
-                                                        <td>Case Status Description</td>
-                                                        <td>${map.offenceDesc}</td>
-                                                        <td>${map.outcome}</td>
-                                                        <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                        <td>${map.prosecutionOutcome}</td>
-                                                        <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                        <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                        <th scope="col">Indentification No.</th>
+                                                        <th scope="col">Case No.</th>
+                                                        <th scope="col">Case Type Description</th>
+                                                        <th scope="col">Case Status Description</th>
+                                                        <th scope="col">Offence Description</th>
+                                                        <th scope="col">Outcome Description</th>
+                                                        <th scope="col">Outcome Issue Date</th>
+                                                        <th scope="col">Prosecution Outcome Description</th>
+                                                        <th scope="col">Created Date</th>
+                                                        <th scope="col">Update Date</th>
                                                     </tr>
-                                                </c:forEach>
-                                                <tr></tr>
-
-                                            </table>
+                                                    <c:forEach items="${hashMap[newLicenceDto.uenNo]}" var="map">
+                                                        <tr>
+                                                            <td>${map.identificationNo}</td>
+                                                            <td>${map.caseNo}</td>
+                                                            <td>${map.caseType}</td>
+                                                            <td>Case Status Description</td>
+                                                            <td>${map.offenceDesc}</td>
+                                                            <td>${map.outcome}</td>
+                                                            <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                            <td>${map.prosecutionOutcome}</td>
+                                                            <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                            <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    <tr></tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </c:if>
@@ -105,36 +106,38 @@
                                     <div class="row old-img-show" style="display: none">
                                         <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
                                             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                            <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                                <tr>
-                                                    <th scope="col">Indentification No.</th>
-                                                    <th scope="col">Case No.</th>
-                                                    <th scope="col">Case Type Description</th>
-                                                    <th scope="col">Case Status Description</th>
-                                                    <th scope="col">Offence Description</th>
-                                                    <th scope="col">Outcome Description</th>
-                                                    <th scope="col">Outcome Issue Date</th>
-                                                    <th scope="col">Prosecution Outcome Description</th>
-                                                    <th scope="col">Created Date</th>
-                                                    <th scope="col">Update Date</th>
-                                                </tr>
-                                                <c:forEach items="${hashMap[oldLicenceDto.uenNo]}" var="map">
+                                            <div class="table-responsive">
+                                                <table aria-describedby="" border="1px"
+                                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                                                     <tr>
-                                                        <td>${map.identificationNo}</td>
-                                                        <td>${map.caseNo}</td>
-                                                        <td>${map.caseType}</td>
-                                                        <td>Case Status Description</td>
-                                                        <td>${map.offenceDesc}</td>
-                                                        <td>${map.outcome}</td>
-                                                        <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                        <td>${map.prosecutionOutcome}</td>
-                                                        <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                        <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                        <th scope="col">Indentification No.</th>
+                                                        <th scope="col">Case No.</th>
+                                                        <th scope="col">Case Type Description</th>
+                                                        <th scope="col">Case Status Description</th>
+                                                        <th scope="col">Offence Description</th>
+                                                        <th scope="col">Outcome Description</th>
+                                                        <th scope="col">Outcome Issue Date</th>
+                                                        <th scope="col">Prosecution Outcome Description</th>
+                                                        <th scope="col">Created Date</th>
+                                                        <th scope="col">Update Date</th>
                                                     </tr>
-                                                </c:forEach>
-                                                <tr></tr>
-
-                                            </table>
+                                                    <c:forEach items="${hashMap[oldLicenceDto.uenNo]}" var="map">
+                                                        <tr>
+                                                            <td>${map.identificationNo}</td>
+                                                            <td>${map.caseNo}</td>
+                                                            <td>${map.caseType}</td>
+                                                            <td>Case Status Description</td>
+                                                            <td>${map.offenceDesc}</td>
+                                                            <td>${map.outcome}</td>
+                                                            <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                            <td>${map.prosecutionOutcome}</td>
+                                                            <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                            <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    <tr></tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </c:if>

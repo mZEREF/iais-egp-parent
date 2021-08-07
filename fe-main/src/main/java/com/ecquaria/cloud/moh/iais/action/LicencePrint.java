@@ -56,7 +56,8 @@ public class LicencePrint {
                 map.put("licenseeName",licenceViewDto.getLicenseeName());
                 map.put("serviceName",licenceViewDto.getServiceName());
                 map.put("hivTesting",licenceViewDto.getHivTesting());
-                map.put("hciName",licenceViewDto.getHciName());
+                //map.put("hciName",licenceViewDto.getHciName());
+                map.put("businessName",licenceViewDto.getBusinessName());
                 map.put("address",licenceViewDto.getAddress());
                 map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 map.put("startDate",licenceViewDto.getStartDate());

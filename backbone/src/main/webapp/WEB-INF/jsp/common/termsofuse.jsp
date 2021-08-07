@@ -18,9 +18,19 @@
   </div>
   <div class="module alt">
     <table aria-describedby="" class="table" border="0" >
+      <thead>
+      <tr>
+        <th scope="col" ></th>
+      </tr>
+      </thead>
       <tbody><tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">1.</td>
               <td style="border: 0px solid white">
@@ -44,6 +54,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">2.</td>
               <td style="border: 0px solid white">
@@ -66,6 +81,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">3.</td>
               <td style="border: 0px solid white">
@@ -96,6 +116,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">5.</td>
               <td style="border: 0px solid white">
@@ -116,6 +141,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">6.</td>
               <td style="border: 0px solid white">
@@ -149,6 +179,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">8.</td>
               <td style="border: 0px solid white">
@@ -189,6 +224,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">10.</td>
               <td style="border: 0px solid white">
@@ -211,6 +251,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">11.</td>
               <td style="border: 0px solid white">
@@ -244,6 +289,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">13.</td>
               <td style="border: 0px solid white">
@@ -314,6 +364,11 @@
       <tr>
         <td style="border: 0px solid white">
           <table aria-describedby="" class="table">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="30px">19.</td>
               <td style="border: 0px solid white">

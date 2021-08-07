@@ -227,7 +227,7 @@ public class LicenceServiceImpl implements LicenceService {
     public LicenceDto getLicenceDto(String licenceId) {
         LicenceDto result = null;
         if(!StringUtil.isEmpty(licenceId)){
-            result = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+            result = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         }
         return result;
     }
@@ -241,6 +241,7 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public List<String> getLicenceOutDate(int outMonth){
         List<LicenseeDto> lics = organizationClient.getLicenseeDtoFromSingpass().getEntity();
+        log.info(StringUtil.changeForLog("The licensee with Singpass ==> " + lics.size()));
         return hcsaLicenceClient.getLicenceOutDate(lics, outMonth).getEntity();
     }
 

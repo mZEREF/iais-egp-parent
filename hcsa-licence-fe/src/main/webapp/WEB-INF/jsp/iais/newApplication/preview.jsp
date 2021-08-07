@@ -9,7 +9,6 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_tab" value="">
     <div class="main-content">
         <div class="container">
@@ -31,6 +30,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                <%@include file="../common/previewLicensee.jsp"%>
                                                 <%@include file="../common/previewPremises.jsp"%>
                                                 <%@include file="../common/previewPrimary.jsp"%>
                                                 <c:forEach var="hcsaServiceDto" items="${hcsaServiceDtoList}" varStatus="status" >
@@ -197,6 +197,10 @@
         if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
             $('#rfcPending').modal('show');
         }
+        $('#subLicenseeEdit').click(function(){
+            showWaiting();
+            submit('licensee',null,null);
+        });
         $('#premisesEdit').click(function(){
             showWaiting();
             submit('premises',null,null);
@@ -240,6 +244,14 @@
         $('#Back').unbind();
         $('#Back').click(function(){
             submit('premises',null,null);
+        });
+        </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.licenseeEdit}">
+        $('#docEdit').unbind();
+        $('.doSvcEdit').unbind();
+        $('#Back').unbind();
+        $('#Back').click(function(){
+            submit('licensee',null,null);
         });
         </c:if>
         <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">

@@ -238,7 +238,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationService.getAppPremisesCorrelationByAppGroupId(oldAppGrpId);
             for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos
-            ) {
+                 ) {
                 if(apc.getApplicationId().equals(oldApplicationDto.getId())){
                     AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(apc.getId()).getEntity();
                     if(appInspectionStatusDto!=null){

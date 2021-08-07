@@ -265,6 +265,9 @@
                                     <c:when test="${spDtoLength >= spHcsaSvcPersonnelDto.maximumCount}">
                                         <c:set var="needAddPsn" value="false"/>
                                     </c:when>
+                                    <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
+                                        <c:set var="needAddPsn" value="false"/>
+                                    </c:when>
                                 </c:choose>
                                 <div id="addPsnDiv" class="row <c:if test="${!needAddPsn}">hidden</c:if>">
                                     <div class="col-sm-5">

@@ -39,6 +39,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                            <%@include file="section/viewLicensee.jsp" %>
                                             <%@include file="section/viewPremises.jsp" %>
                                             <%@include file="section/viewPrimaryDoc.jsp" %>
                                             <%@include file="section/viewKeyRoles.jsp" %>
@@ -108,6 +109,9 @@
         </c:if>
         <c:if test="${pageAppEditSelectDto.serviceEdit}">
         $('#serviceCheckbox').closest("div.panel-body").attr("style","");
+        </c:if>
+        <c:if test="${pageAppEditSelectDto.licenseeEdit}">
+        $('#licenseeCheckbox').closest("div.panel-body").attr("style","");
         </c:if>
 
         $('input[name="editCheckbox"]').click(changeSectionStyle);

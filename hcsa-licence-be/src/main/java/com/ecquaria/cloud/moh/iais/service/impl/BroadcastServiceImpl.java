@@ -94,7 +94,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                     broadcastApplicationDto.setAppSvcVehicleDtos(appSvcVehicleDtos);
                     //set db data for roll back
                     broadcastApplicationDto.setRollBackAppSvcVehicleDtos(appSvcVehicleDtoList);
-                    //vehicle details don't show
+                //vehicle details don't show
                 } else {
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {

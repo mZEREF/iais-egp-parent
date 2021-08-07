@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validate.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -156,6 +157,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         }
     }
 
+
     @Override
     public void doValidateAdressType(String floorNo, String blkNo, String unitNo, Integer index, Map<String, String> map, List<String> errorName) {
         if(errorName==null||errorName.size()!=3){
@@ -183,10 +185,6 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         }
     }
 
-    @Override
-    protected void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap, String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo, AppGrpPremisesDto appGrpPremisesDto) {
-        super.checkOperaionUnit(operationalUnitDtos, errorMap, floorErrName, unitErrName, floorUnitList, floorUnitErrName, floorUnitNo, appGrpPremisesDto);
-    }
     @Override
     public void doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi, List<String> premisesHciList,List<String> oldPremiseHciList) {
         String PostalCode = map.get("easMtsPostalCode" + index);
@@ -231,6 +229,12 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             }
         }
     }
+
+    @Override
+    protected void checkOperaionUnit(List<AppPremisesOperationalUnitDto> operationalUnitDtos, Map<String, String> errorMap, String floorErrName, String unitErrName, List<String> floorUnitList, String floorUnitErrName, List<String> floorUnitNo, AppGrpPremisesDto appGrpPremisesDto) {
+        super.checkOperaionUnit(operationalUnitDtos, errorMap, floorErrName, unitErrName, floorUnitList, floorUnitErrName, floorUnitNo, appGrpPremisesDto);
+    }
+
     protected void  checkHciIsSame(AppGrpPremisesDto appGrpPremisesDto,List<String> premisesHciList,Map<String, String> errorMap,String errName){
         List<String> currHciList = NewApplicationHelper.genPremisesHciList(appGrpPremisesDto);
         for(String hci:currHciList){

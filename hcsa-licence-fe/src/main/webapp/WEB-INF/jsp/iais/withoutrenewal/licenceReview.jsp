@@ -69,6 +69,7 @@
                                                                     <c:if test="${isSingle == 'N'}">
                                                                         <h2 style='border-bottom:none;'>${AppSubmissionDto.serviceName}; Licence No. ${AppSubmissionDto.licenceNo}</h2>
                                                                     </c:if>
+                                                                    <%@include file="../common/previewLicensee.jsp"%>
                                                                     <%@include file="../common/previewPremises.jsp"%>
                                                                     <%@include file="../common/previewPrimary.jsp"%>
                                                                     <div class="panel panel-default svc-content">
@@ -291,6 +292,13 @@
         }
         window.open(url+ txt,'_blank');
     })
+
+    $('#subLicenseeEdit').click(function () {
+        showWaiting();
+        $('#EditValue').val('licensee');
+        $('[name="switch_value"]').val('doEdit');
+        $('#mainForm').submit();
+    });
 
 
 </script>

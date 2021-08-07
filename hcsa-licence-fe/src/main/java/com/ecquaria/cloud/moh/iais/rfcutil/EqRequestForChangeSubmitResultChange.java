@@ -10,6 +10,7 @@ import sop.util.CopyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EqRequestForChangeSubmitResultChange {
 
@@ -73,7 +74,8 @@ public class EqRequestForChangeSubmitResultChange {
         boolean eqAppSvcVehicle = isChangeAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
         boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(n.get(0).getAppSvcChargesPageDto(), o.get(0).getAppSvcChargesPageDto());
         boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        if (!flag || !flag1 || eqSvcDoc || eqAppSvcVehicle ||eqAppSvcChargesPageDto || changePersonnel) {
+        boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(n.get(0).getAppSvcBusinessDtoList(), o.get(0).getAppSvcBusinessDtoList());
+        if (!flag || !flag1 || eqSvcDoc || eqAppSvcVehicle ||eqAppSvcChargesPageDto || changePersonnel || eqAppSvcBusiness) {
             return true;
         }
         return false;
@@ -595,6 +597,36 @@ public class EqRequestForChangeSubmitResultChange {
         return false;
     }
 
+    public static boolean isChangeAppSvcBusinessDtos(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList){
+        if (appSvcRelatedInfoDtoList == null || oldAppSvcRelatedInfoDtoList == null) {
+            return true;
+        }
+        if (appSvcRelatedInfoDtoList.size() != oldAppSvcRelatedInfoDtoList.size()) {
+            return true;
+        }
+        List<AppSvcBusinessDto> appSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
+        appSvcRelatedInfoDtoList.forEach((item)->{
+            appSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList());
+        });
+        List<AppSvcBusinessDto> oldAppSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
+        oldAppSvcRelatedInfoDtoList.forEach((item)->{
+            oldAppSvcBusinessDtoList.addAll(item.getAppSvcBusinessDtoList());
+        });
+        return isChangeAppSvcBusinessDto(appSvcBusinessDtoList, oldAppSvcBusinessDtoList);
+    }
+
+    public static boolean isChangeAppSvcBusinessDto(List<AppSvcBusinessDto> appSvcBusinessDtoList, List<AppSvcBusinessDto> oldAppSvcBusinessDtoList){
+        List<String> appSvcBusinessNameList = IaisCommonUtils.genNewArrayList();
+        appSvcBusinessDtoList.forEach((v)->{
+            appSvcBusinessNameList.add(v.getBusinessName());
+        });
+        List<String> oldAppSvcBusinessNameList = IaisCommonUtils.genNewArrayList();
+        oldAppSvcBusinessDtoList.forEach((v)->{
+            oldAppSvcBusinessNameList.add(v.getBusinessName());
+        });
+        return ! appSvcBusinessNameList.equals(oldAppSvcBusinessNameList);
+    }
+
     public static boolean eqAppSvcChargesPageDto(AppSvcChargesPageDto appSvcChargesPageDto,AppSvcChargesPageDto oldAppSvcChargesPageDto){
         AppSvcChargesPageDto n = PageDataCopyUtil.copyAppSvcClinicalDirector(appSvcChargesPageDto);
         AppSvcChargesPageDto o = PageDataCopyUtil.copyAppSvcClinicalDirector(oldAppSvcChargesPageDto);
@@ -612,4 +644,9 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return false;
     }
+
+    public static boolean isChangeSubLicensee(SubLicenseeDto subLicenseeDto, SubLicenseeDto oldSbLicenseeDto) {
+        return !Objects.equals(subLicenseeDto, oldSbLicenseeDto);
+    }
+
 }

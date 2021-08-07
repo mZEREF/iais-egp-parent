@@ -9,7 +9,7 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <%--<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
     <input type="hidden" name="paramController" id="paramController"
            value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity"

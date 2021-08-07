@@ -1,4 +1,6 @@
-        <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants" %>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
             <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
             <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
             <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -11,6 +13,7 @@
             <br/>
             <%@include file="../common/dashboard.jsp" %>
              <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+               <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                 <div class="row">
                     <div class="container">
                  <div class="col-xs-12">
@@ -40,14 +43,27 @@
                              </iais:row>
                            </c:if>
                                  <iais:row>
-                                     <iais:field value="UEN of Licensee to transfer licence to" mandatory="true"></iais:field>
+                                   <label class="col-xs-11 col-md-4 control-label">UEN of Licensee to transfer licence to <span style="color: red"> *</span>
+                                     <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                                        title='Please refer to <a>www.uen.org</a> for the UEN of the licensee'
+                                        style="z-index: 10"
+                                        data-original-title="">i</a>
+                                   </label>
                                      <iais:value width="10">
                                        <p>
-                                        <input type="text" name="UEN" value="${UEN}" maxlength="10">
+                                        <input type="text" id ="uen" name="UEN" value="${UEN}" maxlength="10">
                                        <span  class="error-msg" name="iaisErrorMsg" id="error_uenError"></span>
                                        </p>
                                      </iais:value>
                                  </iais:row>
+                                 <iais:row id = "subLicenseeRow">
+                                       <iais:field width="5" mandatory="true" value="Please select the licensee to transfer to"/>
+                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
+                                         <iais:select name="subLicensee" firstOption="Please Select"
+                                                       value=""/>
+                                       </iais:value>
+                                 </iais:row>
+
                          </iais:section>
                   </div>
                 </div>
@@ -87,6 +103,57 @@
                     overlayCSS: {opacity: 0.2}});
             }
 
+         function checkUEN(uen){
+                alert(uen);
+         }
 
+            $(document).ready(function () {
+                $("#subLicenseeRow").hide();
+                checkUen();
+                $("#uen").change(function () {
+                    checkUen();
+                })
+            });
+
+
+            function checkUen(){
+                var uen = $("#uen").val();
+                if(uen != ""){
+                    var data = {
+                        'uen':uen
+                    };
+                    showWaiting();
+                    $.ajax({
+                        'url':'${pageContext.request.contextPath}/check-uen',
+                        'dataType':'json',
+                        'data':data,
+                        'type':'POST',
+                        'success':function (data) {
+                            if('<%=AppConsts.AJAX_RES_CODE_SUCCESS%>' == data.resCode){
+                                if('<%=OrganizationConstants.LICENSEE_TYPE_CORPPASS%>' == data.type){
+                                    $("#error_uenError").html('');
+                                    $("#subLicenseeDiv").html(data.resultJson + '');
+                                    $("#subLicensee").niceSelect();
+                                    $("#subLicenseeRow").show();
+                                }else{
+                                    $("#error_uenError").html('');
+                                    $("#subLicenseeRow").hide();
+                                }
+                            }else if('<%=AppConsts.AJAX_RES_CODE_VALIDATE_ERROR%>' == data.resCode){
+                                $("#error_uenError").html(data.resultJson + '');
+                                $("#subLicenseeRow").hide();
+                            }else if('<%=AppConsts.AJAX_RES_CODE_ERROR%>' == data.resCode){
+                                $("#error_uenError").html('');
+                                $("#subLicenseeRow").hide();
+                            }
+                           // setValue();
+                        },
+                        'error':function () {
+
+                        }
+                    });
+                    dismissWaiting();
+                }
+            }
 
         </script>

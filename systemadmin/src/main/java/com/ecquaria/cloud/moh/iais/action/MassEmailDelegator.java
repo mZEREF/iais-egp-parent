@@ -618,9 +618,9 @@ public class MassEmailDelegator {
             case ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR:
                 roleName = "Clinical Director";
                 break;
-            default:
-                roleName = roleAbbreviation;
-                break;
+                default:
+                    roleName = roleAbbreviation;
+                    break;
         }
         return roleName;
     }

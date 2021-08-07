@@ -17,7 +17,7 @@
     }
 </style>
 <div class="tab-pane" id="tabApp" role="tabpanel">
-    <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+    <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input id="action" type="hidden" name="crud_action_type" value="">
         <input type="hidden" id="hiddenIndex" name="hiddenIndex" value=""/>
@@ -39,6 +39,7 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                                    <%@include file="../common/previewLicensee.jsp"%>
                                                     <%@include file="../common/previewPremises.jsp"%>
                                                     <%@include file="../common/previewPrimary.jsp"%>
                                                     <div class="panel panel-default svc-content">
@@ -95,41 +96,45 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('#subLicenseeEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('licensee');
+            $('#menuListForm').submit();
+        });
+
+        $('#premisesEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('premises');
+            $('#menuListForm').submit();
+        });
+
+        $('#docEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('doc');
+            $('#menuListForm').submit();
+        });
+
+        $('#doSvcEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('service');
+            $('#action').val('serviceForms');
+            $('#menuListForm').submit();
+        });
+
+        $('#Back').click(function () {
+            showWaiting();
+            $('[name="switch_value"]').val('back');
+            $('#menuListForm').submit();
+        });
+
+        $('#rfcPrint').click(function () {
+            // window.print();
+            var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY005",request)%>';
+            window.open(url,'_blank');
+        });
+        $('#RFC_BACK').click(function (){
+            location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
+        });
 
     });
-
-    $('#premisesEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('premises');
-        $('#menuListForm').submit();
-    });
-
-    $('#docEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('doc');
-        $('#menuListForm').submit();
-    });
-
-    $('#doSvcEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('service');
-        $('#action').val('serviceForms');
-        $('#menuListForm').submit();
-    });
-
-    $('#Back').click(function () {
-        showWaiting();
-        $('[name="switch_value"]').val('back');
-        $('#menuListForm').submit();
-    });
-
-    $('#rfcPrint').click(function () {
-        // window.print();
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY005",request)%>';
-        window.open(url,'_blank');
-    });
-    $('#RFC_BACK').click(function (){
-        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
-    });
-
 </script>

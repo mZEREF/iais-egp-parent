@@ -14,7 +14,12 @@
     <h1>Privacy Statement</h1>
   </div>
   <div class="module alt">
-    <table border="0" class="table">
+    <table border="0" class="table" aria-describedby="">
+      <thead>
+      <tr>
+        <th scope="col" ></th>
+      </tr>
+      </thead>
       <tbody><tr>
         <td style="border: 0px solid white" width="30px">1.</td>
         <td style="border: 0px solid white">
@@ -89,7 +94,12 @@
 
           College of Medicine Building<br>
           16 College Road Singapore 169854<br>
-          <table>
+          <table aria-describedby="">
+            <thead>
+            <tr>
+              <th scope="col" ></th>
+            </tr>
+            </thead>
             <tbody><tr>
               <td style="border: 0px solid white" width="60px"><strong>Email :</strong></td><td style="border: 0px solid white">
             </td><td style="border: 0px solid white"><a href="mailto:MOH_INFO@moh.gov.sg" tabindex="71">MOH_INFO@moh.gov.sg</a></td><td style="border: 0px solid white">

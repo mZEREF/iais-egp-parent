@@ -19,34 +19,34 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 
 
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="instruction-content center-content">
-                    <h2>${modulename}</h2>
-                    <div class="table-gp">
-                        <table aria-describedby="" class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col" >HCI Code</th>
-                                <th scope="col" >HCI Name</th>
-                                <th scope="col" >Address</th>
-                                <th scope="col" >Service Name</th>
-                                <th scope="col" >Audit Type</th>
-                                <c:if test="${ISTUC}">
-                                    <th scope="col" >
-                                        TCU Audit Due Date
-                                    </th>
-                                </c:if>
-                                <th scope="col" >Assign task to Inspector</th>
-                                <th scope="col" >Select for Audit</th>
-                                <c:if test="${ISTUC}">
-                                    <th scope="col" >
-                                        Announced Audit
-                                    </th>
-                                </c:if>
-                            </tr>
-                            </thead>
-                            <tbody>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="instruction-content center-content">
+                        <h2>${modulename}</h2>
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col" >HCI Code</th>
+                                    <th scope="col" >HCI Name</th>
+                                    <th scope="col" >Address</th>
+                                    <th scope="col" >Service Name</th>
+                                    <th scope="col" >Audit Type</th>
+                                    <c:if test="${ISTUC}">
+                                        <th scope="col" >
+                                            TCU Audit Due Date
+                                        </th>
+                                    </c:if>
+                                    <th scope="col" >Assign task to Inspector</th>
+                                    <th scope="col" >Select for Audit</th>
+                                    <c:if test="${ISTUC}">
+                                        <th scope="col" >
+                                            Announced Audit
+                                        </th>
+                                    </c:if>
+                                </tr>
+                                </thead>
+                                <tbody>
 
                             <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
                                 <c:if test="${item.selectedForAudit}">
@@ -79,10 +79,14 @@
                                             <td>
                                                 <input type="checkbox" name = "announced${status.index}" value = "announced"/>
                                             </td>
-                                        </c:if>
-                                    </tr>
-                                </c:if>
-                            </c:forEach>
+                                            <c:if test="${ISTUC}">
+                                                <td>
+                                                    <input type="checkbox" name = "announced${status.index}" value = "announced"/>
+                                                </td>
+                                            </c:if>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
 
                             </tbody>
                         </table>

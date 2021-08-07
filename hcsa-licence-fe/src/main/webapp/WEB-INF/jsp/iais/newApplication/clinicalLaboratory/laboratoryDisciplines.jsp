@@ -15,8 +15,6 @@
     }
 </style>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ClinicalOfficerValidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>

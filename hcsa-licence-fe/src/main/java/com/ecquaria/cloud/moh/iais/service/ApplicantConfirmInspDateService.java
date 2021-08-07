@@ -117,20 +117,20 @@ public interface ApplicantConfirmInspDateService {
     String getAppPremCorrIdByAppNo(String applicationNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/27
-     * @Param: inspSetMaskValueDto
-     * @return: String
-     * @Descripation: getTcuAuditApptPreDateFlag
-     */
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getTcuAuditApptPreDateFlag
+      */
     String getTcuAuditApptPreDateFlag(InspSetMaskValueDto inspSetMaskValueDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/27
-     * @Param: inspSetMaskValueDto
-     * @return: String
-     * @Descripation: getAppGroupIdByMaskValueDto
-     */
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getAppGroupIdByMaskValueDto
+      */
     String getAppGroupIdByMaskValueDto(InspSetMaskValueDto inspSetMaskValueDto);
 }

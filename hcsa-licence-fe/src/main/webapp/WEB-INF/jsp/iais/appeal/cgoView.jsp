@@ -16,11 +16,6 @@
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
       <table aria-describedby="" class="control-grid columns1 " style="width: 100%;">
-        <thead style="display: none">
-        <tr>
-          <th scope="col" ></th>
-        </tr>
-        </thead>
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">

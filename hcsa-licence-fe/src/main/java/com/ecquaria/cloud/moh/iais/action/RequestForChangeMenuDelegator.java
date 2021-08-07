@@ -45,6 +45,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -1272,7 +1274,7 @@ public class RequestForChangeMenuDelegator {
     private void updateGroupStatus(List<AppSubmissionDto> appSubmissionDtos){
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             Double amount = appSubmissionDto.getAmount();
-            if (0.0 == amount && appSubmissionDto.isAutoRfc()) {
+            if (MiscUtil.doubleEquals(amount, 0.0) && appSubmissionDto.isAutoRfc()) {
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if (entity != null && !entity.isEmpty()) {
@@ -1285,7 +1287,7 @@ public class RequestForChangeMenuDelegator {
                     applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                     applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
                 }
-            } else if (0.0 == amount && !appSubmissionDto.isAutoRfc()) {
+            } else if (MiscUtil.doubleEquals(amount, 0.0) && !appSubmissionDto.isAutoRfc()) {
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if (entity != null && !entity.isEmpty()) {
@@ -1407,7 +1409,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setPaymentMethod(payMethod);
         }
         bpc.request.getSession().setAttribute("payMethod", payMethod);
-        if (0.0 == appSubmissionDtos.get(0).getAmount()) {
+        if (MiscUtil.doubleEquals(appSubmissionDtos.get(0).getAmount(), 0.0)) {
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
@@ -1658,32 +1660,28 @@ public class RequestForChangeMenuDelegator {
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(appType);
         appSubmissionDto.setAppGrpNo(appGroupNo);
 
-        appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setPremisesListEdit(true);
+        appEditSelectDto.setPremisesEdit(true);
 
         //amount
+        boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-
-        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
         amendmentFeeDto.setChangeInHCIName(!b);
         amendmentFeeDto.setChangeInLocation(!isSame);
         boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
-
-        boolean isAutoRfc = true;
-        if (!isSame || !b || eqAddFloorNo) {
-            isAutoRfc = false;
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
-                appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
-            }
-        } else if (isSame && b && !eqAddFloorNo) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1) {
-                appGrpPremisesDto.setSelfAssMtFlag(4);
-            }
-        }
         if (eqAddFloorNo) {
             amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
         }
+        // check app edit select dto
+        appEditSelectDto.setChangeHciName(!isSame);
+        appEditSelectDto.setChangeInLocation(b);
+        appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
+        log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
+        NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
         amendmentFeeDto.setIsCharity(isCharity);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
@@ -1697,135 +1695,10 @@ public class RequestForChangeMenuDelegator {
         if (total == null) {
             total = 0.0;
         }
-        //
         if (selectLicence != null) {
-            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-            appEditSelectDto.setServiceEdit(false);
-            appEditSelectDto.setDocEdit(false);
-            appEditSelectDto.setPoEdit(false);
-            appEditSelectDto.setPremisesListEdit(true);
-            appEditSelectDto.setPremisesEdit(true);
-            appEditSelectDto.setChangeHciName(!isSame);
-            appEditSelectDto.setChangeInLocation(b);
-            appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
-            String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             boolean isValid = requestForChangeService.checkAffectedAppSubmissions(selectLicence, appGrpPremisesDtoList1.get(0), null,
-                    total, appGrpNo, appEditSelectDto, isAutoRfc, appSubmissionDtos, bpc.request);
+                    total, null, appGroupNo, appEditSelectDto, appSubmissionDtos, bpc.request);
             log.info(StringUtil.changeForLog("The affected data is valid - " + isValid));
-            /*
-            for (LicenceDto string : selectLicence) {
-                LicenceDto licenceDto = requestForChangeService.getLicenceById(licenceId);
-                boolean grpLic = licenceDto.isGrpLic();
-                AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
-                requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
-                String premisesIndexNo = "";
-                List<AppGrpPremisesDto> appGrpPremisesDtoList2 = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                if (grpLic) {
-                    String hciCode1 = appGrpPremisesDtoList1.get(0).getHciCode();
-                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList2) {
-                        String hciCode = appGrpPremisesDto.getHciCode();
-                        if (hciCode1.equals(hciCode)) {
-                            premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                            break;
-                        }
-                    }
-                } else {
-                    premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
-                }
-                appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-                if(string.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED)&&string.getMigrated()==1&& IaisEGPHelper.isActiveMigrated()){
-                    total=0.0;
-                }
-                if (0 == total) {
-                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-
-                }
-                appSubmissionDtoByLicenceId.setAmount(total);
-                AppGrpPremisesDto o = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList1.get(0));
-                List<AppGrpPremisesDto> appGrpPremise = new ArrayList<>(1);
-                appGrpPremise.add(o);
-                appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremise);
-                appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
-                appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
-                if (!isSame || !b || eqAddFloorNo) {
-                    appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
-                        }
-                    }
-                } else {
-                    appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                        }
-                    }
-                }
-                PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
-                if (preOrPostInspectionResultDto == null) {
-                    appSubmissionDtoByLicenceId.setPreInspection(true);
-                    appSubmissionDtoByLicenceId.setRequirement(true);
-                } else {
-                    appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-                    appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
-                }
-                appSubmissionService.setRiskToDto(appSubmissionDto);
-                if (isSame && b && !eqAddFloorNo) {
-                    appSubmissionDtoByLicenceId.setAutoRfc(true);
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                    if (!StringUtil.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setSelfAssMtFlag(4);
-                        }
-                    }
-                    Iterator<AppSvcRelatedInfoDto> iterator = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().iterator();
-                    while (iterator.hasNext()){
-                        AppSvcRelatedInfoDto next = iterator.next();
-                        List<AppSvcVehicleDto> appSvcVehicleDtoList = next.getAppSvcVehicleDtoList();
-                        if(appSvcVehicleDtoList!=null&&!appSvcVehicleDtoList.isEmpty()){
-                            for (AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtoList) {
-                                appSvcVehicleDto.setStatus(ApplicationConsts.VEHICLE_STATUS_APPROVE);
-                            }
-                        }
-                    }
-                } else {
-                    appSubmissionDtoByLicenceId.setAutoRfc(false);
-                }
-
-                AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-                appEditSelectDto.setServiceEdit(false);
-                appEditSelectDto.setDocEdit(false);
-                appEditSelectDto.setPoEdit(false);
-                appEditSelectDto.setPremisesListEdit(true);
-                appEditSelectDto.setPremisesEdit(true);
-                appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
-                appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
-                //save data
-                appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-                String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
-                if (StringUtil.isEmpty(draftNo)) {
-                    appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
-                }
-                if (grpLic) {
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                    if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                            appGrpPremisesDto.setGroupLicenceFlag(string.getId());
-                        }
-                    }
-                }
-                appSubmissionDtoByLicenceId.setGroupLic(grpLic);
-                appSubmissionDtoByLicenceId.setPartPremise(grpLic);
-
-                appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-                oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-                appSubmissionDtos.add(appSubmissionDtoByLicenceId);
-            }*/
         }
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         String submissionId = generateIdClient.getSeqId().getEntity();
@@ -1967,7 +1840,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("noNeedPayment:" + noNeedPayment));
         String action = ParamUtil.getString(bpc.request, "crud_action_additional");
         if ("next".equals(action)) {
-            if (0.0 != appSubmissionDtos.get(0).getAmount()) {
+            if (!MiscUtil.doubleEquals(appSubmissionDtos.get(0).getAmount(), 0.0)) {
                 Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
                 if (StringUtil.isEmpty(payMethod)) {
                     errorMap.put("pay", MessageUtil.replaceMessage("GENERAL_ERR0006", "Payment Method", "field"));

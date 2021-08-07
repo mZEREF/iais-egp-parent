@@ -119,6 +119,14 @@ public class INTERNET___MohNewApplication___1 extends BaseProcessClass {
 	// 		doPayValidate->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPayValidate", this);
 	}
+    public void prepareSubLicensee_OnStepProcess_0() throws Exception {
+    // 		PrepareSubLicensee->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "prepareSubLicensee", this);
+    }
+    public void doSubLicensee_OnStepProcess_0() throws Exception {
+    // 		DoSubLicensee->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doSubLicensee", this);
+    }
 	
 
 }

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
@@ -271,6 +272,9 @@ public interface HcsaLicenceClient {
 
     @GetMapping(path= "/hcsa-licence/licence-corrId/hci-code", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getHciCodeByCorrId(@RequestParam(name = "corrId") String corrId);
+
+    @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
 
     @GetMapping(path= "/hcsa-licence/licence-appCorrId/licAppPremCorrelationDto", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicAppPremCorrelationDto> getLicAppPremCorrelationDtoByCorrId(@RequestParam(name = "corrId") String corrId);

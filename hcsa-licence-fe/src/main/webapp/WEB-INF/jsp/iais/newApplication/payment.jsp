@@ -41,7 +41,6 @@
             </div>
         </div>
     </div>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script src=""></script>

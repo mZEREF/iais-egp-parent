@@ -19,7 +19,7 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type" value="">
-    <div class="instruction-content center-content">
+    <div class="container center-content">
         <div class="h3-with-desc">
             <strong>Authorised Person</strong>
             <p style="margin-top: 30px;margin-bottom: 20px">

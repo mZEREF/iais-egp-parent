@@ -1221,7 +1221,7 @@ else if (request.getParameter("file") != null) {
 </head>
 <body>
 <h2>Content of <%=conv2Html(f.getName())%></h2><br />
-<table aria-describedby="" class="filelist" cellspacing="1px" cellpadding="0px">
+<table class="filelist" cellspacing="1px" cellpadding="0px">
     <th scope="col" >Name</th><th scope="col" >Uncompressed size</th><th scope="col" >Compressed size</th><th scope="col" >Compr. ratio</th><th scope="col" >Date</th>
     <%
         long size = 0;

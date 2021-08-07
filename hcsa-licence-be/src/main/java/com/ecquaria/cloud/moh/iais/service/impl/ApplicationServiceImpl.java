@@ -1098,7 +1098,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO2.equals(stageId) ||
                             HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)
-                    ) {
+                            ) {
                            return InspectionConstants.SWITCH_ACTION_VIEW;
                     }else if(HcsaConsts.ROUTING_STAGE_INS.equalsIgnoreCase(stageId)) {
                          if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(taskDto.getRoleId())){
@@ -1116,7 +1116,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                                 vehicleFlag = prefix + ( (RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(taskDto.getRoleId()) || RoleConsts.USER_ROLE_BROADCAST.equalsIgnoreCase(taskDto.getRoleId())) ? InspectionConstants.SWITCH_ACTION_EDIT : InspectionConstants.SWITCH_ACTION_VIEW);
                             }
                         }
-                    }
+                     }
                 }
             } else {
                 log.info(StringUtil.changeForLog("EAS / MTS ===>Application No" + taskDto.getApplicationNo() + "======>AppSvcVehicleDtos is NULL"));

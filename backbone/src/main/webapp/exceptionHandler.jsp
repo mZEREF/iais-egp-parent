@@ -15,7 +15,7 @@
   String resourcePath = EngineHelper.getResourcePath();
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Error</title>
 </head>

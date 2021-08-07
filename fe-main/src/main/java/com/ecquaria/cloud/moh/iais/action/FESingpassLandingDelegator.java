@@ -47,6 +47,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
 public class FESingpassLandingDelegator {

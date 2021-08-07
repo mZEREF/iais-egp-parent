@@ -31,20 +31,20 @@ public interface BroadcastService {
                                                          String appStatus, String appType);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/24
-     * @Param: taskDto, applicationViewDto, broadcastApplicationDto
-     * @return: BroadcastApplicationDto
-     * @Descripation: replySetVehicleByRole
-     */
+      * @author: shicheng
+      * @Date 2021/6/24
+      * @Param: taskDto, applicationViewDto, broadcastApplicationDto
+      * @return: BroadcastApplicationDto
+      * @Descripation: replySetVehicleByRole
+      */
     BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/28
-     * @Param: appStatus(process decision), applicationDto, submissionId, evenRefNum
-     * @return:
-     * @Descripation:
-     */
+      * @author: shicheng
+      * @Date 2021/7/28
+      * @Param: appStatus(process decision), applicationDto, submissionId, evenRefNum
+      * @return:
+      * @Descripation:
+      */
     EventBeLicenseDto saveEventBeLicenseDto(String appStatus, ApplicationDto applicationDto, String submissionId, String evenRefNum, Process process);
 }

@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import lombok.Data;
-import org.springframework.boot.actuate.metrics.http.Outcome;
 
 import java.io.Serializable;
 

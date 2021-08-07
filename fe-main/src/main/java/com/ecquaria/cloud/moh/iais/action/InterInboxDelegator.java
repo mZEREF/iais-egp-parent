@@ -105,6 +105,9 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
+    @Autowired
+    AssessmentGuideService assessmentGuideService;
+    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
@@ -155,7 +158,6 @@ public class InterInboxDelegator {
 //        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         ParamUtil.setRequestAttr(request, "ssoToElisUrl",
                 elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
-
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
@@ -554,7 +556,7 @@ public class InterInboxDelegator {
                 appStatus.add(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                 appStatus.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                 for (AppPremiseMiscDto apc:entity
-                ) {
+                     ) {
                     ApplicationDto applicationDto=appInboxClient.getApplicationByCorreId(apc.getAppPremCorreId()).getEntity();
                     if (!appStatus.contains(applicationDto.getStatus())){
                         ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
@@ -778,19 +780,22 @@ public class InterInboxDelegator {
                     }
                     List<LicenceDto> bundleLicenceDtos=new ArrayList<>(10);
                     List<LicenceDto> list=new ArrayList<>(10);
+                    //This can be optimized
                     for (String v : licIdValue) {
                         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(v).getEntity();
                         list.add(licenceDto);
                         HcsaServiceDto hcsaServiceDto = hcsaServiceDtoMap.get(licenceDto.getSvcName());
-                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
-                            if(hcsaServiceDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())){
+                        ListIterator<HcsaFeeBundleItemDto> iterator = hcsaFeeBundleItemDtos.listIterator();
+                        while (iterator.hasNext()){
+                            HcsaFeeBundleItemDto next = iterator.next();
+                            if(hcsaServiceDto.getSvcCode().equals(next.getSvcCode())){
                                 List<LicenceDto> licenceDtos = licenceInboxClient.getBundleLicence(licenceDto).getEntity();
                                 if(!licenceDtos.isEmpty()){
-                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(hcsaFeeBundleItemDto.getBundleId());
+                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(next.getBundleId());
                                     for (LicenceDto dto : licenceDtos) {
                                         HcsaServiceDto hcsaServiceDto1 = hcsaServiceDtoMap.get(dto.getSvcName());
                                         for (HcsaFeeBundleItemDto feeBundleItemDto : hcsaFeeBundleItemDtos1) {
-                                            if(!feeBundleItemDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
+                                            if(!feeBundleItemDto.getSvcCode().equals(next.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
                                                 bundleLicenceDtos.add(dto);
                                             }
                                         }

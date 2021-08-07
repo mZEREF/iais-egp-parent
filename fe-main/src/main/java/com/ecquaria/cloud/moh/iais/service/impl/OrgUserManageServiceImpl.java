@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -67,6 +68,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private LicenseeClient licenseeClient;
+
+    @Autowired
+    private LicenceInboxClient licenceClient;
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
@@ -169,6 +173,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void refreshLicensee(LicenseeDto licenseeDto){
         feAdminClient.updateLicence(licenseeDto);
+    }
+
+    private String refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
+        return licenceClient.refreshSubLicenseeInfo(licenseeDto).getEntity();
+    }
+    private void refreshBeSubLicenseeInfo(LicenseeDto licenseeDto) {
+        eicGatewayFeMainClient.refreshSubLicenseeInfo(licenseeDto);
     }
 
     @Override
@@ -291,6 +302,16 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
         if(feUserDto != null){
+            String status = feUserDto.getStatus();
+            Character accountStatus = null;
+            if (AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+                accountStatus = ClientUser.STATUS_TERMINATED;
+            } else if (AppConsts.COMMON_STATUS_IACTIVE.equals(status)) {
+                accountStatus = ClientUser.STATUS_INACTIVE;
+            } else if (AppConsts.COMMON_STATUS_ACTIVE.equals(status)) {
+                accountStatus = ClientUser.STATUS_ACTIVE;
+            }
+
             ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
             String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
             if (clientUser != null){
@@ -300,7 +321,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 clientUser.setIdentityNo(feUserDto.getIdentityNo());
                 clientUser.setMobileNo(feUserDto.getMobileNo());
                 clientUser.setContactNo(feUserDto.getOfficeTelNo());
-
+                clientUser.setAccountStatus(accountStatus);
                 //prevent history simple pwd throw 500
                 clientUser.setPassword(pwd);
 
@@ -308,12 +329,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 //delete egp role
                 feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
                 feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
-
-            }else{
+            } else {
                 clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
                 clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
                 clientUser.setId(feUserDto.getUserId());
-                clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+                clientUser.setAccountStatus(accountStatus);
                 String email = feUserDto.getEmail();
                 String salutation = feUserDto.getSalutation();
                 clientUser.setSalutation(salutation);
@@ -338,27 +358,28 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
 
             //assign role
-            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-            String roleName = feUserDto.getUserRole();
-            egpUserRole.setUserId(feUserDto.getUserId());
-            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            egpUserRole.setRoleId(roleName);
-            egpUserRole.setPermission("A");
-            //assign role
-            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-            //corppass
-            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                    feUserDto.isCorpPass()){
-                EgpUserRoleDto role = new EgpUserRoleDto();
-                role.setUserId(feUserDto.getUserId());
-                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                role.setPermission("A");
-                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+            if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+                EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                String roleName = feUserDto.getUserRole();
+                egpUserRole.setUserId(feUserDto.getUserId());
+                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                egpUserRole.setRoleId(roleName);
+                egpUserRole.setPermission("A");
                 //assign role
-                feMainRbacClient.createUerRoleIds(role).getEntity();
-            }
+                feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
 
+                //corppass
+                if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
+                        feUserDto.isCorpPass()){
+                    EgpUserRoleDto role = new EgpUserRoleDto();
+                    role.setUserId(feUserDto.getUserId());
+                    role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                    role.setPermission("A");
+                    role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+                    //assign role
+                    feMainRbacClient.createUerRoleIds(role).getEntity();
+                }
+            }
 
         }
     }
@@ -380,18 +401,18 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
             licenseeIndividualDto = licenseeDto.getLicenseeIndividualDto();
         }
-      if( myInfoDto != null){
-          feUserDto.setEmail(myInfoDto.getEmail());
-          feUserDto.setMobileNo(myInfoDto.getMobileNo());
-          feUserDto.setDisplayName(myInfoDto.getUserName());
-          licenseeDto.setName(myInfoDto.getUserName());
-          licenseeDto.setFloorNo(myInfoDto.getFloor());
-          licenseeDto.setPostalCode(myInfoDto.getPostalCode());
-          licenseeDto.setUnitNo(myInfoDto.getUnitNo());
-          licenseeDto.setBlkNo(myInfoDto.getBlockNo());
-          licenseeDto.setBuildingName(myInfoDto.getBuildingName());
-          licenseeDto.setStreetName(myInfoDto.getStreetName());
-      }
+        if (myInfoDto != null) {
+            feUserDto.setEmail(myInfoDto.getEmail());
+            feUserDto.setMobileNo(myInfoDto.getMobileNo());
+            feUserDto.setDisplayName(myInfoDto.getUserName());
+            licenseeDto.setName(myInfoDto.getUserName());
+            licenseeDto.setFloorNo(myInfoDto.getFloor());
+            licenseeDto.setPostalCode(myInfoDto.getPostalCode());
+            licenseeDto.setUnitNo(myInfoDto.getUnitNo());
+            licenseeDto.setBlkNo(myInfoDto.getBlockNo());
+            licenseeDto.setBuildingName(myInfoDto.getBuildingName());
+            licenseeDto.setStreetName(myInfoDto.getStreetName());
+        }
         //fe user
         FeUserDto feUserDtoCreate = editUserAccount(feUserDto);
         feUserDto.setId(feUserDtoCreate.getId());
@@ -428,6 +449,13 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
             refreshLicensee(licenseeDto);
+            log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo Start"));
+            licenseeDto.setId(null);
+            String id = refreshSubLicenseeInfo(licenseeDto);
+            log.info(StringUtil.changeForLog("id: " + id));
+            licenseeDto.setId(id);
+            refreshBeSubLicenseeInfo(licenseeDto);
+            log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo End"));
         }
         return licenseeDto;
     }

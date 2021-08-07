@@ -39,6 +39,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -48,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -61,6 +63,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
@@ -132,6 +135,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -743,6 +747,66 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<OrgGiroAccountInfoDto> getOrgGiroAccDtosByLicenseeId(String licenseeId) {
         return organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity();
+    }
+
+    @Override
+    public SubLicenseeDto getSubLicenseeByLicenseeId(String licenseeId, String uenNo) {
+        LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+        Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+        fieldMap.put("name", "licenseeName");
+        fieldMap.put("organizationId", "orgId");
+        fieldMap.put("officeTelNo", "telephoneNo");
+        fieldMap.put("emilAddr", "emailAddr");
+        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class, fieldMap);
+        if (subLicenseeDto == null) {
+            subLicenseeDto = new SubLicenseeDto();
+        }
+        subLicenseeDto.setUenNo(uenNo);
+        if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
+        } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+            subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
+            LicenseeIndividualDto licenseeIndividualDto = Optional.ofNullable(licenseeDto)
+                    .map(dto -> dto.getLicenseeIndividualDto())
+                    .orElseGet(LicenseeIndividualDto::new);
+            subLicenseeDto.setIdType(licenseeIndividualDto.getIdType());
+            subLicenseeDto.setIdNumber(licenseeIndividualDto.getIdNo());
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
+        }
+        return subLicenseeDto;
+    }
+
+    @Override
+    public boolean validateSubLicenseeDto(Map<String, String> errorMap, SubLicenseeDto subLicenseeDto, HttpServletRequest request) {
+        if (subLicenseeDto == null) {
+            if (errorMap != null) {
+                errorMap.put("licenseeType", "Invalid Data");
+            }
+            return false;
+        }
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        if (result != null) {
+            map = result.retrieveAll();
+        }
+
+        // add log
+        if (!map.isEmpty()) {
+            log.info(StringUtil.changeForLog("Error Message : " + map + " For the Sub Licensee - " +
+                    JsonUtil.parseToJson(subLicenseeDto)));
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
+            if (!map.isEmpty() && errorMap != null) {
+                errorMap.put("licenseeType", "Invalid Licensee Type");
+            }
+            return map.isEmpty();
+        } else {
+            if (errorMap != null) {
+                errorMap.putAll(map);
+            }
+            return map.isEmpty();
+        }
     }
 
     @Override
@@ -2210,6 +2274,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc) {
         StringBuilder sB = new StringBuilder(40);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        // sub licensee (licensee details)
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+        if (validateSubLicenseeDto(previewAndSubmitMap, subLicenseeDto, bpc.request)) {
+            coMap.put("licensee", "licensee");
+        } else {
+            coMap.put("licensee", "");
+        }
+        // premises
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
@@ -2747,6 +2819,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(dto -> dto.getLicenseeType())
+                    .filter(licenseeType -> StringUtil.isEmpty(licenseeType) ||
+                            OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
+                    .isPresent();
+            appEditSelectDto.setLicenseeEdit(licenseeEdit);
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setDocEdit(true);
             appEditSelectDto.setServiceEdit(true);
@@ -3633,6 +3711,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.SVC_DOC_CONFIG);
         session.removeAttribute("app-rfc-tranfer");
         HashMap<String, String> coMap = new HashMap<>(4);
+        coMap.put("licensee", "");
         coMap.put("premises", "");
         coMap.put("document", "");
         coMap.put("information", "");
@@ -3641,5 +3720,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         //request For Information Loading
         session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
+        // CR: Licensee Details
+        session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
+        // clear selectLicence
+        Enumeration<?> names = session.getAttributeNames();
+        if (names != null) {
+            while (names.hasMoreElements()) {
+                String name = (String) names.nextElement();
+                if (name.startsWith("selectLicence")) {
+                    session.removeAttribute(name);
+                }
+            }
+        }
     }
 }

@@ -13,26 +13,21 @@ import org.springframework.context.ApplicationContext;
 public final class SystemParamUtil {
 
     public static int getFileMaxLimit(){
-       ApplicationContext applicationContext = SpringContextHelper.getContext();
-       SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
-       return spc.getUploadFileLimit();
+       return SpringContextHelper.getContext().getBean(SystemParamConfig.class).getUploadFileLimit();
     }
 
     public static int getAuditTrailSearchWeek() {
-        ApplicationContext applicationContext = SpringContextHelper.getContext();
-        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        SystemParamConfig spc = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
         return spc.getAuditTrailSearchWeek();
     }
 
     public static String getInterServerName(){
-        ApplicationContext applicationContext = SpringContextHelper.getContext();
-        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        SystemParamConfig spc = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
        return spc.getInterServerName();
     }
 
     public static String getUploadFileType() {
-        ApplicationContext applicationContext = SpringContextHelper.getContext();
-        SystemParamConfig spc = applicationContext.getBean(SystemParamConfig.class);
+        SystemParamConfig spc = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
         return spc.getUploadFileType();
     }
 

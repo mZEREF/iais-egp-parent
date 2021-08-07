@@ -136,13 +136,13 @@
 </div>
 
 <style>
-  @media only screen and (min-width: 1201px) and (max-width: 1920px) {
-    .dashboard-multiple .dashboard-tile-item .dashboard-tile {
-      border-radius: 18px;
-      height: 200px;
-      margin-bottom: 55px;
+    @media only screen and (min-width: 1201px) and (max-width: 1920px) {
+        .dashboard-multiple .dashboard-tile-item .dashboard-tile {
+            border-radius: 18px;
+            height: 200px;
+            margin-bottom: 55px;
+        }
     }
-  }
 </style>
 <script type="text/javascript">
     <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -58,5 +59,15 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     @SearchTrack(catalog = "applicationQuery", key = "getLicenceBySerName")
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam){
         return licenceClient.getMenuLicence(searchParam).getEntity();
+    }
+
+    @Override
+    public List<SubLicenseeDto> getSubLicenseeDto(String orgId) {
+        return licenceClient.getSubLicensees(orgId,null).getEntity();
+    }
+
+    @Override
+    public SubLicenseeDto getSubLicenseesById(String id) {
+        return licenceClient.getSubLicenseesById(id).getEntity();
     }
 }

@@ -460,11 +460,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         count=cos.read(b);
                     }
 
-            }else {
-                log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
-                String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
-                if(s.endsWith(File.separator)){
-                    s=s.substring(0,s.length()-1);
+                }else {
+                    log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
+                    String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
+                    if(s.endsWith(File.separator)){
+                        s=s.substring(0,s.length()-1);
+                    }
+                    File file = MiscUtil.generateFile(s);
+                    file.mkdirs();
+                    log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
+
                 }
                 File file = MiscUtil.generateFile(s);
                 file.mkdirs();

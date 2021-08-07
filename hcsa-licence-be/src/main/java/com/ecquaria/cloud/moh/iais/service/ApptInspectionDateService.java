@@ -166,20 +166,20 @@ public interface ApptInspectionDateService {
     List<AppPremInspApptDraftDto> getInspApptDraftBySamePremises(ApptInspectionDateDto apptInspectionDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/30
-     * @Param: refNo
-     * @return: String
-     * @Descripation: getTcuAuditAnnouncedFlag
-     */
+      * @author: shicheng
+      * @Date 2021/6/30
+      * @Param: refNo
+      * @return: String
+      * @Descripation: getTcuAuditAnnouncedFlag
+      */
     String getTcuAuditAnnouncedFlag(String refNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/1
-     * @Param: originLicenceId
-     * @return: String
-     * @Descripation: getAppSubmitByWithLicId
-     */
+      * @author: shicheng
+      * @Date 2021/7/1
+      * @Param: originLicenceId
+      * @return: String
+      * @Descripation: getAppSubmitByWithLicId
+      */
     String getAppSubmitByWithLicId(String originLicenceId);
 }

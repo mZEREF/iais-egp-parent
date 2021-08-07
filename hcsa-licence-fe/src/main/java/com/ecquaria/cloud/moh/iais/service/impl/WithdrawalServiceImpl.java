@@ -216,7 +216,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             if (recallApplicationDto.getResult()){
                 for (ApplicationDto app:applicationDtoList
-                ) {
+                     ) {
                     app.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
                 }
                 applicationFeClient.updateApplicationList(applicationDtoList);
@@ -469,7 +469,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
         setRiskToDto(appSubmissionDto);
     }
 

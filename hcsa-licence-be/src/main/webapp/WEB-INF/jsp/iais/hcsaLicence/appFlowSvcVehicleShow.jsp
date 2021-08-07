@@ -19,12 +19,12 @@
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">
             <thead>
-            <tr align="center">
-              <th scope="col" width="5%">S/N</th>
-              <th scope="col" width="25%">Vehicle</th>
-              <th scope="col" width="35%">Recommendation</th>
-              <th scope="col" width="35%">Remarks</th>
-            </tr>
+              <tr align="center">
+                <th scope="col" width="5%">S/N</th>
+                <th scope="col" width="25%">Vehicle</th>
+                <th scope="col" width="35%">Recommendation</th>
+                <th scope="col" width="35%">Remarks</th>
+              </tr>
             </thead>
             <tbody>
             <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
@@ -95,16 +95,16 @@
   </c:if>
 </c:if>
 <script type="text/javascript">
-    function appFlowVehicleShowRadio(recommendation) {
-        if('other' == recommendation){
-            $('.vehicle-approve').removeAttr("disabled","disabled");
-            $('.vehicle-reject').removeAttr("disabled","disabled");
-        } else if('reject' == recommendation || 'decisionReject' == recommendation) {
-            $('.vehicle-approve').attr("disabled","disabled");
-            $('.vehicle-reject').attr("disabled","disabled");
-        }else{
-            $('.vehicle-approve').removeAttr("disabled","disabled");
-            $('.vehicle-reject').removeAttr("disabled","disabled");
-        }
-    }
+  function appFlowVehicleShowRadio(recommendation) {
+      if('other' == recommendation){
+          $('.vehicle-approve').removeAttr("disabled","disabled");
+          $('.vehicle-reject').removeAttr("disabled","disabled");
+      } else if('reject' == recommendation || 'decisionReject' == recommendation) {
+          $('.vehicle-approve').attr("disabled","disabled");
+          $('.vehicle-reject').attr("disabled","disabled");
+      }else{
+          $('.vehicle-approve').removeAttr("disabled","disabled");
+          $('.vehicle-reject').removeAttr("disabled","disabled");
+      }
+  }
 </script>

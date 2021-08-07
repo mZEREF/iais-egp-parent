@@ -75,15 +75,15 @@
                 <div class="table-gp">
                   <table aria-describedby="" class="table application-group">
                     <thead>
-                    <tr align="center">
-                      <th scope="col" style="text-align:center;width: 0%">S/N</th>
-                      <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
-                    </tr>
+                      <tr align="center">
+                        <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                        <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                      </tr>
                     </thead>
                     <tbody>
                     <c:choose>

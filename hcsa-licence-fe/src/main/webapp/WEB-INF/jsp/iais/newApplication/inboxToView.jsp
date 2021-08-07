@@ -57,6 +57,7 @@
                                                 <div class="panel-group" id="accordion" role="tablist"
                                                      aria-multiselectable="true" style="margin-top: 40px" >
                                                     <c:if test="${applicationDto.applicationType != 'APTY008'}">
+                                                        <%@include file="inboxView/inboxLicensee.jsp"%>
                                                         <%@include file="inboxView/inboxPremise.jsp" %>
                                                         <%@include file="inboxView/inboxPrimary.jsp" %>
                                                         <%@include file="inboxView/viewForm.jsp" %>

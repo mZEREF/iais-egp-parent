@@ -376,16 +376,16 @@
                                                                         </div>
                                                                     </c:if>
 
-                                                                    <div id="rfiSelect">
-                                                                        <iais:row>
-                                                                            <iais:field value="Sections Allowed for Change"
-                                                                                        required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p id="selectDetail"></p>
-                                                                                <input type="hidden" id="rfiSelectValue" name="rfiSelectValue" value="" />
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
+                                                                        <div id="rfiSelect">
+                                                                            <iais:row>
+                                                                                <iais:field value="Sections Allowed for Change"
+                                                                                            required="false"/>
+                                                                                <iais:value width="10">
+                                                                                    <p id="selectDetail"></p>
+                                                                                    <input type="hidden" id="rfiSelectValue" name="rfiSelectValue" value="" />
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
                                                                     <c:if test="${applicationViewDto.showTcu && applicationViewDto.editTcu}">
                                                                         <div class="form-group">
                                                                             <label class="col-xs-12 col-md-4 control-label">TCU</label>
@@ -404,31 +404,33 @@
                                                                             </div>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${applicationViewDto.showTcu && !applicationViewDto.editTcu}">
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-12 col-md-4 control-label">TCU</label>
-                                                                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                                                                <p><input type="checkbox" id="tcuTypeShow"  value="tcuTypeShow"  <c:if test="${applicationViewDto.tcuFlag}">checked</c:if>  name="tcuTypeShow"  disabled>
-                                                                                    <label class="form-check-label" for="tcuTypeShow" ><span class="check-square"></span></label>
-                                                                                </p>
+                                                                        <c:if test="${applicationViewDto.showTcu && !applicationViewDto.editTcu}">
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-12 col-md-4 control-label">TCU</label>
+                                                                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                                                                    <p><input type="checkbox" id="tcuTypeShow"  value="tcuTypeShow"  <c:if test="${applicationViewDto.tcuFlag}">checked</c:if>  name="tcuTypeShow"  disabled>
+                                                                                        <label class="form-check-label" for="tcuTypeShow" ><span class="check-square"></span></label>
+                                                                                    </p>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <c:if test="${applicationViewDto.tcuFlag}">
+                                                                           <c:if test="${applicationViewDto.tcuFlag}">
                                                                             <div class="form-group" id="tcuLabel" >
                                                                                 <label class="col-xs-12 col-md-4 control-label">TCU Date</label>
                                                                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                                                                     <p>${applicationViewDto.tuc}</p>
                                                                                 </div>
                                                                             </div>
+                                                                          </c:if>
                                                                         </c:if>
-                                                                    </c:if>
-                                                                    <%--</table>--%>
-                                                                </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
-                                                                <div align="right">
-                                                                    <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
-                                                                        Submit
-                                                                    </button>
+                                                                        <%--</table>--%>
+                                                                    </iais:section>
+                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                                                                    <div align="right">
+                                                                        <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
+                                                                            Submit
+                                                                        </button>
+                                                                    </div>
+                                                                    <div>&nbsp;</div>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>

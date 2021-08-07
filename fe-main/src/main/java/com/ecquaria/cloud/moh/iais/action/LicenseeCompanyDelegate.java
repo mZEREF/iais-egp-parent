@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
@@ -47,6 +48,9 @@ public class LicenseeCompanyDelegate {
     OrgUserManageService orgUserManageService;
     @Autowired
     MyInfoAjax myInfoAjax;
+
+    @Autowired
+    private LicenceInboxClient licenceClient;
     @Autowired
     SoloEditValidator soloEditValidator;
     /**
@@ -129,7 +133,9 @@ public class LicenseeCompanyDelegate {
         //ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"person",licenseeKeyApptPersonDto);
-
+        // sub licensees (licensee details)
+        List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getIndividualSubLicensees(loginContext.getOrgId()).getEntity();
+        ParamUtil.setRequestAttr(bpc.request,"subLicenseeDtoList",subLicenseeDtoList);
     }
 
     public void solo(BaseProcessClass bpc) {
