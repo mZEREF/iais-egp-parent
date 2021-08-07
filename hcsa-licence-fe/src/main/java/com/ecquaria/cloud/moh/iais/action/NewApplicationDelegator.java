@@ -4571,6 +4571,15 @@ public class NewApplicationDelegator {
                     });
                     appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
                 }
+                // check personnels
+                List<PersonnelDto> personnels = appSvcRelatedInfoDto.getPersonnels();
+                if (personnels == null) {
+                    personnels = IaisCommonUtils.genNewArrayList();
+                }
+                if (dto.getPersonnels() != null) {
+                    personnels.addAll(dto.getPersonnels());
+                }
+                appSvcRelatedInfoDto.setPersonnels(personnels);
             });
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtos.removeAll(otherList);
