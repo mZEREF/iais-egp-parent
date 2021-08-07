@@ -403,6 +403,7 @@ public class NewApplicationDelegator {
                 Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
                 if (licenseeMap != null && !licenseeMap.isEmpty()) {
                     licenseeMap.forEach((personKey, dto) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, dto));
+                    bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
                 }
             }
         }
