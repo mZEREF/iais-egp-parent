@@ -3944,13 +3944,14 @@ public class NewApplicationHelper {
         return false;
     }
 
-    public static List<SelectOption> genSubLicessOption(List<SubLicenseeDto> subLicenseeDtoList) {
+    public static List<SelectOption> genSubLicessOption(Map<String, SubLicenseeDto> licenseeMap) {
         List<SelectOption> options = IaisCommonUtils.genNewArrayList();
         options.add(new SelectOption("-1", "Please Select"));
         options.add(new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new licensee"));
-        if (subLicenseeDtoList != null) {
-            subLicenseeDtoList.stream().forEach(dto -> options.add(new SelectOption(getPersonKey(dto.getIdType(), dto.getIdNumber()),
-                    getPersonView(dto.getIdType(), dto.getIdNumber(), dto.getLicenseeName()))));
+        if (licenseeMap != null) {
+            licenseeMap.forEach((personKey, dto) ->
+                    options.add(new SelectOption(personKey, getPersonView(dto.getIdType(), dto.getIdNumber(), dto.getLicenseeName())))
+            );
         }
         return options;
     }

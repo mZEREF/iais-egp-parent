@@ -91,6 +91,10 @@
         if ($postalCode.length > 0) {
             $('.retrieveAddr').toggleClass('hidden', $postalCode.prop('disabled'));
         }
+        if (!isEmpty(assignSel) && '-1' != assignSel && 'newOfficer' != assignSel) {
+            disableContent('[name="idType"]');
+            disableContent('[name="idNumber"]');
+        }
     }
 
     function checkLicenseeType() {
@@ -289,7 +293,7 @@
                 $input.val(val);
             }
             if (!$input.hasClass('not-disabled') && !isEmpty(val) && val != '-' && val != '-1') {
-                disableContent($input);
+                // disableContent($input);
             }
         });
         // init licensee type
