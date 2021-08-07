@@ -2391,14 +2391,18 @@ public class NewApplicationDelegator {
         boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDto);
         boolean changeVehicles = EqRequestForChangeSubmitResultChange.isChangeAppSvcVehicleDtos(
                 appSubmissionDto.getAppSvcRelatedInfoDtoList(), oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
+        boolean changeBusiness = EqRequestForChangeSubmitResultChange.isChangeAppSvcBusinessDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
-        boolean isNeedNewLicNo = changeHciName || changeInLocation || eqAddFloorNo || changeVehicles;
-        if (isAutoRfc) {
-            isAutoRfc = !isNeedNewLicNo;
-        }
         appEditSelectDto.setChangeHciName(changeHciName);
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
+        appEditSelectDto.setChangeVehicle(changeVehicles);
+        appEditSelectDto.setChangeBusinessName(changeBusiness);
+        boolean isNeedNewLicNo = appEditSelectDto.isNeedNewLicNo();
+        appEditSelectDto.setChangePersonnel(isAutoRfc);
+        isAutoRfc = appEditSelectDto.isAutoRfc();
+        appEditSelectDto.setChangePersonnel(isAutoRfc);
         log.info(StringUtil.changeForLog("changeHciName: " + changeHciName + " - changeInLocation: " + changeInLocation + " - " +
                 "eqAddFloorNo: " + eqAddFloorNo + " - changeVehicles: " + changeVehicles + " - isAutoRfc: " + isAutoRfc + " - isNeedNewLicNo: " + isNeedNewLicNo));
         // reSet: isNeedNewLicNo and self assessment flag
@@ -2473,7 +2477,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
-        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(changeHciName, changeInLocation, changeVehicles, isCharity);
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(changeHciName, changeInLocation, changeVehicles, isCharity, changeBusiness);
         if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
@@ -3635,7 +3639,7 @@ public class NewApplicationDelegator {
     }
 
     private AmendmentFeeDto getAmendmentFeeDto(boolean changeHciName, boolean changeLocation, boolean changeVehicles,
-            boolean isCharity) {
+            boolean isCharity, boolean changeBusiness) {
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
         amendmentFeeDto.setChangeInHCIName(changeHciName);
@@ -3644,6 +3648,7 @@ public class NewApplicationDelegator {
             amendmentFeeDto.setChangeInHCIName(Boolean.TRUE);
         }
         amendmentFeeDto.setIsCharity(isCharity);
+        amendmentFeeDto.setChangeBusinessName(changeBusiness);
         return amendmentFeeDto;
     }
 
