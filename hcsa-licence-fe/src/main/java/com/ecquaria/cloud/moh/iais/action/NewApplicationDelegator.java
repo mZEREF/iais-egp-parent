@@ -2590,6 +2590,7 @@ public class NewApplicationDelegator {
                 licenseeAffectedList = IaisCommonUtils.genNewArrayList(0);
             }
             licenseeAffectedList.stream().forEach(dto -> {
+                dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class));
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
                 changeSelectDto.setLicenseeEdit(true);
                 requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, draftNo, groupNo,
