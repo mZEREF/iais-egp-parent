@@ -2466,7 +2466,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
             // check app edit select dto
             AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
-            editDto.setServiceEdit(false);
+            editDto.setPremisesEdit(true);
             if (StringUtil.isEmpty(draftNo)) {
                 appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                 draftNo = appSubmissionDtoByLicenceId.getDraftNo();
