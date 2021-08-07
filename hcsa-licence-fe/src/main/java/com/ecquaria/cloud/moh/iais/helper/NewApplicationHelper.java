@@ -96,19 +96,17 @@ import java.util.Set;
 @Slf4j
 public class NewApplicationHelper {
 
-    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, Boolean needNewLicNo, int selfAssMtFlag) {
-        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null || appEditSelectDto == null) {
             return;
         }
-        if (Boolean.FALSE.equals(needNewLicNo)) {
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
-        } else if (Boolean.TRUE.equals(needNewLicNo)) {
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
-        }
+        boolean isNeedNewLicNo = appEditSelectDto.isNeedNewLicNo();
+        boolean isAutoRfc = appEditSelectDto.isAutoRfc();
+        int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
+                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
+        appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
-            if (needNewLicNo != null) {
-                appGrpPremisesDto.setNeedNewLicNo(needNewLicNo);
-            }
+            appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
         });
     }
