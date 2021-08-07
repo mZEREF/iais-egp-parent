@@ -347,10 +347,13 @@ public class NewApplicationDelegator {
         }
         // init option, map and some fields
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
-            List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getIndividualSubLicensees(loginContext.getOrgId()).getEntity();
-            Map<String, SubLicenseeDto> licenseeMap = NewApplicationHelper.genSubLicessMap(subLicenseeDtoList);
-            bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
-            bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(subLicenseeDtoList));
+            Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
+            if (licenseeMap == null) {
+                List<SubLicenseeDto> subLicenseeDtoList = licenceClient.getIndividualSubLicensees(loginContext.getOrgId()).getEntity();
+                licenseeMap = NewApplicationHelper.genSubLicessMap(subLicenseeDtoList);
+                bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
+            }
+            bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(licenseeMap));
 
             if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect())) {
                 subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
@@ -395,11 +398,18 @@ public class NewApplicationDelegator {
                 appEditSelectDto.setLicenseeEdit(NewApplicationHelper.canLicenseeEdit(appSubmissionDto, isRfi));
             }
             appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
+            // synchronize the licencsee map
+            if (errorMap.isEmpty() && !OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+                Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
+                if (licenseeMap != null && !licenseeMap.isEmpty()) {
+                    licenseeMap.forEach((personKey, dto) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, dto));
+                }
+            }
         }
 
         String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
 
-        if (errorMap.size() > 0) {
+        if (!errorMap.isEmpty()) {
             //set audit
             NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
                     appSubmissionDto.getLicenceNo());
