@@ -694,7 +694,7 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             for(ApplicationDto applicationDto : saveApplicationDtoList){
                 if(ApplicationConsts.APPLICATION_STATUS_APPROVED .equalsIgnoreCase(applicationDto.getStatus())){
                     appovedNum.add(applicationDto);
-                }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(applicationDto.getStatus())){
+                }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equalsIgnoreCase(applicationDto.getStatus())){
                     rejectNum.add(applicationDto);
                 }
             }
