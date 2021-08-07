@@ -2475,6 +2475,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     editDto, appSubmissionDtos, request);
             if (!isValid) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
+                ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
                 return false;
             }
         }
@@ -2499,20 +2500,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (StringUtil.isEmpty(baseServiceId1)) {
             log.info(StringUtil.changeForLog("BaseService is null - " + errorSvcMsg));
             request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
-            ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
             return false;
         }
         Boolean changeOtherOperation = isOtherOperation(licence.getId());
         if (!changeOtherOperation) {
             log.info(StringUtil.changeForLog("errorRfcPendingApplication"));
             request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-            ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
             return false;
         }
         List<ApplicationDto> changeApplicationDtos = getAppByLicIdAndExcludeNew(licence.getId());
         if (!IaisCommonUtils.isEmpty(changeApplicationDtos)) {
             request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-            ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
             return false;
         }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -2592,6 +2590,5 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
             }
         }
-
     }
 }

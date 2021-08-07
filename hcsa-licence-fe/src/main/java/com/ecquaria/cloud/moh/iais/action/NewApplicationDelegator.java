@@ -2582,32 +2582,19 @@ public class NewApplicationDelegator {
         }
         String groupNo = notAutoSaveAppsubmission.isEmpty() ? appGroupNo : appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         log.info(StringUtil.changeForLog("the auto group No is -->:" + groupNo));
-        // check app submission affected by sub licensee
+        // check app submissions affected by sub licensee
         if (licenseeChange) {
             SubLicenseeDto oldSublicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
             List<AppSubmissionDto> licenseeAffectedList = licenceClient.getAppSubmissionDtosBySubLicensee(oldSublicenseeDto).getEntity();
             if (licenseeAffectedList == null) {
                 licenseeAffectedList = IaisCommonUtils.genNewArrayList(0);
             }
-            Boolean isValid = licenseeAffectedList.stream()
-                    .map(dto -> {
-                        AppEditSelectDto changeSelectDto = new AppEditSelectDto();
-                        changeSelectDto.setLicenseeEdit(true);
-                        NewApplicationHelper.reSetAdditionalFields(dto, changeSelectDto);
-                        requestForChangeService.setRelatedInfoBaseServiceId(dto);
-                        requestForChangeService.premisesDocToSvcDoc(dto);
-                        return requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, draftNo, groupNo,
-                                changeSelectDto,null, bpc.request);
-                    })
-                    .filter(valid -> !valid)
-                    .findAny()
-                    .orElseGet(() -> Boolean.TRUE);
-            if (!isValid) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
-                return;
-            }
-
-            //List<AppSubmissionDto> licenseeAffectedList = checkAffectedBySubLicensee(groupNo, oldSublicenseeDto);
+            licenseeAffectedList.stream().forEach(dto -> {
+                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+                changeSelectDto.setLicenseeEdit(true);
+                requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, draftNo, groupNo,
+                        changeSelectDto, null, bpc.request);
+            });
             addToAuto(licenseeAffectedList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }
 
