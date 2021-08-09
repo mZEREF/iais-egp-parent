@@ -1342,7 +1342,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return serListDto;
     }
 
-    private String getObservationByAppPremCorrId(String appPremCorrId) {
+    @Override
+    public String getObservationByAppPremCorrId(String appPremCorrId) {
         String observation = "";
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
                 (appPremCorrId, InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION).getEntity();

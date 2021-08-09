@@ -105,6 +105,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
+    @Autowired
+    private FillupChklistService fillupChklistService;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -117,6 +120,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
+        //get Observation
+        String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+        inspectionReportDto.setObservation(observation);
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
