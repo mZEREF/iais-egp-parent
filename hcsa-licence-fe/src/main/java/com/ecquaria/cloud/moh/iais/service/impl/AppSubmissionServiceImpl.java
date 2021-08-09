@@ -154,7 +154,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class AppSubmissionServiceImpl implements AppSubmissionService {
-    // String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
+   // String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
     //String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
     @Autowired
@@ -1030,7 +1030,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return licenseeDto.getName() == null ? "" :licenseeDto.getName();
         }else{
             OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(applicantId).getEntity();
-            return orgUserDto.getDisplayName() == null ? "" : orgUserDto.getDisplayName();
+           return orgUserDto.getDisplayName() == null ? "" : orgUserDto.getDisplayName();
         }
     }
 

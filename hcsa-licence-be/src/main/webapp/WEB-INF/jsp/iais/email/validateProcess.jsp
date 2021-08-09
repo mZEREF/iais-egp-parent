@@ -8,29 +8,29 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-    String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+       String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <div class="main-content">
-            <div class="row">
-                <div class="col-lg-12 col-xs-12">
-                    <div class="center-content">
-                        <div class="intranet-content">
-                            <iais:body>
-                            <div class="">
-                                <div class="col-xs-12">
-                                    <div class="tab-gp dashboard-tab">
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <div class="main-content">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <div class="intranet-content">
+                        <iais:body>
+                        <div class="">
+                            <div class="col-xs-12">
+                                <div class="tab-gp dashboard-tab">
 
-                                        <%@ include file="./navTabs.jsp" %>
-                                        <div class="tab-content">
-                                            <div class="tab-pane" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp" %>
-                                            </div>
-                                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
-                                            </div>
+                                    <%@ include file="./navTabs.jsp" %>
+                                    <div class="tab-content">
+                                        <div class="tab-pane" id="tabInfo" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabViewApp.jsp" %>
+                                        </div>
+                                        <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                            <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
+                                        </div>
 
                                         <div class="tab-pane " id="tabLetter" role="tabpanel">
                                             <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
@@ -119,10 +119,14 @@
 
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <iais:row>
-                                                        <iais:field value="Processing Decision" required="true"/>
+                                                        <iais:field value="Licence Start Date" />
                                                         <iais:value width="7">
-                                                            <iais:select id="decision-validate-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
                                                         </iais:value>
                                                     </iais:row>
                                                 </c:if>
@@ -147,10 +151,11 @@
                         </div>
                     </div>
                 </div>
-                </iais:body>
             </div>
+            </iais:body>
         </div>
-    </form>
+    </div>
+</form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 

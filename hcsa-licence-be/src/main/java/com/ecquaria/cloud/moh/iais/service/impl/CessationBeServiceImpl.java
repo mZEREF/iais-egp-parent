@@ -209,7 +209,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                             appSpecifiedLicDtos.add(appSpecifiedLicDto);
                         }
                     }
-                }
             }
         }
         return appSpecifiedLicDtos;
@@ -235,7 +234,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                     }
                 }
             }
-        }
         if (!IaisCommonUtils.isEmpty(specLicIds)) {
             for (String specId : specLicIds) {
                 if (licIds.contains(specId)) {
@@ -467,7 +465,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         taskService.createTasks(taskDtos);
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
         appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-        //appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
+       //appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(workGroupId);
         appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(ASO_WORKGROUPID);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }

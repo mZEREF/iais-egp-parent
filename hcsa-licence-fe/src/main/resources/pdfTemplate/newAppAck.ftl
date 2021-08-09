@@ -51,11 +51,11 @@
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                        <th scope="col" >Application No.</th>
+                        <th>Application No.</th>
                         ${txnRefNoColumn!""}
-                        <th scope="col" >${dateColumn}</th>
-                        <th scope="col" >Amount Deducted</th>
-                        <th scope="col" >Payment Method</th>
+                        <th>${dateColumn}</th>
+                        <th>Amount Deducted</th>
+                        <th>Payment Method</th>
                     </tr>
                     </thead>
                     <tbody>

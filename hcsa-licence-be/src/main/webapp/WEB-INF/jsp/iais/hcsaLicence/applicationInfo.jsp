@@ -43,22 +43,27 @@
             </div>
         </div>
     </div>
-</div>
-<div align="center">
-    <a   href="javascript:void(0);" onclick="javascript:doOpenApp()">
-        <button type="button" class="btn btn-primary">
-            View Application
-        </button>
-    </a>
-    <c:if test="${'APST004' eq applicationViewDto.applicationDto.status}">
-        <c:if test="${not empty commonDto}">
-            <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
-                Self-Assessment Checklists
+    <div align="center">
+        <a   href="javascript:void(0);" onclick="javascript:doOpenApp()">
+            <button type="button" class="btn btn-primary">
+                View Application
             </button>
+        </a>
+        <c:if test="${'APST004' eq applicationViewDto.applicationDto.status}">
+            <c:if test="${not empty commonDto}">
+                <button type="button" class="btn btn-primary" onclick="javascript:doInspectionPreTaskSelfBack()">
+                    Self-Assessment Checklists
+                </button>
+            </c:if>
+            <c:if test="${empty commonDto}">
+                <button type="button" class="btn btn-primary" disabled>
+                    Self-Assessment Checklists
+                </button>
+            </c:if>
         </c:if>
-        <c:if test="${empty commonDto}">
-            <button type="button" class="btn btn-primary" disabled>
-                Self-Assessment Checklists
+        <c:if test="${'APST022' eq applicationViewDto.applicationDto.status}">
+            <button type="button" class="btn btn-primary" onclick="javascript:doInspectorProRecView()">
+                View Checklist
             </button>
         </c:if>
     </div>

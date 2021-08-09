@@ -9,7 +9,7 @@
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-    String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
+         String webroot=IaisEGPConstant.CSS_ROOT + IaisEGPConstant.BE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
@@ -120,10 +120,14 @@
                                                 </iais:row>
                                                 <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
                                                     <iais:row>
-                                                        <iais:field value="Processing Decision" required="true"/>
+                                                        <iais:field value="Licence Start Date" />
                                                         <iais:value width="7">
-                                                            <iais:select id="decision-revise-email" name="decision"  cssClass="nice-select nextStage" options="appTypeOption" firstOption="Please select"  />
-                                                            <span style="font-size: 1.6rem; color: #D22727; display: none" id="selectDecisionMsg" >This field is mandatory</span>
+                                                            <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                            </c:if>
+                                                            <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                <p>-</p>
+                                                            </c:if>
                                                         </iais:value>
                                                     </iais:row>
                                                 </c:if>
@@ -149,10 +153,11 @@
                         </div>
                     </div>
                 </div>
-                </iais:body>
             </div>
+            </iais:body>
         </div>
-    </form>
+    </div>
+</form>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 

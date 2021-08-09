@@ -33,8 +33,8 @@
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href=${payNowCallBackUrl}>Cancel</a>
-            <%--            <span style="float:right">&nbsp;</span>--%>
-            <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
+<%--            <span style="float:right">&nbsp;</span>--%>
+<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
 </div>

@@ -190,7 +190,7 @@ public class InboxServiceImpl implements InboxService {
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-        ) {
+                ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);
@@ -221,12 +221,12 @@ public class InboxServiceImpl implements InboxService {
     public List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos) {
         List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
         for (RecallApplicationDto h:recallApplicationDtos
-        ) {
+             ) {
             String appId = h.getAppId();
             List<String> refNoList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-            ) {
+                    ) {
                 refNoList.add(appPremisesCorrelationDto.getId());
             }
             h.setRefNo(refNoList);
@@ -271,7 +271,7 @@ public class InboxServiceImpl implements InboxService {
         String appId = recallApplicationDto.getAppId();
         List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
-        ) {
+             ) {
             refNoList.add(appPremisesCorrelationDto.getId());
         }
         recallApplicationDto.setRefNo(refNoList);

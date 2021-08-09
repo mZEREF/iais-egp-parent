@@ -99,7 +99,7 @@ public class MassEmailDelegator {
         searchRole(bpc);
         setModeSelection(bpc);
         for (DistributionListDto item:searchResult.getRows()
-        ) {
+             ) {
             item.setRole(roleName(item.getRole()));
         }
         setSearchparam(bpc,searchParam);
@@ -368,7 +368,7 @@ public class MassEmailDelegator {
     private boolean repeatList(List<String> list){
         Map<String,String> repeatMap = IaisCommonUtils.genNewHashMap();
         for (String item:list
-        ) {
+             ) {
             if(StringUtil.isEmpty(repeatMap.get(item))){
                 repeatMap.put(item,item);
                 continue;
@@ -590,7 +590,7 @@ public class MassEmailDelegator {
 
         }
         doSortSelOption(selectOptions);
-        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+       ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
 
 

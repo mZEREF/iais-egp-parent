@@ -383,7 +383,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
-            ,String groupPath,String submissionId)  throws Exception {
+    ,String groupPath,String submissionId)  throws Exception {
 
         Boolean flag=Boolean.FALSE;
 
@@ -432,12 +432,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
-            ,String groupPath)  {
+        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
+        ,String groupPath)  {
 
 
-        try {
-            if(!zipEntry.getName().endsWith(File.separator)){
+            try {
+                if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
@@ -471,12 +471,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
 
                 }
-                File file = MiscUtil.generateFile(s);
-                file.mkdirs();
-                log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
-
-            }
-        }catch (IOException e){
+            }catch (IOException e){
 
             }finally {
                 if(cos!=null){
@@ -508,16 +503,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-        }
+            }
 
-    }
+        }
 
 
 
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId,Long l)
-    {
+           {
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
 
@@ -604,7 +599,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(cessionOrwith);
         boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
         if(b){
-            return Boolean.FALSE;
+           return Boolean.FALSE;
         }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
@@ -782,7 +777,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }
 
-        });
+                });
         log.info("withdrow email function end");
 
     }
@@ -794,8 +789,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ApplicationDto next = applicationDtoListIterator.next();
             String status = next.getStatus();
             if(!ApplicationConsts.PENDING_ASO_REPLY.equals(status)&&
-                    !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
-                    !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
+               !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
+               !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
                 List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(next.getId()).getEntity();
                 if(!entity.isEmpty()){
                     Iterator<AppPremiseMiscDto> iterator = entity.iterator();
@@ -822,8 +817,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*
-     *
-     * save file to fileRepro*/
+    *
+    * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath,"files");
         if(!file.exists()){
@@ -950,9 +945,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     "saveFileName", currentApp + "-" + currentDomain,
                     ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(applicationDtos));
 
-    }
+        }
 
-    public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
+        public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
         AuditTrailDto intranet =new AuditTrailDto();
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
@@ -1146,7 +1141,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             boolean flag=false;
             for(ApplicationDto application :v){
                 if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
-                        ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
+                ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
                     requestForInforList.add(application);
                     flag=true;
                 }
@@ -1256,7 +1251,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -1287,8 +1282,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 

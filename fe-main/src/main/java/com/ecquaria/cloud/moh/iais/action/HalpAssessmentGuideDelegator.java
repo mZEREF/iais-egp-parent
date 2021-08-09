@@ -1729,7 +1729,7 @@ public class HalpAssessmentGuideDelegator {
                 List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
                 List<String> addressList = IaisCommonUtils.genNewArrayList();
                 for (PremisesDto premisesDto:premisesDtoList
-                ) {
+                        ) {
                     addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                     h.setPremisesDtoList(addressList);
                 }
@@ -1788,7 +1788,7 @@ public class HalpAssessmentGuideDelegator {
             List<SelfPremisesListQueryDto> selfPremisesListQueryDtoList = amendHCISearchResult.getRows();
             List<PremisesListQueryDto> premisesListQueryDtoList = IaisCommonUtils.genNewArrayList();
             for (SelfPremisesListQueryDto selfPremisesListQueryDto:selfPremisesListQueryDtoList
-            ) {
+                 ) {
                 PremisesListQueryDto premisesListQueryDto = MiscUtil.transferEntityDto(selfPremisesListQueryDto, PremisesListQueryDto.class);
                 premisesListQueryDtoList.add(premisesListQueryDto);
             }
@@ -2270,7 +2270,7 @@ public class HalpAssessmentGuideDelegator {
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-            StringBuilder stringBuilder=new StringBuilder();
+                StringBuilder stringBuilder=new StringBuilder();
             if(!draftByLicAppId.isEmpty()){
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');

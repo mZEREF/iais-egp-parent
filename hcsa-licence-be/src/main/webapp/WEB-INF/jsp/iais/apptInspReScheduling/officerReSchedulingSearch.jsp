@@ -86,48 +86,48 @@
                       </tr>
                     </thead>
                     <tbody>
-                    <c:choose>
-                      <c:when test="${empty inspReSchSearchResult.rows}">
-                        <tr>
-                          <td colspan="7">
-                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                          </td>
-                        </tr>
-                      </c:when>
-                      <c:otherwise>
-                        <c:forEach var="reschSearch" items="${inspReSchSearchResult.rows}" varStatus="status">
+                      <c:choose>
+                        <c:when test="${empty inspReSchSearchResult.rows}">
                           <tr>
-                            <td class="row_no"><c:out value="${(status.index + 1) + (inspReSchSearchParam.pageNo - 1) * inspReSchSearchParam.pageSize}"/></td>
-                            <td><c:out value="${reschSearch.hciName}"/></td>
-                            <c:if test="${empty reschSearch.inspectors}">
-                              <td><c:out value="-"/></td>
-                            </c:if>
-                            <c:if test="${not empty reschSearch.inspectors}">
-                              <td>
-                                <c:forEach var="inspector" items="${reschSearch.inspectors}">
-                                  <c:out value="${inspector}"/><br>
-                                </c:forEach>
-                              </td>
-                            </c:if>
-                            <td><fmt:formatDate value = "${reschSearch.inspectionDate}" pattern = "dd/MM/yyyy HH:mm:ss"/></td>
-                            <td><c:out value="${reschSearch.taskType}"/></td>
-                            <c:if test="${empty reschSearch.serviceNames}">
-                              <td><c:out value="-"/></td>
-                            </c:if>
-                            <c:if test="${not empty reschSearch.serviceNames}">
-                              <td>
-                                <c:forEach var="service" items="${reschSearch.serviceNames}">
-                                  <c:out value="${service}"/><br>
-                                </c:forEach>
-                              </td>
-                            </c:if>
-                            <td>
-                              <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Re-schedule</button>
+                            <td colspan="7">
+                              <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
                             </td>
                           </tr>
-                        </c:forEach>
-                      </c:otherwise>
-                    </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                          <c:forEach var="reschSearch" items="${inspReSchSearchResult.rows}" varStatus="status">
+                            <tr>
+                              <td class="row_no"><c:out value="${(status.index + 1) + (inspReSchSearchParam.pageNo - 1) * inspReSchSearchParam.pageSize}"/></td>
+                              <td><c:out value="${reschSearch.hciName}"/></td>
+                              <c:if test="${empty reschSearch.inspectors}">
+                                <td><c:out value="-"/></td>
+                              </c:if>
+                              <c:if test="${not empty reschSearch.inspectors}">
+                                <td>
+                                  <c:forEach var="inspector" items="${reschSearch.inspectors}">
+                                    <c:out value="${inspector}"/><br>
+                                  </c:forEach>
+                                </td>
+                              </c:if>
+                              <td><fmt:formatDate value = "${reschSearch.inspectionDate}" pattern = "dd/MM/yyyy HH:mm:ss"/></td>
+                              <td><c:out value="${reschSearch.taskType}"/></td>
+                              <c:if test="${empty reschSearch.serviceNames}">
+                                <td><c:out value="-"/></td>
+                              </c:if>
+                              <c:if test="${not empty reschSearch.serviceNames}">
+                                <td>
+                                  <c:forEach var="service" items="${reschSearch.serviceNames}">
+                                    <c:out value="${service}"/><br>
+                                  </c:forEach>
+                                </td>
+                              </c:if>
+                              <td>
+                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Re-schedule</button>
+                              </td>
+                            </tr>
+                          </c:forEach>
+                        </c:otherwise>
+                      </c:choose>
                     </tbody>
                   </table>
                 </div>
@@ -202,8 +202,8 @@
     }
 
     function chooseWorkGroup() {
-        showWaiting();
-        officerReSchedulingSubmit('search');
+      showWaiting();
+      officerReSchedulingSubmit('search');
 
     }
 </script>

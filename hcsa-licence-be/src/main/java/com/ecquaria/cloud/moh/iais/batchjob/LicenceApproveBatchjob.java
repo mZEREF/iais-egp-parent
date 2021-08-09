@@ -1155,6 +1155,7 @@ public class LicenceApproveBatchjob {
                         log.info(StringUtil.changeForLog("The originLicenceDto.getStatus() is -->:" + originLicenceDto.getStatus()));
                         originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
                     }
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
 
                 if(originLicenceDto != null){

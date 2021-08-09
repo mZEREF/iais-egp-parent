@@ -1144,63 +1144,9 @@
     });
 
     $('#NumberDocument').keyup(function () {
-      let val = $('#NumberDocument').val();
-      if(val==''){
-        val='0';
-      }
-      let number = parseInt(val);
-      let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
-      let number1 = parseInt(jQuery.length);
-      let svcCd=$('#serviceSvcCode').val();
-      let cd='';
-      let cd1='';
-      if(svcCd=='EAS'||svcCd=='MTS'){
-        cd="                   <option value=\"CD\">Clinical Director ?</option>\n";
-        cd1="     <li data-value=\"CD\" class=\"option\">Clinical Director </li>\n";
-      }
-      if(number-number1>0){
-        for(var i=0;i<number-number1;i++){
-          $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
-                  "            <div class=\"col-xs-12 col-md-12\">\n" +
-                  "           <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
-                  "              <label class=\"col-xs-12 col-md-5 control-label\"  style=\"margin-right: 2%\">Name of Info Field</label>\n" +
-                  "              <div class=\"col-xs-12 col-md-2\">\n" +
-                  "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
-                  "              </div>\n" +
-                  "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
-                  "                <input type=\"hidden\" name=\"serviceDocMandatory\" value=\"0\">\n" +
-                  "                <input  style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocMandatory\">\n" +
-                  "                <label  style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
-                  "              </div>\n" +
-                  "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
-                  "                <input type=\"hidden\" name=\"serviceDocPremises\" value=\"0\">\n" +
-                  "                <input style=\"white-space: nowrap\" class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocPremises\">\n" +
-                  "                <label style=\"white-space: nowrap\" class=\"form-check-label\" ><span class=\"check-square\"></span>To duplicate for individual mode of service delivery ?</label>\n" +
-                  "              </div>\n" +
-                  "              <div class=\"col-xs-12 col-md-3 form-check\" style=\"margin-top: 1%\">\n" +
-                  "                <select name=\"selectDocPerson\" style=\"display: none;\">\n" +
-                  "                   <option value=\"\">To duplicate for the personnel?</option>\n" +
-                  "                   <option value=\"PO\">Principal Officer (PO)?</option>\n" +
-                  "                   <option value=\"DPO\">Nominee?</option>\n" +
-                  "                   <option value=\"CGO\">Clinical Governance Officer (CGO)?</option>\n" +
-                  "                   <option value=\"SVCPSN\">Service Personnel ?</option>\n" +
-                  "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +
-                  "                   <option value=\"MAP\">MedAlert Person ?</option>\n" +cd+
-                  "                 </select>\n" +
-                  "  <div class=\"nice-select\" tabindex=\"0\">\n"+
-                  "   <span class=\"current\">To duplicate for the personnel?</span>\n"+
-                  "   <ul class=\"list\">\n"+
-                  "     <li data-value=\"\" class=\"option selected\">To duplicate for the personnel?</li>\n"+
-                  "     <li data-value=\"PO\" class=\"option\">Principal Officer (PO)</li>\n"+
-                  "     <li data-value=\"DPO\" class=\"option\">Nominee</li>\n"+
-                  "     <li data-value=\"CGO\" class=\"option\">Clinical Governance Officer (CGO)</li>\n"+
-                  "     <li data-value=\"SVCPSN\" class=\"option\">Service Personnel</li>\n"+
-                  "     <li data-value=\"MAP\" class=\"option\">MedAlert Person </li>\n"+cd1+
-                  "   </ul>\n"+
-                  "  </div>\n"+
-                  "              </div>\n" +
-                  "            </div>\n" +
-                  "          </div>");
+        let val = $('#NumberDocument').val();
+        if(val==''){
+          val='0';
         }
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
@@ -1261,7 +1207,6 @@
                 $(this).closest("div.form-group").next(".serviceNumberfields").children().last().remove();
             }
         }
-      }
 
     });
 

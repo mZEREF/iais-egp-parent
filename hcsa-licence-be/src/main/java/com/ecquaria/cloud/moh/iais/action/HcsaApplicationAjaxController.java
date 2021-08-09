@@ -168,7 +168,7 @@ public class HcsaApplicationAjaxController{
                 }
             }
             if(appIntranetDocDe!= null)
-                appIntranetDocDtos.remove( appIntranetDocDe);
+            appIntranetDocDtos.remove( appIntranetDocDe);
             boolean isUpload = false;
             for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
                 if(appIntranetDocDto.getIsUpload() != null && appIntranetDocDto.getIsUpload()){

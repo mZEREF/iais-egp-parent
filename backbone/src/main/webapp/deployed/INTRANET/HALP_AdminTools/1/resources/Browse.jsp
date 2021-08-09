@@ -1182,7 +1182,7 @@ else if (request.getParameter("command") != null) {
 %></textarea>
     <input type="hidden" name="dir" value="<%= request.getAttribute("dir")%>">
     <br /><br />
-    <table aria-describedby="" class="formular">
+    <table class="formular">
         <tr><td title="Enter your command">
             Command: <input size="<%=EDITFIELD_COLS-5%>" type="text" name="command" value="">
         </td></tr>
@@ -1352,7 +1352,7 @@ else if (request.getParameter("editfile") != null) {
                 dir_view = false;
 
 %></textarea><br /><br />
-    <table aria-describedby="" class="formular">
+    <table class="formular">
         <input type="hidden" name="nfile" value="<%= request.getParameter("editfile")%>">
         <input type="hidden" name="sort" value="<%=request.getParameter("sort")%>">
         <tr><td colspan="2"><input type="radio" name="lineformat" value="dos" <%= dos?"checked":""%>>Ms-Dos/Windows

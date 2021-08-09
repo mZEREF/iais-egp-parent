@@ -395,7 +395,4 @@ public interface HcsaConfigClient {
 
     @PostMapping (value = "/hcsa-config/stage-work-group-apptype",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getSvcIdsByStageIdAndWorkgroupIdsAndAppType(@RequestBody RoutingStageSearchDto routingStageSearchDto);
-
-    @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-name",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoByName(@RequestParam("svcName") String svcName);
 }

@@ -70,21 +70,21 @@ public interface IntranetUserService {
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 
     /**
-     * @author: shicheng
-     * @Date 2020/9/16
-     * @Param: xmlFile
-     * @return: Map<String, String>
-     * @Descripation: importRoleXmlValidation
-     */
+      * @author: shicheng
+      * @Date 2020/9/16
+      * @Param: xmlFile
+      * @return: Map<String, String>
+      * @Descripation: importRoleXmlValidation
+      */
     Map<String, String> importRoleXmlValidation(File xmlFile, int userFileSize, CommonsMultipartFile sessionFile, List<EgpUserRoleDto> egpUserRoleDtos) throws DocumentException;
 
     /**
-     * @author: shicheng
-     * @Date 2020/9/16
-     * @Param: xmlFile
-     * @return: importRoleXml
-     * @Descripation: save role data
-     */
+      * @author: shicheng
+      * @Date 2020/9/16
+      * @Param: xmlFile
+      * @return: importRoleXml
+      * @Descripation: save role data
+      */
     List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException;
 
     List<OrganizationDto> getUenList();

@@ -14,255 +14,255 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
-        <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
-        <input type="hidden" name="interalFileId" id="interalFileId"/>
-        <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
-        <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
-        <input type="hidden" id="isOtherAppealType" value="${isOtherAppealType}"/>
-        <input type="hidden" id="isChangePeriodAppealType" value="${isChangePeriodAppealType}"/>
-        <input type="hidden" id="isLateFeeAppealType" value="${isLateFeeAppealType}"/>
-        <input type="hidden" id="appealRecommendationOtherOnlyShow" value="${appealRecommendationOtherOnlyShow}"/>
-        <input type="hidden" id="returnFeeOnlyShow" value="${returnFeeOnlyShow}"/>
-        <input type="hidden" id="isRequestForChange" value="${isRequestForChange}"/>
-        <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
-        <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
-        <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
-        <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
-        <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
-        <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
-        <c:set var="isBroacastAso" value="${broadcastAso}"/>
-        <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
-        <c:set var="isWithDrawal" value="${applicationViewDto.applicationDto.applicationType == 'APTY006'}"/>
-        <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
-        <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
-        <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
-        <input type="hidden" id="isAppealType" value="${isAppealType}"/>
-        <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
-        <input type="hidden" id="isCessation" value="${isCessation}"/>
+        <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+            <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+            <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+            <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
+            <input type="hidden" name="interalFileId" id="interalFileId"/>
+            <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
+            <input type="hidden" name="recommendationShow" value="${recommendationOnlyShow}"/>
+            <input type="hidden" id="isOtherAppealType" value="${isOtherAppealType}"/>
+            <input type="hidden" id="isChangePeriodAppealType" value="${isChangePeriodAppealType}"/>
+            <input type="hidden" id="isLateFeeAppealType" value="${isLateFeeAppealType}"/>
+            <input type="hidden" id="appealRecommendationOtherOnlyShow" value="${appealRecommendationOtherOnlyShow}"/>
+            <input type="hidden" id="returnFeeOnlyShow" value="${returnFeeOnlyShow}"/>
+            <input type="hidden" id="isRequestForChange" value="${isRequestForChange}"/>
+            <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
+            <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
+            <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
+            <c:set var="isRouteBackStatus" value="${isInspectorRouteBackStatus || isAoRouteBackStatus || isPsoRouteBackStatus}"/>
+            <c:set var="isBroadcastStatus" value="${applicationViewDto.applicationDto.status == 'APST013'}"/>
+            <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
+            <c:set var="isBroacastAso" value="${broadcastAso}"/>
+            <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
+            <c:set var="isWithDrawal" value="${applicationViewDto.applicationDto.applicationType == 'APTY006'}"/>
+            <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+            <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
+            <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
+            <input type="hidden" id="isAppealType" value="${isAppealType}"/>
+            <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
+            <input type="hidden" id="isCessation" value="${isCessation}"/>
 
-        <div class="main-content">
-            <div class="row">
-                <div class="col-lg-12 col-xs-12">
-                    <div class="center-content">
-                        <div class="intranet-content">
-                            <iais:body >
-                                <div class="col-xs-12">
-                                    <div class="tab-gp dashboard-tab">
-                                        <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li class="active" id="info" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                                                data-toggle="tab">Info</a></li>
-                                            <li class="complete" id="document" role="presentation"><a href="#tabDocuments"
-                                                                                                      aria-controls="tabDocuments" role="tab"
-                                                                                                      data-toggle="tab">Documents</a></li>
-                                            <li id="ApplicationViewInspection" class="complete" role="presentation"
-                                                style="display: block"><a href="#tabInspection"
-                                                                          aria-controls="tabInspection" role="tab"
-                                                                          data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></li>
-                                            <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
-                                                                                                       aria-controls="tabProcessing" role="tab"
-                                                                                                       data-toggle="tab">Processing</a></li>
-                                        </ul>
-                                        <div class="tab-nav-mobile visible-xs visible-sm">
-                                            <div class="swiper-wrapper" role="tablist">
-                                                <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
-                                                                             data-toggle="tab">Info</a></div>
-                                                <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
-                                                                             role="tab" data-toggle="tab">Documents</a></div>
-                                                    <%--                                                    <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabProcessing"--%>
-                                                    <%--                                                                                 role="tab" data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></div>--%>
-                                                <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
-                                                                             role="tab" data-toggle="tab">Processing</a></div>
-                                            </div>
-                                            <div class="swiper-button-prev"></div>
-                                            <div class="swiper-button-next"></div>
-                                        </div>
-                                        <div class="tab-content">
-                                                <%--info page--%>
-                                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="applicationInfo.jsp" %>
-                                            </div>
-                                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp"%>
-                                            </div>
-                                                <%--         Inspection start                       --%>
-                                            <div class="tab-pane" id="tabInspection" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
-                                            </div>
-                                                <%--         Inspection end                       --%>
-                                            <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                                <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
-                                                <br/><br/>
-                                                <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Processing Status Update</h4>
-                                                    </strong>
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12">
+                        <div class="center-content">
+                            <div class="intranet-content">
+                                <iais:body >
+                                    <div class="col-xs-12">
+                                        <div class="tab-gp dashboard-tab">
+                                            <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                                <li class="active" id="info" role="presentation"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                                                                    data-toggle="tab">Info</a></li>
+                                                <li class="complete" id="document" role="presentation"><a href="#tabDocuments"
+                                                                                                          aria-controls="tabDocuments" role="tab"
+                                                                                                          data-toggle="tab">Documents</a></li>
+                                                <li id="ApplicationViewInspection" class="complete" role="presentation"
+                                                    style="display: block"><a href="#tabInspection"
+                                                                              aria-controls="tabInspection" role="tab"
+                                                                              data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></li>
+                                                <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
+                                                                                                           aria-controls="tabProcessing" role="tab"
+                                                                                                           data-toggle="tab">Processing</a></li>
+                                            </ul>
+                                            <div class="tab-nav-mobile visible-xs visible-sm">
+                                                <div class="swiper-wrapper" role="tablist">
+                                                    <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo" role="tab"
+                                                                                 data-toggle="tab">Info</a></div>
+                                                    <div class="swiper-slide"><a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments"
+                                                                                 role="tab" data-toggle="tab">Documents</a></div>
+<%--                                                    <div class="swiper-slide"><a href="#tabInspection" aria-controls="tabProcessing"--%>
+<%--                                                                                 role="tab" data-toggle="tab">Inspection${!isAso && !isPso || isAoRouteBackStatus || isBroadcastStatus ? ' Report' : ''}</a></div>--%>
+                                                    <div class="swiper-slide"><a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing"
+                                                                                 role="tab" data-toggle="tab">Processing</a></div>
                                                 </div>
-                                                <form method="post" action=<%=process.runtime.continueURL()%>>
-                                                    <input type="hidden" name="sopEngineTabRef"
-                                                           value="<%=process.rtStatus.getTabRef()%>">
-                                                    <div class="row">
-                                                        <div class="col-xs-12">
-                                                            <div class="table-gp">
-                                                                <iais:section title="">
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Current Status" required="false"/>
-                                                                            <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <%--<div>--%>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <div id="internalRemarksFalse"><iais:field value="Internal Remarks" required="false"  width="12"/></div>
-                                                                            <div id="internalRemarksTrue" class="hidden"><iais:field value="Internal Remarks" required="true"  width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
+                                                <div class="swiper-button-prev"></div>
+                                                <div class="swiper-button-next"></div>
+                                            </div>
+                                            <div class="tab-content">
+                                                    <%--info page--%>
+                                                <div class="tab-pane active" id="tabInfo" role="tabpanel">
+                                                    <%@include file="applicationInfo.jsp" %>
+                                                </div>
+                                                <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                                    <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp"%>
+                                                </div>
+                                                    <%--         Inspection start                       --%>
+                                                <div class="tab-pane" id="tabInspection" role="tabpanel">
+                                                    <%@include file="/WEB-INF/jsp/iais/report/ao1Report.jsp" %>
+                                                </div>
+                                                    <%--         Inspection end                       --%>
+                                                <div class="tab-pane" id="tabProcessing" role="tabpanel">
+                                                    <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
+                                                    <br/><br/>
+                                                    <div class="alert alert-info" role="alert">
+                                                        <strong>
+                                                            <h4>Processing Status Update</h4>
+                                                        </strong>
+                                                    </div>
+                                                    <form method="post" action=<%=process.runtime.continueURL()%>>
+                                                        <input type="hidden" name="sopEngineTabRef"
+                                                               value="<%=process.rtStatus.getTabRef()%>">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-gp">
+                                                                    <iais:section title="">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Current Status" required="false"/>
+                                                                                <iais:value width="10"><p>${applicationViewDto.currentStatus}</p></iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                        <%--<div>--%>
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <div id="internalRemarksFalse"><iais:field value="Internal Remarks" required="false"  width="12"/></div>
+                                                                                <div id="internalRemarksTrue" class="hidden"><iais:field value="Internal Remarks" required="true"  width="12"/></div>
+                                                                                <iais:value width="10">
+                                                                                    <div class="input-group">
+                                                                                        <div class="ax_default text_area">
                                                                                         <textarea id="internalRemarksId"
                                                                                                   name="internalRemarks" cols="70"
                                                                                                   rows="7" maxlength="300">${internalRemarks}</textarea>
-                                                                                        <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                            <span id="error_internalRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <%--</div>--%>
-                                                                    <%--Choose to inspect for 6 months--%>
-                                                                    <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
-                                                                        <div id="chooseInspectionBox">
-                                                                            <iais:row>
-                                                                                <label class="col-xs-0 col-md-4 control-label">
-                                                                                    To use recent inspection report?<a onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
-                                                                                </label>
-                                                                                <iais:value width="10">
-                                                                                    <p>
-                                                                                        <input class="form-check-input" id="chooseInspection"
-                                                                                               type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
-                                                                                        <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
-                                                                                        <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
-                                                                                            <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
-                                                                                               title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
-                                                                                        </c:if>
-                                                                                    </p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
-                                                                    <div id="processingDecision">
-                                                                        <iais:row>
-                                                                            <iais:field value="Processing Decision" required="true"/>
-                                                                            <%String nextStage = request.getParameter("nextStage");%>
-                                                                            <iais:value width="10">
-                                                                                <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
-                                                                                             options="nextStages"
-                                                                                             value="<%=nextStage%>"></iais:select>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <c:if test="${isRouteBackStatus || applicationViewDto.applicationDto.status == 'APST014' || applicationViewDto.applicationDto.status == 'APST013'}">
-                                                                        <div id="replytr" class="hidden">
+                                                                        <%--</div>--%>
+                                                                        <%--Choose to inspect for 6 months--%>
+                                                                        <c:if test="${(applicationViewDto.applicationDto.status == 'APST007' || applicationViewDto.applicationDto.status == 'APST012') && isChooseInspection}">
+                                                                            <div id="chooseInspectionBox">
+                                                                                <iais:row>
+                                                                                    <label class="col-xs-0 col-md-4 control-label">
+                                                                                        To use recent inspection report?<a onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
+                                                                                    </label>
+                                                                                    <iais:value width="10">
+                                                                                        <p>
+                                                                                            <input class="form-check-input" id="chooseInspection"
+                                                                                                   type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
+                                                                                            <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
+                                                                                            <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
+                                                                                                <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
+                                                                                                   title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
+                                                                                            </c:if>
+                                                                                        </p>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
+                                                                        <div id="processingDecision">
                                                                             <iais:row>
                                                                                 <iais:field value="Processing Decision" required="true"/>
-                                                                                <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
+                                                                                <%String nextStage = request.getParameter("nextStage");%>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select cssClass="nextStageReplys" name="nextStageReplys" id="nextStageReply"
-                                                                                                 options="nextStageReply"
-                                                                                                 value="${selectNextStageReply}"></iais:select>
+                                                                                    <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
+                                                                                                 options="nextStages"
+                                                                                                 value="<%=nextStage%>"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
-                                                                    <%-- DMS approval and reject --%>
-                                                                    <c:if test="${applicationViewDto.applicationDto.status == 'APST014'}">
-                                                                        <div id="decision">
+                                                                        <c:if test="${isRouteBackStatus || applicationViewDto.applicationDto.status == 'APST014' || applicationViewDto.applicationDto.status == 'APST013'}">
+                                                                            <div id="replytr" class="hidden">
+                                                                                <iais:row>
+                                                                                    <iais:field value="Processing Decision" required="true"/>
+                                                                                    <%--                                                                <%String selectNextStageReply = request.getParameter("selectNextStageReply");%>--%>
+                                                                                    <iais:value width="10">
+                                                                                        <iais:select cssClass="nextStageReplys" name="nextStageReplys" id="nextStageReply"
+                                                                                                     options="nextStageReply"
+                                                                                                     value="${selectNextStageReply}"></iais:select>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
+                                                                        <%-- DMS approval and reject --%>
+                                                                        <c:if test="${applicationViewDto.applicationDto.status == 'APST014'}">
+                                                                            <div id="decision">
+                                                                                <iais:row>
+                                                                                    <iais:field value="Processing Decision" required="true"/>
+                                                                                    <iais:value width="10">
+                                                                                        <iais:select cssClass="decisionValues" name="decisionValues" id="decisionValues"
+                                                                                                     firstOption="Please Select"
+                                                                                                     options="decisionValues"
+                                                                                                     value="${selectDecisionValue}"></iais:select>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
+                                                                        <div id="rollBackDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <iais:field value="Processing Decision" required="true"/>
+                                                                                <iais:field value="Route Back To" required="true"/>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select cssClass="decisionValues" name="decisionValues" id="decisionValues"
+                                                                                    <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
                                                                                                  firstOption="Please Select"
-                                                                                                 options="decisionValues"
-                                                                                                 value="${selectDecisionValue}"></iais:select>
+                                                                                                 options="routeBackValues"
+                                                                                                 value="${selectRollBack}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
-                                                                    <div id="rollBackDropdown" class="hidden">
-                                                                        <iais:row>
-                                                                            <iais:field value="Route Back To" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
-                                                                                             firstOption="Please Select"
-                                                                                             options="routeBackValues"
-                                                                                             value="${selectRollBack}"></iais:select>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <c:if test="${ 'canRouteBackReview' == routeBackReview}">
-                                                                        <div id="routeBackReviewBox" class="hidden">
+                                                                        <c:if test="${ 'canRouteBackReview' == routeBackReview}">
+                                                                            <div id="routeBackReviewBox" class="hidden">
+                                                                                <iais:row>
+                                                                                    <iais:field value="To review application after internal user has clarified?" required="false"/>
+                                                                                    <iais:value width="10">
+                                                                                        <p>
+                                                                                            <input class="form-check-input" id="routeBackReview"
+                                                                                                   type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">checked</c:if> value="Y">
+                                                                                            <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
+                                                                                        </p>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
+                                                                        <div id="verifiedDropdown" class="hidden">
                                                                             <iais:row>
-                                                                                <iais:field value="To review application after internal user has clarified?" required="false"/>
-                                                                                <iais:value width="10">
-                                                                                    <p>
-                                                                                        <input class="form-check-input" id="routeBackReview"
-                                                                                               type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">checked</c:if> value="Y">
-                                                                                        <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
-                                                                                    </p>
+                                                                                <iais:field value="Assign To" required="false"/>
+                                                                                <iais:value width="10" id="verifyCallAjaxDropDown">
+                                                                                    <iais:select cssClass="verified" name="verified"
+                                                                                                 options="verifiedValues"
+                                                                                                 value="${selectVerified}"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
-                                                                    <div id="verifiedDropdown" class="hidden">
-                                                                        <iais:row>
-                                                                            <iais:field value="Assign To" required="false"/>
-                                                                            <iais:value width="10" id="verifyCallAjaxDropDown">
-                                                                                <iais:select cssClass="verified" name="verified"
-                                                                                             options="verifiedValues"
-                                                                                             value="${selectVerified}"></iais:select>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
 
-                                                                    <div id="comments" class="hidden">
-                                                                        <%String commentsValue = request.getParameter("comments");%>
-                                                                        <iais:row>
-                                                                            <iais:field value="Comments to applicant" required="false"  width="12"/>
-                                                                            <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
+                                                                        <div id="comments" class="hidden">
+                                                                            <%String commentsValue = request.getParameter("comments");%>
+                                                                            <iais:row>
+                                                                                <iais:field value="Comments to applicant" required="false"  width="12"/>
+                                                                                <iais:value width="10">
+                                                                                    <div class="input-group">
+                                                                                        <div class="ax_default text_area">
                                                                                     <textarea name="comments" cols="70"
                                                                                               rows="7" maxlength="300"><%=commentsValue == null ? "" : commentsValue%></textarea>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <%--application type == new application --%>
-                                                                    <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002'}">
-                                                                        <div id="licenceStartDate">
-                                                                            <iais:row>
-                                                                                <iais:field value="Licence Start Date" required="false"/>
-                                                                                <iais:value width="10">
-                                                                                    <c:choose>
-                                                                                        <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || isBroacastAso}">
-                                                                                            <iais:datePicker id="licenceStartDate" name="tuc"
-                                                                                                             value="${date}"></iais:datePicker>
-                                                                                        </c:when>
-                                                                                        <c:otherwise>
-                                                                                            <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
-                                                                                        </c:otherwise>
-                                                                                    </c:choose>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
+                                                                        <%--application type == new application --%>
+                                                                        <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY002'}">
+                                                                            <div id="licenceStartDate">
+                                                                                <iais:row>
+                                                                                    <iais:field value="Licence Start Date" required="false"/>
+                                                                                    <iais:value width="10">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${applicationViewDto.applicationDto.status=='APST007' || (isRouteBackStatus && taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC') || isBroacastAso}">
+                                                                                                <iais:datePicker id="licenceStartDate" name="tuc"
+                                                                                                                 value="${date}"></iais:datePicker>
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                <p>${(recomInDateOnlyShow == "" || recomInDateOnlyShow == null) ? "-" : recomInDateOnlyShow}</p>
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
 
-                                                                    <%--application type == appeal --%>
-                                                                    <div id="appealRecommendationDiv">
-                                                                        <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
+                                                                        <%--application type == appeal --%>
+                                                                        <div id="appealRecommendationDiv">
+                                                                            <c:if test="${isAppealType || ((isWithDrawal || isCessation) && (!finalStage || hasRollBackHistoryList && (appealRecommendationValueOnlyShow != '' && appealRecommendationValueOnlyShow != null)))}">
                                                                             <div id="appealRecommendation">
                                                                                 <iais:row>
                                                                                     <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
@@ -301,10 +301,10 @@
                                                                                 </iais:row>
                                                                             </div>
                                                                         </c:if>
-                                                                    </div>
+                                                                        </div>
 
-                                                                    <div id="normalRecommendationDiv">
-                                                                        <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
+                                                                        <div id="normalRecommendationDiv">
+                                                                            <div id="recommendationDropdown" ${applicationViewDto.applicationDto.applicationType == 'APTY007' ? 'hidden' : ''}>
                                                                             <iais:row>
                                                                                 <div id="recommendationFieldTrue" class="hidden"><iais:field value="${recommendationShowName}" required="true"/></div>
                                                                                 <div id="recommendationFieldFalse"><iais:field value="${recommendationShowName}" required="false"/></div>
@@ -324,57 +324,57 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </div>
+                                                                        </div>
 
-                                                                    <div id="recommendationOtherDropdown">
-                                                                        <iais:row>
-                                                                            <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <c:choose>
-                                                                                    <c:when test="${!isAppealType || (isAppealType && (isAso || isPso))}">
-                                                                                        <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="${isAppealType ? 1 : 2}" value="${otherNumber}">
-                                                                                        <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                                                                                        <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
-                                                                                        <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
-                                                                                    </c:when>
-                                                                                    <c:otherwise>
-                                                                                        <p>${appealRecommendationOtherOnlyShow}</p>
-                                                                                    </c:otherwise>
-                                                                                </c:choose>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
-                                                                    <%--application type != appeal --%>
-                                                                    <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
-                                                                        <div class="fastTrack">
+                                                                        <div id="recommendationOtherDropdown">
                                                                             <iais:row>
-                                                                                <iais:field value="Fast Tracking?" required="false"/>
+                                                                                <iais:field value="${isAppealType ? 'Recommended Licence Period' : 'Other Period'}" required="true"/>
                                                                                 <iais:value width="10">
-                                                                                    <p>
-                                                                                        <c:choose>
-                                                                                            <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
-                                                                                                <input class="form-check-input" id="fastTracking"
-                                                                                                <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                                       checked disabled
-                                                                                                </c:if>
-                                                                                                       type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                                            </c:when>
-                                                                                            <c:otherwise>
-                                                                                                <input class="form-check-input" disabled
-                                                                                                <c:if test="${applicationViewDto.applicationDto.fastTracking}">
-                                                                                                       checked
-                                                                                                </c:if>
-                                                                                                       id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
-                                                                                                <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
-                                                                                            </c:otherwise>
-                                                                                        </c:choose>
-                                                                                    </p>
+                                                                                    <c:choose>
+                                                                                        <c:when test="${!isAppealType || (isAppealType && (isAso || isPso))}">
+                                                                                            <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="${isAppealType ? 1 : 2}" value="${otherNumber}">
+                                                                                            <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                            <iais:select cssClass="chrono" id="chronoUnit" name="chrono" options="recommendationOtherDropdown" value="${otherChrono}"/>
+                                                                                            <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                        </c:when>
+                                                                                        <c:otherwise>
+                                                                                            <p>${appealRecommendationOtherOnlyShow}</p>
+                                                                                        </c:otherwise>
+                                                                                    </c:choose>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:if>
+                                                                        <%@include file="/WEB-INF/jsp/iais/hcsaLicence/appFlowSvcVehicleShow.jsp"%>
+                                                                        <%--application type != appeal --%>
+                                                                        <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
+                                                                            <div class="fastTrack">
+                                                                                <iais:row>
+                                                                                    <iais:field value="Fast Tracking?" required="false"/>
+                                                                                    <iais:value width="10">
+                                                                                        <p>
+                                                                                            <c:choose>
+                                                                                                <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
+                                                                                                    <input class="form-check-input" id="fastTracking"
+                                                                                                    <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                                           checked disabled
+                                                                                                    </c:if>
+                                                                                                           type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                                    <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                                                </c:when>
+                                                                                                <c:otherwise>
+                                                                                                    <input class="form-check-input" disabled
+                                                                                                    <c:if test="${applicationViewDto.applicationDto.fastTracking}">
+                                                                                                           checked
+                                                                                                    </c:if>
+                                                                                                           id="fastTracking" type="checkbox" name="fastTracking" aria-invalid="false" value="Y">
+                                                                                                    <label class="form-check-label" for="fastTracking"><span class="check-square"></span></label>
+                                                                                                </c:otherwise>
+                                                                                            </c:choose>
+                                                                                        </p>
+                                                                                    </iais:value>
+                                                                                </iais:row>
+                                                                            </div>
+                                                                        </c:if>
 
                                                                         <div id="rfiSelect">
                                                                             <iais:row>
@@ -432,26 +432,24 @@
                                                                     </div>
                                                                     <div>&nbsp;</div>
                                                                 </div>
-                                                                <div>&nbsp;</div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </form>
-                                                <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
+                                                    </form>
+                                                    <%@include file="/WEB-INF/jsp/iais/inspectionncList/processHistory.jsp"%>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </iais:body>
+                                </iais:body>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-    </form>
-    <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
+        </form>
+        <iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 </div>
 <%@include file="/WEB-INF/jsp/iais/inspectionncList/uploadFile.jsp" %>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -522,14 +520,14 @@
     });
     function recommendationRemoveRequired() {
         if ('${applicationViewDto.applicationDto.status}' == 'APST013' ||  '${applicationViewDto.applicationDto.status}' == 'APST062' ||  '${applicationViewDto.applicationDto.status}' == 'APST065' ||  '${applicationViewDto.applicationDto.status}' == 'APST066' || '${applicationViewDto.applicationDto.status}' == 'APST067') {
-            $('#recommendationFieldTrue').addClass('hidden');
-            $('#recommendationFieldFalse').removeClass('hidden');
+        $('#recommendationFieldTrue').addClass('hidden');
+        $('#recommendationFieldFalse').removeClass('hidden');
         }
     }
     function checkInspectionShow(){
         if('${isShowInspection}' == 'N'){
             $('#ApplicationViewInspection').css('display', 'none');
-            <%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
+<%--            ${'#applicationSlidInspection'}.css('display', 'none');--%>
         }
     }
 
@@ -639,11 +637,11 @@
     }
 
     //appeal
-    $("[name='appealRecommendationValues']").change(function selectChange() {
-        if (${isAppealType}) {
-            checkAppealRecommendation();
-        }
-    });
+        $("[name='appealRecommendationValues']").change(function selectChange() {
+            if (${isAppealType}) {
+                checkAppealRecommendation();
+            }
+        });
 
 
     function checkAppealRecommendation(){
@@ -683,8 +681,8 @@
 
     function DMSCheck(){
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
-            $('#recommendationFieldTrue').removeClass('hidden');
-            $('#recommendationFieldFalse').addClass('hidden');
+                $('#recommendationFieldTrue').removeClass('hidden');
+                $('#recommendationFieldFalse').addClass('hidden');
             var isRequestForChange = $('#isRequestForChange').val();
             if(isRequestForChange != 'Y') {
                 checkRecommendationDMS();
@@ -958,18 +956,18 @@
         showWaiting();
         var data = {"repoId":verify};
         $.post(
-                "${pageContext.request.contextPath}/verifyFileExist",
-                data,
-                function (data) {
-                    if(data != null ){
-                        if(data.verify == 'N'){
-                            $('#supportReport').modal('show');
-                        }else {
-                            $("#"+verify+"Down").click();
-                        }
-                        dismissWaiting();
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                    if(data.verify == 'N'){
+                        $('#supportReport').modal('show');
+                    }else {
+                        $("#"+verify+"Down").click();
                     }
+                    dismissWaiting();
                 }
+            }
         )
     }
 

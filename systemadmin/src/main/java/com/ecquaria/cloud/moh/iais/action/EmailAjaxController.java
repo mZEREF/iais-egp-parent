@@ -219,7 +219,7 @@ public class EmailAjaxController {
         Map<String, String> result = new HashMap<>();
         List<String> disList = IaisCommonUtils.genNewArrayList();
         for (String item: disString
-        ) {
+             ) {
             disList.add(item);
         }
 
@@ -288,7 +288,7 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption(na,MasterCodeUtil.getCodeDesc(na)));
             selectOptions.add(new SelectOption(sms,MasterCodeUtil.getCodeDesc(sms)));
         }else{
-            String naText = MasterCodeUtil.getCodeDesc(na);
+           String naText = MasterCodeUtil.getCodeDesc(na);
             switch (deliveyMode){
                 case MsgTemplateConstants.MSG_TEMPLATE_TYPE_ALERT:
                     selectOptions.add(new SelectOption(na,naText ));
@@ -325,7 +325,7 @@ public class EmailAjaxController {
                 .append(name).append("Clear\">");
         int i = 0;
         for (SelectOption item:selectOptionList
-        ) {
+              ) {
             sBuffer.append("<label class=\"checkbox-custom check-primary\" style=\"margin-left: 2px\">")
                     .append("<input value=\"").append(item.getValue()).append("\" id=\"").append(name).append(i).append("\" name=\"").append(name).append("\" type=\"checkbox\">")
                     .append("<label for=\"").append(name).append(i).append("\">")

@@ -37,12 +37,12 @@ public interface InspectionAssignTaskService {
     List<TaskDto> getCommPoolByGroupWordId(LoginContext loginContext);
 
     /**
-     * @author: shicheng
-     * @Date 2020/11/18
-     * @Param: applicationDtos, stageId
-     * @return:  List<HcsaSvcStageWorkingGroupDto>
-     * @Descripation: generateHcsaSvcStageWorkingGroupDtos
-     */
+      * @author: shicheng
+      * @Date 2020/11/18
+      * @Param: applicationDtos, stageId
+      * @return:  List<HcsaSvcStageWorkingGroupDto>
+      * @Descripation: generateHcsaSvcStageWorkingGroupDtos
+      */
     List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId);
 
     /**
@@ -100,14 +100,14 @@ public interface InspectionAssignTaskService {
     String assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto, LoginContext loginContext);
 
     /**
-     * @author: shicheng
-     * @Date 2020/6/23
-     * @Param: td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, loginContext
-     * @return: void
-     * @Descripation:
-     */
+      * @author: shicheng
+      * @Date 2020/6/23
+      * @Param: td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, loginContext
+      * @return: void
+      * @Descripation: 
+      */
     String assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                  ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext);
+                                ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext);
 
     /**
      * @author: shicheng
@@ -182,23 +182,23 @@ public interface InspectionAssignTaskService {
     void setInspectorLeadName(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, List<OrgUserDto> orgUserDtos, String workGroupId);
 
     /**
-     * @author: shicheng
-     * @Date 2020/5/11
-     * @Param: loginContext, commonPool
-     * @return: PoolRoleCheckDto
-     * @Descripation: get roles option by pool kind name
-     */
+      * @author: shicheng
+      * @Date 2020/5/11
+      * @Param: loginContext, commonPool
+      * @return: PoolRoleCheckDto
+      * @Descripation: get roles option by pool kind name
+      */
     PoolRoleCheckDto getRoleOptionByKindPool(LoginContext loginContext, String poolName, PoolRoleCheckDto poolRoleCheckDto);
 
     AppStageSlaTrackingDto searchSlaTrackById(String appNo,String stageId);
 
     /**
-     * @author: shicheng
-     * @Date 2020/7/7
-     * @Param: refNo
-     * @return: boolean
-     * @Descripation: applicantIsSubmit
-     */
+      * @author: shicheng
+      * @Date 2020/7/7
+      * @Param: refNo
+      * @return: boolean
+      * @Descripation: applicantIsSubmit
+      */
     boolean applicantIsSubmit(String refNo);
 
     /**

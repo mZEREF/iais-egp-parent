@@ -316,7 +316,7 @@
                 html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                     '<td colspan="7" style="padding: 0px 8px !important;">' +
                     '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                    '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                     '<thead>' +
                     '<tr>';
                 if (hastaskList == "true") {

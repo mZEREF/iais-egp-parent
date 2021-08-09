@@ -21,12 +21,12 @@ public interface BroadcastService {
     public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/8
-     * @Param: broadcastApplicationDto, applicationViewDto
-     * @return: BroadcastApplicationDto
-     * @Descripation: setAppSvcVehicleDtoByAppView
-     */
+      * @author: shicheng
+      * @Date 2021/6/8
+      * @Param: broadcastApplicationDto, applicationViewDto
+      * @return: BroadcastApplicationDto
+      * @Descripation: setAppSvcVehicleDtoByAppView
+      */
     BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
                                                          String appStatus, String appType);
 

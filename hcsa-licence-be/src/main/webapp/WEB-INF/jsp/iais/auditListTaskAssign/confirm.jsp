@@ -15,8 +15,8 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <div class="main-content">
-    <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+<form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 
 
             <div class="row">
@@ -48,36 +48,32 @@
                                 </thead>
                                 <tbody>
 
-                            <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
-                                <c:if test="${item.selectedForAudit}">
-                                    <tr>
-                                        <c:set var="id" value="${status.index}"></c:set>
-                                        <td><c:out value="${item.hclCode}"/></td>
-                                        <td><c:out value="${empty item.hclName ? 'N/A' :item.hclName}"/></td>
-                                        <td><c:out value="${empty item.address ? 'N/A' : item.address}"/></td>
-                                        <td><c:out value="${item.svcName}"/></td>
-                                        <td><iais:code code="${item.auditType}"/></td>
-                                        <c:if test="${ISTUC}">
+                                <c:forEach var = "item" items = "${auditTaskDataDtos}" varStatus="status">
+                                    <c:if test="${item.selectedForAudit}">
+                                        <tr>
+                                            <c:set var="id" value="${status.index}"></c:set>
+                                            <td><c:out value="${item.hclCode}"/></td>
+                                            <td><c:out value="${empty item.hclName ? 'N/A' :item.hclName}"/></td>
+                                            <td><c:out value="${empty item.address ? 'N/A' : item.address}"/></td>
+                                            <td><c:out value="${item.svcName}"/></td>
+                                            <td><iais:code code="${item.auditType}"/></td>
+                                            <c:if test="${ISTUC}">
+                                                <td>
+                                                    <fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"/>
+                                                </td>
+                                            </c:if>
                                             <td>
-                                                <fmt:formatDate value="${item.tcuDate}" pattern="dd/MM/yyyy"/>
+                                                <c:out value="${item.inspector}"/>
                                             </td>
-                                        </c:if>
-                                        <td>
-                                            <c:out value="${item.inspector}"/>
-                                        </td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${item.selectedForAudit}">
-                                                    <p>Audit Confirmed</p>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <p><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value="${item.auditType}"/></p>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <c:if test="${ISTUC}">
                                             <td>
-                                                <input type="checkbox" name = "announced${status.index}" value = "announced"/>
+                                                <c:choose>
+                                                    <c:when test="${item.selectedForAudit}">
+                                                        <p>Audit Confirmed</p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p><iais:select name="${id}auditType" options="aduitTypeOp" firstOption="Please Select" value="${item.auditType}"/></p>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </td>
                                             <c:if test="${ISTUC}">
                                                 <td>
@@ -88,28 +84,28 @@
                                     </c:if>
                                 </c:forEach>
 
-                            </tbody>
-                        </table>
-                        <div class="table-footnote">
+                                </tbody>
+                            </table>
+                            <div class="table-footnote">
+                            </div>
                         </div>
-                    </div>
-                    <iais:action style="text-align:right;">
-                        <button type="button" class="btn btn-secondary" onclick="javascript:cancel('${actionCancel}');">Cancel
-                        </button>
-                        <button type="button" class="btn btn-primary next" onclick="javascript:confirm('${actionConfirm}');">Confirm
-                            to Audit
-                        </button>
-                        <!--
-                        <div class="col-xs-12 col-sm-6">
-                        <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: remove();">Remove Audit Task</a></div>
-                        </div> -->
+                        <iais:action style="text-align:right;">
+                            <button type="button" class="btn btn-secondary" onclick="javascript:cancel('${actionCancel}');">Cancel
+                            </button>
+                            <button type="button" class="btn btn-primary next" onclick="javascript:confirm('${actionConfirm}');">Confirm
+                                to Audit
+                            </button>
+                            <!--
+                            <div class="col-xs-12 col-sm-6">
+                            <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: remove();">Remove Audit Task</a></div>
+                            </div> -->
 
-                    </iais:action>
+                        </iais:action>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </form>
+</form>
 </div>
 <script type="text/javascript">
     function confirm(act) {
