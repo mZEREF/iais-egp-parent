@@ -1312,9 +1312,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String startDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME);
         String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
         String otherinspectionofficer = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
+        String observation = getObservationByAppPremCorrId(appPremCorrId);
         serListDto.setOtherinspectionofficer(otherinspectionofficer);
         serListDto.setStartTime(startDate);
         serListDto.setEndTime(endDate);
+        serListDto.setObservation(observation);
        String [] startDateHHMM = getStringsByHHDD(startDate);
        if(startDateHHMM != null && startDateHHMM.length == 2){
            serListDto.setStartHour(startDateHHMM[0]);
@@ -1338,6 +1340,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         getSvcName(serListDto);
         return serListDto;
+    }
+
+    private String getObservationByAppPremCorrId(String appPremCorrId) {
+        String observation = "";
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
+                (appPremCorrId, InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION).getEntity();
+        if(appPremisesRecommendationDto != null) {
+            observation = appPremisesRecommendationDto.getRemarks();
+        }
+        return observation;
     }
 
     @Override
