@@ -84,7 +84,8 @@
                 <table aria-describedby="" class="table">
                   <thead>
                   <tr align="center">
-                    <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                    <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User ID"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date Start"></iais:sortableHeader>
                     <iais:sortableHeader needSort="true" field="" value="User Blockout Date End"></iais:sortableHeader>
