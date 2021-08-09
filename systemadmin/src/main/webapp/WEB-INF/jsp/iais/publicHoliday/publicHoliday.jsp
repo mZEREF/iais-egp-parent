@@ -82,7 +82,8 @@
                                 <thead>
                                     <tr align="center">
                                         <iais:sortableHeader needSort="false" field="" value=" "/>
-                                        <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                        <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
                                         <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
                                         <iais:sortableHeader needSort="true"  field="PH_DESC" value="Holiday Description"/>
