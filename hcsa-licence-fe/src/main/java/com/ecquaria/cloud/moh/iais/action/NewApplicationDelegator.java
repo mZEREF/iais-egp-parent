@@ -397,18 +397,19 @@ public class NewApplicationDelegator {
                 AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                 appEditSelectDto.setLicenseeEdit(NewApplicationHelper.canLicenseeEdit(appSubmissionDto, isRfi));
             }
-            appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
-            // synchronize the licencsee map
-            if (errorMap.isEmpty() && !OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
-                Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
-                if (licenseeMap != null && !licenseeMap.isEmpty()) {
-                    licenseeMap.forEach((personKey, dto) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, dto));
-                    bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
+            String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            if (!"saveDraft".equals(actionValue)) {
+                appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
+                // synchronize the licencsee map
+                if (errorMap.isEmpty() && !OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+                    Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
+                    if (licenseeMap != null && !licenseeMap.isEmpty()) {
+                        licenseeMap.forEach((personKey, dto) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, dto));
+                        bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
+                    }
                 }
             }
         }
-
-        String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
 
         if (!errorMap.isEmpty()) {
             //set audit
@@ -426,6 +427,7 @@ public class NewApplicationDelegator {
             coMap.put("licensee", "licensee");
             //coMap.put("serviceConfig", sB.toString());
             bpc.request.getSession().setAttribute("coMap", coMap);
+            String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(actionAdditional)) {
                 try {
                     doSaveDraft(bpc);
