@@ -17,7 +17,7 @@
                         <table aria-describedby="" class="table">
                         <iais:pagination  param="MsgTemplateSearchParam" result="MsgTemplateSearchResult"/>
                             <thead>
-                            <tr>
+                            <tr><th scope="col" style="display: none"></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:5%;"/>
                                 <iais:sortableHeader needSort="true" field="message_type" value="Message Type" style="width:10%;" customSpacing="12"/>
                                 <iais:sortableHeader needSort="true" field="template_name" value="Template Name" style="width:15%;" customSpacing="12"/>

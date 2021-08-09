@@ -1199,14 +1199,15 @@ public class MasterCodeDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
-        String originalFilename = file.getOriginalFilename();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        fileValidation(request,originalFilename,errorMap);
-        if (file.isEmpty()){
+        if (file==null||file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
+        }else if(file.getOriginalFilename()!=null){
+            String originalFilename = file.getOriginalFilename();
+            fileValidation(request,originalFilename,errorMap);
         }
 
         String originalFileName = file.getOriginalFilename();

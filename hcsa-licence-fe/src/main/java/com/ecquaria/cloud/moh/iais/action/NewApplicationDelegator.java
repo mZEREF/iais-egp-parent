@@ -2517,7 +2517,7 @@ public class NewApplicationDelegator {
         if (grpPremiseIsChange) {
             // reSet amount
             if (appEditSelectDto.isChangeBusinessName()) {
-                amendmentFeeDto.setChangeBusinessName(false);
+                amendmentFeeDto.setChangeBusinessName(Boolean.FALSE);
                 feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 amount = feeDto.getTotal();
             }
@@ -4413,8 +4413,8 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(appNo) && !StringUtil.isEmpty(msgId)) {
 //            appNo = "AN210511010651A-01";
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
-            appSubmissionDto.setAmountStr("N/A");
             if (appSubmissionDto != null) {
+                appSubmissionDto.setAmountStr("N/A");
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     rfiLoadingCheckImplForRenew.checkPremiseInfo(appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);

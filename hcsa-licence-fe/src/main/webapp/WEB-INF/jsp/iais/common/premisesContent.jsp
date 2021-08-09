@@ -93,8 +93,8 @@
                     <div class="form-check col-sm-12" >
                         <table aria-describedby="" class="impactedLic">
                             <tr>
-                                <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </td>
-                                <td style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</td>
+                                <th scope="col" style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence  </th>
+                                <th scope="col" style="font-size: 18px;font-weight: 700" class="form-check col-sm-3">Licence No.</th>
                                 <span id="error_selectLicence" class="error-msg"></span>
                             </tr>
                             <c:forEach items="${appGrpPremisesDto.licenceDtos}" var="licence">

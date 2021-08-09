@@ -122,6 +122,7 @@
                       <table aria-describedby="" class="table">
                         <thead>
                         <tr>
+                          <th scope="col" style="display: none"></th>
                           <iais:sortableHeader needSort="false"  style="width:1%" field="index" value="No."></iais:sortableHeader>
                           <iais:sortableHeader needSort="true" style="width:10%"  field="NAME" value="Inspector ID"></iais:sortableHeader>
                           <iais:sortableHeader needSort="true"  style="width:10%"  field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>

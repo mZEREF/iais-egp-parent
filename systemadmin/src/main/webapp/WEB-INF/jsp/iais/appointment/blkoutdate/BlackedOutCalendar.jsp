@@ -105,6 +105,7 @@
                   <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <iais:sortableHeader needSort="false"    field="index" value="No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"    field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>

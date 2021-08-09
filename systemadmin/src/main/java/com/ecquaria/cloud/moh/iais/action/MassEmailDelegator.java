@@ -268,8 +268,7 @@ public class MassEmailDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        String originalFileName = file.getOriginalFilename();
-        if (!FileUtils.isExcel(originalFileName)){
+        if (file!=null&&file.getOriginalFilename()!=null&&!FileUtils.isExcel(file.getOriginalFilename())){
             errMap.put("file", MessageUtil.getMessageDesc("CHKL_ERR041"));
         }else if (FileUtils.outFileSize(file.getSize())){
             int maxSize = SystemParamUtil.getFileMaxLimit();
