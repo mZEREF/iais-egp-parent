@@ -71,7 +71,7 @@
                                         <span class="mandatory">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-12">
-                                        <iais:input cssClass="businessName" maxLength="25" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
+                                        <iais:input cssClass="businessName" maxLength="100" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
                                     </div>
                                 </div>
                             </div>
