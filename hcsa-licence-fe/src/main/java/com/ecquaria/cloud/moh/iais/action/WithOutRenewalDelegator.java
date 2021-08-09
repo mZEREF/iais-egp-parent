@@ -149,8 +149,6 @@ public class WithOutRenewalDelegator {
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
-    private HcsaConfigFeClient hcsaConfigFeClient;
-    @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
