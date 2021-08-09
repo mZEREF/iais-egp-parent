@@ -53,6 +53,7 @@
                   <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
                       <%--<iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>--%>
                       <iais:sortableHeader needSort="false"   field="day" value="Day"></iais:sortableHeader>

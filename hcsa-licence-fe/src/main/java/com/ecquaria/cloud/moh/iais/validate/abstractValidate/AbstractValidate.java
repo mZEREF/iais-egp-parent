@@ -70,7 +70,7 @@ public abstract class AbstractValidate implements Validate {
             if(fieldValidate!=null){
                 if(f!=null){
                     String s = fieldValidate.fieldFormat();
-                    if(s!=null||!"".equals(s)){
+                    if(s!=null&&!"".equals(s)){
                         if(f instanceof String){
                             boolean matches = ((String) f).matches(s);
                             String message = fieldValidate.fieldFormatMessage();

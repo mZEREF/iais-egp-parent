@@ -21,6 +21,9 @@
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>General Conveyance Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.generalChargesDtos.size() > 1}"> ${gcStatus.index+1}</c:if></strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
@@ -63,6 +66,9 @@
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medical Equipment and Other Charges<c:if test="${currentPreviewSvcInfo.appSvcChargesPageDto.otherChargesDtos.size() > 1}"> ${ocStatus.index+1}</c:if></strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>

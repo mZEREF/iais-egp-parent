@@ -6,7 +6,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
