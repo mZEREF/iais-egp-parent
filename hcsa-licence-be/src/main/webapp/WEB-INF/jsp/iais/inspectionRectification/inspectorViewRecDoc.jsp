@@ -120,10 +120,19 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Best Practices</label>
+                      <label style="font-size: 16px">Recommendation</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionReportDto.bestPractice}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Observation</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.observation}"/></span>
                     </div>
                   </div>
                   <p></p>
