@@ -105,10 +105,6 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
-    @Autowired
-    AssessmentGuideService assessmentGuideService;
-    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
-
     public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     private static String msgStatus[] = {
