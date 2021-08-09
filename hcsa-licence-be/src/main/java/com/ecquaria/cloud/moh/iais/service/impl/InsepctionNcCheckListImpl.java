@@ -163,7 +163,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             appPremisesRecommendationDto.setVersion( appPremisesRecommendationDto.getVersion()+1);
         }else {
             if(StringUtil.isEmpty(incRiskType)){
-              return isFirstHaveIncRiskType;
+                return isFirstHaveIncRiskType;
             }
             appPremisesRecommendationDto = new AppPremisesRecommendationDto();
             appPremisesRecommendationDto.setVersion(1);
@@ -183,7 +183,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     public void saveRimRiskCountByLicenseeId(String licenseeId,boolean isAdd) {
         RimRiskCountDto rimRiskCountDto = organizationClient.getUenRimRiskCountDtoByLicenseeId(licenseeId).getEntity();
         if( rimRiskCountDto == null){
-         log.info(StringUtil.changeForLog("----------getUenRimRiskCountDtoByLicenseeId : " + licenseeId + " have no licensee."));
+            log.info(StringUtil.changeForLog("----------getUenRimRiskCountDtoByLicenseeId : " + licenseeId + " have no licensee."));
         }else {
             if(isAdd){
                 rimRiskCountDto.setLeadshipGovAuditCount(rimRiskCountDto.getLeadshipGovAuditCount()+1);
@@ -293,8 +293,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Override
     public AppPremisesPreInspectChklDto getAppPremChklDtoByTaskId(String taskId, String configId) {
         if (StringUtil.isEmpty(taskId)) {
-             log.info("-----------getAppPremChklDtoByTaskId TASKID is null -------------------------- ");
-             return null;
+            log.info("-----------getAppPremChklDtoByTaskId TASKID is null -------------------------- ");
+            return null;
         }
         TaskDto taskDto = taskService.getTaskById(taskId);
         String appPremCorrId = null;
@@ -463,7 +463,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         AppPremisesSpecialDocDto appIntranetDocDto = serListDto.getAppPremisesSpecialDocDto();
         if(appIntranetDocDto != null && !StringUtil.isEmpty(appIntranetDocDto.getFileRepoId())
                 && !appIntranetDocDto.getFileRepoId().equalsIgnoreCase(serListDto.getOldFileGuid())){
-                 removeFiles(appIntranetDocDto.getFileRepoId());
+            removeFiles(appIntranetDocDto.getFileRepoId());
         }
     }
     public void saveInspectionDate(InspectionFDtosDto serListDto, String appPremId) {
@@ -581,10 +581,10 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
         if(ncflagNum == 0 && showDto != null && !IaisCommonUtils.isEmpty(showDto.getAdItemList())){
             for(AdhocNcCheckItemDto adhocNcCheckItemDto : showDto.getAdItemList()){
-               if("No".equalsIgnoreCase(adhocNcCheckItemDto.getAdAnswer())){
-                   ncflagNum++;
-                   break;
-               }
+                if("No".equalsIgnoreCase(adhocNcCheckItemDto.getAdAnswer())){
+                    ncflagNum++;
+                    break;
+                }
             }
         }
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList;
@@ -637,13 +637,13 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public void saveTcuDate(String appPremId,String tcu){
-            AppPremisesRecommendationDto appPreRecommentdationDto = getTcuRec(appPremId,tcu);
-            appPreRecommentdationDto.setId(null);
-            appPreRecommentdationDto.setAppPremCorreId(appPremId);
-            appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
-            appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
+        AppPremisesRecommendationDto appPreRecommentdationDto = getTcuRec(appPremId,tcu);
+        appPreRecommentdationDto.setId(null);
+        appPreRecommentdationDto.setAppPremCorreId(appPremId);
+        appPreRecommentdationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPreRecommentdationDto.setRecomType(InspectionConstants.RECOM_TYPE_TCU);
+        appPreRecommentdationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveAppRecom(appPreRecommentdationDto);
     }
     private void saveSerListDto(InspectionFDtosDto serListDto,String appPremId) {
         List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
@@ -695,27 +695,27 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     }
 
     public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
-            EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
-                    InsepctionNcCheckListImpl.class.getName(),
-                    "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
-                    AdhocCheckListConifgDto.class.getName(), JsonUtil.parseToJson(adhocConfig));
-            try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
-                if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
-                    EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
-                    if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callEicGatewaySaveItem(adhocConfig);
-                        preEicRequest.setProcessNum(1);
-                        Date now = new Date();
-                        preEicRequest.setFirstActionAt(now);
-                        preEicRequest.setLastActionAt(now);
-                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
-                    }
+        EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
+                InsepctionNcCheckListImpl.class.getName(),
+                "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
+                AdhocCheckListConifgDto.class.getName(), JsonUtil.parseToJson(adhocConfig));
+        try {
+            FeignResponseEntity<EicRequestTrackingDto> fetchResult = eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+            if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
+                EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
+                if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
+                    callEicGatewaySaveItem(adhocConfig);
+                    preEicRequest.setProcessNum(1);
+                    Date now = new Date();
+                    preEicRequest.setFirstActionAt(now);
+                    preEicRequest.setLastActionAt(now);
+                    preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                    eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
                 }
-            }catch (Exception e){
-                log.debug(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
             }
+        }catch (Exception e){
+            log.debug(StringUtil.changeForLog("encounter failure when sync adhoc item to fe" + e.getMessage()));
+        }
     }
 
     public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
@@ -1290,9 +1290,34 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
+        //save observation
+        saveObservation(serListDto, appPremId);
         saveLitterFile(serListDto);
         if(serListDto.isSpecServiceVehicle()){
             saveSpecServiceVerdict(appPremId);
+        }
+    }
+
+    private void saveObservation(InspectionFDtosDto serListDto, String appPremId) {
+        if(serListDto != null) {
+            String observation = serListDto.getObservation();
+            if(!StringUtil.isEmpty(observation)) {
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
+                        (appPremId, InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION).getEntity();
+                if(appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDto.setRemarks(observation);
+                } else {
+                    appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setVersion(1);
+                    appPremisesRecommendationDto.setId(null);
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremId);
+                    appPremisesRecommendationDto.setRemarks(observation);
+                    appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION);
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                }
+                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+            }
         }
     }
 
