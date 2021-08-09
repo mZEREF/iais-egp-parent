@@ -370,10 +370,19 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="col-xs-4">
-                                                                            <p>&nbsp;Recommended Best Practices</p>
+                                                                            <p>&nbsp;Recommendation</p>
                                                                         </td>
                                                                         <td class="col-xs-4">
                                                                             <p>&nbsp;${insRepDto.bestPractice}</p>
+                                                                        </td>
+                                                                        <td class="col-xs-4"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="col-xs-4">
+                                                                            <p>&nbsp;Observation</p>
+                                                                        </td>
+                                                                        <td class="col-xs-4">
+                                                                            <p>&nbsp;${insRepDto.observation}</p>
                                                                         </td>
                                                                         <td class="col-xs-4"></td>
                                                                     </tr>
