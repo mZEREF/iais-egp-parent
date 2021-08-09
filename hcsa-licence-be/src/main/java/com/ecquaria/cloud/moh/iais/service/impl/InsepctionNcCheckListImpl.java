@@ -1290,9 +1290,34 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         saveEndTime(serListDto,appPremId);
         saveOtherInspection(serListDto,appPremId);
         saveRecommend(serListDto,appPremId);
+        //save observation
+        saveObservation(serListDto, appPremId);
         saveLitterFile(serListDto);
         if(serListDto.isSpecServiceVehicle()){
             saveSpecServiceVerdict(appPremId);
+        }
+    }
+
+    private void saveObservation(InspectionFDtosDto serListDto, String appPremId) {
+        if(serListDto != null) {
+            String observation = serListDto.getObservation();
+            if(!StringUtil.isEmpty(observation)) {
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
+                        (appPremId, InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION).getEntity();
+                if(appPremisesRecommendationDto != null) {
+                    appPremisesRecommendationDto.setRemarks(observation);
+                } else {
+                    appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setVersion(1);
+                    appPremisesRecommendationDto.setId(null);
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremId);
+                    appPremisesRecommendationDto.setRemarks(observation);
+                    appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION);
+                    appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                }
+                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+            }
         }
     }
 

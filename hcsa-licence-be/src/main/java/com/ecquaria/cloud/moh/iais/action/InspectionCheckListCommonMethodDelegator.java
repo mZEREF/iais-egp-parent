@@ -372,6 +372,7 @@ public class InspectionCheckListCommonMethodDelegator {
             tcu = ParamUtil.getString(request,"tuc");
         }
         String bestpractice = ParamUtil.getString(request,"bestpractice");
+        String observation = ParamUtil.getString(request,"observation");
         String tcuremark = ParamUtil.getString(request,"tcuRemark");
         String otherOfficers = ParamUtil.getString(request,"otherinspector");
         serListDto.setRemarksForHistory( ParamUtil.getString(request,"RemarksForHistory"));
@@ -400,7 +401,7 @@ public class InspectionCheckListCommonMethodDelegator {
             serListDto.setTuc(null);
         }
         serListDto.setBestPractice(bestpractice);
-
+        serListDto.setObservation(observation);
         // set litter file
         String litterFile =  ParamUtil.getString(request,"litterFile" );
         if(!StringUtil.isEmpty(litterFile)){

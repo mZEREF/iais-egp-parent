@@ -107,10 +107,18 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">Best Practices</label>
+        <label class="col-xs-12 col-md-4 control-label">Recommendation</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="bestpractice" id="bestpractice" maxlength="500"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
             <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-md-4 control-label">Observation</label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <textarea cols="43" rows="5" name="observation " id="observation" maxlength="500"><c:out value="${serListDto.observation}"></c:out></textarea>
+            <span class="error-msg" id="error_observation" name="iaisErrorMsg"></span>
         </div>
     </div>
 
