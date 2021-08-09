@@ -517,7 +517,7 @@ public class AppealApproveBatchjob {
                 ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
                 List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
                 appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
-                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)){
+                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)&&!entity.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                     for (AppGrpPremisesEntityDto appPrem:appealAppGrpPremisesDto
                          ) {
                         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.getPremCorrDtoByAppGroupId(appPrem.getAppGrpId()).getEntity();

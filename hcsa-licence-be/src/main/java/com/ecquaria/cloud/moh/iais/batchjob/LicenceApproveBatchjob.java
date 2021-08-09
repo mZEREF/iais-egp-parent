@@ -1996,7 +1996,8 @@ public class LicenceApproveBatchjob {
                 //appeal add cgo not need new licence no
                 if(applicationDto!=null){
                     if(!applicationDto.isNeedNewLicNo()&&applicationDto.getOriginLicenceId()!=null){
-                        licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
+                        //the new generated licences should increase the serial no. 69002
+                        //licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
                         version=originLicenceDto.getVersion()+1;
                     }
                 }
