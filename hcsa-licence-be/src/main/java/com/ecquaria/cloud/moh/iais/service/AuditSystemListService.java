@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
 import com.ecquaria.cloud.role.Role;
@@ -45,4 +46,8 @@ public interface AuditSystemListService {
     boolean  rightControlForRole(List<SelectOption> roleSels,String roleId);
 
     void setTcuAuditFlag(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+
+    void filetDoc(AppSubmissionDto appSubmissionDto);
+
+    void setRiskToDto(AppSubmissionDto appSubmissionDto);
 }

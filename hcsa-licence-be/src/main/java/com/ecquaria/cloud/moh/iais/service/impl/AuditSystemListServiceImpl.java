@@ -1027,7 +1027,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return null;
     }
-    private void filetDoc(AppSubmissionDto appSubmissionDto){
+    @Override
+    public void filetDoc(AppSubmissionDto appSubmissionDto){
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
@@ -1042,6 +1043,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                             appSvcDocDtoListIterator.remove();
                         }
                     }
+                    setSvcDocsDupForPerson(appSvcDocDtoLit);
                 }
             }
         }
@@ -1058,7 +1060,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
     }
-    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+    @Override
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -1105,5 +1108,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
         return false;
+    }
+
+    private void  setSvcDocsDupForPerson(List<AppSvcDocDto> appSvcDocDtoLit){
+        if(IaisCommonUtils.isNotEmpty(appSvcDocDtoLit)){
+            appSvcDocDtoLit.forEach((v)->{
+                if(StringUtil.isNotEmpty(v.getSvcDocId())){
+                    v.setDupForPerson(hcsaConfigClient.getHcsaSvcDocConfigDtoById(v.getSvcDocId()).getEntity().getDupForPerson());
+                }
+            });
+        }
     }
 }
