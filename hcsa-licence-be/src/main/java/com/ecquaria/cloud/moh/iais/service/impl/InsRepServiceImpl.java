@@ -122,6 +122,9 @@ public class InsRepServiceImpl implements InsRepService {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //get Observation
         String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+        if(StringUtil.isEmpty(observation)) {
+            observation = "-";
+        }
         inspectionReportDto.setObservation(observation);
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
