@@ -2495,6 +2495,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (licence == null) {
             return true;
         }
+        // set draft no
+        appSubmissionDto.setDraftNo(draftNo);
+        try {
+            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId());
+        } catch (Exception e) {
+            log.warn(StringUtil.changeForLog(e.getMessage()), e);
+        }
         String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", licence.getSvcName());
         String baseServiceId1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
         if (StringUtil.isEmpty(baseServiceId1)) {
@@ -2513,14 +2520,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
             return false;
         }
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        // set draft no
-        appSubmissionDto.setDraftNo(draftNo);
-        try {
-            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId());
-        } catch (Exception e) {
-            log.warn(StringUtil.changeForLog(e.getMessage()), e);
-        }
+
         appSubmissionDto.setAppGrpNo(appGroupNo);
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(
                 appSubmissionDto);
@@ -2548,10 +2548,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         appSubmissionDto.setGetAppInfoFromDto(true);
         RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDto);
-        oldPremiseToNewPremise(appSubmissionDto);
         premisesDocToSvcDoc(appSubmissionDto);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        setRelatedInfoBaseServiceId(appSubmissionDto);
         // set app GrpPremisess
         boolean groupLic = appSubmissionDto.isGroupLic();
         int hciNameChange = appEditSelectDto.isChangeHciName() ? 1 : 0;
@@ -2570,25 +2568,4 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return true;
     }
 
-    private void oldPremiseToNewPremise(AppSubmissionDto appSubmissionDto) {
-        if (appSubmissionDto != null) {
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-            if (appGrpPremisesDtoList != null) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                    if (appSvcLaboratoryDisciplinesDtoList != null) {
-                        for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
-                            String premiseVal = appSvcLaboratoryDisciplinesDto.getPremiseVal();
-                            if (!premisesIndexNo.equals(premiseVal)) {
-                                appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesIndexNo);
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-    }
 }
