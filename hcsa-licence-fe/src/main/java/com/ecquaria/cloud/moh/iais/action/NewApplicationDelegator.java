@@ -2413,10 +2413,6 @@ public class NewApplicationDelegator {
         appEditSelectDto.setChangeVehicle(changeVehicles);
         appEditSelectDto.setChangeBusinessName(changeBusiness);
         appEditSelectDto.setChangePersonnel(!notChangePersonnel);
-        boolean isAutoRfc = appEditSelectDto.isAutoRfc();
-        log.info(StringUtil.changeForLog("App Edit Select Dto: " + JsonUtil.parseToJson(appEditSelectDto)));
-        // reSet: isNeedNewLicNo and self assessment flag
-        NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
         boolean licHadSubmit = !IaisCommonUtils.isEmpty(applicationDtos);
         if (licHadSubmit) {
@@ -2468,7 +2464,6 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         docIsChange = EqRequestForChangeSubmitResultChange.eqDocChange(dtoAppGrpPrimaryDocDtos, oldAppGrpPrimaryDocDtos);
-        appEditSelectDto.setDocEdit(docIsChange);
         /*
         * 1.add if migrated -> hci name if no change to 2  ,if change to 0 (premises) first rfc or renew
         * 2. migrated ->premises -> is 0 all to -> 0 . can 2-> 0. but cannot 0->2
@@ -2480,10 +2475,16 @@ public class NewApplicationDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         serviceIsChange = EqRequestForChangeSubmitResultChange.eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-        log.info(StringUtil.changeForLog("serviceIsChange" + serviceIsChange));
+        appEditSelectDto.setDocEdit(docIsChange);
+        appEditSelectDto.setLicenseeEdit(licenseeChange);
         appEditSelectDto.setServiceEdit(serviceIsChange);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        boolean isAutoRfc = appEditSelectDto.isAutoRfc();
+        appSubmissionDto.setAutoRfc(isAutoRfc);
+        // reSet: isNeedNewLicNo and self assessment flag
+        NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+        log.info(StringUtil.changeForLog("App Edit Select Dto: " + JsonUtil.parseToJson(appEditSelectDto)));
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(changeHciName, changeInLocation, changeVehicles, isCharity, changeBusiness);
@@ -2539,7 +2540,6 @@ public class NewApplicationDelegator {
             }
         }
 
-        appSubmissionDto.setAutoRfc(isAutoRfc);
         //judge is the preInspection
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
