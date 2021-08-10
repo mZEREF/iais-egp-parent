@@ -49,7 +49,11 @@ public class SoloEditValidator implements CustomizeValidator {
             return map;
         }
 
-        valCol("postalCode",6,licenseeDto.getPostalCode(),map);
+        boolean postalVal = valCol("postalCode",6,licenseeDto.getPostalCode(),map);
+        if( !postalVal && !CommonValidator.isValidePostalCode(licenseeDto.getPostalCode())){
+            map.put("postalCode", MessageUtil.getMessageDesc("NEW_ERR0004"));
+        }
+
         valCol("addrType",10,licenseeDto.getAddrType(),map);
         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(licenseeDto.getAddrType())) {
             String blkNo = licenseeDto.getBlkNo();
@@ -74,8 +78,7 @@ public class SoloEditValidator implements CustomizeValidator {
     }
 
     private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map){
-        valCol(showEorArea, maxLength, code, map,true);
-        return false;
+        return valCol(showEorArea, maxLength, code, map,true);
     }
 
     private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map,boolean needVerEmpty){

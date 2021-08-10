@@ -49,6 +49,9 @@
                                                              field="HCI_ADDRESS"
                                                              value="HCI Address"/>
                                         <iais:sortableHeader needSort="false"
+                                                             field="UEN_NO"
+                                                             value="UEN"/>
+                                        <iais:sortableHeader needSort="false"
                                                              field="LICENSEE_NAME"
                                                              value="Licensee Name"/>
                                         <iais:sortableHeader needSort="false"
@@ -178,6 +181,8 @@
                                                             </c:choose>
                                                         </c:if>
                                                     </td>
+                                                    <td><c:out
+                                                            value="${pool.uenNo}"/></td>
                                                     <td><c:out
                                                             value="${pool.licenseeName}"/></td>
                                                     <td><c:if test="${pool.appCorrId==null}">${pool.serviceName}</c:if>

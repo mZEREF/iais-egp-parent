@@ -47,7 +47,12 @@
             : ${businessDto.premAddress}
           </div>
           <span class="col-xs-6"></span>
-          <table  class="col-xs-12">
+          <table  class="col-xs-12" aria-describedby="">
+            <thead style="display: none">
+              <tr>
+                <th scope="col"></th>
+              </tr>
+            </thead>
             <tr>
               <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>

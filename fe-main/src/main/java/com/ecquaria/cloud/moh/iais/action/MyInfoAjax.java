@@ -87,6 +87,8 @@ public class MyInfoAjax {
 			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
 			return ;
 		}
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
+		ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
 		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
 		nric = getNric(nric, request);
 		if(StringUtil.isNotEmpty(nric)){

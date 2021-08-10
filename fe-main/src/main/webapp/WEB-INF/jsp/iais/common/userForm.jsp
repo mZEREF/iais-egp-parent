@@ -1,7 +1,7 @@
 <iais:row>
     <iais:field value="Name" width="11" required="true"/>
     <iais:value width="11">
-        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
+        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
             <span class="error-msg" name="errorMsg" id="error_displayName"></span>
     </iais:value>
 </iais:row>
