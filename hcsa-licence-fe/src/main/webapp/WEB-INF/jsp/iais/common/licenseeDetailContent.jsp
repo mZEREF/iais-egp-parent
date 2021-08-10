@@ -9,7 +9,8 @@
   <iais:row cssClass="ind-no ${dto.licenseeType == individualType ? '' : 'hidden'}">
     <iais:field width="5" mandatory="true" value="ID No."/>
     <iais:value width="3">
-      <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${dto.idType}" />
+      <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${dto.idType}"
+                   cssClass="idTypeSel"/>
     </iais:value>
     <iais:value width="3">
       <iais:input maxLength="9" type="text" name="idNumber" value="${dto.idNumber}" />
