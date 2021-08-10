@@ -67,7 +67,8 @@ public class MyinfoUtil {
 	public static final  String SOLO_DTO_SEESION = "myinfo_solo_dto_seesion";
 	public static final  String SOLO_DTO_SEESION_ACTION = "saveSoleAction";
 	public static final  String MYINFO_TRANSFER_CALL_BACK = "myinfo_transfer_call_back";
-
+	public static final  String SINGPASS_LOGIN                = "myinfo_sinpass_login_evaluate";
+	public static final  String NO_GET_NAME_SHOW_NAME           = "-";
 	/**
      * Retrieves Person data from MyInfo
      *
