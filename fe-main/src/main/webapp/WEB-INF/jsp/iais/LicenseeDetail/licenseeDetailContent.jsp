@@ -51,7 +51,12 @@
   </iais:row>
 
   <iais:row>
+    <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
     <iais:field value="Email Address" mandatory="true" width="11"/>
+    </c:if>
+    <c:if test="${empty myinfo_sinpass_login_evaluate}">
+      <iais:field value="Email" mandatory="true" width="11"/>
+    </c:if>
     <iais:value width="11">
       <iais:input type="text" name="emailAddr" maxLength="320" value="${licensee.emilAddr}"/>
     </iais:value>
