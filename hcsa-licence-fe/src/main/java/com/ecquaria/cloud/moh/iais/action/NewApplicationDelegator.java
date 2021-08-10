@@ -471,6 +471,16 @@ public class NewApplicationDelegator {
                 dto.setAssignSelect(assignSelect);
                 dto.setLicenseeType(licenseeType);
             }
+            if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(dto.getLicenseeType())) {
+                Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) request.getSession().getAttribute(
+                        LICENSEE_MAP);
+                Optional<SubLicenseeDto> optional = Optional.ofNullable(licenseeMap).map(map -> map.get(assignSelect));
+                if (optional.isPresent()) {
+                    SubLicenseeDto selectedDto = optional.get();
+                    dto.setIdType(selectedDto.getIdType());
+                    dto.setIdNumber(selectedDto.getIdNumber());
+                }
+            }
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
                 dto.setOrgId(loginContext.getOrgId());
