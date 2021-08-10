@@ -305,10 +305,11 @@ public class InspectionMergeSendNcEmailDelegator {
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
-                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+                    String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||observation!=null)){
                         String[] observations=new String[]{};
-                        if(appPreRecommentdationDto.getRemarks()!=null){
-                            observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        if(observation!=null){
+                            observations=observation.split("\n");
                         }
                         String[] recommendations=new String[]{};
                         if(appPreRecommentdationDto.getBestPractice()!=null){
