@@ -8,20 +8,21 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Paths;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Map;
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author yichen
@@ -62,7 +63,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(Paths.get(optHtmlName)), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
@@ -91,7 +92,7 @@ public class PDFGenerator {
 			}
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(Paths.get(optHtmlName)), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

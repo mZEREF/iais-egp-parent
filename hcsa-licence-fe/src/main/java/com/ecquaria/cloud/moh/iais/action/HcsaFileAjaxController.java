@@ -102,7 +102,7 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        if(selectedFile != null && selectedFile.getOriginalFilename()!=null) {
+        if(selectedFile != null && selectedFile.getOriginalFilename() != null) {
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
@@ -147,8 +147,9 @@ public class HcsaFileAjaxController {
         }
 
         //name
-        if(selectedFile.getOriginalFilename()!=null) {
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+        String orginName = selectedFile.getOriginalFilename();
+        if(orginName != null) {
+            String[] fileSplit = orginName.split("\\.");
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
             if (fileName.length() > 100) {
                 return MessageUtil.getMessageDesc("GENERAL_ERR0022");
