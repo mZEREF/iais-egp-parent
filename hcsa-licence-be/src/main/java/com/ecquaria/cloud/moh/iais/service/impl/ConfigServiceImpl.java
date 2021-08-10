@@ -125,7 +125,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private static List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private static volatile List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
     private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
 
@@ -1076,16 +1076,15 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private  List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if(hcsaServiceCatgoryDtos!=null){
-            return hcsaServiceCatgoryDtos;
-        }
-        synchronized (this){
-            if (hcsaServiceCatgoryDtos == null) {
-                //this config cannot change,so need init once
-                hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+        if (hcsaServiceCatgoryDtos == null) {
+            synchronized (this){
+                if (hcsaServiceCatgoryDtos == null) {
+                    //this config cannot change,so need init once
+                    hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+                }
             }
-            return hcsaServiceCatgoryDtos;
         }
+        return hcsaServiceCatgoryDtos;
     }
 
     @Override

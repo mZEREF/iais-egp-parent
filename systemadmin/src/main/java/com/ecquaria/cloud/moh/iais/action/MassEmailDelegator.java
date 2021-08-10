@@ -337,7 +337,7 @@ public class MassEmailDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
         ParamUtil.setRequestAttr(bpc.request,"distribution",distributionListWebDto);
-        ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
+        ParamUtil.setRequestAttr(bpc.request,"fileName",file != null ? file.getOriginalFilename() : null);
         setServiceSelect(bpc);
         setModeSelection(bpc);
         if(!StringUtil.isEmpty(distributionListWebDto.getService())){

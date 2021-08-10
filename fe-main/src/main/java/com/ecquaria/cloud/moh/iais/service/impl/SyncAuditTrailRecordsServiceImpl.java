@@ -25,12 +25,12 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -110,7 +110,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = new FileOutputStream(MiscUtil.generateFile(sharedOutPath,file.getName()));
+        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(Paths.get(sharedOutPath,file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -138,7 +138,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(MiscUtil.generateFile(sharedOutPath, l+ AppServicesConsts.ZIP_NAME));
+        try (OutputStream is=java.nio.file.Files.newOutputStream(Paths.get(sharedOutPath, l+ AppServicesConsts.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
