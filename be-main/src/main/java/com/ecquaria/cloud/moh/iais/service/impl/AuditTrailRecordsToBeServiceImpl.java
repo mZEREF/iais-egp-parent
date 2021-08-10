@@ -21,8 +21,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -94,7 +92,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                         log.info(StringUtil.changeForLog(name));
                         if (name.endsWith(RequestForInformationConstants.ZIP_NAME)) {
                             try {
-                                try (InputStream is = new FileInputStream(fil);
+                                try (InputStream is = java.nio.file.Files.newInputStream(fil.toPath());
                                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                                     int count;
                                     byte [] size=new byte[1024];
@@ -154,7 +152,8 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName()));
+                File outF = MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName());
+                os= java.nio.file.Files.newOutputStream(outF.toPath());
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
