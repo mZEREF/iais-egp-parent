@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
@@ -14,7 +17,6 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
 
 /**
  * @author weilu
@@ -143,6 +147,14 @@ public class PaymentServiceImpl implements PaymentService {
                 restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, String.class);
         log.info(StringUtil.changeForLog("S2S response status : " + response.getStatusCodeValue()));
         String stringBody = response.getBody();
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setModule("Payment");
+        auditTrailDto.setFunctionName("enets Retrieve Payment");
+        auditTrailDto.setBeforeAction(soapiToGW);
+        auditTrailDto.setAfterAction(response.getBody());
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
         String hmacResponseFromGW = response.getHeaders().getFirst("hmac");
         String hmacForResponseGenerated = PaymentNetsProxy.generateSignature(stringBody,
                 secretKey);

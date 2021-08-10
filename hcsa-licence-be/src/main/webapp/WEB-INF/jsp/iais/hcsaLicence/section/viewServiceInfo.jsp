@@ -28,7 +28,23 @@
       <div class="amend-preview-info">
         <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
           <div class="col-xs-12">
-            <strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}
+            <strong >
+              <c:choose>
+                <c:when test="${'ONSITE' == businessDto.premType}">
+                  <c:out value="Premises"/>
+                </c:when>
+                <c:when test="${'CONVEYANCE' == businessDto.premType}">
+                  <c:out value="Conveyance"/>
+                </c:when>
+                <c:when test="${'OFFSITE'  == businessDto.premType}">
+                  <c:out value="Off-site"/>
+                </c:when>
+                <c:when test="${'EASMTS'  == businessDto.premType}">
+                  <c:out value="Conveyance"/>
+                </c:when>
+              </c:choose>
+            </strong>
+            : ${businessDto.premAddress}
           </div>
           <span class="col-xs-6"></span>
           <table  class="col-xs-12">

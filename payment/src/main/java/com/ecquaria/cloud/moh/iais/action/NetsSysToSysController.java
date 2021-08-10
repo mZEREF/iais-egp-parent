@@ -9,10 +9,13 @@ import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -138,6 +141,13 @@ public class NetsSysToSysController {
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            auditTrailDto.setModule("Payment");
+            auditTrailDto.setFunctionName("payNow Call Back");
+            auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             RedirectUtil.redirect(url, request, response);
 
         }
