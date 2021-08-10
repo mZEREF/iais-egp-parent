@@ -1681,10 +1681,6 @@ public class LicenceViewServiceDelegator {
                 List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(k);
                 if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
                     AppSvcDocDto appSvcDocDto = appSvcDocDtos.get(0);
-                    //String personType = appSvcDocDto.getPersonType();
-//                    if(StringUtil.isEmpty(personType)){
-//                        personType = k.substring(0,k.indexOf(":"));
-//                    }
                    String  personType = k.substring(0,k.indexOf(':'));
                     log.info(StringUtil.changeForLog("The translateForShow personType is -->:"+personType));
                     Integer num = nums.get(personType);
@@ -1747,7 +1743,8 @@ public class LicenceViewServiceDelegator {
             } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
                 result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1:Service Personnel " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Service Personnel " + num
+                        + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
                 result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
             }

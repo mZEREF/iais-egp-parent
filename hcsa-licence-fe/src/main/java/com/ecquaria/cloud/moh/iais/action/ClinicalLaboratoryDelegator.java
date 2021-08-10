@@ -86,6 +86,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -242,6 +243,79 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
 
+    /**
+     * Process: MohServiceRelatedInformation
+     * Step: PrepareStepData
+     * @param bpc
+     */
+    public void prepareStepData(BaseProcessClass bpc) {
+        ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
+                ShowServiceFormsDelegator.SERVICESTEPDTO);
+        HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
+                .map(ServiceStepDto::getCurrentStep)
+                .orElseGet(HcsaServiceStepSchemeDto::new);
+        String currentStepName = Optional.ofNullable(step)
+                .map(HcsaServiceStepSchemeDto::getStepName)
+                .orElseGet(() -> HcsaConsts.BUSINESS_NAME);
+        log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " Start ---"));
+        String currentStep = Optional.ofNullable(step)
+                .map(HcsaServiceStepSchemeDto::getStepCode)
+                .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+        if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
+            prepareBusiness(bpc);
+        } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
+            prePareVehicles(bpc);
+        } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+            prePareClinicalDirector(bpc);
+        } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+            // Section Leader
+        } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+            // Key Appointment Holder
+        } else {
+            log.warn(StringUtil.changeForLog("Wrong Step!!!"));
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, "currentStep", currentStep);
+        log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " End ---"));
+    }
+
+    /**
+     * Process: MohServiceRelatedInformation
+     * Step: DoStep
+     * @param bpc
+     */
+    public void doStep(BaseProcessClass bpc) {
+        ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
+                ShowServiceFormsDelegator.SERVICESTEPDTO);
+        HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
+                .map(ServiceStepDto::getCurrentStep)
+                .orElseGet(HcsaServiceStepSchemeDto::new);
+        String currentStepName = Optional.ofNullable(step)
+                .map(HcsaServiceStepSchemeDto::getStepName)
+                .orElseGet(() -> HcsaConsts.BUSINESS_NAME);
+        log.info(StringUtil.changeForLog("--- Do " + currentStepName + " Start ---"));
+        String currentStep = Optional.ofNullable(step)
+                .map(HcsaServiceStepSchemeDto::getStepCode)
+                .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+        String pageStep = ParamUtil.getString(bpc.request, "currentStep");
+        if (currentStep.equals(pageStep)) {
+            log.warn(StringUtil.changeForLog("Wrong page step - " + pageStep));
+        }
+        if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
+            doBusiness(bpc);
+        } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
+            doVehicles(bpc);
+        } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+            doClinicalDirector(bpc);
+        } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+            // Section Leader
+        } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+            // Key Appointment Holder
+        } else {
+            log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
+        }
+        log.info(StringUtil.changeForLog("--- Do " + currentStepName + " End ---"));
+    }
 
     /**
      * StartStep: prepareLaboratoryDisciplines

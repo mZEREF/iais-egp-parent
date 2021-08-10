@@ -363,12 +363,14 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-SectionLeader" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <iais:input type="hidden" name="secldrId" value="${SECLDR.id}"/>
+            <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount9"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-SectionLeader" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount9"></span>
           </div>
         </div>
@@ -378,12 +380,14 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-KAH" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
+            <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount10"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-KAH" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount10"></span>
           </div>
         </div>
