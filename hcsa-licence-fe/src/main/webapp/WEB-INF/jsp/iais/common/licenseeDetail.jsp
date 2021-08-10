@@ -62,7 +62,11 @@
             assignSelect(this, $(this).closest('div.licenseeContent').find('div.licensee-detail'));
         });
         $('#edit').on('click', editContent);
-        $('#licenseeType').change(checkLicenseeType);
+        $('#licenseeType').on('change', function() {
+            clearErrorMsg();
+            clearFields('.licensee-detail');
+            checkLicenseeType();
+        });
         $('#addrType').on('change', checkAddressManatory);
         $('.retrieveAddr').click(function() {
             var $postalCodeEle = $(this).closest('div.postalCodeDiv');
