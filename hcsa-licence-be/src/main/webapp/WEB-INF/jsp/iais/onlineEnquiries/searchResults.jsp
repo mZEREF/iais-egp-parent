@@ -182,7 +182,7 @@
                                                         </c:if>
                                                     </td>
                                                     <td><c:out
-                                                            value="${pool.uenNo}"/></td>
+                                                            value="${pool.uen}"/></td>
                                                     <td><c:out
                                                             value="${pool.licenseeName}"/></td>
                                                     <td><c:if test="${pool.appCorrId==null}">${pool.serviceName}</c:if>
