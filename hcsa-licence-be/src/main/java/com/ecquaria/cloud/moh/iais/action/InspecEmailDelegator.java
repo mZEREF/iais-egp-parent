@@ -264,13 +264,13 @@ public class InspecEmailDelegator {
                 }
                 mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             }
-
+            String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
             //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
-            if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+            if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||observation!=null)){
                 int sn=1;
                 String[] observations=new String[]{};
-                if(appPreRecommentdationDto.getRemarks()!=null){
-                    observations=appPreRecommentdationDto.getRemarks().split("\n");
+                if(observation!=null){
+                    observations=observation.split("\n");
                 }
                 String[] recommendations=new String[]{};
                 if(appPreRecommentdationDto.getBestPractice()!=null){
