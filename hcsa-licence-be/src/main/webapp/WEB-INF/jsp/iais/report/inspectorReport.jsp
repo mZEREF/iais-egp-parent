@@ -281,10 +281,10 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>&nbsp;Observation</p>
+                                <p>Observation</p>
                             </td>
                             <td class="col-xs-4">
-                                <p>&nbsp;${insRepDto.observation}</p>
+                                <p>${insRepDto.observation}</p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
