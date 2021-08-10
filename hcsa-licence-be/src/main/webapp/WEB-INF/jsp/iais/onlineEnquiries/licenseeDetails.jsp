@@ -13,11 +13,11 @@
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Licensee Type</td>
-                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.licenseeType}"/></td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${organizationLicDto.licenseeDto.licenseeType}"/></td>
                     </tr>
                     <tr>
                         <td align="right">UEN</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.uenNo}<c:if test="${empty subLicenseeDto.uenNo}">-</c:if></td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.uenNo}<c:if test="${empty organizationLicDto.licenseeDto.uenNo}">-</c:if></td>
                     </tr>
                     <tr>
                         <td align="right">Are you registered with ACRA/ROS</td>
@@ -78,7 +78,7 @@
     </div>
 </div>
 
-<c:if test="${  organizationLicDto.licenseeDto.licenseeType=='LICT001'}">
+<c:if test="${  organizationLicDto.licenseeDto.licenseeType=='Company'}">
     <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
         <div class="panel panel-default">
             <div class="panel-heading"><strong>Board Members</strong></div>
@@ -186,7 +186,7 @@
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Name</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.licenseeName}<c:if test="${empty subLicenseeDto.licenseeName}">-</c:if></td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.name}<c:if test="${empty organizationLicDto.licenseeDto.name}">-</c:if></td>
                     </tr>
                     <tr>
                         <td align="right">Salutation</td>
@@ -194,7 +194,89 @@
                     </tr>
                     <tr>
                         <td align="right">ID Type</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.idType}<c:if test="${empty subLicenseeDto.idType}">-</c:if></td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.idType}<c:if test="${empty organizationLicDto.licenseeDto.idType}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">ID No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.idNo}<c:if test="${empty organizationLicDto.licenseeDto.idNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Postal Code</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.postalCode}<c:if test="${empty organizationLicDto.licenseeDto.postalCode}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Address Type</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.addrType}<c:if test="${empty organizationLicDto.licenseeDto.addrType}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Block No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.blkNo}<c:if test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Floor No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.floorNo}<c:if test="${empty organizationLicDto.licenseeDto.floorNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Unit No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.unitNo}<c:if test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
+                    </tr><tr>
+                        <td align="right">Street Name</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.streetName}<c:if test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Building Name</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.buildingName}<c:if test="${empty organizationLicDto.licenseeDto.buildingName}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Mobile No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeIndividualDto.mobileNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.mobileNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Office Telephone No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.officeTelNo}<c:if test="${empty organizationLicDto.licenseeDto.officeTelNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Email Address</td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><c:out value="${organizationLicDto.licenseeDto.officeEmailAddr}"/><c:if test="${empty organizationLicDto.licenseeDto.officeEmailAddr}">-</c:if></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>Licensee</strong></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-gp">
+                <table aria-describedby="" class="table table-bordered">
+                    <thead style="display: none">
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td align="right">Licensee Type</td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.licenseeType}"/><c:if test="${empty subLicenseeDto.licenseeType}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">UEN</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.uenNo}<c:if test="${empty subLicenseeDto.uenNo}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td class="col-xs-6" align="right">Name</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.licenseeName}<c:if test="${empty subLicenseeDto.licenseeName}">-</c:if></td>
+                    </tr>
+                    <tr>
+                        <td align="right">Salutation</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">-</td>
+                    </tr>
+                    <tr>
+                        <td align="right">ID Type</td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.idType}"/><c:if test="${empty subLicenseeDto.idType}">-</c:if></td>
                     </tr>
                     <tr>
                         <td align="right">ID No</td>
@@ -206,7 +288,7 @@
                     </tr>
                     <tr>
                         <td align="right">Address Type</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.addrType}<c:if test="${empty subLicenseeDto.addrType}">-</c:if></td>
+                        <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${subLicenseeDto.addrType}"/><c:if test="${empty subLicenseeDto.addrType}">-</c:if></td>
                     </tr>
                     <tr>
                         <td align="right">Block No</td>
@@ -229,7 +311,7 @@
                     </tr>
                     <tr>
                         <td align="right">Mobile No</td>
-                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeIndividualDto.mobileNo}<c:if test="${empty organizationLicDto.licenseeIndividualDto.mobileNo}">-</c:if></td>
+                        <td class="col-xs-6" style="padding-left: 15px;">-</td>
                     </tr>
                     <tr>
                         <td align="right">Office Telephone No</td>
