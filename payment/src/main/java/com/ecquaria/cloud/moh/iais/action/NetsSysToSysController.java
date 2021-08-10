@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.config.ConfigUtil;
-import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +61,6 @@ public class NetsSysToSysController {
     @Autowired
     private PaymentClient paymentClient;
     public static final Locale LOCALE = new Locale("en", "SG");
-    static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
     @Value("${paynow.qr.expiry.minutes}")
     private int expiryMinutes;
     @Autowired
