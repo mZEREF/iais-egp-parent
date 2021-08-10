@@ -361,6 +361,36 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
+            <input  type="text" name="man-SectionLeader" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount9"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input  type="text" name="mix-SectionLeader" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount9"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
+            <input  type="text" name="man-KAH" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount10"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input  type="text" name="mix-KAH" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount10"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${serviceDocSize}" maxlength="2" name="NumberDocument" maxlength="2">

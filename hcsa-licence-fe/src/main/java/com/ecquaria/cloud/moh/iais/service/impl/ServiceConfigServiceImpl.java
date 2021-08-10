@@ -267,6 +267,8 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     psnTypes.add(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
                 }else if(HcsaConsts.STEP_CHARGES.equals(stepCode)){
                     psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES);
+                }else if(HcsaConsts.STEP_BUSINESS_NAME.equals(stepCode)){
+                    psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES_OTHER);
                 }else if(HcsaConsts.STEP_CHARGES_OTHER.equals(stepCode)){
                     psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES_OTHER);
                 }
