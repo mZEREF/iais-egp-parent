@@ -330,7 +330,7 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Name of HCI " mandatory="true" width="11"/>
+                        <iais:field value="Business Name " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5 disabled">
                             <iais:input cssClass="" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                             <span id="error_hciName${status.index}" name="iaisErrorMsg" class="error-msg"></span>
@@ -879,7 +879,7 @@
             <div class="new-premise-form-conv hidden">
                 <div class="form-horizontal">
                     <iais:row>
-                        <iais:field value="Name of HCI " mandatory="true" width="11"/>
+                        <iais:field value="Business Name " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input cssClass="hciName" maxLength="100" type="text" name="conveyanceHciName" value="${appGrpPremisesDto.conveyanceHciName}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceHciName${status.index}"></span>
@@ -1420,7 +1420,7 @@
             <div class="new-premise-form-off-site hidden">
                 <div class="form-horizontal">
                     <iais:row>
-                        <iais:field value="Name of HCI " mandatory="true" width="11"/>
+                        <iais:field value="Business Name " mandatory="true" width="11"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input cssClass="hciName" maxLength="100" type="text" name="offSiteHciName" value="${appGrpPremisesDto.offSiteHciName}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_offSiteHciName${status.index}"></span>
@@ -1960,7 +1960,7 @@
                 <div class="new-premise-form-eas-mts hidden">
                     <div class="form-horizontal">
                         <iais:row>
-                            <iais:field value="Name of HCI " mandatory="true" width="11"/>
+                            <iais:field value="Business Name " mandatory="true" width="11"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input cssClass="hciName" maxLength="100" type="text" name="easMtsHciName" value="${appGrpPremisesDto.easMtsHciName}"></iais:input>
                                 <span  class="error-msg"  name="iaisErrorMsg" id="error_easMtsHciName${status.index}"></span>
