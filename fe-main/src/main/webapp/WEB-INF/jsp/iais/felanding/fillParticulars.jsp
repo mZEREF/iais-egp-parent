@@ -44,8 +44,14 @@
                                 <div class="col-xs-12">
                                     <h2>Authorised Person Particulars Form</h2>
                                         <div class="form-horizontal">
-                                            <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                            <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+                                                <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                                <c:set var="licensee" value="${myinfo_solo_dto_seesion}"/>
+                                                <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
+                                            </c:if>
+                                            <c:if test="${empty myinfo_sinpass_login_evaluate}">
                                                 <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
@@ -88,4 +94,21 @@
             callAuthoriseApi();
         }
     }
+
+    $('#addrType').on('change',checkAddressManatory);
+
+    function checkAddressManatory() {
+        var addrType = $('#addrType').val();
+        if ('ADDTY001' == addrType) {
+            $('.blkNoLabel').append('<span class="mandatory">*</span>');
+            $('.floorUnitLabel').append('<span class="mandatory">*</span>');
+        } else {
+            $('.blkNoLabel .mandatory').remove();
+            $('.floorUnitLabel .mandatory').remove();
+        }
+    }
+
+    $(document).ready(function() {
+        checkAddressManatory();
+    });
 </script>
