@@ -125,11 +125,20 @@ public class AuditTrailDelegator {
 
     private AuditLogDetailView generateViewDetail(AuditTrailDto atd) {
         AuditLogDetailView view = new AuditLogDetailView();
-        if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
-            view.setBeforeChange(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
-        }
-        if (StringUtil.isNotEmpty(atd.getAfterAction())) {
-            view.setAfterChange(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+        if(atd.getOperation()==AuditTrailConsts.OPERATION_FOREIGN_INTERFACE){
+            if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
+                view.setRequest(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
+            }
+            if (StringUtil.isNotEmpty(atd.getAfterAction())) {
+                view.setResponse(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+            }
+        }else {
+            if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
+                view.setBeforeChange(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
+            }
+            if (StringUtil.isNotEmpty(atd.getAfterAction())) {
+                view.setAfterChange(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+            }
         }
         if (StringUtil.isNotEmpty(atd.getViewParams())) {
             view.setSearchParam(auditTrailService.genAuditLogRecList(atd.getViewParams()));
