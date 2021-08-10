@@ -1695,7 +1695,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   footer.footerlogin .footer-link ul li a {
     position: relative;
     font-size: 11px;
-    position: relative;
   }
   footer.footerlogin .footer-link ul li a:before {
     content: none;
