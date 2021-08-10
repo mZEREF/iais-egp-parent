@@ -18,7 +18,24 @@
                 <div class="col-xs-12">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" var="businessDto" varStatus="status">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}</p>
+                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                <strong >
+                                    <c:choose>
+                                        <c:when test="${'ONSITE' == businessDto.premType}">
+                                            <c:out value="Premises"/>
+                                        </c:when>
+                                        <c:when test="${'CONVEYANCE' == businessDto.premType}">
+                                            <c:out value="Conveyance"/>
+                                        </c:when>
+                                        <c:when test="${'OFFSITE'  == businessDto.premType}">
+                                            <c:out value="Off-site"/>
+                                        </c:when>
+                                        <c:when test="${'EASMTS'  == businessDto.premType}">
+                                            <c:out value="Conveyance"/>
+                                        </c:when>
+                                    </c:choose>
+                                </strong>
+                                : ${businessDto.premAddress}</p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
                             <thead style="display: none">
