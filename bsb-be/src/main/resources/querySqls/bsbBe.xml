@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="bsbBe">
+    <sql key = "queryApplicationInfo" remarks = "query ApplicationInfo sql">
+        <![CDATA[
+            select app.ID,app.APPLICATION_NO,app.APP_TYPE,app.STATUS,app.APPLICATION_DT,app.APPROVAL_DATE,fac.FACILITY_CLASSIFICATION,fac.FACILITY_TYPE,fac.FACILITY_NAME,bio.NAME,bio.RISK_LEVEL,app.PROCESS_TYPE,app.DO_VERIFIED_DT,app.AO_VERIFIED_DT,app.HM_VERIFIED_DT
+            from bsb_facility fac
+            join bsb_application app on fac.id = app.FACILITY_ID
+            join biological bio on fac.BIOLOGICAL_ID = bio.ID
+            where 1= 1
+            <#if applicationNo??> AND CHARINDEX(:applicationNo, app.APPLICATION_NO) >0</#if>
+            <#if applicationType??> AND APP_TYPE = :applicationType</#if>
+            <#if applicationStatus??> AND STATUS = :applicationStatus</#if>
+            <#if applicationSubmissionDateFrom??> AND app.APPLICATION_DT >= convert(date,:applicationSubmissionDateFrom)</#if>
+            <#if applicationSubmissionDateTo??> AND app.APPLICATION_DT <= convert(date,:applicationSubmissionDateTo)</#if>
+            <#if approvalDateFrom??> AND app.APPROVAL_DATE >= convert(date,:approvalDateFrom)</#if>
+            <#if approvalDateTo??> AND app.APPROVAL_DATE <= convert(date,:approvalDateTo)</#if>
+            <#if facilityClassification??> AND fac.FACILITY_CLASSIFICATION = :facilityClassification</#if>
+            <#if facilityType??> AND fac.FACILITY_TYPE = :facilityType</#if>
+            <#if facilityName??> AND fac.FACILITY_NAME = :facilityName</#if>
+            <#if scheduleType??> AND fac.SCHEDULE_TYPE = :scheduleType</#if>
+            <#if riskLevelOfTheBiologicalAgent??> AND bio.NAME = :riskLevelOfTheBiologicalAgent</#if>
+        ]]>
+    </sql>
+
+    <sql key = "queryFacilityInfo" remarks = "query FacilityInfo sql">
+        <![CDATA[
+           select distinct f.ID,FACILITY_NAME,
+            concat(BLK_NO ,
+                '/',
+                case f.STREET_NAME
+                  when null then null
+                  when '' then null
+              else ''+ f.STREET_NAME end
+               , case f.FLOOR_NO
+                  when null then null
+                  when '' then null
+              else ' # '+f.FLOOR_NO end
+               , case f.UNIT_NO
+                  when null then null
+                  when '' then null
+              else '-'+f.UNIT_NO end
+               , case f.postal_code
+                  when null then null
+                  when '' then null
+              else ', '+f.POSTAL_CODE end
+              ) as ADDRESS,
+           FACILITY_CLASSIFICATION,FACILITY_TYPE,SCHEDULE_TYPE,b.NAME,b.RISK_LEVEL
+           ,EXPIRYED_DT,IS_PROTECTED,OPERATOR_NAME ,fad.ADMIN_NAME,f.APPROVAL_STATUS,f.APPROVAL
+           from bsb_facility f
+           left join biological b on f.BIOLOGICAL_ID = b.ID
+           left join facility_admin fad on fad.FACILITY_ID = f.ID
+           left join facility_authoriser fau on fau.FACILITY_ID = f.ID
+           left join facility_biosafety_committee fbc on fbc.FACILITY_ID = f.ID
+           where 1=1
+             <#if facilityType??> AND f.FACILITY_TYPE in (:facilityType)</#if>
+            <#if facilityName??> AND f.FACILITY_NAME = :facilityName</#if>
+            <#if facilityClassification??> AND f.FACILITY_CLASSIFICATION = :facilityClassification</#if>
+            <#if scheduleType??> AND f.SCHEDULE_TYPE = :scheduleType</#if>
+            <#if riskLevelOfTheBiologicalAgent??> AND b.NAME = :riskLevelOfTheBiologicalAgent</#if>
+            <#if facilityExpiryDateFrom??> AND f.EXPIRYED_DT >= convert(date,:facilityExpiryDateFrom)</#if>
+            <#if facilityExpiryDateTo??> AND f.EXPIRYED_DT <= convert(date,:facilityExpiryDateTo)</#if>
+            <#if gazettedArea??> AND f.IS_PROTECTED = :gazettedArea</#if>
+            <#if facilityOperator??> AND f.OPERATOR_NAME = :facilityOperator</#if>
+            <#if facilityAdmin??> AND fad.ADMIN_NAME = :facilityAdmin</#if>
+            <#if authorisedPersonnelWorkingInFacility??> AND fau.NAME = :authorisedPersonnelWorkingInFacility</#if>
+            <#if biosafetyCommitteePersonnel??> AND fbc.NAME = :biosafetyCommitteePersonnel</#if>
+            <#if facilityStatus??> AND f.APPROVAL_STATUS = :facilityStatus</#if>
+        ]]>
+    </sql>
+
+    <sql key = "AOQueryApplication" remarks = "AO query ApplicationInfo sql">
+        <![CDATA[
+            select app.ID,fac.ID FACILITYID,app.APPLICATION_NO,app.APP_TYPE,app.PROCESS_TYPE,app.STATUS,app.APPLICATION_DT,app.APPROVAL_DATE,fac.FACILITY_CLASSIFICATION,fac.APPROVAL_STATUS,fac.FACILITY_TYPE,fac.FACILITY_NAME,fac.POSTAL_CODE,fac.BLK_NO,fac.FLOOR_NO,fac.UNIT_NO,fac.STREET_NAME,bio.NAME,appmisc.REASON,appmisc.REASON_CONTENT,appmisc.REMARKS,app.CREATED_BY,app.CREATED_DT,app.UPDATED_BY,app.UPDATED_DT
+            from bsb_facility fac
+            join bsb_application app on fac.id = app.FACILITY_ID
+            join biological bio on fac.BIOLOGICAL_ID = bio.ID
+            join bsb_application_misc appmisc on app.ID = appmisc.APPLICATION_ID
+            <#if applicationNo??> AND CHARINDEX(:applicationNo, app.APPLICATION_NO) >0</#if>
+            <#if applicationType??> AND app.APP_TYPE = :applicationType</#if>
+            <#if applicationStatus??> AND app.STATUS = :applicationStatus</#if>
+            <#if applicationDate??> AND app.APPLICATION_DT = :applicationDate</#if>
+            <#if facilityClassification??> AND fac.FACILITY_CLASSIFICATION = :facilityClassification</#if>
+            <#if facilityType??> AND fac.FACILITY_TYPE = :facilityType</#if>
+            <#if facilityName??> AND CHARINDEX(:facilityName, fac.FACILITY_NAME) >0</#if>
+            <#if processType??> AND app.PROCESS_TYPE = :processType</#if>
+            <#if blockNo??> AND fac.BLK_NO = :blockNo</#if>
+            <#if streetName??> AND fac.STREET_NAME = :streetName</#if>
+            <#if floorNo??> AND fac.FLOOR_NO = :floorNo</#if>
+            <#if unitNo??> AND fac.UNIT_NO = :unitNo</#if>
+            <#if postalCode??> AND fac.POSTAL_CODE = :postalCode</#if>
+        ]]>
+    </sql>
+
+</sqls>
+
+
