@@ -38,7 +38,6 @@ public class LicencePrint {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        File pdfZipFile = new File("LICENCE.zip");
         byte[] buf = new byte[1024];
         List<File> pdfFileList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(ids)){

@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -30,9 +29,12 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.nio.file.Files.newInputStream;
 
 /**
  * FileUtil.java
@@ -157,7 +159,7 @@ public class FileUtil {
 		File f= MiscUtil.generateFile(fileName);
 		if (f.exists() && f.isFile()) {
 			String xml;
-			try(InputStream is = new FileInputStream(f)) {
+			try(InputStream is = newInputStream(Paths.get(fileName))) {
 				xml = getString(is);
 				if (!f.delete()) {
 					log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
@@ -243,7 +245,7 @@ public class FileUtil {
 		try {
 			int byteread = 0;
 			if (source.exists()) {
-				inStream = Files.newInputStream(source.toPath());
+				inStream = newInputStream(source.toPath());
 				fs =  Files.newOutputStream(target.toPath());
 				byte[] buffer = new byte[1444];
 				while ((byteread = inStream.read(buffer)) != -1) {
@@ -280,7 +282,7 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			try(InputStream fis = new FileInputStream(MiscUtil.generateFile(fileName))) {
+			try(InputStream fis = newInputStream(Paths.get(fileName))) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){

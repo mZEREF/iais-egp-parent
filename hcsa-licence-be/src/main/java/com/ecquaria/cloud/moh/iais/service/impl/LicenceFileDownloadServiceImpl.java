@@ -79,21 +79,15 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -108,6 +102,12 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newOutputStream;
 
 
 /**
@@ -203,7 +203,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String name = file.getName();
                     String path = file.getPath();
                     log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
-                    try (InputStream is = new FileInputStream(file);
+                    try (InputStream is = java.nio.file.Files.newInputStream(Paths.get(inFolder , v.getFileName()));
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];
@@ -447,7 +447,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                     log.info(StringUtil.changeForLog(file.getPath()+"-----zipFile---------"));
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
-                    os=new FileOutputStream(MiscUtil.generateFile(s));
+                    os= newOutputStream(Paths.get(s));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -1101,8 +1101,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void  moveFile(File file){
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
-        File moveFile=MiscUtil.generateFile(sharedPath+File.separator+"move",name);
-        try (OutputStream fileOutputStream=new FileOutputStream(moveFile);
+        try (OutputStream fileOutputStream = newOutputStream(Paths.get(sharedPath+File.separator+"move",name));
              InputStream fileInputStream=Files.newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];

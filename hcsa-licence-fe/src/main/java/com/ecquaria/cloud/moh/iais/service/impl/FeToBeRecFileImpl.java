@@ -27,11 +27,11 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author Shicheng
@@ -150,11 +152,11 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
             if(!backupsFile.exists()){
                 boolean fileStatus2 = backupsFile.createNewFile();
                 if(fileStatus2) {
-                    fileOutputStream2 = Files.newOutputStream(backupsFile.toPath());
+                    fileOutputStream2 = newOutputStream(backupsFile.toPath());
                     fileOutputStream2.write(fileByte);
                 }
             } else {
-                fileOutputStream2 = Files.newOutputStream(backupsFile.toPath());
+                fileOutputStream2 = newOutputStream(backupsFile.toPath());
                 fileOutputStream2.write(fileByte);
             }
 
@@ -175,7 +177,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String compress(String fileId){
         long l = System.currentTimeMillis();
-        try (OutputStream is =  new FileOutputStream(MiscUtil.generateFile(getOutFolder() , l + ".zip"));
+        try (OutputStream is =  newOutputStream(Paths.get(getOutFolder() , l + ".zip"));
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
