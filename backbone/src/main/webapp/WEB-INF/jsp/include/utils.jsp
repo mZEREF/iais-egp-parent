@@ -110,7 +110,7 @@
         }
 
         const strToObj = JSON.parse(str)
-        let doStartTag = "<table width = \"50%\" border = \"1\">".concat("<thead>").concat("<tr>").concat("<th scope="col" >Field</th>").concat("<th scope="col" >Value</th>").concat("</tr>")
+        let doStartTag = "<table width = \"50%\" border = \"1\">".concat("<thead>").concat("<tr>").concat("<th scope=\"col\" >Field</th>").concat("<th scope=\"col\" >Value</th>").concat("</tr>")
         let doEndTag =  "</thead></table>"
         let jsonToHtmlTable = doStartTag.concat(buildHtmlTable(strToObj)).concat(doEndTag)
         $("#" + id).html(jsonToHtmlTable)
