@@ -142,7 +142,7 @@
                                                                             <thead>
                                                                             <tr>
                                                                                 <th scope="col" style="display: none"></th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
