@@ -38,7 +38,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo,String licenseeId) {
         String easMtsHciName = appGrpPremisesDto.getEasMtsHciName();
         if(StringUtil.isEmpty(easMtsHciName)){
-            map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
+            map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
         }else {
             if(easMtsHciName.length()>100){
                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");

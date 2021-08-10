@@ -89,7 +89,7 @@
                     <div class="clear"></div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
                     <div class="col-sm-7 col-md-5 col-xs-10">
                         <input type="text" id="sitePremiseName" name="onSiteHciName" maxlength="100" autocomplete="off">
                         <span id="error_hciName" name="iaisErrorMsg" class="error-msg"></span>
@@ -401,7 +401,7 @@
         <div class="new-premise-form-conv hidden">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
                     <div class="col-sm-7 col-md-6 col-xs-10 col-md-5">
                         <input type="text" name="conveyanceHciName" class="hciName" maxlength="100" autocomplete="off"><span id="error_conveyanceHciName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
@@ -696,7 +696,7 @@
         <div class="new-premise-form-off-site hidden">
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-xs-11 col-md-4 control-label">Name of HCI <span class="mandatory">*</span></label>
+                    <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
                     <div class="col-sm-7 col-md-6 col-xs-10 col-md-5">
                         <input type="text" name="offSiteHciName" class="hciName" maxlength="100" autocomplete="off"><span id="error_offSiteHciName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
