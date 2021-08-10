@@ -1607,10 +1607,11 @@ public class HcsaApplicationDelegator {
                     //size
                     long size = selectedFile.getSize();
                     appIntranetDocDto.setDocSize(String.valueOf(size / 1024));
-                    if (!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                    String originName = selectedFile.getOriginalFilename();
+                    if (!StringUtil.isEmpty(originName)) {
                         log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
                         //type
-                        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+                        String[] fileSplit = originName.split("\\.");
                         String fileType = fileSplit[fileSplit.length - 1];
                         appIntranetDocDto.setDocType(fileType);
                         //name
