@@ -37,7 +37,7 @@
     <iais:field value="Address Type" mandatory="true" width="5"/>
     <iais:value width="7">
       <iais:select name="addrType" codeCategory="CATE_ID_ADDRESS_TYPE" firstOption="Please Select"
-                   value="${dto.addrType}" />
+                   value="${dto.addrType}" cssClass="addrTypeSel"/>
     </iais:value>
   </iais:row>
   <iais:row cssClass="address">
