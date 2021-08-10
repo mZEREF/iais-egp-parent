@@ -25,7 +25,7 @@
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
                 <iais:value width="7">
-                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" />
+                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" cssClass="assignSel"/>
                 </iais:value>
             </iais:row>
         </c:if>
@@ -37,7 +37,7 @@
             <iais:field width="5" mandatory="true" value="Licensee Type"/>
             <iais:value width="7">
                 <iais:select name="licenseeType" firstOption="Please Select" codeCategory="CATE_ID_LICENSEE_SUB_TYPE"
-                             cssClass="not-disabled" value="${dto.licenseeType}"/>
+                             cssClass="not-disabled licenseeTypeSel" value="${dto.licenseeType}" />
             </iais:value>
         </iais:row>
         <%-- License Detail Content --%>
