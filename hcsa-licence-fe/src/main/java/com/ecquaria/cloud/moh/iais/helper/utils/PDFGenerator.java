@@ -84,7 +84,7 @@ public class PDFGenerator {
 		}
 
 		String optHtmlName = System.currentTimeMillis() + FILE_HTML ;
-		File optHtmlFile = new File(optHtmlName);
+		File optHtmlFile = MiscUtil.generateFile(optHtmlName);
 		if (!optHtmlFile.exists()){
 			boolean flag = optHtmlFile.createNewFile();
 			if (!flag) {
