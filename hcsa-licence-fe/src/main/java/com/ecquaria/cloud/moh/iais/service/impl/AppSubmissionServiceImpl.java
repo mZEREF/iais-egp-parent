@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -2309,7 +2310,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, currSvcInfoDto,dto,
+            Map<String, String> map = doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, currSvcInfoDto,dto,
                     systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             // vehicle
             List<String> appIds = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
@@ -2372,7 +2373,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB,
-            Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
             AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos, int uploadFileLimit, String sysFileType,
             List<AppGrpPremisesDto> appGrpPremisesDtos) {
         String serviceId = dto.getServiceId();
@@ -2382,82 +2383,97 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
             valiatePersonnelCount(dto, psnType, mandatoryCount, sB, errorMap);
         }
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-        Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, dto.getServiceCode());
-        log.info(JsonUtil.parseToJson(map));
-        if (!map.isEmpty()) {
-            sB.append(serviceId);
-            errorMap.put("Medaler", "error");
-        }
-        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
-
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-        doAppSvcCgoDto(hcsaSvcPersonnelDtos, errorMap, appSvcCgoDtoList, serviceId, sB);
-        log.info(sB.toString());
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-        doSvcDis(errorMap, appSvcDisciplineAllocationDtoList, serviceId, sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDis"));
-        dolabory(errorMap,appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
-        log.info(sB.toString());
-        doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDisdolabory"));
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(), licPersonMap, dto.getServiceCode());
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
-        if (!govenMap.isEmpty()) {
-            errorMap.put("CGO", "error");
-            sB.append(serviceId);
-            log.info("govenMap is error");
-        }
-        doPO(hcsaSvcPersonnelDtos, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
-        log.info(sB.toString());
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-        doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos, errorMap, appSvcPersonnelDtoList, serviceId, sB,dto.getServiceCode());
-        log.info(sB.toString());
-        List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
-        doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
-        List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(dto.getServiceId());
-        if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
-            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
-                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    svcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
+        for (HcsaServiceStepSchemeDto step : hcsaServiceStepSchemeDtos) {
+            String currentStep = Optional.ofNullable(step)
+                    .map(HcsaServiceStepSchemeDto::getStepCode)
+                    .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+            if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
+                // business name
+            } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
+                // Vehicles
+                List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+                if (!IaisCommonUtils.isEmpty(dtos)) {
+                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+                        if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
+                            appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                        }
+                    }
+                }
+                validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(), null);
+            } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+                // Clinical Director
+                String currSvcCode = dto.getServiceCode();
+                if (StringUtil.isEmpty(currSvcCode)) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
+                }
+                validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
+            } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
+            } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                doAppSvcCgoDto(currentSvcAllPsnConfig, errorMap, appSvcCgoDtoList, serviceId, sB);
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, dto.getServiceCode());
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
+                if (!govenMap.isEmpty()) {
+                    errorMap.put("CGO", "error");
+                    sB.append(serviceId);
+                    log.info("govenMap is error");
+                }
+            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+                // Section Leader
+            } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                doSvcDis(errorMap, appSvcDisciplineAllocationDtoList, serviceId, sB);
+                dolabory(errorMap,appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
+            } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+                validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
+            } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+                doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
+            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+                // Key Appointment Holder
+            } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,dto.getServiceCode());
+            } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, dto.getServiceCode());
+                log.info(JsonUtil.parseToJson(map));
+                if (!map.isEmpty()) {
+                    sB.append(serviceId);
+                    errorMap.put("Medaler", "error");
+                }
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
+                List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+                doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
+                List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
+                List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
+                List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(dto.getServiceId());
+                if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
+                    for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                        if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                            svcDocConfigDtos.add(hcsaSvcDocConfigDto);
+                        } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                            premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
+                        }
+                    }
+                }
+                Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,dto,svcDocErrMap);
+                if(svcDocErrMap.size() > 0){
+                    sB.append(serviceId);
+                    errorMap.put("svcDoc", "error");
                 }
             }
         }
-        Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
-        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,dto,svcDocErrMap);
-        if(svcDocErrMap.size() > 0){
-            sB.append(serviceId);
-            errorMap.put("svcDoc", "error");
-        }
         log.info(sB.toString());
-        validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
-        // Clinical Director
-        Map<String,String> svcCdErrMap = IaisCommonUtils.genNewHashMap();
-        String currSvcCode = dto.getServiceCode();
-        if (StringUtil.isEmpty(currSvcCode)) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-            currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
-        }
-        validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
-        // Vehicles
-        // List<AppSvcVehicleDto> oldAppSvcVehicleDto = getActiveVehicles(dto.getAppId());
-        List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(dtos)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
-                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
-                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
-                    appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
-                }
-            }
-        }
-        validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(), null);
         return errorMap;
     }
 

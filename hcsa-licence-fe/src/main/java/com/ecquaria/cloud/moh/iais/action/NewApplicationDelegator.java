@@ -1113,7 +1113,7 @@ public class NewApplicationDelegator {
         if (!"saveDraft".equals(crud_action_value)) {
             String keywords = MasterCodeUtil.getCodeDesc("MS001");
 
-            Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = appSubmissionService.getAllSvcAllPsnConfig(bpc.request);
+            // Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = appSubmissionService.getAllSvcAllPsnConfig(bpc.request);
             List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             StringBuilder sB = new StringBuilder(10);
 
@@ -1123,7 +1123,7 @@ public class NewApplicationDelegator {
                 ServiceStepDto serviceStepDto = new ServiceStepDto();
                 serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
                 List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-                appSubmissionService.doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
+                appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             }
             bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
