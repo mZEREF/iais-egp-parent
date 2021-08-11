@@ -8,19 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.ApprovalApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BiologicalQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BsbFacilityQueryDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +26,6 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author Li Ran
@@ -251,17 +248,8 @@ public class NewApprovalDelegator {
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.AGENTS_OR_TOXINS_LIST_ATTR, (Serializable) biologicalIdList);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.NATURE_LIST_ATTR, (Serializable) natureList);
-
-        /*ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto, "possessLocal");
-        if(vResult != null && vResult.isHasErrors()){
-            Map<String,String> errorMap = vResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {*/
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-            /*userManagementServiceLR.saveUser(userManagementDtoLR);*/
-/*        }*/
-
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+        approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
     public void controlSwitch(BaseProcessClass bpc) {
@@ -278,7 +266,7 @@ public class NewApprovalDelegator {
         log.info(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
         Object approvalApplicationDto = ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        approvalApplicationClient.saveApproval((ApprovalApplicationDto) approvalApplicationDto);
+
     }
 
 }

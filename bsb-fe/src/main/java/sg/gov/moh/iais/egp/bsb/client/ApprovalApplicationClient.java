@@ -7,9 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApplication.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.ApprovalApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BiologicalQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BsbFacilityQueryDto;
 
 import java.util.List;
 
