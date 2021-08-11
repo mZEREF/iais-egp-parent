@@ -1990,19 +1990,23 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             notificationHelper.sendNotification(emailParam);
             //msg
             try {
-
-                List<String> svcCode=IaisCommonUtils.genNewArrayList();
-                for (AppSubmissionDto appSubmissionDto1:appSubmissionDtos){
-                    String svcName=appSubmissionDto1.getServiceName();
-                    if(svcName==null){
-                        LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto1.getLicenceNo()).getEntity();
-                        svcName=licenceDto.getSvcName();
-                    }
-                    List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-                    if(appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
-                        svcCode.add(svcDto.get(0).getSvcCode());
+                List<String> svcCode = IaisCommonUtils.genNewArrayList();
+                for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
+                    String svcName = appSubmissionDto1.getServiceName();
+                    if (appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                        if (svcName == null) {
+                            LicenceDto licenceDto = licenceClient.getLicBylicNo(appSubmissionDto1.getLicenceNo()).getEntity();
+                            svcName = licenceDto.getSvcName();
+                        }
+                        List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(
+                                Collections.singletonList(svcName)).getEntity();
+                        if (svcDto != null && !svcDto.isEmpty()) {
+                            svcCode.add(svcDto.get(0).getSvcCode());
+                        }
                     }
                 }
+                log.info(StringUtil.changeForLog("App Grp No: " + appSubmissionDto.getAppGrpNo() +
+                        " - AppSubmission size: " + appSubmissionDtos.size() + " - Service Code: " + svcCode));
                 rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
                 EmailParam msgParam = new EmailParam();

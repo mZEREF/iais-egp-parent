@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.HfsmsDto;
@@ -32,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
@@ -88,6 +90,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -176,9 +179,27 @@ public class LicenceViewServiceDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
         }
+
+        // Get AppSubmissionDto
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
+        if (appPremisesCorrelationDto == null) {
+            // the appPremisesCorrelationDto should not be null, not used any more
+            String appId = ParamUtil.getString(bpc.request, "appId");
+            appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
+        }
+        AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
+        // set App Edit Select Dto
         AppEditSelectDto appEditSelectDto = (AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if (appEditSelectDto == null) {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+        }
+        if (appSubmissionDto != null && appEditSelectDto != null && appEditSelectDto.isLicenseeEdit()) {
+            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(SubLicenseeDto::getLicenseeType)
+                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+            if (!licenseeType.isPresent()) {
+                appEditSelectDto.setLicenseeEdit(false);
+            }
         }
         AppEditSelectDto rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");
         String isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
@@ -189,15 +210,6 @@ public class LicenceViewServiceDelegator {
         }
         log.info(StringUtil.changeForLog(appEditSelectDto+"appEditSelectDto"));
         bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);
-
-        // Get AppSubmissionDto
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
-        if (appPremisesCorrelationDto == null) {
-            // the appPremisesCorrelationDto should not be null, not used any more
-            String appId = ParamUtil.getString(bpc.request, "appId");
-            appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
-        }
-        AppSubmissionDto appSubmissionDto = getAppSubmissionAndHandLicence(appPremisesCorrelationDto, bpc.request);
 
         if (appPremisesCorrelationDto != null && appSubmissionDto != null) {
             handleWithDrawalDoc(appSubmissionDto.getAppType(), appSubmissionDto.getAppGrpId(), appPremisesCorrelationDto.getApplicationId(),

@@ -253,6 +253,7 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
                     } else {
                         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                        appEditSelectDto.setLicenseeEdit(true);
                         appEditSelectDto.setPremisesEdit(true);
                         appEditSelectDto.setDocEdit(true);
                         appEditSelectDto.setServiceEdit(true);

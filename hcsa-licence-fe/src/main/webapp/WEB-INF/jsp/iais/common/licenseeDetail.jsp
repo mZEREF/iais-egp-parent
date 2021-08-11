@@ -14,7 +14,7 @@
             <c:if test="${canEdit}">
                 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                 <a id="edit" class="text-right app-font-size-16">
-                    <em class="fa fa-pencil-square-o">&nbsp;Edit</em>
+                    <em class="fa fa-pencil-square-o">&nbsp;</em>Edit
                 </a>
             </c:if>
         </iais:value>
@@ -76,6 +76,7 @@
 
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
         disableContent('div.licenseeContent');
+        $('.retrieveAddr').addClass('hidden');
         </c:if>
     });
 
@@ -156,9 +157,11 @@
         unDisableContent('div.assignSelectRow');
         unDisableContent('div.licenseeType');
         unDisableContent('div.licensee-detail');
+        $('.retrieveAddr').removeClass('hidden');
         </c:if>
         <c:if test="${!isNewApp && not empty dto.licenseeType}">
         unDisableContent('div.licensee-detail');
+        $('.retrieveAddr').removeClass('hidden');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
