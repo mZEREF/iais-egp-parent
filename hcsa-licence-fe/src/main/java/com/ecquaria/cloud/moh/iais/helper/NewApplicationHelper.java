@@ -104,6 +104,7 @@ public class NewApplicationHelper {
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
         int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
                 ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
+        appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
             appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
