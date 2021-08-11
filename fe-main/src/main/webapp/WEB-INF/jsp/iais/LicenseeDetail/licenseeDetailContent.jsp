@@ -1,6 +1,6 @@
 <%-- Address start --%>
   <iais:row cssClass="postalCodeDiv">
-    <iais:field value="Postal Code " mandatory="true" width="11"/>
+    <iais:field value="Postal Code" mandatory="true" width="11"/>
     <iais:value width="11">
       <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode" value="${licensee.postalCode}" />
     </iais:value>
