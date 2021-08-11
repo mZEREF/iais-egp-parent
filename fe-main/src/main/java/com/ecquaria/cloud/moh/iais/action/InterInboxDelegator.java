@@ -1192,18 +1192,20 @@ public class InterInboxDelegator {
             }
         }*/
         //EAS and MTS licence only one active/approve licence
-        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-        if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
-            hcsaServiceDtos.add(hcsaServiceDto);
-        }
-        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-            boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
-            if(!canCreateEasOrMts){
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
-                ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
-                return;
+        if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+            List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                hcsaServiceDtos.add(hcsaServiceDto);
+            }
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
+                if(!canCreateEasOrMts){
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
+                    ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                    return;
+                }
             }
         }
         if(!licenceDtos.isEmpty()){
