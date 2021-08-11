@@ -2212,9 +2212,6 @@ public class NewApplicationDelegator {
         //appSubmissionService.updateMsgStatus(msgId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
             appSubmissionDto= appSubmissionService.submitRequestRfcRenewInformation(appSubmissionRequestInformationDto, bpc.process);
-/*
-            appSubmissionDto= applicationFeClient.saveRFCOrRenewRequestInformation(appSubmissionRequestInformationDto).getEntity();
-*/
         }else {
             appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         }
@@ -2386,6 +2383,7 @@ public class NewApplicationDelegator {
         }
         if (!map.isEmpty()) {
             //set audit
+            log.warn(StringUtil.changeForLog("Error Message: " + map));
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
@@ -2875,17 +2873,20 @@ public class NewApplicationDelegator {
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 }
             }
-            if(!StringUtil.isEmpty(noNeedPayment)){
-                ParamUtil.setSessionAttr(bpc.request,"txnRefNo","");
-                try{
-                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                        List<AppSubmissionDto> appSubmissionDtos =IaisCommonUtils.genNewArrayList();
-                        appSubmissionDtos.add(appSubmissionDto);
-                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos,null);
-
+            if (!StringUtil.isEmpty(noNeedPayment)) {
+                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", "");
+                try {
+                    if (appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
+                                "appSubmissionDtos");
+                        if (appSubmissionDtos == null || appSubmissionDtos.size() == 0) {
+                            appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+                            appSubmissionDtos.add(appSubmissionDto);
+                        }
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos, null);
                     }
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
                 }
             }
         }else {
