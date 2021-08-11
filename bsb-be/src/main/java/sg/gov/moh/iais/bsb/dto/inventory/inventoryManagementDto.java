@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.bsb.dto.inventoryManagement;
+package sg.gov.moh.iais.bsb.dto.inventory;
 
 import lombok.Getter;
 import lombok.Setter;

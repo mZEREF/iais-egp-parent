@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.bsb.dto.biosafetyEnquiry;
+package sg.gov.moh.iais.bsb.dto.enquiry;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;

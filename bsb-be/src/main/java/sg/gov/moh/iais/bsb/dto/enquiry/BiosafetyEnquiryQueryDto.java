@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.bsb.dto.biosafetyEnquiry;
+package sg.gov.moh.iais.bsb.dto.enquiry;
 
 import lombok.Getter;
 import lombok.Setter;

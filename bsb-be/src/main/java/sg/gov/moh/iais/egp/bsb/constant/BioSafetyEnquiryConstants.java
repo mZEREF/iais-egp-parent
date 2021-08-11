@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.constant.biosafetyEnquiry;
+package sg.gov.moh.iais.egp.bsb.constant;
 
 /**
  * AUTHOR: YiMing

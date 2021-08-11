@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.bsb.dto.biosafetyEnquiry.BiologicalDto;
+import sg.gov.moh.iais.bsb.dto.enquiry.BiologicalDto;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 
 import javax.servlet.http.HttpServletRequest;
