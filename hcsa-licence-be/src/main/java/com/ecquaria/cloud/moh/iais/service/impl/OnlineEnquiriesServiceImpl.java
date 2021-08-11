@@ -201,24 +201,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeDto().setLicenseeType("-");
+                    log.error("getLicenseeType {}"+organizationLicDto.getLicenseeDto().getLicenseeType());
                 }
                 try {
                     organizationLicDto.getLicenseeDto().setAddrType(AcraConsts.getAddressTypeD().get(organizationLicDto.getLicenseeDto().getAddrType()));
                 }catch (Exception e) {
-                    organizationLicDto.getLicenseeDto().setAddrType("-");
+                    log.error("getAddrType {}"+organizationLicDto.getLicenseeDto().getAddrType());
                 }
             }
             if (organizationLicDto.getLicenseeIndividualDto() != null) {
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getSalutation()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeIndividualDto().setSalutation("-");
+                    log.error("getSalutation {}"+organizationLicDto.getLicenseeIndividualDto().getSalutation());
                 }
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setIdType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getIdType()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeIndividualDto().setIdType("-");
+                    log.error("getIdType {}"+organizationLicDto.getLicenseeIndividualDto().getIdType());
                 }
             }
             if (organizationLicDto.getLicenseeKeyApptPersonDtos() != null) {
@@ -228,12 +228,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
 
                     } catch (Exception e) {
-                        org.setDesignation("-");
+                        org.setDesignation(org.getDesignation());
                     }
                     try {
                         org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
                     } catch (Exception e) {
-                        org.setIdType("-");
+                        org.setIdType(org.getIdType());
                     }
                     org.setSalutation("-");
                 }
@@ -247,28 +247,28 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.getCodeDesc(per.getLicKeyPersonnelDto().getPsnType()));
                 } catch (Exception e) {
-                    per.getLicKeyPersonnelDto().setPsnType( "-");
+                    log.error("getPsnType {}"+per.getLicKeyPersonnelDto().getPsnType());
                 }
                 try {
                     per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getSalutation()));
                 } catch (Exception e) {
-                    per.getKeyPersonnelDto().setSalutation( "-");
+                    log.error("getSalutation {}"+per.getKeyPersonnelDto().getSalutation());
                 }
                 try {
                     per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getDesignation()));
                 } catch (Exception e) {
-                    per.getKeyPersonnelDto().setDesignation( "-");
+                    log.error("getDesignation {}"+per.getKeyPersonnelDto().getDesignation());
                 }
                 if(per.getKeyPersonnelExtDto()!=null){
                     try {
                         per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
                     } catch (Exception e) {
-                        per.getKeyPersonnelExtDto().setProfessionType("-");
+                        log.error("getProfessionType {}"+per.getKeyPersonnelExtDto().getProfessionType());
                     }
                     try {
                         per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
                     } catch (Exception e) {
-                        per.getKeyPersonnelExtDto().setDescription("-");
+                        log.error("getDescription {}"+per.getKeyPersonnelExtDto().getDescription());
                     }
                 }
             }
