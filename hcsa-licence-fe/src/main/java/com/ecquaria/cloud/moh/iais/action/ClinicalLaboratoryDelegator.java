@@ -248,7 +248,7 @@ public class ClinicalLaboratoryDelegator {
      * Step: PrepareStepData
      * @param bpc
      */
-    public void prepareStepData(BaseProcessClass bpc) {
+    public void prepareStepData(BaseProcessClass bpc) throws Exception {
         ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
                 ShowServiceFormsDelegator.SERVICESTEPDTO);
         HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
@@ -267,10 +267,25 @@ public class ClinicalLaboratoryDelegator {
             prePareVehicles(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
             prePareClinicalDirector(bpc);
+        } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+            prepareLaboratoryDisciplines(bpc);
+        } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
+            prepareGovernanceOfficers(bpc);
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
+        } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+            prepareDisciplineAllocation(bpc);
+        } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+            prePareCharges(bpc);
+        } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
+            preparePrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
             // Key Appointment Holder
+        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+            prepareServicePersonnel(bpc);
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+            prePareMedAlertPerson(bpc);
+        } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
         } else {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
@@ -307,10 +322,18 @@ public class ClinicalLaboratoryDelegator {
             doVehicles(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
             doClinicalDirector(bpc);
+        } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+        } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
+        } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+        } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+        } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
             // Key Appointment Holder
+        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+        } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
         } else {
             log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
         }
@@ -934,6 +957,7 @@ public class ClinicalLaboratoryDelegator {
 
     private Map<String, String> isAllChecked(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
         StringBuilder sB = new StringBuilder();
+        /*
         Map<String, List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         if (svcAllPsnConfig == null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -944,6 +968,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
+        */
 
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> map = new HashMap<>();
@@ -953,7 +978,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
+            map = appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
         }
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
