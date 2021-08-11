@@ -284,7 +284,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
                     AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(),InspectionConstants.RECOM_TYPE_TCU);
                     List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationDto.getId());
-
+                    String observation = fillupChklistService.getObservationByAppPremCorrId(appPremisesCorrelationDto.getId());
                     if(ncAnswerDtos.size()!=0){
                         stringBuilder1.append("<tr><td colspan=\"6\"><b>").append(appViewDto.getServiceType()).append("</b></td></tr>");
                         int i=0;
@@ -305,7 +305,6 @@ public class InspectionMergeSendNcEmailDelegator {
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
-                    String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
                     if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||observation!=null)){
                         String[] observations=new String[]{};
                         if(observation!=null){
