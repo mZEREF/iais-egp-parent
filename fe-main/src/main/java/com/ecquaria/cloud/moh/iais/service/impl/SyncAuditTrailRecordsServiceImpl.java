@@ -110,7 +110,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(groupPath.toPath());
+        File outFile = MiscUtil.generateFile(sharedOutPath,file.getName());
+        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(outFile.toPath());
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath())){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
