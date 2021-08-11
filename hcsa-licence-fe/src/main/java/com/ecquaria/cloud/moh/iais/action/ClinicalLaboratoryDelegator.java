@@ -197,7 +197,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
 
-
         log.debug(StringUtil.changeForLog("The prepareJumpPage action is -->;" + action));
         String formTab = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.FORM_TAB);
         log.debug(StringUtil.changeForLog("The form_tab action is -->;" + formTab));
@@ -286,6 +285,7 @@ public class ClinicalLaboratoryDelegator {
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             prePareMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
+            prepareDocuments(bpc);
         } else {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
@@ -299,7 +299,7 @@ public class ClinicalLaboratoryDelegator {
      * Step: DoStep
      * @param bpc
      */
-    public void doStep(BaseProcessClass bpc) {
+    public void doStep(BaseProcessClass bpc) throws Exception {
         ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request,
                 ShowServiceFormsDelegator.SERVICESTEPDTO);
         HcsaServiceStepSchemeDto step = Optional.ofNullable(serviceStepDto)
@@ -323,17 +323,25 @@ public class ClinicalLaboratoryDelegator {
         } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
             doClinicalDirector(bpc);
         } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+            doLaboratoryDisciplines(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
+            doGovernanceOfficers(bpc);
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
         } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+            doDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+            doCharges(bpc);
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
+            doPrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
             // Key Appointment Holder
         } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+            doServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+            doMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
+            doDocuments(bpc);
         } else {
             log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
         }
@@ -969,7 +977,6 @@ public class ClinicalLaboratoryDelegator {
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
         */
-
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> map = new HashMap<>();
         ServiceStepDto serviceStepDto = new ServiceStepDto();
@@ -978,7 +985,8 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            map = appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
+            map = appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i), dto,
+                    appSubmissionDto.getAppGrpPremisesDtoList());
         }
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");

@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="../dashboard.jsp" %>
-<form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
+<form method="post" id="mainForm" class="__egovform" ${currentStep == 'SVST005' ? 'enctype="multipart/form-data"' : '' } action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
     <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
@@ -44,14 +44,48 @@
                                                                 <%@include file="clinicalDirectorContent.jsp"%>
                                                             </div>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST002'}">
+                                                            <div class="clinical-governance-officer">
+                                                                <%@include file="governanceOfficers.jsp"%>
+                                                            </div>
+                                                        </c:when>
                                                         <c:when test="${currentStep == 'SVST013'}">
                                                             <div class="section-leader">
                                                                 <%@include file="sectionLeader.jsp"%>
                                                             </div>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST003'}">
+                                                            <%@include file="disciplineAllocation.jsp"%>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST010'}">
+                                                            <div class="charges">
+                                                                <%@include file="chargesContent.jsp"%>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST004'}">
+                                                            <%@include file="principalOfficers.jsp"%>
+                                                        </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
                                                             <div class="key-appointment-holder">
                                                                 <%@include file="keyAppointmentHolder.jsp"%>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST006'}">
+                                                            <div class="clinical-governance-officer">
+                                                                <!--start -->
+                                                                <%@include file="servicePersonnel.jsp" %>
+                                                                <!--end -->
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST007'}">
+                                                            <div class="med-alert-person">
+                                                                <%@include file="medAlertContent.jsp"%>
+                                                            </div>
+                                                        </c:when>
+                                                        <c:when test="${currentStep == 'SVST005'}">
+                                                            <div class="Service-related-Documents">
+                                                                <h2>Service-related Documents</h2>
+                                                                <%@include file="CR_Doc.jsp"%>
                                                             </div>
                                                         </c:when>
                                                     </c:choose>
