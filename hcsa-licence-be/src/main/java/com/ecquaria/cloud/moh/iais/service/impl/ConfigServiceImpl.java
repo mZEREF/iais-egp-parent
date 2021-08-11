@@ -53,14 +53,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,6 +63,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wenkang
@@ -125,7 +125,7 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private static volatile List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private static CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
     private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
 
@@ -1075,14 +1075,10 @@ public class ConfigServiceImpl implements ConfigService {
         return map;
     }
 
-    private  List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+    private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
         if (hcsaServiceCatgoryDtos == null) {
-            synchronized (this){
-                if (hcsaServiceCatgoryDtos == null) {
-                    //this config cannot change,so need init once
-                    hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-                }
-            }
+            //this config cannot change,so need init once
+            hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
         }
         return hcsaServiceCatgoryDtos;
     }

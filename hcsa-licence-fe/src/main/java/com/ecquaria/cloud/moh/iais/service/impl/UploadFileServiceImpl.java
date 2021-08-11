@@ -60,7 +60,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -229,7 +228,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         File zipFile = MiscUtil.generateFile(soPath);
         MiscUtil.checkDirs(zipFile);
         String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
-        try (OutputStream outputStream = newOutputStream(Paths.get(osPath));//Destination compressed folder
+        try (OutputStream outputStream = newOutputStream(zipFile.toPath());//Destination compressed folder
              CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 

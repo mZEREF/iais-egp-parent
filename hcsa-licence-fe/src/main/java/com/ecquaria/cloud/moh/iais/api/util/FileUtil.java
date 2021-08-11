@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -159,7 +158,7 @@ public class FileUtil {
 		File f= MiscUtil.generateFile(fileName);
 		if (f.exists() && f.isFile()) {
 			String xml;
-			try(InputStream is = newInputStream(Paths.get(fileName))) {
+			try(InputStream is = newInputStream(f.toPath())) {
 				xml = getString(is);
 				if (!f.delete()) {
 					log.debug(StringUtil.changeForLog(fileName + " is inexistence in service."));
@@ -282,7 +281,8 @@ public class FileUtil {
 	public static byte[] readBytesFromFile(String fileName) throws IOException{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		if(fileName != null){
-			try(InputStream fis = newInputStream(Paths.get(fileName))) {
+			File inFile = MiscUtil.generateFile(fileName);
+			try(InputStream fis = newInputStream(inFile.toPath())) {
 				byte[] b = new byte[1024];
 				int n = fis.read(b);
 				while(n != -1){

@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -111,10 +110,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = newOutputStream(Paths.get(sharedOutPath,file.getName()));
-             OutputStream fileOutputStream  = newOutputStream(Paths.get(sharedPath
-                     + RequestForInformationConstants.FILE_NAME_RFI+File.separator,
-                     s+RequestForInformationConstants.FILE_FORMAT))){
+        File outFile = MiscUtil.generateFile(sharedOutPath, file.getName());
+        try (OutputStream fileInputStream = newOutputStream(outFile.toPath());
+             OutputStream fileOutputStream  = newOutputStream(file.toPath())){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -168,7 +166,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=newOutputStream(Paths.get(sharedOutPath, l+RequestForInformationConstants.ZIP_NAME));
+        File outFile = MiscUtil.generateFile(sharedOutPath, l+RequestForInformationConstants.ZIP_NAME);
+        try (OutputStream is=newOutputStream(outFile.toPath());
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
