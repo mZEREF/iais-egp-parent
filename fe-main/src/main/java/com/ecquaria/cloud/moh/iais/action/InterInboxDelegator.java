@@ -151,7 +151,7 @@ public class InterInboxDelegator {
 //        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         ParamUtil.setRequestAttr(request, "ssoToElisUrl",
                 elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
-
+        IaisEGPHelper.doLogout(request);
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
@@ -172,6 +172,7 @@ public class InterInboxDelegator {
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
 //        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
         ParamUtil.setRequestAttr(request, "ssoToAlertUrl", alertUrl);
+        IaisEGPHelper.doLogout(request);
     }
 
     /**
