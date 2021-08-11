@@ -42,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -2397,6 +2398,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
                 // business name
+                List<AppSvcBusinessDto> appSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
+                if (!IaisCommonUtils.isEmpty(dtos)) {
+                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
+                        List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
+                        if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
+                            appSvcBusinessDtoList.addAll(appSvcBusinessDtos);
+                        }
+                    }
+                }
+                Map<String,String> businessNameErrorMap = IaisCommonUtils.genNewHashMap();
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, businessNameErrorMap);
+                if (!businessNameErrorMap.isEmpty()) {
+                    errorMap.put("Business Name", "error");
+                    sB.append(serviceId);
+                    log.info("businessNameErrorMap is error");
+                }
             } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
                 // Vehicles
                 List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
