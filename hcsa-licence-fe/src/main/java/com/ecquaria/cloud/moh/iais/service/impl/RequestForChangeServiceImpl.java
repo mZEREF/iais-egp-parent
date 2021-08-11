@@ -86,6 +86,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1990,19 +1991,25 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             notificationHelper.sendNotification(emailParam);
             //msg
             try {
-
-                List<String> svcCode=IaisCommonUtils.genNewArrayList();
-                for (AppSubmissionDto appSubmissionDto1:appSubmissionDtos){
-                    String svcName=appSubmissionDto1.getServiceName();
-                    if(svcName==null){
-                        LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto1.getLicenceNo()).getEntity();
-                        svcName=licenceDto.getSvcName();
-                    }
-                    List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
-                    if(appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
-                        svcCode.add(svcDto.get(0).getSvcCode());
+                List<String> svcNameList = IaisCommonUtils.genNewArrayList();
+                for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
+                    String svcName = appSubmissionDto1.getServiceName();
+                    if (appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
+                        if (svcName == null) {
+                            LicenceDto licenceDto = licenceClient.getLicBylicId(appSubmissionDto1.getLicenceId()).getEntity();
+                            svcName = licenceDto != null ? licenceDto.getSvcName() : null;
+                        }
+                        if (svcName != null) {
+                            svcNameList.add(svcName);
+                        }
                     }
                 }
+                List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(svcNameList).getEntity();
+                List<String> svcCode = IaisCommonUtils.genNewArrayList();
+                if (svcDto != null && !svcDto.isEmpty()) {
+                    svcDto.stream().forEach(dto -> svcCode.add(dto.getSvcCode()));
+                }
+                log.info(StringUtil.changeForLog("AppSubmission size: " + appSubmissionDtos.size() + " - Service Code: " + svcCode));
                 rfiEmailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG).getEntity();
                 subject = MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(), map);
                 EmailParam msgParam = new EmailParam();
