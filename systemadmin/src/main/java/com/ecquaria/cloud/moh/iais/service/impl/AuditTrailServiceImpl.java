@@ -73,6 +73,9 @@ public class AuditTrailServiceImpl implements AuditTrailService {
                         map.put(ent.getKey(), ent.getValue());
                     }
                 }
+                if(map.isEmpty()){
+                    map.put(detail,detail);
+                }
             } else {
                 map = JsonUtil.parseToObject(detail, Map.class);
             }
