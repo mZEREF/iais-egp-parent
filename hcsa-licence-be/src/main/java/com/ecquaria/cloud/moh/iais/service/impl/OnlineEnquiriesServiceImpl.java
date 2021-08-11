@@ -201,24 +201,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
                 } catch (Exception e) {
-                    log.error("getLicenseeType {}"+organizationLicDto.getLicenseeDto().getLicenseeType());
+                    log.error(StringUtil.changeForLog("getLicenseeType {}"+organizationLicDto.getLicenseeDto().getLicenseeType()));
                 }
                 try {
                     organizationLicDto.getLicenseeDto().setAddrType(AcraConsts.getAddressTypeD().get(organizationLicDto.getLicenseeDto().getAddrType()));
                 }catch (Exception e) {
-                    log.error("getAddrType {}"+organizationLicDto.getLicenseeDto().getAddrType());
+                    log.error(StringUtil.changeForLog("getAddrType {}"+organizationLicDto.getLicenseeDto().getAddrType()));
                 }
             }
             if (organizationLicDto.getLicenseeIndividualDto() != null) {
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getSalutation()));
                 } catch (Exception e) {
-                    log.error("getSalutation {}"+organizationLicDto.getLicenseeIndividualDto().getSalutation());
+                    log.error(StringUtil.changeForLog("getSalutation {}"+organizationLicDto.getLicenseeIndividualDto().getSalutation()));
                 }
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setIdType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getIdType()));
                 } catch (Exception e) {
-                    log.error("getIdType {}"+organizationLicDto.getLicenseeIndividualDto().getIdType());
+                    log.error(StringUtil.changeForLog("getIdType {}"+organizationLicDto.getLicenseeIndividualDto().getIdType()));
                 }
             }
             if (organizationLicDto.getLicenseeKeyApptPersonDtos() != null) {
@@ -228,12 +228,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
 
                     } catch (Exception e) {
-                        org.setDesignation(org.getDesignation());
+                        log.error(StringUtil.changeForLog("getDesignation {}"+org.getDesignation()));
                     }
                     try {
                         org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
                     } catch (Exception e) {
-                        org.setIdType(org.getIdType());
+                        log.error(StringUtil.changeForLog("getIdType {}"+org.getIdType()));
                     }
                     org.setSalutation("-");
                 }
@@ -247,28 +247,28 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.getCodeDesc(per.getLicKeyPersonnelDto().getPsnType()));
                 } catch (Exception e) {
-                    log.error("getPsnType {}"+per.getLicKeyPersonnelDto().getPsnType());
+                    log.error(StringUtil.changeForLog("getPsnType {}"+per.getLicKeyPersonnelDto().getPsnType()));
                 }
                 try {
                     per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getSalutation()));
                 } catch (Exception e) {
-                    log.error("getSalutation {}"+per.getKeyPersonnelDto().getSalutation());
+                    log.error(StringUtil.changeForLog("getSalutation {}"+per.getKeyPersonnelDto().getSalutation()));
                 }
                 try {
                     per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getDesignation()));
                 } catch (Exception e) {
-                    log.error("getDesignation {}"+per.getKeyPersonnelDto().getDesignation());
+                    log.error(StringUtil.changeForLog("getDesignation {}"+per.getKeyPersonnelDto().getDesignation()));
                 }
                 if(per.getKeyPersonnelExtDto()!=null){
                     try {
                         per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
                     } catch (Exception e) {
-                        log.error("getProfessionType {}"+per.getKeyPersonnelExtDto().getProfessionType());
+                        log.error(StringUtil.changeForLog("getProfessionType {}"+per.getKeyPersonnelExtDto().getProfessionType()));
                     }
                     try {
                         per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
                     } catch (Exception e) {
-                        log.error("getDescription {}"+per.getKeyPersonnelExtDto().getDescription());
+                        log.error(StringUtil.changeForLog("getDescription {}"+per.getKeyPersonnelExtDto().getDescription()));
                     }
                 }
             }
