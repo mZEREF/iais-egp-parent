@@ -271,6 +271,7 @@ public class LicenceServiceImpl implements LicenceService {
 //                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
+                generateUEN(eventBusLicenceGroupDtos);
                 sendUenEmail(eventBusLicenceGroupDtos);
                 for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
                 ) {
@@ -308,6 +309,41 @@ public class LicenceServiceImpl implements LicenceService {
             }
         }
         log.info("----- create save-lic-app-risk-by-licdtos end ");
+    }
+
+    private void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
+        log.info(StringUtil.changeForLog("The generateUen start ..."));
+        try{
+            IaisUENDto iaisUENDto = new IaisUENDto();
+            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
+            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
+                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    SuperLicDto superLicDto = superLicDtos.get(0);
+                    LicenceDto licenceDto = superLicDto.getLicenceDto();
+                    String svcCode = licenceDto.getSvcCode();
+                    String licenseeId = licenceDto.getLicenseeId();
+                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
+                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
+                    iaisUENDto.setLicenseeId(licenseeId);
+                    iaisUENDto.setSvcCode(svcCode);
+                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
+                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
+                    iaisUENDto.setPremises(premisesDto);
+                }else{
+                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+            }
+            acraUenBeClient.generateUen(iaisUENDto);
+        }catch (Throwable t){
+            log.error(StringUtil.changeForLog( t.getMessage()),t);
+        }
+        log.info(StringUtil.changeForLog("The generateUen end ..."));
     }
 
     private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
