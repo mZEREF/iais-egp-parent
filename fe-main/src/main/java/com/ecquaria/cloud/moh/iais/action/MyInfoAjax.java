@@ -120,6 +120,7 @@ public class MyInfoAjax {
 		}
 		HttpServletResponse response =  bpc.response;
 		HttpServletRequest request = bpc.request;
+		log.info(StringUtil.changeForLog("-----Authorise call back response : " +JsonUtil.parseToJson(response)));
 		if(HttpServletResponse.SC_MOVED_TEMPORARILY == response.getStatus()){
 			String code = ParamUtil.getString(request,"code");
 			String state = ParamUtil.getString(request,"state");
@@ -151,6 +152,8 @@ public class MyInfoAjax {
 				}
 
 			}
+		}else {
+			log.info(StringUtil.changeForLog("-----Authorise call back response is not 302------ "));
 		}
 		return null;
 	}
