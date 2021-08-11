@@ -55,13 +55,17 @@ public class SoloEditValidator implements CustomizeValidator {
         }
 
         valCol("addrType",10,licenseeDto.getAddrType(),map);
+        String blkNo = licenseeDto.getBlkNo();
+        String floorNo = licenseeDto.getFloorNo();
+        String unitNo = licenseeDto.getUnitNo();
         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(licenseeDto.getAddrType())) {
-            String blkNo = licenseeDto.getBlkNo();
-            String floorNo = licenseeDto.getFloorNo();
-            String unitNo = licenseeDto.getUnitNo();
             valCol("blkNo",10,blkNo,map);
             valCol("floorNo",3,floorNo,map);
             valCol("unitNo",3,unitNo,map);
+        }else {
+            valCol("blkNo",10,blkNo,map,false);
+            valCol("floorNo",3,floorNo,map,false);
+            valCol("unitNo",3,unitNo,map,false);
         }
         valCol("streetName",32,licenseeDto.getStreetName(),map);
         valCol("buildingName",66,licenseeDto.getBuildingName(),map,false);
