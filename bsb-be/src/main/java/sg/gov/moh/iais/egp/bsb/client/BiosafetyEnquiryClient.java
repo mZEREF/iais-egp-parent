@@ -5,14 +5,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import sg.gov.moh.iais.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.bsb.dto.enquiry.ApplicationInfoDto;
 import sg.gov.moh.iais.bsb.dto.enquiry.BiologicalDto;
 import sg.gov.moh.iais.bsb.dto.enquiry.FacilityInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApplicationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
+
 import java.util.List;
 
 /**
@@ -47,4 +52,7 @@ public interface BiosafetyEnquiryClient {
 
     @GetMapping(path = "/bio_info/{schedule}")
     FeignResponseEntity<List<BiologicalDto>> queryBiologicalBySchedule(@PathVariable(name = "schedule") String schedule);
+
+    @GetMapping(value = "/app_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApplicationResultDto> getApp(@SpringQueryMap EnquiryDto dto);
 }
