@@ -2258,16 +2258,9 @@ public class ClinicalLaboratoryDelegator {
             //get data from page
             List<AppSvcBusinessDto> appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            for(int i = 0; i<appSvcBusinessDtos.size(); i++){
-                String businessName = appSvcBusinessDtos.get(i).getBusinessName();
-                if(StringUtil.isEmpty(businessName)){
-                    errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
-                }else {
-                    if(businessName.length()>100){
-                        String general_err0041=NewApplicationHelper.repLength("businessName","100");
-                        errorMap.put("businessName"+i, general_err0041);
-                    }
-                }
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+            if("next".equals(crud_action_type)){
+                doValidateBusiness(appSvcBusinessDtos, errorMap);
             }
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
@@ -4872,6 +4865,20 @@ public class ClinicalLaboratoryDelegator {
             AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
             appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
+        }
+    }
+
+    private void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+        for(int i = 0; i< appSvcBusinessDtos.size(); i++){
+            String businessName = appSvcBusinessDtos.get(i).getBusinessName();
+            if(StringUtil.isEmpty(businessName)){
+                errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
+            }else {
+                if(businessName.length()>100){
+                    String general_err0041=NewApplicationHelper.repLength("businessName","100");
+                    errorMap.put("businessName"+i, general_err0041);
+                }
+            }
         }
     }
 }
