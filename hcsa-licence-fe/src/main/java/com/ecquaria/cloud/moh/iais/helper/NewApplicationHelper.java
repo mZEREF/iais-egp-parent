@@ -3683,6 +3683,20 @@ public class NewApplicationHelper {
         }
     }
 
+    public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+        for(int i = 0; i< appSvcBusinessDtos.size(); i++){
+            String businessName = appSvcBusinessDtos.get(i).getBusinessName();
+            if(StringUtil.isEmpty(businessName)){
+                errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
+            }else {
+                if(businessName.length()>100){
+                    String general_err0041=NewApplicationHelper.repLength("businessName","100");
+                    errorMap.put("businessName"+i, general_err0041);
+                }
+            }
+        }
+    }
+
     private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList){
         List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
         HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;

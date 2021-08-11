@@ -2293,11 +2293,11 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
             if("next".equals(crud_action_type)){
-                doValidateBusiness(appSvcBusinessDtos, errorMap);
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, errorMap);
             }
             if(!errorMap.isEmpty()){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "SVST012");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
             }
             currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
@@ -4898,20 +4898,6 @@ public class ClinicalLaboratoryDelegator {
             AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
             appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        }
-    }
-
-    private void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
-        for(int i = 0; i< appSvcBusinessDtos.size(); i++){
-            String businessName = appSvcBusinessDtos.get(i).getBusinessName();
-            if(StringUtil.isEmpty(businessName)){
-                errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
-            }else {
-                if(businessName.length()>100){
-                    String general_err0041=NewApplicationHelper.repLength("businessName","100");
-                    errorMap.put("businessName"+i, general_err0041);
-                }
-            }
         }
     }
 }
