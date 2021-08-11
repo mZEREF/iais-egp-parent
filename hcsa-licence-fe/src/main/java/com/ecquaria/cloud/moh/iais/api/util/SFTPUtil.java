@@ -29,7 +29,6 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.File;
 import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -189,7 +188,8 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        try(OutputStream os = newOutputStream(Paths.get(saveFile))) {
+	    File outFile = MiscUtil.generateFile(saveFile);
+        try(OutputStream os = newOutputStream(outFile.toPath())) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {

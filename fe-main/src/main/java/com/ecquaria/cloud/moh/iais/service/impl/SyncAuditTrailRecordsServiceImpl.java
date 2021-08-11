@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -105,13 +104,13 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 log.debug("Create File fail");
             }
         }
-        File groupPath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
+        File groupPath = MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(Paths.get(sharedOutPath,file.getName()));
-             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
+        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(groupPath.toPath());
+             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath())){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -138,7 +137,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=java.nio.file.Files.newOutputStream(Paths.get(sharedOutPath, l+ AppServicesConsts.ZIP_NAME));
+        try (OutputStream is=java.nio.file.Files.newOutputStream(c.toPath());
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 

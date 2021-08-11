@@ -64,7 +64,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -326,7 +325,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         map.put("fileName",name);
                         map.put("filePath", path);
 
-                        try (InputStream is = newInputStream(Paths.get(inSharedPath , v.getFileName()));
+                        try (InputStream is = newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];
@@ -387,7 +386,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName()));
+                File outFile = MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName());
+                os= newOutputStream(outFile.toPath());
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);

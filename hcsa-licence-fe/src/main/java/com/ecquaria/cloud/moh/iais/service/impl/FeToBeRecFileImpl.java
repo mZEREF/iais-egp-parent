@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -177,7 +176,8 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String compress(String fileId){
         long l = System.currentTimeMillis();
-        try (OutputStream is =  newOutputStream(Paths.get(getOutFolder() , l + ".zip"));
+        File outFile = MiscUtil.generateFile(getOutFolder() , l + ".zip");
+        try (OutputStream is =  newOutputStream(outFile.toPath());
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);){
 
