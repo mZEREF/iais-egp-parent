@@ -22,6 +22,11 @@ import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,10 +43,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * SyncAuditTrailRecordsServiceImpl
@@ -137,7 +138,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=java.nio.file.Files.newOutputStream(c.toPath());
+        File outFile = MiscUtil.generateFile(sharedOutPath, l+ AppServicesConsts.ZIP_NAME);
+        try (OutputStream is=java.nio.file.Files.newOutputStream(outFile.toPath());
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 
