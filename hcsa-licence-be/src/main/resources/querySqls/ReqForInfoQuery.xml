@@ -17,6 +17,7 @@
                 oev.BLK_NO,oev.lic_BLK_NO,
                 oev.FLOOR_NO,oev.lic_FLOOR_NO,
                 oev.UNIT_NO,oev.lic_UNIT_NO,
+                oev.app_uen_no,oev.lic_uen_no,
                 oev.STREET_NAME,oev.lic_STREET_NAME,
                 oev.BUILDING_NAME,oev.lic_BUILDING_NAME,
                 oev.POSTAL_CODE,oev.lic_postal_code,
