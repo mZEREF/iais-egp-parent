@@ -91,7 +91,7 @@ public class ConfigServiceImpl implements ConfigService {
     private static final String CESSATION ="Cessation";
     private static final String SUSPENSION="Suspension";
     private static final String WITHDRAWAL="Withdrawal";
-    @Autowired
+
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private OrganizationClient organizationClient;
@@ -125,9 +125,15 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private static CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
     private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+
+    @Autowired
+    public ConfigServiceImpl(HcsaConfigClient hcsaConfigClient) {
+        this.hcsaConfigClient = hcsaConfigClient;
+        this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+    }
 
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
@@ -1076,10 +1082,6 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if (hcsaServiceCatgoryDtos == null) {
-            //this config cannot change,so need init once
-            hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-        }
         return hcsaServiceCatgoryDtos;
     }
 
