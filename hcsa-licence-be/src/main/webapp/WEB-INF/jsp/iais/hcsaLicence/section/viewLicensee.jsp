@@ -37,7 +37,7 @@
                     </c:if>
                 </c:if>
             </p>
-            <div class="panel-main-content">
+            <div class="panel-main-content postion-relative">
                 <div class="row" style="margin-top: 1%;margin-bottom: 1%;">
                     <div class="col-md-12">
                         <label>Licensee Details</label>
@@ -67,106 +67,31 @@
                             <div class="col-md-6">
                                 <span class="newVal" attr="${curDto.uenNo}">
                                     <c:out value="${curDto.uenNo}" />
-                                    <c:if test="${empty hashMap[curDto.uenNo]}">
-                                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                    </c:if>
-                                    <c:if test="${not empty hashMap[curDto.uenNo]}">
-                                        <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                    </c:if>
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${curDto.uenNo}"/>
+                                        <jsp:param name="methodName" value="showThisTableNew"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <span class="oldVal" attr="${oldDto.uenNo}">
                                     <c:out value="${oldDto.uenNo}" />
-                                    <c:if test="${empty hashMap[oldDto.uenNo]}">
-                                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                    </c:if>
-                                    <c:if test="${not empty hashMap[oldDto.uenNo]}">
-                                        <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNew(this)" width="25" height="25" alt="NETS">
-                                    </c:if>
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableOld"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <c:if test="${not empty hashMap[curDto.uenNo]}">
-                        <div class="row new-img-show" style="display: none">
-                            <div class="col-xs-12 col-md-12"
-                                 style="position: absolute;z-index: 100;background-color: #F5F5F5;width:85%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                <div class="table-responsive">
-                                    <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                        <tr>
-                                            <th scope="col">Indentification No.</th>
-                                            <th scope="col">Case No.</th>
-                                            <th scope="col">Case Type Description</th>
-                                            <th scope="col">Case Status Description</th>
-                                            <th scope="col">Offence Description</th>
-                                            <th scope="col">Outcome Description</th>
-                                            <th scope="col">Outcome Issue Date</th>
-                                            <th scope="col">Prosecution Outcome Description</th>
-                                            <th scope="col">Created Date</th>
-                                            <th scope="col">Update Date</th>
-                                        </tr>
-                                        <c:forEach items="${hashMap[curDto.uenNo]}" var="map">
-                                            <tr>
-                                                <td>${map.identificationNo}</td>
-                                                <td>${map.caseNo}</td>
-                                                <td>${map.caseType}</td>
-                                                <td>Case Status Description</td>
-                                                <td>${map.offenceDesc}</td>
-                                                <td>${map.outcome}</td>
-                                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                <td>${map.prosecutionOutcome}</td>
-                                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            </tr>
-                                        </c:forEach>
-                                        <tr></tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </c:if>
-                    <c:if test="${not empty hashMap[oldDto.uenNo]}">
-                        <div class="row old-img-show" style="display: none">
-                            <div class="col-xs-12 col-md-12"
-                                 style="position: absolute;z-index: 100;background-color: #F5F5F5;width:85%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
-                                <div class="table-responsive">
-                                    <table aria-describedby="" border="1px"
-                                           style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                        <tr>
-                                            <th scope="col">Indentification No.</th>
-                                            <th scope="col">Case No.</th>
-                                            <th scope="col">Case Type Description</th>
-                                            <th scope="col">Case Status Description</th>
-                                            <th scope="col">Offence Description</th>
-                                            <th scope="col">Outcome Description</th>
-                                            <th scope="col">Outcome Issue Date</th>
-                                            <th scope="col">Prosecution Outcome Description</th>
-                                            <th scope="col">Created Date</th>
-                                            <th scope="col">Update Date</th>
-                                        </tr>
-                                        <c:forEach items="${hashMap[oldDto.uenNo]}" var="map">
-                                            <tr>
-                                                <td>${map.identificationNo}</td>
-                                                <td>${map.caseNo}</td>
-                                                <td>${map.caseType}</td>
-                                                <td>Case Status Description</td>
-                                                <td>${map.offenceDesc}</td>
-                                                <td>${map.outcome}</td>
-                                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                <td>${map.prosecutionOutcome}</td>
-                                                <td><fmt:formatDate value="${map.createdDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                                <td><fmt:formatDate value="${map.updatedDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                            </tr>
-                                        </c:forEach>
-                                        <tr></tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </c:if>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${curDto.uenNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${oldDto.uenNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
                     <div class="row" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
                         <div class="col-md-6">ID Type</div>
                         <div class="col-md-6">
@@ -182,23 +107,38 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                    <div class="row img-show" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' :
+                     'display: none;'}">
                         <div class="col-md-6">ID No.</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
                                 <span class="newVal" attr="${curDto.idNumber}">
                                     <c:out value="${curDto.idNumber}" />
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableNew"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <span class="oldVal" attr="${oldDto.idNumber}">
-                                    <c:out value="${oldDto.idNumber}" />
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    <c:out value="${old.idNumber}" />
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableOld"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                         </div>
                     </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
                 </c:if>
                 <%-- SOLO --%>
                 <c:if test="${curDto.licenseeType eq soloType || oldDto.licenseeType eq soloType}">
@@ -208,17 +148,31 @@
                             <div class="col-md-6">
                                 <span class="newVal" attr="${curDto.idNumber}">
                                     <c:out value="${curDto.idNumber}" />
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableNew"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                             <div class="col-md-6">
                                 <span class="oldVal" attr="${oldDto.idNumber}">
                                     <c:out value="${oldDto.idNumber}" />
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableOld"/>
+                                    </jsp:include>
                                 </span>
                             </div>
                         </div>
                     </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${curDto.idNumber}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
                 </c:if>
                 <div class="row">
                     <div class="col-md-6">Licensee Name</div>

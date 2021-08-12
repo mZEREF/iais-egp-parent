@@ -18,7 +18,7 @@
       </p>
       <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}"
                  varStatus="status">
-        <div class="panel-main-content">
+        <div class="panel-main-content postion-relative">
           <div class="preview-info">
             <div class="row">
               <div class="col-md-6">
