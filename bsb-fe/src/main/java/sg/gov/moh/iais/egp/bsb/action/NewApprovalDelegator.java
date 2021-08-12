@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @Author Li Ran
- * @Date 2021/7/27 16:01
- **/
+ * @author : LiRan
+ * @date : 2021/8/11
+ */
 @Delegator
 @Slf4j
 public class NewApprovalDelegator {

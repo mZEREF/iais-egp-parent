@@ -14,9 +14,9 @@ import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BsbFacilityQueryDto;
 import java.util.List;
 
 /**
- * @Author Li Ran
- * @Date 2021/7/27 16:01
- **/
+ * @author : LiRan
+ * @date : 2021/8/11
+ */
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
 public interface ApprovalApplicationClient {
 

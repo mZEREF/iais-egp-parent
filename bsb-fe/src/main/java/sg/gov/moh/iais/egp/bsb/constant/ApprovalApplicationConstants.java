@@ -1,9 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
 /**
- * @Author Li Ran
- * @Date 2021/7/28 18:32
- **/
+ * @author : LiRan
+ * @date : 2021/8/11
+ */
 public class ApprovalApplicationConstants {
 
     public static final String FACILITY_ID = "facilityId";
