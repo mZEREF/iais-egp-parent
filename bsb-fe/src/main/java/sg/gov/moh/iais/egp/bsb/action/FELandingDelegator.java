@@ -65,7 +65,7 @@ public class FELandingDelegator {
 				&& AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
 			StringBuilder url = new StringBuilder();
 			url.append("https://").append(bpc.request.getServerName())
-					.append("/main-web/eservice/INTERNET/MohInternetInbox");
+					.append("/bsb-fe/eservice/INTERNET/MohInternetInbox");
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
 	}

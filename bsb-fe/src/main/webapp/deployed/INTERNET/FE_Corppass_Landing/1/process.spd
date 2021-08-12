@@ -56,7 +56,7 @@
     <JavaCode defClass="" executor="" methodName="corppassCallBack_OnStepProcess_0" name="corppassCallBack_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="inbox" processname="MohInternetInbox" project="INTERNET" version="-1" x="540" y="770">
+  <InvokeStep defClass="" executor="" icon="" name="inbox" processname="MohBSBInboxMsg" project="INTERNET" version="-1" x="540" y="770">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>

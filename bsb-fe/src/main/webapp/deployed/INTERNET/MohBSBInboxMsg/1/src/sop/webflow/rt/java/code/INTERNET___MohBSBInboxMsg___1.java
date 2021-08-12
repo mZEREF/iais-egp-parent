@@ -14,7 +14,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBSBInboxMsg___1 extends BaseProcessClass {
+public class INTERNET___MohBSBInboxMsg___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbInboxMsgDelegator";
 
 
