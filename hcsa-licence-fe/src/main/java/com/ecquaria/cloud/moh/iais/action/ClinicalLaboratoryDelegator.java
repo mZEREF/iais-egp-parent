@@ -2157,6 +2157,8 @@ public class ClinicalLaboratoryDelegator {
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(bpc.request,PREMALIGNBUSINESSMAP, premAlignBusinessMap);
 
         log.debug(StringUtil.changeForLog("prepare business end ..."));
