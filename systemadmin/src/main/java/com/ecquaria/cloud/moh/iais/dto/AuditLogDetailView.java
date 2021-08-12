@@ -1,9 +1,10 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * AuditLogDetailView
@@ -18,6 +19,8 @@ public class AuditLogDetailView implements Serializable {
 
     private ArrayList<AuditLogRecView> searchParam;
     private ArrayList<AuditLogRecView> beforeChange;
+    private ArrayList<AuditLogRecView> response;
+    private ArrayList<AuditLogRecView> request;
     private ArrayList<AuditLogRecView> afterChange;
     private ArrayList<AuditLogRecView> errorMsg;
 }

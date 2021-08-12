@@ -15,15 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AuditLogDetailView;
-import com.ecquaria.cloud.moh.iais.dto.AuditLogRecView;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -34,22 +31,18 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Delegator(value = "auditTrailDelegator")
 @Slf4j
@@ -132,11 +125,20 @@ public class AuditTrailDelegator {
 
     private AuditLogDetailView generateViewDetail(AuditTrailDto atd) {
         AuditLogDetailView view = new AuditLogDetailView();
-        if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
-            view.setBeforeChange(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
-        }
-        if (StringUtil.isNotEmpty(atd.getAfterAction())) {
-            view.setAfterChange(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+        if(atd.getOperation()==AuditTrailConsts.OPERATION_FOREIGN_INTERFACE){
+            if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
+                view.setRequest(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
+            }
+            if (StringUtil.isNotEmpty(atd.getAfterAction())) {
+                view.setResponse(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+            }
+        }else {
+            if (StringUtil.isNotEmpty(atd.getBeforeAction())) {
+                view.setBeforeChange(auditTrailService.genAuditLogRecList(atd.getBeforeAction()));
+            }
+            if (StringUtil.isNotEmpty(atd.getAfterAction())) {
+                view.setAfterChange(auditTrailService.genAuditLogRecList(atd.getAfterAction()));
+            }
         }
         if (StringUtil.isNotEmpty(atd.getViewParams())) {
             view.setSearchParam(auditTrailService.genAuditLogRecList(atd.getViewParams()));
@@ -161,6 +163,7 @@ public class AuditTrailDelegator {
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_SESSION_TIMEOUT), "Session Timeout"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_INACTIVE_RECORD), "Inactive Record"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UNAUTHORISED_ACCESS_SOURCES), "Unauthorised Access Sources"));
+        operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE), "Foreign Interface"));
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
         List<SelectOption> dataActivites =  IaisCommonUtils.genNewArrayList();
