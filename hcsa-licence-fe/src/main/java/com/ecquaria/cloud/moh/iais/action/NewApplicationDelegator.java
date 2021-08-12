@@ -2659,7 +2659,7 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         List<AppSubmissionDto> ackPageAppSubmissionDto=new ArrayList<>(2);
-        Set<String> svcNameSet = new LinkedHashSet<>();
+        List<String> svcNameSet = new ArrayList<>();
         if (!notAutoSaveAppsubmission.isEmpty()) {
             // save submission (notAUto data)
             AuditTrailDto currentAuditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
