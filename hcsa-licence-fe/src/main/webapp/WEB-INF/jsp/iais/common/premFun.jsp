@@ -809,6 +809,7 @@
             $premSelect.find('input[name="'+premisesType+'UnitNo"]').val(data.conveyanceUnitNo);
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.conveyanceBuildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.conveyanceStreetName);
+            $premSelect.find('input[name="'+premisesType+'Email"]').val(data.conveyanceEmail);
 
             // $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.conStartHH);
             // var startHH = $premSelect.find('option[value="' + data.conStartHH + '"]').html();
@@ -864,6 +865,7 @@
             $premSelect.find('input[name="'+premisesType+'BuildingName"]').val(data.offSiteBuildingName);
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.offSiteStreetName);
             $premSelect.find('select[name="'+premisesType+'StartHH"]').val(data.offSiteStartHH);
+            $premSelect.find('input[name="'+premisesType+'Email"]').val(data.offSiteEmail);
             // var startHH = $premSelect.find('option[value="' + data.offSiteStartHH + '"]').html();
             // $premSelect.find('select[name="'+premisesType+'StartHH"]').next().find('.current').html(startHH);
             // $premSelect.find('select[name="'+premisesType+'StartMM"]').val(data.offSiteStartMM);
