@@ -79,21 +79,13 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -108,6 +100,13 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 
 
 /**
@@ -203,7 +202,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String name = file.getName();
                     String path = file.getPath();
                     log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
-                    try (InputStream is = new FileInputStream(file);
+                    try (InputStream is = newInputStream(file.toPath());
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];
@@ -383,7 +382,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     public Boolean  download( ProcessFileTrackDto processFileTrackDto,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,String fileName
-            ,String groupPath,String submissionId)  throws Exception {
+    ,String groupPath,String submissionId)  throws Exception {
 
         Boolean flag=Boolean.FALSE;
 
@@ -400,7 +399,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         InputStream  fileInputStream = null;
                         try{
-                            fileInputStream=Files.newInputStream(filzz.toPath());
+                            fileInputStream= newInputStream(filzz.toPath());
                             ByteArrayOutputStream by=new ByteArrayOutputStream();
                             int count;
                             byte [] size=new byte[1024];
@@ -432,12 +431,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
-            ,String groupPath)  {
+        private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName
+        ,String groupPath)  {
 
 
-        try {
-            if(!zipEntry.getName().endsWith(File.separator)){
+            try {
+                if(!zipEntry.getName().endsWith(File.separator)){
 
                     String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
                     String s1=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+substring;
@@ -447,7 +446,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                     log.info(StringUtil.changeForLog(file.getPath()+"-----zipFile---------"));
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
-                    os=new FileOutputStream(MiscUtil.generateFile(s));
+                    File outFile = MiscUtil.generateFile(s);
+                    os= newOutputStream(outFile.toPath());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -460,18 +460,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         count=cos.read(b);
                     }
 
-            }else {
-                log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
-                String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
-                if(s.endsWith(File.separator)){
-                    s=s.substring(0,s.length()-1);
-                }
-                File file = MiscUtil.generateFile(s);
-                file.mkdirs();
-                log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
+                }else {
+                    log.info(StringUtil.changeForLog(zipEntry.getName()+"------zipEntry.getName()------"));
+                    String s=sharedPath + File.separator + AppServicesConsts.COMPRESS + File.separator + fileName + File.separator + groupPath + File.separator + zipEntry.getName();
+                    if(s.endsWith(File.separator)){
+                        s=s.substring(0,s.length()-1);
+                    }
+                    File file = MiscUtil.generateFile(s);
+                    file.mkdirs();
+                    log.info(StringUtil.changeForLog(file.getPath()+"-----else  zipFile-----"));
 
-            }
-        }catch (IOException e){
+                }
+            }catch (IOException e){
 
             }finally {
                 if(cos!=null){
@@ -503,16 +503,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                 }
 
-        }
+            }
 
-    }
+        }
 
 
 
 
     private Boolean fileToDto(String str,List<ApplicationDto> listApplicationDto,List<ApplicationDto> requestForInfList,ProcessFileTrackDto processFileTrackDto,
                               String submissionId,Long l)
-    {
+           {
         AuditTrailDto intranet = AuditTrailHelper.getCurrentAuditTrailDto();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(str, ApplicationListFileDto.class);
 
@@ -599,7 +599,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         withdrow(cessionOrwith);
         boolean b = withdrowAppToBe(cessionOrwith, applicationListDto, processFileTrackDto);
         if(b){
-            return Boolean.FALSE;
+           return Boolean.FALSE;
         }
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
@@ -777,7 +777,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
             }
 
-        });
+                });
         log.info("withdrow email function end");
 
     }
@@ -789,8 +789,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             ApplicationDto next = applicationDtoListIterator.next();
             String status = next.getStatus();
             if(!ApplicationConsts.PENDING_ASO_REPLY.equals(status)&&
-                    !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
-                    !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
+               !ApplicationConsts.PENDING_PSO_REPLY.equals(status)&&
+               !ApplicationConsts.PENDING_INP_REPLY.equals(status)){
                 List<AppPremiseMiscDto> entity = applicationClient.getAppPremiseMiscDtoRelateId(next.getId()).getEntity();
                 if(!entity.isEmpty()){
                     Iterator<AppPremiseMiscDto> iterator = entity.iterator();
@@ -817,8 +817,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     /*
-     *
-     * save file to fileRepro*/
+    *
+    * save file to fileRepro*/
     private void saveFileRepo(String fileNames,String groupPath,String submissionId,Long l){
         File file =MiscUtil.generateFile(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileNames+File.separator+groupPath+File.separator+"folder"+File.separator+groupPath,"files");
         if(!file.exists()){
@@ -945,9 +945,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     "saveFileName", currentApp + "-" + currentDomain,
                     ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(applicationDtos));
 
-    }
+        }
 
-    public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
+        public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
 
         AuditTrailDto intranet =new AuditTrailDto();
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
@@ -1101,9 +1101,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void  moveFile(File file){
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
-        File moveFile=MiscUtil.generateFile(sharedPath+File.separator+"move",name);
-        try (OutputStream fileOutputStream=new FileOutputStream(moveFile);
-             InputStream fileInputStream=Files.newInputStream(file.toPath())) {
+        File outFile = MiscUtil.generateFile(sharedPath+File.separator+"move", name);
+        try (OutputStream fileOutputStream = newOutputStream(outFile.toPath());
+             InputStream fileInputStream = newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];
             count= fileInputStream.read(size);
@@ -1141,7 +1141,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             boolean flag=false;
             for(ApplicationDto application :v){
                 if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
-                        ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
+                ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
                     requestForInforList.add(application);
                     flag=true;
                 }
@@ -1251,7 +1251,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -1282,8 +1282,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
-                            ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
+                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 

@@ -4,12 +4,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.PostInspectionDto;
@@ -19,9 +15,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -45,12 +40,11 @@ public class PostInspectionBatchJob {
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
     @Autowired
-    private HcsaConfigClient hcsaConfigClient;
-    @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
-
+    @Autowired
+    private AuditSystemListService auditSystemListService;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -87,7 +81,7 @@ public class PostInspectionBatchJob {
             List<AppSubmissionDto> appSubmissionDtoList = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity();
             for (AppSubmissionDto entity : appSubmissionDtoList) {
                 try {
-                    filetDoc(entity);
+                    auditSystemListService.filetDoc(entity);
                     entity.setAppGrpNo(grpNo);
                     entity.setAppType(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION);
                     entity.setAmount(0.0);
@@ -103,7 +97,7 @@ public class PostInspectionBatchJob {
                     String svcCode = hcsaServiceDto.getSvcCode();
                     appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
                     appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
-                    setRiskToDto(entity);
+                    auditSystemListService.setRiskToDto(entity);
                     appSubmissionDtos.add(entity);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -128,70 +122,5 @@ public class PostInspectionBatchJob {
         });
     }
 
-    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
-        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
-            riskAcceptiionDto.setScvCode(appSvcRelatedInfoDto.getServiceCode());
-            riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
-            riskAcceptiionDtoList.add(riskAcceptiionDto);
-        }
 
-        List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
-
-        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            String serviceCode = appSvcRelatedInfoDto.getServiceCode();
-            RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
-            if (riskResultDto != null) {
-                appSvcRelatedInfoDto.setScore(riskResultDto.getScore());
-                appSvcRelatedInfoDto.setDoRiskDate(riskResultDto.getDoRiskDate());
-            }
-        }
-    }
-
-
-    private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
-        if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
-            return null;
-        }
-        for (RiskResultDto riskResultDto : riskResultDtoList) {
-            if (serviceCode.equals(riskResultDto.getSvcCode())) {
-                return riskResultDto;
-            }
-        }
-        return null;
-    }
-
-    private void filetDoc(AppSubmissionDto appSubmissionDto){
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
-                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                if(!IaisCommonUtils.isEmpty(appSvcDocDtoLit)){
-                    ListIterator<AppSvcDocDto> appSvcDocDtoListIterator = appSvcDocDtoLit.listIterator();
-                    while (appSvcDocDtoListIterator.hasNext()){
-                        AppSvcDocDto appSvcDocDto = appSvcDocDtoListIterator.next();
-                        String fileRepoId = appSvcDocDto.getFileRepoId();
-                        String svcDocId = appSvcDocDto.getSvcDocId();
-                        if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
-                            appSvcDocDtoListIterator.remove();
-                        }
-                    }
-                }
-            }
-        }
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
-            ListIterator<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoListIterator = appGrpPrimaryDocDtos.listIterator();
-            while (appGrpPrimaryDocDtoListIterator.hasNext()){
-                AppGrpPrimaryDocDto next = appGrpPrimaryDocDtoListIterator.next();
-                String fileRepoId = next.getFileRepoId();
-                String svcDocId = next.getSvcDocId();
-                if(StringUtil.isEmpty(fileRepoId)||StringUtil.isEmpty(svcDocId)){
-                    appGrpPrimaryDocDtoListIterator.remove();
-                }
-            }
-        }
-    }
 }

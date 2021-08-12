@@ -464,9 +464,9 @@ public final class IaisEGPHelper extends EGPHelper {
     }
     /**
     * @description: format date
-    * @param:
-    * @return:
-    * @author: yichen
+    * @param: 
+    * @return: 
+    * @author: yichen 
     */
     public static Date parseToDate(String val) {
         if(StringUtils.isEmpty(val)){

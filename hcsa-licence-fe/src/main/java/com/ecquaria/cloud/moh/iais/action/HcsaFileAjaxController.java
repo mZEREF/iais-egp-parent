@@ -62,36 +62,36 @@ public class HcsaFileAjaxController {
         }
         if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
-        } else if (size <= 0) {
+         } else if (size <= 0) {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
         String errerMesssage = getErrorMessage(selectedFile);
         MessageDto messageCode = new MessageDto();
-        if(!StringUtil.isEmpty(errerMesssage)){
-            messageCode.setMsgType("N");
-            messageCode.setDescription(errerMesssage);
-            return JsonUtil.toJson(messageCode);
-        }else {
-            messageCode.setMsgType("Y");
-        }
-        try{
-            if(reloadIndex == -1){
-                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
-                if (needMaxGlobal) {
-                    ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
-                }
-                map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
-            }else {
-                map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
-                size = reloadIndex;
-            }
+         if(!StringUtil.isEmpty(errerMesssage)){
+             messageCode.setMsgType("N");
+             messageCode.setDescription(errerMesssage);
+             return JsonUtil.toJson(messageCode);
+         }else {
+             messageCode.setMsgType("Y");
+         }
+         try{
+             if(reloadIndex == -1){
+                 ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
+                 if (needMaxGlobal) {
+                     ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
+                 }
+                 map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
+             }else {
+                 map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
+                 size = reloadIndex;
+             }
 
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
-            log.info("----------change MultipartFile to file  falie-----------------");
-            return "";
-        }
+         }catch (Exception e){
+             log.error(e.getMessage(),e);
+             log.info("----------change MultipartFile to file  falie-----------------");
+             return "";
+         }
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -102,7 +102,7 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        if(selectedFile != null && selectedFile.getOriginalFilename()!=null) {
+        if(selectedFile != null && selectedFile.getOriginalFilename() != null) {
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
@@ -147,8 +147,9 @@ public class HcsaFileAjaxController {
         }
 
         //name
-        if(selectedFile.getOriginalFilename()!=null) {
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+        String orginName = selectedFile.getOriginalFilename();
+        if(orginName != null) {
+            String[] fileSplit = orginName.split("\\.");
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
             if (fileName.length() > 100) {
                 return MessageUtil.getMessageDesc("GENERAL_ERR0022");
@@ -163,12 +164,12 @@ public class HcsaFileAjaxController {
         String fileAppendId = ParamUtil.getString(request,"fileAppendId");
         String index  = ParamUtil.getString(request,"fileIndex");
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
-            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
-            if( !IaisCommonUtils.isEmpty(map)) {
+        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
+        if( !IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
-                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
+            ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
             }
         }
         log.info("-----------deleteFeCallFile end------------");

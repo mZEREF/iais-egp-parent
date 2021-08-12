@@ -21,6 +21,9 @@
                             <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Vehicle<c:if test="${currentPreviewSvcInfo.appSvcVehicleDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>

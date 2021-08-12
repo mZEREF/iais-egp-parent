@@ -10,30 +10,40 @@
     String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
-<input type="hidden" name="crud_action_type" value="">
-<input type="hidden" name="crud_action_value" value="">
-<input type="hidden" name="crud_action_additional" value="">
+<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <input type="hidden" name="crud_action_type_form_page" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
-<input type="hidden" value="${coMap.premises}" id="coMappremises" name="coMappremises">
-<input type="hidden" value="${coMap.document}" id="coMapdocument" name="coMapdocument">
-<input type="hidden" value="${coMap.information}" id="coMapinformation" name="coMapinformation">
-<input type="hidden" value="${coMap.previewli}" id="coMappreviewli" name="coMappreviewli">
 
     <%if(!StringUtil.isEmpty(flag)&&"transfer".equals(flag)){
 
     }else{
         %>
-<ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a></li>
-    <li id = "documentsli"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary<br> Documents</a></li>
-    <li id = "serviceFormsli"  role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related<br> Information</a></li>
-    <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
-    <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
+<ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+    <li id="licenseeli" role="presentation" class="${empty coMap.licensee ? 'incomplete' : 'complete'}">
+        <a id="licensee" aria-controls="licenseeTab" role="tab" data-toggle="tab">Licensee Details</a>
+    </li>
+    <li id="premisesli" role="presentation" class="${empty coMap.premises ? 'incomplete' : 'complete'}">
+        <a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Mode of Service Delivery</a>
+    </li>
+    <li id="documentsli" role="presentation" class="${empty coMap.document ? 'incomplete' : 'complete'}">
+        <a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary<br> Documents</a>
+    </li>
+    <li id="serviceFormsli" role="presentation" class="${empty coMap.information ? 'incomplete' : 'complete'}">
+        <a id="serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related<br> Information</a>
+    </li>
+    <li id="previewli" role="presentation" class="${empty coMap.previewli ? 'incomplete' : 'complete'}">
+        <a id="preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a>
+    </li>
+    <li id="paymentli" class="disabled" role="presentation">
+        <a id="payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a>
+    </li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm" style="overflow:hidden">
     <div class="swiper-wrapper" role="tablist">
-        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
+        <div class="swiper-slide " >
+            <a href="#licenseeTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Licensee Details</a>
+        </div>
+        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="licenseeTab"  role="tab" data-toggle="tab">Mode of Service Delivery</a></div>
         <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
         <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
         <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
@@ -48,79 +58,35 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        let val = $('#coMappremises').val();
-        let val1 = $('#coMapdocument').val();
-        let val2 = $('#coMapinformation').val();
-        let val3 = $('#coMappreviewli').val();
-        if(val=='premises'){
-            $('#premisesli').attr("class",'complete');
-        }else {
-            $('#premisesli').attr("class",'incomplete');
-        }
-        if(val1=='document'){
-            $('#documentsli').attr("class","complete");
-        }else {
-            $('#documentsli').attr("class","incomplete");
-        }
-        if(val2=='information'){
-            $('#serviceFormsli').attr("class",'complete');
-        }else {
-            $('#serviceFormsli').attr("class",'incomplete');
-        }
-        if(val3=='previewli'){
-            $('#previewli').attr("class",'complete');
-        }else {
-            $('#previewli').attr("class",'incomplete');
-        }
-
-
+        // tab click
         var controlLi = $('#controlLi').val();
-        $('#'+controlLi+'li').addClass('active');
-        var premisesli= $('#premisesli').attr("class");
-        if(premisesli.match("active")){
-            $('#premisesli').removeClass("incomplete");
-            $('#premisesli').removeClass("complete");
+        var $tarSel = $('#'+controlLi+'li');
+        if ($tarSel.length > 0) {
+            $tarSel.addClass('active');
+            if ($tarSel.attr("class").match("active")){
+                $tarSel.removeClass("incomplete");
+                $tarSel.removeClass("complete");
+            }
         }
-        var documentsli=  $('#documentsli').attr("class");
-        if(documentsli.match("active")){
-            $('#documentsli').removeClass("incomplete");
-            $('#documentsli').removeClass("complete");
-        }
-        var serviceFormsli= $('#serviceFormsli').attr("class");
-        if(serviceFormsli.match("active")){
-            $('#serviceFormsli').removeClass("incomplete");
-            $('#serviceFormsli').removeClass("complete");
-        }
-        var previewli= $('#previewli').attr("class");
-        if(previewli.match("active")){
-            $('#previewli').removeClass("incomplete");
-            $('#previewli').removeClass("complete");
-        }
-        $('#premises').click(function(){
-            showWaiting();
-            submit('premises',null,null);
+        // bind event
+        $('#nav-tabs-ul a').click(function() {
+            var currId = $(this).attr('id');
+            console.info(currId);
+            if (controlLi == currId) {
+                return;
+            } else if ('serviceForms' == currId) {
+                showWaiting();
+                $("[name='crud_action_type']").val('serviceForms');
+                $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
+                $("[name='crud_action_type_form_page']").val('jump');
+                var mainForm = document.getElementById("mainForm");
+                mainForm.submit();
+            } else if (currId != 'payment') {
+                showWaiting();
+                $('#mainForm').find(':input').prop('disabled',false);
+                submit(currId,null,null);
+            }
         });
-        $('#documents').click(function(){
-            showWaiting();
-            submit('documents',null,null);
-        });
-        $('#serviceForms').click(function(){
-            showWaiting();
-            // submit('serviceForms',null,null);
-            $("[name='crud_action_type']").val('serviceForms');
-            $("[name='crud_action_type_tab']").val('${hcsaServiceDtoList.get(0).svcCode}');
-            $("[name='crud_action_type_form_page']").val('jump');
-            var mainForm = document.getElementById("mainForm");
-            mainForm.submit();
-        });
-        $('#preview').click(function(){
-            showWaiting();
-            submit('preview',null,null);
-        });
-        /*$('#payment').click(function(){
-            submit('payment',null,null);
-        });*/
-
 
         <c:if test="${requestInformationConfig==null && ('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
         <c:if test="${'APTY004' ==AppSubmissionDto.appType}">
@@ -161,7 +127,6 @@
         $('#payment').removeAttr("data-toggle");
         </c:otherwise>
         </c:choose>
-
 
         </c:if>
 

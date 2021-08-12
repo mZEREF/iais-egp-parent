@@ -69,7 +69,7 @@ public class InsRepRecValidate implements CustomizeValidator {
             recommendation  = ParamUtil.getRequestString(httpServletRequest, "recommendationRfc");
         }
         verifyVehicleEasMtsReport( httpServletRequest,errorMap,applicationViewDto,recommendation);
-        return errorMap;
+            return errorMap;
     }
 
     private void verifyVehicleEasMtsReport(HttpServletRequest request, Map<String, String> errorMap, ApplicationViewDto applicationViewDto,String recommendation){

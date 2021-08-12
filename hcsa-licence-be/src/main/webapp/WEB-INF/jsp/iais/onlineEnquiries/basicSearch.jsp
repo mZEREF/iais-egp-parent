@@ -72,6 +72,12 @@
                                            <c:if test="${count=='5'}">checked</c:if>
                                            name="searchChk"/><label for="servicePersonnelChk">&nbsp;Service Personnel Name</label>
                                 </iais:value>
+                                <iais:value width="18" cssClass="form-check">
+                                    <input id="uenChk" type="radio"
+                                           value="6"
+                                           <c:if test="${count=='6'}">checked</c:if>
+                                           name="searchChk"/><label for="uenChk">&nbsp;UEN</label>
+                                </iais:value>
                             </iais:row>
                             <iais:row id="selectSearchChkMsg" style="display: none">
                                 <div class="row" height="1"

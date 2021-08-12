@@ -36,9 +36,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
         appEditSelectDto.setServiceEdit(true);
-        appEditSelectDto.setPremisesEdit(false);
-        appEditSelectDto.setDocEdit(false);
-        appEditSelectDto.setPoEdit(false);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         if (appSvcRelatedInfoDto == null || oldAppSvcRelatedInfoDto == null) {
@@ -152,8 +149,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appSubmissionDtoByLicenceId.setAutoRfc(true);
             appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, Boolean.FALSE,
-                    ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 

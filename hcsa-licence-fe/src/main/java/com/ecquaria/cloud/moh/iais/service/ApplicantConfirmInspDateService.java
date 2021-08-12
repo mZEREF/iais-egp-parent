@@ -15,12 +15,12 @@ public interface ApplicantConfirmInspDateService {
      * System Date
      */
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: appPremCorrId, appStatus
-     * @return: ApptFeConfirmDateDto
-     * @Descripation: get Appt System Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: appPremCorrId, appStatus
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: get Appt System Date
+      */
     ApptFeConfirmDateDto getApptSystemDate(String premCorrId, String appStatus);
 
     /**
@@ -33,104 +33,104 @@ public interface ApplicantConfirmInspDateService {
     void confirmInspectionDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: apptFeConfirmDateDto
-     * @return: ApptFeConfirmDateDto
-     * @Descripation: get Appt New System Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: apptFeConfirmDateDto
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: get Appt New System Date
+      */
     ApptFeConfirmDateDto getApptNewSystemDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: get InspectionDate Hours
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get InspectionDate Hours
+      */
     List<SelectOption> getInspectionDateHours();
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: get AmPm Option
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: get AmPm Option
+      */
     List<SelectOption> getAmPmOption();
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: apptFeConfirmDateDto
-     * @return: void
-     * @Descripation: reject System Date And Create Task
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: apptFeConfirmDateDto
+      * @return: void
+      * @Descripation: reject System Date And Create Task
+      */
     void rejectSystemDateAndCreateTask(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
      * Specific Date
      */
     /**
-     * @author: shicheng
-     * @Date 2020/2/18
-     * @Param: appPremCorrId
-     * @return: ApptFeConfirmDateDto
-     * @Descripation: getSpecificDateDto
-     */
+      * @author: shicheng
+      * @Date 2020/2/18
+      * @Param: appPremCorrId
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: getSpecificDateDto
+      */
     ApptFeConfirmDateDto getSpecificDateDto(String appPremCorrId, String appStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/19
-     * @Param: apptFeConfirmDateDto
-     * @return: void
-     * @Descripation: reject Specific Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/19
+      * @Param: apptFeConfirmDateDto
+      * @return: void
+      * @Descripation: reject Specific Date
+      */
     void rejectSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/21
-     * @Param: apptFeConfirmDateDto
-     * @return: ApptFeConfirmDateDto
-     * @Descripation: confirm New Date
-     */
+      * @author: shicheng
+      * @Date 2020/2/21
+      * @Param: apptFeConfirmDateDto
+      * @return: ApptFeConfirmDateDto
+      * @Descripation: confirm New Date
+      */
     ApptFeConfirmDateDto confirmNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/2/21
-     * @Param: apptFeConfirmDateDto
-     * @return: void
-     * @Descripation: saveAccSpecificDate
-     */
+      * @author: shicheng
+      * @Date 2020/2/21
+      * @Param: apptFeConfirmDateDto
+      * @return: void
+      * @Descripation: saveAccSpecificDate
+      */
     void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
 
     /**
-     * @author: shicheng
-     * @Date 2020/8/4
-     * @Param: applicationNo
-     * @return: String
-     * @Descripation: get AppPremCorrId By AppNo
-     */
+      * @author: shicheng
+      * @Date 2020/8/4
+      * @Param: applicationNo
+      * @return: String
+      * @Descripation: get AppPremCorrId By AppNo
+      */
     String getAppPremCorrIdByAppNo(String applicationNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/27
-     * @Param: inspSetMaskValueDto
-     * @return: String
-     * @Descripation: getTcuAuditApptPreDateFlag
-     */
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getTcuAuditApptPreDateFlag
+      */
     String getTcuAuditApptPreDateFlag(InspSetMaskValueDto inspSetMaskValueDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/27
-     * @Param: inspSetMaskValueDto
-     * @return: String
-     * @Descripation: getAppGroupIdByMaskValueDto
-     */
+      * @author: shicheng
+      * @Date 2021/7/27
+      * @Param: inspSetMaskValueDto
+      * @return: String
+      * @Descripation: getAppGroupIdByMaskValueDto
+      */
     String getAppGroupIdByMaskValueDto(InspSetMaskValueDto inspSetMaskValueDto);
 }

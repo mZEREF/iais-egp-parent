@@ -19,119 +19,28 @@
     }
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="crud_action_type" value="">
-    <div class="instruction-content center-content">
-        <div class="h3-with-desc">
-            <strong>Licensee</strong>
-            <p>A licensee is a person or company to whom a licence is granted.</p>
-
-            <strong>${licensee.name}</strong>
-            <p>Your company information is retrieved from ACRA.</p>
-
-            <div class="form-horizontal">
-                <iais:row>
-                    <iais:field value="UEN (ACRA / ROS) No." width="11"/>
-                    <iais:field value="${licensee.uenNo}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Name of Licensee" width="11"/>
-                    <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code  code="${licensee.name}"/>
-                    </label>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Postal Code" width="11"/>
-                    <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code code="${licensee.postalCode}"/>
-                    </label>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Address Type" width="11"/>
-                    <iais:field value="${licensee.addrType}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Block / House No." width="11"/>
-                    <iais:field value="${licensee.blkNo}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Floor No." width="11"/>
-                    <iais:field value="${licensee.floorNo}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Unit No." width="11"/>
-                    <iais:field value="${licensee.unitNo}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Street Name" width="11"/>
-                    <iais:field value="${licensee.streetName}" width="11"/>
-                </iais:row>
-
-
-                <iais:row>
-                    <iais:field value="Building Name" width="11"/>
-                    <iais:field value="${licensee.buildingName}" width="11"/>
-                </iais:row>
-
-                <iais:row>
-                    <iais:field value="Office Telephone No." width="11"/>
-                    <iais:field value="${licensee.getOfficeTelNo()}" width="11"/>
-                </iais:row>
-                <iais:row>
-                    <iais:field value="Office Email Address" width="11"/>
-                    <iais:field value="${licensee.getEmilAddr()}" width="11"/>
-                </iais:row>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <div class="main-content">
+        <div class="container center-content">
+            <div class="col-xs-12">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <%@include file="section/companyDetail.jsp" %>
+                    <c:forEach var="licensee" items="${subLicenseeDtoList}" varStatus="status">
+                        <c:set var="index" value="${status.index + 1}" />
+                        <%@include file="section/licenseeDetail.jsp" %>
+                    </c:forEach>
+                </div>
+                <c:if test="${'common'.equals(flag)}">
+                    <div class="container-footer">
+                        <div class="col-sm-4 col-md-2 text-left">
+                            <a style="padding-left: 5px;" class="back" id="back">
+                                <em class="fa fa-angle-left">&nbsp;Back</em>
+                            </a>
+                        </div>
+                    </div>
+                </c:if>
             </div>
         </div>
-        <c:forEach var="item" items="${person}" varStatus="status">
-        <div class="h3-with-desc">
-            <div class="form-horizontal">
-                    <strong>Board Member ${status.index + 1}</strong>
-                    <iais:row>
-                        <iais:field value="Name" width="11"/>
-                        <iais:field value="${item.getName()}" width="11"/>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="ID Type" width="11"/>
-                        <label class="col-xs-11 col-md-4 control-label">
-                            <iais:code  code="${item.getIdType()}"/>
-                        </label>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="ID No." width="11"/>
-                        <iais:field value="${item.getIdNo()}" width="11"/>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Designation" width="11"/>
-                        <iais:field value="${item.getDesignation()}" width="11"/>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Designation Appointment Date" width="11"/>
-                        <label class="col-xs-11 col-md-4 control-label">
-                            <fmt:formatDate value="${item.getApptDt()}" pattern="dd/MM/yyyy"/>
-                        </label>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Designation Cessation Date" width="11"/>
-                        <label class="col-xs-11 col-md-4 control-label">
-                            <fmt:formatDate value="${item.getCessationDt()}" pattern="dd/MM/yyyy"/>
-                        </label>
-                    </iais:row>
-                    <iais:row>
-                        <iais:field value="Designation Cessation Reason" width="11"/>
-                        <iais:field value="${item.getCessationReason()}" width="11"/>
-                    </iais:row>
-            </div>
-        </div>
-
-        </c:forEach>
-        <c:if test="${'common'.equals(flag)}">
-        <div class="row">
-            <div class="col-xs-2 col-md-2">
-                <a align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
-            </div>
-        </div>
-        </c:if>
-
     </div>
 </form>
 <script type="text/javascript">

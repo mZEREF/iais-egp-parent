@@ -11,11 +11,12 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
-import java.util.Date;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * @Author: yichen

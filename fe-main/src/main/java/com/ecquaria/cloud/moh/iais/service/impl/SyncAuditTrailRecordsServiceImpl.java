@@ -22,10 +22,14 @@ import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminMainFeClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -39,10 +43,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * SyncAuditTrailRecordsServiceImpl
@@ -105,13 +105,14 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 log.debug("Create File fail");
             }
         }
-        File groupPath=MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
+        File groupPath = MiscUtil.generateFile(sharedPath , RequestForInformationConstants.FILE_NAME_AUDIT);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = new FileOutputStream(MiscUtil.generateFile(sharedOutPath,file.getName()));
-             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
+        File outFile = MiscUtil.generateFile(sharedOutPath,file.getName());
+        try (OutputStream fileInputStream = java.nio.file.Files.newOutputStream(outFile.toPath());
+             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath())){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -138,7 +139,8 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(MiscUtil.generateFile(sharedOutPath, l+ AppServicesConsts.ZIP_NAME));
+        File outFile = MiscUtil.generateFile(sharedOutPath, l+ AppServicesConsts.ZIP_NAME);
+        try (OutputStream is=java.nio.file.Files.newOutputStream(outFile.toPath());
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 

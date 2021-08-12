@@ -11,7 +11,7 @@
 <%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%-- END taglib --%>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Pragma" content="no-cache"/>
 	<meta http-equiv="Cache Control" content="no-store"/>

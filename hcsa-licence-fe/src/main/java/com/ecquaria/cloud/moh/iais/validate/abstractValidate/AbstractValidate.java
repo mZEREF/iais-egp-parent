@@ -5,12 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.annotation.validate.FieldValidate;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.validate.Validate;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
@@ -42,13 +45,22 @@ public abstract class AbstractValidate implements Validate {
     private void validateFidld(Map<String,String> map,@NotNull Field[] declaredFields,Object o,Integer index){
         for(Field v : declaredFields){
             FieldNotNull annotation = v.getAnnotation(FieldNotNull.class);
-            v.setAccessible(true);
-            Object f;
+            String stat = "get";
+            if (v.getType().equals(boolean.class)) {
+                stat = "is";
+            }
+            Method getMed = null;
             try {
-                 f = v.get(o);
-            } catch (IllegalAccessException e) {
-                log.error("-----error-----");
-                throw  new RuntimeException("-----error-----", e);
+                getMed = o.getClass().getMethod(stat + StringUtil.capitalize(v.getName()));
+            } catch (NoSuchMethodException e) {
+                return;
+            }
+            Object f = null;
+            try {
+                f = getMed.invoke(o, null);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                log.error(e.getMessage(), e);
+                throw new IaisRuntimeException(e);
             }
             if(annotation!=null){
                 if(f==null){
@@ -70,7 +82,7 @@ public abstract class AbstractValidate implements Validate {
             if(fieldValidate!=null){
                 if(f!=null){
                     String s = fieldValidate.fieldFormat();
-                    if(s!=null||!"".equals(s)){
+                    if(s!=null&&!"".equals(s)){
                         if(f instanceof String){
                             boolean matches = ((String) f).matches(s);
                             String message = fieldValidate.fieldFormatMessage();

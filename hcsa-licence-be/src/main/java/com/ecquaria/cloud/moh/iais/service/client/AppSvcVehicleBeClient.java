@@ -28,5 +28,5 @@ public interface AppSvcVehicleBeClient {
 
     @GetMapping(value = "/halp-be-svc-vehicle/svc-vehicles-status/{appPremCorrId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcVehicleDto>> getSvcVehicleDtoListByCorrIdStatus(@PathVariable(name = "appPremCorrId") String appPremCorrId,
-                                                                                     @PathVariable(name = "status") String status);
+                                                                                   @PathVariable(name = "status") String status);
 }

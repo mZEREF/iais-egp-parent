@@ -33,9 +33,33 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaPrimiseWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.RoutingStageSearchDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,10 +70,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Wenkang
@@ -221,7 +241,8 @@ public interface HcsaConfigClient {
 
     @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}", method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId") String serviceId);
-
+    @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-name",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoByName(@RequestParam("svcName") String svcName);
 
     @RequestMapping(value = "/kpi-reminder/module-name-service-code", method = RequestMethod.GET)
     FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);
@@ -307,7 +328,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<HcsaServiceStepSchemeDto>> getHcsaServiceStepSchemeDtoByServiceId(@RequestParam("serviceId") String serviceId);
 
     @GetMapping(value = "/hcsa-config/hcsa-service-categorys", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<HcsaServiceCategoryDto>> getHcsaServiceCategorys();
+    FeignResponseEntity<CopyOnWriteArrayList<HcsaServiceCategoryDto>> getHcsaServiceCategorys();
 
     @GetMapping(value = "/hcsa-config/service-is-active")
     FeignResponseEntity<Boolean> serviceIdIsUsed(@RequestParam("serviceId") String serviceId);
@@ -394,7 +415,4 @@ public interface HcsaConfigClient {
 
     @PostMapping (value = "/hcsa-config/stage-work-group-apptype",produces = MediaType.APPLICATION_JSON_VALUE,consumes =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getSvcIdsByStageIdAndWorkgroupIdsAndAppType(@RequestBody RoutingStageSearchDto routingStageSearchDto);
-
-    @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-name",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoByName(@RequestParam("svcName") String svcName);
 }

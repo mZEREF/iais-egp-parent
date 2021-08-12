@@ -120,6 +120,8 @@ public final class MasterCodeUtil {
 
     public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
 
+    public static final String CATE_ID_LICENSEE_TYPE                                    = "1CC74A81-ACA4-EA11-BE7A-000C29D29DB0";
+    public static final String CATE_ID_LICENSEE_SUB_TYPE                                = "AB50CD91-80D5-EB11-8B7F-000C29FD17F9";
 
     /**
      * @description: refresh the master codes into cache

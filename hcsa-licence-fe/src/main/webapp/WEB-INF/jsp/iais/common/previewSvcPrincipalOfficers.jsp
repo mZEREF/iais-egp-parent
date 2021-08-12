@@ -36,6 +36,9 @@
                             </div>
                         </c:if>
                         <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <c:choose>
                                 <c:when test="${po.psnType=='PO'}">
 

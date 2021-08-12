@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper.utils;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.google.common.base.Charsets;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.BaseFont;
@@ -8,20 +9,20 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.xhtmlrenderer.pdf.ITextFontResolver;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.xhtmlrenderer.pdf.ITextFontResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author yichen
@@ -54,7 +55,7 @@ public class PDFGenerator {
 		}
 
 		String optHtmlName = System.currentTimeMillis() + FILE_HTML ;
-		File optHtmlFile = new File(optHtmlName);
+		File optHtmlFile = MiscUtil.generateFile(optHtmlName);
 		if (!optHtmlFile.exists()){
 			boolean flag = optHtmlFile.createNewFile();
 			if (!flag) {
@@ -62,7 +63,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();
@@ -83,7 +84,7 @@ public class PDFGenerator {
 		}
 
 		String optHtmlName = System.currentTimeMillis() + FILE_HTML ;
-		File optHtmlFile = new File(optHtmlName);
+		File optHtmlFile = MiscUtil.generateFile(optHtmlName);
 		if (!optHtmlFile.exists()){
 			boolean flag = optHtmlFile.createNewFile();
 			if (!flag) {
@@ -91,7 +92,7 @@ public class PDFGenerator {
 			}
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(optHtmlFile), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(newOutputStream(optHtmlFile.toPath()), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

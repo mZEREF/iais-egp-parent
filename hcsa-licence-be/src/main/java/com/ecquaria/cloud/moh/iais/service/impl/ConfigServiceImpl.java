@@ -29,7 +29,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
@@ -50,18 +53,24 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * @author Wenkang
@@ -75,8 +84,14 @@ public class ConfigServiceImpl implements ConfigService {
     private static final String VERSION = "version";
     private static final String DATE_PARSE = "yyyy-MM-dd HH:mm:ss";
     private static final String ILLEGAL_OPERATION = "Illegal operation";
+    private static final String NEW_APPLICATION="New Application";
+    private static final String  APPEAL="Appeal";
+    private static final String REQUEST_FOR_CHANGE="Request For Change";
+    private static final String RENEW="Renew";
+    private static final String CESSATION ="Cessation";
+    private static final String SUSPENSION="Suspension";
+    private static final String WITHDRAWAL="Withdrawal";
 
-    @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private OrganizationClient organizationClient;
@@ -110,9 +125,15 @@ public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
-    private static List<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
+    private CopyOnWriteArrayList<HcsaServiceCategoryDto> hcsaServiceCatgoryDtos;
 
     private static List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos;
+
+    @Autowired
+    public ConfigServiceImpl(HcsaConfigClient hcsaConfigClient) {
+        this.hcsaConfigClient = hcsaConfigClient;
+        this.hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
+    }
 
     @Override
     public List<HcsaServiceDto> getAllHcsaServices() {
@@ -634,7 +655,7 @@ public class ConfigServiceImpl implements ConfigService {
                         errorMap.put("mandatoryCount"+i, generalErr0002);
                     }
                 }else {
-                    errorMap.put("mandatoryCount"+i, generalErr0002);
+                    errorMap.put("mandatoryCount"+i,generalErr0002);
                 }
             }
             if (StringUtil.isEmpty(pageMaximumCount)) {
@@ -644,10 +665,10 @@ public class ConfigServiceImpl implements ConfigService {
                     pageMaxFlag=true;
                     int i1 = Integer.parseInt(pageMaximumCount);
                     if(i1<0){
-                        errorMap.put("maximumCount"+i, generalErr0002);
+                        errorMap.put("maximumCount"+i,generalErr0002);
                     }
                 }else {
-                    errorMap.put("maximumCount"+i, generalErr0002);
+                    errorMap.put("maximumCount"+i,generalErr0002);
                 }
             }
             if(pageManFlag&&pageMaxFlag){
@@ -1060,17 +1081,8 @@ public class ConfigServiceImpl implements ConfigService {
         return map;
     }
 
-    private  List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
-        if(hcsaServiceCatgoryDtos!=null){
-            return hcsaServiceCatgoryDtos;
-        }
-        synchronized (this){
-            if (hcsaServiceCatgoryDtos == null) {
-                //this config cannot change,so need init once
-                hcsaServiceCatgoryDtos = hcsaConfigClient.getHcsaServiceCategorys().getEntity();
-            }
-            return hcsaServiceCatgoryDtos;
-        }
+    private List<HcsaServiceCategoryDto> getHcsaServiceCategoryDto() {
+        return hcsaServiceCatgoryDtos;
     }
 
     @Override
@@ -1276,21 +1288,21 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
             List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-                appeal= getWorkGrop(type,"Appeal");
+                appeal= getWorkGrop(type,APPEAL);
             }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-                appeal=  getWorkGrop(type,"New Application");
+                appeal=  getWorkGrop(type,NEW_APPLICATION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
-               appeal = getWorkGrop(type, "Request For Change");
+               appeal = getWorkGrop(type, REQUEST_FOR_CHANGE);
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-                appeal=  getWorkGrop(type,"Renew");
+                appeal=  getWorkGrop(type,RENEW);
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-                appeal= getWorkGrop(type,"Cessation");
+                appeal= getWorkGrop(type,CESSATION);
             }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-                appeal= getWorkGrop(type,"Suspension");
+                appeal= getWorkGrop(type,SUSPENSION);
             }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
                 appeal= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-                appeal= getWorkGrop(type,"Withdrawal");
+                appeal= getWorkGrop(type,WITHDRAWAL);
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);
@@ -1483,19 +1495,19 @@ public class ConfigServiceImpl implements ConfigService {
     private void sendHcsaConfigPageDtoTypeName(HcsaConfigPageDto hcsaConfigPageDto,String type){
         hcsaConfigPageDto.setAppType(type);
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("New Application");
+            hcsaConfigPageDto.setAppTypeName(NEW_APPLICATION);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Appeal");
+            hcsaConfigPageDto.setAppTypeName(APPEAL);
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
-            hcsaConfigPageDto.setAppTypeName("Request For Change");
+            hcsaConfigPageDto.setAppTypeName(REQUEST_FOR_CHANGE);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Renew");
+            hcsaConfigPageDto.setAppTypeName(RENEW);
         }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Cessation");
+            hcsaConfigPageDto.setAppTypeName(CESSATION);
         }else  if(ApplicationConsts.APPLICATION_TYPE_SUSPENSION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Suspension");
+            hcsaConfigPageDto.setAppTypeName(SUSPENSION);
         }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("Withdrawal");
+            hcsaConfigPageDto.setAppTypeName(WITHDRAWAL);
         }
     }
 

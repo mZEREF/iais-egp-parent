@@ -91,11 +91,7 @@ function gotoFirstMsg() {
     if (errorTop <= 0) {
         errorTop = $target.offset().top;
     }
-    if (errorTop > 0) {
-        $('html,body').animate({scrollTop: errorTop - 100});
-    } else {
-        $('html,body').animate({scrollTop: errorTop - 100});
-    }
+    $('html,body').animate({scrollTop: errorTop - 100});
 }
 
 function getErrorMsg(){

@@ -81,8 +81,9 @@
                             <table aria-describedby="" class="table">
                                 <thead>
                                     <tr align="center">
+                                        <th scope="col" style="display: none"></th>
                                         <iais:sortableHeader needSort="false" field="" value=" "/>
-                                        <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                        <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                         <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
                                         <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
                                         <iais:sortableHeader needSort="true"  field="PH_DESC" value="Holiday Description"/>

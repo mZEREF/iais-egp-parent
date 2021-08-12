@@ -563,7 +563,9 @@ public class PaymentNetsProxy extends PaymentProxy {
 	public static String generateSignature(String txnReq,String secretKey) throws Exception{
 		String concatPayloadAndSecretKey = txnReq + secretKey;
 		String concatPayloadAndSecretKey1 = new String(concatPayloadAndSecretKey.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-		return encodeBase64(hashSHA256ToBytes(concatPayloadAndSecretKey1.getBytes(StandardCharsets.UTF_8)));
+		String hmac = encodeBase64(hashSHA256ToBytes(concatPayloadAndSecretKey1.getBytes(StandardCharsets.UTF_8)));
+		System.out.println("hmac" + hmac);
+		return hmac;
 
 	}
 

@@ -9,7 +9,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
-                <th scope="col" style="width: 0"></th>
+                <th scope="col" style="display: none"></th>
                 <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="T3.LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="false"  field="T2.PSN_TYPE" value="Role" isFE="true"/>
@@ -26,36 +26,35 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
-                        <tr>
-                            <td></td>
-                            <td>
-                                <p class="visible-xs visible-sm table-row-title">Type</p>
-                                    ${pool.svcName}</td>
-                            <td>
-                                <p class="visible-xs visible-sm table-row-title">Licence No.</p>
-                                    ${pool.licenceNo}</td>
-                            <td>
-                                <p class="visible-xs visible-sm table-row-title">Role</p>
-                                <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
-                                    <c:choose>
-                                        <c:when test="${pool.roles.size() == 1}">
-                                            <iais:code code="${assessList}"/>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <c:choose>
-                                                <c:when test="${pool.roles.size() == assessStatus.index + 1}">
-                                                    <iais:code code="${assessList}"/>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <iais:code code="${assessList}"/>,
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </td>
-                        </tr>
-                    </c:forEach>
+                            <tr>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Type</p>
+                                        ${pool.svcName}</td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                        ${pool.licenceNo}</td>
+                                <td>
+                                    <p class="visible-xs visible-sm table-row-title">Role</p>
+                                    <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
+                                        <c:choose>
+                                            <c:when test="${pool.roles.size() == 1}">
+                                                <iais:code code="${assessList}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:choose>
+                                                    <c:when test="${pool.roles.size() == assessStatus.index + 1}">
+                                                        <iais:code code="${assessList}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="${assessList}"/>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </td>
+                            </tr>
+                        </c:forEach>
                 </c:otherwise>
             </c:choose>
             </tbody>

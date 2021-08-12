@@ -632,7 +632,7 @@ public class BlastManagementDelegator {
             if("SMS".equals(mode)){
                 List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
                 for (EmailAuditTrailDto item:searchResult.getRows()
-                ) {
+                     ) {
                     EmailAuditTrailSMSDto emailAuditTrailSMSDto = new EmailAuditTrailSMSDto();
                     emailAuditTrailSMSDto.setRecipient(item.getRecipient());
                     emailAuditTrailSMSDto.setSubject(item.getSubject());

@@ -35,6 +35,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -132,9 +133,9 @@ public class FeUserManagement {
 
     public void delete(BaseProcessClass bpc){
         String[] userId =  ParamUtil.getMaskedStrings(bpc.request, "userId");
-        for (String item:userId
-             ) {
-            if (!StringUtil.isEmpty(item)){
+        log.info(StringUtil.changeForLog("The deleted user: " + Arrays.toString(userId)));
+        for (String item : userId) {
+            if (!StringUtil.isEmpty(item)) {
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                 orgUserDto.setIdentityNo(orgUserDto.getIdNumber());

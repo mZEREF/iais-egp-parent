@@ -202,6 +202,9 @@
     $("#amendLicence4_2").click(function(){
         guideSubmit("amend4_2","main");
     });
+    $("#amendLicence5").click(function(){
+        guideSubmit("amend5","main");
+    });
     $("#updateAdminPersonnel").click(function(){
         guideSubmit("upAdmin","main");
     });

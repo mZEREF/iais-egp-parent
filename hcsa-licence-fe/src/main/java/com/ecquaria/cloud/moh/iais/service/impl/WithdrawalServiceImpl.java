@@ -216,7 +216,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             if (recallApplicationDto.getResult()){
                 for (ApplicationDto app:applicationDtoList
-                ) {
+                     ) {
                     app.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
                 }
                 applicationFeClient.updateApplicationList(applicationDtoList);
@@ -263,7 +263,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee!=0.0d){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee>0){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
@@ -469,7 +469,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSubmissionDto.setRequirement(true);
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_WITHDRAWN);
         setRiskToDto(appSubmissionDto);
     }
 

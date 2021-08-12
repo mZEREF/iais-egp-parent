@@ -137,113 +137,113 @@ public class AppealApproveBatchjob {
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveGroupDtos length is -->:"+appealApproveGroupDtos.size()));
         if(!IaisCommonUtils.isEmpty(appealApproveGroupDtos)){
-            for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
-                ApplicationGroupDto applicationGroupDto = appealApproveGroupDto.getApplicationGroupDto();
-                List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();
-                if(!IaisCommonUtils.isEmpty(appealApproveDtos)&&applicationGroupDto!=null){
-                    log.info(StringUtil.changeForLog("The AppealApproveBatchjob group no is -->"+applicationGroupDto.getGroupNo()));
-                    log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveDtos.size() is -->"+appealApproveDtos.size()));
-                    List<ApplicationDto> appealApplicaiton = new ArrayList();
-                    List<ApplicationDto> rollBackApplication = IaisCommonUtils.genNewArrayList();
-                    List<LicenceDto> appealLicence = IaisCommonUtils.genNewArrayList();
-                    List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
-                    List<LicenceDto> rollBackLicence = IaisCommonUtils.genNewArrayList();
-                    List<PremisesDto> licPremisesDto = IaisCommonUtils.genNewArrayList();
-                    List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
-                    List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
-                    List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
-                    List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
-                    List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
-                    List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
-                    List<ApplicationGroupDto> appealApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
-                    List<ApplicationGroupDto> rollBackApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
-                    for (AppealApproveDto appealApproveDto: appealApproveDtos){
-                        ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
-                        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
-                        if(applicationDto!= null && appealDto != null){
-                            log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
-                            String  appealType = appealDto.getAppealType();
-                            log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
-                            switch(appealType){
-                                case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
-                                    appealApplicaiton(appPremiseMiscDtoList,appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
-                                            appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,licPremisesDto,
-                                            appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
-                                            appealApproveDto);
-                                    break;
-                                case ApplicationConsts.APPEAL_TYPE_LICENCE :
-                                    appealLicence(appPremiseMiscDtoList,appealDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getReason());
-                                    break;
+          for (AppealApproveGroupDto appealApproveGroupDto :appealApproveGroupDtos ){
+              ApplicationGroupDto applicationGroupDto = appealApproveGroupDto.getApplicationGroupDto();
+              List<AppealApproveDto> appealApproveDtos = appealApproveGroupDto.getAppealApproveDtoList();
+              if(!IaisCommonUtils.isEmpty(appealApproveDtos)&&applicationGroupDto!=null){
+                  log.info(StringUtil.changeForLog("The AppealApproveBatchjob group no is -->"+applicationGroupDto.getGroupNo()));
+                  log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApproveDtos.size() is -->"+appealApproveDtos.size()));
+                  List<ApplicationDto> appealApplicaiton = new ArrayList();
+                  List<ApplicationDto> rollBackApplication = IaisCommonUtils.genNewArrayList();
+                  List<LicenceDto> appealLicence = IaisCommonUtils.genNewArrayList();
+                  List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
+                  List<LicenceDto> rollBackLicence = IaisCommonUtils.genNewArrayList();
+                  List<PremisesDto> licPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppSvcKeyPersonnelDto> appealPersonnel = IaisCommonUtils.genNewArrayList();
+                  List<AppSvcKeyPersonnelDto> rollBackPersonnel = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto = IaisCommonUtils.genNewArrayList();
+                  List<AppPremisesRecommendationDto> appealAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
+                  List<AppPremisesRecommendationDto> rollBackAppPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
+                  List<ApplicationGroupDto> appealApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                  List<ApplicationGroupDto> rollBackApplicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                  for (AppealApproveDto appealApproveDto: appealApproveDtos){
+                      ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
+                      AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
+                      if(applicationDto!= null && appealDto != null){
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
+                          String  appealType = appealDto.getAppealType();
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
+                          switch(appealType){
+                              case ApplicationConsts.APPEAL_TYPE_APPLICAITON :
+                                  appealApplicaiton(appPremiseMiscDtoList,appealApplicaiton,rollBackApplication,appealPersonnel,rollBackPersonnel,
+                                          appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,licPremisesDto,
+                                          appealAppPremisesRecommendationDtos,rollBackAppPremisesRecommendationDtos,appealApplicationGroupDtos,rollBackApplicationGroupDtos,
+                                          appealApproveDto);
+                                  break;
+                              case ApplicationConsts.APPEAL_TYPE_LICENCE :
+                                  appealLicence(appPremiseMiscDtoList,appealDto,appealLicence,rollBackLicence,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto.getReason());
+                                  break;
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
 //                            break;
-                                default:break;
-                            }
-                            /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
-                        }
-                    }
-                    rollBackApplicationGroupDtos.add(applicationGroupDto);
-                    ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
-                    appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
-                    appealApplicationGroupDtos.add(appealApplicationGroupDto);
-                    //event bus
-                    AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-                    //licence
-                    if(!IaisCommonUtils.isEmpty(appealLicence)){
-                        AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
-                        String evenRefNum = String.valueOf(System.currentTimeMillis());
-                        appealLicenceDto.setEventRefNo(evenRefNum);
-                        appealLicenceDto.setAppealLicence(appealLicence);
-                        appealLicenceDto.setRollBackLicence(rollBackLicence);
-                        appealLicenceDto.setAuditTrailDto(auditTrailDto);
-                        appealLicenceDto.setAppPremiseMiscDto(appPremiseMiscDtoList);
-                        appealService.createAppealLicenceDto(appealLicenceDto);
-                    }else{
-                        log.info(StringUtil.changeForLog("The appealLicence is Empty."));
-                    }
-                    appealService.updateAppPremiseMisc(appPremiseMiscDtoList);
+                              default:break;
+                          }
+                          /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
+                      }
+                  }
+                  rollBackApplicationGroupDtos.add(applicationGroupDto);
+                  ApplicationGroupDto appealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
+                  appealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED);
+                  appealApplicationGroupDtos.add(appealApplicationGroupDto);
+                  //event bus
+                  AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+                  //licence
+                  if(!IaisCommonUtils.isEmpty(appealLicence)){
+                      AppealLicenceDto appealLicenceDto = new AppealLicenceDto();
+                      String evenRefNum = String.valueOf(System.currentTimeMillis());
+                      appealLicenceDto.setEventRefNo(evenRefNum);
+                      appealLicenceDto.setAppealLicence(appealLicence);
+                      appealLicenceDto.setRollBackLicence(rollBackLicence);
+                      appealLicenceDto.setAuditTrailDto(auditTrailDto);
+                      appealLicenceDto.setAppPremiseMiscDto(appPremiseMiscDtoList);
+                      appealService.createAppealLicenceDto(appealLicenceDto);
+                  }else{
+                      log.info(StringUtil.changeForLog("The appealLicence is Empty."));
+                  }
+                  appealService.updateAppPremiseMisc(appPremiseMiscDtoList);
 
-                    //application
-                    AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
-                    String eventRefNo = String.valueOf(System.currentTimeMillis());
-                    appealApplicationDto.setEventRefNo(eventRefNo);
-                    appealApplicationDto.setApplicationDtos(appealApplicaiton);
-                    appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
-                    appealApplicationDto.setAppealPersonnel(appealPersonnel);
-                    appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
-                    appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
-                    appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
-                    appealApplicationDto.setAppealApplicationGroupDtos(appealApplicationGroupDtos);
-                    appealApplicationDto.setRollBackApplicationGroupDtos(rollBackApplicationGroupDtos);
-                    appealApplicationDto.setAppealAppPremisesRecommendationDtos(appealAppPremisesRecommendationDtos);
-                    appealApplicationDto.setRollBackAppPremisesRecommendationDtos(rollBackAppPremisesRecommendationDtos);
-                    appealService.createAppealApplicationDto(appealApplicationDto);
+                  //application
+                  AppealApplicationDto appealApplicationDto = new  AppealApplicationDto();
+                  String eventRefNo = String.valueOf(System.currentTimeMillis());
+                  appealApplicationDto.setEventRefNo(eventRefNo);
+                  appealApplicationDto.setApplicationDtos(appealApplicaiton);
+                  appealApplicationDto.setRollBackApplicationDto(rollBackApplication);
+                  appealApplicationDto.setAppealPersonnel(appealPersonnel);
+                  appealApplicationDto.setRollBackPersonnel(rollBackPersonnel);
+                  appealApplicationDto.setAppealAppGrpPremisesDto(appealAppGrpPremisesDto);
+                  appealApplicationDto.setRollBackAppGrpPremisesDto(rollBackAppGrpPremisesDto);
+                  appealApplicationDto.setAppealApplicationGroupDtos(appealApplicationGroupDtos);
+                  appealApplicationDto.setRollBackApplicationGroupDtos(rollBackApplicationGroupDtos);
+                  appealApplicationDto.setAppealAppPremisesRecommendationDtos(appealAppPremisesRecommendationDtos);
+                  appealApplicationDto.setRollBackAppPremisesRecommendationDtos(rollBackAppPremisesRecommendationDtos);
+                  appealService.createAppealApplicationDto(appealApplicationDto);
 
-                    if(IaisCommonUtils.isNotEmpty(licPremisesDto)){
-                        licPremisesDto=hcsaLicenceClient.savePremises(licPremisesDto).getEntity();
-                        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                        beEicGatewayClient.savePremises(licPremisesDto, signature.date(), signature.authorization(),
-                                signature2.date(), signature2.authorization()).getEntity();
-                    }
-                    for (AppealApproveDto appealApproveDto: appealApproveDtos){
-                        ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
-                        AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
-                        if(applicationDto!= null && appealDto != null){
-                            log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
-                            String  appealType = appealDto.getAppealType();
-                            log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
+                  if(IaisCommonUtils.isNotEmpty(licPremisesDto)){
+                      licPremisesDto=hcsaLicenceClient.savePremises(licPremisesDto).getEntity();
+                      HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                      HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                      beEicGatewayClient.savePremises(licPremisesDto, signature.date(), signature.authorization(),
+                              signature2.date(), signature2.authorization()).getEntity();
+                  }
+                  for (AppealApproveDto appealApproveDto: appealApproveDtos){
+                      ApplicationDto applicationDto = appealApproveDto.getApplicationDto();
+                      AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
+                      if(applicationDto!= null && appealDto != null){
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationDto no is -->"+applicationDto.getApplicationNo()));
+                          String  appealType = appealDto.getAppealType();
+                          log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealType  is -->"+appealType));
 
-                            try {
-                                String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
-                                sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
-                            }catch (Exception e){
-                                log.info(e.getMessage(),e);
-                            }
-                        }
-                    }
-                }
-            }
+                          try {
+                              String reason = appealApproveDto.getAppPremiseMiscDto().getReason();
+                              sendAllEmailApproved(applicationDto,reason,appealApproveDto.getLicenceDto(),appealApproveDto.getNewAppPremisesRecommendationDto(),appealDto);
+                          }catch (Exception e){
+                              log.info(e.getMessage(),e);
+                          }
+                      }
+                  }
+              }
+          }
         }else{
             log.info(StringUtil.changeForLog("appealApproveGroupDtos is empty"));
         }
@@ -517,9 +517,9 @@ public class AppealApproveBatchjob {
                 ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
                 List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
                 appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
-                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)){
+                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)&&!entity.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                     for (AppGrpPremisesEntityDto appPrem:appealAppGrpPremisesDto
-                    ) {
+                         ) {
                         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.getPremCorrDtoByAppGroupId(appPrem.getAppGrpId()).getEntity();
                         if(appPremisesCorrelationDtos!=null){
                             for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos

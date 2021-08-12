@@ -926,9 +926,11 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
         File file = MiscUtil.generateFileInTempFolder("temp.xml");
-        File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
-        List<OrgUserDto> orgUserDtos = importXML(xmlFile);
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", (Serializable) orgUserDtos);
+        if(sessionFile!=null){
+            File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
+            List<OrgUserDto> orgUserDtos = importXML(xmlFile);
+            ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", (Serializable) orgUserDtos);
+        }
         return;
     }
 
@@ -1143,6 +1145,9 @@ public class MohIntranetUserDelegator {
         log.debug(StringUtil.changeForLog("the importUserRole start ...."));
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("userRoleUpload");
+        if (sessionFile == null) {
+            return;
+        }
         int userFileSize = (int) ParamUtil.getSessionAttr(bpc.request, "userFileSize");
         File file = MiscUtil.generateFileInTempFolder("temp.xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);

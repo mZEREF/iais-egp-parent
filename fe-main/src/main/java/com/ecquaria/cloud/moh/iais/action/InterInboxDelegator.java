@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -101,7 +103,8 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
-
+    @Autowired
+    AssessmentGuideService assessmentGuideService;
     public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     private static String msgStatus[] = {
@@ -220,7 +223,7 @@ public class InterInboxDelegator {
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
-        ) {
+                ) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
@@ -384,7 +387,7 @@ public class InterInboxDelegator {
             List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getId());
             List<String> addressList = IaisCommonUtils.genNewArrayList();
             for (PremisesDto premisesDto:premisesDtoList
-            ) {
+                 ) {
                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                 h.setPremisesDtoList(addressList);
             }
@@ -511,7 +514,7 @@ public class InterInboxDelegator {
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licId).getEntity();
         if(licenceDto != null){
             boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
-            boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
+           boolean isApprove= licenceDto!=null && ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto.getStatus());
             if(!isActive && !isApprove){
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
@@ -551,7 +554,7 @@ public class InterInboxDelegator {
                 appStatus.add(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                 appStatus.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                 for (AppPremiseMiscDto apc:entity
-                ) {
+                     ) {
                     ApplicationDto applicationDto=appInboxClient.getApplicationByCorreId(apc.getAppPremCorreId()).getEntity();
                     if (!appStatus.contains(applicationDto.getStatus())){
                         ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("APPEAL_ERR002"));
@@ -775,19 +778,22 @@ public class InterInboxDelegator {
                     }
                     List<LicenceDto> bundleLicenceDtos=new ArrayList<>(10);
                     List<LicenceDto> list=new ArrayList<>(10);
+                    //This can be optimized
                     for (String v : licIdValue) {
                         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(v).getEntity();
                         list.add(licenceDto);
                         HcsaServiceDto hcsaServiceDto = hcsaServiceDtoMap.get(licenceDto.getSvcName());
-                        for (HcsaFeeBundleItemDto hcsaFeeBundleItemDto : hcsaFeeBundleItemDtos) {
-                            if(hcsaServiceDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())){
+                        ListIterator<HcsaFeeBundleItemDto> iterator = hcsaFeeBundleItemDtos.listIterator();
+                        while (iterator.hasNext()){
+                            HcsaFeeBundleItemDto next = iterator.next();
+                            if(hcsaServiceDto.getSvcCode().equals(next.getSvcCode())){
                                 List<LicenceDto> licenceDtos = licenceInboxClient.getBundleLicence(licenceDto).getEntity();
                                 if(!licenceDtos.isEmpty()){
-                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(hcsaFeeBundleItemDto.getBundleId());
+                                    List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(next.getBundleId());
                                     for (LicenceDto dto : licenceDtos) {
                                         HcsaServiceDto hcsaServiceDto1 = hcsaServiceDtoMap.get(dto.getSvcName());
                                         for (HcsaFeeBundleItemDto feeBundleItemDto : hcsaFeeBundleItemDtos1) {
-                                            if(!feeBundleItemDto.getSvcCode().equals(hcsaFeeBundleItemDto.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
+                                            if(!feeBundleItemDto.getSvcCode().equals(next.getSvcCode())&&hcsaServiceDto1.getSvcCode().equals(feeBundleItemDto.getSvcCode())){
                                                 bundleLicenceDtos.add(dto);
                                             }
                                         }
@@ -1002,18 +1008,18 @@ public class InterInboxDelegator {
     }
 
     public  String getRepalceService(){
-        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.allHcsaService().getEntity();
-        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-            return null;
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(" ( CASE app.service_id ");
-        for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
-            stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
-        }
-        stringBuilder.append("ELSE  'N/A' END )");
-        return  stringBuilder.toString();
-    }
+       List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.allHcsaService().getEntity();
+       if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+           return null;
+       }
+       StringBuilder stringBuilder = new StringBuilder();
+       stringBuilder.append(" ( CASE app.service_id ");
+       for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
+           stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
+       }
+       stringBuilder.append("ELSE  'N/A' END )");
+       return  stringBuilder.toString();
+   }
 
     public void doInspection(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
@@ -1176,7 +1182,7 @@ public class InterInboxDelegator {
         }else {
             appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         }
-        List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
+         List<LicenceDto> licenceDtos = licenceInboxClient.isNewApplication(appId).getEntity();
         ApplicationDto applicationDto = appInboxClient.getApplicationById(appId).getEntity();
  /*       //68521
         if(applicationDto!=null && applicationDto.getOriginLicenceId()!=null){
@@ -1185,6 +1191,23 @@ public class InterInboxDelegator {
                 licenceDtos.add(entity);
             }
         }*/
+        //EAS and MTS licence only one active/approve licence
+        if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+            List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                hcsaServiceDtos.add(hcsaServiceDto);
+            }
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
+                if(!canCreateEasOrMts){
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
+                    ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                    return;
+                }
+            }
+        }
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
