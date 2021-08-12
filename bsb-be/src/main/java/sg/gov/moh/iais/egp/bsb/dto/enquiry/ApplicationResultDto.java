@@ -15,12 +15,12 @@ import java.util.List;
 @Data
 public class ApplicationResultDto {
     private PageInfo pageInfo;
-    private List<ApplicationInfoDto> bsbInboxes;
+    private List<ApplicationInfoDto> bsbApp;
 
     public static ApplicationResultDto of(Page<ApplicationInfoDto> applicationPage) {
         ApplicationResultDto dto = new ApplicationResultDto();
         dto.pageInfo = PageInfo.of(applicationPage);
-        dto.bsbInboxes = applicationPage.getContent();
+        dto.bsbApp = applicationPage.getContent();
         return dto;
     }
 }

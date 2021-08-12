@@ -135,7 +135,7 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                        <c:forEach var="items" items="${facInfoSearchResult.rows}" varStatus="status">
+                                        <c:forEach var="items" items="${facInfoSearchResult}" varStatus="status">
                                             <tr name="basicData">
                                                 <td><c:out  value="${status.index + 1}"/></td>
                                                 <td><c:out  value="${items.facilityName}"/></td>

@@ -51,4 +51,7 @@ public interface BiosafetyEnquiryClient {
 
     @GetMapping(value = "/app_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApplicationResultDto> getApp(@SpringQueryMap EnquiryDto dto);
+
+    @GetMapping(value = "/fac_info/query/fac", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityResultDto> getFac(@SpringQueryMap EnquiryDto dto);
 }
