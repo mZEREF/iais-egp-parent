@@ -68,14 +68,14 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-
-
-
-
-
-
-
-
+        <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-lite</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-entities</artifactId>
+        </dependency>
         <dependency>
             <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>backbone</artifactId>

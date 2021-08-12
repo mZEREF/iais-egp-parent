@@ -64,7 +64,7 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                       <c:forEach var="items" items="${appInfoSearchResult.rows}" varStatus="status">
+                                       <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out  value="${status.index + 1}"/></td>
                                             <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
