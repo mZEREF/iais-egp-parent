@@ -221,18 +221,22 @@ try{
     }
 
     // block progression of pipeline until deployer has test environment ready.
+	/* weiyang was here
     if(doAutomatedTestGate()){
         node{
             currentBuild.result = 'ABORTED'
         }
         return
     }
+	*/
 
+	/* weiyang was here
     node{
         docker.withServer(DOCKER_URL) {
             runAutomatedTests()
         }
     }
+	*/
 
     // block progression of pipeline until QA makes a decision.
     if(doQAGate()){
