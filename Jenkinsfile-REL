@@ -772,7 +772,6 @@ def createVerificationPackage(){
                     mv iais-egp.bundle ${env.WORKSPACE}/${PAYLOAD_FOLDER}
                 )
 				
-				//weiyang was here
 				mkdir -p ${CHECKOUT_DIRECTORY_AUTOMATED_TESTING}
 
                 (
