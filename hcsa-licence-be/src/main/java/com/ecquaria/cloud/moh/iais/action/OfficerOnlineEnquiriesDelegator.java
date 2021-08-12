@@ -1109,6 +1109,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "4":
+            case "6":
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
@@ -1314,6 +1315,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "4":
+            case "6":
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }

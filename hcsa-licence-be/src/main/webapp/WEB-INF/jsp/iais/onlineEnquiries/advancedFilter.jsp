@@ -177,7 +177,7 @@
     <h4>
                         <span >Search By Licensee
                             <strong >&nbsp;
-                                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'}">checked</c:if>   value="4"   name="searchChk"  />
+                                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'||count=='6'}">checked</c:if>   value="4"   name="searchChk"  />
                             </strong>
                         </span>
     </h4>
