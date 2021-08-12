@@ -1,4 +1,4 @@
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.BE_WEB_ROOT" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -9,7 +9,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<script type="text/javascript" src="<%=BE_WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <div class="main-content" style="min-height: 73vh;">
 
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -123,7 +123,7 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-                        <iais:pagination param="applicationSearch" result="applicationSearchResult"/>
+
                         <div class="table-gp">
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
@@ -140,8 +140,8 @@
                                     <iais:sortableHeader needSort="true" field="" value="Application Status"></iais:sortableHeader>
                                 </tr>
                                 </thead>
-                                <c:forEach var="item" items="${applicationSearchResult.rows}" varStatus="status">
-                                    <tr style="display: table-row;" id="appId${(status.index + 1) + (applicationSearch.pageNo - 1) * applicationSearch.pageSize}">
+                                <c:forEach var="item" items="${applicationSearchResult}" varStatus="status">
+                                    <tr style="display: table-row;" id="appId${status.index + 1}">
                                         <td><c:out value="${status.index + 1}"/></td>
                                         <td><a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a></td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>

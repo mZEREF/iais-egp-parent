@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "view_bsb_AO_search_result")
-public class ApprovalOfficerQueryResultsDto extends BaseEntity implements Serializable {
+public class AOQueryInfoDto extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

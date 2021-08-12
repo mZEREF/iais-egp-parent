@@ -2,19 +2,18 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
-import sg.gov.moh.iais.egp.bsb.constant.revocationConstants.RevocationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
+import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
+import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.AOQueryResultDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,12 +29,6 @@ import java.util.List;
 @Delegator(value = "AORevocationDelegator")
 @Slf4j
 public class AORevocationDelegator {
-
-    private final FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(ApprovalOfficerQueryResultsDto.class)
-            .searchAttr(RevocationConstants.PARAM_APPLICATION_SEARCH)
-            .resultAttr(RevocationConstants.PARAM_APPLICATION_SEARCH_RESULT)
-            .sortFieldToMap("APPLICATION_NO", SearchParam.ASCENDING).build();
 
     @Autowired
     private RevocationClient revocationClient;
@@ -62,11 +55,13 @@ public class AORevocationDelegator {
      */
     public void prepareTaskListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
-        QueryHelp.setMainSql("bsbBe", "AOQueryApplication", param);
-        SearchResult searchResult = revocationClient.doQuery(param).getEntity();
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, param);
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH_RESULT, searchResult);
+        // get search DTO
+        ApprovalOfficerQueryDto searchDto=(ApprovalOfficerQueryDto)ParamUtil.getSessionAttr(request,RevocationConstants.PARAM_APPLICATION_SEARCH);
+        if (searchDto==null) {
+            searchDto = new ApprovalOfficerQueryDto();
+        }
+        AOQueryResultDto searchResult = revocationClient.doQuery(searchDto).getEntity();
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH_RESULT, (Serializable) searchResult.getBsbInboxes());
     }
 
     /**
@@ -76,6 +71,7 @@ public class AORevocationDelegator {
      */
     public void doSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
+        ApprovalOfficerQueryDto searchDto = new ApprovalOfficerQueryDto();
 
         String facilityName = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_NAME);
         String facilityAddress = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ADDRESS);
@@ -87,51 +83,35 @@ public class AORevocationDelegator {
         String applicationType = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_TYPE);
         String applicationStatus = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_STATUS);
 
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-
         Date applicationDate=null;
 
-        if (StringUtil.isNotEmpty(facilityName)) {
-            searchParam.addFilter(RevocationConstants.PARAM_FACILITY_NAME, facilityName, true);
-        }
-        if (StringUtil.isNotEmpty(facilityClassification)) {
-            searchParam.addFilter(RevocationConstants.PARAM_FACILITY_CLASSIFICATION, facilityClassification, true);
-        }
-        if (StringUtil.isNotEmpty(facilityType)) {
-            searchParam.addFilter(RevocationConstants.PARAM_FACILITY_TYPE, facilityType, true);
-        }
-        if (StringUtil.isNotEmpty(processType)) {
-            searchParam.addFilter(RevocationConstants.PARAM_PROCESS_TYPE, processType, true);
-        }
+        searchDto.setFacilityName(facilityName);
+        searchDto.setFacilityClassification(facilityClassification);
+        searchDto.setFacilityType(facilityType);
+        searchDto.setProcessType(processType);
+        searchDto.setApplicationNo(applicationNo);
+        searchDto.setApplicationType(applicationType);
+        searchDto.setApplicationStatus(applicationStatus);
         if (StringUtil.isNotEmpty(applicationDt)) {
             applicationDate = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE));
-            searchParam.addFilter(RevocationConstants.PARAM_APPLICATION_DATE, applicationDate, true);
-        }
-        if (StringUtil.isNotEmpty(applicationNo)) {
-            searchParam.addFilter(RevocationConstants.PARAM_APPLICATION_NO, applicationNo, true);
-        }
-        if (StringUtil.isNotEmpty(applicationType)) {
-            searchParam.addFilter(RevocationConstants.PARAM_APPLICATION_TYPE, applicationType, true);
-        }
-        if (StringUtil.isNotEmpty(applicationStatus)) {
-            searchParam.addFilter(RevocationConstants.PARAM_APPLICATION_STATUS, applicationStatus, true);
+            searchDto.setApplicationDate(applicationDate);
         }
         if (StringUtil.isNotEmpty(facilityAddress)) {
             String[] strArr = facilityAddress.split("");
             String blockNo = strArr[0];
-            String floorNo = strArr[1];
+            String streetName = strArr[1];
             String postalCode = strArr[3];
+            searchDto.setBlockNo(blockNo);
+            searchDto.setStreetName(streetName);
+            searchDto.setPostalCode(postalCode);
 
             String[] arr = strArr[2].split("-");
-            String unitNo = arr[0];
-            String streetName = arr[1];
-
-            searchParam.addFilter(RevocationConstants.PARAM_BLOCK_NO, blockNo, true);
-            searchParam.addFilter(RevocationConstants.PARAM_FLOOR_NO, floorNo, true);
-            searchParam.addFilter(RevocationConstants.PARAM_POSTAL_CODE, postalCode, true);
-            searchParam.addFilter(RevocationConstants.PARAM_UNIT_NO, unitNo, true);
-            searchParam.addFilter(RevocationConstants.PARAM_STREET_NAME, streetName, true);
+            String floorNo = arr[0];
+            String unitNo = arr[1];
+            searchDto.setFloorNo(floorNo);
+            searchDto.setUnitNo(unitNo);
         }
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
         //Select back the query criteria
         ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_NAME, facilityName);
         ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_CLASSIFICATION, facilityClassification);
@@ -150,9 +130,6 @@ public class AORevocationDelegator {
      * @param bpc
      */
     public void doPaging(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doPaging(searchParam, bpc.request);
     }
 
     /**
@@ -161,9 +138,6 @@ public class AORevocationDelegator {
      * @param bpc
      */
     public void doSorting(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        CrudHelper.doSorting(searchParam, bpc.request);
     }
 
     /**
@@ -271,4 +245,5 @@ public class AORevocationDelegator {
         }
         revocationClient.updateApplicationStatusById(appId,"BSBAPST003");
     }
+
 }

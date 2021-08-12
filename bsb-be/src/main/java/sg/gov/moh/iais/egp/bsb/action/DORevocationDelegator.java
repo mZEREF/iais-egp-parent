@@ -11,8 +11,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
-import sg.gov.moh.iais.egp.bsb.constant.revocationConstants.RevocationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
+import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.AOQueryInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -70,7 +70,7 @@ public class DORevocationDelegator {
 
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
 
-        ApprovalOfficerQueryResultsDto resultDto = new ApprovalOfficerQueryResultsDto();
+        AOQueryInfoDto resultDto = new AOQueryInfoDto();
         resultDto.setApplicationNo("APP0000009");//Every time plus one
         resultDto.setFacilityId(facilityId);
         resultDto.setAppType("BSBAPTY006");
@@ -78,7 +78,7 @@ public class DORevocationDelegator {
         resultDto.setStatus("BSBAPST002");
         resultDto.setApplicationDt(new Date());
 
-        FeignResponseEntity<ApprovalOfficerQueryResultsDto> result = revocationClient.saveApplication(resultDto);
+        FeignResponseEntity<AOQueryInfoDto> result = revocationClient.saveApplication(resultDto);
 
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);

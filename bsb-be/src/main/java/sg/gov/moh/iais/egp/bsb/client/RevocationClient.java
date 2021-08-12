@@ -5,11 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 
 import java.util.List;
 
@@ -24,13 +24,13 @@ public interface RevocationClient {
     FeignResponseEntity<RevocationDetailsDto> getApplicationById(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApprovalOfficerQueryResultsDto> saveApplication(@RequestBody ApprovalOfficerQueryResultsDto approvalOfficerQueryResultsDto);
+    FeignResponseEntity<AOQueryInfoDto> saveApplication(@RequestBody AOQueryInfoDto aoQueryInfoDto);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RevocationDetailsDto> saveApplicationMisc(@RequestBody RevocationDetailsDto revocationDetailsDto);
 
-    @PostMapping(value = "/bsb-application/query", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<ApprovalOfficerQueryResultsDto>> doQuery(@RequestBody SearchParam param);
+    @GetMapping(value = "/bsb-application/app/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AOQueryResultDto> doQuery(@SpringQueryMap ApprovalOfficerQueryDto queryDto);
 
     @PostMapping(path = "/bsb-application/saveHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BsbRoutingHistoryDto> saveHistory(@RequestBody BsbRoutingHistoryDto historyDto);

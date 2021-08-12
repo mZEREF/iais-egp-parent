@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.constant.revocationConstants;
+package sg.gov.moh.iais.egp.bsb.constant;
 
 import lombok.NoArgsConstructor;
 
