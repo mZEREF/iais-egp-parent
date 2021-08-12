@@ -728,7 +728,7 @@ public class ConfigServiceDelegator {
         HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
         hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaServiceStepSchemeDto.setStepCode(stepCode);
-        hcsaServiceStepSchemeDto.setSeqNum(HcsaConsts.SEQ_MAP.get(stepCode));
+        hcsaServiceStepSchemeDto.setSeqNum(SEQ_MAP.get(stepCode));
         hcsaServiceStepSchemeDto.setStepName(stepName);
         hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
     }
