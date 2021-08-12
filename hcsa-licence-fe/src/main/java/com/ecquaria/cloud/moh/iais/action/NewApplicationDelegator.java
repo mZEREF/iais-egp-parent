@@ -355,7 +355,8 @@ public class NewApplicationDelegator {
             }
             bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(licenseeMap));
 
-            if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect())) {
+            if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect()) ||
+                    OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
                 subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber()));
             }
@@ -401,10 +402,12 @@ public class NewApplicationDelegator {
             if (!"saveDraft".equals(actionValue)) {
                 appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
                 // synchronize the licencsee map
-                if (errorMap.isEmpty() && !OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+                if (errorMap.isEmpty() && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
                     Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
                     if (licenseeMap != null && !licenseeMap.isEmpty()) {
-                        licenseeMap.forEach((personKey, dto) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, dto));
+                        String personKey = NewApplicationHelper.getPersonKey(subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
+                        licenseeMap.computeIfPresent(personKey,
+                                (key, old) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, old));
                         bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
                     }
                 }

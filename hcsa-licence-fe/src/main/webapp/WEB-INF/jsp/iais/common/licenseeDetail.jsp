@@ -14,7 +14,7 @@
             <c:if test="${canEdit}">
                 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                 <a id="edit" class="text-right app-font-size-16">
-                    <em class="fa fa-pencil-square-o">&nbsp;</em>Edit
+                    <em class="fa fa-pencil-square-o">&nbsp;</em> Edit
                 </a>
             </c:if>
         </iais:value>
@@ -165,6 +165,7 @@
         disableContent('div.ind-no');
         disableContent('#licenseeName');
         </c:if>
+        initLicenseePage();
         $(this).closest('div').hide();
     }
 
