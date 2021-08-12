@@ -488,6 +488,12 @@ public class LicenceViewServiceDelegator {
             LicenseeDto oldL=(LicenseeDto)oldLicenceDto;
             idNoSet.add(oldL.getUenNo());
         }
+        // licensee
+        SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+        if (subLicenseeDto != null) {
+            idNoSet.add(subLicenseeDto.getUenNo());
+            idNoSet.add(subLicenseeDto.getIdNumber());
+        }
         if(appSvcCgoDtoList!=null){
             for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList){
                 String idNo = appSvcCgoDto.getIdNo();
@@ -539,7 +545,13 @@ public class LicenceViewServiceDelegator {
                 idNoSet.add(apptPersonDto.getIdNo());
             }
         }*/
-        if(oldAppSubmissionDto!=null){
+        if (oldAppSubmissionDto != null) {
+            // licensee
+            subLicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
+            if (subLicenseeDto != null) {
+                idNoSet.add(subLicenseeDto.getUenNo());
+                idNoSet.add(subLicenseeDto.getIdNumber());
+            }
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if(oldAppSvcCgoDtoList!=null){
