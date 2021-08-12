@@ -1128,6 +1128,7 @@ def uploadTransferPackageToGDCSFTP(){
     }
 }
 
+/* weiyang was here
 def runAutomatedTests(){
     stage('Run Automated Tests'){
         def dockerArgs
@@ -1202,7 +1203,9 @@ def runAutomatedTests(){
 		}
     }
 }
+*/
 
+/* weiyang was here
 def doAutomatedTestGate(){
     def stageName = 'Proceed Automation Test?'
     def inputId = 'atGate'
@@ -1221,6 +1224,7 @@ def doAutomatedTestGate(){
         yesText, noText,
         choiceDescription, commentDescription)
 }
+*/
 
 def doQAGate(){
     def stageName = 'QA Gate'
