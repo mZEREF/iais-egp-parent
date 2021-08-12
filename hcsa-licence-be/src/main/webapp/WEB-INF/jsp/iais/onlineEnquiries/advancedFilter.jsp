@@ -1,4 +1,4 @@
-<c:if test="${count=='3'||count=='2'||count=='6'}">
+<c:if test="${count=='3'||count=='2'}">
     <h4>
                         <span >
                             Search By Application
@@ -173,7 +173,7 @@
         </div>
     </div>
 </c:if>
-<c:if test="${count=='4'}">
+<c:if test="${count=='4'||count=='6'}">
     <h4>
                         <span >Search By Licensee
                             <strong >&nbsp;
@@ -207,6 +207,14 @@
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
                             <input type="text" maxlength="20" style=" font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
+
+                        </div >
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="UEN"/>
+                        <div class="col-sm-7 col-md-4 col-xs-10">
+
+                            <input type="text" maxlength="10" style=" font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
 
                         </div >
                     </iais:row>
