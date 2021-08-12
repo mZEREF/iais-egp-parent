@@ -7,9 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.BsbFacilityQueryDto;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ public interface ApprovalApplicationClient {
     FeignResponseEntity<List<BsbFacilityQueryDto>> getFacilityByApprovalStatus(@PathVariable("processType") String processType);
 
     @PostMapping(path = "/bsb-approval/schedule/{schedule}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalNameBySchedule(@PathVariable("schedule") String schedule);
+    FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
 }

@@ -16,9 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalapplication.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.BsbFacilityQueryDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,13 +119,7 @@ public class NewApprovalDelegator {
         for (BsbFacilityQueryDto dto : facilityByApprovalStatus) {
             facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
         }
-        List<BiologicalQueryDto> biologicalNameBySchedule = approvalApplicationClient.getBiologicalNameBySchedule("SCHTYPE001").getEntity();
-        List<SelectOption> listOfAgentsOrToxins =  IaisCommonUtils.genNewArrayList();
-        for (BiologicalQueryDto dto : biologicalNameBySchedule) {
-            listOfAgentsOrToxins.add(new SelectOption(dto.getId(),dto.getName()));
-        }
         ParamUtil.setRequestAttr(request, "facilityNameSelect", facilityNameList);
-        ParamUtil.setRequestAttr(request, "listOfAgentsOrToxinsSelect", listOfAgentsOrToxins);
     }
 
     public void prepareJump(BaseProcessClass bpc) {
