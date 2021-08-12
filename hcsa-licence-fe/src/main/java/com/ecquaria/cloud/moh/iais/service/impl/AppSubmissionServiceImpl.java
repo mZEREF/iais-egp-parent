@@ -2455,7 +2455,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     sB.append(serviceId);
                     log.info("govenMap is error");
                 }
-            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+            //} else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
             } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
@@ -2467,7 +2467,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
-            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+            //} else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
                 // Key Appointment Holder
             } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
