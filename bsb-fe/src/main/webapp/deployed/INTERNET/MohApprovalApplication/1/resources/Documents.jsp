@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/approvalapplication/documents.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/approval/documents.jsp"%>

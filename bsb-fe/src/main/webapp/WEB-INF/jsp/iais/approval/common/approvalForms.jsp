@@ -34,8 +34,8 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7">
-                                                                        <input type="hidden" id="facilityName" name="facilityName" value="">
-                                                                        <iais:select name="facilityId" id="facilityId" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facilityName}"></iais:select>
+                                                                        <input type="hidden" id="facilityId" name="facilityId" value="">
+                                                                        <iais:select name="facilityName" id="facilityName" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facilityName}"></iais:select>
                                                                         <span id="error_facilityId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -51,7 +51,7 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7">
-                                                                        <iais:select name="schedule" disabled="false" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" firstOption="Please Select" value="${approvalApplicationDto.schedule}"></iais:select>
+                                                                        <iais:select id="schedule" name="schedule" disabled="false" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" firstOption="Please Select" value="${approvalApplicationDto.schedule}"></iais:select>
                                                                         <span id="error_schedule" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -67,8 +67,8 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7 control-font-label">
-                                                                        <input type="hidden" id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" value="">
-                                                                        <iais:select name="biologicalId" disabled="false" options="listOfAgentsOrToxinsSelect" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select>
+                                                                        <input type="hidden" id="biologicalId" name="biologicalId" value="">
+                                                                        <iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" disabled="false" options="listOfAgentsOrToxinsSelect" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select>
                                                                         <span id="error_biologicalId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
