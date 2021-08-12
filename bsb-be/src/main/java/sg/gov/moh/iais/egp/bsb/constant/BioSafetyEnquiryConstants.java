@@ -11,6 +11,7 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_FACILITY_INFO_SEARCH = "facInfoSearchParam";
     public static final String PARAM_FACILITY_INFO_RESULT = "facInfoSearchResult";
 
+
     //PARAM
 
     public static final String PARAM_ID = "id";

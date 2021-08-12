@@ -7,9 +7,9 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import sg.gov.moh.iais.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
-import sg.gov.moh.iais.bsb.dto.revocation.BsbRoutingHistoryDto;
-import sg.gov.moh.iais.bsb.dto.revocation.RevocationDetailsDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
 
 import java.util.List;
 

@@ -14,15 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sg.gov.moh.iais.bsb.dto.enquiry.ApplicationInfoDto;
-import sg.gov.moh.iais.bsb.dto.enquiry.FacilityInfoDto;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApplicationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.FacilityInfoDto;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -41,13 +42,8 @@ import java.util.Objects;
 @Slf4j
 public class BiosafetyEnquiryDelegator {
     private final String SEARCH_CATALOG = "bsbBe";
+    private static final String KEY_ENQUIRY_SEARCH_DTO = "enquiryDto";
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
-    FilterParameter appInfoParameter = new FilterParameter.Builder()
-            .clz(ApplicationInfoDto.class)
-            .searchAttr(BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH)
-            .resultAttr(BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT)
-            .sortField("APPLICATION_DT").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
-
     FilterParameter facInfoParameter = new FilterParameter.Builder()
             .clz(FacilityInfoDto.class)
             .searchAttr(BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH)
@@ -106,6 +102,8 @@ public class BiosafetyEnquiryDelegator {
         }
         ParamUtil.setRequestAttr(request, "count",count);
         preSelectOption(request,count);
+        HttpSession session = request.getSession();
+        session.removeAttribute(KEY_ENQUIRY_SEARCH_DTO);
     }
 
     /**
@@ -117,18 +115,15 @@ public class BiosafetyEnquiryDelegator {
         String count = ParamUtil.getString(request, "searchChk");
         ParamUtil.setRequestAttr(request, "count", count);
         preSelectOption(request, count);
-        FilterParameter filterParameter = null;
         if("1".equals(count)){
-            filterParameter = appInfoParameter;
             ParamUtil.setRequestAttr(request,"download","Application-information-file");
-        }else if("2".equals(count)){
-            filterParameter = facInfoParameter;
-            ParamUtil.setRequestAttr(request,"download","Facility-information-file");
-        }else{
-            log.info(StringUtil.changeForLog("null point for filterParameter"));
+        }else if("2".equals(count)) {
+            ParamUtil.setRequestAttr(request, "download", "Facility-information-file");
         }
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-        getResultAndAddFilter(request,searchParam,count,filterParameter);
+        // get search DTO
+        EnquiryDto searchDto = getSearchDto(request);
+        getResultAndAddFilter(request,searchDto,count);
+        ParamUtil.setSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO, searchDto);
     }
 
 
@@ -167,8 +162,7 @@ public class BiosafetyEnquiryDelegator {
 
     }
 
-    public void getResultAndAddFilter(HttpServletRequest request,SearchParam searchParam,String count,FilterParameter filterParameter) throws ParseException {
-        EnquiryDto enquiryDto = new EnquiryDto();
+    public void getResultAndAddFilter(HttpServletRequest request,EnquiryDto enquiryDto,String count) throws ParseException {
         String applicationNo = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_NO);
         String applicationType = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_TYPE);
         String applicationStatus = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_STATUS);
@@ -178,7 +172,6 @@ public class BiosafetyEnquiryDelegator {
         Date approvalDateTo = Formatter.parseDate(ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_DATE_TO));
         String facilityClassification = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_FACILITY_CLASSIFICATION);
         String[] facilityType = ParamUtil.getStrings(request,BioSafetyEnquiryConstants.PARAM_FACILITY_TYPE);
-//        log.info(StringUtil.changeForLog(facilityType.length+"-------------------facilityType"));
         String facilityName = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_FACILITY_NAME);
         String biologicalAgent = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_BIOLOGICAL_AGENT);
         String scheduleType = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_SCHEDULE_TYPE);
@@ -194,47 +187,36 @@ public class BiosafetyEnquiryDelegator {
         String facilityStatus = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_FACILITY_STATUS);
         String approvedFacilityCertifier = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVED_FACILITY_CERTIFIER);
         if (StringUtil.isNotEmpty(applicationNo)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_NO, applicationNo, true);
             enquiryDto.setApplicationNo(applicationNo);
         }
         if (StringUtil.isNotEmpty(applicationType)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_TYPE, applicationType, true);
             enquiryDto.setApplicationType(applicationType);
         }
         if (StringUtil.isNotEmpty(applicationStatus)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_STATUS, applicationStatus, true);
             enquiryDto.setApplicationStatus(applicationStatus);
         }
         if (applicationSubmissionDateFrom != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_FROM, applicationSubmissionDateFrom, true);
             enquiryDto.setApplicationSubmissionDateFrom(applicationSubmissionDateFrom);
         }else if("1".equals(count)){
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR,-1);
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_FROM, calendar, true);
             enquiryDto.setApplicationSubmissionDateFrom(calendar.getTime());
         }
         if (applicationSubmissionDateTo != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_TO, applicationSubmissionDateTo, true);
             enquiryDto.setApplicationSubmissionDateTo(applicationSubmissionDateTo);
         }else if("1".equals(count)){
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPLICATION_SUBMISSION_DATE_TO, new Date(), true);
             enquiryDto.setApplicationSubmissionDateTo(new Date());
         }
         if (approvalDateFrom != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPROVAL_DATE_FROM, approvalDateFrom, true);
             enquiryDto.setApprovalDateFrom(approvalDateFrom);
         }
         if (approvalDateTo != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPROVAL_DATE_TO, approvalDateTo, true);
             enquiryDto.setApprovalDateTo(approvalDateTo);
         }
         if (StringUtil.isNotEmpty(facilityClassification)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_CLASSIFICATION, facilityClassification, true);
             enquiryDto.setFacilityClassification(facilityClassification);
         }
         if (facilityType != null && facilityType.length>0 ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_TYPE, facilityType, true);
             List<String> facType = IaisCommonUtils.genNewArrayList();
             for (String s : facilityType) {
                 facType.add(s);
@@ -242,71 +224,66 @@ public class BiosafetyEnquiryDelegator {
             enquiryDto.setFacilityType(facType);
         }
         if (StringUtil.isNotEmpty(facilityName)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_NAME, facilityName, true);
             enquiryDto.setFacilityName(facilityName);
         }
         if (StringUtil.isNotEmpty(facilityName)) {
             enquiryDto.setFacilityName(biologicalAgent);
         }
         if (StringUtil.isNotEmpty(scheduleType)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_SCHEDULE_TYPE, scheduleType, true);
             enquiryDto.setScheduleType(scheduleType);
         }
         if (StringUtil.isNotEmpty(riskLevelOfTheBiologicalAgent)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT, riskLevelOfTheBiologicalAgent, true);
             enquiryDto.setRiskLevelOfTheBiologicalAgent(riskLevelOfTheBiologicalAgent);
         }
         if (StringUtil.isNotEmpty(processType)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_PROCESS_TYPE, processType, true);
             enquiryDto.setProcessType(processType);
         }
+
+
         if (facilityExpiryDateFrom != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_FROM, facilityExpiryDateFrom, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_FROM, facilityExpiryDateFrom, true);
         }else if(StringUtil.stringEqual("2",count)){
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR,-1);
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_FROM, calendar, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_FROM, calendar, true);
         }
         if (facilityExpiryDateTo != null ) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_TO, facilityExpiryDateTo, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_TO, facilityExpiryDateTo, true);
         } else if (StringUtil.stringEqual("2", count)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_TO,new Date(), true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_EXPIRY_DATE_TO,new Date(), true);
         }
         if (StringUtil.isNotEmpty(gazettedArea)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_GAZETTED_AREA, gazettedArea, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_GAZETTED_AREA, gazettedArea, true);
         }
         if (StringUtil.isNotEmpty(facilityOperator)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_OPERATOR, facilityOperator, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_OPERATOR, facilityOperator, true);
         }
         if (StringUtil.isNotEmpty(facilityAdmin)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_ADMIN, facilityAdmin, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_ADMIN, facilityAdmin, true);
         }
         if (StringUtil.isNotEmpty(authorisedPersonnelWorkingInFacility)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_AUTHORISED_PERSONNEL_WORKING_IN_FACILITY, authorisedPersonnelWorkingInFacility, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_AUTHORISED_PERSONNEL_WORKING_IN_FACILITY, authorisedPersonnelWorkingInFacility, true);
         }
         if (StringUtil.isNotEmpty(biosafetyCommitteePersonnel)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_BIOSAFETY_COMMITTEE_PERSONNEL, biosafetyCommitteePersonnel, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_BIOSAFETY_COMMITTEE_PERSONNEL, biosafetyCommitteePersonnel, true);
         }
         if (StringUtil.isNotEmpty(facilityStatus)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_STATUS, facilityStatus, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_FACILITY_STATUS, facilityStatus, true);
         }
         if (StringUtil.isNotEmpty(facilityAdmin)) {
-            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPROVED_FACILITY_CERTIFIER, approvedFacilityCertifier, true);
+//            searchParam.addFilter(BioSafetyEnquiryConstants.PARAM_APPROVED_FACILITY_CERTIFIER, approvedFacilityCertifier, true);
         }
         if("1".equals(count)){
-            QueryHelp.setMainSql(SEARCH_CATALOG, "queryApplicationInfo", searchParam);
-//            SearchResult<ApplicationInfoDto> searchResult = biosafetyEnquiryClient.queryAppInfo(searchParam).getEntity();
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbInboxes());
-            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, searchParam);
+            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
             log.info(StringUtil.changeForLog(applicationResultDto.getBsbInboxes().toString()+"===================application"));
         }
         if("2".equals(count)){
-            QueryHelp.setMainSql(SEARCH_CATALOG, "queryFacilityInfo", searchParam);
-            SearchResult<FacilityInfoDto> searchResult = biosafetyEnquiryClient.queryFacilityInfo(searchParam).getEntity();
-            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT, searchResult);
-            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH, searchResult);
-            log.info(StringUtil.changeForLog(searchResult.getRows().toString()+"==================="));
+//            SearchResult<FacilityInfoDto> searchResult = biosafetyEnquiryClient.queryFacilityInfo(searchParam).getEntity();
+//            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT, searchResult);
+//            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH, searchResult);
+//            log.info(StringUtil.changeForLog(searchResult.getRows().toString()+"==================="));
         }
 
     }
@@ -316,16 +293,11 @@ public class BiosafetyEnquiryDelegator {
     void appFileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
         File file = null;
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(request, appInfoParameter);
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-
         log.debug("indicates that a record has been selected ");
-
-        QueryHelp.setMainSql(SEARCH_CATALOG, "queryApplicationInfo", searchParam);
-        SearchResult<ApplicationInfoDto> results = biosafetyEnquiryClient.queryAppInfo(searchParam).getEntity();
+        EnquiryDto enquiryDto = getSearchDto(request);
+        ApplicationResultDto results = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
         if (!Objects.isNull(results)){
-            List<ApplicationInfoDto> queryList = results.getRows();
+            List<ApplicationInfoDto> queryList = results.getBsbInboxes();
             queryList.forEach(i -> i.setApplicationStatus(MasterCodeUtil.getCodeDesc(i.getApplicationStatus())));
             queryList.forEach(i -> i.setApplicationType(MasterCodeUtil.getCodeDesc(i.getApplicationType())));
             queryList.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
@@ -380,5 +352,13 @@ public class BiosafetyEnquiryDelegator {
         }
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
+    private EnquiryDto getSearchDto(HttpServletRequest request) {
+        EnquiryDto searchDto = (EnquiryDto) ParamUtil.getSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO);
+        return searchDto == null ? getDefaultSearchDto() : searchDto;
+    }
 
+    private EnquiryDto getDefaultSearchDto() {
+        EnquiryDto dto = new EnquiryDto();
+        return dto;
+    }
 }

@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.bsb.dto;
+package sg.gov.moh.iais.egp.bsb.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

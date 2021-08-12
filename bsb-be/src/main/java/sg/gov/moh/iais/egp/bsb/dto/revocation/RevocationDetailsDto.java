@@ -1,41 +1,34 @@
-package sg.gov.moh.iais.bsb.dto.revocation;
+package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
-import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author Zhu Tangtang
- * @date 2021/7/26 18:01
+ * @date 2021/7/26 17:08
  */
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
+@Table(name="view_bsb_revocation_details")
 @Entity
-@Table(name = "view_bsb_AO_search_result")
-public class ApprovalOfficerQueryResultsDto extends BaseEntity implements Serializable {
+@ToString
+public class RevocationDetailsDto implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Id
-    @Column(name="ID")
-    private String id;
+    @Column(name="APPID")
+    private String applicationId;
 
     @Column(name="FACILITYID")
     private String facilityId;
-
-    @Column(name="APPLICATION_NO")
-    private String applicationNo;
-
-    @Column(name="APP_TYPE")
-    private String appType;
 
     @Column(name="FACILITY_NAME")
     private String facilityName;
@@ -55,24 +48,28 @@ public class ApprovalOfficerQueryResultsDto extends BaseEntity implements Serial
     @Column(name="STREET_NAME")
     private String streetName;
 
+    @Column(name="FACILITY_CLASSIFICATION")
+    private String facilityClassification;
+
     @Column(name="FACILITY_TYPE")
     private String facilityType;
 
-    @Column(name="PROCESS_TYPE")
-    private String processType;
+    @Column(name="APPROVAL")
+    private String approval;
 
-    @Column(name="NAME")
-    private String biologicalAgentsAndToxins;
-
-    @Column(name="APPLICATION_DT")
-    private Date applicationDt;
-
-    @Column(name="APPROVAL_DATE")
-    private Date approvalDate;
-
-    @Column(name="STATUS")
-    private String status;
-
-    @Column(name = "APPROVAL_STATUS")
+    @Column(name="APPROVAL_STATUS")
     private String approvalStatus;
+
+    @Column(name="REASON_CONTENT")
+    private String reasonContent;
+
+    @Column(name="REMARKS")
+    private String remarks;
+//
+//    private String AORemarks;
+
+//    private String processingDecision;
+    @Column(name="STATUS")
+    private String currentStatus;
+    //uploadFile
 }

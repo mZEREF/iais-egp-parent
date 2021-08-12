@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.bsb.dto.revocation;
+package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
 import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Getter;

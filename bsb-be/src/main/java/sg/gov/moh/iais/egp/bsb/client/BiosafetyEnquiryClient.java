@@ -11,12 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import sg.gov.moh.iais.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.bsb.dto.enquiry.ApplicationInfoDto;
-import sg.gov.moh.iais.bsb.dto.enquiry.BiologicalDto;
-import sg.gov.moh.iais.bsb.dto.enquiry.FacilityInfoDto;
-import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApplicationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 
 import java.util.List;
 

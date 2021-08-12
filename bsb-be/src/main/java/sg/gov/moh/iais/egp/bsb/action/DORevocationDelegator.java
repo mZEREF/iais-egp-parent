@@ -12,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.revocationConstants.RevocationConstants;
-import sg.gov.moh.iais.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
-import sg.gov.moh.iais.bsb.dto.revocation.BsbRoutingHistoryDto;
-import sg.gov.moh.iais.bsb.dto.revocation.RevocationDetailsDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalOfficerQueryResultsDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
