@@ -50,23 +50,23 @@
 <webui:setLayout name="iais-internet"/>
 
 <div class="main-content">
-  <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-    <div class="col-md-12" style="margin-top:10px;">
-      <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-        <div class="dashalert alert-info dash-announce alertMaintainace">
-          <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-          <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-      </c:if>
-      <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-        <div class="dashalert alert-info dash-announce alertBanner">
-          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-          <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-          <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
-        </div>
-      </c:if>
+<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+  <div class="col-md-12" style="margin-top:10px;">
+  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce alertMaintainace">
+      <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+                            <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
+  </c:if>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+    <div class="dashalert alert-info dash-announce alertBanner">
+      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
+      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
     </div>
   </c:if>
+  </div>
+</c:if>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
@@ -103,11 +103,11 @@
                     onclick="javascript:landing();" />
                   <label class="form-check-label" for="newSystem">
                     <span class="check-square"></span>
-                    <b>Clinical Support Licences</b>
+                    <strong>Clinical Support Licences</strong>
                   </label>
                 </div>
                 <div>
-                  <p><b>Include:</b></p>
+                  <p><strong>Include:</strong></p>
                   <div class="col-xs-4 col-md-4 col-sm-4">Clinical Laboratory</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Blood Banking</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Nuclear Medicine</div>
@@ -120,10 +120,10 @@
                 <div class="form-check">
                   <input class="form-check-input" id="oldSystem" type="checkbox" name="serviceGroup" aria-invalid="false" value="0"
                     onclick="javascript:landing();">
-                  <label class="form-check-label" for="oldSystem"><span class="check-square"></span><b>Other Licences</b></label>
+                  <label class="form-check-label" for="oldSystem"><span class="check-square"></span><strong>Other Licences</strong></label>
                 </div>
                 <div>
-                  <p><b>Include:</b></p>
+                  <p><strong>Include:</strong></p>
                   <div class="col-xs-4 col-md-4 col-sm-4">Hospital Licences</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Nursing Home Licences</div>
                   <div class="col-xs-4 col-md-4 col-sm-4">Medical Clinic Licences</div>

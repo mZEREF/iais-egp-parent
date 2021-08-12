@@ -49,18 +49,26 @@ public class SoloEditValidator implements CustomizeValidator {
             return map;
         }
 
-        valCol("postalCode",6,licenseeDto.getPostalCode(),map);
+        boolean postalVal = valCol("postalCode",6,licenseeDto.getPostalCode(),map);
+        if( !postalVal && !CommonValidator.isValidePostalCode(licenseeDto.getPostalCode())){
+            map.put("postalCode", MessageUtil.getMessageDesc("NEW_ERR0004"));
+        }
+
         valCol("addrType",10,licenseeDto.getAddrType(),map);
+        String blkNo = licenseeDto.getBlkNo();
+        String floorNo = licenseeDto.getFloorNo();
+        String unitNo = licenseeDto.getUnitNo();
         if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(licenseeDto.getAddrType())) {
-            String blkNo = licenseeDto.getBlkNo();
-            String floorNo = licenseeDto.getFloorNo();
-            String unitNo = licenseeDto.getUnitNo();
             valCol("blkNo",10,blkNo,map);
             valCol("floorNo",3,floorNo,map);
             valCol("unitNo",3,unitNo,map);
+        }else {
+            valCol("blkNo",10,blkNo,map,false);
+            valCol("floorNo",3,floorNo,map,false);
+            valCol("unitNo",3,unitNo,map,false);
         }
         valCol("streetName",32,licenseeDto.getStreetName(),map);
-        valCol("buildingName",66,licenseeDto.getBuildingName(),map);
+        valCol("buildingName",66,licenseeDto.getBuildingName(),map,false);
         String mobileNo = licenseeDto.getMobileNo();
         boolean verifyMobEor = valCol("telephoneNo",8,mobileNo,map);
         if (!verifyMobEor && !CommonValidator.isMobile(mobileNo)) {
@@ -74,11 +82,15 @@ public class SoloEditValidator implements CustomizeValidator {
     }
 
     private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map){
-        if(StringUtil.isEmpty(code)){
+        return valCol(showEorArea, maxLength, code, map,true);
+    }
+
+    private boolean valCol(String showEorArea,int maxLength,String code, Map<String, String> map,boolean needVerEmpty){
+        if(needVerEmpty && StringUtil.isEmpty(code)){
             String MANDATORY_MSG = MessageUtil.getMessageDesc("GENERAL_ERR0006");
             map.put(showEorArea, MANDATORY_MSG);
             return true;
-        }else if(maxLength >0 && code.length() > maxLength){
+        }else if(StringUtil.isNotEmpty(code) && maxLength >0 && code.length() > maxLength){
             map.put(showEorArea, MessageUtil.replaceMessage("GENERAL_ERR0041",String.valueOf(maxLength),"maxlength"));
             return true;
         }

@@ -11,6 +11,9 @@
             <div class="row">
                 <div class="col-xs-12">
                     <table aria-describedby="" class="col-xs-12">
+                        <thead style="display: none">
+                        <tr><th scope="col"></th> </tr>
+                        </thead>
                         <%--<c:forEach var="svcDoc" items="${currentPreviewSvcInfo.appSvcDocDtoLit}" varStatus="status">
                             <tr>
                                 <td>

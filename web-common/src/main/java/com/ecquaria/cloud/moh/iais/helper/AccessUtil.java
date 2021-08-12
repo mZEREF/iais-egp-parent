@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -30,12 +31,14 @@ import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * AccessUtil
@@ -193,5 +196,23 @@ public class AccessUtil {
         log.info(StringUtil.changeForLog("BrowserInfo .........." + uaStr));
         return uaStr.toString();
     }
+    public static boolean isActiveMigrated()  {
+        String periodDateStr = ConfigHelper.getString(AppConsts.PERIOD_APPROVED_MIGRATED_LICENCE,"");
+        boolean result = false;
+            try {
+                if(!StringUtil.isEmpty(periodDateStr)){
+                    SimpleDateFormat df = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+                    Date periodDate = df.parse(periodDateStr);
+                    Date nowDate = new Date();
+                    if(nowDate.before(periodDate)){
+                        result =  true;
+                    }
+               }
+            } catch (ParseException e) {
+                log.error(e.getMessage(),e);
+            }
 
+
+        return  result;
+    }
 }

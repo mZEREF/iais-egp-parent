@@ -166,7 +166,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendMailForAuditPlaner(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
         if( !IaisCommonUtils.isEmpty(userDtoList)){
-            sendEmailToIns(emailKey,null,null);
+               sendEmailToIns(emailKey,null,null);
         }else {
             log.info("----------no audit plan user ---------");
         }
@@ -192,21 +192,21 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             return auditTaskDataFillterDtos;
         }
 
-        return auditTaskDataDtos;
+      return auditTaskDataDtos;
     }
 
     private Map<String, List<OrgUserDto>> getAllOrgUsersByAuditTaskDataFillterDtos(List<AuditTaskDataFillterDto> auditTaskDataDtos){
-        List<String> workGroupIds = new ArrayList<>(auditTaskDataDtos.size());
-        for(AuditTaskDataFillterDto temp : auditTaskDataDtos){
-            if(!workGroupIds.contains(temp.getWorkGroupId())){
-                workGroupIds.add(temp.getWorkGroupId());
-            }
-        }
+         List<String> workGroupIds = new ArrayList<>(auditTaskDataDtos.size());
+         for(AuditTaskDataFillterDto temp : auditTaskDataDtos){
+             if(!workGroupIds.contains(temp.getWorkGroupId())){
+                 workGroupIds.add(temp.getWorkGroupId());
+             }
+         }
         Map<String, List<OrgUserDto>> map = IaisCommonUtils.genNewHashMap();
-        for(String workGroupId :  workGroupIds){
-            map.put(workGroupId,getOrgDtos(workGroupId));
-        }
-        return  map;
+         for(String workGroupId :  workGroupIds){
+             map.put(workGroupId,getOrgDtos(workGroupId));
+         }
+         return  map;
     }
 
     private   List<OrgUserDto> getOrgDtos( String workGroupId){
@@ -589,10 +589,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
         auditCombinationDto.setAuditTaskDataFillterDto(temp);
         String  RefNo = applicationClient.getRefNoByLicId(temp.getLicId(),temp.getHclCode()).getEntity();
-        if(StringUtil.isEmpty( RefNo)){
-            log.info(StringUtil.changeForLog("It is a dirty data : licid" +  temp.getLicId()+ " hcicode :" + temp.getHclCode()));
-            return;
-        }
+       if(StringUtil.isEmpty( RefNo)){
+           log.info(StringUtil.changeForLog("It is a dirty data : licid" +  temp.getLicId()+ " hcicode :" + temp.getHclCode()));
+           return;
+       }
         auditCombinationDto.setEventRefNo(RefNo);
         // boolean haveApptData =
         setAppPremisesInspecApptDtos(auditCombinationDto,RefNo);
@@ -606,13 +606,13 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(groupNo).getEntity();
             appSubmissionForAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             saveAppForAuditToFe(appSubmissionForAuditDto,true);
-            //send email to insp
-            if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
-                sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp);
-                sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK_SMS,groupNo);
-            }else {
-                log.info("-----------Inspector id is null or UserIdToEmails is null");
-            }
+        //send email to insp
+        if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
+            sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp);
+            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK_SMS,groupNo);
+        }else {
+            log.info("-----------Inspector id is null or UserIdToEmails is null");
+        }
 
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -804,7 +804,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     public void updateLicenceSaveCancelTask( AuditCombinationDto auditCombinationDto,String status,String submitId){
-        AuditTaskDataFillterDto temp = auditCombinationDto.getAuditTaskDataFillterDto();
+       AuditTaskDataFillterDto temp = auditCombinationDto.getAuditTaskDataFillterDto();
         LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(temp.getAuditId()).getEntity();
         licPremisesAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         licPremisesAuditDto.setStatus(status);
@@ -851,22 +851,22 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     public void releaseTimeForInsUserCallBack(String eventRefNum,String submissionId)throws FeignException{
         log.info("---releaseTimeForInsUserCallBack into---------------");
-        if( !StringUtil.isEmpty(eventRefNum)){
-            log.info(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum+ " submissionId :"+ submissionId +"--------------------"));
-            List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getAllSystemDtosByAppPremCorrId(eventRefNum).getEntity();
-            if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)){
-                ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
-                List<String> cancelRefNums = new ArrayList<>(1);
-                for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
-                    cancelRefNums.add(appPremisesInspecApptDto.getApptRefNo());
-                }
-                apptCalendarStatusDto.setCancelRefNums(cancelRefNums);
-                apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-                appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
-            }else {
-                log.info(StringUtil.changeForLog("------ eventRefNum :" + eventRefNum +" cannot exist appt"));
-            }
-        }
+         if( !StringUtil.isEmpty(eventRefNum)){
+             log.info(StringUtil.changeForLog("--------------- releaseTimeForInsUserCallBack eventRefNum :" + eventRefNum+ " submissionId :"+ submissionId +"--------------------"));
+             List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getAllSystemDtosByAppPremCorrId(eventRefNum).getEntity();
+             if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)){
+                 ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+                 List<String> cancelRefNums = new ArrayList<>(1);
+                 for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtos){
+                     cancelRefNums.add(appPremisesInspecApptDto.getApptRefNo());
+                 }
+                 apptCalendarStatusDto.setCancelRefNums(cancelRefNums);
+                 apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                 appointmentClient.updateUserCalendarStatus(apptCalendarStatusDto);
+             }else {
+                 log.info(StringUtil.changeForLog("------ eventRefNum :" + eventRefNum +" cannot exist appt"));
+             }
+         }
     }
     @Override
     public List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
@@ -932,7 +932,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         add(roleIds,RoleConsts.USER_ROLE_AUDIT_PLAN,selectOptionArrayList,roles);
         //add(roleIds,RoleConsts.USER_ROLE_INSPECTIOR,selectOptionArrayList,roles);
         add(roleIds,RoleConsts.USER_ROLE_INSPECTION_LEAD,selectOptionArrayList,roles);
-        return selectOptionArrayList;
+       return selectOptionArrayList;
     }
 
     private void add(List<String> roleIds,String roleId, List<SelectOption> selectOptionArrayList,List<Role> roles){
@@ -945,9 +945,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
     @Override
     public  SelectOption getRoleSelectOption(List<Role> roles,String roleId){
-        if(IaisCommonUtils.isEmpty(roles) || StringUtil.isEmpty(roleId)){
-            return null;
-        }
+       if(IaisCommonUtils.isEmpty(roles) || StringUtil.isEmpty(roleId)){
+           return null;
+       }
         for(Role role : roles){
             if(roleId.equalsIgnoreCase(role.getId())){
                 return new SelectOption(role.getId(),role.getName());
@@ -1027,7 +1027,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return null;
     }
-    private void filetDoc(AppSubmissionDto appSubmissionDto){
+    @Override
+    public void filetDoc(AppSubmissionDto appSubmissionDto){
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
@@ -1042,6 +1043,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                             appSvcDocDtoListIterator.remove();
                         }
                     }
+                    setSvcDocsDupForPerson(appSvcDocDtoLit);
                 }
             }
         }
@@ -1058,7 +1060,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
     }
-    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+    @Override
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -1105,5 +1108,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
         return false;
+    }
+
+    private void  setSvcDocsDupForPerson(List<AppSvcDocDto> appSvcDocDtoLit){
+        if(IaisCommonUtils.isNotEmpty(appSvcDocDtoLit)){
+            appSvcDocDtoLit.forEach((v)->{
+                if(StringUtil.isNotEmpty(v.getSvcDocId())){
+                    v.setDupForPerson(hcsaConfigClient.getHcsaSvcDocConfigDtoById(v.getSvcDocId()).getEntity().getDupForPerson());
+                }
+            });
+        }
     }
 }

@@ -121,7 +121,7 @@ public class WebValidationHelper {
         try {
             result = validatePropertyWithoutCustom(obj, propertyName);
             if (result != null) {
-                result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
+                result.addMessages(customizeValidate(obj, obj.getClass(), propertyName, result.isHasErrors()));
             }
 
             saveAuditTrail(obj, result);
@@ -294,10 +294,11 @@ public class WebValidationHelper {
      * @param: [cls]
      * @return: java.util.Map<java.lang.String,java.lang.String>
      */
-    private static Map<String, String> customizeValidate(Class cls, String property, boolean withError){
+    private static <T> Map<String, String> customizeValidate(T target, Class cls, String property, boolean withError){
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         CustomValidate ano = (CustomValidate) cls.getAnnotation(CustomValidate.class);
         if (ano == null || (withError && ano.skipWhenError())) {
-            return null;
+            return errorMap;
         }
         if (!org.springframework.util.StringUtils.isEmpty(property)) {
             boolean jump = true;
@@ -308,7 +309,7 @@ public class WebValidationHelper {
                 }
             }
             if (jump) {
-                return null;
+                return errorMap;
             }
         }
 
@@ -323,14 +324,19 @@ public class WebValidationHelper {
             CustomizeValidator cv = (CustomizeValidator) obj;
             HttpServletRequest request = MiscUtil.getCurrentRequest();
             if (request != null) {
-                return cv.validate(request);
+                if(cv.validate(request) != null) {
+                    errorMap.putAll(cv.validate(request));
+                }
+            }
+            if(cv.validate(target, request) != null) {
+                errorMap.putAll(cv.validate(target, request));
             }
         } catch (InstantiationException | IllegalAccessException e) {
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
 
-        return null;
+        return errorMap;
     }
 
     private static void saveAuditTrail(Object obj, ValidationResult result) {

@@ -20,6 +20,7 @@ public final class ValueTag extends DivTagSupport {
     private boolean label;
     private boolean offset;
     private boolean align;
+    private boolean display;
 
     public ValueTag() {
         super();
@@ -34,6 +35,7 @@ public final class ValueTag extends DivTagSupport {
         setLabel(false);
         setOffset(false);
         setAlign(false);
+        setDisplay(false);
     }
 
     @Override
@@ -82,7 +84,9 @@ public final class ValueTag extends DivTagSupport {
             html.append(" style=\"").append(style).append('\"');
         }
         html.append('>');
-
+        if (display) {
+            html.append("<p>");
+        }
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
@@ -102,6 +106,9 @@ public final class ValueTag extends DivTagSupport {
     @Override
     public int doEndTag() throws JspException {
         try {
+            if (display) {
+                pageContext.getOut().print("</p>");
+            }
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
             throw new JspTagException("ValueTag: " + ex.getMessage(),ex);
@@ -120,5 +127,8 @@ public final class ValueTag extends DivTagSupport {
     }
     public void setAlign(boolean align) {
         this.align = align;
+    }
+    public void setDisplay(boolean display) {
+        this.display = display;
     }
 }

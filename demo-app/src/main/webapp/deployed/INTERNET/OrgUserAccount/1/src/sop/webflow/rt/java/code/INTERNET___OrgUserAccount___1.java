@@ -24,10 +24,9 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class IAIS___OrgUserAccount___1 extends BaseProcessClass {
+public class INTERNET___OrgUserAccount___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="orgUserAccountDelegator";
 	private static final long serialVersionUID = 5780305468489273358L;
 

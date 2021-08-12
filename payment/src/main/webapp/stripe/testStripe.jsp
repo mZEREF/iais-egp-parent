@@ -4,7 +4,7 @@
 
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <meta http-equiv="refresh" content="${GatewayConfig.refreshTime};url=${failUrl}">
 
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>

@@ -88,6 +88,15 @@ import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonFor
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -95,14 +104,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.util.CopyUtil;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -141,13 +142,12 @@ public class WithOutRenewalDelegator {
     private SystemAdminClient systemAdminClient;
     @Autowired
     NewApplicationDelegator newApplicationDelegator;
-
+    @Autowired
+    private HcsaConfigFeClient hcsaConfigFeClient;
     @Autowired
     RequestForChangeService requestForChangeService;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private HcsaConfigFeClient hcsaConfigFeClient;
     @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
@@ -668,6 +668,7 @@ public class WithOutRenewalDelegator {
            if(newAppSubmissionDtos.size()==1){
                appSubmissionService.initDeclarationFiles(newAppSubmissionDtos.get(0).getAppDeclarationDocDtos(),ApplicationConsts.APPLICATION_TYPE_RENEWAL,bpc.request);
            }
+            appSubmissionService.setPreviewDta(newAppSubmissionDtos.get(0),bpc);
         }
         if (!IaisCommonUtils.isEmpty(oldSubmissionDtos) && !IaisCommonUtils.isEmpty(newAppSubmissionDtos)) {
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
@@ -763,6 +764,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> noAutoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+            appEditSelectDto.setLicenseeEdit(appSubmissionDto.getChangeSelectDto() == null ? false : appSubmissionDto.getChangeSelectDto().isLicenseeEdit());
             if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
                 appSubmissionDto.setAppGrpNo(systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_RENEWAL).getEntity());
             }
@@ -921,7 +923,7 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
-            }else if( appSubmissionDtos.size() > 1){
+            } else if( appSubmissionDtos.size() > 1){
                 List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos = hcsaConfigFeClient.getActiveBundleDtoList().getEntity();
                 List<HcsaServiceDto> hcsaServiceDtoList = hcsaConfigFeClient.getActiveServices().getEntity();
                 Map<String,HcsaServiceDto> map=new HashMap<>(10);
@@ -1775,6 +1777,9 @@ public class WithOutRenewalDelegator {
             } else if (RfcConst.EDIT_SERVICE.equals(editValue)) {
                 appEditSelectDto.setServiceEdit(true);
                 ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_SERVICE);
+            }else if(RfcConst.EDIT_LICENSEE.equalsIgnoreCase(editValue)){
+                appEditSelectDto.setLicenseeEdit(true);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_LICENSEE);
             }
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setClickEditPage(null);

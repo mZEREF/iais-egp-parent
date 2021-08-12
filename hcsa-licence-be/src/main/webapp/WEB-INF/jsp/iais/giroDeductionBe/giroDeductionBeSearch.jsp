@@ -93,7 +93,8 @@
                       <th scope="col" style="padding-bottom: 27px">
                         <input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if> onclick="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/>
                       </th>
-                      <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                      <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Transaction Reference No."></iais:sortableHeader>

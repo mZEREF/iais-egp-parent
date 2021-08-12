@@ -59,6 +59,17 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -77,16 +88,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -859,6 +860,7 @@ public class ClinicalLaboratoryDelegator {
 
     private Map<String, String> isAllChecked(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
         StringBuilder sB = new StringBuilder();
+        /*
         Map<String, List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         if (svcAllPsnConfig == null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -869,7 +871,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> svcStepConfigs = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcIds);
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
-
+        */
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> map = new HashMap<>();
         ServiceStepDto serviceStepDto = new ServiceStepDto();
@@ -878,7 +880,8 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            map = appSubmissionService.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i),dto,systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
+            map = appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i), dto,
+                    appSubmissionDto.getAppGrpPremisesDtoList());
         }
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
@@ -2154,6 +2157,8 @@ public class ClinicalLaboratoryDelegator {
                 premAlignBusinessMap.put(appSvcBusinessDto.getPremIndexNo(), appSvcBusinessDto);
             }
         }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "isRfi", isRfi);
         ParamUtil.setRequestAttr(bpc.request,PREMALIGNBUSINESSMAP, premAlignBusinessMap);
 
         log.debug(StringUtil.changeForLog("prepare business end ..."));
@@ -2182,6 +2187,15 @@ public class ClinicalLaboratoryDelegator {
         if (isGetDataFromPage) {
             //get data from page
             List<AppSvcBusinessDto> appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+            if("next".equals(crud_action_type)){
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, errorMap);
+            }
+            if(!errorMap.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
+            }
             currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         }

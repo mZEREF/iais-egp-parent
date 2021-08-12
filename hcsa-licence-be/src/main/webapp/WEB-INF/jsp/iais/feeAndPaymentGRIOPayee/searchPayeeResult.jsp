@@ -70,7 +70,7 @@
                                                     <table aria-describedby="" class="table">
                                                         <thead>
                                                         <tr align="center">
-                                                            <th scope="col" class="text-center"2%">
+                                                            <th scope="col" style="width:2%">
 
                                                             </th>
 <%--                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"--%>

@@ -1,4 +1,4 @@
-<c:if test="${count=='3'||count=='2'}">
+<c:if test="${count=='3'||count=='2'||count=='6'}">
     <h4>
                         <span >
                             Search By Application

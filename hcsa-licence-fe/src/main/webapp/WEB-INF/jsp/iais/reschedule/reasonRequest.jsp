@@ -25,13 +25,13 @@
 
                         <table aria-describedby="" class="table">
                             <tr >
-                                <td class="sorting"><strong>S/N</strong></td>
-                                <td class="sorting"><strong>Mode of Service Delivery</strong></td>
-                                <td class="sorting"><strong>Service(s)</strong></td>
-                                <td class="sorting"><strong>Date and Time of Inspection</strong></td>
-                                <td class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></td>
-                                <td class="sorting" style="width:16%"><strong>New Preferred Date Range </strong><strong style="color:#ff0000;">*</strong></td>
-                                <td class="sorting" style="width:14%"><strong>New Date </strong><strong style="color:#ff0000;">*</strong></td>
+                                <th scope="col" class="sorting"><strong>S/N</strong></th>
+                                <th scope="col" class="sorting"><strong>Mode of Service Delivery</strong></th>
+                                <th scope="col" class="sorting"><strong>Service(s)</strong></th>
+                                <th scope="col" class="sorting"><strong>Date and Time of Inspection</strong></th>
+                                <th scope="col" class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></th>
+                                <th scope="col" class="sorting" style="width:16%"><strong>New Preferred Date Range </strong><strong style="color:#ff0000;">*</strong></th>
+                                <th scope="col" class="sorting" style="width:14%"><strong>New Date </strong><strong style="color:#ff0000;">*</strong></th>
                             </tr>
                             <tbody>
                             <c:choose>

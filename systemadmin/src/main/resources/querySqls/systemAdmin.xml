@@ -121,6 +121,8 @@
             when 10 then 'Session Timeout'
             when 11 then 'Inactive Record'
             when 12 then 'Unauthorised Access Sources'
+            when 13 then 'All Access'
+            when 14 then 'Foreign Interface'
             else 'unknown'
             end operation_desc,
             nric_number,

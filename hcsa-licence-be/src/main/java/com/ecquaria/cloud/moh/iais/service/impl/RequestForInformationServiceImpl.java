@@ -61,12 +61,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,6 +83,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * RequestForInformationServiceImpl
@@ -325,7 +325,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                         map.put("fileName",name);
                         map.put("filePath", path);
 
-                        try (InputStream is = new FileInputStream(fil);
+                        try (InputStream is = newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];
@@ -386,7 +386,8 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName()));
+                File outFile = MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId,zipEntry.getName());
+                os= newOutputStream(outFile.toPath());
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
@@ -449,7 +450,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         File[] files = file.listFiles();
         for(File  filzz:files){
             if(filzz.isFile() &&filzz.getName().endsWith(RequestForInformationConstants.FILE_FORMAT)){
-                try (InputStream fileInputStream =Files.newInputStream(filzz.toPath());
+                try (InputStream fileInputStream = newInputStream(filzz.toPath());
                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
 
                     int count=0;

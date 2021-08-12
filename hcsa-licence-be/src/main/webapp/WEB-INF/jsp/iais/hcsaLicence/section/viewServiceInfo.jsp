@@ -22,6 +22,60 @@
   <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto==null}">
   <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST012')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">${stepNameMap['SVST012']}</label>
+      <div class="amend-preview-info">
+        <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
+          <div class="col-xs-12">
+            <strong >
+              <c:choose>
+                <c:when test="${'ONSITE' == businessDto.premType}">
+                  <c:out value="Premises"/>
+                </c:when>
+                <c:when test="${'CONVEYANCE' == businessDto.premType}">
+                  <c:out value="Conveyance"/>
+                </c:when>
+                <c:when test="${'OFFSITE'  == businessDto.premType}">
+                  <c:out value="Off-site"/>
+                </c:when>
+                <c:when test="${'EASMTS'  == businessDto.premType}">
+                  <c:out value="Conveyance"/>
+                </c:when>
+              </c:choose>
+            </strong>
+            : ${businessDto.premAddress}
+          </div>
+          <span class="col-xs-6"></span>
+          <table  class="col-xs-12" aria-describedby="">
+            <thead style="display: none">
+              <tr>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>
+              </td>
+              <td >
+                <div class="col-xs-6">
+                    <span class="newVal " attr="${businessDto.businessName}">
+                        <c:out value="${businessDto.businessName}"></c:out>
+                    </span>
+                </div>
+                <div class="col-xs-6">
+                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}">
+                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}"></c:out>
+                    </span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+      </div>
+    </div>
+  </c:if>
+
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST008')}">
     <div class="amended-service-info-gp">
       <label style="font-size: 2.2rem">${stepNameMap['SVST008']}</label>
@@ -220,7 +274,7 @@
                             <label style="font-weight: normal">
                               The Professional has existing disciplinary records in PRS
                             </label>
-                            <span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                            <span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X&nbsp;</span>
                             <div class="table-responsive">
                             <table aria-describedby="" border="1px"
                                    style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
@@ -922,39 +976,7 @@
 
     </div>
   </c:if>
-  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST012')}">
-    <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST012']}</label>
-      <div class="amend-preview-info">
-        <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
-          <div class="col-xs-12">
-            <strong>Mode of Service Delivery ${status.index+1}</strong>: ${businessDto.premAddress}
-          </div>
-          <span class="col-xs-6"></span>
-          <table aria-describedby="" class="col-xs-12">
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Business Name</p>
-              </td>
-              <td >
-                <div class="col-xs-6">
-                    <span class="newVal " attr="${businessDto.businessName}">
-                        <c:out value="${businessDto.businessName}"></c:out>
-                    </span>
-                </div>
-                <div class="col-xs-6">
-                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}">
-                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}"></c:out>
-                    </span>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </c:forEach>
-      </div>
 
-    </div>
-  </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST002')}">
     <div class="amended-service-info-gp">
       <label style="font-size: 2.2rem">${stepNameMap['SVST002']}</label>
@@ -1592,6 +1614,8 @@
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList"
                          varStatus="status">
+                <c:set var="oldAppSvcPersonnelDtoList"
+                       value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index]}"/>
                 <p><strong class="col-xs-6">Service Personnel <c:if
                         test="${fn:length(currentPreviewSvcInfo.appSvcPersonnelDtoList)>1}">${status.index+1}</c:if>:</strong>
                 </p>
@@ -1601,52 +1625,52 @@
                     <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation
+                          <p class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Designation
                           </p>
                         </td>
                         <td>
                           <div class="col-xs-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.designation}"><c:out
-                                    value="${appSvcPersonnelDtoList.designation}"/></span>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.designation}">
+                              <c:out value="${appSvcPersonnelDtoList.designation}"/>
+                            </span>
                             <br>
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}</span>
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.designation}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.designation}"/>
+                            </span>
                           </div>
-
-
                         </td>
                       </tr>
                       <tr>
                         <td class="col-xs-6">
-                          <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                          <p class="form-check-label" aria-label="premise-1-cytology">
+                            <span class="check-square"></span>Name
                           </p>
                         </td>
                         <td>
-
                           <div class="col-xs-12 img-show">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
-                                    value="${appSvcPersonnelDtoList.name}"/>
+                            <span class="newVal" attr="${appSvcPersonnelDtoList.name}">
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
                               <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
                                   <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name==appSvcPersonnelDtoList.name}">
-                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+                                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                   </c:if>
                                   <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name!=appSvcPersonnelDtoList.name}">
                                     <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
                                   </c:if>
                               </c:if>
-                            <br>
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}
-                                  <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
-                                    <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}">
+                            </span>
+                            <br/>
+                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                                <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
+                                <c:if test="${not empty proHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
+                                    <c:if test="${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name==oldAppSvcPersonnelDtoList.name}">
                                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
                                     </c:if>
-                                    <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}">
+                                    <c:if test="${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name!=oldAppSvcPersonnelDtoList.name}">
                                       <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
                                     </c:if>
-                                  </c:if>
+                                </c:if>
                             </span>
                           </div>
                           <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
@@ -1663,7 +1687,7 @@
                               </div>
                             </div>
                           </c:if>
-                          <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                          <c:if test="${not empty proHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                             <div class="row old-img-show" style="display: none">
                               <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
                                 <label style="font-weight: normal">The name of this personnel as listed in PRS is:
@@ -1671,7 +1695,7 @@
                                                    onclick="closeThis(this)">X</span>
                                 <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                                   <tr>
-                                    <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo].name}</td>
+                                    <td>${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name}</td>
                                   </tr>
 
                                 </table>
@@ -1700,12 +1724,12 @@
                           </div>
                           <div class="col-xs-6 img-show">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}
-                              <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                                  attr="${oldAppSvcPersonnelDtoList.profRegNo}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.profRegNo}
+                              <c:if test="${empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                                 <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                               </c:if>
-                               <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                               <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                                  <img src="/hcsa-licence-web/img/2020109171436.png"
                                       onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
                                </c:if>
@@ -1753,7 +1777,7 @@
                               </div>
                             </div>
                           </c:if>
-                          <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                          <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                             <div class="row old-img-show" style="display: none">
                               <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
@@ -1774,10 +1798,10 @@
                                     <td>Other Disciplinary action End Date</td>
                                   </tr>
                                   <c:forEach
-                                          items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}"
+                                          items="${listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}"
                                           var="list">
                                     <tr>
-                                      <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
+                                      <td>${oldAppSvcPersonnelDtoList.profRegNo}</td>
                                       <td style="text-align: left">
                                         <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
                                         <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
@@ -1813,8 +1837,8 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</span>
+                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                           </div>
 
                           </p>
@@ -1829,12 +1853,13 @@
                         </td>
                         <td>
                           <div class="col-xs-6 col-md-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
-                                    value="${appSvcPersonnelDtoList.name}"/></span>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
+                            </span>
                             <br>
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</span>
+                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.name}" style="display:none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
+                            </span>
                           </div>
 
                           </p>
@@ -1851,8 +1876,8 @@
                                     value="${appSvcPersonnelDtoList.qualification}"/></span>
                             <br>
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}</span>
+                                  attr="${oldAppSvcPersonnelDtoList.qualification}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.qualification}</span>
                           </div>
 
 
@@ -1870,8 +1895,8 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</span>
+                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                           </div>
 
                         </td>
@@ -1898,11 +1923,12 @@
 
                           <div class="col-xs-12">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                             ${appSvcPersonnelDtoList.name}
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none">
-                              ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</span>
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
+                            </span>
                           </div>
 
                         </td>
@@ -1918,8 +1944,8 @@
                               ${appSvcPersonnelDtoList.designation}
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].designation}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.designation}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.designation}
                             </span>
                           </div>
                         </td>
@@ -1936,8 +1962,8 @@
                              ${appSvcPersonnelDtoList.qualification}
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.qualification}
                             </span>
                           </div>
                         </td>
@@ -1955,9 +1981,9 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"
+                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
                                   style="display: none"><c:out
-                                    value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"/></span>
+                                    value="${oldAppSvcPersonnelDtoList.wrkExpYear}"/></span>
                           </div>
 
 
@@ -1985,11 +2011,11 @@
 
                           <div class="col-xs-12">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                               ${appSvcPersonnelDtoList.name}
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
                             </span>
                           </div>
 
@@ -2007,9 +2033,8 @@
                                     value="${appSvcPersonnelDtoList.qualification}"/>
                             </span>
                             <br>
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.qualification}
                             </span>
                           </div>
 
@@ -2030,8 +2055,8 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</span>
+                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                           </div>
 
                         </td>
@@ -2057,11 +2082,11 @@
 
                           <div class="col-xs-12">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                             ${appSvcPersonnelDtoList.name}
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
                             </span>
                             <br>
-                            <span class="oldVal  " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}
+                            <span class="oldVal  " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
                             </span>
                           </div>
                         </td>
@@ -2087,11 +2112,11 @@
 
                           <div class="col-xs-12">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                             ${appSvcPersonnelDtoList.name}
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
                             </span>
                           </div>
                         </td>
@@ -2117,12 +2142,12 @@
                           </div>
                           <div class="col-xs-6 img-show">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}
-                              <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                                  attr="${oldAppSvcPersonnelDtoList.profRegNo}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.profRegNo}
+                              <c:if test="${empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                                 <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                               </c:if>
-                              <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                              <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                                 <img src="/hcsa-licence-web/img/2020109171436.png"
                                      onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
                               </c:if>
@@ -2171,7 +2196,7 @@
                               </div>
                             </div>
                           </c:if>
-                          <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}">
+                          <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
                             <div class="row old-img-show" style="display: none">
                               <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
                                 <label style="font-weight: normal">The Professional has existing disciplinary records in
@@ -2192,10 +2217,10 @@
                                     <td>Other Disciplinary action End Date</td>
                                   </tr>
                                   <c:forEach
-                                          items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo]}"
+                                          items="${listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}"
                                           var="list">
                                     <tr>
-                                      <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</td>
+                                      <td>${oldAppSvcPersonnelDtoList.profRegNo}</td>
                                       <td style="text-align: left">
                                         <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
                                         <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
@@ -2228,14 +2253,14 @@
                         <td>
 
                           <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}"><c:out
-                                    value="${appSvcPersonnelDtoList.name}"/></span>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
+                              <c:out value="${appSvcPersonnelDtoList.name}"/>
+                            </span>
                           </div>
                           <div class="col-xs-6">
-                            <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].name}</span>
-
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
+                            </span>
                           </div>
                         </td>
                       </tr>
@@ -2251,8 +2276,8 @@
                               ${appSvcPersonnelDtoList.qualification}
                             </span>
                             <br>
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}" style="display: none">
-                                ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].qualification}
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.qualification}
                             </span>
                           </div>
                         </td>
@@ -2271,8 +2296,8 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal "
-                                  attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}"
-                                  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].wrkExpYear}</span>
+                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                           </div>
 
                         </td>

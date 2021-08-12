@@ -74,6 +74,9 @@
         $('#RfcSaveDraft').click(function () {
             showWaiting();
             <c:choose>
+            <c:when test="${AppSubmissionDto.appEditSelectDto.licenseeEdit}">
+            submit('licensee','saveDraft',null);
+            </c:when>
             <c:when test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
             submit('premises','saveDraft',null);
             </c:when>

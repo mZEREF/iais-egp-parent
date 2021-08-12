@@ -2927,9 +2927,9 @@ font-family: FontAwesome, sans-serif;    width: 27px;
     color: #333333;
     flex-basis: 100%;
     position: relative;
-    padding-left: 0;
     text-align: center;
     padding: 0 10px;
+    padding-left: 0;
 }
 .progress-tracker li:before {
     content: "";
@@ -5799,5 +5799,14 @@ section.logo img {
   }
 }*/
 
+p, span {
+    word-wrap: break-word;
+}
+
+.container-footer {
+    margin-top: 15px;
+    padding-top: 30px;
+    border-top: 1px solid #BABABA;
+}
 
 

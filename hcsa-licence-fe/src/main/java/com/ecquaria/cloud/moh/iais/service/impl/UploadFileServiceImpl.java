@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeri
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubLicenseeCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -50,10 +52,15 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -70,11 +77,8 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author Wenkang
@@ -134,7 +138,7 @@ public class UploadFileServiceImpl implements UploadFileService {
              groupId = applicationGroup.get(0).getId();
         }
         File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
-        try (OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());) {
+        try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
              if(!file.exists()){
                  boolean newFile = file.createNewFile();
                  if(newFile){
@@ -226,7 +230,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         MiscUtil.checkDirs(zipFile);
         String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
         File osFile = MiscUtil.generateFile(osPath);
-        try (OutputStream outputStream = new FileOutputStream(osFile);//Destination compressed folder
+        try (OutputStream outputStream = newOutputStream(osFile.toPath());//Destination compressed folder
              CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 
@@ -421,8 +425,11 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppPremOpenPeriodDto> appPremOpenPeriods = applicationListDto.getAppPremOpenPeriods();
         List<AppSvcVehicleDto> appSvcVehicles = applicationListDto.getAppSvcVehicles();
         List<AppSvcChargesDto> appSvcChargesPages = applicationListDto.getAppSvcChargesPages();
+        List<AppSvcClinicalDirectorDto> appSvcClinicalDirectors = applicationListDto.getAppSvcClinicalDirectors();
         List<AppDeclarationMessageDto> appDeclarationMessages = applicationListDto.getAppDeclarationMessages();
         List<AppDeclarationDocDto> appDeclarationDocs = applicationListDto.getAppDeclarationDocs();
+        List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtos= applicationListDto.getAppSubLicenseeCorrelations();
+        List<SubLicenseeDto> subLicenseeDtos=applicationListDto.getAppGrpSubLicenseeInfos();
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(applicationGroup)){
             for(ApplicationGroupDto every :applicationGroup){
@@ -467,8 +474,17 @@ public class UploadFileServiceImpl implements UploadFileService {
                 List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
                 List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
                 List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
+                List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtoList= IaisCommonUtils.genNewArrayList();
+                List<SubLicenseeDto> subLicenseeDtoList=IaisCommonUtils.genNewArrayList();
                 groupDtos.add(every);
                 String groupId = every.getId();
+                if(subLicenseeDtos!=null){
+                    for (SubLicenseeDto v : subLicenseeDtos) {
+                        if(v.getAppGrpId().equals(groupId)){
+                            subLicenseeDtoList.add(v);
+                        }
+                    }
+                }
                 if(appDeclarationMessages!=null){
                     for (AppDeclarationMessageDto v : appDeclarationMessages) {
                         String appGrpId = v.getAppGrpId();
@@ -549,6 +565,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                             if(applicationDtoId.equals(applicationId) && appliGrpPremisesIds.contains(appGrpPremId)){
                                 appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
+                                if(appSubLicenseeCorrelationDtos!=null){
+                                    for (AppSubLicenseeCorrelationDto v : appSubLicenseeCorrelationDtos) {
+                                        if(v.getApplicationId().equals(applicationId)){
+                                            appSubLicenseeCorrelationDtoList.add(v);
+                                        }
+                                    }
+                                }
                                 for (AppSvcPremisesScopeDto appSvcPremisesScopeDto:appSvcPremisesScope){
                                     String appPremCorreId = appSvcPremisesScopeDto.getAppPremCorreId();
 
@@ -701,8 +724,11 @@ public class UploadFileServiceImpl implements UploadFileService {
                 applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
                 applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
                 applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
+                applicationListFileDto.setAppGrpSubLicenseeInfos(subLicenseeDtoList);
+                applicationListFileDto.setAppSubLicenseeCorrelations(appSubLicenseeCorrelationDtoList);
                 applicationListFileDtoList.add(applicationListFileDto);
             }
+
         }
         return applicationListFileDtoList;
 
@@ -743,7 +769,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         log.info(StringUtil.changeForLog("file repo id is " + id));
         File file=MiscUtil.generateFile(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId+ File.separator + AppServicesConsts.FILES,
                 id);
-        try (OutputStream outputStream=Files.newOutputStream(file.toPath())) {
+        try (OutputStream outputStream= newOutputStream(file.toPath())) {
             if(entity!=null){
                 outputStream.write(entity);
             }

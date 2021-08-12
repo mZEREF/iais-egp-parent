@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -81,6 +82,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * NewApplicationHelper
@@ -92,19 +96,18 @@ import java.util.Map;
 @Slf4j
 public class NewApplicationHelper {
 
-    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, Boolean needNewLicNo, int selfAssMtFlag) {
-        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null || appEditSelectDto == null) {
             return;
         }
-        if (Boolean.FALSE.equals(needNewLicNo)) {
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
-        } else if (Boolean.TRUE.equals(needNewLicNo)) {
-            appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
-        }
+        boolean isNeedNewLicNo = appEditSelectDto.isNeedNewLicNo();
+        boolean isAutoRfc = appEditSelectDto.isAutoRfc();
+        int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
+                ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
+        appSubmissionDto.setAutoRfc(isAutoRfc);
+        appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
-            if (needNewLicNo != null) {
-                appGrpPremisesDto.setNeedNewLicNo(needNewLicNo);
-            }
+            appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
         });
     }
@@ -272,6 +275,12 @@ public class NewApplicationHelper {
                     String otherQualification = appSvcCgoList.get(i).getOtherQualification();
                     if(StringUtil.isEmpty(otherQualification)){
                         errMap.put("otherQualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Other Qualification","field"));
+                    }else if(otherQualification.length()>100){
+                        Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                        repMap.put("number","100");
+                        repMap.put("fieldNo","Other Qualification");
+                        errMap.put("otherQualification"+i,MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+
                     }
                 }
 
@@ -3211,20 +3220,20 @@ public class NewApplicationHelper {
         return appSvcDocDtos;
     }
 
-    private static List<AppSvcBusinessDto> removeEmptyAlignBusiness(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
+    private static List<AppSvcBusinessDto> removeEmptyAlignBusiness(List<AppGrpPremisesDto> appGrpPremisesDtoList,AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
         List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
-        if(!IaisCommonUtils.isEmpty(appSvcBusinessDtos)){
-            List<AppSvcBusinessDto> newBusinessDtos = IaisCommonUtils.genNewArrayList();
-            for(AppSvcBusinessDto appSvcBusinessDto:newBusinessDtos){
+        List<AppSvcBusinessDto> newBusinessDtos = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
+            for (AppSvcBusinessDto appSvcBusinessDto : appSvcBusinessDtos) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    if (appGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDto.getPremisesIndexNo())) {
+                    if (Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), appSvcBusinessDto.getPremIndexNo())){
                         newBusinessDtos.add(appSvcBusinessDto);
                         break;
                     }
                 }
             }
         }
-        return appSvcBusinessDtos;
+        return newBusinessDtos;
     }
 
     private static List<SelectOption> getPremisesSel(String appType){
@@ -3241,17 +3250,19 @@ public class NewApplicationHelper {
         return selectOptionList;
     }
 
-    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType){
+    private static boolean checkCanEdit(AppEditSelectDto appEditSelectDto, String currentType) {
         boolean pageCanEdit = false;
-        if(appEditSelectDto != null){
-            if(ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)){
+        if (appEditSelectDto != null) {
+            if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_PREMISES_INFORMATION.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isPremisesEdit();
             } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isServiceEdit();
             } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SUPPORTING_DOCUMENT.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isDocEdit();
-            }else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT.equals(currentType)) {
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_DOCUMENT.equals(currentType)) {
                 pageCanEdit = appEditSelectDto.isServiceEdit() || appEditSelectDto.isDocEdit();
+            } else if (ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_LICENSEE.equals(currentType)) {
+                pageCanEdit = appEditSelectDto.isLicenseeEdit();
             }
         }
         return pageCanEdit;
@@ -3672,6 +3683,20 @@ public class NewApplicationHelper {
         }
     }
 
+    public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+        for(int i = 0; i< appSvcBusinessDtos.size(); i++){
+            String businessName = appSvcBusinessDtos.get(i).getBusinessName();
+            if(StringUtil.isEmpty(businessName)){
+                errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
+            }else {
+                if(businessName.length()>100){
+                    String general_err0041=NewApplicationHelper.repLength("businessName","100");
+                    errorMap.put("businessName"+i, general_err0041);
+                }
+            }
+        }
+    }
+
     private static List<String> getOtherScopeChildrenIdList(List<HcsaSvcSubtypeOrSubsumedDto> scopeConfigDtoList){
         List<String> otherScopeChildrenList = IaisCommonUtils.genNewArrayList();
         HcsaSvcSubtypeOrSubsumedDto otherScopeConfigDto = null;
@@ -3909,8 +3934,64 @@ public class NewApplicationHelper {
         return riskLevelResult;
     }
 
+    public static boolean canLicenseeEdit(AppSubmissionDto appSubmissionDto, boolean isRFI) {
+        if (appSubmissionDto == null || appSubmissionDto.getSubLicenseeDto() == null) {
+            return false;
+        }
+        String licenseeType = appSubmissionDto.getSubLicenseeDto().getLicenseeType();
+        String appType = appSubmissionDto.getAppType();
+        boolean oldLicenseeEdit = Optional.ofNullable(appSubmissionDto.getAppEditSelectDto())
+                .map(AppEditSelectDto::isLicenseeEdit)
+                .orElseGet(() -> Boolean.TRUE);
+        return canLicenseeEdit(licenseeType, appType, oldLicenseeEdit, isRFI);
+    }
+
+    public static boolean canLicenseeEdit(String licenseeType, String appType, boolean oldLicenseeEdit, boolean isRFI) {
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            return false;
+        }
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            return !isRFI || oldLicenseeEdit;
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            return oldLicenseeEdit;
+        }
+        return false;
+    }
+
+    public static List<SelectOption> genSubLicessOption(Map<String, SubLicenseeDto> licenseeMap) {
+        List<SelectOption> options = IaisCommonUtils.genNewArrayList();
+        options.add(new SelectOption("-1", "Please Select"));
+        options.add(new SelectOption(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW, "I'd like to add a new licensee"));
+        if (licenseeMap != null) {
+            licenseeMap.forEach((personKey, dto) ->
+                    options.add(new SelectOption(personKey, getPersonView(dto.getIdType(), dto.getIdNumber(), dto.getLicenseeName())))
+            );
+        }
+        return options;
+    }
+
+    public static Map<String, SubLicenseeDto> genSubLicessMap(List<SubLicenseeDto> subLicenseeDtoList) {
+        Map<String, SubLicenseeDto> map = IaisCommonUtils.genNewLinkedHashMap();
+        if (subLicenseeDtoList != null) {
+            subLicenseeDtoList.stream().forEach(dto -> map.put(getPersonKey(dto.getIdType(), dto.getIdNumber()), dto));
+        }
+        return map;
+    }
+
     public static boolean isEmpty(String assignSel) {
         return StringUtil.isEmpty(assignSel) || "-1".equals(assignSel);
+    }
+
+    public static String getAssignSelect(Set<String> keySet, String idType, String idNumber) {
+        String assignSelect = "-1";
+        String personKey = getPersonKey(idType, idNumber);
+        if (keySet != null && keySet.contains(personKey)) {
+            assignSelect = personKey;
+        } else if (!StringUtil.isEmpty(personKey)) {
+            assignSelect = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW;
+        }
+        return assignSelect;
     }
 
     public static String getAssignSelect(String idType, String idNumber, String defaultVal) {

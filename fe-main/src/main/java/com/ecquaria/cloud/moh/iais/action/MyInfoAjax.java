@@ -3,41 +3,43 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.myinfo.AccessTokenDto;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
-
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.lowagie.text.pdf.codec.Base64;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.Signature;
-import java.util.*;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpClientErrorException;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @Controller
@@ -85,6 +87,8 @@ public class MyInfoAjax {
 			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
 			return ;
 		}
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
+		ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
 		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
 		nric = getNric(nric, request);
 		if(StringUtil.isNotEmpty(nric)){
@@ -118,6 +122,7 @@ public class MyInfoAjax {
 		}
 		HttpServletResponse response =  bpc.response;
 		HttpServletRequest request = bpc.request;
+		log.info(StringUtil.changeForLog("-----Authorise call back response : " +JsonUtil.parseToJson(response)));
 		if(HttpServletResponse.SC_MOVED_TEMPORARILY == response.getStatus()){
 			String code = ParamUtil.getString(request,"code");
 			String state = ParamUtil.getString(request,"state");
@@ -149,6 +154,8 @@ public class MyInfoAjax {
 				}
 
 			}
+		}else {
+			log.info(StringUtil.changeForLog("-----Authorise call back response is not 302------ "));
 		}
 		return null;
 	}
@@ -202,7 +209,7 @@ public class MyInfoAjax {
 	private  MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
 		if (StringUtil.isEmpty(response))
 			return dto;
-		
+
 		JSONObject jsonObject = JSONObject.fromObject(response);
 		JSONObject jsonObjectRegadd = jsonObject.getJSONObject("regadd");
 		if (!jsonObjectRegadd.isNullObject()) {
@@ -283,7 +290,7 @@ public class MyInfoAjax {
             baseStr = MyinfoUtil.getBaseString(idNum, list, clientId, singPassEServiceId, txnNo);
             log.info(StringUtil.changeForLog("baseString =====> " + baseStr));
             sig.update(baseStr.getBytes(StandardCharsets.UTF_8));
-            byte[] signedData= sig.sign(); 
+            byte[] signedData= sig.sign();
             String finalStr= Base64.encodeBytes(signedData);
             log.info(StringUtil.changeForLog("Base64 signedData =====> " + finalStr));
             authorization = MyinfoUtil.getAuthorization(realm, finalStr.replace("\n",""), appId, nonce, timestamp);
@@ -344,6 +351,14 @@ public class MyInfoAjax {
 		try {
 			resEntity = IaisCommonUtils.callEicGatewayWithParam(uri, HttpMethod.GET, param, MediaType.APPLICATION_JSON, null,
 					authorizationHeader, null, null, String.class);
+			AuditTrailDto auditTrailDto = new AuditTrailDto();
+			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+			auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+			auditTrailDto.setModule("MyInfo");
+			auditTrailDto.setFunctionName("getMyInfoByTrue");
+			auditTrailDto.setBeforeAction(JsonUtil.parseToJson(param));
+			auditTrailDto.setAfterAction(resEntity.getBody());
+			AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 			// HttpStatus httpStatus = resEntity.getStatusCode();
 			String responseStr = MyinfoUtil.decodeEncipheredData(resEntity.getBody());
 			MyInfoDto dto = new MyInfoDto();

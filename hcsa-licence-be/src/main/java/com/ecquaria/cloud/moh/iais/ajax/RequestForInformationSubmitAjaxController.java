@@ -126,6 +126,11 @@ public class RequestForInformationSubmitAjaxController {
         }
         String parentMsg = "";
         List<String> rfiUpWindowsCheck = IaisCommonUtils.genNewArrayList();
+        if (selectsList.contains("licensee")) {
+            appEditSelectDto.setLicenseeEdit(true);
+            parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Licensee Details</li>";
+            rfiUpWindowsCheck.add("licensee");
+        }
         if (selectsList.contains("premises")) {
             appEditSelectDto.setPremisesEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Mode of Service Delivery</li>";

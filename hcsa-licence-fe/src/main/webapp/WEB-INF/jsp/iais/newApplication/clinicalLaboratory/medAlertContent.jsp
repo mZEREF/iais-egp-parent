@@ -247,7 +247,7 @@
                 <c:when test="${mapDtoLength >= mapHcsaSvcPersonnel.maximumCount}">
                     <c:set var="needAddPsn" value="false"/>
                 </c:when>
-                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                     <c:set var="needAddPsn" value="false"/>
                 </c:when>
             </c:choose>

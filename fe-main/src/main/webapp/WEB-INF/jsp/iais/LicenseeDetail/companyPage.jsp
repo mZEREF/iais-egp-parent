@@ -27,116 +27,25 @@
     </div>
 </div>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="crud_action_type" value="">
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
-        <div class="tab-gp steps-tab">
-            <div class="tab-content">
-                <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="new-premise-form-conveyance">
-                                <div class="form-horizontal">
-                                    <h3>Company Details</h3>
-                                    <iais:row>
-                                        <iais:field value="Who is the licensee" width="11"/>
-                                        <iais:field value="${licensee.getLicenseeType()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="UEN No." width="11"/>
-                                        <iais:field value="${organization.getUenNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Name of Licensee" width="11"/>
-                                        <iais:field value="${licensee.getName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Postal Code" width="11"/>
-                                        <iais:field value="${licensee.getPostalCode()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Address Type" width="11"/>
-                                        <iais:field value="${licensee.getAddrType()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Block / House No." width="11"/>
-                                        <iais:field value="${licensee.getBlkNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Floor No." width="11"/>
-                                        <iais:field value="${licensee.getFloorNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit No." width="11"/>
-                                        <iais:field value="${licensee.getUnitNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Street Name" width="11"/>
-                                        <iais:field value="${licensee.getStreetName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Building Name" width="11"/>
-                                        <iais:field value="${licensee.getBuildingName()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Office Telephone No." width="11"/>
-                                        <iais:field value="${licensee.getOfficeTelNo()}" width="11"/>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Office Email Address" width="11"/>
-                                        <iais:field value="${licensee.getEmilAddr()}" width="11"/>
-                                    </iais:row>
-
-                                    <c:forEach var="item" items="${person}" varStatus="status">
-                                        <h3>Board Member ${status.index + 1}</h3>
-
-                                        <iais:row>
-                                            <iais:field value="Name" width="11"/>
-                                            <iais:field value="${item.getName()}" width="11"/>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="ID Type" width="11"/>
-                                            <label class="col-xs-11 col-md-4 control-label">
-                                                <iais:code  code="${item.getIdType()}"/>
-                                            </label>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="ID No." width="11"/>
-                                            <iais:field value="${item.getIdNo()}" width="11"/>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Designation" width="11"/>
-                                            <iais:field value="${item.getDesignation()}" width="11"/>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Designation Appointment Date" width="11"/>
-                                            <label class="col-xs-11 col-md-4 control-label">
-                                                    <fmt:formatDate value="${item.getApptDt()}" pattern="dd/MM/yyyy"/>
-                                            </label>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Designation Cessation Date" width="11"/>
-                                            <label class="col-xs-11 col-md-4 control-label">
-                                                <fmt:formatDate value="${item.getCessationDt()}" pattern="dd/MM/yyyy"/>
-                                            </label>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Designation Cessation Reason" width="11"/>
-                                            <iais:field value="${item.getCessationReason()}" width="11"/>
-                                        </iais:row>
-                                    </c:forEach>
-                                    <div class="application-tab-footer">
-                                        <div class="row">
-                                            <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
-                                            </div>
-                                            <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary" id="refresh" >Refresh and Save Data</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="container center-content">
+            <div class="col-xs-12">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <%@include file="section/companyDetail.jsp" %>
+                    <c:forEach var="licensee" items="${subLicenseeDtoList}" varStatus="status">
+                        <c:set var="index" value="${status.index + 1}" />
+                        <%@include file="section/licenseeDetail.jsp" %>
+                    </c:forEach>
+                </div>
+                <div class="container-footer">
+                    <div class="col-sm-4 col-md-2 text-left">
+                        <a style="padding-left: 5px;" class="back" id="back">
+                            <em class="fa fa-angle-left">&nbsp;Back</em>
+                        </a>
+                    </div>
+                    <div class="col-sm-12 col-md-10 text-right">
+                        <button class="btn btn-primary" id="refresh" >Refresh and Save Data</button>
                     </div>
                 </div>
             </div>

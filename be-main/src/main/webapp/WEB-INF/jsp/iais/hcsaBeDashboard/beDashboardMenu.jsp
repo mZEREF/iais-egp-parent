@@ -136,16 +136,16 @@
 </div>
 
 <style>
-  @media only screen and (min-width: 1201px) and (max-width: 1920px) {
-    .dashboard-multiple .dashboard-tile-item .dashboard-tile {
-      border-radius: 18px;
-      height: 200px;
-      margin-bottom: 55px;
+    @media only screen and (min-width: 1201px) and (max-width: 1920px) {
+        .dashboard-multiple .dashboard-tile-item .dashboard-tile {
+            border-radius: 18px;
+            height: 200px;
+            margin-bottom: 55px;
+        }
     }
-  }
 </style>
 <script type="text/javascript">
-    <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
+  <c:if test="${'SYSTEM_USER_ADMIN' ne iais_Login_User_Info_Attr.curRoleId}">
     $(document).ready(function() {
         $.post(
             '/main-web/hcsa/intranet/dashboard/appGroup.do',
@@ -157,19 +157,19 @@
             }
         )
     });
-    </c:if>
-    <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'ASO' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'PSO' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO2' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO1' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO1_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO3' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO2_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'AO3_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'ASO_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                    'PSO_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+  </c:if>
+  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'ASO' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'PSO' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO2' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO1' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO1_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO3' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO2_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'AO3_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'ASO_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                  'PSO_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
     $(document).ready(function() {
         $.post(
             '/main-web/hcsa/intranet/dashboard/appGroup.do',
@@ -217,16 +217,16 @@
             }
         )
     });
-    </c:if>
-    <c:if test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'AO1' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'AO1_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'AO3' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'AO2_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'AO3_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'ASO_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
-                  'PSO_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+  </c:if>
+  <c:if test="${'AO2' eq iais_Login_User_Info_Attr.curRoleId ||
+                'AO1' eq iais_Login_User_Info_Attr.curRoleId ||
+                'AO1_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                'AO3' eq iais_Login_User_Info_Attr.curRoleId ||
+                'AO2_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                'AO3_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                'ASO_LEAD' eq iais_Login_User_Info_Attr.curRoleId ||
+                'PSO_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
     $(document).ready(function() {
         $.post(
             '/main-web/hcsa/intranet/dashboard/appGroup.do',
@@ -238,7 +238,7 @@
             }
         )
     });
-    </c:if>
+  </c:if>
     function dashboardStepClear() {
         $('input[name="application_no"]').val("");
         $('input[name="hci_code"]').val("");
@@ -252,51 +252,51 @@
         $("#searchCondition .current").text("Please Select");
     }
 
-    function dashboardAssignMe() {
-        showWaiting();
-        $('#switchAction').val('assignme');
-        intraDashboardSubmit('assignme');
-    }
+  function dashboardAssignMe() {
+      showWaiting();
+      $('#switchAction').val('assignme');
+      intraDashboardSubmit('assignme');
+  }
 
-    function dashboardApplicantReply() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('reply');
-        intraDashboardSubmit('reply');
-    }
+  function dashboardApplicantReply() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('reply');
+      intraDashboardSubmit('reply');
+  }
 
-    function dashboardKpiTask() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('kpi');
-        intraDashboardSubmit('kpi');
-    }
+  function dashboardKpiTask() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('kpi');
+      intraDashboardSubmit('kpi');
+  }
 
-    function dashboardRenewalExpiry() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('renew');
-        intraDashboardSubmit('renew');
-    }
+  function dashboardRenewalExpiry() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('renew');
+      intraDashboardSubmit('renew');
+  }
 
-    function dashboardWaitApproval() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('wait');
-        intraDashboardSubmit('wait');
-    }
+  function dashboardWaitApproval() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('wait');
+      intraDashboardSubmit('wait');
+  }
 
-    function dashboardCommonPool() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('common');
-        intraDashboardSubmit('common');
-    }
+  function dashboardCommonPool() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('common');
+      intraDashboardSubmit('common');
+  }
 
-    function dashboardSupervisorPool() {
-        showWaiting();
-        dashboardStepClear();
-        $('#switchAction').val('group');
-        intraDashboardSubmit('group');
-    }
+  function dashboardSupervisorPool() {
+      showWaiting();
+      dashboardStepClear();
+      $('#switchAction').val('group');
+      intraDashboardSubmit('group');
+  }
 </script>

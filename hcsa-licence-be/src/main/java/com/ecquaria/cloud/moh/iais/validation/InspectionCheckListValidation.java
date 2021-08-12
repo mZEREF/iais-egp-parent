@@ -127,17 +127,17 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
     }
     private boolean serviceSpecFillUpVad(Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
         if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
-                int flagNum = 0;
-                if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
-                    for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
-                        if(!fillServiceVad(fDto,errMap)){
-                            flagNum++;
-                        };
-                    }
+            int flagNum = 0;
+            if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
+                for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
+                    if(!fillServiceVad(fDto,errMap)){
+                        flagNum++;
+                    };
                 }
-                if(flagNum>0){
-                    return false;
-                }
+            }
+            if(flagNum>0){
+                return false;
+            }
         }
         return true;
     }
@@ -344,6 +344,10 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
         String bestPractice = icDto.getBestPractice();
         if(bestPractice!=null&&bestPractice.length()>500){
             errMap.put("bestPractice","UC_INSTA004_ERR004");
+        }
+        String observation = icDto.getObservation();
+        if(observation!=null&&observation.length()>500){
+            errMap.put("observation","UC_INSTA004_ERR004");
         }
         String otherofficer = icDto.getOtherinspectionofficer();
         if (otherofficer!=null&&otherofficer.length()>300) {

@@ -28,7 +28,7 @@
                                 <br/>
                                 <h2>Payment Summary</h2>
                                 <%--<p >--%>
-                                <%--Total amount due: ${dAmount}--%>
+                                    <%--Total amount due: ${dAmount}--%>
                                 <%--</p>--%>
                                 <div class="table-responsive">
                                     <table aria-describedby="" class="table">

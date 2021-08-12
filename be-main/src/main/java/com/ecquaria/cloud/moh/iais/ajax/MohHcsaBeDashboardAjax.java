@@ -134,8 +134,8 @@ public class MohHcsaBeDashboardAjax {
                 String curRole = loginContext.getCurRoleId();
                 if(!StringUtil.isEmpty(curRole)) {
                     if(curRole.contains(RoleConsts.USER_ROLE_AO1) ||
-                            curRole.contains(RoleConsts.USER_ROLE_AO2) ||
-                            curRole.contains(RoleConsts.USER_ROLE_AO3)
+                       curRole.contains(RoleConsts.USER_ROLE_AO2) ||
+                       curRole.contains(RoleConsts.USER_ROLE_AO3)
                     ) {
                         map.put("dashSupportFlag", AppConsts.TRUE);
                     }

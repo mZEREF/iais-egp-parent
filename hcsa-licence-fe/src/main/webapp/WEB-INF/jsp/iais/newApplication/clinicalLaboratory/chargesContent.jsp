@@ -79,7 +79,7 @@
                             <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${gcStat.index}" value="${generalChargesDto.chargesIndexNo}"/>
                             <div class="col-md-12 col-xs-12">
                                 <div class="edit-content">
-                                    <c:if test="${'true' == canEdit}">
+                                    <c:if test="${canEdit}">
                                         <p>
                                         <div class="text-right app-font-size-16">
                                             <a class="edit chargesEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
@@ -111,7 +111,8 @@
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
                                         </div>
                                         <div class="control-label formtext col-md-1 col-xs-1">
-                                            <c:if test="${gcStat.index - generalChargesConfig.mandatoryCount >=0}">
+                                            <c:if test="${(gcStat.index - generalChargesConfig.mandatoryCount >= 0) &&
+                                            (!AppSubmissionDto.needEditController || canEdit)}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                                 </h4>
@@ -146,7 +147,7 @@
                             <c:when test="${generalChargesLength >= generalChargesConfig.maximumCount}">
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
-                            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
                         </c:choose>
@@ -259,7 +260,7 @@
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
                                             <div class="control-label formtext col-md-1 col-xs-1">
-                                                <c:if test="${ocStat.index - otherChargesConfig.mandatoryCount >=0}">
+                                                <c:if test="${(ocStat.index - otherChargesConfig.mandatoryCount >= 0) && (!AppSubmissionDto.needEditController || canEdit)}">
                                                     <h4 class="text-danger">
                                                         <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
                                                     </h4>
@@ -294,7 +295,7 @@
                                 <c:when test="${otherChargesLength >= otherChargesConfig.maximumCount}">
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
-                                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                             </c:choose>

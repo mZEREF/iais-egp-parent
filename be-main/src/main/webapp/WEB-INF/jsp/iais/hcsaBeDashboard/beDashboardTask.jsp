@@ -165,7 +165,8 @@
               <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                 <thead>
                 <tr>
-                  <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                  <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
@@ -188,9 +189,9 @@
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                         <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
-                                                                                           data-toggle="collapse" aria-expanded="false"
-                                                                                           data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
-                                                                                           onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
+                                                                                                   data-toggle="collapse" aria-expanded="false"
+                                                                                                   data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                                   onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
                         <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
@@ -310,7 +311,7 @@
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="7" style="padding: 0px 8px !important;">' +
                         '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
                     if ("true" == dashSupportFlag) {

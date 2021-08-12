@@ -83,14 +83,14 @@ public class EventbusCallBackDelegate {
                     for (ServiceStatus status : ent.getValue()) {
                         log.info("Come into Compensation ======>");
                         submissionClient.submitCompensation(AppConsts.REST_PROTOCOL_TYPE
-                                        + RestApiUrlConsts.EVENT_BUS,
+                                + RestApiUrlConsts.EVENT_BUS,
                                 submissionId, status.getServiceName(), operation);
                     }
                 }
             } else if (!pending) {
                 String flag = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .get("IaisEventbusCbCount",
-                                submissionId + "_" + operation + "_CallbackFlag");
+                        submissionId + "_" + operation + "_CallbackFlag");
                 if (StringUtil.isEmpty(flag)) {
                     log.info("<======= Do callback =======>");
                     SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("IaisEventbusCbCount",

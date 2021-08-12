@@ -21,30 +21,30 @@ public interface BroadcastService {
     public BroadcastOrganizationDto getBroadcastOrganizationDto(String groupName, String groupDomain);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/8
-     * @Param: broadcastApplicationDto, applicationViewDto
-     * @return: BroadcastApplicationDto
-     * @Descripation: setAppSvcVehicleDtoByAppView
-     */
+      * @author: shicheng
+      * @Date 2021/6/8
+      * @Param: broadcastApplicationDto, applicationViewDto
+      * @return: BroadcastApplicationDto
+      * @Descripation: setAppSvcVehicleDtoByAppView
+      */
     BroadcastApplicationDto setAppSvcVehicleDtoByAppView(BroadcastApplicationDto broadcastApplicationDto, ApplicationViewDto applicationViewDto,
                                                          String appStatus, String appType);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/24
-     * @Param: taskDto, applicationViewDto, broadcastApplicationDto
-     * @return: BroadcastApplicationDto
-     * @Descripation: replySetVehicleByRole
-     */
+      * @author: shicheng
+      * @Date 2021/6/24
+      * @Param: taskDto, applicationViewDto, broadcastApplicationDto
+      * @return: BroadcastApplicationDto
+      * @Descripation: replySetVehicleByRole
+      */
     BroadcastApplicationDto replySetVehicleByRole(TaskDto taskDto, ApplicationViewDto applicationViewDto, BroadcastApplicationDto broadcastApplicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/7/28
-     * @Param: appStatus(process decision), applicationDto, submissionId, evenRefNum
-     * @return:
-     * @Descripation:
-     */
+      * @author: shicheng
+      * @Date 2021/7/28
+      * @Param: appStatus(process decision), applicationDto, submissionId, evenRefNum
+      * @return:
+      * @Descripation:
+      */
     EventBeLicenseDto saveEventBeLicenseDto(String appStatus, ApplicationDto applicationDto, String submissionId, String evenRefNum, Process process);
 }

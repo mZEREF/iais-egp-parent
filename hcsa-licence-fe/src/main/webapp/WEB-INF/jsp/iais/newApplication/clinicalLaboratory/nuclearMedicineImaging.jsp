@@ -5,6 +5,9 @@
         <div id="control--runtime--0" class="page control control-area  container-p-1">
             <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
             <table aria-describedby="" class="control-grid columns1" style="width:100%;">
+                <thead style="display: none">
+                <tr><th scope="col"></th></tr>
+                </thead>
                 <tbody>
                 <tr height="1">
                     <td class="first last" style="width: 100%;">
@@ -79,6 +82,9 @@
                                         <c:set value="${AppSvcPersonnelDtoList[status.index]}" var="appSvcPersonnelDto"/>
                                     </c:if>
                                     <table aria-describedby="" class="personnel-content" id="personnelRemoveId${status.index}">
+                                        <thead style="display: none">
+                                        <tr><th scope="col"></th></tr>
+                                        </thead>
                                         <input type="hidden" name="cgoIndexNo" value="${appSvcPersonnelDto.cgoIndexNo}"/>
                                         <tbody>
                                         <tr height="1" class="personnel-header">
@@ -118,6 +124,9 @@
                                                 </div>
                                                 <div class="new-svc-personnel-form">
                                                     <table aria-describedby="" class="control-grid" style="width:100%;">
+                                                        <thead style="display: none">
+                                                        <tr><th scope="col"></th></tr>
+                                                        </thead>
                                                         <tbody>
                                                         <tr height="1" class="">
                                                             <td class="">
@@ -263,6 +272,9 @@
                                         <c:set var="needAddPsn" value="false"/>
                                     </c:when>
                                     <c:when test="${spDtoLength >= spHcsaSvcPersonnelDto.maximumCount}">
+                                        <c:set var="needAddPsn" value="false"/>
+                                    </c:when>
+                                    <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                                         <c:set var="needAddPsn" value="false"/>
                                     </c:when>
                                 </c:choose>

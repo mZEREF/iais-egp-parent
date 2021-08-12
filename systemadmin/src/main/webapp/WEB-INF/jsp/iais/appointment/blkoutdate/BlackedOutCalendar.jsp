@@ -15,10 +15,10 @@
 
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-<input type="hidden" name="currentValidateId" value="">
-<div class="bg-title"><h2>Blacked Out Dates Management</h2></div>
+  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" name="currentValidateId" value="">
+    <div class="bg-title"><h2>Blacked Out Dates Management</h2></div>
 <c:choose>
   <c:when test="${empty wrlGrpNameOpt}">
     Your current group cannot be found or you are not an inspection lead !
@@ -105,6 +105,7 @@
                   <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <iais:sortableHeader needSort="false"    field="index" value="No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"    field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
@@ -117,9 +118,9 @@
                     <tbody>
                     <c:choose>
                       <c:when test="${empty blackedOutDateResultAttr.rows}">
-                        <td colspan="6">
-                          <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                        </td>
+                          <td colspan="6">
+                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                          </td>
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="blackDateAttr" items="${blackedOutDateResultAttr.rows}" varStatus="status">
@@ -139,10 +140,10 @@
                               <div class="modal fade" id="DeleteTemplateModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                 <div class="modal-dialog" role="document">
                                   <div class="modal-content">
-                                      <%--                                    <div class="modal-header">--%>
-                                      <%--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-                                      <%--                                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
-                                      <%--                                    </div>--%>
+<%--                                    <div class="modal-header">--%>
+<%--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+<%--                                      <div class="modal-title" id="gridSystemModalLabel" style="font-size:2rem;">Confirmation Box</div>--%>
+<%--                                    </div>--%>
                                     <div class="modal-body">
                                       <div class="row">
                                         <div class="col-md-12"><span style="font-size: 2rem">Are you sure you want to delete?</span></div>
@@ -177,13 +178,13 @@
       </div>
 
       <div class="application-tab-footer">
-        <div class="col-xs-12 col-md-11">
-          <div class="text-right">
-            <a class="btn btn-primary" id="addBtnId" value="doSearch" href="#">Create</a>
+          <div class="col-xs-12 col-md-11">
+            <div class="text-right">
+              <a class="btn btn-primary" id="addBtnId" value="doSearch" href="#">Create</a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
 
     </div>
@@ -191,14 +192,14 @@
   </c:otherwise>
 </c:choose>
 
-</form>
+  </form>
 </div>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
   addBtnId.onclick = function(){
-    SOP.Crud.cfxSubmit("mainForm", "preCreate");
+      SOP.Crud.cfxSubmit("mainForm", "preCreate");
   }
 
   function doDelete(val){
@@ -207,15 +208,15 @@
   }
 
   function doUpdate(val){
-    $('#blackDateId').val(val);
-    SOP.Crud.cfxSubmit("mainForm", "preUpdate");
+      $('#blackDateId').val(val);
+      SOP.Crud.cfxSubmit("mainForm", "preUpdate");
   }
 
   function cutOutDate(date) {
-    if (date != null){
-      var str = date.toString();
-      return str.substring(str.length - 4);
-    }
+      if (date != null){
+          var str = date.toString();
+          return str.substring(str.length - 4);
+      }
   }
 
   function doClear() {
@@ -233,11 +234,11 @@
 
 
   function jumpToPagechangePage(){
-    SOP.Crud.cfxSubmit("mainForm", "doPage");
+      SOP.Crud.cfxSubmit("mainForm", "doPage");
   }
 
   function sortRecords(sortFieldName,sortType){
-    SOP.Crud.cfxSubmit("mainForm","doFilter",sortFieldName,sortType);
+      SOP.Crud.cfxSubmit("mainForm","doFilter",sortFieldName,sortType);
   }
 
 </script>
