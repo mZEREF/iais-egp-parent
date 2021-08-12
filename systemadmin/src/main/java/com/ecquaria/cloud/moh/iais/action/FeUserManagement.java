@@ -142,9 +142,10 @@ public class FeUserManagement {
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
-                    String orgId = orgUserDto.getOrgId();
                     List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
-                    Optional<FeUserDto> user = userList.stream().filter(i -> i.getOrgId().equals(orgId)).findFirst();
+                    Optional<FeUserDto> user = userList.stream()
+                            .filter(i -> item.equals(i.getId()))
+                            .findAny();
                     user.ifPresent(i -> {
                         i.setStatus(AppConsts.COMMON_STATUS_DELETED);
                         eicGatewayClient.syncFeUser(i);
@@ -243,6 +244,7 @@ public class FeUserManagement {
             OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
             ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",userAttr);
+            ParamUtil.setRequestAttr(bpc.request, "isNeedValidateField", IaisEGPConstant.YES);
             if ("Edit".equals(title)) {
                 validationResult = WebValidationHelper.validateProperty(userAttr, "edit");
                 if (StringUtil.isEmpty(userAttr.getId())) {
@@ -254,6 +256,7 @@ public class FeUserManagement {
                     }
                 }
             } else {
+                ParamUtil.setRequestAttr(bpc.request, "isNeedValidateField", IaisEGPConstant.YES);
                 String uenNo = ParamUtil.getString(bpc.request,"uenNo");
                 userAttr.setUenNo(uenNo);
                 validationResult = WebValidationHelper.validateProperty(userAttr, "create");

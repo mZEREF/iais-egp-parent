@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
@@ -16,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * AdminValidator
@@ -30,6 +34,8 @@ public class UserValidator implements CustomizeValidator {
 
     @Autowired
     IntranetUserService intranetUserService;
+    @Autowired
+    IntranetUserService intranetUserServicee;
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -79,6 +85,32 @@ public class UserValidator implements CustomizeValidator {
         if (dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
             if (!dto.getOfficeTelNo().matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
                 map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+            }
+        }
+        String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, "isNeedValidateField");
+        if (IaisEGPConstant.YES.equals(isNeedValidateField)) {
+            if (dto.getIdentityNo() != null) {
+                String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
+                if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
+                    List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(dto.getIdentityNo(), idType);
+                    if (dto.getId() == null) { // create
+                        Optional<FeUserDto> user = userList.stream()
+                                .filter(feUserDto -> !AppConsts.COMMON_STATUS_DELETED.equals(feUserDto.getStatus()))
+                                .findAny();
+                        if (user.isPresent()) {
+                            map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                        }
+                    } else { // edit
+                        Optional<FeUserDto> user = userList.stream()
+                                .filter(feUserDto -> !AppConsts.COMMON_STATUS_DELETED.equals(feUserDto.getStatus())
+                                        && !dto.getId().equals(feUserDto.getId()))
+                                .findAny();
+                        if (user.isPresent()) {
+                            map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                        }
+                    }
+                }
+
             }
         }
         return map;
