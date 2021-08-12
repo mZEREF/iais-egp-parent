@@ -310,14 +310,26 @@
                             <td align="right">Building Name</td>
                             <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.buildingName}<c:if test="${empty subLicenseeDto.buildingName}">-</c:if></td>
                         </tr>
-                        <tr>
-                            <td align="right">Mobile No</td>
-                            <td class="col-xs-6" style="padding-left: 15px;">-</td>
-                        </tr>
-                        <tr>
-                            <td align="right">Office Telephone No</td>
-                            <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.telephoneNo}<c:if test="${empty subLicenseeDto.telephoneNo}">-</c:if></td>
-                        </tr>
+                        <c:if test="${subLicenseeDto.idType=='LICTSUB002'}">
+                            <tr>
+                                <td align="right">Mobile No</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.telephoneNo}<c:if test="${empty subLicenseeDto.telephoneNo}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Office Telephone No</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">-</td>
+                            </tr>
+                        </c:if>
+                        <c:if test="${subLicenseeDto.idType=='LICTSUB001' or subLicenseeDto.idType=='LICT002'}">
+                            <tr>
+                                <td align="right">Mobile No</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">-</td>
+                            </tr>
+                            <tr>
+                                <td align="right">Office Telephone No</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.telephoneNo}<c:if test="${empty subLicenseeDto.telephoneNo}">-</c:if></td>
+                            </tr>
+                        </c:if>
                         <tr>
                             <td align="right">Email Address</td>
                             <td class="col-xs-6" style="padding-left: 15px;"><c:out value="${subLicenseeDto.emailAddr}"/><c:if test="${empty subLicenseeDto.emailAddr}">-</c:if></td>
