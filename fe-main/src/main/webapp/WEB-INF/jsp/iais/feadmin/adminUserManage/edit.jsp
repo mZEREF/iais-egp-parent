@@ -41,28 +41,30 @@
                                     <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                     <c:choose>
                                         <c:when test="${isAdmin.equals('1')}">
-                                            <iais:row  style="margin-bottom:4px">
-                                                <iais:field value="Is Administrator" id="userRole" width="11"/>
-                                                <div class="col-md-3">
+                                            <iais:row  style="margin-bottom:0px">
+                                                <iais:field value="Is Administrator" id="userRole" width="12"/>
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >Yes</label>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
+                                                <br>
+                                                <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                                                <div class="col-md-3" style="padding-left: 0px;">
+                                                    <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
+                                                </div>
                                             </iais:row>
-                                            <div>
-                                                <iais:field value="" width="11"/>
-                                                <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
-                                            </div>
+                                            <p></p>
                                             <iais:row>
-                                                <iais:field value="Is Active" width="11"/>
-                                                <div class="col-md-3">
+                                                <iais:field value="Is Active" width="12"/>
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${inter_user_attr.status == 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >Yes</label>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
@@ -94,9 +96,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
         <c:if test="${fromMyinfo == 'Y'}" >
-            $('#name').prop('readonly', true);
-            $('#mobileNo').prop('readonly', true);
-            $('#email').prop('readonly', true);
+        $('#name').prop('readonly', true);
+        $('#mobileNo').prop('readonly', true);
+        $('#email').prop('readonly', true);
         </c:if>
     });
 
@@ -113,9 +115,9 @@
 
     function reLoadMyInfoTodo() {
         if(verifyTaken()){
-        $("#action").val("getMyInfo");
-        var mainPoolForm = document.getElementById('mainForm');
-        mainPoolForm.submit();
+            $("#action").val("getMyInfo");
+            var mainPoolForm = document.getElementById('mainForm');
+            mainPoolForm.submit();
         }else {
             // To obtain authorization
             showWaiting();

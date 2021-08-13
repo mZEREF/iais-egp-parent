@@ -35,7 +35,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -423,6 +422,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(svcSubType)){
                     filters.put("serviceSubTypeName", svcSubType);
                 }
+                if(!StringUtil.isEmpty(uenNo)){
+                    filters.put("uen_no", uenNo);
+                }
                 break;
             case "1":
                 if(!StringUtil.isEmpty(hciCode)){
@@ -461,6 +463,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(licenseeRegnNo)){
                     filters.put("licenseeRegnNo",licenseeRegnNo);
+                }
+                if(!StringUtil.isEmpty(uenNo)){
+                    filters.put("uen_no", uenNo);
                 }
                 break;
             default:
@@ -632,6 +637,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(licenseeRegnNo)){
                     filters.put("licenseeRegnNo",licenseeRegnNo);
+                }
+                if(!StringUtil.isEmpty(uenNo)){
+                    filters.put("uen_no", uenNo);
                 }
                 break;
             default:
@@ -1101,6 +1109,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "4":
+            case "6":
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
@@ -1109,6 +1118,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
+                }
+                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
+                    filters.put("uen_no", parm.getFilters().get("uen_no"));
                 }
                 break;
             default:
@@ -1199,7 +1211,6 @@ public class OfficerOnlineEnquiriesDelegator {
         HttpServletRequest request=bpc.request;
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
-        List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
@@ -1265,14 +1276,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    licCount=10;
-                    List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen((String) parm.getFilters().get("uen_no")).getEntity();
-                    if(licenseeDtos!=null) {
-                        for (LicenseeDto licensee:licenseeDtos
-                        ) {
-                            licenseeIds.add(licensee.getId());
-                        }
-                    }
+                    filters.put("uen_no", parm.getFilters().get("uen_no"));
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -1311,6 +1315,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 break;
             case "4":
+            case "6":
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeIdNo"))){
                     filters.put("licenseeIdNo",parm.getFilters().get("licenseeIdNo"));
                 }
@@ -1319,6 +1324,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
+                }
+                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
+                    filters.put("uen_no", parm.getFilters().get("uen_no"));
                 }
                 break;
             default:
@@ -1374,15 +1382,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                 }
-                if(licenseeIds.size()!=0){
-                    String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
-                    int indx = 0;
-                    for (String s : licenseeIds){
-                        appParam.addFilter("oev.APP_LICENSEE_ID"+indx, s);
-                        indx++;
-                    }
-                    appParam.addParam("licenseeId",typeStr);
-                }
+
                 SearchResult<ApplicationLicenceQueryDto> appResult;
                 if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {
                     QueryHelp.setMainSql(RFI_QUERY,"appLicenceForCommPoolQuery",appParam);
@@ -1459,7 +1459,6 @@ public class OfficerOnlineEnquiriesDelegator {
         File file = null;
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcIds=IaisCommonUtils.genNewArrayList();
-        List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
         switch (count) {
@@ -1524,14 +1523,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    licCount=10;
-                    List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen((String) parm.getFilters().get("uen_no")).getEntity();
-                    if(licenseeDtos!=null) {
-                        for (LicenseeDto licensee:licenseeDtos
-                        ) {
-                            licenseeIds.add(licensee.getId());
-                        }
-                    }
+                    filters.put("uen_no", parm.getFilters().get("uen_no"));
                 }
                 if(appCount!=licCount){
                     if(appCount>licCount){
@@ -1578,6 +1570,9 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licenseeRegnNo"))){
                     filters.put("licenseeRegnNo",parm.getFilters().get("licenseeRegnNo"));
+                }
+                if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
+                    filters.put("uen_no", parm.getFilters().get("uen_no"));
                 }
                 break;
             default:
@@ -1629,15 +1624,6 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                         appParam.addParam("appSubStatus_HIV", sb);
                     }
-                }
-                if(licenseeIds.size()!=0){
-                    String typeStr = SqlHelper.constructInCondition("oev.APP_LICENSEE_ID",licenseeIds.size());
-                    int indx = 0;
-                    for (String s : licenseeIds){
-                        appParam.addFilter("oev.APP_LICENSEE_ID"+indx, s);
-                        indx++;
-                    }
-                    appParam.addParam("licenseeId",typeStr);
                 }
                 SearchResult<ApplicationLicenceQueryDto> appResult ;
                 if (parm!=null&&parm.getFilters()!=null&&parm.getFilters().get("appStatus") != null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT)) {

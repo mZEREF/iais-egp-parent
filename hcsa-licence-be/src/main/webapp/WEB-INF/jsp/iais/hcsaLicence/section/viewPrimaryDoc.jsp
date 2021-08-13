@@ -14,7 +14,7 @@
             <div class="elemClass-1561088919456">
                 <div  class="page section control  container-s-1" style="margin: 10px 0px">
                     <div class="control-set-font control-font-header section-header">
-                        <label style="font-size: 2.2rem">Uploaded Documents</label>
+                        <label class="title-font-size">Uploaded Documents</label>
                     </div>
                     <table aria-describedby="" class="col-xs-12 col-md-12">
                         <thead style="display: none">

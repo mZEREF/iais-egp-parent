@@ -24,7 +24,7 @@
   <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST012')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST012']}</label>
+      <label class="title-font-size">${stepNameMap['SVST012']}</label>
       <div class="amend-preview-info">
         <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
           <div class="col-xs-12">
@@ -78,7 +78,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST008')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST008']}</label>
+      <label class="title-font-size">${stepNameMap['SVST008']}</label>
       <div class="amend-preview-info">
         <c:forEach var="appSvcVehicleDto" items="${currentPreviewSvcInfo.appSvcVehicleDtoList}" varStatus="status">
           <p><strong class="col-xs-6">Vehicle <c:if
@@ -152,7 +152,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST001')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST001']}</label>
+      <label class="title-font-size">${stepNameMap['SVST001']}</label>
       <c:forEach var="appSvcLaboratoryDisciplinesDto"
                  items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
@@ -205,7 +205,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST009')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">Key Clinical Personnel</label>
+      <label class="title-font-size">Key Clinical Personnel</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -247,116 +247,31 @@
                       <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
                             ${appSvcClinicalDirectorDto.profRegNo}
-                              <c:if test="${empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                              <c:if test="${not empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/2020109171436.png"
-                                     onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                              </c:if>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                              <jsp:param name="methodName" value="showThisTableNewService"/>
+                            </jsp:include>
                         </span>
                       </div>
                       <div class="col-xs-6 img-show">
                         <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}
-                              <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                              <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
-                                <img src="/hcsa-licence-web/img/2020109171436.png"
-                                     onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
-                              </c:if>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                              <jsp:param name="methodName" value="showThisTableOldService"/>
+                            </jsp:include>
                         </span>
                       </div>
-                      <c:if test="${not empty listHashMap[appSvcClinicalDirectorDto.profRegNo]}">
-                        <div class="row new-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -50%;width: 100%;margin-top: 5%">
-                            <label style="font-weight: normal">
-                              The Professional has existing disciplinary records in PRS
-                            </label>
-                            <span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X&nbsp;</span>
-                            <div class="table-responsive">
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                              <tr>
-                                <th scope="col">Professional Regn. No.</th>
-                                <th scope="col">Complaints</th>
-                                <th scope="col">Final Outcome</th>
-                                <th scope="col">Fine Amounts</th>
-                                <th scope="col">Restrictive Practice Start Date</th>
-                                <th scope="col">Restrictive Practice End Date</th>
-                                <th scope="col">Suspension Start Date</th>
-                                <th scope="col">Suspension End Date</th>
-                                <th scope="col">Other disciplinary action Start Date</th>
-                                <th scope="col">Other Disciplinary action End Date</th>
-                              </tr>
-                              <c:forEach items="${listHashMap[appSvcClinicalDirectorDto.profRegNo]}" var="list">
-                                <tr>
-                                  <td>${appSvcClinicalDirectorDto.profRegNo}</td>
-                                  <td style="text-align: left">
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
-                                  </td>
-                                  <td>${list.finaloutcome}</td>
-                                  <td>${list.fineamount}</td>
-                                  <td>${list.restrictstartdate}</td>
-                                  <td>${list.restrictenddate}</td>
-                                  <td>${list.suspendstartdate}</td>
-                                  <td>${list.suspendenddate}</td>
-                                  <td>${list.otherstartdate}</td>
-                                  <td>${list.otherenddate}</td>
-                                </tr>
-                              </c:forEach>
-                            </table>
-                            </div>
-                          </div>
-                        </div>
-                      </c:if>
-                      <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
-                        <div class="row old-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in
-                              PRS</label><span style="position: absolute;right: 0px;color: black"
-                                               onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                              <tr>
-                                <td>Professional Regn. No.</td>
-                                <td width="10%">Complaints</td>
-                                <td>Final Outcome</td>
-                                <td>Fine Amounts</td>
-                                <td>Restrictive Practice Start Date</td>
-                                <td>Restrictive Practice End Date</td>
-                                <td>Suspension Start Date</td>
-                                <td>Suspension End Date</td>
-                                <td>Other disciplinary action Start Date</td>
-                                <td>Other Disciplinary action End Date</td>
-                              </tr>
-                              <c:forEach
-                                      items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}"
-                                      var="list">
-                                <tr>
-                                  <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}</td>
-                                  <td style="text-align: left">
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                    <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                  </td>
-                                  <td>${list.finaloutcome}</td>
-                                  <td>${list.fineamount}</td>
-                                  <td>${list.restrictstartdate}</td>
-                                  <td>${list.restrictenddate}</td>
-                                  <td>${list.suspendstartdate}</td>
-                                  <td>${list.suspendenddate}</td>
-                                  <td>${list.otherstartdate}</td>
-                                  <td>${list.otherenddate}</td>
-                                </tr>
-                              </c:forEach>
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
                     </td>
                   </tr>
                   <c:if test="${'MTS'==currentPreviewSvcInfo.serviceCode}">
@@ -458,111 +373,31 @@
                       <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.idNo}">
                             ${appSvcClinicalDirectorDto.idNo}
-                            <c:if test="${empty hashMap[appSvcClinicalDirectorDto.idNo]}">
-                               <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
-                          <c:if test="${not empty hashMap[appSvcClinicalDirectorDto.idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" width="25"
-                                 onclick="showThisTableNewService(this)" height="25" alt="NETS">
-                          </c:if>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.idNo}"/>
+                              <jsp:param name="methodName" value="showThisTableNewService"/>
+                            </jsp:include>
                         </span>
                       </div>
                       <div class="col-xs-6 img-show">
                         <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}">
-                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}
-                          <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
-                         <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
-                           <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                width="25" height="25" alt="NETS">
-                         </c:if>
+                              ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                          </jsp:include>
                         </span>
                       </div>
-                      <c:if test="${not empty hashMap[appSvcClinicalDirectorDto.idNo]}">
-                        <div class="row new-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in
-                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                  onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                              <tr>
-                                <td>Indentification No.</td>
-                                <td>Case No.</td>
-                                <td>Case Type Description</td>
-                                <td>Case Status Description</td>
-                                <td>Offence Description</td>
-                                <td>Outcome Description</td>
-                                <td>Outcome Issue Date</td>
-                                <td>Prosecution Outcome Description</td>
-                                <td>Created Date</td>
-                                <td>Update Date</td>
-                              </tr>
-                              <c:forEach items="${hashMap[appSvcClinicalDirectorDto.idNo]}" var="map">
-                                <tr>
-                                  <td>${map.identificationNo}</td>
-                                  <td>${map.caseNo}</td>
-                                  <td>${map.caseType}</td>
-                                  <td>${map.caseStatus}</td>
-                                  <td>${map.offenceDesc}</td>
-                                  <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                </tr>
-                              </c:forEach>
-                              <tr></tr>
-
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
-                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}">
-                        <div class="row old-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in
-                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                  onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
-                              <tr>
-                                <td>Indentification No.</td>
-                                <td>Case No.</td>
-                                <td>Case Type Description</td>
-                                <td>Case Status Description</td>
-                                <td>Offence Description</td>
-                                <td>Outcome Description</td>
-                                <td>Outcome Issue Date</td>
-                                <td>Prosecution Outcome Description</td>
-                                <td>Created Date</td>
-                                <td>Update Date</td>
-                              </tr>
-                              <c:forEach
-                                      items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo]}"
-                                      var="map">
-                                <tr>
-                                  <td>${map.identificationNo}</td>
-                                  <td>${map.caseNo}</td>
-                                  <td>${map.caseType}</td>
-                                  <td>${map.caseStatus}</td>
-                                  <td>${map.offenceDesc}</td>
-                                  <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                </tr>
-                              </c:forEach>
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.idNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].idNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
                     </td>
                   </tr>
                   <tr>
@@ -803,7 +638,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST010')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST010']}</label>
+      <label class="title-font-size">${stepNameMap['SVST010']}</label>
       <div class="amend-preview-info">
         <c:set value="${currentPreviewSvcInfo.appSvcChargesPageDto}" var="appSvcChargesPageDto"></c:set>
         <c:forEach items="${appSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="status">
@@ -979,7 +814,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST002')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST002']}</label>
+      <label class="title-font-size">${stepNameMap['SVST002']}</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
         <p><strong class="col-xs-6">Clinical Governance Officer <c:if
@@ -1016,7 +851,8 @@
                   </td>
                   <td>
                     <div class="col-xs-12 img-show">
-                      <span class="newVal " attr="${cgo.name}"><iais:code code="${cgo.name}"/>
+                      <span class="newVal " attr="${cgo.name}">
+                        <c:out value="${cgo.name}"/>
                         <c:if test="${not empty proHashMap[cgo.profRegNo]}">
                           <c:if test="${proHashMap[cgo.profRegNo].name==cgo.name}">
                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
@@ -1104,117 +940,35 @@
                   </td>
                   <td>
                       <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${cgo.idNo}">
-                         <c:out value="${cgo.idNo}"/>
-                         <c:if test="${empty hashMap[cgo.idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
-                          <c:if test="${not empty hashMap[cgo.idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" width="25"
-                               onclick="showThisTableNewService(this)" height="25" alt="NETS">
-                          </c:if>
+                        <span class="newVal" attr="${cgo.idNo}">
+                          <c:out value="${cgo.idNo}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${cgo.idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
                       </span>
                       </div>
 
                     <div class="col-xs-6 img-show">
-                      <span class="oldVal"
-                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"
+                      <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"
                             style="display: none">
                           ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}
-                        <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>
-                         <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
-                           <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                width="25" height="25" alt="NETS">
-                         </c:if>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                          </jsp:include>
                       </span>
                     </div>
-
-                    <c:if test="${not empty hashMap[cgo.idNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach items="${hashMap[cgo.idNo]}" var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-                            <tr></tr>
-
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-                    <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center;">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo]}"
-                                    var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                      <jsp:param name="idNo" value="${cgo.idNo}"/>
+                      <jsp:param name="cssClass" value="new-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                      <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"/>
+                      <jsp:param name="cssClass" value="old-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
                   </td>
                 </tr>
 
@@ -1286,117 +1040,35 @@
                   </td>
                   <td>
                     <div class="col-xs-6 img-show">
-                      <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/>
-                        <c:if test="${empty listHashMap[cgo.profRegNo] && cgo.profRegNo!=''}">
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>
-                        <c:if test="${not empty listHashMap[cgo.profRegNo]}">
-                          <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)"
-                               width="25" height="25" alt="NETS">
-                        </c:if>
+                      <span class="newVal " attr="${cgo.profRegNo}">
+                        <c:out value="${cgo.profRegNo}"/>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                          <jsp:param name="idNo" value="${cgo.profRegNo}"/>
+                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                        </jsp:include>
                       </span>
                     </div>
                     <div class="col-xs-6 img-show">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"
                             style="display: none">
-                        <iais:code
-                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
-                       <c:if test="${empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                       </c:if>
-                        <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                          <img src="/hcsa-licence-web/img/2020109171436.png" width="25"
-                               onclick="showThisTableOldService(this)" height="25" alt="NETS">
-                        </c:if>
+                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                          <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                          <jsp:param name="methodName" value="showThisTableOldService"/>
+                        </jsp:include>
                       </span>
                     </div>
-                    <c:if test="${not empty listHashMap[cgo.profRegNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            PRS</label><span style="position: absolute;right: 0px;color: black"
-                                             onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Professional Regn. No.</td>
-                              <td>Complaints</td>
-                              <td>Final Outcome</td>
-                              <td>Fine Amounts</td>
-                              <td>Restrictive Practice Start Date</td>
-                              <td>Restrictive Practice End Date</td>
-                              <td>Suspension Start Date</td>
-                              <td>Suspension End Date</td>
-                              <td>Other disciplinary action Start Date</td>
-                              <td>Other Disciplinary action End Date</td>
-                            </tr>
-                            <c:forEach items="${listHashMap[cgo.profRegNo]}" var="list">
-                              <tr>
-                                <td>${cgo.profRegNo}</td>
-                                <td style="text-align: left">
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p
-                                </td>
-                                <td>${list.finaloutcome}</td>
-                                <td>${list.fineamount}</td>
-                                <td>${list.restrictstartdate}</td>
-                                <td>${list.restrictenddate}</td>
-                                <td>${list.suspendstartdate}</td>
-                                <td>${list.suspendenddate}</td>
-                                <td>${list.otherstartdate}</td>
-                                <td>${list.otherenddate}</td>
-                              </tr>
-                            </c:forEach>
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-                    <c:if test="${not empty listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            PRS</label><span style="position: absolute;right: 0px;color: black"
-                                             onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Professional Regn. No.</td>
-                              <td width="10%">Complaints</td>
-                              <td>Final Outcome</td>
-                              <td>Fine Amounts</td>
-                              <td>Restrictive Practice Start Date</td>
-                              <td>Restrictive Practice End Date</td>
-                              <td>Suspension Start Date</td>
-                              <td>Suspension End Date</td>
-                              <td>Other disciplinary action Start Date</td>
-                              <td>Other Disciplinary action End Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${listHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}"
-                                    var="list">
-                              <tr>
-                                <td>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}</td>
-                                <td style="text-align: left">
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                  <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                </td>
-                                <td>${list.finaloutcome}</td>
-                                <td>${list.fineamount}</td>
-                                <td>${list.restrictstartdate}</td>
-                                <td>${list.restrictenddate}</td>
-                                <td>${list.suspendstartdate}</td>
-                                <td>${list.suspendenddate}</td>
-                                <td>${list.otherstartdate}</td>
-                                <td>${list.otherenddate}</td>
-                              </tr>
-                            </c:forEach>
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${cgo.profRegNo}"/>
+                      <jsp:param name="cssClass" value="new-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                      <jsp:param name="cssClass" value="old-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
                   </td>
                 </tr>
                 <tr>
@@ -1512,7 +1184,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList,'SVST003')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST003']}</label>
+      <label class="title-font-size">${stepNameMap['SVST003']}</label>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
@@ -1607,7 +1279,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST006')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST006']}</label>
+      <label class="title-font-size">${stepNameMap['SVST006']}</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -1711,117 +1383,33 @@
                         </td>
                         <td>
                           <div class="col-xs-6 img-show">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}"><c:out
-                                    value="${appSvcPersonnelDtoList.profRegNo}"/>
-                              <c:if test="${empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                              <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/2020109171436.png"
-                                     onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                              </c:if>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}">
+                              <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
+                              <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                <jsp:param name="idNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                <jsp:param name="methodName" value="showThisTableNewService"/>
+                              </jsp:include>
                             </span>
                           </div>
                           <div class="col-xs-6 img-show">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.profRegNo}"
-                                  style="display: none">${oldAppSvcPersonnelDtoList.profRegNo}
-                              <c:if test="${empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                               <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                                 <img src="/hcsa-licence-web/img/2020109171436.png"
-                                      onclick="showThisTableOldService(this)" width="25" height="25" alt="NETS">
-                               </c:if>
+                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.profRegNo}
+                                <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                  <jsp:param name="idNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="methodName" value="showThisTableOldService"/>
+                                </jsp:include>
                             </span>
                           </div>
-                          <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                            <div class="row new-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in
-                                  PRS</label><span style="position: absolute;right: 0px;color: black"
-                                                   onclick="closeThis(this)">X</span>
-                                <table aria-describedby="" border="1px"
-                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                  <tr>
-                                    <td>Professional Regn. No.</td>
-                                    <td>Complaints</td>
-                                    <td>Final Outcome</td>
-                                    <td>Fine Amounts</td>
-                                    <td>Restrictive Practice Start Date</td>
-                                    <td>Restrictive Practice End Date</td>
-                                    <td>Suspension Start Date</td>
-                                    <td>Suspension End Date</td>
-                                    <td>Other disciplinary action Start Date</td>
-                                    <td>Other Disciplinary action End Date</td>
-                                  </tr>
-                                  <c:forEach items="${listHashMap[appSvcPersonnelDtoList.profRegNo]}" var="list">
-                                    <tr>
-                                      <td>${appSvcPersonnelDtoList.profRegNo}</td>
-                                      <td style="text-align: left">
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                      </td>
-                                      <td>${list.finaloutcome}</td>
-                                      <td>${list.fineamount}</td>
-                                      <td>${list.restrictstartdate}</td>
-                                      <td>${list.restrictenddate}</td>
-                                      <td>${list.suspendstartdate}</td>
-                                      <td>${list.suspendenddate}</td>
-                                      <td>${list.otherstartdate}</td>
-                                      <td>${list.otherenddate}</td>
-                                    </tr>
-                                  </c:forEach>
-                                </table>
-                              </div>
-                            </div>
-                          </c:if>
-                          <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                            <div class="row old-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in
-                                  PRS</label><span style="position: absolute;right: 0px;color: black"
-                                                   onclick="closeThis(this)">X</span>
-                                <table aria-describedby="" border="1px"
-                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                  <tr>
-                                    <td>Professional Regn. No.</td>
-                                    <td>Complaints</td>
-                                    <td>Final Outcome</td>
-                                    <td>Fine Amounts</td>
-                                    <td>Restrictive Practice Start Date</td>
-                                    <td>Restrictive Practice End Date</td>
-                                    <td>Suspension Start Date</td>
-                                    <td>Suspension End Date</td>
-                                    <td>Other disciplinary action Start Date</td>
-                                    <td>Other Disciplinary action End Date</td>
-                                  </tr>
-                                  <c:forEach
-                                          items="${listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}"
-                                          var="list">
-                                    <tr>
-                                      <td>${oldAppSvcPersonnelDtoList.profRegNo}</td>
-                                      <td style="text-align: left">
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                      </td>
-                                      <td>${list.finaloutcome}</td>
-                                      <td>${list.fineamount}</td>
-                                      <td>${list.restrictstartdate}</td>
-                                      <td>${list.restrictenddate}</td>
-                                      <td>${list.suspendstartdate}</td>
-                                      <td>${list.suspendenddate}</td>
-                                      <td>${list.otherstartdate}</td>
-                                      <td>${list.otherenddate}</td>
-                                    </tr>
-                                  </c:forEach>
-                                </table>
-                              </div>
-                            </div>
-                          </c:if>
-
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                            <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="cssClass" value="new-img-show"/>
+                            <jsp:param name="style" value="margin-left: -50%;"/>
+                          </jsp:include>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="cssClass" value="old-img-show"/>
+                            <jsp:param name="style" value="margin-left: -50%;"/>
+                          </jsp:include>
                         </td>
                       </tr>
                       <tr>
@@ -2129,118 +1717,33 @@
                         <td>
 
                           <div class="col-xs-6 img-show">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}"><c:out
-                                    value="${appSvcPersonnelDtoList.profRegNo}"/>
-                              <c:if test="${empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                              <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/2020109171436.png"
-                                     onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                              </c:if>
+                            <span class="newVal" attr="${appSvcPersonnelDtoList.profRegNo}">
+                              <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
+                              <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                <jsp:param name="idNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                <jsp:param name="methodName" value="showThisTableNewService"/>
+                              </jsp:include>
                             </span>
                           </div>
                           <div class="col-xs-6 img-show">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.profRegNo}"
-                                  style="display: none">${oldAppSvcPersonnelDtoList.profRegNo}
-                              <c:if test="${empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </c:if>
-                              <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                                <img src="/hcsa-licence-web/img/2020109171436.png"
-                                     onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                              </c:if>
+                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.profRegNo}
+                                <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                  <jsp:param name="idNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="methodName" value="showThisTableOldService"/>
+                                </jsp:include>
                             </span>
-
                           </div>
-                          <c:if test="${not empty listHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                            <div class="row new-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in
-                                  PRS</label><span style="position: absolute;right: 0px;color: black"
-                                                   onclick="closeThis(this)">X</span>
-                                <table aria-describedby="" border="1px"
-                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                  <tr>
-                                    <td>Professional Regn. No.</td>
-                                    <td>Complaints</td>
-                                    <td>Final Outcome</td>
-                                    <td>Fine Amounts</td>
-                                    <td>Restrictive Practice Start Date</td>
-                                    <td>Restrictive Practice End Date</td>
-                                    <td>Suspension Start Date</td>
-                                    <td>Suspension End Date</td>
-                                    <td>Other disciplinary action Start Date</td>
-                                    <td>Other Disciplinary action End Date</td>
-                                  </tr>
-                                  <c:forEach items="${listHashMap[appSvcPersonnelDtoList.profRegNo]}" var="list">
-                                    <tr>
-                                      <td>${appSvcPersonnelDtoList.profRegNo}</td>
-                                      <td style="text-align: left">
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                      </td>
-                                      <td>${list.finaloutcome}</td>
-                                      <td>${list.fineamount}</td>
-                                      <td>${list.restrictstartdate}</td>
-                                      <td>${list.restrictenddate}</td>
-                                      <td>${list.suspendstartdate}</td>
-                                      <td>${list.suspendenddate}</td>
-                                      <td>${list.otherstartdate}</td>
-                                      <td>${list.otherenddate}</td>
-                                    </tr>
-                                  </c:forEach>
-                                </table>
-                              </div>
-                            </div>
-                          </c:if>
-                          <c:if test="${not empty listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                            <div class="row old-img-show" style="display: none">
-                              <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                                <label style="font-weight: normal">The Professional has existing disciplinary records in
-                                  PRS</label><span style="position: absolute;right: 0px;color: black"
-                                                   onclick="closeThis(this)">X</span>
-                                <table aria-describedby="" border="1px"
-                                       style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                                  <tr>
-                                    <td>Professional Regn. No.</td>
-                                    <td>Complaints</td>
-                                    <td>Final Outcome</td>
-                                    <td>Fine Amounts</td>
-                                    <td>Restrictive Practice Start Date</td>
-                                    <td>Restrictive Practice End Date</td>
-                                    <td>Suspension Start Date</td>
-                                    <td>Suspension End Date</td>
-                                    <td>Other disciplinary action Start Date</td>
-                                    <td>Other Disciplinary action End Date</td>
-                                  </tr>
-                                  <c:forEach
-                                          items="${listHashMap[oldAppSvcPersonnelDtoList.profRegNo]}"
-                                          var="list">
-                                    <tr>
-                                      <td>${oldAppSvcPersonnelDtoList.profRegNo}</td>
-                                      <td style="text-align: left">
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint1}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint2}</p>
-                                        <p style="margin-bottom: 10%;white-space: nowrap">${list.complaint3}</p>
-                                      </td>
-                                      <td>${list.finaloutcome}</td>
-                                      <td>${list.fineamount}</td>
-                                      <td>${list.restrictstartdate}</td>
-                                      <td>${list.restrictenddate}</td>
-                                      <td>${list.suspendstartdate}</td>
-                                      <td>${list.suspendenddate}</td>
-                                      <td>${list.otherstartdate}</td>
-                                      <td>${list.otherenddate}</td>
-                                    </tr>
-                                  </c:forEach>
-                                </table>
-                              </div>
-                            </div>
-                          </c:if>
-
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                            <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="cssClass" value="new-img-show"/>
+                            <jsp:param name="style" value="margin-left: -50%;"/>
+                          </jsp:include>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="cssClass" value="old-img-show"/>
+                            <jsp:param name="style" value="margin-left: -50%;"/>
+                          </jsp:include>
                         </td>
                       </tr>
                     </c:when>
@@ -2316,7 +1819,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST004')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST004']}</label>
+      <label class="title-font-size">${stepNameMap['SVST004']}</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -2390,123 +1893,36 @@
                         No.</p>
                     </td>
                     <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/>
-                          <c:if test="${empty hashMap[po.idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"/>
-                          </c:if>
-                          <c:if test="${not empty hashMap[po.idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)"
-                                 width="25" height="25" alt="NETS">
-                          </c:if>
-                          </span>
-                      </div>
-                      <div class="col-xs-6 img-show">
-                        <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"
-                              style="display: none">
-                           <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
-                          <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"/>
-                          </c:if>
-                          <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                 width="25" height="25" alt="NETS"/>
-                          </c:if>
+                        <span class="newVal" attr="${po.idNo}">
+                          <c:out value="${po.idNo}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${po.idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
                         </span>
                       </div>
-                      <c:if test="${not empty hashMap[po.idNo]}">
-                        <div class="row new-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in
-                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                  onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                              <tr>
-                                <td>Indentification No.</td>
-                                <td>Case No.</td>
-                                <td>Case Type Description</td>
-                                <td>Case Status Description</td>
-                                <td>Offence Description</td>
-                                <td>Outcome Description</td>
-                                <td>Outcome Issue Date</td>
-                                <td>Prosecution Outcome Description</td>
-                                <td>Created Date</td>
-                                <td>Update Date</td>
-                              </tr>
-                              <c:forEach items="${hashMap[po.idNo]}" var="map">
-                                <tr>
-                                  <td>${map.identificationNo}</td>
-                                  <td>${map.caseNo}</td>
-                                  <td>${map.caseType}</td>
-                                  <td>${map.caseStatus}</td>
-                                  <td>${map.offenceDesc}</td>
-                                  <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                </tr>
-                              </c:forEach>
-                              <tr></tr>
-
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
-
-                      <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}">
-                        <div class="row old-img-show" style="display: none">
-                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                            <label style="font-weight: normal">The Professional has existing disciplinary records in
-                              HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                  onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px"
-                                   style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                              <tr>
-                                <td>Indentification No.</td>
-                                <td>Case No.</td>
-                                <td>Case Type Description</td>
-                                <td>Case Status Description</td>
-                                <td>Offence Description</td>
-                                <td>Outcome Description</td>
-                                <td>Outcome Issue Date</td>
-                                <td>Prosecution Outcome Description</td>
-                                <td>Created Date</td>
-                                <td>Update Date</td>
-                              </tr>
-                              <c:forEach
-                                      items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo]}"
-                                      var="map">
-                                <tr>
-                                  <td>${map.identificationNo}</td>
-                                  <td>${map.caseNo}</td>
-                                  <td>${map.caseType}</td>
-                                  <td>${map.caseStatus}</td>
-                                  <td>${map.offenceDesc}</td>
-                                  <td>${map.outcome}</td>
-                                  <td><fmt:formatDate value="${map.issueDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td>${map.prosecutionOutcome}</td>
-                                  <td><fmt:formatDate value="${map.createdDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                  <td><fmt:formatDate value="${map.updatedDate}"
-                                                      pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                </tr>
-                              </c:forEach>
-                              <tr></tr>
-
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
-
-                      </p>
+                      <div class="col-xs-6 img-show">
+                        <span class="oldVal"
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"
+                              style="display: none">
+                            <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
+                              <jsp:param name="methodName" value="showThisTableOldService"/>
+                            </jsp:include>
+                        </span>
+                      </div>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${po.idNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                        <jsp:param name="style" value="margin-left: -50%;"/>
+                      </jsp:include>
                     </td>
                   </tr>
                   <tr>
@@ -2608,7 +2024,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
     <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${stepNameMap['SVST007']}</label>
+    <label class="title-font-size">${stepNameMap['SVST007']}</label>
     <div class="amend-preview-info">
       <div class="form-check-gp">
         <div class="row">
@@ -2679,117 +2095,35 @@
                   </td>
                   <td>
                     <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out
-                                value="${appSvcMedAlertPerson.idNo}"/>
-                          <c:if test="${empty hashMap[appSvcMedAlertPerson.idNo]}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
-                          <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)"
-                                 width="25" height="25" alt="NETS">
-                          </c:if>
+                        <span class="newVal " attr="${appSvcMedAlertPerson.idNo}">
+                          <c:out value="${appSvcMedAlertPerson.idNo}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${appSvcMedAlertPerson.idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
                         </span>
                     </div>
                     <div class="col-xs-6 img-show">
-                        <span class="oldVal "
+                        <span class="oldVal"
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"
-                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
-                            <c:if test="${empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
-                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
-                           <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
-                             <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                  width="25" height="25" alt="NETS">
-                           </c:if>
+                              style="display: none">
+                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"/>
+                              <jsp:param name="methodName" value="showThisTableOldService"/>
+                            </jsp:include>
                         </span>
                     </div>
-                    <c:if test="${not empty hashMap[appSvcMedAlertPerson.idNo]}">
-                      <div class="row new-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach items="${hashMap[appSvcMedAlertPerson.idNo]}" var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-                    <c:if test="${not empty hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}">
-                      <div class="row old-img-show" style="display: none">
-                        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left: -55%;width: 140%;margin-top: 5%">
-                          <label style="font-weight: normal">The Professional has existing disciplinary records in
-                            HERIMS</label><span style="position: absolute;right: 0px;color: black"
-                                                onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px"
-                                 style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
-                            <tr>
-                              <td>Indentification No.</td>
-                              <td>Case No.</td>
-                              <td>Case Type Description</td>
-                              <td>Case Status Description</td>
-                              <td>Offence Description</td>
-                              <td>Outcome Description</td>
-                              <td>Outcome Issue Date</td>
-                              <td>Prosecution Outcome Description</td>
-                              <td>Created Date</td>
-                              <td>Update Date</td>
-                            </tr>
-                            <c:forEach
-                                    items="${hashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo]}"
-                                    var="map">
-                              <tr>
-                                <td>${map.identificationNo}</td>
-                                <td>${map.caseNo}</td>
-                                <td>${map.caseType}</td>
-                                <td>${map.caseStatus}</td>
-                                <td>${map.offenceDesc}</td>
-                                <td>${map.outcome}</td>
-                                <td><fmt:formatDate value="${map.issueDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td>${map.prosecutionOutcome}</td>
-                                <td><fmt:formatDate value="${map.createdDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                <td><fmt:formatDate value="${map.updatedDate}"
-                                                    pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                              </tr>
-                            </c:forEach>
-
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                      <jsp:param name="idNo" value="${appSvcMedAlertPerson.idNo}"/>
+                      <jsp:param name="cssClass" value="new-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                      <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}"/>
+                      <jsp:param name="cssClass" value="old-img-show"/>
+                      <jsp:param name="style" value="margin-left: -50%;"/>
+                    </jsp:include>
                   </td>
                 </tr>
 
@@ -2843,7 +2177,7 @@
   <%-- Document --%>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">${stepNameMap['SVST005']}</label>
+      <label class="title-font-size">${stepNameMap['SVST005']}</label>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
