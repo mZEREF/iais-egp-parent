@@ -75,8 +75,8 @@ public interface OrgUserManageService {
       * @author: shicheng
       * @Date 2021/8/12
       * @Param: userSession
-      * @return: boolean
+      * @return: String
       * @Descripation: getActiveUserAndRoleFlag
       */
-    boolean getActiveUserAndRoleFlag(FeUserDto userSession);
+    String getActiveUserAndRoleFlag(FeUserDto userSession);
 }

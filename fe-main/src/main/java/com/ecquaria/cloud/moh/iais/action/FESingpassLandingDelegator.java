@@ -166,8 +166,8 @@ public class FESingpassLandingDelegator {
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
         //get active flag and active role flag
-        boolean userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
-        if(!userAndRoleFlag) {
+        String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        if(AppConsts.FALSE.equals(userAndRoleFlag)) {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
             AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
