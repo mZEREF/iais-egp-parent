@@ -283,7 +283,6 @@ public class FESingpassLandingDelegator {
         userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
         userSession.setEmail(ParamUtil.getString(request,"emailAddr"));
         userSession.setDisplayName(ParamUtil.getString(request,"name"));
-        userSession.setOfficeTelNo(userSession.getMobileNo());
         if(StringUtil.isEmpty(userSession.getDesignation())){
             userSession.setDesignation(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
             userSession.setDesignationOther(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
@@ -305,7 +304,6 @@ public class FESingpassLandingDelegator {
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setMobileNo(userSession.getMobileNo());
         licenseeDto.setEmilAddr(userSession.getEmail());
-        licenseeDto.setOfficeTelNo(userSession.getMobileNo());
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
 
@@ -321,7 +319,6 @@ public class FESingpassLandingDelegator {
                     log.info(StringUtil.changeForLog("SingPass Login service [receiveUserInfo] MyInfo ...." + JsonUtil.parseToJson(myInfo)));
                     userSession.setEmail(myInfo.getEmail());
                     userSession.setMobileNo(myInfo.getMobileNo());
-                    userSession.setOfficeTelNo(myInfo.getMobileNo());
                     userSession.setDisplayName(myInfo.getUserName());
                     LicenseeDto liceInfo = new LicenseeDto();
                     liceInfo.setFloorNo(myInfo.getFloor());
@@ -332,7 +329,6 @@ public class FESingpassLandingDelegator {
                     liceInfo.setBuildingName(myInfo.getBuildingName());
                     liceInfo.setStreetName(myInfo.getStreetName());
                     liceInfo.setMobileNo(myInfo.getMobileNo());
-                    liceInfo.setOfficeTelNo(myInfo.getMobileNo());
                     ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
