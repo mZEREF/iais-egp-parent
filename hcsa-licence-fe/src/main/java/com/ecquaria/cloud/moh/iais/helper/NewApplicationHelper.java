@@ -61,6 +61,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
@@ -2139,6 +2140,19 @@ public class NewApplicationHelper {
             appPsnEditDto.setBclsExpiryDate(true);
             appPsnEditDto.setNoRegWithProfBoard(true);
             appPsnEditDto.setTransportYear(true);
+            // the solo doesn't have the officer number default
+            HttpServletRequest request = MiscUtil.getCurrentRequest();
+            if (request != null) {
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                RequestForChangeService rfcService = SpringContextHelper.getContext().getBean(RequestForChangeService.class);
+                String licenseeType = Optional.ofNullable(rfcService)
+                        .map(svc -> svc.getLicenseeByOrgId(loginContext.getOrgId()))
+                        .map(dto -> dto.getLicenseeType())
+                        .orElseGet(() -> "");
+                appPsnEditDto.setOfficeTelNo(OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(licenseeType));
+            } else {
+                appPsnEditDto.setOfficeTelNo(true);
+            }
 
             if(ApplicationConsts.PERSON_LOADING_TYPE_BLUR.equals(person.getLoadingType())){
                 appPsnEditDto.setIdType(true);
