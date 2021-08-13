@@ -772,6 +772,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     .orElseGet(LicenseeIndividualDto::new);
             subLicenseeDto.setIdType(licenseeIndividualDto.getIdType());
             subLicenseeDto.setIdNumber(licenseeIndividualDto.getIdNo());
+            if (!StringUtil.isEmpty(licenseeDto.getMobileNo())) {
+                subLicenseeDto.setTelephoneNo(licenseeDto.getMobileNo());
+            }
             subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
         }
         return subLicenseeDto;
