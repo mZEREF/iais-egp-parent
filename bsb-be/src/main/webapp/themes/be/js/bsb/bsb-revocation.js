@@ -3,14 +3,6 @@ function doProcess(id){
     SOP.Crud.cfxSubmit("mainForm", "doProcess",id);
 }
 
-function jumpToPagechangePage() {
-    SOP.Crud.cfxSubmit("mainForm", "doPaging");
-}
-
-function sortRecords(sortFieldName, sortType) {
-    SOP.Crud.cfxSubmit("mainForm", "doSorting",sortFieldName,sortType);
-}
-
 function openUploadDoc(){
     $('#uploadDoc').dialog('open');
 };
@@ -156,5 +148,13 @@ $(function () {
         if (optionValue == "Please Select") {
             $("#error_decision").html("Please select valid options!");
         }
+    });
+
+    $("#backToTask").click(function (){
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
+
+    $("#backToProcess").click(function (){
+        SOP.Crud.cfxSubmit("mainForm");
     });
 });

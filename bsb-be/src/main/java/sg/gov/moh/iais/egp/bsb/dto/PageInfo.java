@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.data.domain.Page;
+import sg.gov.moh.iais.egp.bsb.constant.GlobalConstants;
 
 
 /**
@@ -48,5 +49,31 @@ public class PageInfo {
         pageInfo.size = pageData.getSize();
         pageInfo.numberOfElements = pageData.getNumberOfElements();
         return pageInfo;
+    }
+
+    /**
+     *  Empty page info with default page size
+     */
+    public static PageInfo emptyPageInfo() {
+        return emptyPageInfo(GlobalConstants.DEFAULT_PAGE_SIZE);
+    }
+
+    public static PageInfo emptyPageInfo(int pageSize) {
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.first = true;
+        pageInfo.last = true;
+        pageInfo.totalPages = 0;
+        pageInfo.totalElements = 0;
+        pageInfo.pageNo = 0;
+        pageInfo.size = pageSize;
+        pageInfo.numberOfElements = 0;
+        return pageInfo;
+    }
+
+    /**
+     *  Empty page info but keep the current page size
+     */
+    public static PageInfo emptyPageInfo(PagingAndSortingDto dto) {
+        return emptyPageInfo(dto.getSize());
     }
 }

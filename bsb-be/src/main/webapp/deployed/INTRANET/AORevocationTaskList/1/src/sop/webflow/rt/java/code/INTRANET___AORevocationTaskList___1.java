@@ -33,11 +33,11 @@ public class INTRANET___AORevocationTaskList___1 extends BaseProcessClass {
 	}
 
 	public void doSorting_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSorting", this);
+		EngineHelper.delegate(DELEGATOR, "sort", this);
 	}
 
 	public void doPaging_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doPaging", this);
+		EngineHelper.delegate(DELEGATOR, "page", this);
 	}
 
 }

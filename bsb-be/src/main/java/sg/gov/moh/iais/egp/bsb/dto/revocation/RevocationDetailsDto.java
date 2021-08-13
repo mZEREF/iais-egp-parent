@@ -34,6 +34,9 @@ public class RevocationDetailsDto implements Serializable {
     private String facilityName;
 
     @Column(name="BLK_NO")
+    private String facilityAddress;
+
+    @Column(name="BLK_NO")
     private String blockNo;
 
     @Column(name="POSTAL_CODE")
@@ -65,11 +68,11 @@ public class RevocationDetailsDto implements Serializable {
 
     @Column(name="REMARKS")
     private String remarks;
-//
-//    private String AORemarks;
 
-//    private String processingDecision;
     @Column(name="STATUS")
     private String currentStatus;
+
+    @Column(name="APPLICATION_NO")
+    private String applicationNo;
     //uploadFile
 }

@@ -21,7 +21,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "view_bsb_AO_search_result")
-public class AOQueryInfoDto extends BaseEntity implements Serializable {
+public class AOQueryInfoDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -73,6 +73,18 @@ public class AOQueryInfoDto extends BaseEntity implements Serializable {
     @Column(name="STATUS")
     private String status;
 
-    @Column(name = "APPROVAL_STATUS")
-    private String approvalStatus;
+    @Column(name = "FACILITY_STATUS")
+    private String facilityStatus;
+
+    @Column(name = "CREATED_BY", updatable = false)
+    private String createdBy;
+
+    @Column(name = "CREATED_DT", updatable = false)
+    private Date createdDt;
+
+    @Column(name = "UPDATED_BY")
+    private String modifiedBy;
+
+    @Column(name = "UPDATED_DT")
+    private Date modifiedDt;
 }

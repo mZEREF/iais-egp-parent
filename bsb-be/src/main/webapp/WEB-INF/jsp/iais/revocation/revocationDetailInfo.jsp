@@ -18,7 +18,7 @@
                         </tr>
                         <tr>
                             <td align="right">Facility Address</td>
-                            <td style="padding-left : 20px"><c:out value="${item.blockNo} ${item.streetName} ${item.floorNo}-${item.unitNo} ${item.postalCode}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${item.facilityAddress}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
@@ -34,7 +34,7 @@
                         </tr>
                         <tr>
                             <td align="right">Approval Status</td>
-                            <td style="padding-left : 20px"><c:out value="${item.approvalStatus}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${item.approvalStatus}"></iais:code></td>
                         </tr>
                     </c:forEach>
                     </tbody>

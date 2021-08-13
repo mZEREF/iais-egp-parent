@@ -56,6 +56,9 @@ public class DORevocationDelegator {
         List<RevocationDetailsDto> list=new LinkedList<>();
         HttpServletRequest request = bpc.request;
         RevocationDetailsDto revocationDetailsDto = revocationClient.getApplicationById("B856D31C-E3F0-EB11-8B7D-000C293F0C99").getEntity();
+        //Do address processing
+        String address = joinAddress(revocationDetailsDto);
+        revocationDetailsDto.setFacilityAddress(address);
         list.add(revocationDetailsDto);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
     }
@@ -99,6 +102,48 @@ public class DORevocationDelegator {
         historyDto.setInternalRemarks(revocationDetailsDto.getRemarks());
         historyDto.setApplicationNo(result.getEntity().getApplicationNo());
         revocationClient.saveHistory(historyDto);
+    }
+
+    private String joinAddress(RevocationDetailsDto revocationDetailsDto){
+        String blockNo = revocationDetailsDto.getBlockNo();
+        String streetName = revocationDetailsDto.getStreetName();
+        String floorNo = revocationDetailsDto.getFloorNo();
+        String unitNo = revocationDetailsDto.getUnitNo();
+        String postalCode = revocationDetailsDto.getPostalCode();
+        StringBuilder builder=new StringBuilder();
+        String facilityAddress="";
+        if (blockNo!=null){
+            builder.append(blockNo).append(" ");
+        }else{
+            builder.append("? ");
+        }
+
+        if (streetName!=null){
+            builder.append(streetName).append(" ");
+        }else{
+            builder.append("? ");
+        }
+
+        if (floorNo!=null){
+            builder.append(floorNo).append("-");
+        }else{
+            builder.append("?-");
+        }
+
+        if (unitNo!=null){
+            builder.append(unitNo).append(" ");
+        }else{
+            builder.append("? ");
+        }
+
+        if (postalCode!=null){
+            builder.append(postalCode).append(" ");
+        }else{
+            builder.append("?");
+        }
+        facilityAddress=builder.toString();
+
+        return facilityAddress;
     }
 
 }

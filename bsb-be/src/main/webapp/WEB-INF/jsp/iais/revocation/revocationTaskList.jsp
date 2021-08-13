@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
@@ -10,10 +11,14 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <div class="main-content" style="min-height: 73vh;">
 
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="col-xs-12">
             <div class="center-content">
                 <div class="intranet-content" id="clearSelect">
@@ -123,21 +128,21 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-
+                        <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-gp">
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Application No."></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Application Type"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility Name/Address"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility type"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Process Type"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Biological Agents/Toxins"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Application Date (dd/mm/yyyy)"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility / Approval Expiry Date (dd/mm/yyyy)"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="" value="Application Status"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="applicationNo" value="Application No." isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="applicationType" value="Application Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Facility Name/Address" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facilityType" value="Facility type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Biological Agents/Toxins" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="applicationDate" value="Application Date (dd/mm/yyyy)" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Facility / Approval Expiry Date (dd/mm/yyyy)" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="applicationStatus" value="Application Status" isFE="false"/>
                                 </tr>
                                 </thead>
                                 <c:forEach var="item" items="${applicationSearchResult}" varStatus="status">
