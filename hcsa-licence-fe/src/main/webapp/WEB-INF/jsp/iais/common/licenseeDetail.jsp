@@ -142,12 +142,11 @@
 
     function checkAddressManatory() {
         var addrType = $('#addrType').val();
+        $('.blkNoLabel .mandatory').remove();
+        $('.floorUnitLabel .mandatory').remove();
         if ('ADDTY001' == addrType) {
             $('.blkNoLabel').append('<span class="mandatory">*</span>');
             $('.floorUnitLabel').append('<span class="mandatory">*</span>');
-        } else {
-            $('.blkNoLabel .mandatory').remove();
-            $('.floorUnitLabel .mandatory').remove();
         }
     }
 
