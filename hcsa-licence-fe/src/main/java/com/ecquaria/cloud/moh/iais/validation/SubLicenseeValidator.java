@@ -56,16 +56,22 @@ public class SubLicenseeValidator implements CustomizeValidator {
                 errorMap.put("idType", MANDATORY_MSG);
             }
         }
+
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
+            String telephoneNo = subLicenseeDto.getTelephoneNo();
+            if (telephoneNo != null && !CommonValidator.isTelephoneNo(telephoneNo)) {
+                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+            }
+        }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
             String mobileNo = subLicenseeDto.getTelephoneNo();
             if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
                 errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
-
         if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
             String telephoneNo = subLicenseeDto.getTelephoneNo();
-            if (telephoneNo != null && !CommonValidator.isTelephoneNo(telephoneNo)) {
+            if (telephoneNo != null && !CommonValidator.isMobile(telephoneNo)) {
                 errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
@@ -88,7 +94,7 @@ public class SubLicenseeValidator implements CustomizeValidator {
         if (errorMap.isEmpty() && IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(subLicenseeDto.getAssignSelect())
                 && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-            boolean needVal = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(appSubmissionDto.getAppType()) && !NewApplicationHelper.checkIsRfi(request);
+            boolean needVal = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(appSubmissionDto.getAppType()) /*&& !NewApplicationHelper.checkIsRfi(request)*/;
             Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                     NewApplicationDelegator.LICENSEE_MAP);
             if (needVal && psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {
