@@ -65,6 +65,8 @@
         $('#licenseeType').on('change', function() {
             clearErrorMsg();
             clearFields('.licensee-detail');
+            unDisableContent('div.licensee-detail');
+            $('.retrieveAddr').removeClass('hidden');
             checkLicenseeType();
         });
         $('#addrType').on('change', checkAddressManatory);
@@ -97,8 +99,8 @@
             $('.retrieveAddr').toggleClass('hidden', $postalCode.prop('disabled'));
         }
         if (!isEmpty(assignSel) && '-1' != assignSel && 'newOfficer' != assignSel) {
-            disableContent('[name="idType"]');
-            disableContent('[name="idNumber"]');
+            disableContent('div.licensee-detail');
+            $('.retrieveAddr').addClass('hidden');
         }
     }
 
@@ -300,7 +302,7 @@
                 $input.val(val);
             }
             if (!$input.hasClass('not-disabled') && !isEmpty(val) && val != '-' && val != '-1') {
-                // disableContent($input);
+                disableContent($input);
             }
         });
         // init licensee type
