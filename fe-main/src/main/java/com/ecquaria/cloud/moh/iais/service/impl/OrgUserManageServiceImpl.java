@@ -610,7 +610,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public boolean getActiveUserAndRoleFlag(FeUserDto userSession) {
+    public String getActiveUserAndRoleFlag(FeUserDto userSession) {
         if(userSession != null) {
             String identityNo = userSession.getIdentityNo();
             String idType = userSession.getIdType();
@@ -626,17 +626,19 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                                 for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                                     if(orgUserRoleDto != null) {
                                         if(AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
-                                            return true;
+                                            return AppConsts.TRUE;
                                         }
                                     }
                                 }
                             }
                         }
                     }
+                } else {
+                    return AppConsts.EMPTY_STR_NA;
                 }
             }
         }
-        return false;
+        return AppConsts.FALSE;
     }
 
     private boolean isValid(FeUserDto feUserDto) {
