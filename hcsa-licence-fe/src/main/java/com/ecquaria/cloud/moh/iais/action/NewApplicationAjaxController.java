@@ -1431,6 +1431,52 @@ public class NewApplicationAjaxController {
         return ajaxResDto;
     }
 
+    @PostMapping(value = "/keyAppointmentHolder-html")
+    public @ResponseBody AjaxResDto generateKeyAppointmentHolderHtml(HttpServletRequest request) throws TemplateException, IOException {
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
+
+        // Assigned person dropdown list
+        Map<String, String> assignSelAttr = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
+        assignSelAttr.put("class", "assignSel");
+        assignSelAttr.put("name", "assignSel" + keyAppointmentHolderLength);
+        assignSelAttr.put("style", "display: none;");
+        String personalSelect = NewApplicationHelper.generateDropDownHtml(assignSelAttr, personOptions, null, null);
+
+        //salutation
+        List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
+        salutationAttr.put("class", "salutation");
+        salutationAttr.put("name", "salutation" + keyAppointmentHolderLength);
+        salutationAttr.put("style", "display: none;");
+        String salutationSelect = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        //ID Type
+        List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+        Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
+        idTypeAttr.put("class", "idType");
+        idTypeAttr.put("name", "idType" + keyAppointmentHolderLength);
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelect = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("keyAppointmentHolderLength",keyAppointmentHolderLength + 1);
+        paramMap.put("keyAppointmentHolderSuffix",keyAppointmentHolderLength);
+        paramMap.put("personalSelect",personalSelect);
+        paramMap.put("salutationSelect",salutationSelect);
+        paramMap.put("idTypeSelect",idTypeSelect);
+
+        String keyAppointmentHolderHtml = SqlMap.INSTANCE.getSql("keyAppointmentHolder", "generateKeyAppointmentHolderHtml", paramMap);
+
+        ajaxResDto.setResultJson(keyAppointmentHolderHtml);
+
+        return ajaxResDto;
+
+    }
+
     //=============================================================================
     //private method
     //=============================================================================

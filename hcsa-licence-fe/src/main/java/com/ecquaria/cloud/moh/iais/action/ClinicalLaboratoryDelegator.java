@@ -279,7 +279,7 @@ public class ClinicalLaboratoryDelegator {
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
             preparePrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
-            // Key Appointment Holder
+            prepareKeyAppointmentHolder(bpc);
         } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
             prepareServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
@@ -335,7 +335,7 @@ public class ClinicalLaboratoryDelegator {
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
             doPrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
-            // Key Appointment Holder
+            doKeyAppointmentHolder(bpc);
         } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
             doServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
@@ -591,6 +591,21 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
+    public void prepareKeyAppointmentHolder(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("prepareKeyAppointmentHolder start ..."));
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currSvcId, ApplicationConsts.PERSONNEL_PSN_KAH);
+        if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            ParamUtil.setSessionAttr(bpc.request, "keyAppointmentHolderConfigDto", hcsaSvcPersonnelDto);
+        }
+//        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currSvcId);
+//        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+//        ParamUtil.setRequestAttr(bpc.request,"AppSvcKeyAppointmentHolderDtoList",appSvcKeyAppointmentHolderDtoList);
+        List<SelectOption> assignSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request, true);
+        ParamUtil.setRequestAttr(bpc.request, "KeyAppointmentHolderAssignSelect", assignSelectList);
+        log.debug(StringUtil.changeForLog("prepareKeyAppointmentHolder end ..."));
+    }
     /**
      * StartStep: prepareDocuments
      *
@@ -1439,6 +1454,11 @@ public class ClinicalLaboratoryDelegator {
         }
 
         log.debug(StringUtil.changeForLog("the do doPrincipalOfficers end ...."));
+    }
+
+    public void doKeyAppointmentHolder(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the do doKeyAppointmentHolder start ...."));
+        log.debug(StringUtil.changeForLog("the do doKeyAppointmentHolder end ...."));
     }
 
     /**
