@@ -96,9 +96,15 @@ public class EventbusCallBackDelegate {
                 if (StringUtil.isEmpty(flag)) {
                     cacheHelper.set("IaisEventbusCbCount",
                             flagKey, setVal, 60L * 60L * 24L);
-                    log.info("<======= Do callback =======>");
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        log.error(e.getMessage(),e);
+                        Thread.currentThread().interrupt();
+                    }
                     flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
                     if (setVal.equals(flag)) {
+                        log.info("<======= Do callback =======>");
                         callbackMethod(submissionId, operation, eventRefNum);
                     }
                 }
