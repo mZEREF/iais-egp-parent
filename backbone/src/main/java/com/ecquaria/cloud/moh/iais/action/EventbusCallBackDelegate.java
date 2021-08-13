@@ -97,7 +97,7 @@ public class EventbusCallBackDelegate {
                     cacheHelper.set("IaisEventbusCbCount",
                             flagKey, setVal, 60L * 60L * 24L);
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         log.error(e.getMessage(),e);
                         Thread.currentThread().interrupt();
