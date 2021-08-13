@@ -44,7 +44,7 @@
                             <p class="col-xs-12"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
                             <c:if test="${dAmount!='$0.0'}">
                                 <p class="col-xs-12">Transactional details:</p>
-                                <div class="table-responsive">
+                                <div class="col-xs-12 col-sm-12 margin-bottom-10 table-responsive">
                                     <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
