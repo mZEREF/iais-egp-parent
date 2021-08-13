@@ -13,6 +13,12 @@
   *{
     font-size: 16px;
   }
+  .title-font-size {
+    font-size: 2.2rem;
+  }
+  .postion-relative {
+    position: relative;
+  }
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">

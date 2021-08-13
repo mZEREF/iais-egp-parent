@@ -16,8 +16,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,11 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -49,6 +46,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -431,7 +434,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             organizationDto.setLicenseeDto(licenseeDto);
         }
         organizationDto.setId(organizationById.getId());
-        updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee
             licenseeDto.setOrganizationId(organizationDto.getId());
@@ -457,6 +459,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             refreshBeSubLicenseeInfo(licenseeDto);
             log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo End"));
         }
+        updateUserBe(organizationDto);
         return licenseeDto;
     }
 
@@ -604,6 +607,38 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         updateEgpUser(feUserDto);
         log.info("Synchronize FE user from BE end.");
         return feUserDtoRes;
+    }
+
+    @Override
+    public String getActiveUserAndRoleFlag(FeUserDto userSession) {
+        if(userSession != null) {
+            String identityNo = userSession.getIdentityNo();
+            String idType = userSession.getIdType();
+            if(!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(idType)) {
+                List<OrgUserDto> orgUserDtoList = feUserClient.getUserListByNricAndIdType(identityNo, idType).getEntity();
+                if(!IaisCommonUtils.isEmpty(orgUserDtoList)) {
+                    OrgUserDto orgUserDto = orgUserDtoList.get(0);
+                    if(orgUserDto != null) {
+                        String userStatus = orgUserDto.getStatus();
+                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(userStatus)) {
+                            List<OrgUserRoleDto> orgUserRoleDtos = feUserClient.retrieveRolesByUserAccId(orgUserDto.getId()).getEntity();
+                            if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                                for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                                    if(orgUserRoleDto != null) {
+                                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
+                                            return AppConsts.TRUE;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    return AppConsts.EMPTY_STR_NA;
+                }
+            }
+        }
+        return AppConsts.FALSE;
     }
 
     private boolean isValid(FeUserDto feUserDto) {

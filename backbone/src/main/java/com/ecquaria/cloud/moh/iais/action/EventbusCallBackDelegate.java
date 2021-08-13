@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -88,14 +89,24 @@ public class EventbusCallBackDelegate {
                     }
                 }
             } else if (!pending) {
-                String flag = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                        .get("IaisEventbusCbCount",
-                        submissionId + "_" + operation + "_CallbackFlag");
+                RedisCacheHelper cacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+                String flagKey = submissionId + "_" + operation + "_CallbackFlag";
+                String setVal = UUID.randomUUID().toString();
+                String flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
                 if (StringUtil.isEmpty(flag)) {
-                    log.info("<======= Do callback =======>");
-                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("IaisEventbusCbCount",
-                            submissionId + "_" + operation + "_CallbackFlag", "callback", 60L * 60L * 24L);
-                    callbackMethod(submissionId, operation, eventRefNum);
+                    cacheHelper.set("IaisEventbusCbCount",
+                            flagKey, setVal, 60L * 60L * 24L);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        log.error(e.getMessage(),e);
+                        Thread.currentThread().interrupt();
+                    }
+                    flag = cacheHelper.get("IaisEventbusCbCount", flagKey);
+                    if (setVal.equals(flag)) {
+                        log.info("<======= Do callback =======>");
+                        callbackMethod(submissionId, operation, eventRefNum);
+                    }
                 }
             }
         }

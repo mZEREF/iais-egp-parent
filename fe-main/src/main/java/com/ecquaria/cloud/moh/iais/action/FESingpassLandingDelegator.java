@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.OidcAuthDto;
@@ -166,6 +165,14 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
+        //get active flag and active role flag
+        String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        if(AppConsts.FALSE.equals(userAndRoleFlag)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+            ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
+            return;
+        }
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
@@ -249,13 +256,13 @@ public class FESingpassLandingDelegator {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMsg));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 } else {
+                    LicenseeDto liceInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);
                     OrganizationDto orgn = new OrganizationDto();
                     orgn.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
                     orgn.setOrgType(UserConstants.ORG_TYPE);
                     orgn.setUenNo(userSession.getUenNo());
                     orgn.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     orgn.setFeUserDto(userSession);
-                    LicenseeDto liceInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);
                     orgn.setLicenseeDto(liceInfo);
 
                     FeUserDto createdUser = orgUserManageService.createSingpassAccount(orgn);
@@ -275,8 +282,9 @@ public class FESingpassLandingDelegator {
     private void setRequestDto(HttpServletRequest request,FeUserDto userSession){
         userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
         userSession.setEmail(ParamUtil.getString(request,"emailAddr"));
-        if(StringUtil.isEmpty(userSession.getDisplayName())){
-            userSession.setDisplayName(userSession.getIdentityNo());
+        userSession.setDisplayName(ParamUtil.getString(request,"name"));
+        userSession.setOfficeTelNo(userSession.getMobileNo());
+        if(StringUtil.isEmpty(userSession.getDesignation())){
             userSession.setDesignation(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
             userSession.setDesignationOther(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
             userSession.setSalutation(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
@@ -297,6 +305,7 @@ public class FESingpassLandingDelegator {
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setMobileNo(userSession.getMobileNo());
         licenseeDto.setEmilAddr(userSession.getEmail());
+        licenseeDto.setOfficeTelNo(userSession.getMobileNo());
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
 
@@ -312,6 +321,7 @@ public class FESingpassLandingDelegator {
                     log.info(StringUtil.changeForLog("SingPass Login service [receiveUserInfo] MyInfo ...." + JsonUtil.parseToJson(myInfo)));
                     userSession.setEmail(myInfo.getEmail());
                     userSession.setMobileNo(myInfo.getMobileNo());
+                    userSession.setOfficeTelNo(myInfo.getMobileNo());
                     userSession.setDisplayName(myInfo.getUserName());
                     LicenseeDto liceInfo = new LicenseeDto();
                     liceInfo.setFloorNo(myInfo.getFloor());
@@ -321,6 +331,8 @@ public class FESingpassLandingDelegator {
                     liceInfo.setName(myInfo.getUserName());
                     liceInfo.setBuildingName(myInfo.getBuildingName());
                     liceInfo.setStreetName(myInfo.getStreetName());
+                    liceInfo.setMobileNo(myInfo.getMobileNo());
+                    liceInfo.setOfficeTelNo(myInfo.getMobileNo());
                     ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
