@@ -132,6 +132,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT = "2C41F2F7-6D09-44AC-80B8-F1FA7BC8D38A";
     public static final String CATE_ID_BSB_APP_STATUS = "B37CA772-53BC-4CD5-A644-F5A34513B6C0";
     public static final String CATE_ID_BSB_APPROVAL_TYPE = "6EF28184-C9ED-427C-8F2B-E5012D7A7B75";
+    public static final String CATE_ID_BSB_APPROVAL_STATUS = "3DE300C3-C94C-47C9-88BA-A27B2D5740F4";
 
     //FacilityInfo
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
