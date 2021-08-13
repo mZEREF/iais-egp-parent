@@ -122,12 +122,14 @@
                             <div class="table-gp">
                                 <table aria-describedby="" class="table">
                                     <thead>
-                                    <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
+                                    <tr><th scope="col" <c:if test="${auditLogDetailView.request.size()==1 and auditLogDetailView.request[0].colName==auditLogDetailView.request[0].longText}">style="display: none" </c:if> >Field</th><th scope="col" >Value</th></tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach var="msg" items="${auditLogDetailView.request}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
+                                        <tr>
+                                            <td <c:if test="${msg.colName==msg.longText}"> style="display: none" </c:if>><c:out value="${msg.colName}"/></td>
+                                            <td class="line-limit-length"><c:out value="${msg.longText}"/></td>
+                                        </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
@@ -151,12 +153,14 @@
                             <div class="table-gp">
                                 <table aria-describedby="" class="table">
                                     <thead>
-                                    <tr><th scope="col" >Field</th><th scope="col" >Value</th></tr>
+                                    <tr><th scope="col"  <c:if test="${auditLogDetailView.response.size()==1 and auditLogDetailView.response[0].colName==auditLogDetailView.response[0].longText}">style="display: none"</c:if>>Field</th><th scope="col" >Value</th></tr>
                                     </thead>
                                     <tbody>
                                     <c:forEach var="msg" items="${auditLogDetailView.response}">
-                                        <tr><td><c:out value="${msg.colName}"/></td><td class="line-limit-length"><c:out value="${msg.longText}"/>
-                                        </td></tr>
+                                        <tr>
+                                            <td <c:if test="${msg.colName==msg.longText}"> style="display: none" </c:if>><c:out value="${msg.colName}"/></td>
+                                            <td class="line-limit-length"><c:out value="${msg.longText}"/></td>
+                                        </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
