@@ -434,7 +434,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             organizationDto.setLicenseeDto(licenseeDto);
         }
         organizationDto.setId(organizationById.getId());
-        updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee
             licenseeDto.setOrganizationId(organizationDto.getId());
@@ -460,6 +459,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             refreshBeSubLicenseeInfo(licenseeDto);
             log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo End"));
         }
+        updateUserBe(organizationDto);
         return licenseeDto;
     }
 
