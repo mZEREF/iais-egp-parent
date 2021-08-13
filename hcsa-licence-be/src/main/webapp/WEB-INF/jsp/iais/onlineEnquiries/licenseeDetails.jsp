@@ -236,7 +236,7 @@
                             <td align="right">Building Name</td>
                             <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.buildingName}<c:if test="${empty subLicenseeDto.buildingName}">-</c:if></td>
                         </tr>
-                        <c:if test="${subLicenseeDto.idType=='LICTSUB002'}">
+                        <c:if test="${subLicenseeDto.licenseeType=='LICTSUB002'}">
                             <tr>
                                 <td align="right">Mobile No</td>
                                 <td class="col-xs-6" style="padding-left: 15px;">${subLicenseeDto.telephoneNo}<c:if test="${empty subLicenseeDto.telephoneNo}">-</c:if></td>
@@ -246,7 +246,7 @@
                                 <td class="col-xs-6" style="padding-left: 15px;">-</td>
                             </tr>
                         </c:if>
-                        <c:if test="${subLicenseeDto.idType=='LICTSUB001' or subLicenseeDto.idType=='LICT002'}">
+                        <c:if test="${subLicenseeDto.licenseeType=='LICTSUB001' or subLicenseeDto.licenseeType=='LICT002'}">
                             <tr>
                                 <td align="right">Mobile No</td>
                                 <td class="col-xs-6" style="padding-left: 15px;">-</td>
