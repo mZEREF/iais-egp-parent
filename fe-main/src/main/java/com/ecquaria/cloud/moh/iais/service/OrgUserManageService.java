@@ -71,4 +71,12 @@ public interface OrgUserManageService {
 
     FeUserDto syncFeUserFromBe(FeUserDto feUserDto);
 
+    /**
+     * @author: shicheng
+     * @Date 2021/8/12
+     * @Param: userSession
+     * @return: boolean
+     * @Descripation: getActiveUserAndRoleFlag
+     */
+    boolean getActiveUserAndRoleFlag(FeUserDto userSession);
 }
