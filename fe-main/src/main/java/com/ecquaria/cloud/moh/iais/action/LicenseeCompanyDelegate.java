@@ -161,7 +161,6 @@ public class LicenseeCompanyDelegate {
                     myInfoDto.setBlockNo(licenseeDto.getBlkNo());
                     myInfoDto.setBuildingName(licenseeDto.getBuildingName());
                     myInfoDto.setStreetName(licenseeDto.getStreetName());
-                    feUserDto.setOfficeTelNo(licenseeDto.getOfficeTelNo());
                     orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
                 }
             }
@@ -187,7 +186,6 @@ public class LicenseeCompanyDelegate {
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
         licenseeDto.setEmilAddr(ParamUtil.getString(request,"emailAddr"));
-        licenseeDto.setOfficeTelNo(licenseeDto.getMobileNo());
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.YES);
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
@@ -204,7 +202,6 @@ public class LicenseeCompanyDelegate {
             licenseeDto.setBuildingName(myInfoDto.getBuildingName());
             licenseeDto.setStreetName(myInfoDto.getStreetName());
             licenseeDto.setMobileNo(myInfoDto.getMobileNo());
-            licenseeDto.setOfficeTelNo(myInfoDto.getMobileNo());
         }else {
             ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
         }
