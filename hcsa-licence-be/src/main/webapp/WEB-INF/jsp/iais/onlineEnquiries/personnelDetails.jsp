@@ -335,6 +335,31 @@
                                 </div>
                             </td>
                         </tr>
+                        <c:if test="${'Medical Transport Service'==setLicInfoSvcName}">
+                            <tr>
+                                <td class="col-xs-6" align="right">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Not registered with a Professional Board</p>
+                                </td>
+                                <td>
+                                    <div class="col-xs-6">
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.noRegWithProfBoard}">
+                          <c:choose>
+                              <c:when test="${appSvcClinicalDirectorDto.noRegWithProfBoard=='1'}">
+                              <div class="form-check active">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                              </c:when>
+                              <c:otherwise>
+                              <div class="form-check ">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                              </div>
+                              </c:otherwise>
+                          </c:choose>
+                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:if>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
@@ -502,7 +527,7 @@
 
                         <tr>
                             <td class="col-xs-6" align="right">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ACLS Expiry Date </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (ACLS) </p>
                             </td>
                             <td>
                                 <div class="col-xs-6">
@@ -513,7 +538,21 @@
 
                             </td>
                         </tr>
+                        <c:if test="${'Medical Transport Service'==setLicInfoSvcName}">
 
+                            <tr>
+                                <td class="col-xs-6" align="right">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Expiry Date (BCLS and AED) </p>
+                                </td>
+                                <td>
+                                    <div class="col-xs-6">
+                        <span class="newVal " attr="${appSvcClinicalDirectorDto.bclsExpiryDate}">
+                            <fmt:formatDate value="${appSvcClinicalDirectorDto.bclsExpiryDate}" pattern="dd/MM/yyyy"/>
+                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:if>
                         <tr>
                             <td class="col-xs-6" align="right">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.  </p>

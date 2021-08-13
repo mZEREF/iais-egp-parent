@@ -184,6 +184,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcChargesPageDto());
             ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList());
             ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList());
+            ParamUtil.setSessionAttr(request, "setLicInfoSvcName", licenceDto.getSvcName());
         }catch (Exception e){
             log.error("not currentPreviewSvcInfo");
         }
