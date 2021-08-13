@@ -193,7 +193,7 @@ public class FECorppassLandingDelegator {
         userSession =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
         //get active flag and active role flag
         boolean userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
-        if (userAndRoleFlag || Optional.ofNullable(userSession).isPresent()){
+        if (userAndRoleFlag && Optional.ofNullable(userSession).isPresent()){
             userSession.setScp(scp);
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
