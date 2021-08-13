@@ -1833,6 +1833,7 @@ input[type=number]::-webkit-outer-spin-button {
     position: relative;
 }
 .form-check input.form-check-input {
+    height: auto;
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -2797,6 +2798,7 @@ span.error-msg {
     color: #333333;
     position: absolute;
     display: block;
+    margin-left: auto;
     margin-right: auto;
     font-weight: 600;
     margin-bottom: 0;
@@ -3932,6 +3934,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 @media only screen and (min-width : 768px) and (max-width : 992px) {
     .tab-search.license-search .licence-btns {
         flex: 1;
+        width: auto;
         margin-right: 0;
         order: 1;
         margin-top: 0;
@@ -5223,6 +5226,7 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox],
 .control-item-container input.control-input[type=radio] {
+    height: auto;
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -5244,6 +5248,11 @@ table select.form-control.control-input {
     min-height: 22px;
     line-height: 22px !important;
     font-family: "Open Sans", sans-serif;
+    color: #333333;
+    font-size: 1.6rem;
+    font-weight: 400;
+    position: relative;
+    padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
     .control-item-container input.control-input[type=checkbox] + label.control-label,
@@ -5686,7 +5695,7 @@ section.logo img {
     display: inline-block;
     font-size: 16px;
     margin: 4px;
-}
+ }
 
 .lic-footer {
     margin-top: 12.5%;
@@ -5743,21 +5752,22 @@ section.logo img {
         transition: all 0.3s ease;
     }
     .nav ul.pagination > li > a, .nav ul.pagination > li span {
-        font-size: 1.4rem;
-        padding: 6px 8px;
+    font-size: 1.4rem;
+    padding: 6px 8px;
     }
 
     .table-gp table.table > tbody > tr > td p {
         margin-bottom: 0;
         line-height: 25px;
     }
+
     .table-info-display {
-        margin: 20px 15px 25px 12px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;
+    margin: 20px 15px 25px 12px;
+    background: #efefef;
+    padding: 8px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
     }
 }
 
@@ -5834,14 +5844,5 @@ section.logo img {
   }
 }*/
 
-p, span {
-    word-wrap: break-word;
-}
-
-.container-footer {
-    margin-top: 15px;
-    padding-top: 30px;
-    border-top: 1px solid #BABABA;
-}
 
 
