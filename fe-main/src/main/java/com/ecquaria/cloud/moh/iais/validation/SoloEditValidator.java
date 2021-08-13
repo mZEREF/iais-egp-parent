@@ -45,10 +45,11 @@ public class SoloEditValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION);
-        if (Objects.isNull(licenseeDto)) {
+        FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        if (Objects.isNull(licenseeDto) || Objects.isNull(dto)) {
             return map;
         }
-
+        valCol("name",66,dto.getDisplayName(),map);
         boolean postalVal = valCol("postalCode",6,licenseeDto.getPostalCode(),map);
         if( !postalVal && !CommonValidator.isValidePostalCode(licenseeDto.getPostalCode())){
             map.put("postalCode", MessageUtil.getMessageDesc("NEW_ERR0004"));

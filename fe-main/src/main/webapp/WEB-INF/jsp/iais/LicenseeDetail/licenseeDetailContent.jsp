@@ -1,3 +1,24 @@
+<iais:row>
+  <iais:field value="NRIC" width="11"/>
+  <iais:value width="11">
+    <label><c:out value="${inter_user_attr.identityNo}"/></label>
+  </iais:value>
+</iais:row>
+<iais:row>
+  <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+  <iais:field value="Name" width="11" mandatory="true"/>
+  <iais:value width="11">
+    <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
+    <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+  </iais:value>
+  </c:if>
+  <c:if test="${empty myinfo_sinpass_login_evaluate}">
+    <iais:field value="Name" width="11"/>
+    <iais:value width="11">
+      <label><c:out value="${inter_user_attr.displayName}"/></label>
+    </iais:value>
+  </c:if>
+</iais:row>
 <%-- Address start --%>
   <iais:row cssClass="postalCodeDiv">
     <iais:field value="Postal Code" mandatory="true" width="11"/>
@@ -51,12 +72,7 @@
   </iais:row>
 
   <iais:row>
-    <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
-    <iais:field value="Email Address" mandatory="true" width="11"/>
-    </c:if>
-    <c:if test="${empty myinfo_sinpass_login_evaluate}">
-      <iais:field value="Email" mandatory="true" width="11"/>
-    </c:if>
+    <iais:field value="Email" mandatory="true" width="11"/>
     <iais:value width="11">
       <iais:input type="text" name="emailAddr" maxLength="320" value="${licensee.emilAddr}"/>
     </iais:value>
