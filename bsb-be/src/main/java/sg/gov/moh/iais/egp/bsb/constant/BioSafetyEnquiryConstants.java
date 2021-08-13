@@ -10,6 +10,9 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_APPLICATION_INFO_RESULT = "appInfoSearchResult";
     public static final String PARAM_FACILITY_INFO_SEARCH = "facInfoSearchParam";
     public static final String PARAM_FACILITY_INFO_RESULT = "facInfoSearchResult";
+    public static final String PARAM_APPROVAL_INFO_SEARCH = "approvalSearchParam";
+    public static final String PARAM_APPROVAL_INFO_RESULT = "approvalSearchResult";
+
 
 
     //PARAM

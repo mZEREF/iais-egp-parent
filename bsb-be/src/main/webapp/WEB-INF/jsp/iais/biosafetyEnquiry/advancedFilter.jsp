@@ -113,7 +113,7 @@
            Search by Approval Info
             <strong>&nbsp;
                 <input  id="approvalChk" type="radio"
-                        <c:if test="${count=='3'}">checked</c:if>  value="2" name="searchChk"  />
+                        <c:if test="${count=='3'}">checked</c:if>  value="3" name="searchChk"  />
             </strong>
         </span>
     </h4>
@@ -154,13 +154,13 @@
                     <iais:row>
                         <iais:field value="Nature of the sample"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="nature_of_the_sample" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE"  firstOption="Please Select" multiSelect="true"></iais:select>
+                            <iais:select name="natureOfTheSample" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE"  firstOption="Please Select" multiSelect="true"></iais:select>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Risk Level of the Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="rlotba" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select"></iais:select>
+                            <iais:select name="riskLevelOfTheBiologicalAgent" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -172,13 +172,13 @@
                     <iais:row>
                         <iais:field value="Approval Submission Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approval_sub_from_date"></iais:datePicker>
+                            <iais:datePicker name="approvalSubmissionDateFrom"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approval Submission Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approval_sub_To_date"></iais:datePicker>
+                            <iais:datePicker name="approvalSubmissionDateTo"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -190,13 +190,13 @@
                     <iais:row>
                         <iais:field value="Approved Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approved_from_date"></iais:datePicker>
+                            <iais:datePicker name="approvalDateFrom"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approved_to_date"></iais:datePicker>
+                            <iais:datePicker name="approvalDateTo"></iais:datePicker>
                         </div >
                     </iais:row>
                 </iais:section>

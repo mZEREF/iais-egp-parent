@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.mvel2.util.Make;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,8 +42,6 @@ public class BiosafetyEnquiryDelegator {
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
    @Autowired
    private BiosafetyEnquiryClient biosafetyEnquiryClient;
-
-
 
     /**
      *  AutoStep: prepareBasicSearch
@@ -141,6 +140,7 @@ public class BiosafetyEnquiryDelegator {
             case "2":
                 List<String> approvals = biosafetyEnquiryClient.queryDistinctApproval().getEntity();
                 selectOption(request,"AFC",approvals);
+            case "3":
             case "1":
                 List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
                 selectOption(request,"facilityName",facNames);
@@ -175,6 +175,12 @@ public class BiosafetyEnquiryDelegator {
         String biosafetyCommitteePersonnel = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_BIOSAFETY_COMMITTEE_PERSONNEL);
         String facilityStatus = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_FACILITY_STATUS);
         String approvedFacilityCertifier = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVED_FACILITY_CERTIFIER);
+        String[] natureOfTheSample = ParamUtil.getStrings(request,BioSafetyEnquiryConstants.PARAM_NATURE_OF_THE_SAMPLE);
+        String approvalStatus = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_STATUS);
+        String approvalType = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_TYPE);
+        Date approvalSubmissionDateFrom = Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_SUBMISSION_DATE_FROM)));
+        Date approvalSubmissionDateTo = Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_SUBMISSION_DATE_TO)));
+
         if (StringUtil.isNotEmpty(applicationNo)) {
             enquiryDto.setApplicationNo(applicationNo);
         }
@@ -198,9 +204,15 @@ public class BiosafetyEnquiryDelegator {
         }
         if (approvalDateFrom != null ) {
             enquiryDto.setApprovalDateFrom(approvalDateFrom);
+        }else if ("2".equals(count) || "3".equals(count)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR,-1);
+            enquiryDto.setApprovalDateFrom(calendar.getTime());
         }
         if (approvalDateTo != null ) {
             enquiryDto.setApprovalDateTo(approvalDateTo);
+        }else if ("2".equals(count) || "3".equals(count)){
+            enquiryDto.setApprovalDateTo(new Date());
         }
         if (StringUtil.isNotEmpty(facilityClassification)) {
             enquiryDto.setFacilityClassification(facilityClassification);
@@ -263,6 +275,35 @@ public class BiosafetyEnquiryDelegator {
         if(StringUtil.isNotEmpty(approvedFacilityCertifier)){
             enquiryDto.setApprovedFacilityCertifier(approvedFacilityCertifier);
         }
+        if(StringUtil.isNotEmpty(approvalStatus)){
+            enquiryDto.setApprovalStatus(approvalStatus);
+        }
+        if(natureOfTheSample != null && natureOfTheSample.length>0){
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < natureOfTheSample.length; i++) {
+                if ((i + 1 == natureOfTheSample.length)) {
+                    stringBuilder.append(natureOfTheSample[i]);
+                } else {
+                    stringBuilder.append(natureOfTheSample[i]).append(",");
+                }
+            }
+            enquiryDto.setNatureOfTheSample(stringBuilder.toString());
+        }
+        if(StringUtil.isNotEmpty(approvalType)){
+            enquiryDto.setApprovalType(approvalType);
+        }
+        if(approvalSubmissionDateFrom != null){
+            enquiryDto.setApprovalSubmissionDateFrom(approvalSubmissionDateFrom);
+        } else if ("3".equals(count)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR,-1);
+            enquiryDto.setApprovalSubmissionDateFrom(calendar.getTime());
+        }
+        if(approvalSubmissionDateTo != null){
+            enquiryDto.setApprovalSubmissionDateTo(approvalSubmissionDateTo);
+        }else if("3".equals(count)){
+            enquiryDto.setApprovalSubmissionDateTo(new Date());
+        }
         if("1".equals(count)){
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
@@ -275,6 +316,13 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH,enquiryDto);
             log.info(StringUtil.changeForLog(facilityResultDto.getBsbFac().toString()+"==========facility"));
         }
+        if("3".equals(count)){
+            ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
+            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_RESULT,approvalResultDto.getBsbApproval());
+            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_SEARCH,enquiryDto);
+            log.info(StringUtil.changeForLog(approvalResultDto.getBsbApproval().toString()+"==========facility"));
+        }
+
 
     }
 

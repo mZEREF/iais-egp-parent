@@ -161,6 +161,71 @@
                                         </tbody>
                                     </table>
                                 </c:if>
+                                <c:if test="${count=='3'}">
+                                    <table class="table">
+                                        <thead>
+                                        <tr align="center">
+                                            <iais:sortableHeader needSort="false" field=""
+                                                                 value="S/N"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Approval Type"
+                                                                 value="Approval Type"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Approval Status"
+                                                                 value="Approval Status"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Classification"
+                                                                 value="Facility Classification"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Type"
+                                                                 value="Facility Type"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Name"
+                                                                 value="Facility Name"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Address"
+                                                                 value="Facility Address"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Status"
+                                                                 value="Facility Status"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Biological Agent/Toxin"
+                                                                 value="Biological Agent/Toxin"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Nature of the sample"
+                                                                 value="Nature of the sample"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Risk Level of the Biological Agent/Toxin"
+                                                                 value="Risk Level of the Biological Agent/Toxin"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Physical Possession of BA/T"
+                                                                 value="Physical Possession of BA/T"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Action"
+                                                                 value="Action"/>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="form-horizontal">
+                                        <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
+                                            <tr name="basicData">
+                                                <td><c:out  value="${status.index + 1}"/></td>
+                                                <td><iais:code code="${items.approvalType}"></iais:code></td>
+                                                <td><iais:code code="${items.approvalStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityClassification}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityType}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityName}"></iais:code></td>
+                                                <td><c:out value="${items.facilityAddress}"></c:out></td>
+                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.agent}"></iais:code></td>
+                                                <td><iais:code code="${items.natureOfTheSample}"></iais:code></td>
+                                                <td><iais:code code="${items.riskLevelOfTheBiologicalAgent}"></iais:code></td>
+                                                <td></td>
+                                                <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:if>
                                 <c:if test="${count == '0'}">
                                     <iais:message key="GENERAL_ACK018"
                                                   escape="true"/>
