@@ -131,6 +131,11 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_SCH_TYPE = "D0B94AC3-1FA4-4087-AFCC-C82622A77B80";
     public static final String CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT = "2C41F2F7-6D09-44AC-80B8-F1FA7BC8D38A";
     public static final String CATE_ID_BSB_APP_STATUS = "B37CA772-53BC-4CD5-A644-F5A34513B6C0";
+    public static final String CATE_ID_BSB_APPROVAL_TYPE = "6EF28184-C9ED-427C-8F2B-E5012D7A7B75";
+
+    //FacilityInfo
+    public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
+    public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
     //AO Processing Decision
     public static final String CATE_ID_BSB_PROCESSING_DECISION = "3AF18C9A-9C45-4C59-96D4-419847F51CA7";
@@ -146,6 +151,7 @@ public final class MasterCodeUtil {
      * @author: Jinhua on 2019/7/26 11:04
      * @param: []
      * @return: void
+     *
      */
     public static void refreshCache() {
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);

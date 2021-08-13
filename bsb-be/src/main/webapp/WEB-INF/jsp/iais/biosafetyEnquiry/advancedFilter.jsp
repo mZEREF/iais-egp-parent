@@ -166,7 +166,7 @@
                     <iais:row>
                         <iais:field value="Approval Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APP_TYPE"  firstOption="Please Select"></iais:select>
+                            <iais:select name="approvalType" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"  firstOption="Please Select"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>
@@ -184,7 +184,7 @@
                     <iais:row>
                         <iais:field value="Approval Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="approvalStatus" codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"></iais:select>
+                            <iais:select name="approvalStatus" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>
