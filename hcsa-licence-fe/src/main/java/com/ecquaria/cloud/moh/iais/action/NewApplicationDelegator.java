@@ -402,7 +402,7 @@ public class NewApplicationDelegator {
             if (!"saveDraft".equals(actionValue)) {
                 appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
                 // synchronize the licencsee map
-                if (errorMap.isEmpty() && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
+                /*if (errorMap.isEmpty() && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
                     Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
                     if (licenseeMap != null && !licenseeMap.isEmpty()) {
                         String personKey = NewApplicationHelper.getPersonKey(subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
@@ -410,7 +410,7 @@ public class NewApplicationDelegator {
                                 (key, old) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, old));
                         bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
                     }
-                }
+                }*/
             }
         }
 
@@ -479,9 +479,16 @@ public class NewApplicationDelegator {
                         LICENSEE_MAP);
                 Optional<SubLicenseeDto> optional = Optional.ofNullable(licenseeMap).map(map -> map.get(assignSelect));
                 if (optional.isPresent()) {
-                    SubLicenseeDto selectedDto = optional.get();
-                    dto.setIdType(selectedDto.getIdType());
-                    dto.setIdNumber(selectedDto.getIdNumber());
+                    if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                        MiscUtil.transferEntityDto(optional.get(), SubLicenseeDto.class, null, dto);
+                        dto.setAssignSelect(assignSelect);
+                        dto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL);
+                    } else {
+                        SubLicenseeDto selectedDto = optional.get();
+                        dto.setIdType(selectedDto.getIdType());
+                        dto.setIdNumber(selectedDto.getIdNumber());
+                        dto.setLicenseeName(selectedDto.getLicenseeName());
+                    }
                 }
             }
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -2496,25 +2503,13 @@ public class NewApplicationDelegator {
         // reSet: isNeedNewLicNo and self assessment flag
         NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
         log.info(StringUtil.changeForLog("App Edit Select Dto: " + JsonUtil.parseToJson(appEditSelectDto)));
-        List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
-        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(changeHciName, changeInLocation, changeVehicles, isCharity, changeBusiness);
-        if (!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()) {
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                }
-            }
-        }
-        if(eqAddFloorNo){
-            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
-        }
+        AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(changeHciName, changeInLocation || eqAddFloorNo, changeVehicles,
+                NewApplicationHelper.isCharity(bpc.request), changeBusiness);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         double amount = feeDto.getTotal();
         double currentAmount = amount;
-        if (licenceById.getStatus().equals(
-                ApplicationConsts.LICENCE_STATUS_APPROVED) && licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+        if (licenceById.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED) && licenceById.getMigrated() == 1
+                && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
@@ -2528,6 +2523,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setDraftNo(draftNo);
         log.info(StringUtil.changeForLog("the draft is -->:" + draftNo));
 
+        List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         if (grpPremiseIsChange) {
             // reSet amount
             if (appEditSelectDto.isChangeBusinessName()) {
