@@ -221,6 +221,7 @@ public class RequestForChangeDelegator {
 
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute(RfcConst.APPSUBMISSIONDTO);
         request.getSession().removeAttribute("rfc_eqHciCode");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
         request.getSession().removeAttribute("pageShowFileDtos");
