@@ -44,7 +44,8 @@
       <tr>
         <th scope="col" >Mode of Service Delivery</th>
         <th scope="col" >${svcScopePageName}</th>
-        <th scope="col" >Clinical Governance Officers</th>
+        <th scope="col" style="width:30%">Clinical Governance Officers</th>
+        <th scope="col" style="width:30%">Section Leader</th>
       </tr>
       </thead>
       <c:set var="row_count" value="0"></c:set>
@@ -53,6 +54,8 @@
         <tbody>
         <c:forEach var="chkLst" items="${premisesAndChkLst.appSvcChckListDtoList}" varStatus="status"  >
           <c:set value="${premisesIndexNo}${status.index}" var="cgoName"/>
+          <c:set value="cgo${premisesIndexNo}${status.index}" var="cgoSelName"/>
+          <c:set value="sl${premisesIndexNo}${status.index}" var="slSelName"/>
           <tr>
             <c:if test="${status.first}">
               <td rowspan="${premisesAndChkLst.appSvcChckListDtoList.size()}" style="width:38%" class="premAddress">
@@ -69,12 +72,21 @@
                 <c:otherwise><p>${chkLst.chkName}</p></c:otherwise>
               </c:choose>
             </td>
-            <td style="width:30%">
+            <td>
               <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
               <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
-              <iais:select  cssClass="${premisesIndexNo}" name="${cgoName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+              <iais:select  cssClass="${premisesIndexNo}" name="${cgoSelName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
               <div class="col-sm-10 padding-left" style="margin-top: 2%">
                 <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
+                <c:set var="row_count" value="${row_count+1}" />
+              </div>
+            </td>
+            <td>
+              <p class="visible-xs visible-sm table-row-title">Section Leader</p>
+              <c:set var="cgoSelKey" value="${premisesIndexNo}${chkLst.chkLstConfId}"/>
+              <iais:select  cssClass="${premisesIndexNo}" name="${slSelName}" firstOption="Please Select"  options="slSelectOpts"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+              <div class="col-sm-10 padding-left" style="margin-top: 2%">
+                <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocationSl${row_count}"></span>
                 <c:set var="row_count" value="${row_count+1}" />
               </div>
             </td>
