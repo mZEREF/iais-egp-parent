@@ -16,6 +16,7 @@
 
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">

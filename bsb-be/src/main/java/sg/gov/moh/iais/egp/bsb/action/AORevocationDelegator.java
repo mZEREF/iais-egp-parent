@@ -211,7 +211,7 @@ public class AORevocationDelegator {
     public void approve(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
         revocationClient.updateApplicationStatusById(aoDecisionDto.getRevocationDetailsDto().getApplicationId(),"BSBAPST009");
-        revocationClient.updateFacilityStatusById(aoDecisionDto.getFacId(),"FACSTA007");
+        revocationClient.updateFacilityStatusById(aoDecisionDto.getFacId(),"FACSTA007","APPRSTA003");
         revocationClient.saveApplicationMisc(aoDecisionDto.getRevocationDetailsDto());
         aoDecisionDto.getHistoryDto().setAppStatus("BSBAPST009");
         revocationClient.saveHistory(aoDecisionDto.getHistoryDto());

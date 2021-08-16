@@ -1,6 +1,7 @@
 function doProcess(id){
     $("#appId").val(id);
-    SOP.Crud.cfxSubmit("mainForm", "doProcess",id);
+    $("[name='action_type']").val("doProcess");
+    $("#mainForm").submit();
 }
 
 function openUploadDoc(){
@@ -61,6 +62,7 @@ function validateUploadInternal(){
 }
 
 function uploadInternalDoc(){
+    showWaiting();
     if(validateUploadInternal()) {
         $('#uploadFile').val('Y');
         // callAjaxUploadFile();
@@ -70,6 +72,7 @@ function uploadInternalDoc(){
 }
 
 function deleteFile(repoId) {
+    showWaiting();
     $('#interalFileId').val(repoId);
     $('#mainForm').submit();
 }
@@ -96,11 +99,13 @@ function callAjaxUploadFile(){
 
 $(function () {
     $("#clearButton1").click(function () {
+        showWaiting();
         $('#ReasonId').val("");
         $('#remarksId').val("");
     });
 
     $("#submitButton1").click(function () {
+        showWaiting();
         var reasonValue = $("#ReasonId").val();
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
@@ -110,10 +115,13 @@ $(function () {
     });
 
     $("#searchBtn2").click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "doSearch");
+        showWaiting();
+        $("[name='action_type']").val("doSearch");
+        $("#mainForm").submit();
     });
 
     $("#clearBtn2").click(function () {
+        showWaiting();
         $('#facilityName').val("");
         $('#facilityAddress').val("");
         $('#applicationNo').val("");
@@ -123,15 +131,18 @@ $(function () {
     });
 
     $("#clearButton3").click(function () {
+        showWaiting();
         $('#number').val("");
         $("#clearSelect .current").text("Please Select");
     });
 
     $("#submitButton3").click(function () {
+        showWaiting();
         document.getElementById("mainForm").submit();
     });
 
     $("#submitButton").click(function () {
+        showWaiting();
         var optionValue = $("#decision option:selected").val();
         if (optionValue == "BSBAOPD001") {
             SOP.Crud.cfxSubmit("mainForm", "approve");
@@ -151,10 +162,12 @@ $(function () {
     });
 
     $("#backToTask").click(function (){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "doBack");
     });
 
     $("#backToProcess").click(function (){
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm");
     });
 });
