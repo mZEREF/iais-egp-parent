@@ -184,13 +184,24 @@ public class RequestForChangeDelegator {
         }else {
             log.info(StringUtil.changeForLog("The uen is null"));
         }
+        if(isSameUEN(uen,licenceDto)){
+            result.add(new SelectOption("new","Add a new individual licensee"));
+        }
+        log.info(StringUtil.changeForLog("the getSelect end ...."));
+        return result;
+    }
+
+    private  boolean isSameUEN(String uen,LicenceDto licenceDto){
+        log.info(StringUtil.changeForLog("the isSameUEN start ...."));
+        boolean result = false;
         if(licenceDto != null){
             OrganizationDto organizationDto = licenceViewService.getOrganizationDtoByLicenseeId(licenceDto.getLicenseeId());
             if(organizationDto != null && organizationDto.getUenNo().equals(uen)){
-                result.add(new SelectOption("new","Add a new individual licensee"));
+                result = true;
             }
         }
-        log.info(StringUtil.changeForLog("the getSelect end ...."));
+        log.info(StringUtil.changeForLog("the isSameUEN result is -->:"+result));
+        log.info(StringUtil.changeForLog("the isSameUEN end ...."));
         return result;
     }
     /**
@@ -1115,15 +1126,19 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
                 if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
                         || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                    hcsaServiceDto.setSvcName(svcName);
-                    hcsaServiceDtos.add(hcsaServiceDto);
-                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                    if(!canCreateEasOrMts){
-                        error.put("uenError","RFC_ERR022");
-                        return error;
+                    if(!isSameUEN(uen,licenceDto)){
+                        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                        hcsaServiceDto.setSvcName(svcName);
+                        hcsaServiceDtos.add(hcsaServiceDto);
+                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                        log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                        if(!canCreateEasOrMts){
+                            error.put("uenError","RFC_ERR022");
+                            return error;
+                        }
+                    }else{
+                        log.info(StringUtil.changeForLog("The same UEN ..."));
                     }
                 }
                 //if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
