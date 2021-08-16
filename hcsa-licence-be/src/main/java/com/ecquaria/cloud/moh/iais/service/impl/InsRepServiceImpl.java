@@ -158,10 +158,21 @@ public class InsRepServiceImpl implements InsRepService {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //get Observation
         String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+        StringBuilder observationSb=new StringBuilder();
         if(StringUtil.isEmpty(observation)) {
-            observation = "-";
+            observationSb.append("-");
+        }else {
+            String[] observations=new String[]{};
+            observations=observation.split("\n");
+            if(!StringUtil.isEmpty(observation)){
+                observationSb =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    observationSb.append(rk).append("<br>");
+                }
+            }
         }
-        inspectionReportDto.setObservation(observation);
+        inspectionReportDto.setObservation(observationSb.toString());
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
