@@ -6,7 +6,7 @@
             </a>
         </h4>
     </div>
-    <div id="previewInfo" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
+    <div id="previewInfo" class="panel-collapse collapse">
         <div class="panel-body">
             <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             <div class="panel-main-content form-horizontal min-row">
@@ -29,21 +29,23 @@
                             <c:out value="${approvalApplicationDto.listOfAgentsOrToxins}" />
                         </iais:value>
                     </iais:row>
-                    <c:if test="${taskList=='Approval To Possess'}">
+                    <c:if test="${taskList=='APPRTY001'}">
                         <iais:row>
                             <iais:field value="Nature of the Sample" width="5"/>
                             <iais:value width="7" display="true">
                                 <c:out value="${approvalApplicationDto.sampleNature}" />
                             </iais:value>
                         </iais:row>
-                        <iais:row>
-                            <iais:field value="Others, please specify" width="5"/>
-                            <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.sampleNatureOth}" />
-                            </iais:value>
-                        </iais:row>
+                        <c:if test="${approvalApplicationDto.sampleNatureOth != null}">
+                            <iais:row>
+                                <iais:field value="Others, please specify" width="5"/>
+                                <iais:value width="7" display="true">
+                                    <c:out value="${approvalApplicationDto.sampleNatureOth}" />
+                                </iais:value>
+                            </iais:row>
+                        </c:if>
                     </c:if>
-                    <c:if test="${taskList=='Approval To LargeScaleProduce'}">
+                    <c:if test="${taskList=='APPRTY002'}">
                         <iais:row>
                             <iais:field value="Estimated maximum volume (in litres) of production at any one time" width="5"/>
                             <iais:value width="7" display="true">
@@ -57,7 +59,7 @@
                             </iais:value>
                         </iais:row>
                     </c:if>
-                    <c:if test="${(taskList=='Approval To Possess' || taskList=='Approval To LargeScaleProduce')}">
+                    <c:if test="${(taskList=='APPRTY001' || taskList=='APPRTY002')}">
                         <iais:row>
                             <iais:field value="Mode of Procurement" width="5"/>
                             <iais:value width="7" display="true">
@@ -171,7 +173,7 @@
                             </iais:value>
                         </iais:row>
                     </c:if>
-                    <c:if test="${taskList=='Approval To Special'}">
+                    <c:if test="${taskList=='APPRTY003'}">
                         <iais:row>
                             <iais:field value="Name of Project" width="5"/>
                             <iais:value width="7" display="true">

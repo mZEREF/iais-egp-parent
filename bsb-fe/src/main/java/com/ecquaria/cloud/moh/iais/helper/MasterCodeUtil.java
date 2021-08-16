@@ -136,6 +136,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_NATURE_OF_TTE_SAMPLE         = "0C3D0BC3-E2A5-4BAE-B0F5-8D5BC4231B17";
     public static final String CATE_ID_BSB_MODE_OF_PROCUREMENT          = "F68EC8C9-EA59-48A7-8F9F-88E927FDD3DA";
     public static final String CATE_ID_BSB_COUNTRY                      = "AF33EFBD-ED2E-41CD-97E1-400829723635";
+    public static final String CATE_ID_BSB_APPROVAL_TYPE                = "6EF28184-C9ED-427C-8F2B-E5012D7A7B75";
     /**
      * @description: refresh the master codes into cache
      *

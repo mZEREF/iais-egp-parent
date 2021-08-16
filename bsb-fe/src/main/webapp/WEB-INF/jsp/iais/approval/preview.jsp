@@ -8,6 +8,7 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="common/dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" id="page_id" name="page_id" value="preview_page">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -40,7 +41,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
-                                                <a class="next btn btn-primary" id = "Next">Submit</a>
+                                                <a class="next btn btn-primary" id = "Submit">Submit</a>
                                             </div>
                                         </div>
                                     </div>

@@ -3,9 +3,11 @@ $(function() {
     $("[name='ModeOfProcurement_LocalTransfer']").hide();
     $("[name='ModeOfProcurement_Import']").hide();
     var selectValueNatureOfTheSample = $("#natureOfTheSample").val();
-    for(var i=0;i<selectValueNatureOfTheSample.length ;i++){
-        if(selectValueNatureOfTheSample[i] == "BNOTS006" ) {
-            $("#others").show();
+    if(selectValueNatureOfTheSample != null){
+        for(var i=0;i<selectValueNatureOfTheSample.length ;i++){
+            if(selectValueNatureOfTheSample[i] == "BNOTS006" ) {
+                $("#others").show();
+            }
         }
     }
     var selectValueModeOfProcurement = $("#modeOfProcurement").val();
@@ -19,10 +21,8 @@ $(function() {
         $("[name='ModeOfProcurement_LocalTransfer']").hide();
         $("[name='ModeOfProcurement_Import']").hide();
     }
-    $('#SaveDraft').click(function () {
-        showWaiting();
-        submit('documents', 'saveDraft', $('#selectDraftNo').val());
-    });
+    var facilitySelected = $("#facilityName").find("option:checked").val();
+    $("#facilityId").val(facilitySelected);
     $("#facilityName").change(function() {
         var selectValue = $(this).val();
         $("#facilityId").val(selectValue);
@@ -76,11 +76,45 @@ $(function() {
             }
         )
     })
-    $("#listOfAgentsOrToxins").change(function() {
-        console.log("hehe");
+    $("#Next").click(function (){
+        var pageValue = $("#page_id").val();
+        if(pageValue == "form_page"){
+            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }else if(pageValue == "document_page"){
+            $("[name='crud_action_type_form_page']").val("PreparePreview");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }
     })
-    $("#listOfAgentsOrToxins").change(function() {
-        var selectValue = $('#listOfAgentsOrToxins option:selected').val();
-        $("#biologicalId").val(selectValue);
+    $("#SaveDraft").click(function (){
+        SOP.Crud.cfxSubmit("mainForm","doSaveDraft");
     })
+    $("#Submit").click(function (){
+        SOP.Crud.cfxSubmit("mainForm","doSubmit");
+    })
+    var controlLi = $('#controlLi').val();
+    var $tarSel = $('#'+controlLi+'li');
+    if ($tarSel.length > 0) {
+        $tarSel.addClass('active');
+        if ($tarSel.attr("class").match("active")){
+            $tarSel.removeClass("incomplete");
+            $tarSel.removeClass("complete");
+        }
+    }
+    $('#nav-tabs-ul a').click(function() {
+        var currId = $(this).attr('id');
+        console.log(currId);
+        if (controlLi == currId) {
+            return;
+        }else if(currId == "PrepareForms"){
+            $("[name='crud_action_type_form_page']").val("PrepareForms");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }else if(currId == "PrepareDocuments"){
+            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }else if(currId == "PreparePreview"){
+            $("[name='crud_action_type_form_page']").val("PreparePreview");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }
+    });
 })

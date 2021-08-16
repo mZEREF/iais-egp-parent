@@ -1,4 +1,5 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -10,12 +11,7 @@
     <table style="width: 50%;margin:auto">
         <tr>
             <td>
-                <select name="taskList" value="">
-                    <option>Please Select</option>
-                    <option>Approval To Possess</option>
-                    <option>Approval To LargeScaleProduce</option>
-                    <option>Approval To Special</option>
-                </select>
+                <iais:select name="taskList" disabled="false" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"></iais:select>
             </td>
         </tr>
         <tr>

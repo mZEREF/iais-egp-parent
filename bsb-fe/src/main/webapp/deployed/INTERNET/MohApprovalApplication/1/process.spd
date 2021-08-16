@@ -72,7 +72,7 @@
     <JavaCode defClass="" executor="" methodName="doForms_OnStepProcess_0" name="doForms_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="780" y="280">
+  <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="820" y="340">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -156,13 +156,13 @@
    <position>{(520,360)(640,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDocuments" style="oblique">
-   <position>{(660,130)(800,300)}</position>
+   <position>{(660,130)(840,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPreview" style="oblique">
-   <position>{(670,240)(800,300)}</position>
+   <position>{(670,240)(840,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
-   <position>{(800,300)(1000,280)}</position>
+   <position>{(840,360)(1000,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(1000,280)(1060,600)}</position>
@@ -186,7 +186,7 @@
    <position>{(640,360)(760,430)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(760,430)(800,300)}</position>
+   <position>{(760,430)(840,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareForms" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(760,430)(363,434)(340,360)}</position>
@@ -205,7 +205,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareForms" value="&quot;PrepareForms&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PrepareJump" value="&quot;PrepareJump&quot;" />
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="Switch2" name="Switch2" x="980" y="260">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="980" y="260">
    <Description />
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;loading&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/doSaveDraft" value="&quot;doSaveDraft&quot;" />

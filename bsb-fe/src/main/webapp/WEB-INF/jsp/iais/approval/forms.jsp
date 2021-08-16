@@ -1,6 +1,4 @@
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -10,8 +8,8 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="common/dashboard.jsp" %>
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-approvalapplication.css" rel="stylesheet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approvalapplication.js"></script>
 <form method="post" id="mainForm" class="__egovform" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" id="page_id" name="page_id" value="form_page">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -51,6 +49,5 @@
             </div>
         </div>
     </div>
-    <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>

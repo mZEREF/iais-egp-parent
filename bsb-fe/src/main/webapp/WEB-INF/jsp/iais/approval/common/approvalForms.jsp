@@ -75,7 +75,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <c:if test="${taskList=='Approval To Possess'}">
+                                                    <c:if test="${taskList=='APPRTY001'}">
                                                         <tr height="1">
                                                             <td class="first last" style="">
                                                                 <div class="control control-caption-horizontal">
@@ -111,7 +111,7 @@
                                                             </td>
                                                         </tr>
                                                     </c:if>
-                                                    <c:if test="${taskList=='Approval To LargeScaleProduce'}">
+                                                    <c:if test="${taskList=='APPRTY002'}">
                                                         <tr height="1">
                                                             <td class="first last" style="width: 100%;">
                                                                 <div class="control control-caption-horizontal">
@@ -167,7 +167,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <c:if test="${(taskList=='Approval To Possess' || taskList=='Approval To LargeScaleProduce')}">
+                                                    <c:if test="${(taskList=='APPRTY001' || taskList=='APPRTY002')}">
                                                         <tr height="1">
                                                             <td class="first last" style="width: 100%;">
                                                                 <div class="control control-caption-horizontal">
@@ -196,7 +196,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="expectedDateOfTransfer" value="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
+                                                                                <iais:datePicker name="expectedDateOfTransfer" dateVal="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
                                                                                 <span id="error_transferExpectedDt" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -286,7 +286,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="expectedDateOfImport" value="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
+                                                                                <iais:datePicker name="expectedDateOfImport" dateVal="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
                                                                                 <span id="error_transferExpectedDt" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -469,7 +469,7 @@
                                                             </td>
                                                         </tr>
                                                     </c:if>
-                                                    <c:if test="${taskList=='Approval To Special'}">
+                                                    <c:if test="${taskList=='APPRTY003'}">
                                                         <tr height="1">
                                                             <td class="first last" style="width: 100%;">
                                                                 <div class="control control-caption-horizontal">
@@ -536,7 +536,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="startDate" value="${approvalApplicationDto.startDt}"></iais:datePicker>
+                                                                                <iais:datePicker name="startDate" dateVal="${approvalApplicationDto.startDt}"></iais:datePicker>
                                                                                 <span id="error_startDt" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -554,7 +554,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="endDate" value="${approvalApplicationDto.endDt}"></iais:datePicker>
+                                                                                <iais:datePicker name="endDate" dateVal="${approvalApplicationDto.endDt}"></iais:datePicker>
                                                                                 <span id="error_endDt" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -581,7 +581,7 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <c:if test="${(taskList=='Approval To Possess' || taskList=='Approval To LargeScaleProduce')}">
+                                                    <c:if test="${(taskList=='APPRTY001' || taskList=='APPRTY002')}">
                                                         <tr height="1">
                                                             <td class="first last" style="width: 100%;">
                                                                 <div class="control control-caption-horizontal">

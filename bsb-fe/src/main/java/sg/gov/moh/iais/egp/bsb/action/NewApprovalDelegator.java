@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,13 +35,7 @@ import java.util.List;
 @Slf4j
 public class NewApprovalDelegator {
 
-    public static final String APPROVAL_STATUS_1 = "PROTYPE002";
-    public static final String APPROVAL_STATUS_2 = "PROTYPE008";
-    public static final String APPROVAL_STATUS_3 = "PROTYPE014";
     public static final String TASK_LIST = "taskList";
-    public static final String TASK_LIST_TYPE_1 = "Approval To Possess";
-    public static final String TASK_LIST_TYPE_2 = "Approval To LargeScaleProduce";
-    public static final String TASK_LIST_TYPE_3 = "Approval To Special";
 
     private final ApprovalApplicationClient approvalApplicationClient;
 
@@ -53,34 +48,25 @@ public class NewApprovalDelegator {
     private SystemParamConfig systemParamConfig;
 
     public void doStart(BaseProcessClass bpc) throws IllegalAccessException {
-        log.info(StringUtil.changeForLog("the doStart start ...."));
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
                 AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
+        String task = ParamUtil.getString(request,TASK_LIST);
+        ParamUtil.setSessionAttr(request, TASK_LIST, task);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
     }
 
     public void prepare(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the prepare start ...."));
         HttpServletRequest request = bpc.request;
-        String task = "";
-        String action = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        String action = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
         if (StringUtil.isEmpty(action)) {
-            action = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-            if (StringUtil.isEmpty(action) || "validation".equals(action)) {
-                task = ParamUtil.getString(request,TASK_LIST);
-                action = "PrepareForms";
-            }else{
-                task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-            }
+            action = "PrepareForms";
         }
-        ParamUtil.setSessionAttr(request, TASK_LIST, task);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("prepare(action):"+action));
     }
 
     public void prepareDocuments(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the prepareDocuments start ...."));
         HttpServletRequest request = bpc.request;
         int sysFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setRequestAttr(request, "sysFileSize", sysFileSize);
@@ -108,13 +94,12 @@ public class NewApprovalDelegator {
     }
 
     public void preparePreview(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the preparePreview start ...."));
     }
 
     public void prepareForms(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the prepareForms start ...."));
         HttpServletRequest request = bpc.request;
-        List<BsbFacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalStatus(APPROVAL_STATUS_1).getEntity();
+        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
+        List<BsbFacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
         List<SelectOption> facilityNameList =  IaisCommonUtils.genNewArrayList();
         for (BsbFacilityQueryDto dto : facilityByApprovalStatus) {
             facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
@@ -123,19 +108,15 @@ public class NewApprovalDelegator {
     }
 
     public void prepareJump(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the prepareJump start ...."));
     }
 
     public void doDocuments(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the doDocuments start ...."));
     }
 
     public void doPreview(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the doPreview start ...."));
     }
 
     public void doForms(BaseProcessClass bpc) throws ParseException {
-        log.info(StringUtil.changeForLog("the doForms start ...."));
         HttpServletRequest request = bpc.request;
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         String facilityId = ParamUtil.getString(request, ApprovalApplicationConstants.FACILITY_ID);
@@ -198,13 +179,13 @@ public class NewApprovalDelegator {
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
         approvalApplicationDto.setFacilityId(facilityId);
         approvalApplicationDto.setBiologicalId(biologicalId);
-        if(task.equals(TASK_LIST_TYPE_1)){
+        if(task.equals("APPRTY001")){
             approvalApplicationDto.setSampleNature(natureOfTheSample);
             approvalApplicationDto.setSampleNatureOth(others);
-        }else if(task.equals(TASK_LIST_TYPE_2)){
+        }else if(task.equals("APPRTY002")){
             approvalApplicationDto.setProductionMaximumVolumeLitres(estimatedMaximumVolume);
             approvalApplicationDto.setLargeScaleProductionMethod(methodOrSystemUsedForLargeScaleProduction);
-        }else if(task.equals(TASK_LIST_TYPE_3)){
+        }else if(task.equals("APPRTY003")){
             approvalApplicationDto.setProjectName(nameOfProject);
             approvalApplicationDto.setPrincipalInvestigatorName(nameOfPrincipalInvestigator);
             approvalApplicationDto.setWorkActivityIntended(intendedWorkActivity);
@@ -242,24 +223,62 @@ public class NewApprovalDelegator {
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.AGENTS_OR_TOXINS_LIST_ATTR, (Serializable) biologicalIdList);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.NATURE_LIST_ATTR, (Serializable) natureList);
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-        approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
     public void controlSwitch(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the controlSwitch start ...."));
-        String switch2 = "loading";
-        ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
+        HttpServletRequest request = bpc.request;
+        String crud_action_type=ParamUtil.getString(request,"crud_action_type");
+        String crud_action_type_form_page=ParamUtil.getString(request,"crud_action_type_form_page");
+        ParamUtil.setRequestAttr(request,"crud_action_type_form_page",crud_action_type_form_page);
+
     }
 
     public void doSaveDraft(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the doSaveDraft start ...."));
+        HttpServletRequest request = bpc.request;
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
+        String processType = "";
+        if (task == "APPRTY001"){
+            processType = "PROTYPE002";
+        }else if (task == "APPRTY002"){
+            processType = "PROTYPE003";
+        }else if (task == "APPRTY003"){
+            processType = "PROTYPE004";
+        }
+        String applicationNo = "APP0000011";
+        String appType = "BSBAPTY001";
+        String status = "BSBAPST011";
+        Date applicationDt = new Date();
+        approvalApplicationDto.setProcessType(processType);
+        approvalApplicationDto.setApplicationNo(applicationNo);
+        approvalApplicationDto.setAppType(appType);
+        approvalApplicationDto.setStatus(status);
+        approvalApplicationDto.setApplicationDt(applicationDt);
+        approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
     public void doSubmit(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the doSubmit start ...."));
         HttpServletRequest request = bpc.request;
-        Object approvalApplicationDto = ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
+        String processType = "";
+        if (task == "APPRTY001"){
+            processType = "PROTYPE002";
+        }else if (task == "APPRTY002"){
+            processType = "PROTYPE003";
+        }else if (task == "APPRTY003"){
+            processType = "PROTYPE004";
+        }
+        String applicationNo = "APP0000011";
+        String appType = "BSBAPTY001";
+        String status = "BSBAPST001";
+        Date applicationDt = new Date();
+        approvalApplicationDto.setProcessType(processType);
+        approvalApplicationDto.setApplicationNo(applicationNo);
+        approvalApplicationDto.setAppType(appType);
+        approvalApplicationDto.setStatus(status);
+        approvalApplicationDto.setApplicationDt(applicationDt);
+        approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
 }

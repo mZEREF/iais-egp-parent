@@ -12,7 +12,7 @@
 %>
 
 <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approvalapplication-navtabs.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approvalapplication.js"></script>
 <input type="hidden" name="crud_action_type_form_page" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
 <ul id="nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
@@ -26,6 +26,3 @@
         <a id="PreparePreview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a>
     </li>
 </ul>
-<script>
-
-</script>
