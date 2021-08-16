@@ -1,14 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import lombok.Data;
 
 /**
  * AUTHOR: YiMing
@@ -17,23 +10,17 @@ import javax.persistence.Table;
  **/
 
 
-@Getter
-@Setter
-@ToString
-@Entity
-@Table(name = "biological")
+@Data
 public class BiologicalDto extends BaseEntity{
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "ID", columnDefinition="uniqueidentifier")
     private String id;
-    @Column(name = "BIOLOGICAL_TYPE")
+
     private String biologicalType;
-    @Column(name = "NAME")
+
     private String name;
-    @Column(name = "RISK_LEVEL")
+
     private String riskLevel;
-    @Column(name = "SCHEDULE")
+
     private String schedule;
 }

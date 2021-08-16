@@ -1,9 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import lombok.Data;
-import org.springframework.data.domain.Page;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-
 import java.util.List;
 
 /**

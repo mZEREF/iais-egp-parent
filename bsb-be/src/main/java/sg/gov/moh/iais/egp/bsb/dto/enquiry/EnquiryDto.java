@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.stereotype.Repository;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
