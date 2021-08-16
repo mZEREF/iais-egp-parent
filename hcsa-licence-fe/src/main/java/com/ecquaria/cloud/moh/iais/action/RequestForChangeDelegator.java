@@ -594,6 +594,8 @@ public class RequestForChangeDelegator {
             ParamUtil.setSessionAttr(bpc.request,"reason",reason);
             ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","confirm");
         }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
     }
 
