@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -9,8 +8,7 @@ import java.io.Serializable;
  * @author Zhu Tangtang
  * @date 2021/7/27 9:20
  */
-@Getter
-@Setter
+@Data
 public class ProcessingHistory implements Serializable {
     private static final long serialVersionUID = 1L;
     private String userName;
