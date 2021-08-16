@@ -1123,7 +1123,7 @@ public class RequestForChangeDelegator {
                         return error;
                     }
                 }
-                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                //if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                     if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
                                 getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
@@ -1135,9 +1135,9 @@ public class RequestForChangeDelegator {
                     }else{
                         log.info(StringUtil.changeForLog("The same uen -->:"+uen));
                     }
-                }else{
-                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
-                }
+//                }else{
+//                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
+//                }
             }
         }
         return error;
