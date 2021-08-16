@@ -45,7 +45,7 @@
                                  <iais:row>
                                    <label class="col-xs-11 col-md-4 control-label">UEN of Licensee to transfer licence to <span style="color: red"> *</span>
                                      <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                        title='Please refer to <a>www.uen.org</a> for the UEN of the licensee'
+                                        title='Please refer to <a href = "www.uen.gov.sg" target="_blank">www.uen.gov.sg</a> for the UEN of the licensee'
                                         style="z-index: 10"
                                         data-original-title="">i</a>
                                    </label>
@@ -63,7 +63,6 @@
                                                        value=""/>
                                        </iais:value>
                                  </iais:row>
-
                          </iais:section>
                   </div>
                 </div>
