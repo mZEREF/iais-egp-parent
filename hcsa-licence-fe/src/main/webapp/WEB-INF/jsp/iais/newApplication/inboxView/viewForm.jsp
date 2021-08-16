@@ -40,6 +40,12 @@
                     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST012'}">
                       <%@include file="../../common/previewSvcBusiness.jsp"%>
                     </c:if>
+                    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST013'}">
+                      <%@include file="../../common/previewSectionLeader.jsp"%>
+                    </c:if>
+                    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
+                      <%@include file="../../common/previewKeyAppointmentHolder.jsp"%>
+                    </c:if>
                   </c:forEach>
               </div>
           </div>

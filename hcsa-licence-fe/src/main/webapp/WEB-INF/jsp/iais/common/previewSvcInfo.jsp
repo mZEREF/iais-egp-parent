@@ -32,4 +32,10 @@
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST012'}">
         <%@include file="previewSvcBusiness.jsp"%>
     </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST013'}">
+        <%@include file="previewSectionLeader.jsp"%>
+    </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
+        <%@include file="previewKeyAppointmentHolder.jsp"%>
+    </c:if>
 </c:forEach>
