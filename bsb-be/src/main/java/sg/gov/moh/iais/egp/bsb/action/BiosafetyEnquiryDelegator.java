@@ -147,6 +147,8 @@ public class BiosafetyEnquiryDelegator {
                 List<String> bioNames = biosafetyEnquiryClient.queryDistinctFA().getEntity();
                 selectOption(request,"biologicalAgent",bioNames);
                 break;
+            case "4":
+                break;
         }
 
     }

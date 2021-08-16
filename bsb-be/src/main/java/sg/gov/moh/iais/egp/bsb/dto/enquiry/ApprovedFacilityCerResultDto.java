@@ -8,13 +8,13 @@ import java.util.List;
 
 /**
  * AUTHOR: YiMing
- * DATE:2021/8/11 14:28
+ * DATE:2021/8/16 9:31
  * DESCRIPTION: TODO
  **/
 
 @Data
-public class ApplicationResultDto {
+public class ApprovedFacilityCerResultDto {
     private PageInfo pageInfo;
 
-    private List<ApplicationInfoDto> bsbApp;
+    private List<ApprovedFacilityCerInfo> bsbApproval;
 }

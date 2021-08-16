@@ -14,13 +14,6 @@ import java.util.List;
 @Data
 public class FacilityResultDto {
     private PageInfo pageInfo;
+
     private List<FacilityInfoDto> bsbFac;
-
-    public static FacilityResultDto of(Page<FacilityInfoDto> facilityPage) {
-        FacilityResultDto dto = new FacilityResultDto();
-        dto.pageInfo = PageInfo.of(facilityPage);
-        dto.bsbFac = facilityPage.getContent();
-        return dto;
-    }
-
 }
