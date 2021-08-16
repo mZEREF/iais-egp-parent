@@ -75,7 +75,7 @@
           <div class="col-xs-12">
             <div class="prelogin-title">
               <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
-              <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
+              <p class="component-desc">Manage all Facility-related matters associated with your healthcare services.</p>
             </div>
 <%--             <div class="modal fade" id="confirmTemplateModal" tabindex="-1" role="dialog" aria-labelledby="confirmTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">--%>
 <%--                <div class="modal-dialog" role="document">--%>
@@ -95,7 +95,7 @@
 <%--                  </div>--%>
 <%--                </div>--%>
 <%--              </div>--%>
-            <div class="white-content-box container form-check-gp">
+            <%--<div class="white-content-box container form-check-gp">
               <p class="form-check-title">Which service licences do you wish to apply for (or manage)?</p>
               <div class="col-xs-12">
                 <div class="form-check">
@@ -131,20 +131,20 @@
                   <div class="col-xs-4 col-md-4 col-sm-4">Community Healthy Centre Licences</div>
                 </div>
               </div>
-            </div>
+            </div>--%>
             <div class="prelogin-content text-center">
               <div class="white-content-box login-IAIS" style="height: 274px;">
                <%-- <h3>Login to HALP</h3>--%>
                 <div class="left-content text-left">
                   <ul>
                     <li>
-                      <p>Apply for a new licence</p>
+                      <p>Apply for a new Facility</p>
                     </li>
                     <li>
                       <p>Check the status of your applications</p>
                     </li>
                     <li>
-                      <p>Manage your existing licences</p>
+                      <p>Manage your existing Facility</p>
                     </li>
                     <li>
                       <p>Manage your account profile</p>
@@ -157,7 +157,7 @@
 
                 <div class="right-content login-btns">
                   <a class="btn btn-primary" href="javascript:void(0)" id="corppass">LOGIN USING CorpPass</a>
-                  <p class="text-center"><a href="javascript:void(0)" id="singpass">Don't have a CorpPass?</a></p>
+                  <%--<p class="text-center"><a href="javascript:void(0)" id="singpass">Don't have a CorpPass?</a></p>--%>
                 </div>
               </div>
               <%--<div class="white-content-box hcsa" style="height: 274px;">
@@ -198,10 +198,11 @@
 
     var serviceGroups = $('input[name="serviceGroup"]:checked');
     if (serviceGroups.length == 0) {
-        $('#corppass').attr("href", "javascript:void(0);");
+        /*$('#corppass').attr("href", "javascript:void(0);");
         $('#corppass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
         $('#singpass').attr("href", "javascript:void(0);");
-        $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
+        $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");*/
+      $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
     } else if ($('#oldSystem').is(':checked')) {
         $('#corppass').attr("href", oldSys);
         $('#corppass').removeAttr("onclick");
