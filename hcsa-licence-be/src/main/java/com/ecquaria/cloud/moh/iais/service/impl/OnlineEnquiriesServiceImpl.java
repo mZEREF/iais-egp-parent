@@ -791,23 +791,49 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                     }
                 }
-                if(appSvcChckListDtoList != null && appSvcChckListDtoList.size()>0){
-                    for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
-                        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos,appSvcChckListDto.getChkLstConfId());
-                        if(hcsaSvcSubtypeOrSubsumedDto!=null){
+                if (appSvcChckListDtoList != null && appSvcChckListDtoList.size() > 0) {
+                    for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList) {
+                        boolean check = appSvcChckListDto.isCheck();
+                        if(!check){
+                            continue;
+                        }
+                        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos, appSvcChckListDto.getChkLstConfId());
+                        if (hcsaSvcSubtypeOrSubsumedDto != null) {
                             appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
                         }
-                        if(chkLstId.equals(appSvcChckListDto.getChkLstConfId())){
+                        if("Please indicate".equals(appSvcChckListDto.getChkName())){
+                            appSvcChckListDto.setChkName(appSvcChckListDto.getOtherScopeName());
+                        }
+                        if (chkLstId.equals(appSvcChckListDto.getChkLstConfId())) {
                             appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
                         }
                     }
                 }
                 //set selCgoName
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                if(appSvcCgoDtoList != null && appSvcCgoDtoList.size()>0){
-                    for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtoList){
-                        if(idNo.equals(appSvcCgoDto.getIdNo())){
-                            appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                if (appSvcCgoDtoList != null && appSvcCgoDtoList.size() > 0) {
+                    for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                        if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                            if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                                appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                            }
+                            if(!appSvcDisciplineAllocationDto.isCheck()){
+                                appSvcDisciplineAllocationDto.setCgoSelName(null);
+                            }
+                        }
+                    }
+                }
+                //set sectionLeaderName
+                List<AppSvcPrincipalOfficersDto> appSvcSlDtoList = appSvcRelatedInfoDto.getAppSvcSlDtoList();
+                if (appSvcSlDtoList != null && appSvcSlDtoList.size() > 0) {
+                    for (AppSvcPrincipalOfficersDto appSvcSlDto : appSvcSlDtoList) {
+                        if (idNo.equals(appSvcSlDto.getIdNo())) {
+                            if (idNo.equals(appSvcSlDto.getIdNo())) {
+                                appSvcDisciplineAllocationDto.setSectionLeaderName(appSvcSlDto.getName());
+                            }
+                            if(!appSvcDisciplineAllocationDto.isCheck()){
+                                appSvcDisciplineAllocationDto.setSectionLeaderName(null);
+                            }
                         }
                     }
                 }

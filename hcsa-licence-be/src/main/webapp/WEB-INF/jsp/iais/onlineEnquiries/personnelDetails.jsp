@@ -5,88 +5,209 @@
 <!-- Default panel contents -->
 <c:forEach var="personnel" items="${personnelsDto}">
     <c:if test="${personnel.licKeyPersonnelDto.psnType!='Clinical Director'}">
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="table-gp">
-                        <table aria-describedby="" class="table table-bordered">
-                            <thead style="display: none">
-                            <tr>
-                                <th scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="col-xs-6" align="right">Name</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
-                            </tr>
-                            <tr>
-                                <td align="right">Salutation</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
-                            </tr>
-                            <tr>
-                                <td align="right">ID Type</td>
-                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.idType}"/><c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
-                            </tr>
-                            <tr>
-                                <td align="right">ID No</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
-                            </tr>
-                            <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
+        <c:when test="${personnel.licKeyPersonnelDto.psnType=='Section Leader'}">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table table-bordered">
+                                <thead style="display: none">
                                 <tr>
-                                    <td align="right">Designation</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.designation}<c:if test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
+                                    <th scope="col"></th>
                                 </tr>
-                            </c:if>
-                            <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
+                                </thead>
+                                <tbody>
                                 <tr>
-                                    <td align="right">Professional Type</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
+                                    <td class="col-xs-6" align="right">Name</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
                                 </tr>
                                 <tr>
-                                    <td align="right">Professional Regn. No.</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
+                                    <td align="right">Salutation</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
                                 </tr>
-                                <tr>
-                                    <td align="right">Specialty</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.speciality}<c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
-                                </tr>
-                                <tr>
-                                    <td align="right">Sub-specialty</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality }">-</c:if></td>
-                                </tr>
+
                                 <tr>
                                     <td align="right">Qualification</td>
                                     <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
                                 </tr>
-                            </c:if>
-                            <tr>
-                                <td align="right">Mobile No</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.mobileNo}<c:if test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
-                            </tr>
-                            <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
-                                <tr>
-                                    <td align="right">Office Telephone No</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.officeTelNo}<c:if test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
-                                </tr>
-                            </c:if>
-                            <tr>
-                                <td align="right">Email Address</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.emailAddr}<c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
-                            </tr>
-                                <%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
-                                <%--                                                                        <tr>--%>
-                                <%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
-                                <%--                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
-                                <%--                                                                        </tr>--%>
-                                <%--                                                                    </c:if>--%>
-                            </tbody>
-                        </table>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </c:when>
+        <c:when test="${personnel.licKeyPersonnelDto.psnType=='Key Appointment Holder'}">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table table-bordered">
+                                <thead style="display: none">
+                                <tr>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="col-xs-6" align="right">Name</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">Salutation</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">ID Type</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.idType}"/><c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">ID No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
+                                </tr>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
+                                    <tr>
+                                        <td align="right">Designation</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.designation}<c:if test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
+                                    <tr>
+                                        <td align="right">Professional Type</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Professional Regn. No.</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Specialty</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.speciality}<c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Sub-specialty</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality }">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Qualification</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <tr>
+                                    <td align="right">Mobile No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.mobileNo}<c:if test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
+                                </tr>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
+                                    <tr>
+                                        <td align="right">Office Telephone No</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.officeTelNo}<c:if test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <tr>
+                                    <td align="right">Email Address</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.emailAddr}<c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
+                                </tr>
+                                    <%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
+                                    <%--                                                                        <tr>--%>
+                                    <%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
+                                    <%--                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
+                                    <%--                                                                        </tr>--%>
+                                    <%--                                                                    </c:if>--%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-gp">
+                            <table aria-describedby="" class="table table-bordered">
+                                <thead style="display: none">
+                                <tr>
+                                    <th scope="col"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="col-xs-6" align="right">Name</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">Salutation</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">ID Type</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.keyPersonnelDto.idType}"/><c:if test="${empty personnel.keyPersonnelDto.idType}">-</c:if></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">ID No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.idNo}<c:if test="${empty personnel.keyPersonnelDto.idNo}">-</c:if></td>
+                                </tr>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert'}">
+                                    <tr>
+                                        <td align="right">Designation</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.designation}<c:if test="${empty personnel.keyPersonnelDto.designation}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType=='Clinical Governance Officer'}">
+                                    <tr>
+                                        <td align="right">Professional Type</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.professionType}<c:if test="${empty personnel.keyPersonnelExtDto.professionType}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Professional Regn. No.</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.profRegNo}<c:if test="${empty personnel.keyPersonnelExtDto.profRegNo}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Specialty</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.speciality}<c:if test="${empty personnel.keyPersonnelExtDto.speciality}">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Sub-specialty</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.subSpeciality}<c:if test="${empty personnel.keyPersonnelExtDto.subSpeciality }">-</c:if></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">Qualification</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <tr>
+                                    <td align="right">Mobile No</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.mobileNo}<c:if test="${empty personnel.keyPersonnelDto.mobileNo}">-</c:if></td>
+                                </tr>
+                                <c:if test="${personnel.licKeyPersonnelDto.psnType!='MedAlert' && personnel.licKeyPersonnelDto.psnType!='Clinical Governance Officer'}">
+                                    <tr>
+                                        <td align="right">Office Telephone No</td>
+                                        <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.officeTelNo}<c:if test="${empty personnel.keyPersonnelDto.officeTelNo}">-</c:if></td>
+                                    </tr>
+                                </c:if>
+                                <tr>
+                                    <td align="right">Email Address</td>
+                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.emailAddr}<c:if test="${empty personnel.keyPersonnelDto.emailAddr}">-</c:if></td>
+                                </tr>
+                                    <%--                                                                    <c:if test="${personnel.licKeyPersonnelDto.psnType=='MedAlert'}">--%>
+                                    <%--                                                                        <tr>--%>
+                                    <%--                                                                            <td align="right">Preferred Mode of Receiving MedAlert</td>--%>
+                                    <%--                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.preferredMode}<c:if test="${empty personnel.keyPersonnelExtDto.preferredMode}">-</c:if></td>--%>
+                                    <%--                                                                        </tr>--%>
+                                    <%--                                                                    </c:if>--%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:otherwise>
+
     </c:if>
 
 </c:forEach>
