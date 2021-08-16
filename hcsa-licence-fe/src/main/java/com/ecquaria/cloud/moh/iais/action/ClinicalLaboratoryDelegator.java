@@ -59,6 +59,24 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,27 +86,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 
 /**
@@ -477,14 +474,22 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "PremisesAndChkLst", (Serializable) newChkLstDtoList);
         List<SelectOption> spList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        SelectOption sp = null;
         if (appSvcCgoDtoList != null && !appSvcCgoDtoList.isEmpty()) {
             for (AppSvcPrincipalOfficersDto cgo : appSvcCgoDtoList) {
-                sp = new SelectOption(cgo.getIdNo(), cgo.getName());
+                SelectOption sp = new SelectOption(cgo.getIdNo(), cgo.getName());
                 spList.add(sp);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "CgoSelect", (Serializable) spList);
+        List<AppSvcPersonnelDto> slList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+        List<SelectOption> slOpts = IaisCommonUtils.genNewArrayList();
+        if (slList != null && !slList.isEmpty()) {
+            for (AppSvcPrincipalOfficersDto sl : appSvcCgoDtoList) {
+                SelectOption sp = new SelectOption(sl.getCgoIndexNo(), sl.getName());
+                slOpts.add(sp);
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, "slSelectOpts", (Serializable) slOpts);
 
         Map<String, String> reloadAllocation = IaisCommonUtils.genNewHashMap();
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
@@ -1253,10 +1258,10 @@ public class ClinicalLaboratoryDelegator {
                         StringBuilder chkAndCgoName = new StringBuilder()
                                 .append(premisesValue)
                                 .append(i);
-                        String[] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
-                        if (chkAndCgoValue != null && chkAndCgoValue.length > 1) {
+                        String chkAndCgoValue = ParamUtil.getString(bpc.request, chkAndCgoName.toString());
+                        if (chkAndCgoValue != null && !"".equals(chkAndCgoValue)) {
                             AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
-                            String svcScopeConfigId = chkAndCgoValue[0];
+                            String svcScopeConfigId = chkAndCgoValue;
                             if(!StringUtil.isEmpty(svcScopeConfigId)){
                                 HcsaSvcSubtypeOrSubsumedDto svcScopeConfigDto = svcScopeAlignMap.get(svcScopeConfigId);
                                 /*if(targetChkDto != null && svcScopeConfigDto != null && ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(svcScopeConfigDto.getName())){
@@ -1265,11 +1270,10 @@ public class ClinicalLaboratoryDelegator {
                                 }*/
                                 appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
                                 appSvcDisciplineAllocationDto.setChkLstConfId(svcScopeConfigId);
-                                Iterator<String> iterator= Arrays.stream(chkAndCgoValue).iterator();
-                                iterator.next();
-                                if(iterator.hasNext()){
-                                    appSvcDisciplineAllocationDto.setIdNo(iterator.next());
-                                }
+                                String cgoIdNo = ParamUtil.getString(bpc.request, "cgo" + chkAndCgoName.toString());
+                                appSvcDisciplineAllocationDto.setIdNo(cgoIdNo);
+                                String slIndex = ParamUtil.getString(bpc.request, "sl" + chkAndCgoName.toString());
+                                appSvcDisciplineAllocationDto.setSlIndex(slIndex);
                                 daList.add(appSvcDisciplineAllocationDto);
                                 if(targetChkDto != null && NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS.equals(svcScopeConfigDto.getName())){
                                     targetAllocationDto = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
