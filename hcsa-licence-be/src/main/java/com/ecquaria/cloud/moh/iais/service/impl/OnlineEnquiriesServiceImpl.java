@@ -824,19 +824,19 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     }
                 }
                 //set sectionLeaderName
-                List<AppSvcPrincipalOfficersDto> appSvcSlDtoList = appSvcRelatedInfoDto.getAppSvcSlDtoList();
-                if (appSvcSlDtoList != null && appSvcSlDtoList.size() > 0) {
-                    for (AppSvcPrincipalOfficersDto appSvcSlDto : appSvcSlDtoList) {
-                        if (idNo.equals(appSvcSlDto.getIdNo())) {
-                            if (idNo.equals(appSvcSlDto.getIdNo())) {
-                                appSvcDisciplineAllocationDto.setSectionLeaderName(appSvcSlDto.getName());
-                            }
-                            if(!appSvcDisciplineAllocationDto.isCheck()){
-                                appSvcDisciplineAllocationDto.setSectionLeaderName(null);
-                            }
-                        }
-                    }
-                }
+//                List<AppSvcPersonnelDto> appSvcSlDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+//                if (appSvcSlDtoList != null && appSvcSlDtoList.size() > 0) {
+//                    for (AppSvcPersonnelDto appSvcSlDto : appSvcSlDtoList) {
+//                        if (idNo.equals(appSvcSlDto.getIdNo())) {
+//                            if (idNo.equals(appSvcSlDto.getIdNo())) {
+//                                appSvcDisciplineAllocationDto.setSectionLeaderName(appSvcSlDto.getName());
+//                            }
+//                            if(!appSvcDisciplineAllocationDto.isCheck()){
+//                                appSvcDisciplineAllocationDto.setSectionLeaderName(null);
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
 
