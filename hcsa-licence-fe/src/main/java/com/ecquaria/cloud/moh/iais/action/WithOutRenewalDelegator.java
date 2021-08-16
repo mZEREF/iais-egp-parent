@@ -796,6 +796,7 @@ public class WithOutRenewalDelegator {
                                 for (LicenceDto licenceDto : licenceDtos) {
                                     AppEditSelectDto rfcAppEditSelectDto = new AppEditSelectDto();
                                     rfcAppEditSelectDto.setPremisesEdit(true);
+                                    rfcAppEditSelectDto.setLicenseeEdit(appEditSelectDto.isLicenseeEdit());
                                     AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
                                     setRfcSubmissionDto(appSubmissionDtoByLicenceId,oldAppSubmissionDto,licenseeId,appGrpPremisesDtoList,amendmentFeeDto,appSubmissionDto,i,licenceDto.getId(),rfcAppEditSelectDto);
                                     if (appSubmissionDtoByLicenceId.isAutoRfc()) {
@@ -1016,6 +1017,7 @@ public class WithOutRenewalDelegator {
                 AppEditSelectDto rfcAppEditSelectDto = new AppEditSelectDto();
                 rfcAppEditSelectDto.setLicenseeEdit(true);
                 setRfcSubmissionDto(appSubmissionDtoChange,oldAppSubmissionDto,licenseeId,appGrpPremisesDtoList,amendmentFeeDto,appSubmissionDto,i,appSubmissionDtoChange.getLicenceId(),rfcAppEditSelectDto);
+                appSubmissionDtoChange.setAutoRfc(true);
             }
             }
         }
@@ -1120,7 +1122,24 @@ public class WithOutRenewalDelegator {
         appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
         requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+        setNewSubLic(rfcAppEditSelectDto,appSubmissionDtoByLicenceId,appSubmissionDto);
     }
+
+    private void setNewSubLic(AppEditSelectDto rfcAppEditSelectDto,AppSubmissionDto appSubmissionDtoByLicenceId,AppSubmissionDto appSubmissionDto){
+        if(rfcAppEditSelectDto.isLicenseeEdit()){
+            if(appSubmissionDto.getSubLicenseeDto() != null){
+                SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(),SubLicenseeDto.class);
+                SubLicenseeDto affectedSubLicensee = appSubmissionDtoByLicenceId.getSubLicenseeDto();
+                if(affectedSubLicensee != null){
+                    subLicenseeDto.setId(affectedSubLicensee.getId());
+                    subLicenseeDto.setOrgId(affectedSubLicensee.getOrgId());
+                    subLicenseeDto.setAppGrpId(affectedSubLicensee.getAppGrpId());
+                }
+                appSubmissionDtoByLicenceId.setSubLicenseeDto(subLicenseeDto);
+            }
+        }
+    }
+
     private void setCheckRepeatAppData(List<AppSubmissionDto> saveutoAppSubmissionDto){
         if(IaisCommonUtils.isNotEmpty(saveutoAppSubmissionDto)){
             boolean checkRepeatAppData = false;
