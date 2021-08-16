@@ -139,7 +139,7 @@ public class RequestForChangeDelegator {
                         checkedVals.add(subLicensee);
                     }
                     log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
-                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
+                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen,licenceDto),
                             NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
 
                     String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
@@ -164,7 +164,7 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("the do checkUen end ...."));
         return ajaxResDto;
     }
-    private List<SelectOption> getSelect(String uen){
+    private List<SelectOption> getSelect(String uen,LicenceDto licenceDto){
         log.info(StringUtil.changeForLog("the getSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(uen)){
@@ -184,7 +184,12 @@ public class RequestForChangeDelegator {
         }else {
             log.info(StringUtil.changeForLog("The uen is null"));
         }
-        result.add(new SelectOption("new","Add a new individual licensee"));
+        if(licenceDto != null){
+            OrganizationDto organizationDto = licenceViewService.getOrganizationDtoByLicenseeId(licenceDto.getLicenseeId());
+            if(organizationDto != null && organizationDto.getUenNo().equals(uen)){
+                result.add(new SelectOption("new","Add a new individual licensee"));
+            }
+        }
         log.info(StringUtil.changeForLog("the getSelect end ...."));
         return result;
     }
@@ -1118,7 +1123,7 @@ public class RequestForChangeDelegator {
                         return error;
                     }
                 }
-                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                //if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                     if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
                                 getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
@@ -1130,9 +1135,9 @@ public class RequestForChangeDelegator {
                     }else{
                         log.info(StringUtil.changeForLog("The same uen -->:"+uen));
                     }
-                }else{
-                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
-                }
+//                }else{
+//                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
+//                }
             }
         }
         return error;

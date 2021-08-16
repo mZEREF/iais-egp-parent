@@ -1,11 +1,3 @@
-<h4>
-    <br>
-    <br>
-    <strong>
-        ${(empty inter_user_attr.displayName ||  inter_user_attr.displayName == '-') ? 'Licensee' : inter_user_attr.displayName}
-    </strong>(${inter_user_attr.identityNo})
-</h4>
-<br>
 <br>
 <div class="form-group">
     <div class="col-xs-12 col-md-10" >
