@@ -1,6 +1,6 @@
 <c:forEach var="stepSchem" items="${currentPreviewSvcInfo.appSvcSectionLeaderList}">
-    <c:if test="${stepSchem.stepCode == 'SVST013'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode == 'SVST013'}">
+        <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}"/>
     </c:if>
 </c:forEach>
 <div class="amended-service-info-gp">
