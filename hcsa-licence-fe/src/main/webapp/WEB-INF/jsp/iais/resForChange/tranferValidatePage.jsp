@@ -178,7 +178,12 @@
             </iais:value>
           </iais:row>
           <iais:row>
-            <iais:field width="7" value="Letter of Undertaking" mandatory="true"></iais:field>
+            <label class="col-xs-11 col-md-4 control-label">Letter of Undertaking <span style="color: red"> *</span>
+              <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                 title='This is a letter or email stating that the current licensee will be transferring the licence to the proposed new licensee and in the interim, the current licensee would still be responsible for all licence related matters till the new licence under the new licensee is approved'
+                 style="z-index: 10"
+                 data-original-title="">i</a>
+            </label>
             <iais:value width="10">
               <p>
               <div class="file-upload-gp">
