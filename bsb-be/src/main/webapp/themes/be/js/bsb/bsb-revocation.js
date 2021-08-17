@@ -99,7 +99,6 @@ function callAjaxUploadFile(){
 
 $(function () {
     $("#clearButton1").click(function () {
-        showWaiting();
         $('#ReasonId').val("");
         $('#remarksId').val("");
     });
@@ -121,7 +120,6 @@ $(function () {
     });
 
     $("#clearBtn2").click(function () {
-        showWaiting();
         $('#facilityName').val("");
         $('#facilityAddress').val("");
         $('#applicationNo').val("");
@@ -131,7 +129,6 @@ $(function () {
     });
 
     $("#clearButton3").click(function () {
-        showWaiting();
         $('#number').val("");
         $("#clearSelect .current").text("Please Select");
     });

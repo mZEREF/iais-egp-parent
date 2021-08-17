@@ -15,7 +15,6 @@
 <div class="main-content" style="min-height: 73vh;">
 
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
@@ -129,6 +128,7 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
+                        <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
                         <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-gp">
                             <table class="table application-group" style="border-collapse:collapse;">
@@ -171,4 +171,3 @@
         <iais:confirm msg="" needCancel="false" callBack="aocancel()" popupOrder="approveAo"></iais:confirm>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

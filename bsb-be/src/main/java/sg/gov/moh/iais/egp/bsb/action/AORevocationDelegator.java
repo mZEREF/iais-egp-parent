@@ -36,7 +36,7 @@ public class AORevocationDelegator {
     private static final String KEY_APPLICATION_DATA_LIST = "dataList";
     private static final String KEY_ACTION_VALUE = "action_value";
     private static final String KEY_ACTION_ADDT = "action_additional";
-    private static final String KEY_ACTION_TYPE = "action_type";
+    private static final String KEY_ACTION_TYPE = "crud_action_type";
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
@@ -112,6 +112,7 @@ public class AORevocationDelegator {
         searchDto.setApplicationNo(applicationNo);
         searchDto.setApplicationType(applicationType);
         searchDto.setApplicationStatus(applicationStatus);
+        searchDto.setPage(0);
         if (StringUtil.isNotEmpty(applicationDt)) {
             applicationDate = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE));
             searchDto.setApplicationDate(applicationDate);
