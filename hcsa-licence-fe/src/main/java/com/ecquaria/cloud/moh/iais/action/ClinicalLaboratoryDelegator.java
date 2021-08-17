@@ -585,8 +585,8 @@ public class ClinicalLaboratoryDelegator {
         asvpd.setIndexNo("SL02");
         slList.add(asvpd);
         if (slList != null && !slList.isEmpty()) {
-            for (AppSvcPrincipalOfficersDto sl : appSvcCgoDtoList) {
-                SelectOption sp = new SelectOption(sl.getCgoIndexNo(), sl.getName());
+            for (AppSvcPersonnelDto sl : slList) {
+                SelectOption sp = new SelectOption(sl.getIndexNo(), sl.getName());
                 slOpts.add(sp);
             }
         }
