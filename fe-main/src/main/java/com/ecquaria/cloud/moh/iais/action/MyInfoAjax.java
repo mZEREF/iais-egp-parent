@@ -122,13 +122,13 @@ public class MyInfoAjax {
 		}
 		HttpServletResponse response =  bpc.response;
 		HttpServletRequest request = bpc.request;
-		log.info(StringUtil.changeForLog("-----Authorise call back response : " +JsonUtil.parseToJson(response)));
+		log.info(StringUtil.changeForLog("-----Authorise call back response status : " + response.getStatus()));
 		if(HttpServletResponse.SC_MOVED_TEMPORARILY == response.getStatus()){
 			String code = ParamUtil.getString(request,"code");
 			String state = ParamUtil.getString(request,"state");
 			String error = ParamUtil.getString(request,"error");
 			String errorDescription = ParamUtil.getString(request,"error_description");
-			log.info(StringUtil.changeForLog("--------state :"+state+"----------"));
+			log.info(StringUtil.changeForLog("--------state :"+StringUtil.getNonNull(state)+"----------"));
 			if("500".equalsIgnoreCase(error)){
 				log.info("Unknown or other server side errors");
 			}else if("503".equalsIgnoreCase(error)){
@@ -137,7 +137,8 @@ public class MyInfoAjax {
 				log.info("When user did not give consent, refer to error_description parameter for the reason");
 				log.info(errorDescription);
 			}else {
-				//Assembly data acquisition get taken
+				log.info(StringUtil.changeForLog("--------- Assembly data acquisition get taken start ----"));
+				log.info(StringUtil.changeForLog("--------- Assembly data acquisition code : " + StringUtil.getNonNull(code)));
 				nric = getNric(nric,request);
 				if(StringUtil.isNotEmpty(nric)){
 				    String redirectUri = ConfigHelper.getString("myinfo.common.call.back.url",redirectUriPostfix);;
