@@ -1471,6 +1471,7 @@ public class LicenceApproveBatchjob {
                             if(appGrpPersonnelDto!= null){
                                 LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
                                 licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
+                                licPremisesScopeAllocationDto.setLicPremScopeId(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId());
                                 licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
                             }else{
                                 log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:"
