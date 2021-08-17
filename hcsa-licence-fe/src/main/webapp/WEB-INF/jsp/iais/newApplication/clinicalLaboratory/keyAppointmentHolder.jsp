@@ -39,6 +39,7 @@
             </c:otherwise>
         </c:choose>
 
+        <input type="hidden" name="keyAppointmentHolderLength" value="${pageLength}" />
         <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="keyAppointmentHolderStatus">
             <c:set var="AppSvcKeyAppointmentHolderDto" value="${AppSvcKeyAppointmentHolderDtoList[keyAppointmentHolderStatus.index]}"/>
 
@@ -76,7 +77,7 @@
 
                             <div class="col-sm-5 col-md-7" id="assignSelect">
                                 <div class="">
-                                    <iais:select cssClass="assignSel"  name="assignSel${keyAppointmentHolderStatus.index}" options="KeyAppointmentHolderAssignSelect" needSort="false" value="${AppSvcKeyAppointmentHolderDtoList.assignSelect}"></iais:select>
+                                    <iais:select cssClass="assignSel"  name="assignSel${keyAppointmentHolderStatus.index}" options="KeyAppointmentHolderAssignSelect" needSort="false" value="${AppSvcKeyAppointmentHolderDto.assignSelect}"></iais:select>
                                     <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
@@ -93,13 +94,11 @@
                                     <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
-                                    <iais:select cssClass="salutation"  name="salutation${keyAppointmentHolderStatus.index}" codeCategory="CATE_ID_SALUTATION" value="${AppSvcKeyAppointmentHolderDtoList.salutation}" firstOption="Please Select"></iais:select>
-                                    <span class="error-msg" id="error_salutation${status.index}" name="iaisErrorMsg"></span>
+                                    <iais:select cssClass="salutation"  name="salutation${keyAppointmentHolderStatus.index}" codeCategory="CATE_ID_SALUTATION" value="${AppSvcKeyAppointmentHolderDto.salutation}" firstOption="Please Select"></iais:select>
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idType" maxLength="66" type="text" name="name${keyAppointmentHolderStatus.index}" value="${AppSvcKeyAppointmentHolderDtoList.name}"></iais:input>
-                                    <span class="error-msg" id="error_name${status.index}" name="iaisErrorMsg"></span>
+                                    <iais:input cssClass="idType" maxLength="66" type="text" name="name${keyAppointmentHolderStatus.index}" value="${AppSvcKeyAppointmentHolderDto.name}"></iais:input>
                                 </div>
                             </div>
                         </div>
@@ -115,17 +114,28 @@
                                 </div>
                                 <div class="col-sm-3 col-xs-12">
                                     <div class="">
-                                        <iais:select cssClass="idType idTypeSel"  name="idType${keyAppointmentHolderStatus.index}" needSort="false" value="${AppSvcKeyAppointmentHolderDtoList.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
-                                        <span class="error-msg" id="error_idTyp${status.index}" name="iaisErrorMsg"></span>
+                                        <iais:select cssClass="idType"  name="idType${keyAppointmentHolderStatus.index}" needSort="false" value="${AppSvcKeyAppointmentHolderDto.idType}" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE"></iais:select>
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-12">
-                                    <iais:input cssClass="idNo" maxLength="9" type="text" name="idNo${keyAppointmentHolderStatus.index}" value="${AppSvcKeyAppointmentHolderDtoList.idNo}"></iais:input>
-                                    <span class="error-msg" id="error_idNo${status.index}" name="iaisErrorMsg"></span>
+                                    <iais:input cssClass="idNo" maxLength="9" type="text" name="idNo${keyAppointmentHolderStatus.index}" value="${AppSvcKeyAppointmentHolderDto.idNo}"></iais:input>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
+                                </div>
+                                <div class="col-sm-7">
+                                    <span class="error-msg" id="error_idTypeNo${keyAppointmentHolderStatus.index}" name="iaisErrorMsg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -140,11 +150,15 @@
     </div>
 </div>
 <script>
+    var initEnd = false;
     $(function () {
         assignSel();
         addKeyAppointmentHolder();
         doEdit();
         addDisabled();
+        removeKeyAppointmentHolder();
+        $('select.assignSel').trigger('change');
+        initEnd = true;
     });
 
     var assignSel= function () {
@@ -153,11 +167,15 @@
             var $keyAppointmentHolder = $(this).closest('div.keyAppointmentHolderContent').find('div.keyAppointmentHolder');
             if('-1' == assignSelVal){
                 $keyAppointmentHolder.addClass('hidden');
-                clearFields($keyAppointmentHolder);
+                if (initEnd){
+                    clearFields($keyAppointmentHolder);
+                }
             }else if('newOfficer' == assignSelVal){
                 $keyAppointmentHolder.removeClass('hidden');
-                unDisabledPartPage($keyAppointmentHolder.find('.medAlertPerson'));
-                clearFields($keyAppointmentHolder);
+                unDisabledPartPage($keyAppointmentHolder);
+                if (initEnd){
+                    clearFields($keyAppointmentHolder);
+                }
             }else{
                 $keyAppointmentHolder.removeClass('hidden');
                 var arr = $(this).val().split(',');
@@ -200,10 +218,10 @@
     var doEdit = function (){
         $('.svcPsnEdit').click(function () {
             $('.edit-content').addClass('hidden');
-            $('input[type="text"]').prop('disabled',false);
+            $('input[type="text"]').prop('disabled', false);
             $('div.nice-select').removeClass('disabled');
-            $('input[type="text"]').css('border-color','');
-            $('input[type="text"]').css('color','');
+            $('input[type="text"]').css('border-color', '');
+            $('input[type="text"]').css('color', '');
             $('#isEditHiddenVal').val('1');
         });
     };
@@ -241,18 +259,6 @@
         } else {
             $('.removeKeyAppointmentHolderBtn').show();
         }
-        //reset number
-        $('div.keyAppointmentHolderContent').each(function (k,v) {
-            $(this).find('.assign-psn-item').html(k+1);
-            $(this).find('.assignSel').prop('name','assignSel'+k);
-            $(this).find('.salutation').prop('name','salutation'+k);
-            $(this).find('.name').prop('name','name'+k);
-            $(this).find('.idType').prop('name','idType'+k);
-            $(this).find('.idNo').prop('name','idNo'+k);
-            if ("${AppSubmissionDto.appType}" === "APTY002" && k === 0){
-                $(this).find('.removeKeyAppointmentHolderBtn').hide();
-            }
-        });
         if ("${AppSubmissionDto.appType == 'APTY002' || 'true' == canEdit}"){
             // display add more
             if (keyAppointmentHolderLength < '${keyAppointmentHolderConfigDto.maximumCount}') {
@@ -291,7 +297,7 @@
         });
     };
 
-    var fillKahForm = function ($CurrentPsnEle,data) {
+    var fillKahForm = function ($CurrentPsnEle, data) {
         <!--salutation-->
         var salutation = data.salutation;
         if (salutation == null || salutation == 'undefined' || salutation == '') {
@@ -312,5 +318,15 @@
         $CurrentPsnEle.find('.idType').next().find('.current').html(idTypeVal);
         <!-- idNo-->
         $CurrentPsnEle.find('.idNo').val(data.idNo);
+
+        var isLicPerson = data.licPerson;
+        if('1' == isLicPerson){
+            //add disabled not add input disabled style
+            personDisable($CurrentPsnEle, '', 'Y');
+            var psnEditDto = data.psnEditDto;
+            setPsnDisabled($CurrentPsnEle, psnEditDto);
+        }else{
+            unDisabledPartPage($CurrentPsnEle);
+        }
     };
 </script>

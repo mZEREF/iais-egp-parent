@@ -2471,7 +2471,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
-                // Key Appointment Holder
+                List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                        bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> map = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap,
+                        dto.getServiceCode());
+                log.info(JsonUtil.parseToJson(map));
+                if (!map.isEmpty()) {
+                    sB.append(serviceId);
+                    errorMap.put("KeyAppointmentHolder", "error");
+                }
             } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                 doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,

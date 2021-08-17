@@ -32,7 +32,6 @@
                             <div class="col-sm-5 col-md-7" id="assignSelect">
                                 <div class="">
                                     ${personalSelect}
-                                    <span id="error_assignSelect${keyAppointmentHolderSuffix}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
@@ -50,12 +49,10 @@
 
                                 <div class="col-sm-3 col-xs-12">
                                     ${salutationSelect}
-                                    <span class="error-msg" id="error_salutation${keyAppointmentHolderSuffix}" name="iaisErrorMsg"></span>
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
                                     <input type="text" name="name${keyAppointmentHolderSuffix}" class="idType" maxlength="66" autocomplete="off">
-                                    <span id="error_name${keyAppointmentHolderSuffix}" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
                         </div>
@@ -72,13 +69,23 @@
                                 <div class="col-sm-3 col-xs-12">
                                     <div class="">
                                         ${idTypeSelect}
-                                        <span class="error-msg" id="error_idTyp${keyAppointmentHolderSuffix}" name="iaisErrorMsg"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-4 col-xs-12">
                                     <input type="text" name="idNo${keyAppointmentHolderSuffix}" class="idNo" maxlength="9" autocomplete="off">
-                                    <span class="error-msg" id="error_idNo${keyAppointmentHolderSuffix}" name="iaisErrorMsg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="control control-caption-horizontal">
+                            <div class=" form-group form-horizontal formgap">
+                                <div class="col-sm-3 control-label formtext col-md-5">
+                                </div>
+                                <div class="col-sm-7">
+                                    <span class="error-msg" id="error_idTypeNo${keyAppointmentHolderSuffix}" name="iaisErrorMsg"></span>
                                 </div>
                             </div>
                         </div>

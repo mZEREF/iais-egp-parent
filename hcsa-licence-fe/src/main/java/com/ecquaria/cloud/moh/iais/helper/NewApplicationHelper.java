@@ -1122,6 +1122,89 @@ public class NewApplicationHelper {
         return errMap;
     }
 
+    public static Map<String, String> doValidateKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList, Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode){
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)){
+            return errMap;
+        }
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
+        for(int i = 0; i < appSvcKeyAppointmentHolderList.size(); i++){
+            AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolder = appSvcKeyAppointmentHolderList.get(i);
+            String assignSelect = appSvcKeyAppointmentHolder.getAssignSelect();
+            if("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
+                errMap.put("assignSel" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a MedAlert Person","field"));
+            }else {
+                String idTyp = appSvcKeyAppointmentHolder.getIdType();
+                String idNo = appSvcKeyAppointmentHolder.getIdNo();
+                boolean licPerson = appSvcKeyAppointmentHolder.isLicPerson();
+                String idTypeNoKey = "idTypeNo" + i;
+                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey, svcCode);
+                boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
+                StringBuilder stringBuilder1=new StringBuilder();
+
+                if("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)){
+                    errMap.put("idType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
+                }
+
+                String salutation = appSvcKeyAppointmentHolder.getSalutation();
+                if(StringUtil.isEmpty(salutation)){
+                    errMap.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
+                }
+
+                String name = appSvcKeyAppointmentHolder.getName();
+                if(StringUtil.isEmpty(name)){
+                    errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
+                }else {
+                    if(name.length() > 66){
+                        String general_err0041 = repLength("Name", "66");
+                        errMap.put("name" + i, general_err0041);
+                    }
+                }
+
+                if(StringUtil.isEmpty(idNo)){
+                    errMap.put("idNo" + i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
+                }else {
+                    if(idNo.length() > 9){
+                        String general_err0041 = repLength("ID No.","9");
+                        errMap.put("idNo" + i, general_err0041);
+                    }
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
+                        if(!SgNoValidator.validateFin(idNo)){
+                            errMap.put("idNo" + i,"RFC_ERR0012");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo" + i,"NEW_ERR0012");
+                            }
+                        }
+                    }
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
+                        if(!SgNoValidator.validateNric(idNo)){
+                            errMap.put("idNo" + i,"RFC_ERR0012");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo" + i,"NEW_ERR0012");
+                            }
+                        }
+                    }
+                }
+
+                if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                    if(!stringList.contains(stringBuilder1.toString())){
+                        stringList.add( stringBuilder1.toString());
+                    }
+                }
+
+            }
+
+        }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+        return errMap;
+    }
+
     public static List<AppSvcPrincipalOfficersDto> transferCgoToPsnDtoList(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos){
         List<AppSvcPrincipalOfficersDto> psnDtos = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(appSvcCgoDtos)){

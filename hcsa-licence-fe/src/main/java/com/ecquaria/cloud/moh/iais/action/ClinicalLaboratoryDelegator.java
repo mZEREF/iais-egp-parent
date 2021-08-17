@@ -604,9 +604,9 @@ public class ClinicalLaboratoryDelegator {
             HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
             ParamUtil.setSessionAttr(bpc.request, "keyAppointmentHolderConfigDto", hcsaSvcPersonnelDto);
         }
-//        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currSvcId);
-//        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
-//        ParamUtil.setRequestAttr(bpc.request,"AppSvcKeyAppointmentHolderDtoList",appSvcKeyAppointmentHolderDtoList);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currSvcId);
+        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+        ParamUtil.setRequestAttr(bpc.request,"AppSvcKeyAppointmentHolderDtoList",appSvcKeyAppointmentHolderDtoList);
         List<SelectOption> assignSelectList = NewApplicationHelper.genAssignPersonSel(bpc.request, true);
         ParamUtil.setRequestAttr(bpc.request, "KeyAppointmentHolderAssignSelect", assignSelectList);
         log.debug(StringUtil.changeForLog("prepareKeyAppointmentHolder end ..."));
@@ -1462,6 +1462,80 @@ public class ClinicalLaboratoryDelegator {
 
     public void doKeyAppointmentHolder(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the do doKeyAppointmentHolder start ...."));
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
+        boolean isRfi = requestInformationConfig != null;
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = genAppSvcKeyAppointmentHolder(bpc.request);
+            currentSvcRelatedDto.setAppSvcKeyAppointmentHolderDtoList(appSvcKeyAppointmentHolderList);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+            String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+            if ("next".equals(nextStep)) {
+                reSetChangesForApp(appSubmissionDto);
+                Map<String, String> errorMap = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap, svcCode);
+                //validate mandatory count
+                int psnLength = 0;
+                if(!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)){
+                    psnLength = appSvcKeyAppointmentHolderList.size();
+                }
+                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                if(!isRfi){
+                    errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
+                }
+
+                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+                if (errorMap.isEmpty() && allChecked.isEmpty()) {
+                    coMap.put("information", "information");
+                } else {
+                    coMap.put("information", "");
+                }
+                bpc.request.getSession().setAttribute("coMap", coMap);
+                if (!errorMap.isEmpty()) {
+                    //set audit
+                    bpc.request.setAttribute("errormapIs", "error");
+                    NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
+                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
+                    Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
+                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
+                    return;
+                } else {
+                    //sync person dropdown and submisson dto
+                    personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcKeyAppointmentHolderList, svcCode);
+                }
+            }else{
+                //sync person dropdown and submisson dto
+                personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcKeyAppointmentHolderList, svcCode);
+            }
+            //remove dirty psn dropdown info
+            Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
+            //remove dirty psn doc info
+            List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+            currentSvcRelatedDto = removeDirtyPsnDoc(currentSvcRelatedDto, svcDocConfigDtos, appSvcKeyAppointmentHolderList, ApplicationConsts.DUP_FOR_PERSON_MAP);
+            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
+
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+        }
         log.debug(StringUtil.changeForLog("the do doKeyAppointmentHolder end ...."));
     }
 
@@ -4061,6 +4135,37 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
     }
 
+    private List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request) {
+        List<AppSvcPrincipalOfficersDto> KeyAppointmentHolder = IaisCommonUtils.genNewArrayList();
+        int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
+        for(int i = 0; i < keyAppointmentHolderLength; i++){
+            String assignSel = ParamUtil.getString(request,"assignSel" + i);
+            AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+            switch (assignSel){
+                case NewApplicationConstant.NEW_PSN:
+                    String salutation = ParamUtil.getString(request,"salutation" + i);
+                    String name = ParamUtil.getString(request,"name" + i);
+                    String idType = ParamUtil.getString(request,"idType" + i);
+                    String idNo = ParamUtil.getString(request,"idNo" + i);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
+                    appSvcPrincipalOfficersDto.setSalutation(salutation);
+                    appSvcPrincipalOfficersDto.setName(name);
+                    appSvcPrincipalOfficersDto.setIdType(idType);
+                    appSvcPrincipalOfficersDto.setIdNo(idNo);
+                    break;
+                case "-1":
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
+                    break;
+                default:
+                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
+                    break;
+            }
+            KeyAppointmentHolder.add(appSvcPrincipalOfficersDto);
+        }
+        return KeyAppointmentHolder;
+    }
+
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcMedAlertPerson star ..."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
@@ -4456,6 +4561,13 @@ public class ClinicalLaboratoryDelegator {
                     List<AppSvcPrincipalOfficersDto> appSvcMapDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
                     if(!IaisCommonUtils.isEmpty(appSvcMapDtos)){
                         for(AppSvcPrincipalOfficersDto psn:appSvcMapDtos){
+                            setPsnKeySet(psn,personKeySet);
+                        }
+                    }
+                    //Key Appointment Holder
+                    List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+                    if(!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderDtoList)){
+                        for(AppSvcPrincipalOfficersDto psn:appSvcKeyAppointmentHolderDtoList){
                             setPsnKeySet(psn,personKeySet);
                         }
                     }
