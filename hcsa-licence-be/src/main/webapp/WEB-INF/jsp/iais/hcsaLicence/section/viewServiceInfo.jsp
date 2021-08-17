@@ -1181,7 +1181,90 @@
       </div>
     </div>
   </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST013')}">
+    <div class="amended-service-info-gp">
+      <label class="title-font-size">${stepNameMap['SVST013']}</label>
+      <div class="amend-preview-info">
+        <c:forEach items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" var="sectionLeader"
+                   varStatus="status">
+          <p><strong class="col-xs-6">Section Leader <c:if
+                  test="${fn:length(currentPreviewSvcInfo.appSvcSectionLeaderList)>1}">${status.index+1}</c:if>:</strong>
+          </p>
+          <span class="col-xs-6"></span>
+          <table aria-describedby="" class="col-xs-12">
 
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                </p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                        <span class="newVal " attr="${sectionLeader.salutation}"><iais:code
+                                code="${sectionLeader.salutation}"/></span>
+                </div>
+                <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].salutation}"
+                              style="display: none"><iais:code
+                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].salutation}"/></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                </p>
+              </td>
+              <td>
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${sectionLeader.name}"><c:out value="${sectionLeader.name}"/></span>
+                  <br>
+                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].name}" style="display: none">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].name}
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                  <span class="newVal " attr="<iais:code code="${sectionLeader.qualification}"/>"><iais:code code="${sectionLeader.qualification}"/></span>
+
+                </div>
+                <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/>"
+                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/></span>
+                </div>
+
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Working Experience (in terms of years)</p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                        <span class="newVal " attr="${sectionLeader.wrkExpYear}"><c:out
+                                value="${sectionLeader.wrkExpYear}"/></span>
+                </div>
+                <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].wrkExpYear}"
+                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].wrkExpYear}</span>
+                </div>
+
+              </td>
+            </tr>
+          </table>
+        </c:forEach>
+      </div>
+    </div>
+  </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList,'SVST003')}">
     <div class="amended-service-info-gp">
       <label class="title-font-size">${stepNameMap['SVST003']}</label>
@@ -2039,6 +2122,103 @@
     </div>
 
   </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST014')}">
+    <div class="amended-service-info-gp">
+      <label class="title-font-size">${stepNameMap['SVST014']}</label>
+      <div class="amend-preview-info">
+        <c:forEach items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}" var="keyAppointmentHolder"
+                   varStatus="status">
+          <p><strong class="col-xs-6">Key Appointment Holder<c:if
+                  test="${fn:length(currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList)>1}">${status.index+1}</c:if>:</strong>
+          </p>
+          <span class="col-xs-6"></span>
+          <table aria-describedby="" class="col-xs-12">
+
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
+                </p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                        <span class="newVal " attr="${keyAppointmentHolder.salutation}"><iais:code
+                                code="${keyAppointmentHolder.salutation}"/></span>
+                </div>
+                <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].salutation}"
+                              style="display: none"><iais:code
+                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].salutation}"/></span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                </p>
+              </td>
+              <td>
+                <div class="col-xs-12">
+                  <span class="newVal " attr="${keyAppointmentHolder.name}"><c:out value="${keyAppointmentHolder.name}"/></span>
+                  <br>
+                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].name}" style="display: none">
+                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].name}
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
+                  Type</p>
+              </td>
+              <td>
+                <div class="col-xs-6">
+                  <span class="newVal " attr="<iais:code code="${keyAppointmentHolder.idType}"/>"><iais:code code="${keyAppointmentHolder.idType}"/></span>
+
+                </div>
+                <div class="col-xs-6">
+                        <span class="oldVal "
+                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idType}"/>"
+                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idType}"/></span>
+                </div>
+
+              </td>
+            </tr>
+            <tr>
+              <td class="col-xs-6 img-show">
+                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
+                  No.</p>
+              </td>
+              <td>
+                <div class="col-xs-6 img-show">
+                        <span class="newVal " attr="${keyAppointmentHolder.idNo}">
+                          <c:out value="${keyAppointmentHolder.idNo}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                            <jsp:param name="idNo" value="${keyAppointmentHolder.idNo}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
+                        </span>
+                </div>
+                <div class="col-xs-6 img-show">
+                        <span class="oldVal"
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"
+                              style="display: none">
+                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}
+                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"/>
+                              <jsp:param name="methodName" value="showThisTableOldService"/>
+                            </jsp:include>
+                        </span>
+                </div>
+              </td>
+            </tr>
+
+          </table>
+        </c:forEach>
+      </div>
+    </div>
+  </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
     <div class="amended-service-info-gp">
     <label class="title-font-size">${stepNameMap['SVST007']}</label>
@@ -2241,187 +2421,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </c:if>
-  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST013')}">
-    <div class="amended-service-info-gp">
-      <label class="title-font-size">${stepNameMap['SVST013']}</label>
-      <div class="amend-preview-info">
-        <c:forEach items="${currentPreviewSvcInfo.appSvcSectionLeaderList}" var="sectionLeader"
-                   varStatus="status">
-          <p><strong class="col-xs-6">Section Leader <c:if
-                  test="${fn:length(currentPreviewSvcInfo.appSvcSectionLeaderList)>1}">${status.index+1}</c:if>:</strong>
-          </p>
-          <span class="col-xs-6"></span>
-          <table aria-describedby="" class="col-xs-12">
-
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
-                </p>
-              </td>
-              <td>
-                <div class="col-xs-6">
-                        <span class="newVal " attr="${sectionLeader.salutation}"><iais:code
-                                code="${sectionLeader.salutation}"/></span>
-                </div>
-                <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].salutation}"
-                              style="display: none"><iais:code
-                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].salutation}"/></span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                </p>
-              </td>
-              <td>
-                <div class="col-xs-12">
-                  <span class="newVal " attr="${sectionLeader.name}"><c:out value="${sectionLeader.name}"/></span>
-                  <br>
-                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].name}" style="display: none">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].name}
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
-              </td>
-              <td>
-                <div class="col-xs-6">
-                  <span class="newVal " attr="<iais:code code="${sectionLeader.qualification}"/>"><iais:code code="${sectionLeader.qualification}"/></span>
-
-                </div>
-                <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/>"
-                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/></span>
-                </div>
-
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Working Experience (in terms of years)</p>
-              </td>
-              <td>
-                <div class="col-xs-6">
-                        <span class="newVal " attr="${sectionLeader.wrkExpYear}"><c:out
-                                value="${sectionLeader.wrkExpYear}"/></span>
-                </div>
-                <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].wrkExpYear}"
-                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].wrkExpYear}</span>
-                </div>
-
-              </td>
-            </tr>
-          </table>
-        </c:forEach>
-      </div>
-    </div>
-  </c:if>
-  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST014')}">
-    <div class="amended-service-info-gp">
-      <label class="title-font-size">${stepNameMap['SVST014']}</label>
-      <div class="amend-preview-info">
-        <c:forEach items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}" var="keyAppointmentHolder"
-                   varStatus="status">
-          <p><strong class="col-xs-6">Key Appointment Holder<c:if
-                  test="${fn:length(currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList)>1}">${status.index+1}</c:if>:</strong>
-          </p>
-          <span class="col-xs-6"></span>
-          <table aria-describedby="" class="col-xs-12">
-
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
-                </p>
-              </td>
-              <td>
-                <div class="col-xs-6">
-                        <span class="newVal " attr="${keyAppointmentHolder.salutation}"><iais:code
-                                code="${keyAppointmentHolder.salutation}"/></span>
-                </div>
-                <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].salutation}"
-                              style="display: none"><iais:code
-                                code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].salutation}"/></span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                </p>
-              </td>
-              <td>
-                <div class="col-xs-12">
-                  <span class="newVal " attr="${keyAppointmentHolder.name}"><c:out value="${keyAppointmentHolder.name}"/></span>
-                  <br>
-                  <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].name}" style="display: none">
-                      ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].name}
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
-                  Type</p>
-              </td>
-              <td>
-                <div class="col-xs-6">
-                  <span class="newVal " attr="<iais:code code="${keyAppointmentHolder.idType}"/>"><iais:code code="${keyAppointmentHolder.idType}"/></span>
-
-                </div>
-                <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idType}"/>"
-                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idType}"/></span>
-                </div>
-
-              </td>
-            </tr>
-            <tr>
-              <td class="col-xs-6 img-show">
-                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
-                  No.</p>
-              </td>
-              <td>
-                <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${keyAppointmentHolder.idNo}">
-                          <c:out value="${keyAppointmentHolder.idNo}"/>
-                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                            <jsp:param name="idNo" value="${keyAppointmentHolder.idNo}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
-                          </jsp:include>
-                        </span>
-                </div>
-                <div class="col-xs-6 img-show">
-                        <span class="oldVal"
-                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"
-                              style="display: none">
-                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}
-                            <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"/>
-                              <jsp:param name="methodName" value="showThisTableOldService"/>
-                            </jsp:include>
-                        </span>
-                </div>
-              </td>
-            </tr>
-
-          </table>
-        </c:forEach>
       </div>
     </div>
   </c:if>
