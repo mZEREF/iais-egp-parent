@@ -5,7 +5,7 @@
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
 
-<div class="row form-horizontal licenseeContent">
+<div class="form-horizontal licenseeContent">
     <iais:row>
         <iais:value width="6">
             <strong class="app-font-size-22 premHeader">Licensee Details</strong>
@@ -68,12 +68,6 @@
             unDisableContent('div.licensee-detail');
             $('.retrieveAddr').removeClass('hidden');
             checkLicenseeType();
-        });
-        $('#addrType').on('change', checkAddressManatory);
-        $('.retrieveAddr').click(function() {
-            var $postalCodeEle = $(this).closest('div.postalCodeDiv');
-            var postalCode = $postalCodeEle.find('.postalCode').val();
-            retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
         });
 
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
@@ -139,16 +133,6 @@
             $('.licensee-com').hide();
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
-        }
-    }
-
-    function checkAddressManatory() {
-        var addrType = $('#addrType').val();
-        $('.blkNoLabel .mandatory').remove();
-        $('.floorUnitLabel .mandatory').remove();
-        if ('ADDTY001' == addrType) {
-            $('.blkNoLabel').append('<span class="mandatory">*</span>');
-            $('.floorUnitLabel').append('<span class="mandatory">*</span>');
         }
     }
 
@@ -308,44 +292,5 @@
         // init licensee type
         $('#licenseeType').val('${individualType}');
         $('#licenseeType').niceSelect('update');
-    }
-
-    function retrieveAddr(postalCode, target) {
-        var $addressSelectors = $(target);
-        var re=new RegExp('^[0-9]*$');
-        var data = {
-            'postalCode':postalCode
-        };
-        showWaiting();
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/retrieve-address',
-            'dataType':'json',
-            'data':data,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
-                    // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
-                    //show pop
-                    $('#postalCodePop').modal('show');
-                    handleVal($addressSelectors.find(':input'), '', false);
-                } else {
-                    handleVal($addressSelectors.find('input[name="blkNo"]'), data.blkHseNo, true);
-                    handleVal($addressSelectors.find('input[name="streetName"]'), data.streetName, true);
-                    handleVal($addressSelectors.find('input[name="buildingName"]'), data.buildingName, true);
-                }
-                dismissWaiting();
-            },
-            'error':function () {
-                //show pop
-                $('#postalCodePop').modal('show');
-                handleVal($addressSelectors.find(':input'), '', false);
-                dismissWaiting();
-            }
-        });
-    }
-
-    function handleVal(selector, val, readonly) {
-        $(selector).val(val);
-        $(selector).prop('readonly', readonly);
     }
 </script>

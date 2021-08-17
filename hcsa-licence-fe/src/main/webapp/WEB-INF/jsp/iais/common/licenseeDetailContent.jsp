@@ -86,3 +86,64 @@
     </iais:value>
   </iais:row>
 </div>
+<script type="text/javascript">
+  $(document).ready(function() {
+      checkAddressManatory();
+
+      $('#addrType').on('change', checkAddressManatory);
+      $('.retrieveAddr').click(function() {
+          var $postalCodeEle = $(this).closest('div.postalCodeDiv');
+          var postalCode = $postalCodeEle.find('.postalCode').val();
+          retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
+      });
+  });
+
+  function checkAddressManatory() {
+    var addrType = $('#addrType').val();
+    $('.blkNoLabel .mandatory').remove();
+    $('.floorUnitLabel .mandatory').remove();
+    if ('ADDTY001' == addrType) {
+        $('.blkNoLabel').append('<span class="mandatory">*</span>');
+        $('.floorUnitLabel').append('<span class="mandatory">*</span>');
+    }
+  }
+
+  function retrieveAddr(postalCode, target) {
+    var $addressSelectors = $(target);
+    var re=new RegExp('^[0-9]*$');
+    var data = {
+      'postalCode':postalCode
+    };
+    showWaiting();
+    $.ajax({
+      'url':'${pageContext.request.contextPath}/retrieve-address',
+      'dataType':'json',
+      'data':data,
+      'type':'GET',
+      'success':function (data) {
+        if(data == null){
+          // $postalCodeEle.find('.postalCodeMsg').html("the postal code information could not be found");
+          //show pop
+          $('#postalCodePop').modal('show');
+          handleVal($addressSelectors.find(':input'), '', false);
+        } else {
+          handleVal($addressSelectors.find('input[name="blkNo"]'), data.blkHseNo, true);
+          handleVal($addressSelectors.find('input[name="streetName"]'), data.streetName, true);
+          handleVal($addressSelectors.find('input[name="buildingName"]'), data.buildingName, true);
+        }
+        dismissWaiting();
+      },
+      'error':function () {
+        //show pop
+        $('#postalCodePop').modal('show');
+        handleVal($addressSelectors.find(':input'), '', false);
+        dismissWaiting();
+      }
+    });
+  }
+
+  function handleVal(selector, val, readonly) {
+    $(selector).val(val);
+    $(selector).prop('readonly', readonly);
+  }
+</script>
