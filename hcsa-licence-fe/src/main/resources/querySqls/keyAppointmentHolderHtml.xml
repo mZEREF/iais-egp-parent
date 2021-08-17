@@ -3,6 +3,8 @@
     <sql key="generateKeyAppointmentHolderHtml" cached="no" remarks="generate Key Appointment Holder Html">
         <![CDATA[
             <div class="keyAppointmentHolderContent">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${keyAppointmentHolderSuffix}" value="1"/>
+                <input type="hidden" class="cgoIndexNo" name="cgoIndexNo${keyAppointmentHolderSuffix}" value=""/>
                 <div class="row control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                         <div class="control-label formtext col-md-5 col-xs-5">
