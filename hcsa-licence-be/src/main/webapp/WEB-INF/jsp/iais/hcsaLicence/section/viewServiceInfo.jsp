@@ -2128,7 +2128,7 @@
       <div class="amend-preview-info">
         <c:forEach items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}" var="keyAppointmentHolder"
                    varStatus="status">
-          <p><strong class="col-xs-6">Key Appointment Holder<c:if
+          <p><strong class="col-xs-6">Key Appointment Holder <c:if
                   test="${fn:length(currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList)>1}">${status.index+1}</c:if>:</strong>
           </p>
           <span class="col-xs-6"></span>
