@@ -12,7 +12,9 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="center-content">
             <div class="intranet-content">
                 <div class="bg-title col-xs-12 col-md-12">
@@ -20,7 +22,9 @@
                 </div>
                 <div class="row">&nbsp;</div>
                 <div class="panel-group " id="accordion" role="tablist" aria-multiselectable="true">
+                    <div id="clearFilterForSearch" name="clearFilterForSearch">
                     <%@ include file="advancedFilter.jsp" %>
+                    </div>
                     <div class="col-xs-12 col-md-12">
                         <iais:action style="text-align:right;">
                             <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
@@ -33,5 +37,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

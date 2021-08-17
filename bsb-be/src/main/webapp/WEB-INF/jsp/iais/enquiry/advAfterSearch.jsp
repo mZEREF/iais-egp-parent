@@ -1,16 +1,7 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Administrator
-  Date: 2021/7/15
-  Time: 10:20
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
@@ -24,7 +15,9 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
@@ -43,11 +36,13 @@
                             </div>
                         </div>
                         <div id="searchCondition" class="collapse">
+                            <div id="clearFilterForSearch" name="clearFilterForSearch">
                             <%@ include file="advancedFilter.jsp" %>
+                            </div>
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
                                     <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
-                                    <button class="btn btn-secondary" type="button"  onclick="javascript:doAdvAfterClear()">Clear</button>
+                                    <button class="btn btn-secondary" type="button"  onclick="javascript:doAdvClear()">Clear</button>
                                     <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/${download}">Export</a>
                                     <button class="btn btn-primary" type="button"  onclick="javascript:doAdvAfterSearch()">Search</button>
                                 </iais:action>
@@ -62,5 +57,3 @@
     </form>
 </div>
 
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

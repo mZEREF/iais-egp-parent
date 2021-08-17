@@ -15,7 +15,8 @@ function doAdvancedSearch() {
         $("#selectSearchChkMsg").show();
         dismissWaiting();
     } else {
-        SOP.Crud.cfxSubmit("mainForm", "advSearch");
+        $("[name='action_type']").val("advSearch");
+        $("#mainForm").submit();
     }
 }
 
@@ -31,13 +32,15 @@ function doSearch() {
         $("#selectSearchChkMsg").show();
         dismissWaiting();
     } else {
-        SOP.Crud.cfxSubmit("mainForm", "doSearch");
+        $("[name='action_type']").val("doSearch");
+        $("#mainForm").submit();
     }
 }
 
 function doAppInfo() {
     showWaiting();
-    SOP.Crud.cfxSubmit("mainForm", "appDetail");
+    $("[name='action_type']").val("appDetail");
+    $("#mainForm").submit();
 }
 
 $(function (){
@@ -67,13 +70,20 @@ $(function (){
 })
 
 function doAdvSearch() {
+    $("[name='action_type']").val("doAdvSearch");
+    $("#mainForm").submit();
+}
+
+function doAdvAfterSearch(){
     showWaiting();
-    SOP.Crud.cfxSubmit("mainForm", "doAdvSearch");
+    $("[name='action_type']").val("doAdvSearch");
+    $("#mainForm").submit();
 }
 
 function doBack() {
     showWaiting();
-    SOP.Crud.cfxSubmit("mainForm", "back");
+    $("[name='action_type']").val("back");
+    $("#mainForm").submit();
 }
 
 function doAdvClear() {
@@ -83,16 +93,22 @@ function doAdvClear() {
     $("#error_to_date").hide();
     $("#error_start_to_date").hide();
     $("#error_expiry_date").hide();
+    $("#clearFilterForSearch input[type='checkbox']").prop('checked', false);
+    $("#clearFilterForSearch .multi-select-button").html("-- Select --");
+    $("#facilityType option").prop('selected',false);
+    $("#natureOfTheSample option").prop('selected',false);
 }
 
 function doAdvAfterSearch() {
     showWaiting();
-    SOP.Crud.cfxSubmit("mainForm", "afterSearch");
+    $("[name='action_type']").val("afterSearch");
+    $("#mainForm").submit();
 }
 
 function doAdvAfterClear() {
+    showWaiting();
     $('input[type="text"]').val("");
-    $('select[firstOption="Please Select"] option:first').prop("selected",'selected');
+    $('#applicationType option:first').prop("selected", true);
     $("input[name = 'from_date']").val("");
     $("input[name = 'to_date']").val("");
     $("input[name = 'approval_from_date']").val("");
@@ -103,4 +119,8 @@ function doAdvAfterClear() {
     $("input[name = 'approved_to_date']").val("");
     $("input[name = 'fac_expiry_from_date']").val("");
     $("input[name = 'fac_expiry_to_date']").val("");
+    $("#clearFilterForSearch input[type='checkbox']").prop('checked', false);
+    $("#clearFilterForSearch .multi-select-button").html("-- Select --");
+    $("#facilityType option").prop('selected',false);
+    $("#natureOfTheSample option").prop('selected',false);
 }

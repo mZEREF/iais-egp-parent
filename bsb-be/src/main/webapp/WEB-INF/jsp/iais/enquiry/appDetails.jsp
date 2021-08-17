@@ -25,7 +25,9 @@
 <div class="main-content">
   <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="prRegNo" value="">
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+    <input type="hidden" name="action_type" value="">
+    <input type="hidden" name="action_value" value="">
+    <input type="hidden" name="action_additional" value="">
     <input type="hidden" name="searchChk" id="searchChk" value="${count}"/>
     <div class="bg-title"><h2>Details of Application NO</h2></div>
     <div class="container">

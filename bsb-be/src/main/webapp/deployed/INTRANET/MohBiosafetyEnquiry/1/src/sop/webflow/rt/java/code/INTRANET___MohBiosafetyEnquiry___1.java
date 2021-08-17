@@ -14,7 +14,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohBiosafetyEnquiry___1 extends BaseProcessClass {
-
 	private static final String DELEGATOR ="biosafetyEnquiryDelegator";
 
 	public void prepareBasicSearch_OnStepProcess_0() throws Exception {

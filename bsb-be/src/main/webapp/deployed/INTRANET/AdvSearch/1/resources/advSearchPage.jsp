@@ -1,2 +1,2 @@
-<%@include file="/WEB-INF/jsp/iais/biosafetyEnquiry/advSearch.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/enquiry/advSearch.jsp"%>
 

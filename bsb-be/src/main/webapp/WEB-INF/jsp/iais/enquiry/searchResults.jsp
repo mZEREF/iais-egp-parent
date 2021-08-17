@@ -7,7 +7,7 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-                        <iais:pagination param="biosafetyEnquirySearchParam" result="biosafetyEnquirySearchResult"/>
+                        <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-responsive">
                             <div class="table-gp">
                                 <c:if test="${count=='1'}">
@@ -16,20 +16,20 @@
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""
                                                                  value="S/N"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Application No"
-                                                                 value="Application No."/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Application Type"
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="applicationNo"
+                                                                 value="Application No"/>
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="applicationType"
                                                                  value="Application Type"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field="Application Status"
                                                                  value="Application Status"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Application Submission Date"
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="applicationSubmissionDate"
                                                                  value="Application Submission Date"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Approval Date"
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="approvalDate"
                                                                  value="Approval Date"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field="Facility Classification"
@@ -225,10 +225,6 @@
                                         </c:forEach>
                                         </tbody>
                                     </table>
-                                </c:if>
-                                <c:if test="${count == '0'}">
-                                    <iais:message key="GENERAL_ACK018"
-                                                  escape="true"/>
                                 </c:if>
                             </div>
                         </div>

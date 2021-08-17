@@ -3,6 +3,8 @@ package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.stereotype.Repository;
+import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 @Repository
 @ToString(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class EnquiryDto implements Serializable {
+public class EnquiryDto extends PagingAndSortingDto implements Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
 
@@ -69,6 +71,8 @@ public class EnquiryDto implements Serializable {
 
     private String natureOfTheSample;
 
+    private List<String> natureOfTheSamples;
+
     private String approvalType;
 
     private Date approvalSubmissionDateFrom;
@@ -90,4 +94,44 @@ public class EnquiryDto implements Serializable {
     private Date approvedDateFrom;
 
     private Date approvedDateTo;
+
+
+    public void clearAllFields() {
+        id = "";
+        applicationNo = "";
+        applicationType = "";
+        applicationStatus = "";
+        applicationSubmissionDateFrom = null;
+        applicationSubmissionDateTo = null;
+        approvalDateFrom = null;
+        approvalDateTo = null;
+        facilityClassification = "";
+        facilityType = null;
+        facilityName = "";
+        scheduleType = "";
+        biologicalAgent = "";
+        riskLevelOfTheBiologicalAgent = "";
+        processType = "";
+        facilityExpiryDateFrom = null;
+        facilityExpiryDateTo = null;
+        gazettedArea = "";
+        facilityOperator = "";
+        authorisedPersonnelWorkingInFacility = "";
+        biosafetyCommitteePersonnel = "";
+        facilityStatus = "";
+        approvedFacilityCertifier = "";
+        natureOfTheSample = "";
+        approvalType = "";
+        approvalSubmissionDateFrom = null;
+        approvalSubmissionDateTo = null;
+        approvalStatus = "";
+        organisationName = "";
+        facilityAdministrator = "";
+        approvedDateFrom = null;
+        approvedDateTo = null;
+        afcStatus = "";
+        teamMemberName = "";
+        teamMemberID = "";
+
+    }
 }

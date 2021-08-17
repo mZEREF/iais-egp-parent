@@ -2,9 +2,9 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     //handle to the Engine APIs
@@ -17,7 +17,9 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
@@ -100,4 +102,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

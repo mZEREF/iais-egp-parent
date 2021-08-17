@@ -29,6 +29,7 @@ public class INTRANET___AdvSearch___1 extends BaseProcessClass {
 
 	public void advSearchDoPage_OnStepProcess_0() throws Exception {
 	// 		AdvSearchDoPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "page", this);
 	}
 
 	public void doAdvAfterSearch_OnStepProcess_0() throws Exception {
@@ -38,6 +39,15 @@ public class INTRANET___AdvSearch___1 extends BaseProcessClass {
 	public void prepareDetail_OnStepProcess_0() throws Exception {
 	// 		PrepareDetail->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareDetail", this);
+	}
+
+	public void advSearchSort_OnStepProcess_0() throws Exception {
+	// 		AdvSearchSort->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "sort", this);
+	}
+
+	public void step2_OnStepProcess_0() throws Exception {
+	// 		Step2->OnStepProcess
 	}
 
 }
