@@ -66,12 +66,12 @@ $(function() {
                     var optionString1 = "";
                     for (var i = 0; i < queryResult.length; i++) {
                         optionString += "<option value=\""  + queryResult[i].id + "\">" + queryResult[i].name + "</option>";
-                        optionString1+= "<label class=\"multi-select-menuitem\" name=\"checkAll\" for=\"biological_"+i+"\" role=\"menuitem\">"+"<input id=\"biological_"+i+"\" type=\"checkbox\" value=\""+queryResult[i].id+"\">"+queryResult[i].name+"</label>"
+                        optionString1+= "<label class=\"multi-select-menuitem\" for=\"listOfAgentsOrToxins_"+i+"\" role=\"menuitem\">"+"<input id=\"listOfAgentsOrToxins_"+i+"\" type=\"checkbox\" value=\""+queryResult[i].id+"\">"+queryResult[i].name+"</label>"
                     }
                     $("#listOfAgentsOrToxins").html(optionString);
-                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").html(optionString1);
+                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").children(".multi-select-menuitems").html(optionString1);
                 }else{
-                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").html("");
+                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").children(".multi-select-menuitems").html("");
                 }
             }
         )
@@ -86,11 +86,28 @@ $(function() {
             SOP.Crud.cfxSubmit("mainForm","loading");
         }
     })
+    $("#Back").click(function (){
+        var pageValue = $("#page_id").val();
+        if(pageValue == "form_page"){
+            $("[name='crud_action_type_form_page']").val("PrepareJump");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }else if(pageValue == "document_page"){
+            $("[name='crud_action_type_form_page']").val("PrepareForms");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }else if(pageValue == "preview_page"){
+            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
+            SOP.Crud.cfxSubmit("mainForm","loading");
+        }
+    })
     $("#SaveDraft").click(function (){
         SOP.Crud.cfxSubmit("mainForm","doSaveDraft");
     })
     $("#Submit").click(function (){
         SOP.Crud.cfxSubmit("mainForm","doSubmit");
+    })
+    $("#subApprovalEdit").click(function (){
+        $("[name='crud_action_type_form_page']").val("PrepareForms");
+        SOP.Crud.cfxSubmit("mainForm","loading");
     })
     var controlLi = $('#controlLi').val();
     var $tarSel = $('#'+controlLi+'li');

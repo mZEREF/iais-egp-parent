@@ -44,13 +44,6 @@
     <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="doJump" x="510" y="470">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doJump_OnStepProcess_0" name="doJump_OnStepProcess_0" />
-   </OnStepProcess>
-  </ReturnInvokeProcessStep>
   <AutomaticStep defClass="" executor="" icon="" name="doDocuments" x="640" y="110">
    <Description />
    <probepoint type="none" />
@@ -93,6 +86,11 @@
     <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="doJump" x="470" y="480">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+  </ReturnInvokeProcessStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Forms" stageIndicator="" x="500" y="340">
@@ -130,9 +128,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Prepare" style="rectanular">
    <position>{(100,310)(180,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="oblique">
-   <position>{(330,490)(530,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(180,310)(330,120)}</position>
@@ -190,6 +185,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareForms" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(760,430)(363,434)(340,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="rectanular">
+   <position>{(330,490)(490,500)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

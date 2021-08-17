@@ -8,7 +8,7 @@
     </div>
     <div id="previewInfo" class="panel-collapse collapse">
         <div class="panel-body">
-            <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
+            <p><div class="text-right app-font-size-16"><a href="#" id="subApprovalEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             <div class="panel-main-content form-horizontal min-row">
                 <div class="licensee-com">
                     <iais:row>

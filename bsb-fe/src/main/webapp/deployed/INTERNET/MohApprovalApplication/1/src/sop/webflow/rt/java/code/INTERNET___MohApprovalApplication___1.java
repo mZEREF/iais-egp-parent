@@ -74,10 +74,4 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 	// 		doSubmit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
 	}
-
-	public void doJump_OnStepProcess_0() throws Exception {
-	// 		doJump->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doJump", this);
-	}
-
 }

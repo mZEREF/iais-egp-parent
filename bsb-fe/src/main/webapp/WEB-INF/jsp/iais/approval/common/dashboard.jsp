@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
 %>
@@ -12,7 +13,7 @@
                     <div class="dashboard-page-title">
                         <h1>New Application</h1>
                         <h3 id="newSvc">
-                            You are applying for <strong>Approval to Possess</strong>
+                            You are applying for <strong><iais:code code="${taskList}"></iais:code></strong>
                         </h3>
                     </div>
                 </div>

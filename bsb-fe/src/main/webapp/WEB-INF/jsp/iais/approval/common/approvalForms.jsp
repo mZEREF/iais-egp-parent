@@ -17,7 +17,7 @@
                                                 <div class=" form-group form-horizontal formgap">
                                                     <div class="col-sm-8 control-label formtext control">
                                                         <div class="cgo-header">
-                                                            <strong>${taskList}</strong>
+                                                            <strong><iais:code code="${taskList}"></iais:code></strong>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -585,7 +585,8 @@
                                                         <tr height="1">
                                                             <td class="first last" style="width: 100%;">
                                                                 <div class="control control-caption-horizontal">
-                                                                    <input type="checkbox" name=""> I will ensure to the best of my ability that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated in the BATA Transportation Regulations.
+                                                                    <input type="checkbox" name="checkbox_1"> I will ensure to the best of my ability that the packaging of the materials and the transfer are carried out in accordance with the requirements stipulated in the BATA Transportation Regulations.
+                                                                    <span id="error_checkbox1" name="iaisErrorMsg" class="error-msg"></span>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -593,7 +594,8 @@
                                                     <tr height="1">
                                                         <td class="first last" style="width: 100%;">
                                                             <div class="control control-caption-horizontal">
-                                                                <input type="checkbox" name=""> I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.
+                                                                <input type="checkbox" name="checkbox_2"> I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.
+                                                                <span id="error_checkbox2" name="iaisErrorMsg" class="error-msg"></span>
                                                             </div>
                                                         </td>
                                                     </tr>

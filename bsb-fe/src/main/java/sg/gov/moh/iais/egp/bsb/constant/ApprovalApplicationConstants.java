@@ -39,6 +39,8 @@ public class ApprovalApplicationConstants {
     public static final String INTENDED_WORK_ACTIVITY = "intendedWorkActivity";
     public static final String START_DATE = "startDate";
     public static final String END_DATE = "endDate";
+    public static final String CHECKBOX_1 = "checkbox_1";
+    public static final String CHECKBOX_2 = "checkbox_2";
 
     public static final String APPROVAL_APPLICATION_DTO_ATTR = "approvalApplicationDto";
 

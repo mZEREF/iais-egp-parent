@@ -37,11 +37,11 @@
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
+                                        <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em>Back</a></div>
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
-                                                <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
-                                                <a class="next btn btn-primary" id = "Submit">Submit</a>
+                                                <a class="btn btn-secondary" id="SaveDraft">Save as Draft</a>
+                                                <a class="next btn btn-primary" id="Submit">Submit</a>
                                             </div>
                                         </div>
                                     </div>

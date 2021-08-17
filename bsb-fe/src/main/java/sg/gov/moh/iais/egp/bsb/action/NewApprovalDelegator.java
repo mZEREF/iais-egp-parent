@@ -176,6 +176,8 @@ public class NewApprovalDelegator {
         String startDate = ParamUtil.getString(request, ApprovalApplicationConstants.START_DATE);
         String endDate = ParamUtil.getString(request, ApprovalApplicationConstants.END_DATE);
         String remarks = ParamUtil.getString(request, ApprovalApplicationConstants.REMARKS);
+        String checkbox1 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_1);
+        String checkbox2 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_2);
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
         approvalApplicationDto.setFacilityId(facilityId);
         approvalApplicationDto.setBiologicalId(biologicalId);
@@ -219,9 +221,39 @@ public class NewApprovalDelegator {
         approvalApplicationDto.setTransferPostalCode(postalCode);
         approvalApplicationDto.setCourierServiceProviderName(nameOfCourierServiceProvider);
         approvalApplicationDto.setRemarks(remarks);
+        approvalApplicationDto.setCheckbox1(checkbox1);
+        approvalApplicationDto.setCheckbox2(checkbox2);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.AGENTS_OR_TOXINS_LIST_ATTR, (Serializable) biologicalIdList);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.NATURE_LIST_ATTR, (Serializable) natureList);
+//        String propertyName = "";
+//        if (modeOfProcurement == null) {
+//            propertyName = "nullMode";
+//        }else{
+//            if (task == "APPRTY001" && modeOfProcurement == "BMOP001" && others == null){
+//                propertyName = "possessLocal";
+//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP001" && others != null){
+//                propertyName = "possessLocalOthers";
+//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP002" && others == null){
+//                propertyName = "possessImport";
+//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP002" && others != null){
+//                propertyName = "possessImportOthers";
+//            }else if (task == "APPRTY002" && modeOfProcurement == "BMOP001"){
+//                propertyName = "largeLocal";
+//            }else if (task == "APPRTY002" && modeOfProcurement == "BMOP002"){
+//                propertyName = "largeImport";
+//            }else if (task == "APPRTY003"){
+//                propertyName = "special";
+//            }
+//        }
+//        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto, propertyName);
+//        if(vResult != null && vResult.isHasErrors()){
+//            Map<String,String> errorMap = vResult.retrieveAll();
+//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+//        }else {
+//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+//        }
         ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
     }
 
