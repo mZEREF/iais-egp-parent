@@ -2827,6 +2827,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPersonnelDto> appSlList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
             if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtoList) && !StringUtil.isEmpty(premisesIndexNo)){
                 log.info(StringUtil.changeForLog("appSvcLaboratoryDisciplinesDtoList size:"+appSvcLaboratoryDisciplinesDtoList.size()));
                 for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
@@ -2861,6 +2862,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if(idNo.equals(appSvcCgoDto.getIdNo())){
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!IaisCommonUtils.isEmpty(appSlList) && !StringUtil.isEmpty(allocation.getSlIndex())) {
+                                    for (AppSvcPersonnelDto avpd : appSlList) {
+                                        if(allocation.getSlIndex().equals(avpd.getIndexNo())){
+                                            appSvcDisciplineAllocationDto.setSectionLeaderName(avpd.getName());
                                             break;
                                         }
                                     }

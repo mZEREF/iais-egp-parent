@@ -610,7 +610,8 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
         if (appSvcDisciplineAllocationDtoList != null && !appSvcDisciplineAllocationDtoList.isEmpty()) {
             for (AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList) {
-                reloadAllocation.put(allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(), allocationDto.getIdNo());
+                reloadAllocation.put("cgo" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(), allocationDto.getIdNo());
+                reloadAllocation.put("sl" + allocationDto.getPremiseVal() + allocationDto.getChkLstConfId(), allocationDto.getSlIndex());
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
