@@ -3903,6 +3903,9 @@ public class ClinicalLaboratoryDelegator {
             } else {
                 cgoMap.put(idNo, idNo);
             }
+            if (StringUtil.isEmpty(daList.get(i).getSlIndex())) {
+                map.put("disciplineAllocationSl" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Section Leader","field"));
+            }
         }
         if(map.isEmpty()){
             List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);

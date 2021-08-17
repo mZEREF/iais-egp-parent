@@ -3240,8 +3240,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else {
             for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list) {
                 String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String slIndex = appSvcDisciplineAllocationDto.getSlIndex();
+                boolean hasError = false;
                 if (StringUtil.isEmpty(idNo)) {
                     map.put("idNo", "idNo empty");
+                    hasError = true;
+                }
+                if (StringUtil.isEmpty(slIndex)) {
+                    map.put("slIndex", "slIndex empty");
+                    hasError = true;
+                }
+                if (hasError) {
                     sB.append(serviceId);
                     return;
                 }
