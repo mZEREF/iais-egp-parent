@@ -421,15 +421,15 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "licensee");
             bpc.request.setAttribute("errormapIs", "error");
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("licensee", "");
             //coMap.put("serviceConfig", sB.toString());
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         } else {
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("licensee", "licensee");
             //coMap.put("serviceConfig", sB.toString());
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(actionAdditional)) {
                 try {
@@ -986,8 +986,8 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-        HashMap<String, String> coMap  = bpc.request.getSession().getAttribute("coMap")==null ?
-                null : (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap  = bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP)==null ?
+                null : (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
         String paymentMethod ;
 
@@ -1167,15 +1167,15 @@ public class NewApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "premises");
                 bpc.request.setAttribute("errormapIs", "error");
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
                 coMap.put("premises", "");
                 coMap.put("serviceConfig", sB.toString());
-                bpc.request.getSession().setAttribute("coMap", coMap);
+                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             } else {
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
                 coMap.put("premises", "premises");
                 coMap.put("serviceConfig", sB.toString());
-                bpc.request.getSession().setAttribute("coMap", coMap);
+                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
                 if ("rfcSaveDraft".equals(crud_action_additional)) {
                     try {
                         doSaveDraft(bpc);
@@ -1269,7 +1269,7 @@ public class NewApplicationDelegator {
         if ("next".equals(crud_action_values)) {
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
             doIsCommom(bpc.request, errorMap);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             if (errorMap.isEmpty()) {
                 coMap.put("document", "document");
             } else {
@@ -1279,7 +1279,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
             ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
 
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         }else{
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
             doIsCommom(bpc.request, errorMap);
@@ -1609,7 +1609,7 @@ public class NewApplicationDelegator {
             jumpYeMian(bpc.request, bpc.response);
             return;
         }
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
 
@@ -2342,7 +2342,7 @@ public class NewApplicationDelegator {
         //validate reject  apst050
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
         String rfc_err020 = MessageUtil.getMessageDesc("RFC_ERR020");
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
@@ -3003,14 +3003,14 @@ public class NewApplicationDelegator {
             //set audit
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("previewli", "");
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             return;
         } else {
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("previewli", "previewli");
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         }
         //sync person data
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
@@ -3066,7 +3066,7 @@ public class NewApplicationDelegator {
             }
         }
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
         List<String> strList = new ArrayList<>(5);
         coMap.forEach((k, v) -> {
             if (!StringUtil.isEmpty(v)) {
@@ -4354,7 +4354,7 @@ public class NewApplicationDelegator {
                             }
                         }
                     }
-                    bpc.getSession().setAttribute("coMap", coMap);
+                    bpc.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
                 }
                 if (appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0) {
                     ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -4407,13 +4407,13 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setNeedEditController(true);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("licensee", "licensee");
             coMap.put("premises", "premises");
             coMap.put("document", "document");
             coMap.put("information", "information");
             coMap.put("previewli", "previewli");
-            bpc.request.getSession().setAttribute("coMap", coMap);
+            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
@@ -4480,12 +4480,12 @@ public class NewApplicationDelegator {
                 }
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
                 coMap.put("premises", "premises");
                 coMap.put("document", "document");
                 coMap.put("information", "information");
                 coMap.put("previewli", "previewli");
-                bpc.request.getSession().setAttribute("coMap", coMap);
+                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
                 //control premises edit
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);

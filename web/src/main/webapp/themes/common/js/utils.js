@@ -492,6 +492,7 @@ function refreshIndex(targetSelector) {
         var $ele = $(v);
         var $selector = $ele.find(':input');
         if ($selector.length == 0) {
+            $ele.text(k + 1);
             return;
         }
         $selector.each(function () {

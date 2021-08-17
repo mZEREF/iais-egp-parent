@@ -35,6 +35,7 @@
                 </div>
             </div>
         </div>
+        <span class="error-msg" name="iaisErrorMsg" id="error_errorSECLDR"></span>
     </div>
 
     <c:choose>
@@ -112,48 +113,7 @@
             }
             //reset number
             var $content = $('div.sectionLaderContent');
-            $content.each(function (k,v) {
-                //$(this).find('.assign-psn-item').html(k+1);
-                var $v = $(v);
-                var $selector = $v.find(':input');
-                if ($selector.length == 0) {
-                    return;
-                }
-                $selector.each(function () {
-                    var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
-                    var orgName = $input.attr('name');
-                    var result = /([a-zA-Z_]*)/g.exec(orgName);
-                    var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
-                    console.info(orgName + " " + name);
-                    $input.prop('name', name + k);
-                    if (orgName == $input.attr('id')) {
-                        $input.prop('id', name + k);
-                    }
-                    var errorId = 'error_'+ orgName;
-                    var $errorSpan = $v.find('span[id="' + errorId + '"]');
-                    if ($errorSpan.length > 0) {
-                        console.info("has error span");
-                        $errorSpan.prop('id', 'error_' + name + k);
-                    }
-                    if (tag == 'select') {
-                        $input.niceSelect("update");
-                    }
-                });
-
-
-
-                /*$(this).find('.salutation').prop('name','salutation'+k);
-                $(this).find('.name').prop('name','chassisNum'+k);
-                $(this).find('.qualification').prop('name','engineNum'+k);
-                $(this).find('.wrkExpYear').prop('name','vehicleIndexNo'+k);
-                $(this).find('.slIndexNo').prop('name','slIndexNo'+k);
-                $(this).find('.isPartEdit').prop('name','isPartEdit'+k);*/
-                <%--<c:if test="${AppSubmissionDto.appType == 'APTY002'}" >
-                if (k == 0) {
-                    $(this).find('.addSectionLeaderBtn').hide();
-                }
-                </c:if>--%>
-            });
+            refreshIndex('div.sectionLaderContent');
             <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}">
             // display add more
             if (slLength < '${sectionLeaderConfig.maximumCount}') {

@@ -2319,7 +2319,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             coMap.put("premises", "premises");
         }
         // service info
-        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
         dto.stream().forEach(obj -> {
@@ -2479,6 +2478,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), bpc.request);
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                    errorMap.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "error");
+                    sB.append(serviceId);
+                    log.info("section leader is error");
+                }
             } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
@@ -2539,7 +2545,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
-        log.info(sB.toString());
+        log.info(StringUtil.changeForLog(sB.toString()));
+        log.info(StringUtil.changeForLog("Error Mwssage in doCheckBox : " + errorMap));
         return errorMap;
     }
 
@@ -2583,6 +2590,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     .map(AppSvcChargesPageDto::getOtherChargesDtos)
                     .orElseGet(() -> null);
             validatePersonMandatoryCount(otherChargesDtos, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType)) {
+            List<AppSvcPersonnelDto> sectionLeaderList = dto.getAppSvcSectionLeaderList();
+            validatePersonMandatoryCount(sectionLeaderList, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = dto.getAppSvcKeyAppointmentHolderDtoList();
+            validatePersonMandatoryCount(appSvcKeyAppointmentHolderDtoList, errorMap, psnType, mandatoryCount, serviceId, sB);
         }
     }
 
@@ -3784,7 +3797,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         coMap.put("document", "");
         coMap.put("information", "");
         coMap.put("previewli", "");
-        session.setAttribute("coMap", coMap);
+        session.setAttribute(NewApplicationConstant.CO_MAP, coMap);
         //request For Information Loading
         session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
