@@ -2186,13 +2186,13 @@
               </td>
             </tr>
             <tr>
-              <td class="col-xs-6 img-show">
+              <td class="col-xs-6">
                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID
                   No.</p>
               </td>
               <td>
                 <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${keyAppointmentHolder.idNo}">
+                        <span class="newVal" attr="${keyAppointmentHolder.idNo}">
                           <c:out value="${keyAppointmentHolder.idNo}"/>
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
                             <jsp:param name="idNo" value="${keyAppointmentHolder.idNo}"/>
@@ -2204,13 +2204,23 @@
                         <span class="oldVal"
                               attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"
                               style="display: none">
-                            ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}
+                            <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"/>
                             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
                               <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"/>
                               <jsp:param name="methodName" value="showThisTableOldService"/>
                             </jsp:include>
                         </span>
                 </div>
+                <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                  <jsp:param name="idNo" value="${keyAppointmentHolder.idNo}"/>
+                  <jsp:param name="cssClass" value="new-img-show"/>
+                  <jsp:param name="style" value="margin-left: -50%;"/>
+                </jsp:include>
+                <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                  <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList[status.index].idNo}"/>
+                  <jsp:param name="cssClass" value="old-img-show"/>
+                  <jsp:param name="style" value="margin-left: -50%;"/>
+                </jsp:include>
               </td>
             </tr>
 
