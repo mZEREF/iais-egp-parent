@@ -170,11 +170,11 @@ public class InterInboxDelegator {
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String alertUrl = ConfigHelper.getString("moh.mohAlert.url");
-        bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
 //        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
-        ParamUtil.setRequestAttr(request, "ssoToAlertUrl", alertUrl);
+        ParamUtil.setRequestAttr(request, "ssoToAlertUrl",
+                alertUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
         IaisEGPHelper.doLogout(request);
     }
 
