@@ -14,8 +14,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___AORevocationTaskList___1 extends BaseProcessClass {
-
 	private static final String DELEGATOR = "AORevocationDelegator";
+
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
@@ -25,7 +25,7 @@ public class INTRANET___AORevocationTaskList___1 extends BaseProcessClass {
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch->OnStepProcess
+	// 		prepareSwitch->OnStepProcess
 	}
 
 	public void doSearch_OnStepProcess_0() throws Exception {
