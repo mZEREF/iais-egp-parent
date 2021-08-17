@@ -4053,7 +4053,7 @@ public class ClinicalLaboratoryDelegator {
         String[] qualifications = ParamUtil.getStrings(request, "qualification");
         String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
         String[] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
-        String[] cgoIndexNos = ParamUtil.getStrings(request,"cgoIndexNo");
+        String[] indexNos = ParamUtil.getStrings(request,"indexNo");
         if (personnelSels != null && personnelSels.length > 0) {
             for (int i = 0; i < personnelSels.length; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
