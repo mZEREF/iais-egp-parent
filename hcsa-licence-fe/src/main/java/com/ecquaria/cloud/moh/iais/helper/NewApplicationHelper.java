@@ -2907,7 +2907,7 @@ public class NewApplicationHelper {
                 if(!IaisCommonUtils.isEmpty(spDtos)){
                     for(AppSvcPersonnelDto spDto:spDtos){
                         AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                        psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
+                        psnDto.setCgoIndexNo(spDto.getIndexNo());
                         psnDtoList.add(psnDto);
                     }
                 }

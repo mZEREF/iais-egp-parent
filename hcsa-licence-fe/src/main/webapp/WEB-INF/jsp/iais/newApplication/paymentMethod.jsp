@@ -66,7 +66,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6">
         <c:if test="${('APTY002' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType ) && requestInformationConfig == null}">
-            <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
+            <a id="BACK" href="#" class="back"><em class="fa fa-angle-left"></em> Back</a>
         </c:if>
     </div>
     <div class="col-xs-12 col-sm-6">

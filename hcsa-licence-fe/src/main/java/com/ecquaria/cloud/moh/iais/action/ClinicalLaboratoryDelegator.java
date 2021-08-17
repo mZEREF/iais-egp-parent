@@ -59,6 +59,17 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -76,16 +87,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -407,7 +408,7 @@ public class ClinicalLaboratoryDelegator {
                 sectionLeaderList.add(getSectionLeaderFromPage(String.valueOf(i), request));
             } else if (fromOld) {
                 oldSectionLeadList.stream()
-                        .filter(dto -> slIndexNo.equals(dto.getCgoIndexNo()))
+                        .filter(dto -> slIndexNo.equals(dto.getIndexNo()))
                         .findAny()
                         .ifPresent(dto -> sectionLeaderList.add(dto));
             }
@@ -428,9 +429,9 @@ public class ClinicalLaboratoryDelegator {
         sectionLeader.setName(name);
         sectionLeader.setQualification(qualification);
         sectionLeader.setWrkExpYear(wrkExpYear);
-        sectionLeader.setCgoIndexNo(slIndexNo);
-        if (StringUtil.isEmpty(sectionLeader.getCgoIndexNo())) {
-            sectionLeader.setCgoIndexNo(UUID.randomUUID().toString());
+        sectionLeader.setIndexNo(slIndexNo);
+        if (StringUtil.isEmpty(sectionLeader.getIndexNo())) {
+            sectionLeader.setIndexNo(UUID.randomUUID().toString());
         }
         return sectionLeader;
     }
@@ -1972,7 +1973,7 @@ public class ClinicalLaboratoryDelegator {
             if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtosList)){
                 for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnelDtosList){
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-                    String psnIndexNo = appSvcPersonnelDto.getCgoIndexNo();
+                    String psnIndexNo = appSvcPersonnelDto.getIndexNo();
                     if(!StringUtil.isEmpty(psnIndexNo)){
                         appSvcPrincipalOfficersDto.setCgoIndexNo(psnIndexNo);
                         spList.add(appSvcPrincipalOfficersDto);
@@ -4110,9 +4111,9 @@ public class ClinicalLaboratoryDelegator {
                 appSvcPersonnelDto.setProfRegNo(professionalRegnNo);
                 String cgoIndexNo = cgoIndexNos[i];
                 if(!StringUtil.isEmpty(cgoIndexNo)){
-                    appSvcPersonnelDto.setCgoIndexNo(cgoIndexNo);
+                    appSvcPersonnelDto.setIndexNo(cgoIndexNo);
                 }else{
-                    appSvcPersonnelDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    appSvcPersonnelDto.setIndexNo(UUID.randomUUID().toString());
                 }
                 appSvcPersonnelDtos.add(appSvcPersonnelDto);
             }
