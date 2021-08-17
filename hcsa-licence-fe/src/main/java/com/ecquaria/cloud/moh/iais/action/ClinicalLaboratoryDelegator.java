@@ -578,11 +578,11 @@ public class ClinicalLaboratoryDelegator {
         slList = IaisCommonUtils.genNewArrayList();
         AppSvcPersonnelDto asvpd = new AppSvcPersonnelDto();
         asvpd.setName("ABC");
-        asvpd.setCgoIndexNo("SL01");
+        asvpd.setIndexNo("SL01");
         slList.add(asvpd);
         asvpd = new AppSvcPersonnelDto();
         asvpd.setName("EFG");
-        asvpd.setCgoIndexNo("SL02");
+        asvpd.setIndexNo("SL02");
         slList.add(asvpd);
         if (slList != null && !slList.isEmpty()) {
             for (AppSvcPrincipalOfficersDto sl : appSvcCgoDtoList) {
