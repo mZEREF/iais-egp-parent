@@ -19,9 +19,35 @@ function sortRecords(field, sortType) {
 }
 
 
-
 $(function () {
     $('#pageJumpNoPageSize').change(function () {
         paginationOperation('changeSize');
     })
 });
+
+
+function parseAndShowErrorMsg(data) {
+    if (data && data !== '' && data !== '{}') {
+        $("#iaisErrorFlag").val("BLOCK");
+        var obj = JSON.parse(data);
+        for (var field in obj) {
+            if (obj.hasOwnProperty(field)) {
+                showOneErrorMsg(field, obj[field]);
+            }
+        }
+    }
+}
+
+function showOneErrorMsg(field, errorMsg) {
+    $("span[data-err-ind=field]").text(errorMsg);
+}
+
+function clearAllErrMsg() {
+    $("#iaisErrorFlag").val("");
+    $("span[data-err-ind]").each(function(){
+        $(this).html("");
+    });
+}
+
+
+

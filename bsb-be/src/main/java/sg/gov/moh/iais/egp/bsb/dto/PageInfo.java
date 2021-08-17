@@ -1,15 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.data.domain.Page;
 import sg.gov.moh.iais.egp.bsb.constant.GlobalConstants;
 
 
 /**
- * This class is intend to hold the pagination info which comes from the JPA Page
- * We return this object instead of the JPA page, because it contains too many fields we don't need
+ * This class is intend to hold the pagination info returned from the API part.
+ * We use data here for the pagination in the jsp.
+ * If we don't get pagination data from the API, we can use the {@link #emptyPageInfo} method for fallback.
  */
 @Data
 public class PageInfo {

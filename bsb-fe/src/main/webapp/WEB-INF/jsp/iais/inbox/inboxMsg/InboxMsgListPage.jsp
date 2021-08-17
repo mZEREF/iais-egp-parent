@@ -56,7 +56,7 @@
                         <iais:sortableHeader needSort="true" field="msgType" value="Message Type" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="refNo" value="Ref. No." isFE="true"/>
                         <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="createdDt" value="Date" isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="createdAt" value="Date" isFE="true"/>
                     </tr>
                     </thead>
                     <tbody>
@@ -109,7 +109,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date</p>
-                                    <p><fmt:formatDate value="${msg.createdDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                    <p><fmt:formatDate value="${msg.createdAt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                 </td>
                                 </tr>
                             </c:forEach>

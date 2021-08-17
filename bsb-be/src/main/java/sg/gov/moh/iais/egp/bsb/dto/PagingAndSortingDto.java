@@ -21,7 +21,7 @@ public class PagingAndSortingDto implements Serializable {
 
     /** Suitable for some list pages, it would better to use methods with arguments */
     public void defaultPaging() {
-        defaultPaging("createdDt,desc");
+        defaultPaging("createdAt,desc");
     }
 
     /**

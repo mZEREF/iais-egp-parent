@@ -1,8 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
-
 import java.util.Date;
+
 
 @Data
 public class BsbInbox {
@@ -18,17 +18,15 @@ public class BsbInbox {
 
     private String appType;
 
-    private String serviceCodes;
-
     private String msgContent;
 
     private String status;
 
-    private Date createdDt;
+    private Date createdAt;
 
     private String createdBy;
 
-    private Date updatedDt;
+    private Date modifiedAt;
 
-    private String updatedBy;
+    private String modifiedBy;
 }

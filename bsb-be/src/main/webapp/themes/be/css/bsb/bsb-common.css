@@ -23,3 +23,32 @@
 .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
     margin-left: -5px;
 }
+
+
+
+.push-float-field-xs, .push-float-field-sm, .push-float-field-md, .push-float-field-lg {
+}
+
+@media screen and (max-width: 768px) {
+    .push-float-field-xs {
+        margin-bottom: 44px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .push-float-field-sm {
+        margin-bottom: 50px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .push-float-field-md {
+        margin-bottom: 50px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .push-float-field-lg {
+        margin-bottom: 50px;
+    }
+}
