@@ -4,32 +4,35 @@
 <input type="hidden" name="reloadPayMethod" value="${reloadPaymentMethod}"/>
 <div class="col-xs-12">
     <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
-        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE002">
-        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE002"/></label>
+        <input id="Mastercard" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE002">
+        <label class="form-check-label" for="Mastercard" ><span class="check-circle"></span><iais:code code="PMDE002"/></label>
         <br>
-        <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="CARD">
-        &nbsp;
-        <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
-        <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="CARD">
+        <label class="form-check-label" for="Mastercard" >
+            <img src="<%=webroot1%>img/Mastercard.svg" width="66" height="25" alt="CARD">
+            &nbsp;
+            <%--<img src="/hcsa-licence-web/img/visa.svg" width="66" height="25" alt="GIRO">--%>
+            <img src="<%=webroot1%>img/visa.svg" width="66" height="25" alt="CARD">
+        </label>
+
     </div>
     <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
-        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
-        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
+        <input id="paymentNets" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
+        <label class="form-check-label" for="paymentNets" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
         <br>
-        <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
+        <label class="form-check-label" for="paymentNets" ><img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS"></label>
     </div>
     <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
-        <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}">
-        <label class="form-check-label" ><span class="check-circle"></span><iais:code code="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}"/></label>
+        <input id="paymentPayNow" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}">
+        <label class="form-check-label" for="paymentPayNow" ><span class="check-circle"></span><iais:code code="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}"/></label>
         <br>
-        <img src="<%=webroot1%>img/paymentPayNow.png" width="66" height="30" alt="PayNow">
+        <label class="form-check-label" for="paymentPayNow" ><img src="<%=webroot1%>img/paymentPayNow.png" width="66" height="30" alt="PayNow"></label>
     </div>
     <c:if test="${empty RetriggerGiro && IsGiroAcc}">
         <div class="col-md-3 col-xs-12">
-            <input class="form-check-input premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
-            <label class="form-check-label" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
+            <input id="PereOceanGIRO" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE001">
+            <label class="form-check-label" for="PereOceanGIRO" ><span class="check-circle"></span><iais:code code="PMDE001"/></label>
             <br>
-            <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO">
+            <label class="form-check-label" for="PereOceanGIRO" ><img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO"></label>
         </div>
     </c:if>
 </div>
@@ -63,7 +66,7 @@
 <div class="row">
     <div class="col-xs-12 col-sm-6">
         <c:if test="${('APTY002' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType ) && requestInformationConfig == null}">
-            <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
+            <a id="BACK" href="#" class="back"><em class="fa fa-angle-left"></em> Back</a>
         </c:if>
     </div>
     <div class="col-xs-12 col-sm-6">

@@ -16,7 +16,7 @@
             </c:choose>
         </c:if>
         " id="headingPremise" role="tab">
-        <h4 class="panel-title"><a role="button" class="collapse collapsed a-panel-collapse" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Mode of Service Delivery</a></h4>
+        <h4 class="panel-title"><a role="button" class="collapsed" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Mode of Service Delivery</a></h4>
     </div>
     <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">
