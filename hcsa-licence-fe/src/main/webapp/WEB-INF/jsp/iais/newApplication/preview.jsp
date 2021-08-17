@@ -140,8 +140,8 @@
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 </c:if>
 <input type="hidden" id="rfcPendingApplication" value="${rfcPendingApplication}">
-<div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
 <%--            <div class="modal-header">--%>
 <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>

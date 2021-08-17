@@ -574,6 +574,16 @@ public class ClinicalLaboratoryDelegator {
         ParamUtil.setSessionAttr(bpc.request, "CgoSelect", (Serializable) spList);
         List<AppSvcPersonnelDto> slList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
         List<SelectOption> slOpts = IaisCommonUtils.genNewArrayList();
+        //For test
+        slList = IaisCommonUtils.genNewArrayList();
+        AppSvcPersonnelDto asvpd = new AppSvcPersonnelDto();
+        asvpd.setName("ABC");
+        asvpd.setCgoIndexNo("SL01");
+        slList.add(asvpd);
+        asvpd = new AppSvcPersonnelDto();
+        asvpd.setName("EFG");
+        asvpd.setCgoIndexNo("SL02");
+        slList.add(asvpd);
         if (slList != null && !slList.isEmpty()) {
             for (AppSvcPrincipalOfficersDto sl : appSvcCgoDtoList) {
                 SelectOption sp = new SelectOption(sl.getCgoIndexNo(), sl.getName());
