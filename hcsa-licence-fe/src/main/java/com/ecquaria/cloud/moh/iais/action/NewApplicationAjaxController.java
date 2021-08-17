@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -1247,6 +1248,40 @@ public class NewApplicationAjaxController {
         log.debug(StringUtil.changeForLog("the generateVehicleHtml end ...."));
         return ajaxResDto;
 
+    }
+
+    @PostMapping(value = "/section-leader-html")
+    public @ResponseBody AjaxResDto generateSectionLeaderHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml start ...."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int slLength = ParamUtil.getInt(request, "slLength");
+        log.info("The index: " + slLength);
+        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml").getSqlStr();
+        html = html.replace("${stepName}", HcsaConsts.SECTION_LEADER);
+        html = html.replace("${index}", String.valueOf(slLength));
+        html = html.replace("${slIndex}", String.valueOf(slLength + 1));
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        html = html.replace("${salutionOptions}", generateDropDownHtml(selectOptions, null));
+        ajaxResDto.setResultJson(html);
+        log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml end ...."));
+        return ajaxResDto;
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
+        if (options == null || options.isEmpty()) {
+            return "";
+        }
+        StringBuilder html = new StringBuilder();
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
+        }
+        for (SelectOption option : options) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(option.getText());
+            html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
+        }
+        return html.toString();
     }
 
     @PostMapping(value = "/clinical-director-html")

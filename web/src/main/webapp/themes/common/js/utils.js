@@ -480,3 +480,39 @@ function unDisableContent(targetSelector) {
         }
     });
 }
+
+function refreshIndex(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    if ($(targetSelector).length == 0) {
+        return;
+    }
+    var regExp = /([a-zA-Z_]*)/g;
+    $(targetSelector).each(function (k,v) {
+        var $selector = $(v).find(':input');
+        if ($selector.length == 0) {
+            return;
+        }
+        $selector.each(function () {
+            var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+            var orgName = $input.attr('name');
+            var orgId = $input.attr('id');
+            if (isEmpty(orgName)) {
+                orgName = orgId;
+            }
+            if (isEmpty(orgName)) {
+                return;
+            }
+            var result = regExp.exec(orgName);
+            var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+            $input.prop('name', name + k);
+            if (orgName == orgId) {
+                $input.prop('id', name + k);
+            }
+            if (tag == 'select') {
+                $input.niceSelect("update");
+            }
+        });
+    });
+}

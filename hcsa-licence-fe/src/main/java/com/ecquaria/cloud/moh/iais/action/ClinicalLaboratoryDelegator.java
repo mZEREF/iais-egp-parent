@@ -269,6 +269,7 @@ public class ClinicalLaboratoryDelegator {
             prepareGovernanceOfficers(bpc);
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
+            prepareSectionLeader(bpc);
         } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
             prepareDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
@@ -325,6 +326,7 @@ public class ClinicalLaboratoryDelegator {
             doGovernanceOfficers(bpc);
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
+            doSectionLeader(bpc);
         } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
             doDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
@@ -343,6 +345,94 @@ public class ClinicalLaboratoryDelegator {
             log.warn(StringUtil.changeForLog("--- Wrong Step!!!"));
         }
         log.info(StringUtil.changeForLog("--- Do " + currentStepName + " End ---"));
+    }
+
+    public void prepareSectionLeader(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("PrepareSectionLeader start ...."));
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        // Section Leader config
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currSvcId,
+                ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+        if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
+            ParamUtil.setRequestAttr(bpc.request, "sectionLeaderConfig", hcsaSvcPersonnelList.get(0));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "prsFlag", prsFlag);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request, currSvcId);
+        ParamUtil.setRequestAttr(bpc.request, "sectionLeaderList", currSvcInfoDto.getAppSvcSectionLeaderList());
+        log.debug(StringUtil.changeForLog("PrepareSectionLeader end ...."));
+    }
+
+    public void doSectionLeader(BaseProcessClass bpc) {
+        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request,currSvcId);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
+        log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        if (isGetDataFromPage) {
+            List<AppSvcPersonnelDto> appSvcSectionLeaderList = getSectionLeadersFromPage(bpc.request);
+            currSvcInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
+            setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
+        }
+    }
+
+    private List<AppSvcPersonnelDto> getSectionLeadersFromPage(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("Get Section Leader start ..."));
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+        List<AppSvcPersonnelDto> oldSectionLeadList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        List<AppSvcPersonnelDto> sectionLeaderList = IaisCommonUtils.genNewArrayList();
+        int slLength = ParamUtil.getInt(request, "slLength");
+        if (slLength <= 0) {
+            return sectionLeaderList;
+        }
+        for (int i = 0; i < slLength; i++) {
+            String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
+            String slIndexNo = ParamUtil.getString(request, "slIndexNo" + i);
+            boolean fromPage = false;
+            boolean fromOld = false;
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && !isRfi) {
+                fromPage = true;
+            } else if (AppConsts.YES.equals(isPartEdit)) {
+                fromPage = true;
+            } else if (!StringUtil.isEmpty(slIndexNo) && oldSectionLeadList != null && !oldSectionLeadList.isEmpty()) {
+                fromOld = true;
+            }
+            if (fromPage) {
+                sectionLeaderList.add(getSectionLeaderFromPage(String.valueOf(i), request));
+            } else if (fromOld) {
+                oldSectionLeadList.stream()
+                        .filter(dto -> slIndexNo.equals(dto.getCgoIndexNo()))
+                        .findAny()
+                        .ifPresent(dto -> sectionLeaderList.add(dto));
+            }
+        }
+        log.info(StringUtil.changeForLog("The Section Leader length: " + slLength + "; size: " + sectionLeaderList.size()));
+        log.debug(StringUtil.changeForLog("Get Section Leader end ..."));
+        return sectionLeaderList;
+    }
+
+    private AppSvcPersonnelDto getSectionLeaderFromPage(String index, HttpServletRequest request) {
+        String salutation = ParamUtil.getString(request, "salutation" + index);
+        String name = ParamUtil.getString(request, "name" + index);
+        String qualification = ParamUtil.getString(request, "qualification" + index);
+        String wrkExpYear = ParamUtil.getString(request, "wrkExpYear" + index);
+        String slIndexNo = ParamUtil.getString(request, "slIndexNo" + index);
+        AppSvcPersonnelDto sectionLeader = new AppSvcPersonnelDto();
+        sectionLeader.setSalutation(salutation);
+        sectionLeader.setName(name);
+        sectionLeader.setQualification(qualification);
+        sectionLeader.setWrkExpYear(wrkExpYear);
+        sectionLeader.setCgoIndexNo(slIndexNo);
+        if (StringUtil.isEmpty(sectionLeader.getCgoIndexNo())) {
+            sectionLeader.setCgoIndexNo(UUID.randomUUID().toString());
+        }
+        return sectionLeader;
     }
 
     /**
