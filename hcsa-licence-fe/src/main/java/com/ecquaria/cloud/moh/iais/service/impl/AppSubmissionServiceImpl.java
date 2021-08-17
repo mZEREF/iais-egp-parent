@@ -814,6 +814,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, HttpServletRequest request) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
+            return errorMap;
+        }
+        for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
+            ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
+                    ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+            if (result != null) {
+                int index = i;
+                Map<String, String> map = result.retrieveAll();
+                map.forEach((k, v) -> errorMap.put(k + index, v));
+            }
+        }
+        return errorMap;
+    }
+
+    @Override
     public List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds) {
         List<AppSvcVehicleDto> vehicles = applicationFeClient.getActiveVehicles().getEntity();
         if (vehicles == null || vehicles.isEmpty()) {
@@ -832,6 +850,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         });
         return result;
     }
+
 
     private boolean isIn(String appId, List<LicAppCorrelationDto> licAppCorrList) {
         if (licAppCorrList == null || licAppCorrList.isEmpty()) {

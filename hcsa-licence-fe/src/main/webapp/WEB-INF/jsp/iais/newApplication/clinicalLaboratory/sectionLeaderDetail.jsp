@@ -1,5 +1,16 @@
 <div class="form-horizontal sectionLaderContent">
-    <input type="hidden" class="slIndexNo" name="slIndexNo${index}" value="${sectionLeader.cgoIndexNo}"/>
+    <input type="hidden" class="indexNo" name="indexNo${index}" value="${sectionLeader.indexNo}"/>
+    <iais:row>
+        <iais:value width="6" cssClass="text-right editDiv">
+            <c:if test="${canEdit}">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${cdSuffix}" value="1"/>
+                <a class="text-right app-font-size-16">
+                    <em class="fa fa-pencil-square-o">&nbsp;</em> Edit
+                </a>
+            </c:if>
+        </iais:value>
+    </iais:row>
+
     <iais:row>
         <iais:value width="6">
             <strong>
@@ -7,12 +18,11 @@
                 <label class="assign-psn-item"><c:if test="${index > 0}">${index+1}</c:if></label>
             </strong>
         </iais:value>
-        <iais:value width="6" cssClass="text-right editDiv">
-            <c:if test="${canEdit}">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${cdSuffix}" value="1"/>
-                <a class="text-right app-font-size-16">
-                    <em class="fa fa-pencil-square-o">&nbsp;</em> Edit
-                </a>
+        <iais:value width="6" cssClass="text-right">
+            <c:if test="${index > 0}">
+                <h4 class="text-danger">
+                    <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                </h4>
             </c:if>
         </iais:value>
     </iais:row>

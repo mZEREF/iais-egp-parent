@@ -111,27 +111,36 @@
                 $('.addSectionLeaderBtn').show();
             }
             //reset number
-            var regExp = /([a-zA-Z_]*)/g;
             var $content = $('div.sectionLaderContent');
             $content.each(function (k,v) {
                 //$(this).find('.assign-psn-item').html(k+1);
-                var $selector = $(this).find(':input');
+                var $v = $(v);
+                var $selector = $v.find(':input');
                 if ($selector.length == 0) {
                     return;
                 }
                 $selector.each(function () {
                     var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
                     var orgName = $input.attr('name');
-                    var result = regExp.exec(orgName);
+                    var result = /([a-zA-Z_]*)/g.exec(orgName);
                     var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+                    console.info(orgName + " " + name);
                     $input.prop('name', name + k);
                     if (orgName == $input.attr('id')) {
-                    $input.prop('id', name + k);
+                        $input.prop('id', name + k);
+                    }
+                    var errorId = 'error_'+ orgName;
+                    var $errorSpan = $v.find('span[id="' + errorId + '"]');
+                    if ($errorSpan.length > 0) {
+                        console.info("has error span");
+                        $errorSpan.prop('id', 'error_' + name + k);
                     }
                     if (tag == 'select') {
                         $input.niceSelect("update");
                     }
                 });
+
+
 
                 /*$(this).find('.salutation').prop('name','salutation'+k);
                 $(this).find('.name').prop('name','chassisNum'+k);

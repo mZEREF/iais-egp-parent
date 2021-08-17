@@ -85,7 +85,7 @@
                     <thead style="display: none">
                     <tr><th scope="col"></th></tr>
                     </thead>
-                    <input type="hidden" name="cgoIndexNo" value="${appSvcPersonnelDto.cgoIndexNo}"/>
+                    <input type="hidden" name="indexNo" value="${appSvcPersonnelDto.indexNo}"/>
                     <tbody>
                     <tr height="1" class="personnel-header">
                       <td class="" style="width: 100%;">
