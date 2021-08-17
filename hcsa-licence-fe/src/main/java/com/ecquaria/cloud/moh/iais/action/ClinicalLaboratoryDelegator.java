@@ -1582,7 +1582,7 @@ public class ClinicalLaboratoryDelegator {
         if (isGetDataFromPage) {
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
-            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = genAppSvcKeyAppointmentHolder(bpc.request);
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = genAppSvcKeyAppointmentHolder(bpc.request, appType);
             currentSvcRelatedDto.setAppSvcKeyAppointmentHolderDtoList(appSvcKeyAppointmentHolderList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -3200,6 +3200,22 @@ public class ClinicalLaboratoryDelegator {
         return result;
     }
 
+    private AppSvcPrincipalOfficersDto getKeyAppointmentHolderByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+        AppSvcPrincipalOfficersDto result = null;
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderDtoList)){
+                for(AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolder:appSvcKeyAppointmentHolderDtoList){
+                    if(indexNo.equals(appSvcKeyAppointmentHolder.getCgoIndexNo())){
+                        result = appSvcKeyAppointmentHolder;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     private List<AppSvcPrincipalOfficersDto> genAppSvcClinicalDirectorDto(HttpServletRequest request, String appType){
         log.debug(StringUtil.changeForLog("gen app svc clinical director dto start ..."));
         String currSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
@@ -4238,35 +4254,66 @@ public class ClinicalLaboratoryDelegator {
         return appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
     }
 
-    private List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request) {
-        List<AppSvcPrincipalOfficersDto> KeyAppointmentHolder = IaisCommonUtils.genNewArrayList();
+    private List<AppSvcPrincipalOfficersDto> genAppSvcKeyAppointmentHolder(HttpServletRequest request, String appType) {
+        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = IaisCommonUtils.genNewArrayList();
         int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         for(int i = 0; i < keyAppointmentHolderLength; i++){
-            String assignSel = ParamUtil.getString(request,"assignSel" + i);
-            AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-            switch (assignSel){
-                case NewApplicationConstant.NEW_PSN:
-                    String salutation = ParamUtil.getString(request,"salutation" + i);
-                    String name = ParamUtil.getString(request,"name" + i);
-                    String idType = ParamUtil.getString(request,"idType" + i);
-                    String idNo = ParamUtil.getString(request,"idNo" + i);
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
-                    appSvcPrincipalOfficersDto.setSalutation(salutation);
-                    appSvcPrincipalOfficersDto.setName(name);
-                    appSvcPrincipalOfficersDto.setIdType(idType);
-                    appSvcPrincipalOfficersDto.setIdNo(idNo);
-                    break;
-                case "-1":
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
-                    break;
-                default:
-                    appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
-                    appSvcPrincipalOfficersDto.setAssignSelect(assignSel);
-                    break;
+            boolean getDataByIndexNo = false;
+            boolean getPageData = false;
+            String isPartEdit = ParamUtil.getString(request,"isPartEdit"+i);
+            String cgoIndexNo = ParamUtil.getString(request,"cgoIndexNo"+i);
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+                getPageData = true;
+            }else if(AppConsts.YES.equals(isPartEdit)){
+                getPageData = true;
+            }else if(!StringUtil.isEmpty(cgoIndexNo)){
+                getDataByIndexNo = true;
             }
-            KeyAppointmentHolder.add(appSvcPrincipalOfficersDto);
+            AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolderDto = null;
+            if(getDataByIndexNo){
+                appSvcKeyAppointmentHolderDto = getKeyAppointmentHolderByIndexNo(appSvcRelatedInfoDto, cgoIndexNo);
+            }else if(getPageData){
+                String assignSel = ParamUtil.getString(request,"assignSel"+i);
+                String name = ParamUtil.getString(request,"name"+i);
+                String salutation = ParamUtil.getString(request,"salutation"+i);
+                String idType = ParamUtil.getString(request,"idType"+i);
+                String idNo = ParamUtil.getString(request,"idNo"+i);
+                appSvcKeyAppointmentHolderDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
+                appSvcKeyAppointmentHolderDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_KAH);
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
+                    appSvcKeyAppointmentHolderDto.setAssignSelect(assignSel);
+                } else {
+                    appSvcKeyAppointmentHolderDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
+                            IaisEGPConstant.ASSIGN_SELECT_ADD_NEW));
+                }
+                AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
+                if (appPsnEditDto == null) {
+                    appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcKeyAppointmentHolderDto);
+                    appSvcKeyAppointmentHolderDto.setPsnEditDto(appPsnEditDto);
+                }
+                boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(cgoIndexNo);
+                boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel) || !appSvcKeyAppointmentHolderDto.isLicPerson();
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
+                    appSvcKeyAppointmentHolderDto.setName(name);
+                }
+                if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
+                    appSvcKeyAppointmentHolderDto.setSalutation(salutation);
+                }
+                if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
+                    appSvcKeyAppointmentHolderDto.setIdType(idType);
+                }
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
+                    appSvcKeyAppointmentHolderDto.setIdNo(idNo);
+                }
+            }
+            if(appSvcKeyAppointmentHolderDto != null){
+                appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
+            }
         }
-        return KeyAppointmentHolder;
+        return appSvcKeyAppointmentHolderDtoList;
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
