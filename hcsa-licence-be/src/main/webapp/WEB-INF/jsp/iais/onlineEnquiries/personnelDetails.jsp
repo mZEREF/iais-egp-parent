@@ -5,42 +5,6 @@
 <!-- Default panel contents -->
 <c:forEach var="personnel" items="${personnelsDto}">
     <c:if test="${personnel.licKeyPersonnelDto.psnType!='Clinical Director'}">
-        <c:when test="${personnel.licKeyPersonnelDto.psnType=='Section Leader'}">
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="table-gp">
-                            <table aria-describedby="" class="table table-bordered">
-                                <thead style="display: none">
-                                <tr>
-                                    <th scope="col"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td align="right">Salutation</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.salutation}<c:if test="${empty personnel.keyPersonnelDto.salutation}">-</c:if></td>
-                                </tr>
-                                <tr>
-                                    <td class="col-xs-6" align="right">Name</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelDto.name}<c:if test="${empty personnel.keyPersonnelDto.name}">-</c:if></td>
-                                </tr>
-                                <tr>
-                                    <td align="right">Qualification</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
-                                </tr>
-                                <tr>
-                                    <td align="right">Working Experience (in terms of years)</td>
-                                    <td class="col-xs-6" style="padding-left: 15px;">${personnel.keyPersonnelExtDto.qualification}<c:if test="${empty personnel.keyPersonnelExtDto.qualification}">-</c:if></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </c:when>
         <c:when test="${personnel.licKeyPersonnelDto.psnType=='Key Appointment Holder'}">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
@@ -165,7 +129,45 @@
     </c:if>
 
 </c:forEach>
+<c:when test="${not empty appSvcSectionLeaderList}">
+    <c:forEach var="sectionLeader" items="${appSvcSectionLeaderList}">
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong><iais:code code="${sectionLeader.personnelType}"/></strong></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="table-gp">
+                        <table aria-describedby="" class="table table-bordered">
+                            <thead style="display: none">
+                            <tr>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td align="right">Salutation</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${sectionLeader.salutation}<c:if test="${empty sectionLeader.salutation}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td class="col-xs-6" align="right">Name</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${sectionLeader.name}<c:if test="${empty sectionLeader.name}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Qualification</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${sectionLeader.qualification}<c:if test="${empty sectionLeader.qualification}">-</c:if></td>
+                            </tr>
+                            <tr>
+                                <td align="right">Working Experience (in terms of years)</td>
+                                <td class="col-xs-6" style="padding-left: 15px;">${sectionLeader.wrkExpYear}<c:if test="${empty sectionLeader.wrkExpYear}">-</c:if></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
 
+</c:when>
 <c:forEach items="${AppSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="index">
     <div class="panel panel-default">
         <div class="panel-heading"><strong>General Conveyance Charges</strong></div>

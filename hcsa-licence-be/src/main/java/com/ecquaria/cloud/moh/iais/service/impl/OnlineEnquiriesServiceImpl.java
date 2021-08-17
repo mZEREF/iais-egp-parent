@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -166,6 +167,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public void setLicInfo(HttpServletRequest request) {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+        AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(licenceId).getEntity();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList=IaisCommonUtils.genNewArrayList();
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmission.getAppSvcRelatedInfoDtoList()
+             ) {
+            if(appSvcRelatedInfoDto.getAppSvcSectionLeaderList()!=null){
+                appSvcPersonnelDtoList.addAll(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+            }
+        }
 
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
@@ -286,6 +295,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             log.error(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(request, "personnelsDto", (Serializable) personnelsDto);
+        ParamUtil.setSessionAttr(request, "appSvcSectionLeaderList", (Serializable) appSvcPersonnelDtoList);
     }
 
     @Override
@@ -823,20 +833,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         }
                     }
                 }
-                //set sectionLeaderName
-//                List<AppSvcPersonnelDto> appSvcSlDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
-//                if (appSvcSlDtoList != null && appSvcSlDtoList.size() > 0) {
-//                    for (AppSvcPersonnelDto appSvcSlDto : appSvcSlDtoList) {
-//                        if (idNo.equals(appSvcSlDto.getIdNo())) {
-//                            if (idNo.equals(appSvcSlDto.getIdNo())) {
-//                                appSvcDisciplineAllocationDto.setSectionLeaderName(appSvcSlDto.getName());
-//                            }
-//                            if(!appSvcDisciplineAllocationDto.isCheck()){
-//                                appSvcDisciplineAllocationDto.setSectionLeaderName(null);
-//                            }
-//                        }
-//                    }
-//                }
+
             }
         }
 
