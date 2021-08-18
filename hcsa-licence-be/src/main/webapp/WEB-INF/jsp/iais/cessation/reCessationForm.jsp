@@ -80,7 +80,7 @@
                                                                  cssClass="nice-select cessationReasons" needSort="false"/>
                                                 </iais:value>
                                             </iais:row>
-                                            <div id="reason" hidden>
+                                            <div id="reason" style="display: none;">
                                                 <iais:row>
                                                     <iais:field value="Others" mandatory="true"/>
                                                     <iais:value width="7">

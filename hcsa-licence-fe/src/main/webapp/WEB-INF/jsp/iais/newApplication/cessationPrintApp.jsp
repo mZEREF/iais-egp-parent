@@ -89,7 +89,7 @@
                                                                      cssClass="nice-select cessationReasons"/>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="reason" hidden>
+                                                <div class="form-group" id="reason" style="display: none;">
                                                     <label class="col-xs-12 col-md-6 control-label ">Others</label>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
                                                         <iais:input needDisabled="true" type="text"
@@ -284,7 +284,7 @@
                                                     </div>
                                                 </c:if>
                                                 <c:if test="${!isGrpLic}">
-                                                    <div hidden>
+                                                    <div style="display: none;">
                                                         <input class="form-check-input" type="text"
                                                                name="whichTodo"
                                                                value="${appCessHci.premiseId}">
