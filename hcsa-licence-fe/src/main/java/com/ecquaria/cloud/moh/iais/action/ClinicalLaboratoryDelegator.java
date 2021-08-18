@@ -4234,10 +4234,10 @@ public class ClinicalLaboratoryDelegator {
                 if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit) && idNo != null) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
                 }
-                if (StringUtil.isEmpty(cgoIndexNo)) {
-                    appSvcKeyAppointmentHolderDto.setCgoIndexNo(UUID.randomUUID().toString());
+                if (StringUtil.isEmpty(indexNo)) {
+                    appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());
                 } else {
-                    appSvcKeyAppointmentHolderDto.setCgoIndexNo(cgoIndexNo);
+                    appSvcKeyAppointmentHolderDto.setIndexNo(indexNo);
                 }
             }
             if(appSvcKeyAppointmentHolderDto != null){
