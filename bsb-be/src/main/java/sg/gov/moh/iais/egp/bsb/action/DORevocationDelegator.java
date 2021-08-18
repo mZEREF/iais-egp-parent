@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.AOQueryInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.ApplicationMiscDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -74,7 +75,7 @@ public class DORevocationDelegator {
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
 
         AOQueryInfoDto resultDto = new AOQueryInfoDto();
-        resultDto.setApplicationNo("APP0000009");//Every time plus one
+        resultDto.setApplicationNo("APP0000012");//Every time plus one
         resultDto.setFacilityId(facilityId);
         resultDto.setAppType("BSBAPTY006");
         resultDto.setProcessType("PROTYPE001");
@@ -86,12 +87,13 @@ public class DORevocationDelegator {
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
 
-        RevocationDetailsDto revocationDetailsDto = new RevocationDetailsDto();
-        revocationDetailsDto.setRemarks(remarks);
-        revocationDetailsDto.setReasonContent(reason);
-        revocationDetailsDto.setApplicationId(result.getEntity().getId());
+        ApplicationMiscDto miscDto = new ApplicationMiscDto();
+        miscDto.setRemarks(remarks);
+        miscDto.setReasonContent(reason);
+        miscDto.setApplicationId(result.getEntity().getId());
+        miscDto.setReason("REASON02");
 
-        revocationClient.saveApplicationMisc(revocationDetailsDto);
+        revocationClient.saveApplicationMisc(miscDto);
 
         //get user name
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -99,7 +101,7 @@ public class DORevocationDelegator {
         BsbRoutingHistoryDto historyDto=new BsbRoutingHistoryDto();
         historyDto.setAppStatus(result.getEntity().getStatus());
         historyDto.setActionBy(loginContext.getUserName());
-        historyDto.setInternalRemarks(revocationDetailsDto.getRemarks());
+        historyDto.setInternalRemarks(miscDto.getRemarks());
         historyDto.setApplicationNo(result.getEntity().getApplicationNo());
         revocationClient.saveHistory(historyDto);
     }

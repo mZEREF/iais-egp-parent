@@ -27,8 +27,9 @@
                                 <h2><span><c:out value="You have successfully dealt with it"></c:out></span></h2>
                             </div>
                         </div>
-                        <a style="float:left;padding-top: 1.1%;" class="back" id="backToProcess" href="#"><em
-                                class="fa fa-angle-left"></em> Back To Process</a>
+                        <div align="left">
+                            <span><a id="backToProcess" href="#"><em class="fa fa-angle-left"></em> Back To Process</a></span>
+                        </div>
                     </div>
                 </div>
             </div>

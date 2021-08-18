@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public final class RevocationConstants {
 
     public static final String PARAM_REVOCATION_DETAIL = "revocationDetail";
+    public static final String PARAM_APPLICATION_MISC_LIST = "applicationMiscList";
     public static final String PARAM_APPLICATION_SEARCH_RESULT = "applicationSearchResult";
     public static final String PARAM_APPLICATION_SEARCH = "applicationSearch";
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
@@ -21,6 +22,7 @@ public final class RevocationConstants {
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
     public static final String PARAM_FACILITY_TYPE = "facilityType";
     public static final String PARAM_REASON = "reason";
+    public static final String PARAM_AOREMARKS = "AORemarks";
     public static final String PARAM_DOREMARKS = "DORemarks";
     public static final String PARAM_APPLICATION_STATUS = "applicationStatus";
     public static final String PARAM_APPROVAL = "approval";

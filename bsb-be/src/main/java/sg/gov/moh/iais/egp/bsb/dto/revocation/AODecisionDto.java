@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class AODecisionDto {
-    public String facId;
     public RevocationDetailsDto revocationDetailsDto;
     public BsbRoutingHistoryDto historyDto;
+    public ApplicationMiscDto miscDto;
 }

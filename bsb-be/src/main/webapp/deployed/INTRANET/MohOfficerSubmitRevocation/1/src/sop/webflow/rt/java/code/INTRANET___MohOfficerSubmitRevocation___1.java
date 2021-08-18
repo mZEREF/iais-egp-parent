@@ -33,4 +33,8 @@ public class INTRANET___MohOfficerSubmitRevocation___1 extends BaseProcessClass 
         EngineHelper.delegate(DELEGATOR, "save", this);
     }
 
+    public void back_OnStepProcess_0() throws Exception {
+        // 		back->OnStepProcess
+    }
+
 }

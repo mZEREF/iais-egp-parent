@@ -27,7 +27,7 @@ public interface RevocationClient {
     FeignResponseEntity<AOQueryInfoDto> saveApplication(@RequestBody AOQueryInfoDto aoQueryInfoDto);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<RevocationDetailsDto> saveApplicationMisc(@RequestBody RevocationDetailsDto revocationDetailsDto);
+    FeignResponseEntity<ApplicationMiscDto> saveApplicationMisc(@RequestBody ApplicationMiscDto misc);
 
     @GetMapping(value = "/bsb-application/app/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AOQueryResultDto> doQuery(@SpringQueryMap ApprovalOfficerQueryDto queryDto);
@@ -43,5 +43,8 @@ public interface RevocationClient {
 
     @RequestMapping(value = "/bsb-application/updateFacilityStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateFacilityStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status, @RequestParam(value = "approvalStatus") String approvalStatus);
+
+    @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationMiscDto>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
 
 }

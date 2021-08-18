@@ -25,8 +25,6 @@ public class RevocationDetailsDto implements Serializable {
     private String facilityType;
     private String approval;
     private String approvalStatus;
-    private String reasonContent;
-    private String remarks;
     private String currentStatus;
     private String applicationNo;
 }

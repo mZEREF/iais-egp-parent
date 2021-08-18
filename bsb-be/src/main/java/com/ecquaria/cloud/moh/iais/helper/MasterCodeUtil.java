@@ -140,6 +140,7 @@ public final class MasterCodeUtil {
 
     //AO Processing Decision
     public static final String CATE_ID_BSB_PROCESSING_DECISION = "3AF18C9A-9C45-4C59-96D4-419847F51CA7";
+    public static final String CATE_ID_BSB_REASON_TYPE = "FF506BE0-75EF-EB11-8B4D-000C293F0C91";
 
     public static final String CATE_ID_BSB_SCHEDULE_TYPE                = "D0B94AC3-1FA4-4087-AFCC-C82622A77B80";
     public static final String CATE_ID_BSB_NATURE_OF_TTE_SAMPLE         = "0C3D0BC3-E2A5-4BAE-B0F5-8D5BC4231B17";

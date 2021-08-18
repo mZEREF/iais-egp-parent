@@ -89,7 +89,7 @@
                                 <iais:row>
                                     <iais:field value="Application Date"/>
                                     <iais:value width="18">
-                                        <iais:datePicker id="applicationDate" name="applicationDate" value="${applicationDate}"></iais:datePicker>
+                                        <iais:datePicker id="applicationDate" name="applicationDate" dateVal="${applicationDate}"></iais:datePicker>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>

@@ -85,7 +85,8 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-
+                                                                    </c:forEach>
+                                                                    <c:forEach var="miscList" items="${sessionScope.applicationMiscList}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <div id="ReasonFalse"><iais:field
@@ -99,7 +100,8 @@
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500">${item.reasonContent}</textarea>
+                                                                                                  maxlength="500">
+                                                                                            <iais:code code="${miscList.reason}"></iais:code>:${miscList.reasonContent};</textarea>
                                                                                             <span id="error_reason"
                                                                                                   name="iaisErrorMsg"
                                                                                                   class="error-msg"></span>
@@ -113,7 +115,7 @@
                                                                                 <iais:field value="DO Remarks"
                                                                                             required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <p>${item.remarks}</p>
+                                                                                    <p>${miscList.remarks}</p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -126,12 +128,12 @@
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
                                                                                         <div class="ax_default text_area">
-                                                                                        <textarea id="remarksId"
-                                                                                                  name="remarks"
+                                                                                        <textarea id="AORemarks"
+                                                                                                  name="AORemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="500"></textarea>
-                                                                                            <span id="error_remarks"
+                                                                                            <span id="error_AORemarks"
                                                                                                   name="iaisErrorMsg"
                                                                                                   class="error-msg"></span>
                                                                                         </div>

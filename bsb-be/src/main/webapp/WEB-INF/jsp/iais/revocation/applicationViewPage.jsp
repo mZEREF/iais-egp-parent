@@ -115,9 +115,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   href="/system-admin-web/eservice/INTRANET/MohOfficerSubmitRevocation">
-                                                                    <em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backToSubmit2" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn1" id="clearButton1"
                                                                             type="button" class="btn btn-secondary">

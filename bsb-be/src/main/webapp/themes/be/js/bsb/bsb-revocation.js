@@ -100,7 +100,7 @@ function callAjaxUploadFile(){
 $(function () {
     $("#clearButton1").click(function () {
         $('#ReasonId').val("");
-        $('#remarksId').val("");
+        $('#AORemarks').val("");
     });
 
     $("#submitButton1").click(function () {
@@ -109,7 +109,7 @@ $(function () {
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
         }else{
-            SOP.Crud.cfxSubmit("mainForm");
+            SOP.Crud.cfxSubmit("mainForm","doSubmit");
         }
     });
 
@@ -124,12 +124,18 @@ $(function () {
         $('#facilityAddress').val("");
         $('#applicationNo').val("");
         $('#applicationStatus').val("");
-        $("#applicationDate").val("dd/mm/yyyy");
+        $("#applicationDate").val("");
+        $("#facilityClassification option:first").prop("selected",'selected');
+        $("#facilityType option:first").prop("selected",'selected');
+        $("#processType option:first").prop("selected",'selected');
+        $("#applicationType option:first").prop("selected",'selected');
         $("#beInboxFilter .current").text("Please Select");
     });
 
     $("#clearButton3").click(function () {
         $('#number').val("");
+        $("#toxinsSelect option:first").prop("selected",'selected');
+        $("#stateSelect option:first").prop("selected",'selected');
         $("#clearSelect .current").text("Please Select");
     });
 
@@ -166,5 +172,15 @@ $(function () {
     $("#backToProcess").click(function (){
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm");
+    });
+
+    $("#backToSubmit2").click(function (){
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "doBack");
+    });
+
+    $("#backToSubmit1").click(function (){
+        showWaiting();
+        document.getElementById("mainForm").submit();
     });
 });
