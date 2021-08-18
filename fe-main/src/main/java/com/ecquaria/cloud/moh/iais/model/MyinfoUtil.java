@@ -281,7 +281,9 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
 		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		log.info(StringUtil.changeForLog("Myinfo person base string => " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		log.info(StringUtil.changeForLog("Myinfo person signature => " + signature));
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
@@ -305,7 +307,9 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
 		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		log.info(StringUtil.changeForLog("Token auth base string ==> " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		log.info(StringUtil.changeForLog("Token auth signature ==> " + signature));
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
@@ -318,6 +322,8 @@ public class MyinfoUtil {
 		if(StringUtil.isEmpty(authorizationHeader)){
 			log.info("--------getTakenCallMyInfo authorizationHeader is null-------------");
 			return null;
+		} else {
+			log.info(StringUtil.changeForLog("Token Auth Header ==> " + authorizationHeader));
 		}
 		ResponseEntity<MyInfoTakenDto> resEntity;
 		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
