@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public interface ApprovalApplicationClient {
     FeignResponseEntity<ApprovalApplicationDto> saveApproval(@RequestBody ApprovalApplicationDto approvalApplicationDto);
 
     @PostMapping(path = "/bsb-approval/{approvalType}",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<BsbFacilityQueryDto>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
+    FeignResponseEntity<List<FacilityQueryDto>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
 
     @PostMapping(path = "/bsb-approval/schedule/{schedule}",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);

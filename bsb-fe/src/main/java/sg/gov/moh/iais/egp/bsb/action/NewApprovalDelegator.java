@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.BsbFacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,7 @@ public class NewApprovalDelegator {
         HttpServletRequest request = bpc.request;
         String task = ParamUtil.getString(request,TASK_LIST);
         ParamUtil.setSessionAttr(request, TASK_LIST, task);
+        log.info("task is {}", task);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
     }
 
@@ -99,9 +101,9 @@ public class NewApprovalDelegator {
     public void prepareForms(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        List<BsbFacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
+        List<FacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
         List<SelectOption> facilityNameList =  IaisCommonUtils.genNewArrayList();
-        for (BsbFacilityQueryDto dto : facilityByApprovalStatus) {
+        for (FacilityQueryDto dto : facilityByApprovalStatus) {
             facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
         }
         ParamUtil.setRequestAttr(request, "facilityNameSelect", facilityNameList);
@@ -179,42 +181,44 @@ public class NewApprovalDelegator {
         String checkbox1 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_1);
         String checkbox2 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_2);
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
-        approvalApplicationDto.setFacilityId(facilityId);
+        Facility facility = new Facility();
+        facility.setId(facilityId);
+        facility.setFacilityName(facilityName);
+        approvalApplicationDto.setFacility(facility);
         approvalApplicationDto.setBiologicalId(biologicalId);
         if(task.equals("APPRTY001")){
             approvalApplicationDto.setSampleNature(natureOfTheSample);
             approvalApplicationDto.setSampleNatureOth(others);
         }else if(task.equals("APPRTY002")){
-            approvalApplicationDto.setProductionMaximumVolumeLitres(estimatedMaximumVolume);
-            approvalApplicationDto.setLargeScaleProductionMethod(methodOrSystemUsedForLargeScaleProduction);
+            approvalApplicationDto.setProdMaxVolumeLitres(estimatedMaximumVolume);
+            approvalApplicationDto.setLspMethod(methodOrSystemUsedForLargeScaleProduction);
         }else if(task.equals("APPRTY003")){
-            approvalApplicationDto.setProjectName(nameOfProject);
+            approvalApplicationDto.setPrjName(nameOfProject);
             approvalApplicationDto.setPrincipalInvestigatorName(nameOfPrincipalInvestigator);
             approvalApplicationDto.setWorkActivityIntended(intendedWorkActivity);
-            approvalApplicationDto.setStartDt(Formatter.parseDate(startDate));
-            approvalApplicationDto.setEndDt(Formatter.parseDate(endDate));
+            approvalApplicationDto.setStartDate(Formatter.parseDate(startDate));
+            approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
         }
-        approvalApplicationDto.setFacilityName(facilityName);
         approvalApplicationDto.setSchedule(schedule);
         approvalApplicationDto.setListOfAgentsOrToxins(listOfAgentsOrToxins);
         approvalApplicationDto.setProcurementMode(modeOfProcurement);
         if (modeOfProcurement != null){
             if (modeOfProcurement.equals("BMOP001")){
-                approvalApplicationDto.setFacilityTransferFrom(transferFromFacilityName);
-                approvalApplicationDto.setTransferExpectedDt(Formatter.parseDate(expectedDateOfTransfer));
-                approvalApplicationDto.setImportContactPersonName(contactPersonFromTransferringFacility);
-                approvalApplicationDto.setImportContactPersonNo(contactNoOfContactPersonFromTransferringFacility);
-                approvalApplicationDto.setImportContactPersonEmail(emailAddressOfContactPersonFromTransferringFacility);
+                approvalApplicationDto.setFacTransferForm(transferFromFacilityName);
+                approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfTransfer));
+                approvalApplicationDto.setImpCtcPersonName(contactPersonFromTransferringFacility);
+                approvalApplicationDto.setImpCtcPersonNo(contactNoOfContactPersonFromTransferringFacility);
+                approvalApplicationDto.setImpCtcPersonEmail(emailAddressOfContactPersonFromTransferringFacility);
             }else if(modeOfProcurement.equals("BMOP002")){
-                approvalApplicationDto.setFacilityTransferFrom(overseasFacilityName);
-                approvalApplicationDto.setTransferExpectedDt(Formatter.parseDate(expectedDateOfImport));
-                approvalApplicationDto.setImportContactPersonName(contactPersonFromSourceFacility);
-                approvalApplicationDto.setImportContactPersonEmail(emailAddressOfContactPersonFromSourceFacility);
+                approvalApplicationDto.setFacTransferForm(overseasFacilityName);
+                approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfImport));
+                approvalApplicationDto.setImpCtcPersonName(contactPersonFromSourceFacility);
+                approvalApplicationDto.setImpCtcPersonEmail(emailAddressOfContactPersonFromSourceFacility);
             }
         }
-        approvalApplicationDto.setTransferFacilityAddr1(facilityAddress1);
-        approvalApplicationDto.setTransferFacilityAddr2(facilityAddress2);
-        approvalApplicationDto.setTransferFacilityAddr3(facilityAddress3);
+        approvalApplicationDto.setTransferFacAddr1(facilityAddress1);
+        approvalApplicationDto.setTransferFacAddr2(facilityAddress2);
+        approvalApplicationDto.setTransferFacAddr3(facilityAddress3);
         approvalApplicationDto.setTransferCountry(country);
         approvalApplicationDto.setTransferCity(city);
         approvalApplicationDto.setTransferState(state);
@@ -270,11 +274,11 @@ public class NewApprovalDelegator {
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         String processType = "";
-        if (task == "APPRTY001"){
+        if (task.equals("APPRTY001")){
             processType = "PROTYPE002";
-        }else if (task == "APPRTY002"){
+        }else if (task.equals("APPRTY002")){
             processType = "PROTYPE003";
-        }else if (task == "APPRTY003"){
+        }else if (task.equals("APPRTY003")){
             processType = "PROTYPE004";
         }
         String applicationNo = "APP0000011";

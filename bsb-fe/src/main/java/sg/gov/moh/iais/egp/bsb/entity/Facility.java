@@ -2,13 +2,15 @@ package sg.gov.moh.iais.egp.bsb.entity;
 
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 
 @Data
-public class Facility {
+public class Facility extends BaseEntity {
     private String id;
 
     private FacilityBiological facBiological;
@@ -65,11 +67,4 @@ public class Facility {
 
     private Date expiryDt;
 
-    private Date createdAt;
-
-    private String createdBy;
-
-    private Date modifiedAt;
-
-    private String modifiedBy;
 }

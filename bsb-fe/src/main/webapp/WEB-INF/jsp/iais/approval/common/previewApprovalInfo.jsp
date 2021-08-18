@@ -14,7 +14,7 @@
                     <iais:row>
                         <iais:field value="Facility Name" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${approvalApplicationDto.facilityName}"/>
+                            <c:out value="${approvalApplicationDto.facility.facilityName}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -49,13 +49,13 @@
                         <iais:row>
                             <iais:field value="Estimated maximum volume (in litres) of production at any one time" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.productionMaximumVolumeLitres}" />
+                                <c:out value="${approvalApplicationDto.prodMaxVolumeLitres}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Method or system used for large scale production " width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.largeScaleProductionMethod}" />
+                                <c:out value="${approvalApplicationDto.lspMethod}" />
                             </iais:value>
                         </iais:row>
                     </c:if>
@@ -70,31 +70,31 @@
                             <iais:row>
                                 <iais:field value="Transfer From Facility Name" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.facilityTransferFrom}" />
+                                    <c:out value="${approvalApplicationDto.facTransferForm}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Expected Date of Transfer" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.transferExpectedDt}" />
+                                    <c:out value="${approvalApplicationDto.transferExpectedDate}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Contact Person from Transferring Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.importContactPersonName}" />
+                                    <c:out value="${approvalApplicationDto.impCtcPersonName}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Contact No of Contact Person from Transferring Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.importContactPersonNo}" />
+                                    <c:out value="${approvalApplicationDto.impCtcPersonNo}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Email Address of Contact Person from Transferring Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.importContactPersonEmail}" />
+                                    <c:out value="${approvalApplicationDto.impCtcPersonEmail}" />
                                 </iais:value>
                             </iais:row>
                         </c:if>
@@ -102,44 +102,44 @@
                             <iais:row>
                                 <iais:field value="Overseas Facility Name" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.facilityTransferFrom}" />
+                                    <c:out value="${approvalApplicationDto.facTransferForm}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Expected Date of Import" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.transferExpectedDt}" />
+                                    <c:out value="${approvalApplicationDto.transferExpectedDate}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Contact person from Source Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.importContactPersonName}" />
+                                    <c:out value="${approvalApplicationDto.impCtcPersonName}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Email address of Contact person from Source Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.importContactPersonEmail}" />
+                                    <c:out value="${approvalApplicationDto.impCtcPersonEmail}" />
                                 </iais:value>
                             </iais:row>
                         </c:if>
                         <iais:row>
                             <iais:field value="Facility Address 1" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.transferFacilityAddr1}" />
+                                <c:out value="${approvalApplicationDto.transferFacAddr1}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Facility Address 2" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.transferFacilityAddr2}" />
+                                <c:out value="${approvalApplicationDto.transferFacAddr2}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Facility Address 3" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.transferFacilityAddr3}" />
+                                <c:out value="${approvalApplicationDto.transferFacAddr3}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -177,7 +177,7 @@
                         <iais:row>
                             <iais:field value="Name of Project" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.projectName}" />
+                                <c:out value="${approvalApplicationDto.prjName}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -195,13 +195,13 @@
                         <iais:row>
                             <iais:field value="Start Date" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.startDt}" />
+                                <c:out value="${approvalApplicationDto.startDate}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="End Date" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.endDt}" />
+                                <c:out value="${approvalApplicationDto.endDate}" />
                             </iais:value>
                         </iais:row>
                     </c:if>

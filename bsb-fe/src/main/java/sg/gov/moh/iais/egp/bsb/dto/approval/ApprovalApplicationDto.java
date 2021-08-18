@@ -1,36 +1,33 @@
 package sg.gov.moh.iais.egp.bsb.dto.approval;
 
 import com.ecquaria.cloud.moh.iais.common.annotation.CustomMsg;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author : LiRan
- * @date : 2021/8/12
+ * @date : 2021/8/11
  */
-@Getter
-@Setter
+@Data
 public class ApprovalApplicationDto implements Serializable {
 
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
+    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Facility Name")
-    private String facilityId;
+    private Facility facility;
 
-    private String facilityName;
-
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
+    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Schedule")
     private String schedule;
 
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
+    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Agent/Toxin")
     private String biologicalId;
 
@@ -46,44 +43,44 @@ public class ApprovalApplicationDto implements Serializable {
     @CustomMsg(placeHolders ="field" ,replaceVals= "Others, please specify")
     private String sampleNatureOth;
 
-    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
-    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special","nullMode"})
+    @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Mode of Procurement")
     private String procurementMode;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Source Facility Name")
-    private String facilityTransferFrom;
+    private String facTransferForm;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Expected Date")
-    private Date transferExpectedDt;
+    private Date transferExpectedDate;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Contact person")
-    private String importContactPersonName;
+    private String impCtcPersonName;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Email address contact person")
-    private String importContactPersonEmail;
+    private String impCtcPersonEmail;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessLocalOthers","largeLocal"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessLocalOthers","largeLocal"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Contact No of Contact Person")
-    private String importContactPersonNo;
+    private String impCtcPersonNo;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Facility Address")
-    private String transferFacilityAddr1;
+    private String transferFacAddr1;
 
-    private String transferFacilityAddr2;
+    private String transferFacAddr2;
 
-    private String transferFacilityAddr3;
+    private String transferFacAddr3;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
@@ -115,17 +112,17 @@ public class ApprovalApplicationDto implements Serializable {
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Estimated maximum volume")
-    private String productionMaximumVolumeLitres;
+    private String prodMaxVolumeLitres;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"largeLocal","largeImport"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"largeLocal","largeImport"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Method or system used")
-    private String largeScaleProductionMethod;
+    private String lspMethod;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"special"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Name of Project")
-    private String projectName;
+    private String prjName;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"special"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"special"})
@@ -140,20 +137,12 @@ public class ApprovalApplicationDto implements Serializable {
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"special"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "Start Work Activities Date")
-    private Date startDt;
+    private Date startDate;
 
     @NotBlank(message = "GENERAL_ERR0006", profiles = {"special"})
     @NotNull(message = "GENERAL_ERR0006", profiles = {"special"})
     @CustomMsg(placeHolders ="field" ,replaceVals= "End Work Activities Date")
-    private Date endDt;
-
-    @NotBlank(message = "Please Check 'Declaration on the accuracy of submission' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
-    @NotNull(message = "Please Check 'Declaration on the accuracy of submission' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
-    private String checkbox1;
-
-    @NotBlank(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
-    @NotNull(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
-    private String checkbox2;
+    private Date endDate;
 
     private String applicationNo;
 
@@ -164,5 +153,13 @@ public class ApprovalApplicationDto implements Serializable {
     private String status;
 
     private Date applicationDt;
+
+    @NotBlank(message = "Please Check 'Declaration on the accuracy of submission' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
+    @NotNull(message = "Please Check 'Declaration on the accuracy of submission' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport"})
+    private String checkbox1;
+
+    @NotBlank(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    @NotNull(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
+    private String checkbox2;
 
 }

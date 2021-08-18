@@ -34,9 +34,9 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7">
-                                                                        <input type="hidden" id="facilityId" name="facilityId" value="">
-                                                                        <iais:select name="facilityName" id="facilityName" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facilityName}"></iais:select>
-                                                                        <span id="error_facilityId" name="iaisErrorMsg" class="error-msg"></span>
+                                                                        <input type="hidden" id="facilityId" name="facilityId" value="${approvalApplicationDto.facility.id}">
+                                                                        <iais:select name="facilityName" id="facilityName" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facility.facilityName}"></iais:select>
+                                                                        <span id="error_facility" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -68,7 +68,7 @@
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7 control-font-label">
                                                                         <input type="hidden" id="biologicalId" name="biologicalId" value="">
-                                                                        <iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" disabled="false" options="listOfAgentsOrToxinsSelect" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select>
+                                                                        <iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select>
                                                                         <span id="error_biologicalId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -122,8 +122,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7" >
                                                                             <div class="">
-                                                                                <iais:input maxLength="10" type="text" name="estimatedMaximumVolume" value="${approvalApplicationDto.productionMaximumVolumeLitres}"></iais:input>
-                                                                                <span id="error_productionMaximumVolumeLitres" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="10" type="text" name="estimatedMaximumVolume" value="${approvalApplicationDto.prodMaxVolumeLitres}"></iais:input>
+                                                                                <span id="error_prodMaxVolumeLitres" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -141,8 +141,8 @@
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="input-group">
                                                                                 <div class="ax_default text_area">
-                                                                                    <textarea name="methodOrSystemUsedForLargeScaleProduction" value="${approvalApplicationDto.largeScaleProductionMethod}" cols="64" rows="4" maxlength="250"></textarea>
-                                                                                    <span id="error_largeScaleProductionMethod" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                    <textarea name="methodOrSystemUsedForLargeScaleProduction" value="${approvalApplicationDto.lspMethod}" cols="64" rows="4" maxlength="250"></textarea>
+                                                                                    <span id="error_lspMethod" name="iaisErrorMsg" class="error-msg"></span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -178,8 +178,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="250" type="text" name="transferFromFacilityName" value="${approvalApplicationDto.facilityTransferFrom}"></iais:input>
-                                                                                <span id="error_facilityTransferFrom" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="250" type="text" name="transferFromFacilityName" value="${approvalApplicationDto.facTransferForm}"></iais:input>
+                                                                                <span id="error_facTransferForm" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -196,8 +196,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="expectedDateOfTransfer" dateVal="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
-                                                                                <span id="error_transferExpectedDt" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:datePicker name="expectedDateOfTransfer" dateVal="${approvalApplicationDto.transferExpectedDate}"></iais:datePicker>
+                                                                                <span id="error_transferExpectedDate" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -214,8 +214,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="132" type="text" name="contactPersonFromTransferringFacility" value="${approvalApplicationDto.importContactPersonName}"></iais:input>
-                                                                                <span id="error_importContactPersonName" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="132" type="text" name="contactPersonFromTransferringFacility" value="${approvalApplicationDto.impCtcPersonName}"></iais:input>
+                                                                                <span id="error_impCtcPersonName" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -232,8 +232,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7" >
                                                                             <div class="">
-                                                                                <iais:input maxLength="20" type="text" name="contactNoOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.importContactPersonNo}"></iais:input>
-                                                                                <span id="error_importContactPersonNo" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="20" type="text" name="contactNoOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.impCtcPersonNo}"></iais:input>
+                                                                                <span id="error_impCtcPersonNo" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -250,8 +250,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="66" type="text" name="emailAddressOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.importContactPersonEmail}"></iais:input>
-                                                                                <span id="error_importContactPersonEmail" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="66" type="text" name="emailAddressOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.impCtcPersonEmail}"></iais:input>
+                                                                                <span id="error_impCtcPersonEmail" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -268,8 +268,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="250" type="text" name="overseasFacilityName" value="${approvalApplicationDto.facilityTransferFrom}"></iais:input>
-                                                                                <span id="error_facilityTransferFrom" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="250" type="text" name="overseasFacilityName" value="${approvalApplicationDto.facTransferForm}"></iais:input>
+                                                                                <span id="error_facTransferForm" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -286,8 +286,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="expectedDateOfImport" dateVal="${approvalApplicationDto.transferExpectedDt}"></iais:datePicker>
-                                                                                <span id="error_transferExpectedDt" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:datePicker name="expectedDateOfImport" dateVal="${approvalApplicationDto.transferExpectedDate}"></iais:datePicker>
+                                                                                <span id="error_transferExpectedDate" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -304,8 +304,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="132" type="text" name="contactPersonFromSourceFacility" value="${approvalApplicationDto.importContactPersonName}"></iais:input>
-                                                                                <span id="error_importContactPersonName" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="132" type="text" name="contactPersonFromSourceFacility" value="${approvalApplicationDto.impCtcPersonName}"></iais:input>
+                                                                                <span id="error_impCtcPersonName" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -322,8 +322,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="66" type="text" name="emailAddressOfContactPersonFromSourceFacility" value="${approvalApplicationDto.importContactPersonEmail}"></iais:input>
-                                                                                <span id="error_importContactPersonEmail" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="66" type="text" name="emailAddressOfContactPersonFromSourceFacility" value="${approvalApplicationDto.impCtcPersonEmail}"></iais:input>
+                                                                                <span id="error_impCtcPersonEmail" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -340,8 +340,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="35" type="text" name="facilityAddress1" value="${approvalApplicationDto.transferFacilityAddr1}"></iais:input>
-                                                                                <span id="error_transferFacilityAddr1" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="35" type="text" name="facilityAddress1" value="${approvalApplicationDto.transferFacAddr1}"></iais:input>
+                                                                                <span id="error_transferFacAddr1" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -357,7 +357,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="35" type="text" name="facilityAddress2" value="${approvalApplicationDto.transferFacilityAddr2}"></iais:input>
+                                                                                <iais:input maxLength="35" type="text" name="facilityAddress2" value="${approvalApplicationDto.transferFacAddr2}"></iais:input>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -373,7 +373,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="35" type="text" name="facilityAddress3" value="${approvalApplicationDto.transferFacilityAddr3}"></iais:input>
+                                                                                <iais:input maxLength="35" type="text" name="facilityAddress3" value="${approvalApplicationDto.transferFacAddr3}"></iais:input>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -480,8 +480,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:input maxLength="300" type="text" name="nameOfProject" value="${approvalApplicationDto.projectName}"></iais:input>
-                                                                                <span id="error_projectName" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:input maxLength="300" type="text" name="nameOfProject" value="${approvalApplicationDto.prjName}"></iais:input>
+                                                                                <span id="error_prjName" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -536,8 +536,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="startDate" dateVal="${approvalApplicationDto.startDt}"></iais:datePicker>
-                                                                                <span id="error_startDt" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:datePicker name="startDate" dateVal="${approvalApplicationDto.startDate}"></iais:datePicker>
+                                                                                <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -554,8 +554,8 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="">
-                                                                                <iais:datePicker name="endDate" dateVal="${approvalApplicationDto.endDt}"></iais:datePicker>
-                                                                                <span id="error_endDt" name="iaisErrorMsg" class="error-msg"></span>
+                                                                                <iais:datePicker name="endDate" dateVal="${approvalApplicationDto.endDate}"></iais:datePicker>
+                                                                                <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>

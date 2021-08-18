@@ -24,8 +24,7 @@ $(function() {
     var facilitySelected = $("#facilityName").find("option:checked").val();
     $("#facilityId").val(facilitySelected);
     $("#facilityName").change(function() {
-        var selectValue = $(this).val();
-        $("#facilityId").val(selectValue);
+        $("#facilityId").val($(this).val());
     })
     $("#natureOfTheSample").change(function() {
         var selectValue = $(this).val();
@@ -62,11 +61,11 @@ $(function() {
                 var result = data.result;
                 if(result == 'success'){
                     var queryResult = data.queryResult;
-                    var optionString = "";
-                    var optionString1 = "";
+                    var optionString = '';
+                    var optionString1 = '';
                     for (var i = 0; i < queryResult.length; i++) {
-                        optionString += "<option value=\""  + queryResult[i].id + "\">" + queryResult[i].name + "</option>";
-                        optionString1+= "<label class=\"multi-select-menuitem\" for=\"listOfAgentsOrToxins_"+i+"\" role=\"menuitem\">"+"<input id=\"listOfAgentsOrToxins_"+i+"\" type=\"checkbox\" value=\""+queryResult[i].id+"\">"+queryResult[i].name+"</label>"
+                        optionString += '<option value=" + queryResult[i].id + ">' + queryResult[i].name + '</option>';
+                        optionString1+= '<label class="multi-select-menuitem" for="listOfAgentsOrToxins_'+i+'" role="menuitem">'+'<input id="listOfAgentsOrToxins_'+i+'" type="checkbox" value="'+queryResult[i].id+'">'+queryResult[i].name+'</label>'
                     }
                     $("#listOfAgentsOrToxins").html(optionString);
                     $("#listOfAgentsOrToxins").next().children(".multi-select-menu").children(".multi-select-menuitems").html(optionString1);

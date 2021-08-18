@@ -11,7 +11,7 @@
     <table style="width: 50%;margin:auto">
         <tr>
             <td>
-                <iais:select name="taskList" disabled="false" codeCategory="CATE_ID_BSB_APPROVAL_TYPE"></iais:select>
+                <iais:select name="taskList" disabled="false" codeCategory="CATE_ID_BSB_APPROVAL_TYPE" firstOption="Please Select"></iais:select>
             </td>
         </tr>
         <tr>
