@@ -152,12 +152,12 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("subLicenseeError is -->:"+subLicenseeError));
                     chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
                     ajaxResDto.setResultJson(chargeTypeSelHtml);
+                }else if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                    error.put("uenError","RFC_ERR021");
                 }
-            }else{
-                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
-                ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
             }
-        }else{
+        }
+        if(!error.isEmpty()){
             ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
             ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
         }
@@ -854,6 +854,8 @@ public class RequestForChangeDelegator {
                                 log.error(StringUtil.changeForLog("This id can not get th subLicensee -->:"+subLicensee));
                             }
                         }
+                    }else if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                        error.put("uenError","RFC_ERR021");
                     }
                 }
             }
