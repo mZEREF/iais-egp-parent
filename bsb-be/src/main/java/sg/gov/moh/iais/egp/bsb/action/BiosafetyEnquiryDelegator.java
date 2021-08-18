@@ -166,7 +166,7 @@ public class BiosafetyEnquiryDelegator {
     }
 
     public void preSelectOption(HttpServletRequest request,String num){
-        switch(num){
+        /*switch(num){
             case "2":
                 List<String> approvals = biosafetyEnquiryClient.queryDistinctApproval().getEntity();
                 selectOption(request,"AFC",approvals);
@@ -179,7 +179,7 @@ public class BiosafetyEnquiryDelegator {
                 break;
             case "4":
                 break;
-        }
+        }*/
 
     }
 
