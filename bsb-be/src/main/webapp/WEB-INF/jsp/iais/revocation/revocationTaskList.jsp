@@ -146,17 +146,18 @@
                                     <iais:sortableHeader needSort="true" field="applicationStatus" value="Application Status" isFE="false"/>
                                 </tr>
                                 </thead>
-                                <c:forEach var="item" items="${applicationSearchResult}" varStatus="status">
-                                    <tr style="display: table-row;" id="appId${status.index + 1}">
-                                        <td><c:out value="${status.index + 1}"/></td>
+                                    <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
+                                <c:forEach var="item" items="${dataList}" varStatus="status">
+                                    <tr style="display: table-row;">
+                                        <td><c:out value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"/></td>
                                         <td><a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a></td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>
-                                        <td><c:out value="${item.facilityName}/${item.blockNo} ${item.streetName} ${item.floorNo}-${item.unitNo} ${item.postalCode}"/></td>
-                                        <td><iais:code code="${item.facilityType}"></iais:code></td>
+                                        <td><c:out value="${item.facility.facilityName}/${item.facility.blkNo} ${item.facility.streetName} ${item.facility.floorNo}-${item.facility.unitNo} ${item.facility.postalCode}"/></td>
+                                        <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td><iais:code code="${item.processType}"></iais:code></td>
-                                        <td><c:out value="${item.biologicalAgentsAndToxins}"/></td>
+                                        <td><c:out value="${item.facility.biological.name}"/></td>
                                         <td><fmt:formatDate value='${item.applicationDt}' pattern='dd/MM/yyyy'/></td>
-                                        <td><fmt:formatDate value='${item.approvalDate}' pattern='dd/MM/yyyy'/></td>
+                                        <td><fmt:formatDate value='${item.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
                                         <td><iais:code code="${item.status}"></iais:code></td>
                                     </tr>
                                 </c:forEach>

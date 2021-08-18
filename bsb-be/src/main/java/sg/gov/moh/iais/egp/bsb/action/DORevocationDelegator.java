@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.revocation.AOQueryInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.ApplicationMiscDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.BsbRoutingHistoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.RevocationDetailsDto;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,13 +55,13 @@ public class DORevocationDelegator {
      * @param bpc
      */
     public void prepareData(BaseProcessClass bpc) {
-        List<RevocationDetailsDto> list=new LinkedList<>();
+        List<Application> list=new LinkedList<>();
         HttpServletRequest request = bpc.request;
-        RevocationDetailsDto revocationDetailsDto = revocationClient.getApplicationById("B856D31C-E3F0-EB11-8B7D-000C293F0C99").getEntity();
+        Application application = revocationClient.getApplicationById("B856D31C-E3F0-EB11-8B7D-000C293F0C99").getEntity();
         //Do address processing
-        String address = joinAddress(revocationDetailsDto);
-        revocationDetailsDto.setFacilityAddress(address);
-        list.add(revocationDetailsDto);
+        String address = joinAddress(application);
+        application.getFacility().setFacilityAddress(address);
+        list.add(application);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
     }
 
@@ -106,12 +107,12 @@ public class DORevocationDelegator {
         revocationClient.saveHistory(historyDto);
     }
 
-    private String joinAddress(RevocationDetailsDto revocationDetailsDto){
-        String blockNo = revocationDetailsDto.getBlockNo();
-        String streetName = revocationDetailsDto.getStreetName();
-        String floorNo = revocationDetailsDto.getFloorNo();
-        String unitNo = revocationDetailsDto.getUnitNo();
-        String postalCode = revocationDetailsDto.getPostalCode();
+    private String joinAddress(Application application){
+        String blockNo = application.getFacility().getBlkNo();
+        String streetName = application.getFacility().getStreetName();
+        String floorNo = application.getFacility().getFloorNo();
+        String unitNo = application.getFacility().getUnitNo();
+        String postalCode = application.getFacility().getPostalCode();
         StringBuilder builder=new StringBuilder();
         String facilityAddress="";
         if (blockNo!=null){

@@ -12,6 +12,7 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input name="appId" id="appId" value="" hidden>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -75,18 +76,18 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <c:forEach var="item" items="${sessionScope.revocationDetail}">
+                                                                    <c:forEach var="item" items="${revocationDetail}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Current Status"
                                                                                             required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <p><iais:code code="${item.currentStatus}"></iais:code></p>
+                                                                                    <p><iais:code code="${item.status}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:forEach>
-                                                                    <c:forEach var="miscList" items="${sessionScope.applicationMiscList}">
+                                                                    <c:forEach var="miscList" items="${applicationMiscList}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <div id="ReasonFalse"><iais:field
@@ -100,8 +101,7 @@
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500">
-                                                                                            <iais:code code="${miscList.reason}"></iais:code>:${miscList.reasonContent};</textarea>
+                                                                                                  maxlength="500">${miscList.reason}:${miscList.reasonContent};</textarea>
                                                                                             <span id="error_reason"
                                                                                                   name="iaisErrorMsg"
                                                                                                   class="error-msg"></span>

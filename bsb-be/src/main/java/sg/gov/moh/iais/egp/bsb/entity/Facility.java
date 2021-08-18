@@ -10,7 +10,7 @@ import java.util.List;
 public class Facility {
     private String id;
 
-    private FacilityBiological facBiological;
+    private Biological biological;
 
     private List<FacilityDoc> docs;
 
@@ -25,6 +25,8 @@ public class Facility {
     private String facilityClassification;
 
     private String facilityType;
+
+    private String facilityAddress;
 
     private String postalCode;
 

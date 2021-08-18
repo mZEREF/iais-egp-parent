@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
 public interface RevocationClient {
 
     @GetMapping(path = "/bsb-application/{id}")
-    FeignResponseEntity<RevocationDetailsDto> getApplicationById(@PathVariable(name = "id") String id);
+    FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AOQueryInfoDto> saveApplication(@RequestBody AOQueryInfoDto aoQueryInfoDto);

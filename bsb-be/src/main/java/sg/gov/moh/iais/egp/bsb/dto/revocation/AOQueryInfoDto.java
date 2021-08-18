@@ -30,7 +30,7 @@ public class AOQueryInfoDto implements Serializable {
     private String status;
     private String facilityStatus;
     private String createdBy;
-    private Date createdDt;
+    private Date createdAt;
     private String modifiedBy;
-    private Date modifiedDt;
+    private Date modifiedAt;
 }
