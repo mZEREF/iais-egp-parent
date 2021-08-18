@@ -380,24 +380,14 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             bpc.request.setAttribute(SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
-        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> map = null;
-        if ("next".equals(crud_action_type)) {
+        if ("next".equals(action)) {
             map = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(), bpc.request);
         }
         if (map != null && !map.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_SECTION_LEADER);
-        } else {
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(
-                    NewApplicationConstant.CO_MAP);
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if (allChecked.isEmpty()) {
-                coMap.put("information", "information");
-            } else {
-                coMap.put("information", "");
-            }
         }
         log.debug(StringUtil.changeForLog("doSectionLeader end ..."));
     }
@@ -819,7 +809,15 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJump(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareJump start ...."));
-
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
+        Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+        if (allChecked.isEmpty()) {
+            coMap.put("information", "information");
+        } else {
+            coMap.put("information", "");
+        }
+        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         log.debug(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
@@ -1078,14 +1076,6 @@ public class ClinicalLaboratoryDelegator {
 
             currentSvcDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcDto);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                coMap.put("information", "information");
-            } else {
-                coMap.put("information", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
                 bpc.request.setAttribute("errormapIs", "error");
@@ -1115,7 +1105,6 @@ public class ClinicalLaboratoryDelegator {
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
         }
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(map)+"---map----"));
         bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
         return map;
     }
@@ -1250,14 +1239,7 @@ public class ClinicalLaboratoryDelegator {
                 errList.putAll(map);
                 reSetChangesForApp(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errList.isEmpty()) {
-                    if (allChecked.isEmpty()) {
-                        coMap.put("information", "information");
-                    }else {
-                        coMap.put("information", "");
-                    }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
                 } else {
@@ -1266,12 +1248,10 @@ public class ClinicalLaboratoryDelegator {
                     NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errList,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.GOVERNANCEOFFICERS);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errList));
-                    coMap.put("information", "");
                     Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
                     return;
                 }
-                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             }else{
                 //sync person dropdown and submisson dto
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
@@ -1412,14 +1392,6 @@ public class ClinicalLaboratoryDelegator {
             }
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                coMap.put("information", "information");
-            } else {
-                coMap.put("information", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
                 bpc.request.setAttribute("errormapIs", "error");
@@ -1519,20 +1491,10 @@ public class ClinicalLaboratoryDelegator {
                 }
                 reSetChangesForApp(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (map.isEmpty()) {
-                    if (allChecked.isEmpty()) {
-                        coMap.put("information", "information");
-                    }else {
-                        coMap.put("information", "");
-                    }
                     //sync person dropdown and submisson dto
                     personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
-                } else {
-                    coMap.put("information", "");
                 }
-                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             }else{
                 //sync person dropdown and submisson dto
                 personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
@@ -1604,14 +1566,6 @@ public class ClinicalLaboratoryDelegator {
                     errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
                 }
 
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                    coMap.put("information", "information");
-                } else {
-                    coMap.put("information", "");
-                }
-                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
                 if (!errorMap.isEmpty()) {
                     //set audit
                     bpc.request.setAttribute("errormapIs", "error");
@@ -1764,14 +1718,6 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(newAppSvcDocDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                coMap.put("information", "information");
-            } else {
-                coMap.put("information", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             if (!errorMap.isEmpty()) {
                 bpc.request.setAttribute("errormapIs", "error");
                 NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
@@ -1996,14 +1942,6 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto = removeDirtyPsnDoc(appSvcRelatedInfoDto,svcDocConfigDtos,spList,ApplicationConsts.DUP_FOR_PERSON_SVCPSN);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
 
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-            if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                coMap.put("information", "information");
-            } else {
-                coMap.put("information", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             if (!errorMap.isEmpty()) {
                 //set audit
                 bpc.request.setAttribute("errormapIs", "error");
@@ -2112,14 +2050,6 @@ public class ClinicalLaboratoryDelegator {
                     errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
                 }
 
-                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-                if (errorMap.isEmpty() && allChecked.isEmpty()) {
-                    coMap.put("information", "information");
-                } else {
-                    coMap.put("information", "");
-                }
-                bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP,coMap);
                 if (!errorMap.isEmpty()) {
                     //set audit
                     bpc.request.setAttribute("errormapIs", "error");
@@ -2219,14 +2149,6 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appIds);
             validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
         }
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-        Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
-        if (map.isEmpty() && allChecked.isEmpty()) {
-            coMap.put("information", "information");
-        } else {
-            coMap.put("information", "");
-        }
-        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         if(!map.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.VEHICLES);

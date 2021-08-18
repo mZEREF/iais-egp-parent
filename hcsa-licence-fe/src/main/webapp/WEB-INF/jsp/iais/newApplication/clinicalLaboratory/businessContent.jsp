@@ -14,7 +14,9 @@
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -57,7 +59,9 @@
                                 <c:if test="${'true' == canEdit && (!isRfi || (isRfi && appGrpPremisesDto.rfiCanEdit))}">
                                     <p>
                                     <div class="text-right app-font-size-16">
-                                        <a class="edit businessEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                        <a class="edit businessEdit" href="javascript:void(0);">
+                                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                        </a>
                                     </div>
                                     </p>
                                 </c:if>

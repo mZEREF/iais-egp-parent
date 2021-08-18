@@ -2546,7 +2546,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         log.info(StringUtil.changeForLog(sB.toString()));
-        log.info(StringUtil.changeForLog("Error Mwssage in doCheckBox : " + errorMap));
+        log.info(StringUtil.changeForLog("Error Mwssage in doCheckBox for [" + dto.getServiceCode() + "] : " + errorMap));
         return errorMap;
     }
 

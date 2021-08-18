@@ -45,8 +45,9 @@
                                         <div id="" class="control control-caption-horizontal">
                                             <div class="form-group form-horizontal formgap">
                                                 <div class="col-sm-4">
-                                                    <strong style="font-size: 20px;">Clinical Governance
-                                                        Officers</strong>
+                                                    <strong style="font-size: 20px;">
+                                                        <c:out value="${stepName}"/>
+                                                    </strong>
                                                 </div>
                                                 <div class="col-sm-8 text-right">
                                                     <c:if test="${AppSubmissionDto.needEditController }">
@@ -68,9 +69,10 @@
                                                         </c:choose>
                                                         <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                                                             <div class="app-font-size-16">
-                                                                <a class="back" id="RfcSkip">Skip<span
-                                                                        style="display: inline-block;">&nbsp;</span><em
-                                                                        class="fa fa-angle-right"></em></a>
+                                                                <a class="back" id="RfcSkip" href="javascript:void(0);">
+                                                                    Skip<span style="display: inline-block;">&nbsp;</span>
+                                                                    <em class="fa fa-angle-right"></em>
+                                                                </a>
                                                             </div>
                                                         </c:if>
                                                         <c:if test="${'true' != isClickEdit}">
@@ -134,8 +136,10 @@
                                                                     <div class="form-group form-horizontal formgap">
                                                                         <div class="col-sm-4 control-label formtext control">
                                                                             <div class="cgo-header">
-                                                                                <strong>Clinical Governance Officer
-                                                                                    <label class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label></strong>
+                                                                                <strong>
+                                                                                    <c:out value="${stepName}"/>
+                                                                                    <label class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label>
+                                                                                </strong>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-sm-8 text-right">
@@ -157,12 +161,12 @@
                                                                         <div class="col-sm-2" style="margin-top:3%;">
                                                                             <div class="edit-content">
                                                                                 <c:if test="${'true' == canEdit}">
-                                                                                    <p>
                                                                                     <div class="text-right app-font-size-16">
-                                                                                        <a class="edit cgoEdit"><em
-                                                                                                class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                                                                        <a class="edit cgoEdit" href="javascript:void(0);">
+                                                                                            <em class="fa fa-pencil-square-o"></em>
+                                                                                            <span>&nbsp;</span>Edit
+                                                                                        </a>
                                                                                     </div>
-                                                                                    </p>
                                                                                 </c:if>
                                                                             </div>
                                                                         </div>

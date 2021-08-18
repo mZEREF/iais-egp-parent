@@ -8,7 +8,9 @@
             <c:if test="${'true' == canEdit}">
                 <p>
                 <div class="text-right app-font-size-16">
-                    <a class="edit cdEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                    <a class="edit cdEdit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
                 </div>
                 </p>
             </c:if>

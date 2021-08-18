@@ -1,20 +1,22 @@
 <div class="form-horizontal sectionLaderContent">
     <input type="hidden" class="indexNo" name="indexNo${index}" value="${sectionLeader.indexNo}"/>
-    <iais:row>
-        <iais:value width="6" cssClass="text-right editDiv">
-            <c:if test="${canEdit}">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${cdSuffix}" value="1"/>
-                <a class="text-right app-font-size-16">
-                    <em class="fa fa-pencil-square-o">&nbsp;</em> Edit
-                </a>
+    <iais:row cssClass="col-md-12 col-xs-12">
+        <div class="edit-content">
+            <c:if test="${'true' == canEdit}">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="1"/>
+                <div class="text-right app-font-size-16">
+                    <a class="edit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
+                </div>
             </c:if>
-        </iais:value>
+        </div>
     </iais:row>
 
     <iais:row>
         <iais:value width="6">
             <strong>
-                ${stepName}
+                <c:out value="${stepName}"/>
                 <label class="assign-psn-item"><c:if test="${index > 0}">${index+1}</c:if></label>
             </strong>
         </iais:value>

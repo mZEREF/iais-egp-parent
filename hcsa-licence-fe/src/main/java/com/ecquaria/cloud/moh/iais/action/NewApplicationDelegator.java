@@ -3314,9 +3314,11 @@ public class NewApplicationDelegator {
                     if(MiscUtil.doubleEquals(0.0, amount) && autoRfc){
                         String appGrpNo = appSubmissionDto1.getAppGrpNo();
                         List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
-                        if(entity!=null &&!entity.isEmpty()){
-                            for(ApplicationDto applicationDto : entity){
-                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        if (entity != null && !entity.isEmpty()) {
+                            for (ApplicationDto applicationDto : entity) {
+                                if (!isRfiStatus(applicationDto.getStatus())) {
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                                }
                             }
                             String grpId = entity.get(0).getAppGrpId();
                             log.info(StringUtil.changeForLog("grpId {}"+grpId));
@@ -3329,9 +3331,11 @@ public class NewApplicationDelegator {
                     }else if(MiscUtil.doubleEquals(0.0, amount) && !autoRfc){
                         String appGrpNo = appSubmissionDto1.getAppGrpNo();
                         List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
-                        if(entity!=null &&!entity.isEmpty()){
-                            for(ApplicationDto applicationDto : entity){
-                                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                        if (entity != null && !entity.isEmpty()) {
+                            for (ApplicationDto applicationDto : entity) {
+                                if (!isRfiStatus(applicationDto.getStatus())) {
+                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                                }
                             }
                             String grpId = entity.get(0).getAppGrpId();
                             ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
@@ -3385,6 +3389,12 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         }
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
+    }
+
+    private boolean isRfiStatus(String status) {
+        return ApplicationConsts.PENDING_ASO_REPLY.equals(status) ||
+                ApplicationConsts.PENDING_PSO_REPLY.equals(status) ||
+                ApplicationConsts.PENDING_INP_REPLY.equals(status);
     }
 
     /**

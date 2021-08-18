@@ -23,14 +23,22 @@
         </c:otherwise>
       </c:choose>
       <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-        <p><div class="text-right app-font-size-16"><a class="back" id="RfcSkip">Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em></a></div></p>
+        <div class="text-right app-font-size-16">
+          <a class="back" id="RfcSkip" href="javascript:void(0);">
+            Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em>
+          </a>
+        </div>
       </c:if>
       <c:if test="${'true' != isClickEdit}">
         <c:set var="locking" value="true"/>
         <div id="edit-content">
           <c:choose>
             <c:when test="${AppSubmissionDto.appEditSelectDto.serviceEdit}">
-              <p><div class="text-right app-font-size-16"><a id="edit" class="allocationEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
+              <div class="text-right app-font-size-16">
+                <a id="edit" class="allocationEdit" href="javascript:void(0);">
+                  <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                </a>
+              </div>
             </c:when>
             <c:otherwise>
 
