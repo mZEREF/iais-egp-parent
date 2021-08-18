@@ -5,7 +5,7 @@
 <!-- Default panel contents -->
 <c:forEach var="personnel" items="${personnelsDto}">
     <c:if test="${personnel.licKeyPersonnelDto.psnType!='Clinical Director'}">
-        <c:when test="${personnel.licKeyPersonnelDto.psnType=='Key Appointment Holder'}">
+        <c:if test="${personnel.licKeyPersonnelDto.psnType=='Key Appointment Holder'}">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
                 <div class="row">
@@ -40,8 +40,8 @@
                     </div>
                 </div>
             </div>
-        </c:when>
-        <c:otherwise>
+        </c:if>
+        <c:if test="${personnel.licKeyPersonnelDto.psnType!='Key Appointment Holder'}">
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>${personnel.licKeyPersonnelDto.psnType}</strong></div>
                 <div class="row">
@@ -124,12 +124,12 @@
                     </div>
                 </div>
             </div>
-        </c:otherwise>
+        </c:if>
 
     </c:if>
 
 </c:forEach>
-<c:when test="${not empty appSvcSectionLeaderList}">
+<c:if test="${not empty appSvcSectionLeaderList}">
     <c:forEach var="sectionLeader" items="${appSvcSectionLeaderList}">
         <div class="panel panel-default">
             <div class="panel-heading"><strong><iais:code code="${sectionLeader.personnelType}"/></strong></div>
@@ -145,7 +145,7 @@
                             <tbody>
                             <tr>
                                 <td align="right">Salutation</td>
-                                <td class="col-xs-6" style="padding-left: 15px;">${sectionLeader.salutation}<c:if test="${empty sectionLeader.salutation}">-</c:if></td>
+                                <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${sectionLeader.salutation}"/><c:if test="${empty sectionLeader.salutation}">-</c:if></td>
                             </tr>
                             <tr>
                                 <td class="col-xs-6" align="right">Name</td>
@@ -166,8 +166,7 @@
             </div>
         </div>
     </c:forEach>
-
-</c:when>
+</c:if>
 <c:forEach items="${AppSvcChargesPageDto.generalChargesDtos}" var="generalChargesDtos" varStatus="index">
     <div class="panel panel-default">
         <div class="panel-heading"><strong>General Conveyance Charges</strong></div>
