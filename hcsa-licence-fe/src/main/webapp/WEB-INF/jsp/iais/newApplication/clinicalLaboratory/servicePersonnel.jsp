@@ -1,4 +1,9 @@
 <%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+
+<c:set var="isRfi" value="${requestInformationConfig != null}"/>
+
+<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
   <div id="wizard-page-title"></div>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -43,7 +48,8 @@
               <c:set var="editControl" value="${(!empty AppSvcPersonnelDtoList && AppSubmissionDto.needEditController) || !AppSubmissionDto.needEditController}" />
               <div class="personnel-edit">
                 <c:if test="${AppSubmissionDto.needEditController }">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
+                  <c:set var="isClickEdit" value="false"/>
+                  <%--<c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
                     <c:if test="${'APPSPN07' == clickEditPage}">
                       <c:set var="isClickEdit" value="true"/>
                     </c:if>
@@ -55,8 +61,8 @@
                     <c:otherwise>
                       <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
                     </c:otherwise>
-                  </c:choose>
-                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                  </c:choose>--%>
+                  <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                     <div class="text-right app-font-size-16">
                       <a class="back" id="RfcSkip" href="javascript:void(0);">
                         Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em>
@@ -68,15 +74,13 @@
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
                     <div id="edit-content">
                       <c:choose>
-                        <c:when test="${'true' == canEdit && editControl}">
+                        <c:when test="${canEdit && editControl}">
                           <div class="text-right app-font-size-16">
                             <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
                               <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                             </a>
                           </div>
                         </c:when>
-                        <c:otherwise>
-                        </c:otherwise>
                       </c:choose>
                     </div>
                   </c:if>

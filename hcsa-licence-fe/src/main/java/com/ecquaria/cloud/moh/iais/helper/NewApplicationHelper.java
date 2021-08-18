@@ -2592,7 +2592,7 @@ public class NewApplicationHelper {
                     }else{
                         List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
                         for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
-                            String psnIndexNo = psnDto.getCgoIndexNo();
+                            String psnIndexNo = psnDto.getIndexNo();
                             AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
                             if(appSvcDocDto == null){
                                 String specErrKey = errKey + psnIndexNo +suffix;
@@ -2613,7 +2613,7 @@ public class NewApplicationHelper {
                             }else{
                                 List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
                                 for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
-                                    String psnIndexNo = psnDto.getCgoIndexNo();
+                                    String psnIndexNo = psnDto.getIndexNo();
                                     AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),psnIndexNo);
                                     if(appSvcDocDto == null){
                                             String specErrKey = errKey + premIndexNo + psnIndexNo +suffix;
@@ -2907,7 +2907,7 @@ public class NewApplicationHelper {
                 if(!IaisCommonUtils.isEmpty(spDtos)){
                     for(AppSvcPersonnelDto spDto:spDtos){
                         AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                        psnDto.setCgoIndexNo(spDto.getIndexNo());
+                        psnDto.setIndexNo(spDto.getIndexNo());
                         psnDtoList.add(psnDto);
                     }
                 }
@@ -3983,7 +3983,7 @@ public class NewApplicationHelper {
             List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
             int psnCount = 1;
             for(AppSvcPrincipalOfficersDto psn:psnList){
-                String psnIndex = psn.getCgoIndexNo();
+                String psnIndex = psn.getIndexNo();
                 String displayTitle = titleTemplate.replace("${psn}",psnName+" "+psnCount+": ");
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psnIndex);
                 setSvcDocDisplayTitle(appSvcDocDtoList,displayTitle);

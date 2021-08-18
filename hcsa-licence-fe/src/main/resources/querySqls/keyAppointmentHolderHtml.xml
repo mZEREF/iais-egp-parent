@@ -4,7 +4,7 @@
         <![CDATA[
             <div class="keyAppointmentHolderContent">
                 <input type="hidden" class="isPartEdit" name="isPartEdit${keyAppointmentHolderSuffix}" value="1"/>
-                <input type="hidden" class="cgoIndexNo" name="cgoIndexNo${keyAppointmentHolderSuffix}" value=""/>
+                <input type="hidden" class="indexNo" name="indexNo${keyAppointmentHolderSuffix}" value=""/>
                 <div class="row control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                         <div class="control-label formtext col-md-5 col-xs-5">

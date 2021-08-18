@@ -66,7 +66,7 @@
                                         </c:choose>
                                         <input type="hidden" name="poExistingPsn" value="0"/>
                                         <input type="hidden" name="poIsPartEdit" value="0"/>
-                                        <input type="hidden" name="poIndexNo" value="${principalOfficer.cgoIndexNo}"/>
+                                        <input type="hidden" name="poIndexNo" value="${principalOfficer.indexNo}"/>
                                         <input type="hidden" name="loadingType" value="${principalOfficer.loadingType}"/>
                                         <div class="row">
                                             <div class="control control-caption-horizontal">
@@ -197,13 +197,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row otherDesignationDiv <c:if test="${principalOfficer.designation != 'DES999'}">hidden</c:if>">
+                                            <div class="row otherDesignationDiv">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-3 control-label formtext col-md-4">
                                                         </div>
                                                         <div class="col-sm-5 col-md-8" >
-                                                            <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${principalOfficer.otherDesignation}"/>
+                                                            <iais:input  maxLength="100" type="text" cssClass="otherDesignation" name="otherDesignation" value="${principalOfficer.otherDesignation}"
+                                                                         style="${principalOfficer.designation != 'DES999' ? 'display:none;':''}"/>
                                                         </div>
                                                         <div  class="col-sm-3  col-md-4"></div>
                                                         <div class="col-sm-5 col-md-8">
@@ -317,10 +318,13 @@
                                     <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                                         <c:choose>
                                             <c:when test="${canEditDpoEdit}">
-                                                <p><div class="text-right app-font-size-16"><a id="edit-dpo" class="dpoSelectEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
+                                                <div class="text-right app-font-size-16">
+                                                    <a id="edit-dpo" class="dpoSelectEdit" href="javascript:void(0);">
+                                                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                    </a>
+                                                </div>
                                             </c:when>
                                             <c:otherwise>
-
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -385,7 +389,7 @@
                                         </c:choose>
                                         <input type="hidden" name="dpoExistingPsn" value="0"/>
                                         <input type="hidden" name="dpoIsPartEdit" value="0"/>
-                                        <input type="hidden" name="dpoIndexNo" value="${deputy.cgoIndexNo}"/>
+                                        <input type="hidden" name="dpoIndexNo" value="${deputy.indexNo}"/>
                                         <input type="hidden" name="dpoLoadingType" value="${deputy.loadingType}"/>
                                         <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                                             <div class="control control-caption-horizontal">
@@ -504,13 +508,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row deputyOtherDesignationDiv <c:if test="${deputy.designation != 'DES999'}">hidden</c:if>">
+                                            <div class="row deputyOtherDesignationDiv">
                                                 <div class="control control-caption-horizontal">
                                                     <div class=" form-group form-horizontal formgap">
                                                         <div class="col-sm-3 control-label formtext col-md-4">
                                                         </div>
                                                         <div class="col-sm-5 col-md-8" >
-                                                            <iais:input  maxLength="100" type="text" cssClass="deputyOtherDesignation" name="deputyOtherDesignation" value="${deputy.otherDesignation}"/>
+                                                            <iais:input maxLength="100" type="text" cssClass="deputyOtherDesignation" name="deputyOtherDesignation" value="${deputy.otherDesignation}"
+                                                                        style="${deputy.designation != 'DES999' ? 'display:none;':''}"/>
                                                         </div>
                                                         <div  class="col-sm-3  col-md-4"></div>
                                                         <div class="col-sm-5 col-md-8">
@@ -930,7 +935,6 @@
                         poSelect();
                         removePo();
                         //retrieveData();
-                        removePo();
                         retrieveData();
                         designationChange();
                         <!--set Scrollbar -->
@@ -1097,7 +1101,11 @@
             var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
             $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
         }
-
+        var otherDesignation = data.otherDesignation;
+        if(!isEmpty(otherDesignation)){
+            $poContentEle.find('input[name="otherDesignation"]').val(otherDesignation);
+        }
+        $poContentEle.find('.designation').trigger('change');
 
         var $psnContentEle = $poContentEle.find('div.principalOfficers');
         //add disabled not add input disabled style
@@ -1187,10 +1195,10 @@
         var designationVal = $poContentEle.find('option[value="' + designation + '"]').html();
         $poContentEle.find('select[name="designation"]').next().find('.current').html(designationVal);
         if('DES999' == designation){
-            $poContentEle.find('div.otherDesignationDiv').removeClass('hidden');
+            $poContentEle.find('div.otherDesignationDiv input').show();
             $poContentEle.find('input[name="otherDesignation"]').val(data.otherDesignation);
         }else{
-            $poContentEle.find('div.otherDesignationDiv').addClass('hidden');
+            $poContentEle.find('div.otherDesignationDiv input').hide();
         }
 
         var isLicPerson = data.licPerson;
@@ -1241,10 +1249,10 @@
         var designationVal = $dpoContentEle.find('option[value="' + designation + '"]').html();
         $dpoContentEle.find('select[name="deputyDesignation"]').next().find('.current').html(designationVal);
         if('DES999' == designation){
-            $dpoContentEle.find('div.deputyOtherDesignationDiv').removeClass('hidden');
+            $dpoContentEle.find('div.deputyOtherDesignationDiv input').show();
             $dpoContentEle.find('input[name="deputyOtherDesignation"]').val(data.otherDesignation);
         }else{
-            $dpoContentEle.find('div.deputyOtherDesignationDiv').addClass('hidden');
+            $dpoContentEle.find('div.deputyOtherDesignationDiv input').hide();
         }
 
         var isLicPerson = data.licPerson;
@@ -1515,9 +1523,9 @@
         $('.designation').change(function () {
             var thisVal = $(this).val();
             if("DES999" == thisVal){
-                $(this).closest('div.po-content').find('div.otherDesignationDiv').removeClass('hidden');
+                $(this).closest('div.po-content').find('div.otherDesignationDiv input').show();
             }else{
-                $(this).closest('div.po-content').find('div.otherDesignationDiv').addClass('hidden');
+                $(this).closest('div.po-content').find('div.otherDesignationDiv input').hide();
             }
         });
     };
@@ -1527,9 +1535,9 @@
         $('.deputyDesignation').change(function () {
             var thisVal = $(this).val();
             if("DES999" == thisVal){
-                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').removeClass('hidden');
+                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv input').show();
             }else{
-                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv').addClass('hidden');
+                $(this).closest('div.dpo-content').find('div.deputyOtherDesignationDiv input').hide();
             }
         });
     };

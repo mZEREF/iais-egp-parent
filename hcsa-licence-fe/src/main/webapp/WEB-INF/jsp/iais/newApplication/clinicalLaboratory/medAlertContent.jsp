@@ -65,7 +65,7 @@
                 </c:choose>
                 <input type="hidden" name="existingPsn" value="0"/>
                 <input type="hidden" name="isPartEdit" value="0"/>
-                <input type="hidden" name="mapIndexNo" value="${medAlertPsn.cgoIndexNo}"/>
+                <input type="hidden" name="mapIndexNo" value="${medAlertPsn.indexNo}"/>
                 <input type="hidden" name="loadingType" value="${medAlertPsn.loadingType}"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">

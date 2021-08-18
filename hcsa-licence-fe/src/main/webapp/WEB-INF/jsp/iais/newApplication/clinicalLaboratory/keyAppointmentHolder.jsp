@@ -41,7 +41,7 @@
             <c:set var="AppSvcKeyAppointmentHolderDto" value="${AppSvcKeyAppointmentHolderDtoList[index]}"/>
             <div class="keyAppointmentHolderContent">
                 <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
-                <input type="hidden" class="cgoIndexNo" name="cgoIndexNo${index}" value="${AppSvcKeyAppointmentHolderDto.cgoIndexNo}"/>
+                <input type="hidden" class="indexNo" name="indexNo${index}" value="${AppSvcKeyAppointmentHolderDto.indexNo}"/>
 
                 <div class="col-md-12 col-xs-12">
                     <div class="edit-content">

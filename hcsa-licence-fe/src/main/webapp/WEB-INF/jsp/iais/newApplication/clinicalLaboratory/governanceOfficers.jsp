@@ -8,6 +8,9 @@
         margin-top: 19px;
     }
 </style>
+
+<c:set var="stepName" value="${serviceStepDto.currentStep.stepName}" scope="request"/>
+
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <input type="hidden" name="prsFlag" value="${prsFlag}"/>
@@ -114,7 +117,7 @@
                                             <tr><th scope="col"></th></tr>
                                             </thead>
                                             <input type="hidden" name="isPartEdit" value="0"/>
-                                            <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                                            <input type="hidden" name="indexNo" value="${currentCgo.indexNo}"/>
                                             <input type="hidden" name="existingPsn" value="0"/>
                                             <input type="hidden" name="psnEditField" value="${currentCgo.psnEditDto}"/>
                                             <c:choose>
@@ -137,7 +140,7 @@
                                                                         <div class="col-sm-4 control-label formtext control">
                                                                             <div class="cgo-header">
                                                                                 <strong>
-                                                                                    <c:out value="${stepName}"/>
+                                                                                    Clinical Governance Officer
                                                                                     <label class="assign-psn-item"><c:if test="${cgoList.size() > 1}">${status.index+1}</c:if></label>
                                                                                 </strong>
                                                                             </div>

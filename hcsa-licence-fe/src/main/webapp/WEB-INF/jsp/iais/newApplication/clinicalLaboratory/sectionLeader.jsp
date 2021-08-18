@@ -96,6 +96,9 @@
     <script type="text/javascript">
         $(document).ready(function() {
             initSectionLeader();
+            <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
+            disableContent('div.sectionLaderContent');
+            </c:if>
         });
 
         function initSectionLeader() {
@@ -183,9 +186,12 @@
         }
 
         var doEdite = function () {
+            $('.edit-content a').unbind('click');
             $('.edit-content a').click(function () {
                 var $currContent = $(this).closest('div.sectionLaderContent');
                 unDisableContent($currContent);
+                $(this).hide();
+                $('#isEditHiddenVal').val('1');
             });
         }
     </script>
