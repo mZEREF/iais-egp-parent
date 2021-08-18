@@ -84,7 +84,7 @@
                                                                      cssClass="nice-select cessationReasons"/>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}reason${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}reason${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6 control-label ">Others <span
                                                             style="color: red">*</span></label>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
@@ -288,7 +288,7 @@
                                                     </div>
                                                 </c:if>
                                                 <c:if test="${!isGrpLic}">
-                                                    <div hidden>
+                                                    <div style="display: none;">
                                                         <input class="form-check-input" type="text"
                                                                name="${num.count}whichTodo${uid.count}"
                                                                value="${appCessHci.premiseId}">

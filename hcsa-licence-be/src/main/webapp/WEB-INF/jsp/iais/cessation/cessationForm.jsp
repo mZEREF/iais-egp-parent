@@ -81,7 +81,7 @@
                                                                      cssClass="nice-select cessationReasons" needSort="false"/>
                                                     </iais:value>
                                                 </iais:row>
-                                                <div id="${num.count}reason${uid.count}" hidden>
+                                                <div id="${num.count}reason${uid.count}" style="display: none;">
                                                     <iais:row>
                                                         <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
@@ -295,7 +295,7 @@
                                                     </iais:row>
                                                 </c:if>
                                                 <c:if test="${!isGrpLic}">
-                                                    <div hidden>
+                                                    <div style="display: none;">
                                                         <input class="form-check-input" type="text"
                                                                name="${num.count}whichTodo${uid.count}"
                                                                value="${appCessHci.premiseId}">

@@ -79,7 +79,7 @@
                                                                  cssClass="nice-select cessationReasons"/>
                                                 </iais:value>
                                             </iais:row>
-                                            <div id="reason" hidden>
+                                            <div id="reason" style="display: none;">
                                                 <iais:row>
                                                     <iais:field value="Others"/>
                                                     <iais:value width="7">
