@@ -32,7 +32,7 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a href="#" onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
         <div class="tab-gp steps-tab">
             <div class="tab-content">
                 <div class="tab-pane active" id="premisesTab" role="tabpanel">
@@ -87,10 +87,10 @@
                                                data-original-title="">i</a>
                                         </label>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
                                         </iais:value>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
                                         </iais:value>
                                         <iais:value width="11" style="padding-top:12px">
                                         </iais:value>

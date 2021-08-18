@@ -90,10 +90,10 @@
                                            data-original-title="">i</a>
                                     </label>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1"> Active
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1"> Active
                                         </iais:value>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0"> Inactive
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0"> Inactive
                                         </iais:value>
                                         <iais:value width="11" style="padding-top:12px">
                                             <span class="error-msg" name="errorMsg" id="error_testStatus"></span>
