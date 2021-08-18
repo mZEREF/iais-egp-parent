@@ -139,7 +139,7 @@ public class RequestForChangeDelegator {
                         checkedVals.add(subLicensee);
                     }
                     log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
-                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
+                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen,licenceDto),
                             NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
 
                     String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
@@ -164,7 +164,7 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("the do checkUen end ...."));
         return ajaxResDto;
     }
-    private List<SelectOption> getSelect(String uen){
+    private List<SelectOption> getSelect(String uen,LicenceDto licenceDto){
         log.info(StringUtil.changeForLog("the getSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(uen)){
@@ -184,8 +184,24 @@ public class RequestForChangeDelegator {
         }else {
             log.info(StringUtil.changeForLog("The uen is null"));
         }
-        result.add(new SelectOption("new","Add a new individual licensee"));
+        if(isSameUEN(uen,licenceDto)){
+            result.add(new SelectOption("new","Add a new individual licensee"));
+        }
         log.info(StringUtil.changeForLog("the getSelect end ...."));
+        return result;
+    }
+
+    private  boolean isSameUEN(String uen,LicenceDto licenceDto){
+        log.info(StringUtil.changeForLog("the isSameUEN start ...."));
+        boolean result = false;
+        if(licenceDto != null){
+            OrganizationDto organizationDto = licenceViewService.getOrganizationDtoByLicenseeId(licenceDto.getLicenseeId());
+            if(organizationDto != null && organizationDto.getUenNo().equals(uen)){
+                result = true;
+            }
+        }
+        log.info(StringUtil.changeForLog("the isSameUEN result is -->:"+result));
+        log.info(StringUtil.changeForLog("the isSameUEN end ...."));
         return result;
     }
     /**
@@ -216,6 +232,7 @@ public class RequestForChangeDelegator {
 
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute(RfcConst.APPSUBMISSIONDTO);
         request.getSession().removeAttribute("rfc_eqHciCode");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
         request.getSession().removeAttribute("pageShowFileDtos");
@@ -588,6 +605,8 @@ public class RequestForChangeDelegator {
             ParamUtil.setSessionAttr(bpc.request,"reason",reason);
             ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","confirm");
         }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
     }
 
@@ -1107,18 +1126,22 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
                 if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
                         || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                    hcsaServiceDto.setSvcName(svcName);
-                    hcsaServiceDtos.add(hcsaServiceDto);
-                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                    if(!canCreateEasOrMts){
-                        error.put("uenError","RFC_ERR022");
-                        return error;
+                    if(!isSameUEN(uen,licenceDto)){
+                        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                        hcsaServiceDto.setSvcName(svcName);
+                        hcsaServiceDtos.add(hcsaServiceDto);
+                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                        log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                        if(!canCreateEasOrMts){
+                            error.put("uenError","RFC_ERR022");
+                            return error;
+                        }
+                    }else{
+                        log.info(StringUtil.changeForLog("The same UEN ..."));
                     }
                 }
-                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                //if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                     if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
                                 getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
@@ -1130,9 +1153,9 @@ public class RequestForChangeDelegator {
                     }else{
                         log.info(StringUtil.changeForLog("The same uen -->:"+uen));
                     }
-                }else{
-                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
-                }
+//                }else{
+//                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
+//                }
             }
         }
         return error;

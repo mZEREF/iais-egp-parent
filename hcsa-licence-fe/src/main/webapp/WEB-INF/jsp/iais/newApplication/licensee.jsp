@@ -25,7 +25,7 @@
                     <div class="tab-gp steps-tab">
                         <%@ include file="/WEB-INF/jsp/iais/newApplication/navTabs.jsp" %>
                         <div class="tab-content">
-                            <div class="tab-pane fade in active">
+                            <div class="tab-pane in active">
                                 <%@ include file="/WEB-INF/jsp/iais/common/licenseeDetail.jsp" %>
                                 <div class="application-tab-footer">
                                     <c:choose>

@@ -34,8 +34,8 @@
                         <tr>
                             <td class="row_no">    <div class="form-check"><span>${(status.index + 1) }</span></div></td>
                             <td><div class="form-check"><a data-toggle="modal" data-target="#DeleteTemplateModalSer${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div> </td>
-                            <div class="modal fade" id="DeleteTemplateModalSer${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal fade" id="DeleteTemplateModalSer${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow">
+                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                             <%--                                                                          <div class="modal-header">--%>
                                             <%--                                                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>

@@ -85,7 +85,7 @@
                                                                      needSort="false"/>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}reason${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}reason${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6 control-label ">Others <span
                                                             style="color: red">*</span></label>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
@@ -109,7 +109,7 @@
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="yes"
                                                                                <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               onchange="javascirpt:changePatSelectCessFe();"
                                                                                aria-invalid="false">
                                                                         <label class="form-check-label"
                                                                                for=${num.count}radioYes${uid.count}"><span
@@ -124,7 +124,7 @@
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="no"
                                                                                <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               onchange="javascirpt:changePatSelectCessFe();"
                                                                                aria-invalid="false">
                                                                         <label class="form-check-label"
                                                                                for="${num.count}radioNo${uid.count}"><span
@@ -233,13 +233,13 @@
                                                                     name="${num.count}patOthersEmailAddress${uid.count}"/>
                                                     </div>
                                                 </div>--%>
-                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000">${appCessHci.transferDetail}</textarea>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000">${appCessHci.transferredWhere}</textarea>
@@ -280,7 +280,7 @@
                                                     </div>
                                                 </c:if>
                                                 <c:if test="${!isGrpLic}">
-                                                    <div hidden>
+                                                    <div style="display: none;">
                                                         <input class="form-check-input" type="text"
                                                                name="${num.count}whichTodo${uid.count}"
                                                                value="${appCessHci.premiseId}">
@@ -373,8 +373,8 @@
     <br/>
 </div>
 </div>
-<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body" >
                 <div class="row">

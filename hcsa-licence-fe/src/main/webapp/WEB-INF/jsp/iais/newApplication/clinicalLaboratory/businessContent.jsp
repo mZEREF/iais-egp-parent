@@ -67,7 +67,7 @@
                             <div class="row control control-caption-horizontal">
                                 <div class=" form-group form-horizontal formgap">
                                     <div class="control-label formtext col-md-5 col-xs-5">
-                                        <label  class="control-label control-set-font control-font-label">Business Name</label>
+                                        <label  class="control-label control-set-font control-font-label">Business Name <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a></label>
                                         <span class="mandatory">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-12">

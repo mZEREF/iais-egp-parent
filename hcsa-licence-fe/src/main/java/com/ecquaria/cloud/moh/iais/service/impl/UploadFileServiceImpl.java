@@ -378,7 +378,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             log.info(StringUtil.changeForLog("have error-------" +s));
-            return s;
+            throw new IaisRuntimeException(e);
         }
         return s;
     }
