@@ -292,7 +292,6 @@ public class FESingpassLandingDelegator {
         LicenseeDto licenseeDto =  (LicenseeDto) ParamUtil.getSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION);
         if(licenseeDto == null){
             licenseeDto = new LicenseeDto();
-            licenseeDto.setName(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
         }
         licenseeDto.setPostalCode(ParamUtil.getString(request,"postalCode"));
         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
@@ -304,6 +303,7 @@ public class FESingpassLandingDelegator {
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setMobileNo(userSession.getMobileNo());
         licenseeDto.setEmilAddr(userSession.getEmail());
+        licenseeDto.setName(userSession.getDisplayName());
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
 
