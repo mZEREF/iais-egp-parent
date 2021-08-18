@@ -52,23 +52,23 @@
                             <iais:row>
                                 <iais:value width="18">
                                     <input id="appChk" type="radio"
-                                           name="searchChk" value="1"
-                                           <c:if test="${count=='1'}">checked</c:if> /><label for="appChk">&nbsp;Application No</label>
+                                           name="searchChk" value="app"
+                                           <c:if test="${count=='app'}">checked</c:if> /><label for="appChk">&nbsp;Application No</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="fnChk" type="radio"
-                                           <c:if test="${count=='2'}">checked</c:if>
+                                           <c:if test="${count=='fn'}">checked</c:if>
                                            name="searchChk"
-                                           value="2"/><label for="fnChk">&nbsp;Facility Name</label>
+                                           value="fn"/><label for="fnChk">&nbsp;Facility Name</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="anChk" type="radio"
-                                           <c:if test="${count=='3'}">checked</c:if> value="3"
+                                           <c:if test="${count=='an'}">checked</c:if> value="an"
                                            name="searchChk"/><label for="anChk">&nbsp;Approval No</label>
                                 </iais:value>
                                 <iais:value width="18" cssClass="form-check">
                                     <input id="onChk" type="radio"
-                                           <c:if test="${count=='4'}">checked</c:if> value="4"
+                                           <c:if test="${count=='on'}">checked</c:if> value="on"
                                            name="searchChk"/><label for="onChk">&nbsp;Organisation Name</label>
                                 </iais:value>
                             </iais:row>

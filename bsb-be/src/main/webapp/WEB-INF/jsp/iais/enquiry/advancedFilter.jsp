@@ -1,10 +1,10 @@
-<c:if test="${count=='2'}">
+<c:if test="${count=='fn'}">
     <h4>
         <span>
             Search by Facility Info
             <strong>&nbsp;
                 <input  id="facilityChk" type="radio"
-                        <c:if test="${count=='2'}">checked</c:if>  value="2" name="searchChk"  />
+                        <c:if test="${count=='fn'}">checked</c:if>  value="fn" name="searchChk"  />
             </strong>
         </span>
     </h4>
@@ -107,13 +107,13 @@
         </div>
     </div>
 </c:if>
-<c:if test="${count=='3'}">
+<c:if test="${count=='an'}">
     <h4>
         <span>
            Search by Approval Info
             <strong>&nbsp;
                 <input  id="approvalChk" type="radio"
-                        <c:if test="${count=='3'}">checked</c:if>  value="3" name="searchChk"  />
+                        <c:if test="${count=='an'}">checked</c:if>  value="an" name="searchChk"  />
             </strong>
         </span>
     </h4>
@@ -204,11 +204,11 @@
         </div>
     </div>
 </c:if>
-<c:if test="${count=='1'}">
+<c:if test="${count=='app'}">
     <h4>
         <span >Search by Application Info
             <strong >&nbsp;
-                <input  id="hciChk" type="radio" name="searchChk" <c:if test="${count=='1'}">checked</c:if>  value="1" />
+                <input  id="hciChk" type="radio" name="searchChk" <c:if test="${count=='app'}">checked</c:if>  value="app" />
             </strong>
         </span>
     </h4>
@@ -306,11 +306,11 @@
         </div>
     </div>
 </c:if>
-<c:if test="${count=='4'}">
+<c:if test="${count=='on'}">
     <h4>
         <span >Search By Approved Facility Certifier Info
             <strong >&nbsp;
-                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'}">checked</c:if>   value="4"   name="searchChk"  />
+                <input  id="licenseeChk" type="radio" <c:if test="${count=='on'}">checked</c:if>   value="on"   name="searchChk"  />
             </strong>
         </span>
     </h4>
