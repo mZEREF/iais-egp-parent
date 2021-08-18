@@ -42,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -89,8 +88,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    private ApplicationViewService applicationViewService;
+
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
