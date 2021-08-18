@@ -43,36 +43,46 @@
                 <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
                 <input type="hidden" class="indexNo" name="indexNo${index}" value="${AppSvcKeyAppointmentHolderDto.indexNo}"/>
 
-                <div class="col-md-12 col-xs-12">
-                    <div class="edit-content">
-                        <c:if test="${'true' == canEdit}">
-                            <div class="text-right app-font-size-16">
-                                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
-                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                                </a>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
-
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">
+                <div class="row">
+                    <div class="control control-caption-horizontal">
+                        <div class=" form-group form-horizontal formgap">
+                            <div class="col-sm-6 control-label formtext col-md-8">
                                 <div class="cgo-header">
                                     <strong>Key Appointment Holder <label class="assign-psn-item"><c:if test="${AppSvcKeyAppointmentHolderDtoList.size() > 1}">${index+1}</c:if></label></strong>
                                 </div>
-                            </label>
-                        </div>
+                            </div>
 
-                        <div class="col-md-7 col-xs-7 text-right">
-                            <c:if test="${index - keyAppointmentHolderConfigDto.mandatoryCount >=0}">
-                                <div class="removeKeyAppointmentHolderBtn">
-                                    <h4 class="text-danger">
-                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                    </h4>
+                            <div class="col-md-4 col-xs-7 text-right">
+                                <c:if test="${index - keyAppointmentHolderConfigDto.mandatoryCount >=0}">
+                                    <div class="removeKeyAppointmentHolderBtn <c:if test="${canEdit}">hidden</c:if>">
+                                        <h4 class="text-danger">
+                                            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                                        </h4>
+                                    </div>
+                                </c:if>
+                            </div>
+
+                            <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
+                                <div class="col-sm-10">
+                                    <label class="control-font-label">
+                                        <c:if test="${!empty AppSvcKeyAppointmentHolderDto.name && !empty AppSvcKeyAppointmentHolderDto.idNo && !empty AppSvcKeyAppointmentHolderDto.idType}">
+                                            ${AppSvcKeyAppointmentHolderDto.name}, ${AppSvcKeyAppointmentHolderDto.idNo} (<iais:code code="${AppSvcKeyAppointmentHolderDto.idType}"/>)
+                                        </c:if>
+                                    </label>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <div class="edit-content">
+                                        <c:if test="${'true' == canEdit}">
+                                            <div class="text-right app-font-size-16">
+                                                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
+                                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                </a>
+                                            </div>
+                                        </c:if>
+                                    </div>
                                 </div>
                             </c:if>
+
                         </div>
                     </div>
                 </div>
@@ -95,7 +105,7 @@
                     </div>
                 </div>
 
-                <div class="keyAppointmentHolder hidden">
+                <div class="keyAppointmentHolder <c:if test="${'-1' == AppSvcKeyAppointmentHolderDto.assignSelect || empty AppSvcKeyAppointmentHolderDto.assignSelect}">hidden</c:if>">
                     <div class="row">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
@@ -185,6 +195,8 @@
                 unDisabledPartPage($keyAppointmentHolder);
                 if (initEnd){
                     clearFields($keyAppointmentHolder);
+                }else {
+                    addDisabled();
                 }
             }else{
                 $keyAppointmentHolder.removeClass('hidden');
@@ -227,6 +239,7 @@
 
     var doEdit = function (){
         $('.svcPsnEdit').click(function () {
+            console.log(".svcPsnEdit:click")
             var $currContent = $(this).closest('div.keyAppointmentHolderContent');
             $currContent.find('input.isPartEdit').val('1');
             $currContent.find('.edit-content').addClass('hidden');
@@ -234,6 +247,7 @@
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');
+            $currContent.find('.removeKeyAppointmentHolderBtn').removeClass('hidden');
             $('#isEditHiddenVal').val('1');
         });
     };
@@ -241,7 +255,9 @@
     function addDisabled() {
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
+        console.log("addDisabled start: appType=" + appType + "rfiObj=" + rfiObj);
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
+            console.log("disabledPage start");
             disabledPage();
         }
     }
@@ -249,6 +265,7 @@
     var removeKeyAppointmentHolder = function () {
         $('.removeBtn').unbind('click');
         $('.removeBtn').click(function () {
+            console.log(".removeBtn:click")
             showWaiting();
             var keyAppointmentHolderLength = $('.keyAppointmentHolderContent').length;
             if (keyAppointmentHolderLength <= '${keyAppointmentHolderConfigDto.mandatoryCount}') {
@@ -264,6 +281,7 @@
     }
 
     function refreshKeyAppointmentHolder() {
+        console.log("refreshKeyAppointmentHolder start")
         var keyAppointmentHolderLength = $('.keyAppointmentHolderContent').length;
         $('input[name="keyAppointmentHolderLength"]').val(keyAppointmentHolderLength);
         if (keyAppointmentHolderLength <= '${keyAppointmentHolderConfigDto.mandatoryCount}') {
@@ -298,18 +316,22 @@
             'type':'GET',
             'success':function (data) {
                 if(data == null){
+                    console.log("loadSelectKah data == null");
                     return;
                 }
                 fillKahForm($CurrentPsnEle, data);
                 dismissWaiting();
             },
             'error':function () {
+                console.log("loadSelectKah error");
                 dismissWaiting();
             }
         });
     };
 
     var fillKahForm = function ($CurrentPsnEle, data) {
+        console.log("fillKahForm start");
+        console.log("fillKahForm data:" + data);
         <!--salutation-->
         var salutation = data.salutation;
         if (salutation == null || salutation == 'undefined' || salutation == '') {
@@ -340,5 +362,9 @@
         }else{
             unDisabledPartPage($CurrentPsnEle);
         }
+        if(!initEnd || '1' != $CurrentPsnEle.closest('div.keyAppointmentHolderContent').find('input.isPartEdit').val()){
+            addDisabled();
+        }
+        console.log("fillKahForm end")
     };
 </script>

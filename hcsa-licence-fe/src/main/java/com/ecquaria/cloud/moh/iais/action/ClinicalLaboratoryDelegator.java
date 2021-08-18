@@ -4222,17 +4222,22 @@ public class ClinicalLaboratoryDelegator {
                 }
                 boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(indexNo);
                 boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel) || !appSvcKeyAppointmentHolderDto.isLicPerson();
-                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
-                    appSvcKeyAppointmentHolderDto.setName(name);
-                }
                 if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setSalutation(salutation);
+                }
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit) && name != null) {
+                    appSvcKeyAppointmentHolderDto.setName(name);
                 }
                 if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdType(idType);
                 }
-                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit) && idNo != null) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
+                }
+                if (StringUtil.isEmpty(cgoIndexNo)) {
+                    appSvcKeyAppointmentHolderDto.setCgoIndexNo(UUID.randomUUID().toString());
+                } else {
+                    appSvcKeyAppointmentHolderDto.setCgoIndexNo(cgoIndexNo);
                 }
             }
             if(appSvcKeyAppointmentHolderDto != null){
