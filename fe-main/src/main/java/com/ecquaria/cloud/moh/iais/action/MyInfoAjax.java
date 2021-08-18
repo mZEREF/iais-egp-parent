@@ -140,9 +140,10 @@ public class MyInfoAjax {
 			nric = getNric(nric, request);
 			if (StringUtil.isNotEmpty(nric)) {
 				String redirectUri = ConfigHelper.getString("myinfo.common.call.back.url", redirectUriPostfix);
-				;
 				MyInfoTakenDto accessTokenDto = getTakenCallMyInfo(code, nric, redirectUri);
 				if (accessTokenDto != null) {
+					log.info(StringUtil.changeForLog("Myinfo Token type => " + accessTokenDto.getToken_type()
+							+ " => Token value =>" + accessTokenDto.getAccess_token()));
 					setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(nric, accessTokenDto.getToken_type(), accessTokenDto.getAccess_token()), request);
 					MyInfoDto myInfoDto = getMyInfoByTrue(nric, accessTokenDto.getToken_type(), accessTokenDto.getAccess_token());
 					return myInfoDto;
@@ -176,8 +177,8 @@ public class MyInfoAjax {
 
 	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){
 		String grantType = ConfigHelper.getString("myinfo.taken.grant.type");
-		String   priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
-		String	clientId = ConfigHelper.getString("myinfo.common.client.id");
+		String priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
+		String clientId = ConfigHelper.getString("myinfo.common.client.id");
 		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
 		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
 		String privateKeyContent = ConfigHelper.getString("myinfo.common.private.key.content");
@@ -341,6 +342,7 @@ public class MyInfoAjax {
 		String  uri = ConfigHelper.getString("myinfo.person.url")+nric+'/';
 		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
 		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,spEsvcId,uri,takenType,taken);
+		log.info(StringUtil.changeForLog("Myinfo person header => " + authorizationHeader));
 		Map <String,Object> param = IaisCommonUtils.genNewHashMap();
 		param.put(AcraConsts.CLIENT_ID, clientId);
 		param.put(AcraConsts.ATTRIBUTE, attrs);
@@ -357,7 +359,9 @@ public class MyInfoAjax {
 			auditTrailDto.setAfterAction(resEntity.getBody());
 			AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 			// HttpStatus httpStatus = resEntity.getStatusCode();
+			log.info(StringUtil.changeForLog("Myinfo person response string encrypt => " + resEntity.getBody()));
 			String responseStr = MyinfoUtil.decodeEncipheredData(resEntity.getBody());
+			log.info(StringUtil.changeForLog("Myinfo person response string decrypt => " + responseStr));
 			MyInfoDto dto = new MyInfoDto();
 			dto = updateDtoFromResponse(dto, responseStr);
 			log.info(JsonUtil.parseToJson(dto));
