@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 
 import java.util.List;
 
@@ -15,5 +16,5 @@ import java.util.List;
 public class ApplicationResultDto {
     private PageInfo pageInfo;
 
-    private List<ApplicationInfoDto> bsbApp;
+    private List<Application> bsbApp;
 }

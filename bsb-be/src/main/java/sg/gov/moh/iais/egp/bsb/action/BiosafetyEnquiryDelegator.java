@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -269,14 +270,14 @@ public class BiosafetyEnquiryDelegator {
         }
         if (facilityExpiryDateFrom != null ) {
             enquiryDto.setFacilityExpiryDateFrom(facilityExpiryDateFrom);
-        }else if(StringUtil.stringEqual("2",count)){
+        }else if(StringUtil.stringEqual("fn",count)){
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR,-1);
             enquiryDto.setFacilityExpiryDateFrom(calendar.getTime());
         }
         if (facilityExpiryDateTo != null ) {
             enquiryDto.setFacilityExpiryDateTo(facilityExpiryDateTo);
-        } else if (StringUtil.stringEqual("2", count)) {
+        } else if (StringUtil.stringEqual("fn", count)) {
             enquiryDto.setFacilityExpiryDateTo(new Date());
         }
         if (StringUtil.isNotEmpty(gazettedArea)) {
@@ -360,65 +361,65 @@ public class BiosafetyEnquiryDelegator {
 
     }
 
-    @GetMapping(value = "Application-information-file")
-    public @ResponseBody
-    void appFileHandler(HttpServletRequest request, HttpServletResponse response) {
-        log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        File file = null;
-        log.debug("indicates that a record has been selected ");
-        EnquiryDto enquiryDto = getSearchDto(request);
-        ApplicationResultDto results = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
-        if (!Objects.isNull(results)){
-            List<ApplicationInfoDto> queryList = results.getBsbApp();
-            queryList.forEach(i -> i.setApplicationStatus(MasterCodeUtil.getCodeDesc(i.getApplicationStatus())));
-            queryList.forEach(i -> i.setApplicationType(MasterCodeUtil.getCodeDesc(i.getApplicationType())));
-            queryList.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
-            queryList.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
-            queryList.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
-            queryList.forEach(i -> i.setProcessType(MasterCodeUtil.getCodeDesc(i.getProcessType())));
-            try {
-                file = ExcelWriter.writerToExcel(queryList, ApplicationInfoDto.class, "Application Information_Search_Template");
-            } catch (Exception e) {
-                log.error("=======>fileHandler error >>>>>", e);
-            }
-        }
-        try {
-            FileUtils.writeFileResponseContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-    }
-
-    @GetMapping(value = "Facility-information-file")
-    public @ResponseBody
-    void facFileHandler(HttpServletRequest request, HttpServletResponse response) {
-        log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        File file = null;
-        EnquiryDto enquiryDto = getSearchDto(request);
-        FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
-        log.debug("indicates that a record has been selected ");
-        if (!Objects.isNull(facilityResultDto)){
-            List<FacilityInfoDto> queryList = facilityResultDto.getBsbFac();
-            queryList.forEach(i -> i.setGazettedArea(MasterCodeUtil.getCodeDesc(i.getGazettedArea())));
-            queryList.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
-            queryList.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
-            queryList.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
-            try {
-                file = ExcelWriter.writerToExcel(queryList, FacilityInfoDto.class, "Facility Information_Search_Template");
-            } catch (Exception e) {
-                log.error("=======>fileHandler error >>>>>", e);
-            }
-        }
-        try {
-            FileUtils.writeFileResponseContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-    }
+//    @GetMapping(value = "Application-information-file")
+//    public @ResponseBody
+//    void appFileHandler(HttpServletRequest request, HttpServletResponse response) {
+//        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+//        File file = null;
+//        log.debug("indicates that a record has been selected ");
+//        EnquiryDto enquiryDto = getSearchDto(request);
+//        ApplicationResultDto results = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
+//        if (!Objects.isNull(results)){
+//            List<Application> queryList = results.getBsbApp();
+//            queryList.forEach(i -> i.setApplicationStatus(MasterCodeUtil.getCodeDesc(i.getApplicationStatus())));
+//            queryList.forEach(i -> i.setApplicationType(MasterCodeUtil.getCodeDesc(i.getApplicationType())));
+//            queryList.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
+//            queryList.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
+//            queryList.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
+//            queryList.forEach(i -> i.setProcessType(MasterCodeUtil.getCodeDesc(i.getProcessType())));
+//            try {
+//                file = ExcelWriter.writerToExcel(queryList, ApplicationInfoDto.class, "Application Information_Search_Template");
+//            } catch (Exception e) {
+//                log.error("=======>fileHandler error >>>>>", e);
+//            }
+//        }
+//        try {
+//            FileUtils.writeFileResponseContent(response, file);
+//            FileUtils.deleteTempFile(file);
+//        } catch (IOException e) {
+//            log.debug(e.getMessage());
+//        }
+//        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+//    }
+//
+//    @GetMapping(value = "Facility-information-file")
+//    public @ResponseBody
+//    void facFileHandler(HttpServletRequest request, HttpServletResponse response) {
+//        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+//        File file = null;
+//        EnquiryDto enquiryDto = getSearchDto(request);
+//        FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
+//        log.debug("indicates that a record has been selected ");
+//        if (!Objects.isNull(facilityResultDto)){
+//            List<FacilityInfoDto> queryList = facilityResultDto.getBsbFac();
+//            queryList.forEach(i -> i.setGazettedArea(MasterCodeUtil.getCodeDesc(i.getGazettedArea())));
+//            queryList.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
+//            queryList.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
+//            queryList.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
+//            try {
+//                file = ExcelWriter.writerToExcel(queryList, FacilityInfoDto.class, "Facility Information_Search_Template");
+//            } catch (Exception e) {
+//                log.error("=======>fileHandler error >>>>>", e);
+//            }
+//        }
+//        try {
+//            FileUtils.writeFileResponseContent(response, file);
+//            FileUtils.deleteTempFile(file);
+//        } catch (IOException e) {
+//            log.debug(e.getMessage());
+//        }
+//        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+//    }
     private EnquiryDto getSearchDto(HttpServletRequest request) {
         EnquiryDto searchDto = (EnquiryDto) ParamUtil.getSessionAttr(request, KEY_ENQUIRY_SEARCH_DTO);
         return searchDto == null ? getDefaultSearchDto() : searchDto;
