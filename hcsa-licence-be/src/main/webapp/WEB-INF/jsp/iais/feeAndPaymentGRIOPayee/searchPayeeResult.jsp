@@ -181,6 +181,9 @@
                                                                                 <br>
                                                                             </c:forEach>
                                                                         </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.remarks}"/>
+                                                                        </td>
                                                                     </tr>
                                                                 </c:forEach>
                                                             </c:otherwise>
