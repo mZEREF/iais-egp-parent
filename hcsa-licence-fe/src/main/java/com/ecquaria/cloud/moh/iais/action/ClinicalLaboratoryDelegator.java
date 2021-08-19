@@ -436,13 +436,13 @@ public class ClinicalLaboratoryDelegator {
         String name = ParamUtil.getString(request, "name" + index);
         String qualification = ParamUtil.getString(request, "qualification" + index);
         String wrkExpYear = ParamUtil.getString(request, "wrkExpYear" + index);
-        String slIndexNo = ParamUtil.getString(request, "slIndexNo" + index);
+        String indexNo = ParamUtil.getString(request, "indexNo" + index);
         AppSvcPersonnelDto sectionLeader = new AppSvcPersonnelDto();
         sectionLeader.setSalutation(salutation);
         sectionLeader.setName(name);
         sectionLeader.setQualification(qualification);
         sectionLeader.setWrkExpYear(wrkExpYear);
-        sectionLeader.setIndexNo(slIndexNo);
+        sectionLeader.setIndexNo(indexNo);
         sectionLeader.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
         if (StringUtil.isEmpty(sectionLeader.getIndexNo())) {
             sectionLeader.setIndexNo(UUID.randomUUID().toString());

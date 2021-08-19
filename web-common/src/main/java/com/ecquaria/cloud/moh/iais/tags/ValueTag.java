@@ -94,17 +94,15 @@ public final class ValueTag extends DivTagSupport {
         }
         return EVAL_BODY_INCLUDE;
     }
-
-    private void frontendForWidth(StringBuilder clazz, int width0) {
-        if (width > 10) {
-            clazz.append("col-sm-7 col-md-").append(width0).append(" col-xs-").append(width0);
-        } else if (width > 5 && width <= 10) {
-            clazz.append("col-sm-7 col-md-").append(width0).append(" col-xs-").append(width0);
-        } else if (width > 0) {
-            clazz.append("col-sm-4 col-md-").append(width0).append(" col-xs-").append(width0);
+    private void frontendForWidth(StringBuilder clazz,int width0){
+        if(width>10){
+            clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
+        }else if(width>5 && width<=10){
+            clazz.append("col-sm-7 col-md-5 col-xs-").append(width0);
+        }else if (width>0){
+            clazz.append("col-sm-4 col-md-2 col-xs-").append(width0);
         }
     }
-
     @Override
     public int doEndTag() throws JspException {
         try {
