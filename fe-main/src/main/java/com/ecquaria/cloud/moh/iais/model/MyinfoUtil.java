@@ -33,12 +33,11 @@ import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -323,22 +322,30 @@ public class MyinfoUtil {
 		} else {
 			log.info(StringUtil.changeForLog("Token Auth Header ==> " + authorizationHeader));
 		}
-		ResponseEntity<MyInfoTakenDto> resEntity;
 		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
-		HttpStatus httpStatus;
 		try {
-			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,getTokenDto,null, header,MyInfoTakenDto.class,null);
+			HttpEntity entity = new HttpEntity<>(handleRequestBody(getTokenDto), header);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<MyInfoTakenDto> response = restTemplate.exchange(redirectUri,
+					HttpMethod.POST, entity,MyInfoTakenDto.class);
+			MyInfoTakenDto body = response.getBody();
+			log.info(StringUtil.changeForLog("Response Status =>" + response.getStatusCodeValue()));
+			if (body != null) {
+				log.info(StringUtil.changeForLog("Response Body ==> " + body));
+			} else {
+				log.info(StringUtil.changeForLog("Response Body is null"));
+			    return null;
+			}
 			AuditTrailDto auditTrailDto = new AuditTrailDto();
 			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
 			auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
 			auditTrailDto.setModule("MyInfo");
 			auditTrailDto.setFunctionName("getTakenCallMyInfo");
 			auditTrailDto.setBeforeAction(JsonUtil.parseToJson(getTokenDto));
-			auditTrailDto.setAfterAction(JsonUtil.parseToJson(resEntity));
+			auditTrailDto.setAfterAction(JsonUtil.parseToJson(body));
 			AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-			httpStatus = resEntity.getStatusCode();
-			if( httpStatus == HttpStatus.OK){
-				return resEntity.getBody();
+			if(response.getStatusCode() == HttpStatus.OK){
+				return body;
 			}else {
 				return null;
 			}
@@ -347,5 +354,16 @@ public class MyinfoUtil {
 			return null;
 		}
 
+	}
+
+	private static MultiValueMap<String, String> handleRequestBody(GetTokenDto getTokenDto) {
+		MultiValueMap<String, String> newMap = new LinkedMultiValueMap<>();
+		newMap.add("code", getTokenDto.getCode());
+		newMap.add("grant_type", getTokenDto.getGrant_type());
+		newMap.add("client_secret", getTokenDto.getClient_secret());
+		newMap.add("client_id", getTokenDto.getClient_id());
+		newMap.add("redirect_uri", getTokenDto.getRedirect_uri());
+		newMap.add("state", getTokenDto.getState());
+		return newMap;
 	}
 }
