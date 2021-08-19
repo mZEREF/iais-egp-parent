@@ -162,7 +162,7 @@
         </c:forEach>
 
         <div class="addKeyAppointmentHolderDiv">
-            <span class="addKeyAppointmentHolderBtn <c:if test="${canEdit}">hidden</c:if>" style="color:deepskyblue;cursor:pointer;">
+            <span class="addKeyAppointmentHolderBtn" style="color:deepskyblue;cursor:pointer;">
                 <span style="">+ Add Key Appointment Holder</span>
             </span>
         </div>
