@@ -3,7 +3,7 @@
     <iais:row cssClass="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="1"/>
+                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
                 <div class="text-right app-font-size-16">
                     <a class="edit" href="javascript:void(0);">
                         <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
@@ -14,13 +14,13 @@
     </iais:row>
 
     <iais:row>
-        <iais:value width="6">
+        <iais:value width="6" cssClass="col-md-6">
             <strong>
                 <c:out value="${stepName}"/>
                 <label class="assign-psn-item"><c:if test="${index > 0}">${index+1}</c:if></label>
             </strong>
         </iais:value>
-        <iais:value width="6" cssClass="text-right">
+        <iais:value width="6" cssClass="col-md-6 text-right">
             <c:if test="${index > 0}">
                 <h4 class="text-danger">
                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
@@ -30,26 +30,26 @@
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Name" cssClass="control-font-label"/>
-        <iais:value width="3">
+        <iais:field width="5" mandatory="true" value="Name" cssClass="col-md-5 control-font-label"/>
+        <iais:value width="3" cssClass="col-md-3">
             <iais:select cssClass="salutation" name="salutation${index}" firstOption="Please Select"
                          codeCategory="CATE_ID_SALUTATION" value="${sectionLeader.salutation}" />
         </iais:value>
-        <iais:value width="3">
+        <iais:value width="3" cssClass="col-md-3">
             <iais:input cssClass="name" maxLength="66" type="text" name="name${index}" value="${sectionLeader.name}" />
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Qualification" cssClass="control-font-label"/>
-        <iais:value width="7">
+        <iais:field width="5" mandatory="true" value="Qualification" cssClass="col-md-5 control-font-label"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="qualification" maxLength="100" type="text" name="qualification${index}" value="${sectionLeader.qualification}" />
         </iais:value>
     </iais:row>
 
     <iais:row>
-        <iais:field width="5" mandatory="true" value="Working Experience (in terms of years)" cssClass="control-font-label"/>
-        <iais:value width="7">
+        <iais:field width="5" mandatory="true" value="Working Experience (in terms of years)" cssClass="col-md-5 control-font-label"/>
+        <iais:value width="7" cssClass="col-md-7">
             <iais:input cssClass="wrkExpYear" maxLength="2" type="text" name="wrkExpYear${index}" value="${sectionLeader.wrkExpYear}" />
         </iais:value>
     </iais:row>

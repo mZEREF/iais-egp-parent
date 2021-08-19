@@ -192,6 +192,7 @@
                 unDisableContent($currContent);
                 $(this).hide();
                 $('#isEditHiddenVal').val('1');
+                $currContent.find('.isPartEdit').val('1');
             });
         }
     </script>

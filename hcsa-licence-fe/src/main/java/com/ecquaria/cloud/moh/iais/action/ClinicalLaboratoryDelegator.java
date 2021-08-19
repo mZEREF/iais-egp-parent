@@ -377,6 +377,18 @@ public class ClinicalLaboratoryDelegator {
         if (isGetDataFromPage) {
             List<AppSvcPersonnelDto> appSvcSectionLeaderList = getSectionLeadersFromPage(bpc.request);
             currSvcInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
+            // re-set allocation
+            List<AppSvcDisciplineAllocationDto> allocationList = currSvcInfoDto.getAppSvcDisciplineAllocationDtoList();
+            if (allocationList != null && !allocationList.isEmpty()) {
+                allocationList.forEach(dto -> {
+                    String slIndex = dto.getSlIndex();
+                    if (!StringUtil.isEmpty(slIndex) && appSvcSectionLeaderList.stream()
+                            .noneMatch(sectionList -> slIndex.equals(sectionList.getIndexNo()))) {
+                        dto.setSlIndex(null);
+                    }
+                });
+                currSvcInfoDto.setAppSvcDisciplineAllocationDtoList(allocationList);
+            }
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             bpc.request.setAttribute(SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
@@ -407,21 +419,21 @@ public class ClinicalLaboratoryDelegator {
         }
         for (int i = 0; i < slLength; i++) {
             String isPartEdit = ParamUtil.getString(request, "isPartEdit" + i);
-            String slIndexNo = ParamUtil.getString(request, "slIndexNo" + i);
+            String indexNo = ParamUtil.getString(request, "indexNo" + i);
             boolean fromPage = false;
             boolean fromOld = false;
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && !isRfi) {
                 fromPage = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
                 fromPage = true;
-            } else if (!StringUtil.isEmpty(slIndexNo) && oldSectionLeadList != null && !oldSectionLeadList.isEmpty()) {
+            } else if (!StringUtil.isEmpty(indexNo) && oldSectionLeadList != null && !oldSectionLeadList.isEmpty()) {
                 fromOld = true;
             }
             if (fromPage) {
                 sectionLeaderList.add(getSectionLeaderFromPage(String.valueOf(i), request));
             } else if (fromOld) {
                 oldSectionLeadList.stream()
-                        .filter(dto -> slIndexNo.equals(dto.getIndexNo()))
+                        .filter(dto -> indexNo.equals(dto.getIndexNo()))
                         .findAny()
                         .ifPresent(dto -> sectionLeaderList.add(dto));
             }
@@ -1213,12 +1225,10 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
                 currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
-                setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             }
             log.debug(StringUtil.changeForLog("cycle cgo dto to retrieve prs info end ..."));
 
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
 
@@ -1264,6 +1274,19 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
             currentSvcRelatedDto = removeDirtyPsnDoc(currentSvcRelatedDto,svcDocConfigDtos,appSvcCgoDtos,ApplicationConsts.DUP_FOR_PERSON_CGO);
+            // re-set allocation
+            List<AppSvcDisciplineAllocationDto> allocationList = currentSvcRelatedDto.getAppSvcDisciplineAllocationDtoList();
+            if (allocationList != null && !allocationList.isEmpty()) {
+                List<AppSvcPrincipalOfficersDto> cgoList = appSvcCgoDtoList;
+                allocationList.forEach(dto -> {
+                    String idNo = dto.getIdNo();
+                    if (!StringUtil.isEmpty(idNo) && cgoList.stream()
+                            .noneMatch(cgo -> idNo.equals(cgo.getIdNo()))) {
+                        dto.setIdNo(null);
+                    }
+                });
+                currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(allocationList);
+            }
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         }
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers end ...."));
@@ -1313,16 +1336,16 @@ public class ClinicalLaboratoryDelegator {
             }
         }
 
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (isGetDataFromPage || svcScopeEdit || cgoChange) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
             List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
             if(svcScopeDtoList == null){
                 svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
             }
             Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
             NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
-            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             List<AppSvcDisciplineAllocationDto> daList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
             if (appSvcLaboratoryDisciplinesDtoList != null) {
@@ -1376,31 +1399,29 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
             }
-
-            String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
-            if ("next".equals(crud_action_additional)) {
-
-                doValidateDisciplineAllocation(errorMap, daList, bpc.request);
-                if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
-                    appSubmissionDto.setClickEditPage(clickEditPages);
-                    reSetChangesForApp(appSubmissionDto);
-                }
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-
-            }
             currentSvcRelatedDto.setAppSvcDisciplineAllocationDtoList(daList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-            if (!errorMap.isEmpty()) {
-                //set audit
-                bpc.request.setAttribute("errormapIs", "error");
-                NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
-                return;
+        }
+        String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if ("next".equals(crud_action_additional)) {
+            doValidateDisciplineAllocation(errorMap, currentSvcRelatedDto.getAppSvcDisciplineAllocationDtoList(), bpc.request);
+            if (appSubmissionDto.isNeedEditController()) {
+                Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+                //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
+                appSubmissionDto.setClickEditPage(clickEditPages);
+                reSetChangesForApp(appSubmissionDto);
             }
-            //save into sub-svc dto
+            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+
+        }
+
+        if (!errorMap.isEmpty()) {
+            //set audit
+            bpc.request.setAttribute("errormapIs", "error");
+            NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
+            return;
         }
 
         log.debug(StringUtil.changeForLog("the do doDisciplineAllocation end ...."));
@@ -3817,6 +3838,9 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList, HttpServletRequest request) {
+        if (daList == null || daList.isEmpty()) {
+            return;
+        }
         Map<String, String> cgoMap = new HashMap<>();
         for (int i = 0; i < daList.size(); i++) {
             String idNo = daList.get(i).getIdNo();

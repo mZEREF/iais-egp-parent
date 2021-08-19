@@ -3,6 +3,7 @@
     <sql key="genSectionLeaderHtml" cached="no" remarks="">
         <![CDATA[
         <div class="form-horizontal sectionLaderContent">
+            <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="1"/>
             <div class="form-group">
                 <div class="col-sm-7 col-md-6 col-xs-6">
                     <strong>${stepName} <label class="assign-psn-item">${slIndex}</label></strong>
