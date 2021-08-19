@@ -2082,6 +2082,17 @@ public class RequestForChangeMenuDelegator {
                     }
                 }
             }
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+            if (appSvcKeyAppointmentHolderList != null) {
+                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcKeyAppointmentHolderList) {
+                    if (appSvcPrincipalOfficersDto.getIdNo().equals(personnelListDto.getIdNo())) {
+                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
+                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
+                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
+                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
+                    }
+                }
+            }
         }
         return appSubmissionDto;
     }
@@ -2157,6 +2168,18 @@ public class RequestForChangeMenuDelegator {
             if (!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtoList)) {
                 for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
                     appSvcDisciplineAllocationDto.setIdNo(idNo);
+                }
+            }
+            //KAH
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+            if (!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderDtoList) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
+                for (AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolderDto : appSvcKeyAppointmentHolderDtoList) {
+                    appSvcKeyAppointmentHolderDto.setIdNo(personnelListDto.getIdNo());
+                    appSvcKeyAppointmentHolderDto.setIdType(personnelListDto.getIdType());
+                    appSvcKeyAppointmentHolderDto.setName(personnelListDto.getPsnName());
+                    appSvcKeyAppointmentHolderDto.setSalutation(personnelListDto.getSalutation());
+                    appSvcKeyAppointmentHolderDto.setMobileNo(personnelListDto.getMobileNo());
+                    appSvcKeyAppointmentHolderDto.setEmailAddr(personnelListDto.getEmailAddr());
                 }
             }
         }
