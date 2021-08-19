@@ -58,7 +58,7 @@
                                  </iais:row>
                                  <iais:row id = "subLicenseeRow">
                                        <iais:field width="5" mandatory="true" value="Please select the licensee to transfer to"/>
-                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
+                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="other-charges-type-div">
                                          <iais:select name="subLicensee" firstOption="Please Select"
                                                        value=""/>
                                        </iais:value>

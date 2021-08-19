@@ -1054,11 +1054,15 @@ public class RequestForChangeDelegator {
             }
             log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
             log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
-            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+new BigDecimal(existCount).
-                    divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()))));
-            int diffrent = licenseeKeyApptPersonDtoList.size()- existCount;
+            log.info(StringUtil.changeForLog("The  oldLicenseeKeyApptPersonDtos.size()  is -->:"+oldLicenseeKeyApptPersonDtos.size()));
+            int totleCount = licenseeKeyApptPersonDtoList.size();
+            if(oldLicenseeKeyApptPersonDtos.size() > licenseeKeyApptPersonDtoList.size()){
+                totleCount =  oldLicenseeKeyApptPersonDtos.size();
+            }
+            log.info(StringUtil.changeForLog("The  totleCount  is -->:"+totleCount));
+            int diffrent = totleCount - existCount;
             log.info(StringUtil.changeForLog("The  diffrent  is -->:"+diffrent));
-            BigDecimal ratio = new BigDecimal(diffrent).divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()));
+            BigDecimal ratio = new BigDecimal(diffrent).divide(new BigDecimal(totleCount));
             log.info(StringUtil.changeForLog("The  ratio  is -->:"+ratio));
             if(ratio.compareTo(BigDecimal.valueOf(0.5))>=0){
                 canTransfer = false;
