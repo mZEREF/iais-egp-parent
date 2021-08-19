@@ -263,10 +263,8 @@ public class NewApprovalDelegator {
 
     public void controlSwitch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String crud_action_type=ParamUtil.getString(request,"crud_action_type");
         String crud_action_type_form_page=ParamUtil.getString(request,"crud_action_type_form_page");
         ParamUtil.setRequestAttr(request,"crud_action_type_form_page",crud_action_type_form_page);
-
     }
 
     public void doSaveDraft(BaseProcessClass bpc) {
@@ -281,12 +279,10 @@ public class NewApprovalDelegator {
         }else if (task.equals("APPRTY003")){
             processType = "PROTYPE004";
         }
-        String applicationNo = "APP0000011";
         String appType = "BSBAPTY001";
         String status = "BSBAPST011";
         Date applicationDt = new Date();
         approvalApplicationDto.setProcessType(processType);
-        approvalApplicationDto.setApplicationNo(applicationNo);
         approvalApplicationDto.setAppType(appType);
         approvalApplicationDto.setStatus(status);
         approvalApplicationDto.setApplicationDt(applicationDt);
@@ -298,19 +294,17 @@ public class NewApprovalDelegator {
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         String processType = "";
-        if (task == "APPRTY001"){
+        if (task.equals("APPRTY001")){
             processType = "PROTYPE002";
-        }else if (task == "APPRTY002"){
+        }else if (task.equals("APPRTY002")){
             processType = "PROTYPE003";
-        }else if (task == "APPRTY003"){
+        }else if (task.equals("APPRTY003")){
             processType = "PROTYPE004";
         }
-        String applicationNo = "APP0000011";
         String appType = "BSBAPTY001";
         String status = "BSBAPST001";
         Date applicationDt = new Date();
         approvalApplicationDto.setProcessType(processType);
-        approvalApplicationDto.setApplicationNo(applicationNo);
         approvalApplicationDto.setAppType(appType);
         approvalApplicationDto.setStatus(status);
         approvalApplicationDto.setApplicationDt(applicationDt);
