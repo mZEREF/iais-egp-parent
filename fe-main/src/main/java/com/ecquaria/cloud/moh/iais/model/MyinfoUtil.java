@@ -304,7 +304,6 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
 		log.info(StringUtil.changeForLog("Token auth base string ==> " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
