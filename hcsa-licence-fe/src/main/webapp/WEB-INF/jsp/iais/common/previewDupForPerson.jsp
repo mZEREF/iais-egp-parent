@@ -35,7 +35,14 @@
 </c:choose>
 <c:forEach begin="0" end="${psnLength}" varStatus="psnStat">
     <c:set var="psn" value="${psnList[psnStat.index]}"/>
-    <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.indexNo}"/>
+    <c:choose>
+        <c:when test="${'16' == config.dupForPerson}">
+            <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.psnIndexNo}"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.indexNo}"/>
+        </c:otherwise>
+    </c:choose>
     <c:set var="fileList" value="${reloadMap[mapKey]}"/>
     <%@include file="previewSvcDocContent.jsp"%>
 </c:forEach>
