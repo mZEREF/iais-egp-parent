@@ -7,24 +7,10 @@
 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
 
 <div class="row">
-    <div class="col-xs-12 col-md-12 text-right">
-        <c:if test="${AppSubmissionDto.needEditController }">
-            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip" href="javascript:void(0);">
-                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
-                    </a>
-                </div>
-            </c:if>
-            <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-        </c:if>
-    </div>
+    <h4><iais:message key="NEW_ERR0033"/></h4>
 </div>
 
 <div class="row">
-    <h4><iais:message key="NEW_ERR0033"/></h4>
-
     <div class="form-group">
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap">
@@ -34,6 +20,19 @@
                             <strong><c:out value="${stepName}"/></strong>
                         </div>
                     </label>
+                </div>
+                <div class="col-md-7 col-xs-7 text-right">
+                    <c:if test="${AppSubmissionDto.needEditController }">
+                        <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+                        <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
+                            <div class="app-font-size-16">
+                                <a class="back" id="RfcSkip" href="javascript:void(0);">
+                                    Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                                </a>
+                            </div>
+                        </c:if>
+                        <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
+                    </c:if>
                 </div>
             </div>
         </div>

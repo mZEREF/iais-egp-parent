@@ -45,13 +45,14 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
 
         List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList = oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+
+        List<AppSvcPrincipalOfficersDto> kahList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
+        List<AppSvcPrincipalOfficersDto> oldKahList = oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
 
         Set<String> set = IaisCommonUtils.genNewHashSet();
         List<String> list = IaisCommonUtils.genNewArrayList();
@@ -59,11 +60,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         List<String> list2 = changeMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
         List<String> list3 = changePo(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
         List<String> list4 = changeClinicalDirector(appSvcClinicalDirectorDtoList, oldAppSvcClinicalDirectorDtoList);
-        List<String> list5 = changeKah(appSvcKeyAppointmentHolderDtoList, oldAppSvcKeyAppointmentHolderDtoList);
+        List<String> list5 = changeKeyAppointmentHolder(kahList, oldKahList);
 
         set.addAll(list1);
         set.addAll(list2);
         set.addAll(list3);
+        set.addAll(list4);
         set.addAll(list5);
         list.addAll(set);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
@@ -142,17 +144,19 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                     appSvcRelatedInfoDto2.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtoList1);
                 }
             }
-            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList1 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcKeyAppointmentHolderDtoList();
-            if(!list4.isEmpty()){
-                if (appSvcKeyAppointmentHolderDtoList1 != null && appSvcKeyAppointmentHolderDtoList != null) {
-                    for(AppSvcPrincipalOfficersDto var1 : appSvcKeyAppointmentHolderDtoList1){
-                        for(AppSvcPrincipalOfficersDto var2 : appSvcKeyAppointmentHolderDtoList){
+            // KAH
+            List<AppSvcPrincipalOfficersDto> kahList1 =
+                    appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcKeyAppointmentHolderDtoList();
+            if(!list5.isEmpty()){
+                if(kahList!=null && kahList1!=null){
+                    for (AppSvcPrincipalOfficersDto var1 : kahList1) {
+                        for (AppSvcPrincipalOfficersDto var2 : kahList) {
                             if(var1.getIdNo().equals(var2.getIdNo())){
-                                appSvcKeyAppointmentHolderDtoList1.set(appSvcKeyAppointmentHolderDtoList1.indexOf(var1),var2);
+                                kahList1.set(kahList1.indexOf(var1),var2);
                             }
                         }
                     }
-                    appSvcRelatedInfoDto2.setAppSvcKeyAppointmentHolderDtoList(appSvcKeyAppointmentHolderDtoList1);
+                    appSvcRelatedInfoDto2.setAppSvcKeyAppointmentHolderDtoList(kahList1);
                 }
             }
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
@@ -172,6 +176,26 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
 
         return appSubmissionDtoList;
     }
+
+    private List<String> changeKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> kahList,
+            List<AppSvcPrincipalOfficersDto> oldKahList) {
+        List<String> ids = new ArrayList<>(10);
+        if (kahList != null && oldKahList != null) {
+            if (kahList.equals(oldKahList)) {
+                return ids;
+            }
+            kahList.stream().forEach(kah -> {
+                if (oldKahList.stream().noneMatch(dto -> Objects.equals(dto.getIdNo(), kah.getIdNo())
+                        && Objects.equals(dto.getIdType(), kah.getIdType())
+                        && Objects.equals(dto.getName(), kah.getName())
+                        && Objects.equals(dto.getSalutation(), dto.getSalutation()))) {
+                    ids.add(kah.getIdNo());
+                }
+            });
+        }
+        return ids;
+    }
+
     protected List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
         List<String> ids=IaisCommonUtils.genNewArrayList();
         if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
@@ -279,29 +303,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                     }
                 }
             }
-        }
-        return ids;
-    }
-    protected List<String> changeKah(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList) {
-        List<String> ids=IaisCommonUtils.genNewArrayList();
-        if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcKeyAppointmentHolderDtoList);
-            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyMedaler(oldAppSvcKeyAppointmentHolderDtoList);
-            if(n.equals(o)){
-                return ids;
-            }
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
-                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : o){
-                    if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
-                        boolean b=appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
-                                &&appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName());
-                        if(!b){
-                            ids.add(appSvcPrincipalOfficersDto.getIdNo());
-                        }
-                    }
-                }
-            }
-
         }
         return ids;
     }
