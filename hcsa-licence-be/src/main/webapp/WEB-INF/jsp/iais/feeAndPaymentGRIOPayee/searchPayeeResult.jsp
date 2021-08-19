@@ -113,7 +113,7 @@
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="FILE_NAME"
                                                                                  value="GIRO Form"/>
-                                                            <iais:sortableHeader needSort="true" field="Internal Remarks"
+                                                            <iais:sortableHeader needSort="false" field="Internal Remarks"
                                                                                  value="REMARKS"/>
                                                         </tr>
                                                         </thead>
