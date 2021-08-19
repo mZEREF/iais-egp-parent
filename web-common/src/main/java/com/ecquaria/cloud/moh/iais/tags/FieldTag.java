@@ -50,7 +50,7 @@ public final class FieldTag extends DivTagSupport {
         setCheckboxVal(null);
         setChecked(false);
         setOnclick(null);
-        setWidth(5);
+        setWidth(0);
         setMandatory(Boolean.FALSE);
     }
 
@@ -80,6 +80,8 @@ public final class FieldTag extends DivTagSupport {
         }
         if (isBackend) {
             html.append("<label class=\"col-lg-").append(width).append(" col-sm-12 control-label float-left");
+        } else if (width == 0){
+            html.append("<label class=\"col-xs-0 col-md-4 control-label");
         } else {
             html.append("<label class=\"col-xs-").append(width).append(" col-md-").append(width).append(" col-sm-10 control-label");
         }

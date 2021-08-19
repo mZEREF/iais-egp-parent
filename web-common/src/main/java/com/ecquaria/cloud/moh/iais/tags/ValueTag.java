@@ -31,7 +31,7 @@ public final class ValueTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        setWidth(7);
+        setWidth(0);
         setLabel(false);
         setOffset(false);
         setAlign(false);
