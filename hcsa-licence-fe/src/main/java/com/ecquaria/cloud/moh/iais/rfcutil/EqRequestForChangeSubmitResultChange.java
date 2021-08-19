@@ -122,6 +122,12 @@ public class EqRequestForChangeSubmitResultChange {
         if (eqMeadrter) {
             return true;
         }
+        List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = n.get(0).getAppSvcKeyAppointmentHolderDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList = o.get(0).getAppSvcKeyAppointmentHolderDtoList();
+        boolean eqKeyAppointmentHolder = eqKeyAppointmentHolder(appSvcKeyAppointmentHolderDtoList, oldAppSvcKeyAppointmentHolderDtoList);
+        if (eqKeyAppointmentHolder) {
+            return true;
+        }
         return false;
     }
 
@@ -223,6 +229,19 @@ public class EqRequestForChangeSubmitResultChange {
                 return true;
             }
         } else if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList1 == null || appSvcMedAlertPersonList == null && oldAppSvcMedAlertPersonList1 != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean eqKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList)  {
+        if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList != null) {
+            List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyMedaler(appSvcKeyAppointmentHolderDtoList);
+            List<AppSvcPrincipalOfficersDto> o = PageDataCopyUtil.copyMedaler(oldAppSvcKeyAppointmentHolderDtoList);
+            if (!n.equals(o)) {
+                return true;
+            }
+        } else if (appSvcKeyAppointmentHolderDtoList != null && oldAppSvcKeyAppointmentHolderDtoList == null || appSvcKeyAppointmentHolderDtoList == null && oldAppSvcKeyAppointmentHolderDtoList != null) {
             return true;
         }
         return false;
