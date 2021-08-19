@@ -533,7 +533,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                         List<AppEditSelectDto> appEditSelectDtos = applicationClient.getAppEditSelectDto(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC).getEntity();
                         boolean changePrem=false;
                         for (AppEditSelectDto edit : appEditSelectDtos) {
-                            if (edit.isPremisesListEdit() || edit.isPremisesEdit()) {
+                            if (edit.isPremisesEdit() || edit.isPremisesListEdit()) {
                                 changePrem = true;
                             }
                         }
