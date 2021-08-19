@@ -239,7 +239,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 boolean changePrem=false;
                 for (AppEditSelectDto edit:appEditSelectDtos
                 ) {
-                    if(edit.isPremisesListEdit()||edit.isPremisesListEdit()){
+                    if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
                         changePrem=true;
                     }
                 }
