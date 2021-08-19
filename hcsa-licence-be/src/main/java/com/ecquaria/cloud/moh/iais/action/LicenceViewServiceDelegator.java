@@ -1492,6 +1492,12 @@ public class LicenceViewServiceDelegator {
         olAppSvcPrincipalOfficersDtoList.addAll(oldDpoAppSvcPrincipalOfficersDto);
         oldAppSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(olAppSvcPrincipalOfficersDtoList);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
+        // section leader
+        List<AppSvcPersonnelDto> appSvcSectionLeaderList = getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        appSvcPersonnelDtoList(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
+        oldAppSvcRelatedInfoDto.setAppSvcSectionLeaderList(oldAppSvcSectionLeaderList);
+        appSvcRelatedInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
         // Svc Personnel
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
@@ -1541,6 +1547,14 @@ public class LicenceViewServiceDelegator {
         dealCharges(appSvcChargesPageDto, oldAppSvcChargesPageDto);
         appSvcRelatedInfoDto.setAppSvcChargesPageDto(appSvcChargesPageDto);
         oldAppSvcRelatedInfoDto.setAppSvcChargesPageDto(oldAppSvcChargesPageDto);
+        // KAH
+        List<AppSvcPrincipalOfficersDto> kahList =
+                getList(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
+        List<AppSvcPrincipalOfficersDto> oldKahList =
+                getList(oldAppSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList());
+        dealClinicalDirector(kahList, oldKahList);
+        appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(kahList);
+        oldAppSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(oldKahList);
     }
 
     private void dealCharges(AppSvcChargesPageDto appSvcChargesPageDto, AppSvcChargesPageDto oldAppSvcChargesPageDto) {
