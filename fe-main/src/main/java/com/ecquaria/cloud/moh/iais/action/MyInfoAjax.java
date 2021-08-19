@@ -176,7 +176,7 @@ public class MyInfoAjax {
 	}
 
 	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){
-		String grantType = ConfigHelper.getString("myinfo.taken.grant.type");
+		String grantType = ConfigHelper.getString("myinfo.taken.grant.type","authorization_code");
 		String priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
 		String clientId = ConfigHelper.getString("myinfo.common.client.id");
 		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
