@@ -667,8 +667,11 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         //0065135
         if(appEditSelectDto != null){
+            if(appEditSelectDto.isLicenseeEdit()) {
+                editSelect = editSelect + "Licensee Details";
+            }
             if(appEditSelectDto.isPremisesEdit()){
-                editSelect = editSelect + "Mode of Service Delivery";
+                editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "Mode of Service Delivery";
             }
             if(appEditSelectDto.isDocEdit()){
                 editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
