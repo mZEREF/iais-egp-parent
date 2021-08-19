@@ -20,25 +20,36 @@
                                 <span>List of GIRO Payees</span>
                             </h2>
                         </div>
-<%--                        <iais:row>--%>
-<%--                            <iais:field value="HCI Code :"/>--%>
-<%--                            <iais:value width="18">--%>
-<%--                                <label>--%>
-<%--                                    <input type="text"--%>
-<%--                                           style="width:180%; font-weight:normal;"--%>
-<%--                                           name="hciCode" maxlength="20"--%>
-<%--                                           value="${hciCode}"/>--%>
-<%--                                </label>--%>
-<%--                            </iais:value>--%>
-<%--                        </iais:row>--%>
                         <iais:row>
-                            <iais:field value="Customer Reference No. :"/>
+                            <iais:field value="UEN"/>
                             <iais:value width="18">
                                 <label>
                                     <input type="text"
                                            style="width:180%; font-weight:normal;"
-                                           name="cusRefNo" maxlength="35"
-                                           value="${cusRefNo}"/>
+                                           name="uen" maxlength="35"
+                                           value="${uen}"/>
+                                </label>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Licensee"/>
+                            <iais:value width="18">
+                                <label>
+                                    <input type="text"
+                                           style="width:180%; font-weight:normal;"
+                                           name="licensee" maxlength="35"
+                                           value="${licensee}"/>
+                                </label>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Licence No."/>
+                            <iais:value width="18">
+                                <label>
+                                    <input type="text"
+                                           style="width:180%; font-weight:normal;"
+                                           name="licenceNo" maxlength="35"
+                                           value="${licenceNo}"/>
                                 </label>
                             </iais:value>
                         </iais:row>
@@ -73,11 +84,14 @@
                                                             <th scope="col" style="width:2%">
 
                                                             </th>
-<%--                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"--%>
-<%--                                                                                 value="HCI Code"/>--%>
-<%--                                                            <iais:sortableHeader needSort="true"--%>
-<%--                                                                                 field="HCI_NAME"--%>
-<%--                                                                                 value="HCI Name"/>--%>
+                                                            <iais:sortableHeader needSort="true" field="UEN"
+                                                                                 value="UEN"/>
+                                                            <iais:sortableHeader needSort="true" field="Licence No."
+                                                                                 value="LICENCE_NO"/>
+                                                            <iais:sortableHeader needSort="true" field="Service Type"
+                                                                                 value="SVC_NAME"/>
+                                                            <iais:sortableHeader needSort="true" field="Licensee"
+                                                                                 value="LICENSEE_NAME"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
@@ -99,6 +113,8 @@
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="FILE_NAME"
                                                                                  value="GIRO Form"/>
+                                                            <iais:sortableHeader needSort="true" field="Internal Remarks"
+                                                                                 value="REMARKS"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">
@@ -128,12 +144,18 @@
                                                                                     class="check-square"></span>
                                                                             </label>
                                                                         </td>
-<%--                                                                        <td >--%>
-<%--                                                                            <c:out value="${pool.hciCode}"/>--%>
-<%--                                                                        </td>--%>
-<%--                                                                        <td>--%>
-<%--                                                                            <c:out value="${pool.hciName}"/>--%>
-<%--                                                                        </td>--%>
+                                                                        <td >
+                                                                            <c:out value="${pool.uen}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.licenceNo}"/>
+                                                                        </td>
+                                                                        <td >
+                                                                            <c:out value="${pool.svcName}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.licenseeName}"/>
+                                                                        </td>
                                                                         <td>
                                                                             <c:out value="${pool.acctName}"/>
                                                                         </td>

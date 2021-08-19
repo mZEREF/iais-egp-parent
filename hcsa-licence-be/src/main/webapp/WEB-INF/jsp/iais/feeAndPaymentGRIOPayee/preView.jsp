@@ -41,61 +41,111 @@
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
-<%--                                    <iais:row>--%>
-<%--                                        <label class="col-xs-0 col-md-4 ">HCI Code(s) :<span class="mandatory">*</span></label>--%>
-<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciCode}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
-<%--                                    <iais:row>--%>
-<%--                                        <label class="col-xs-0 col-md-4 ">HCI Name(s) :<span class="mandatory">*</span></label>--%>
-<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciName}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
+                                    <div class="table-responsive">
+                                        <div class="table-gp">
+                                            <table aria-describedby="" class="table">
+                                                <thead>
+                                                <tr align="center">
+                                                    <th scope="col" style="width:2%">&nbsp;</th>
+                                                    <iais:sortableHeader needSort="true"
+                                                                         field="UEN_NO"
+                                                                         value="UEN"/>
+                                                    <iais:sortableHeader needSort="true" field="Licence No."
+                                                                         value="LICENCE_NO"/>
+                                                    <iais:sortableHeader needSort="true" field="Service Type"
+                                                                         value="SVC_NAME"/>
+                                                    <iais:sortableHeader needSort="true" field="Licensee"
+                                                                         value="LICENSEE_NAME"/>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="form-horizontal">
+                                                <c:choose>
+                                                    <c:when test="${empty hciSession.rows}">
+                                                        <tr>
+                                                            <td colspan="15">
+                                                                <iais:message key="GENERAL_ACK018"
+                                                                              escape="true"/>
+                                                            </td>
+                                                        </tr>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:forEach var="pool"
+                                                                   items="${hciSession.rows}"
+                                                                   varStatus="status">
+                                                            <tr>
+                                                                <td class="form-check"
+                                                                    onclick="javascript:controlCease()">
+                                                                    <input class="form-check-input licenceCheck"
+                                                                           id="orgPer${status.index + 1}"
+                                                                           type="checkbox"
+                                                                           name="opIds"
+                                                                           value="${pool.orgId}">
+                                                                    <label class="form-check-label"
+                                                                           for="orgPer${status.index + 1}"><span
+                                                                            class="check-square"></span>
+                                                                    </label>
+                                                                </td>
+                                                                <td >
+                                                                    <c:out value="${pool.uenNo}"/>
+                                                                </td>
+                                                                <td>
+                                                                    <c:out value="${pool.licenceNo}"/>
+                                                                </td>
+                                                                <td >
+                                                                    <c:out value="${pool.svcName}"/>
+                                                                </td>
+                                                                <td>
+                                                                    <c:out value="${pool.licenseeName}"/>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Account Name :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Account Name <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${acctName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Code :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Code <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankCode}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Branch Code :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Branch Code <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${branchCode}"/>
                                         </div>
                                     </iais:row>
 
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Name :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Name <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <iais:code code="${bankName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Account No. :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Account No. <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankAccountNo}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Customer Reference No. :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Customer Reference No. <span class="mandatory">*</span></label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${cusRefNo}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">GIRO Form <span class="mandatory">*</span></label>
                                         <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
                                             <div class="document-upload-list">
                                                 <div class="file-upload-gp">
@@ -111,6 +161,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-0 col-md-4 ">Internal Remarks </label>
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
+                                            <c:out value="${remarks}"/>
                                         </div>
                                     </iais:row>
                                 </iais:section>
