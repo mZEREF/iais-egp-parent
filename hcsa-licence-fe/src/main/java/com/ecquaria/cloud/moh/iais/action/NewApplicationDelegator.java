@@ -355,7 +355,7 @@ public class NewApplicationDelegator {
             }
             bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(licenseeMap));
 
-            if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect()) ||
+            if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect()) &&
                     OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
                 subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
                         subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber()));

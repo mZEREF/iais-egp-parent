@@ -38,6 +38,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.KeyFactory;
@@ -327,7 +329,7 @@ public class MyinfoUtil {
 		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
 		HttpStatus httpStatus;
 		try {
-			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,getTokenDto,null, header,MyInfoTakenDto.class,null);
+			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,handleRequestBody(getTokenDto),null, header,MyInfoTakenDto.class,null);
 			AuditTrailDto auditTrailDto = new AuditTrailDto();
 			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
 			auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
@@ -347,5 +349,16 @@ public class MyinfoUtil {
 			return null;
 		}
 
+	}
+
+	private static MultiValueMap<String, String> handleRequestBody(GetTokenDto getTokenDto) {
+		MultiValueMap<String, String> newMap = new LinkedMultiValueMap<>();
+		newMap.add("code", getTokenDto.getCode());
+		newMap.add("grant_type", getTokenDto.getGrant_type());
+		newMap.add("client_secret", getTokenDto.getClient_secret());
+		newMap.add("client_id", getTokenDto.getClient_id());
+		newMap.add("redirect_uri", getTokenDto.getRedirect_uri());
+		newMap.add("state", getTokenDto.getState());
+		return newMap;
 	}
 }
