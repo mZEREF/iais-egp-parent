@@ -62,6 +62,7 @@
                                          <iais:select name="subLicensee" firstOption="Please Select"
                                                        value=""/>
                                        </iais:value>
+                                   <div class="clear"><br></br><br></br><br></br></div>
                                  </iais:row>
                          </iais:section>
                   </div>
