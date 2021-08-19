@@ -31,7 +31,7 @@ public final class ValueTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        setWidth(0);
+        setWidth(7);
         setLabel(false);
         setOffset(false);
         setAlign(false);
@@ -97,11 +97,11 @@ public final class ValueTag extends DivTagSupport {
 
     private void frontendForWidth(StringBuilder clazz, int width0) {
         if (width > 10) {
-            clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
+            clazz.append("col-sm-7 col-md-").append(width0).append(" col-xs-").append(width0);
         } else if (width > 5 && width <= 10) {
-            clazz.append("col-sm-7 col-md-6 col-xs-").append(width0);
+            clazz.append("col-sm-7 col-md-").append(width0).append(" col-xs-").append(width0);
         } else if (width > 0) {
-            clazz.append("col-sm-4 col-md-3 col-xs-").append(width0);
+            clazz.append("col-sm-4 col-md-").append(width0).append(" col-xs-").append(width0);
         }
     }
 

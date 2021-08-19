@@ -27,10 +27,10 @@
   <%-- Address start --%>
   <iais:row cssClass="postalCodeDiv">
     <iais:field value="Postal Code" mandatory="true" width="5"/>
-    <iais:value width="7">
+    <iais:value width="4">
       <iais:input cssClass="postalCode" maxLength="6" type="text" name="postalCode" value="${dto.postalCode}" />
     </iais:value>
-    <iais:value width="2">
+    <iais:value width="3">
       <p><a class="retrieveAddr <%--<c:if test="${!canEdit || readOnly}">hidden</c:if>--%>">Retrieve your address</a></p>
     </iais:value>
   </iais:row>
@@ -49,11 +49,11 @@
   </iais:row>
   <iais:row>
     <iais:field value="Floor / Unit No." width="5" cssClass="floorUnitLabel"/>
-    <iais:value width="2">
+    <iais:value width="3">
       <iais:input maxLength="3" type="text" name="floorNo" id="floorNo" value="${dto.floorNo}"/>
     </iais:value>
     <iais:value width="1" cssClass="col-sm-2 col-md-1 text-center"><p>-</p></iais:value>
-    <iais:value width="2">
+    <iais:value width="3">
       <iais:input maxLength="5" type="text" name="unitNo" id="unitNo" value="${dto.unitNo}"/>
     </iais:value>
   </iais:row>
