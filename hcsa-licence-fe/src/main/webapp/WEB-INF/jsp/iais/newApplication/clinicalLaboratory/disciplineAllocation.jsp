@@ -86,7 +86,6 @@
               <iais:select  cssClass="${premisesIndexNo}" name="${cgoSelName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
               <div class="col-sm-10 padding-left" style="margin-top: 2%">
                 <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
-                <c:set var="row_count" value="${row_count+1}" />
               </div>
             </td>
             <td>
