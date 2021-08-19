@@ -208,6 +208,7 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
 		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","SHA256withRSA");
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		log.info(StringUtil.changeForLog("Myinfo person base string => " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
