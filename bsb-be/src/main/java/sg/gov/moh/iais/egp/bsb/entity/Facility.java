@@ -24,6 +24,8 @@ public class Facility {
 
     private String facilityClassification;
 
+    private String facilityStatus;
+
     private String facilityType;
 
     private String facilityAddress;

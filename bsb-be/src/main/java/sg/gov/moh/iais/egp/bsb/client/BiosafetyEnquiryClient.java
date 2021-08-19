@@ -25,12 +25,6 @@ import java.util.List;
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface BiosafetyEnquiryClient {
 
-    @PostMapping(path = "/app_info/results", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<ApplicationInfoDto>> queryAppInfo(@RequestBody SearchParam searchParam);
-
-    @PostMapping(path = "/fac_info/results", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<FacilityInfoDto>> queryFacilityInfo(@RequestBody SearchParam searchParam);
-
     @GetMapping(path = "/fac_info/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();
 
@@ -41,10 +35,10 @@ public interface BiosafetyEnquiryClient {
     FeignResponseEntity<List<String>> queryDistinctApproval();
 
     @GetMapping(path = "/app_info/{applicationNo}")
-    FeignResponseEntity<List<ApplicationInfoDto>> queryApplicationByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
+    ResponseDto<ApplicationResultDto> queryApplicationByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
     @GetMapping(path = "/fac_info/{facilityName}")
-    FeignResponseEntity<List<FacilityInfoDto>> queryFacilityByFacName(@PathVariable(name = "facilityName") String facilityName);
+    ResponseDto<FacilityResultDto> queryFacilityByFacName(@PathVariable(name = "facilityName") String facilityName);
 
     @GetMapping(path = "/bio_info/{schedule}")
     FeignResponseEntity<List<BiologicalDto>> queryBiologicalBySchedule(@PathVariable(name = "schedule") String schedule);

@@ -61,12 +61,12 @@ public class BiosafetyEnquiryDelegator {
         if(StringUtil.isEmpty(searchNo)){ searchNo = "null";}
             switch (count){
                 case "app":
-                    List<ApplicationInfoDto> applicationInfoDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
-                    log.info(StringUtil.changeForLog("delegator applicationInfoDto----"+applicationInfoDto.toString()));
-                    ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationInfoDto);
+                    ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
+                    log.info(StringUtil.changeForLog("delegator applicationInfoDto----"+applicationResultDto.toString()));
+                    ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
                     break;
                 case "fn":
-                    List<FacilityInfoDto> facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
+                    FacilityResultDto facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
                     ParamUtil.setRequestAttr(bpc.request,"facilityInfoDto",facilityInfoDto);
                     break;
         }

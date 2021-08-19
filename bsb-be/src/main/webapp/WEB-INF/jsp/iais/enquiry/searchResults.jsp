@@ -139,22 +139,22 @@
                                             <tr name="basicData">
                                                 <td><c:out  value="${status.index + 1}"/></td>
                                                 <td><c:out  value="${items.facilityName}"/></td>
-                                                <td><c:out value="${items.facilityAddress}"/></td>
+                                                <td><c:out value="${items.blkNo}"/> <c:out value="${items.streetName}"/> <c:out value="${items.floorNo}"/>-<c:out value="${items.unitNo}"/> <c:out value="${items.postalCode}"/></td>
                                                 <td><iais:code code="${items.facilityClassification}"></iais:code></td>
                                                 <td><iais:code code="${items.facilityType}"></iais:code></td>
-                                                <td><c:out  value="${items.biologicalAgent}"/></td>
-                                                <td><iais:code code="${items.riskLevelOfTheBiologicalAgent}"></iais:code></td>
-                                                <td><fmt:formatDate value='${items.facilityExpiryDate}' pattern='dd/MM/yyyy'/></td>
+                                                <td><c:out  value="${items.biological.name}"/></td>
+                                                <td><iais:code code="${items.biological.riskLevel}"></iais:code></td>
+                                                <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
                                                 <td>
-                                                    <c:if test="${items.gazettedArea == 'Y'}">
+                                                    <c:if test="${items.isProtected == 'Y'}">
                                                         <c:out  value="yes"/></c:if>
-                                                    <c:if test="${items.gazettedArea =='N'}">
+                                                    <c:if test="${items.isProtected =='N'}">
                                                         <c:out  value="No"/></c:if>
                                                 </td>
-                                                <td><c:out  value="${items.facilityOperator}"/></td>
-                                                <td><c:out  value="${items.facilityAdmin}"/></td>
-                                                <td><iais:code code="${items.currentFacilityStatus}"></iais:code></td>
-                                                <td><c:out  value="${items.approvedFacilityCertifier}"/></td>
+                                                <td><c:out  value="${items.operatorName}"/></td>
+                                                <td><c:out  value="${items.admins.name}"/></td>
+                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                <td><c:out  value="${items.approval}"/></td>
                                                 <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
                                             </tr>
                                         </c:forEach>

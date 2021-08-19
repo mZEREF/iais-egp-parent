@@ -10,7 +10,7 @@
                         <iais:pagination param="biosafetyEnquirySearchParam" result="biosafetyEnquirySearchResult"/>
                         <div class="table-responsive">
                             <div class="table-gp">
-                                <c:if test="${count=='1'}">
+                                <c:if test="${count=='app'}">
                                     <table class="table">
                                         <thead>
                                         <tr align="center">
@@ -68,26 +68,26 @@
                                         <tr name="basicData">
                                             <td><c:out  value="${status.index + 1}"/></td>
                                             <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
-                                            <td><iais:code code="${items.applicationType}"></iais:code></td>
-                                            <td><iais:code code="${items.applicationStatus}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.applicationSubmissionDate}' pattern='dd/MM/yyyy'/></td>
+                                            <td><iais:code code="${items.appType}"></iais:code></td>
+                                            <td><iais:code code="${items.status}"></iais:code></td>
+                                            <td><fmt:formatDate value='${items.applicationDt}' pattern='dd/MM/yyyy'/></td>
                                             <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
-                                            <td><iais:code code="${items.facilityClassification}"></iais:code></td>
-                                            <td><iais:code code="${items.facilityType}"></iais:code></td>
-                                            <td><iais:code code="${items.facilityName}"></iais:code></td>
-                                            <td><iais:code code="${items.biologicalAgent}"></iais:code></td>
-                                            <td><iais:code code="${items.riskLevelOfTheBiologicalAgent}"></iais:code></td>
+                                            <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
+                                            <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
+                                            <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
+                                            <td><c:out value="${items.facility.biological.name}"></c:out></td>
+                                            <td><iais:code code="${items.facility.biological.riskLevel}"></iais:code></td>
                                             <td><iais:code code="${items.processType}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.verifiedByDO}' pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.verifiedByAO}' pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.verifiedByHM}' pattern='dd/MM/yyyy'/></td>
-                                            <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                            <td><fmt:formatDate value='${items.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                            <td><fmt:formatDate value='${items.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                            <td><fmt:formatDate value='${items.hmVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                            <td><iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
                                         </tr>
                                         </c:forEach>
                                         </tbody>
                                     </table>
                                 </c:if>
-                                <c:if test="${count=='2'}">
+                                <c:if test="${count=='fn'}">
                                     <table class="table">
                                         <thead>
                                         <tr align="center">
