@@ -354,11 +354,15 @@ public class NewApplicationDelegator {
                 bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
             }
             bpc.request.setAttribute(LICENSEE_OPTIONS, NewApplicationHelper.genSubLicessOption(licenseeMap));
-
-            if (StringUtil.isEmpty(subLicenseeDto.getAssignSelect()) &&
-                    OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
-                subLicenseeDto.setAssignSelect(NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
-                        subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber()));
+            String assignSelect = subLicenseeDto.getAssignSelect();
+            if ((StringUtil.isEmpty(assignSelect) || IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSelect))
+                    && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
+                String assigned = NewApplicationHelper.getAssignSelect(licenseeMap.keySet(),
+                        subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
+                if (StringUtil.isEmpty(assignSelect) || !"-1".equals(assigned) && !IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(
+                        assigned)) {
+                    subLicenseeDto.setAssignSelect(assigned);
+                }
             }
         }
         if (StringUtil.isEmpty(subLicenseeDto.getUenNo())) {

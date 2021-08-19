@@ -395,7 +395,7 @@ public class ClinicalLaboratoryDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> map = null;
         if ("next".equals(action)) {
-            map = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(), bpc.request);
+            map = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList());
         }
         if (map != null && !map.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));

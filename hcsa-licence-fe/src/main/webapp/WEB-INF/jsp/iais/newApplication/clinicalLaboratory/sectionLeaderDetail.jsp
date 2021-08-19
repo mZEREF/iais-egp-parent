@@ -1,23 +1,10 @@
 <div class="form-horizontal sectionLaderContent">
     <input type="hidden" class="indexNo" name="indexNo${index}" value="${sectionLeader.indexNo}"/>
-    <iais:row cssClass="col-md-12 col-xs-12">
-        <div class="edit-content">
-            <c:if test="${'true' == canEdit}">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
-                <div class="text-right app-font-size-16">
-                    <a class="edit" href="javascript:void(0);">
-                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                    </a>
-                </div>
-            </c:if>
-        </div>
-    </iais:row>
-
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <strong>
                 <c:out value="${stepName}"/>
-                <label class="assign-psn-item"><c:if test="${index > 0}">${index+1}</c:if></label>
+                <label class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></label>
             </strong>
         </iais:value>
         <iais:value width="6" cssClass="col-md-6 text-right">
@@ -27,6 +14,19 @@
                 </h4>
             </c:if>
         </iais:value>
+    </iais:row>
+
+    <iais:row>
+        <div class="col-md-12 col-xs-12 edit-content">
+            <c:if test="${'true' == canEdit}">
+                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
+                <div class="text-right app-font-size-16">
+                    <a class="edit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
+                </div>
+            </c:if>
+        </div>
     </iais:row>
 
     <iais:row>

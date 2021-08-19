@@ -153,6 +153,6 @@ public interface AppSubmissionService {
 
     List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
 
-    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, HttpServletRequest request);
+    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList);
 
 }

@@ -31,18 +31,17 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
                 return errorMap;
             }
             boolean duplicateName = false;
-            int index = -1;
             for (AppSvcPersonnelDto dto : appSvcSectionLeaderList) {
-                index++;
                 if (Objects.equals(dto.getIndexNo(), svcPersonnel.getIndexNo())) {
                     break;
                 }
-                if (Objects.equals(dto.getName(), name)) {
+                if (name.equalsIgnoreCase(dto.getName())) {
                     duplicateName = true;
+                    break;
                 }
             }
             if (duplicateName) {
-                errorMap.put("name" + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                errorMap.put("name", MessageUtil.getMessageDesc("NEW_ERR0012"));
             }
         }
 

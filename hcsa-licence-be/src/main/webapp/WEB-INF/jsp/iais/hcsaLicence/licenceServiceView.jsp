@@ -43,7 +43,7 @@
       <div class="modal-content">
         <div class="modal-body" >
           <div class="row">
-            <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
+            <div class="col-md-12"><span style="font-size: 2rem;"><c:out value="${beEicGatewayClient}"/></span></div>
           </div>
         </div>
         <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -55,15 +55,12 @@
     </div>
   </div>
 </form>
-<style>
-
-  *{
-    word-wrap: break-word
-  }
-</style>
 <script type="text/javascript">
     document.title = 'HALP';
     $(document).ready(function () {
+        <c:if test="${not empty beEicGatewayClient}">
+        $('#PRS_SERVICE_DOWN').modal('show');
+        </c:if>
         //Binding method
         $('#previewNext').click(function () {
           if(validateCheckBox()){

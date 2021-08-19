@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -814,10 +815,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, HttpServletRequest request) {
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
             return errorMap;
+        }
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request != null) {
+            request.setAttribute(ClinicalLaboratoryDelegator.SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
         for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
             ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
@@ -2478,7 +2483,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
-                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), bpc.request);
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList());
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                     errorMap.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "error");

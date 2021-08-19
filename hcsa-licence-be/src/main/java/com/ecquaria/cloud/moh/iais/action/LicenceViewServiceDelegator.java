@@ -604,7 +604,7 @@ public class LicenceViewServiceDelegator {
                 disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient","PRS mock server down !");
+                request.setAttribute("beEicGatewayClient",MessageUtil.getMessageDesc("GENERAL_ERR0048"));
             }
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -617,7 +617,7 @@ public class LicenceViewServiceDelegator {
                         signature2.date(), signature2.authorization()).getEntity();
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
+                request.setAttribute("beEicGatewayClient",MessageUtil.getMessageDesc("GENERAL_ERR0048"));
                 log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
             }
         }

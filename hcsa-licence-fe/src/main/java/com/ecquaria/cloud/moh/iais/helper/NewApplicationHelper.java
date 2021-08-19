@@ -1265,15 +1265,17 @@ public class NewApplicationHelper {
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                 newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
                 personMap.put(personMapKey,newPersonAndExtDto);
-            }else{
+            } else {
                 //set different page column
                 person.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
-                person.setMobileNo(psnDto.getMobileNo());
-                person.setEmailAddr(psnDto.getEmailAddr());
+                if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnDto.getPsnType())) {
+                    person.setMobileNo(psnDto.getMobileNo());
+                    person.setEmailAddr(psnDto.getEmailAddr());
+                }
                 String designation = psnDto.getDesignation();
                 if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnDto.getPsnType())) {
                     person.setDesignation(designation);
