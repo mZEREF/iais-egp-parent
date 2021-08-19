@@ -279,7 +279,6 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
 		log.info(StringUtil.changeForLog("Myinfo person base string => " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
