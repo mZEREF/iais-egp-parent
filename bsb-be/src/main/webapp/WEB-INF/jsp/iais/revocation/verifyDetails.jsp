@@ -12,7 +12,7 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input name="appId" id="appId" value="" hidden>
+<%--        <input name="appId" id="appId" value="" hidden>--%>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -77,12 +77,13 @@
                                                             <div class="table-gp">
                                                                 <iais:section title="">
                                                                     <c:forEach var="item" items="${revocationDetail}">
+                                                                        <input name="appId" id="appId" value="${item.id}" hidden>
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Current Status"
                                                                                             required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <p><iais:code code="${item.status}"/></p>
+                                                                                    <p><iais:code code="${item.facility.facilityStatus}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -119,6 +120,7 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
+                                                                    </c:forEach>
                                                                         <div>
                                                                             <iais:row>
                                                                                 <div id="RemarksFalse"><iais:field
@@ -153,7 +155,6 @@
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
-                                                                    </c:forEach>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back" id="backToTask" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
 import java.util.List;
 
@@ -25,19 +27,19 @@ public interface RevocationClient {
     FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<AOQueryInfoDto> saveApplication(@RequestBody AOQueryInfoDto aoQueryInfoDto);
+    FeignResponseEntity<Application> saveApplication(@RequestBody Application application);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApplicationMiscDto> saveApplicationMisc(@RequestBody ApplicationMiscDto misc);
+    FeignResponseEntity<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);
 
     @GetMapping(value = "/bsb-application/app/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AOQueryResultDto> doQuery(@SpringQueryMap ApprovalOfficerQueryDto queryDto);
 
     @PostMapping(path = "/bsb-history/saveHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<BsbRoutingHistoryDto> saveHistory(@RequestBody BsbRoutingHistoryDto historyDto);
+    FeignResponseEntity<RoutingHistory> saveHistory(@RequestBody RoutingHistory history);
 
     @PostMapping(value = "/bsb-history/getAllHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<BsbRoutingHistoryDto>> getAllHistory();
+    FeignResponseEntity<List<RoutingHistory>> getAllHistory();
 
     @RequestMapping(value = "/bsb-application/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateApplicationStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status);
@@ -46,6 +48,6 @@ public interface RevocationClient {
     FeignResponseEntity<Void> updateFacilityStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status, @RequestParam(value = "approvalStatus") String approvalStatus);
 
     @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationMiscDto>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
+    FeignResponseEntity<List<ApplicationMisc>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
 
 }

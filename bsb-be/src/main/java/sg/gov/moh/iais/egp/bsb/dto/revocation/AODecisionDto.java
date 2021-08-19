@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
 /**
  * @author Zhu Tangtang
@@ -10,6 +12,6 @@ import sg.gov.moh.iais.egp.bsb.entity.Application;
 @Data
 public class AODecisionDto {
     public Application application;
-    public BsbRoutingHistoryDto historyDto;
-    public ApplicationMiscDto miscDto;
+    public RoutingHistory history;
+    public ApplicationMisc misc;
 }
