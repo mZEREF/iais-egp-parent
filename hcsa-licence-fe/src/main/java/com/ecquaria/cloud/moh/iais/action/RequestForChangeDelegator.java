@@ -898,7 +898,8 @@ public class RequestForChangeDelegator {
      * @Decription prepareAddLicensee
      */
     public void prepareAddLicensee(BaseProcessClass bpc){
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
     }
     /**
      *
