@@ -1304,19 +1304,18 @@
                            value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesIndexNo}"></c:set>
                     <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}"
                                varStatus="stat">
-                      <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
+                      <c:set value="${reloadOld[reloadMapValue]}" var="reloaded" />
                       <tr>
                         <c:if test="${stat.first}">
-                          <td style="text-align: center"
-                              rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
+                          <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
                             <div class="col-xs-12">
                             <span class="newVal " attr="${appGrpPrem.address}"><c:out value="${appGrpPrem.address}"/>
                             <br>
                             </span>
-                              <span class="oldVal "
+                              <span class="oldVal"
                                     attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"
-                                    style="display: none"><c:out
-                                      value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/>
+                                    style="display: none">
+                                <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/>
                             </span>
                             </div>
                           </td>
@@ -1330,43 +1329,39 @@
                           <br>
                           <span class="oldVal "
                                 attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"
-                                style="display: none"><c:out
-                                  value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                                style="display: none">
+                            <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
                           </span>
                           </div>
-
                           </p>
-
                         </td>
                         <td style="text-align: center">
                           <p>
                           <div class="col-xs-12">
                             <span class="newVal "
-                                attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}"><c:out
-                                  value="${disciplineAllocation.cgoSelName}"/>
+                                attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}">
+                              <c:out value="${disciplineAllocation.cgoSelName}"/>
                             </span>
                           <br>
                             <span class="oldVal "
                                 attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}${reloadOld[oldReloadMapValue][stat.index].check}"
-                                style="display: none"><c:out
-                                  value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/>
+                                style="display: none">
+                              <c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/>
                             </span>
                           </div>
-
                           </p>
                         </td>
                         <td style="text-align: center">
                           <p>
                             <div class="col-xs-12">
-                              <span class="newVal "
-                                    attr="${disciplineAllocation.sectionLeaderName}${disciplineAllocation.check}"><c:out
-                                      value="${disciplineAllocation.sectionLeaderName}"/>
+                              <span class="newVal" attr="${disciplineAllocation.sectionLeaderName}${disciplineAllocation.check}">
+                                <c:out value="${disciplineAllocation.sectionLeaderName}"/>
                               </span>
                               <br>
                               <span class="oldVal "
                                     attr="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}${reloadOld[oldReloadMapValue][stat.index].check}"
-                                    style="display: none"><c:out
-                                      value="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}"/>
+                                    style="display: none">
+                                <c:out value="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}"/>
                               </span>
                             </div>
                           </p>
