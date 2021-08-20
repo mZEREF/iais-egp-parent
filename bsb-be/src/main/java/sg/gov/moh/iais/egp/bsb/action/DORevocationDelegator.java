@@ -14,11 +14,12 @@ import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,12 +56,12 @@ public class DORevocationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         List<Application> list=new LinkedList<>();
         HttpServletRequest request = bpc.request;
-        Application application = revocationClient.getApplicationById("B856D31C-E3F0-EB11-8B7D-000C293F0C99").getEntity();
+        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
         //Do address processing
-        String address = joinAddress(application);
+        String address = JoinAddress.joinAddress(application);
         application.getFacility().setFacilityAddress(address);
         list.add(application);
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
     }
 
     /**
@@ -74,11 +75,12 @@ public class DORevocationDelegator {
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
 
         Application resultDto = new Application();
-        resultDto.setApplicationNo("APP0000012");//Every time plus one
-        resultDto.getFacility().setId(facilityId);
-        resultDto.setAppType("BSBAPTY006");
+        Facility facility = new Facility();
+        facility.setId(facilityId);
+        resultDto.setFacility(facility);
+        resultDto.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
         resultDto.setProcessType("PROTYPE001");
-        resultDto.setStatus("BSBAPST002");
+        resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
         resultDto.setApplicationDt(new Date());
 
         FeignResponseEntity<Application> result = revocationClient.saveApplication(resultDto);
@@ -87,10 +89,12 @@ public class DORevocationDelegator {
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
 
         ApplicationMisc miscDto = new ApplicationMisc();
+        Application app=new Application();
+        app.setId(result.getEntity().getId());
         miscDto.setRemarks(remarks);
         miscDto.setReasonContent(reason);
-        miscDto.getApplication().setId(result.getEntity().getId());
-        miscDto.setReason("REASON02");
+        miscDto.setApplication(app);
+        miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
 
         revocationClient.saveApplicationMisc(miscDto);
 
@@ -105,46 +109,21 @@ public class DORevocationDelegator {
         revocationClient.saveHistory(historyDto);
     }
 
-    private String joinAddress(Application application){
-        String blockNo = application.getFacility().getBlkNo();
-        String streetName = application.getFacility().getStreetName();
-        String floorNo = application.getFacility().getFloorNo();
-        String unitNo = application.getFacility().getUnitNo();
-        String postalCode = application.getFacility().getPostalCode();
-        StringBuilder builder=new StringBuilder();
-        String facilityAddress="";
-        if (blockNo!=null){
-            builder.append(blockNo).append(" ");
-        }else{
-            builder.append("? ");
-        }
-
-        if (streetName!=null){
-            builder.append(streetName).append(" ");
-        }else{
-            builder.append("? ");
-        }
-
-        if (floorNo!=null){
-            builder.append(floorNo).append("-");
-        }else{
-            builder.append("?-");
-        }
-
-        if (unitNo!=null){
-            builder.append(unitNo).append(" ");
-        }else{
-            builder.append("? ");
-        }
-
-        if (postalCode!=null){
-            builder.append(postalCode).append(" ");
-        }else{
-            builder.append("?");
-        }
-        facilityAddress=builder.toString();
-
-        return facilityAddress;
+    /**
+     * AutoStep: updateNum
+     *
+     * @param bpc
+     */
+    public void updateNum(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        List<Application> list=new LinkedList<>();
+        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
+        //Do address processing
+        String address = JoinAddress.joinAddress(application);
+        application.getFacility().setFacilityAddress(address);
+        list.add(application);
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
+        //TODO update inventory method
     }
 
 }

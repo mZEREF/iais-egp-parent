@@ -26,7 +26,7 @@ public class INTRANET___MohOfficerSubmitRevocation___1 extends BaseProcessClass 
     }
 
     public void updateNum_OnStepProcess_0() throws Exception {
-        // 		updateNum->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "updateNum", this);
     }
 
     public void submit_OnStepProcess_0() throws Exception {

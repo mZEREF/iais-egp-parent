@@ -1,4 +1,5 @@
 function doProcess(id){
+    showWaiting();
     $("#appId").val(id);
     $("[name='action_type']").val("doProcess");
     $("#mainForm").submit();
@@ -145,7 +146,7 @@ $(function () {
     });
 
     $("#submitButton").click(function () {
-        showWaiting();
+
         var optionValue = $("#decision option:selected").val();
         if (optionValue == "BSBAOPD001") {
             SOP.Crud.cfxSubmit("mainForm", "approve");
@@ -159,7 +160,7 @@ $(function () {
         if (optionValue == "BSBAOPD004") {
             SOP.Crud.cfxSubmit("mainForm", "submit");
         }
-        if (optionValue == "Please Select") {
+        if (optionValue == "Please Select" || optionValue == "") {
             $("#error_decision").html("Please select valid options!");
         }
     });

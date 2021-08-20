@@ -12,7 +12,7 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-<%--        <input name="appId" id="appId" value="" hidden>--%>
+        <%--        <input name="appId" id="appId" value="" hidden>--%>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -77,86 +77,103 @@
                                                             <div class="table-gp">
                                                                 <iais:section title="">
                                                                     <c:forEach var="item" items="${revocationDetail}">
-                                                                        <input name="appId" id="appId" value="${item.id}" hidden>
+                                                                        <input name="applicationId" id="applicationId"
+                                                                               value="${item.id}" hidden>
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Current Status"
                                                                                             required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <p><iais:code code="${item.facility.facilityStatus}"/></p>
+                                                                                    <p><iais:code
+                                                                                            code="${item.facility.facilityStatus}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:forEach>
-                                                                    <c:forEach var="miscList" items="${applicationMiscList}">
-                                                                        <div>
-                                                                            <iais:row>
-                                                                                <div id="ReasonFalse"><iais:field
-                                                                                        value="Reason for Revocation"
-                                                                                        required="false"
-                                                                                        width="12"/></div>
-                                                                                <iais:value width="10">
-                                                                                    <div class="input-group">
-                                                                                        <div class="ax_default text_area">
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <div id="ReasonFalse"><iais:field
+                                                                                    value="Reason for Revocation"
+                                                                                    required="false"
+                                                                                    width="12"/></div>
+                                                                            <iais:value width="10">
+                                                                                <div class="input-group">
+                                                                                    <div class="ax_default text_area">
                                                                                         <textarea id="ReasonId"
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500">${miscList.reason}:${miscList.reasonContent};</textarea>
-                                                                                            <span id="error_reason"
-                                                                                                  name="iaisErrorMsg"
-                                                                                                  class="error-msg"></span>
-                                                                                        </div>
+                                                                                                  maxlength="500"><c:forEach var="miscList" items="${applicationMiscList}" varStatus="status"><c:choose><c:when test="${status.last}"><iais:code code="${miscList.reason}"/>:${miscList.reasonContent}</c:when><c:otherwise><iais:code code="${miscList.reason}"/>:${miscList.reasonContent};</c:otherwise></c:choose></c:forEach></textarea>
+                                                                                        <span id="error_reason"
+                                                                                              name="iaisErrorMsg"
+                                                                                              class="error-msg"></span>
                                                                                     </div>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
-                                                                        <div>
-                                                                            <iais:row>
-                                                                                <iais:field value="DO Remarks"
-                                                                                            required="false"/>
-                                                                                <iais:value width="10">
-                                                                                    <p>${miscList.remarks}</p>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
-                                                                    </c:forEach>
-                                                                        <div>
-                                                                            <iais:row>
-                                                                                <div id="RemarksFalse"><iais:field
-                                                                                        value="AO Remarks"
-                                                                                        required="false"
-                                                                                        width="12"/></div>
-                                                                                <iais:value width="10">
-                                                                                    <div class="input-group">
-                                                                                        <div class="ax_default text_area">
+                                                                                </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO Remarks" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p>
+                                                                                    <c:forEach var="miscs" items="${applicationMiscList}" varStatus="status">
+                                                                                        <c:choose>
+                                                                                            <c:when test="${status.last}">
+                                                                                                ${miscs.remarks}
+                                                                                            </c:when>
+                                                                                            <c:otherwise>
+                                                                                                ${miscs.remarks};
+                                                                                            </c:otherwise>
+                                                                                        </c:choose>
+                                                                                    </c:forEach>
+                                                                                </p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <div id="RemarksFalse"><iais:field
+                                                                                    value="AO Remarks"
+                                                                                    required="false"
+                                                                                    width="12"/></div>
+                                                                            <iais:value width="10">
+                                                                                <div class="input-group">
+                                                                                    <div class="ax_default text_area">
                                                                                         <textarea id="AORemarks"
                                                                                                   name="AORemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="500"></textarea>
-                                                                                            <span id="error_AORemarks"
-                                                                                                  name="iaisErrorMsg"
-                                                                                                  class="error-msg"></span>
-                                                                                        </div>
+                                                                                        <span id="error_AORemarks"
+                                                                                              name="iaisErrorMsg"
+                                                                                              class="error-msg"></span>
                                                                                     </div>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
-                                                                        <div id="processingDecision">
-                                                                            <iais:row>
-                                                                                <iais:field value="Processing Decision"
-                                                                                            required="true"/>
-                                                                                <iais:value width="10">
-                                                                                    <iais:select name="decision" id="decision" codeCategory="CATE_ID_BSB_PROCESSING_DECISION" firstOption="Please Select"/>
-                                                                                    <span id="error_decision"
-                                                                                          name="iaisErrorMsg"
-                                                                                          class="error-msg"></span>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
+                                                                                </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div id="processingDecision">
+                                                                        <iais:row>
+                                                                            <iais:field value="Processing Decision"
+                                                                                        required="true"/>
+                                                                            <iais:value width="10">
+                                                                                <iais:select name="decision"
+                                                                                             id="decision"
+                                                                                             codeCategory="CATE_ID_BSB_PROCESSING_DECISION"
+                                                                                             firstOption="Please Select"/>
+                                                                                <span id="error_decision"
+                                                                                      name="iaisErrorMsg"
+                                                                                      class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backToTask" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back"
+                                                                   id="backToTask" href="#"><em
+                                                                        class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="submitBtn" id="submitButton"
                                                                             type="button" class="btn btn-primary">

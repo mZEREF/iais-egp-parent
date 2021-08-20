@@ -109,7 +109,9 @@
                                 <iais:row>
                                     <iais:field value="Application Status"/>
                                     <iais:value width="18">
-                                        <input type="text" name="applicationStatus" id="applicationStatus" value="${applicationStatus}"/>
+                                        <iais:select name="applicationStatus" id="applicationStatus"
+                                                     value="${applicationStatus}"
+                                                     codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -136,14 +138,14 @@
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="applicationNo" value="Application No." isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="applicationType" value="Application Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Facility Name/Address" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facilityType" value="Facility type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name/Address" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Biological Agents/Toxins" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="applicationDate" value="Application Date (dd/mm/yyyy)" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Facility / Approval Expiry Date (dd/mm/yyyy)" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="applicationStatus" value="Application Status" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.biological.name" value="Biological Agents/Toxins" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="applicationDt" value="Application Date (dd/mm/yyyy)" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.expiryDt" value="Facility / Approval Expiry Date (dd/mm/yyyy)" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="status" value="Application Status" isFE="false"/>
                                 </tr>
                                 </thead>
                                     <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
@@ -152,7 +154,7 @@
                                         <td><c:out value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"/></td>
                                         <td><a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a></td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>
-                                        <td><c:out value="${item.facility.facilityName}/${item.facility.blkNo} ${item.facility.streetName} ${item.facility.floorNo}-${item.facility.unitNo} ${item.facility.postalCode}"/></td>
+                                        <td><c:out value="${item.facility.facilityName}/${item.facility.facilityAddress}"/></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td><iais:code code="${item.processType}"></iais:code></td>
                                         <td><c:out value="${item.facility.biological.name}"/></td>

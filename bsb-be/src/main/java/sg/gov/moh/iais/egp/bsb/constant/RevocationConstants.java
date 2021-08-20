@@ -29,6 +29,9 @@ public final class RevocationConstants {
     public static final String PARAM_APPROVAL_STATUS = "approvalStatus";
     public static final String PARAM_FACILITY_ID = "facilityId";
     public static final String PARAM_APPLICATION_ID = "applicationId";
+    public static final String PARAM_REASON_TYPE_AO = "REASON01";
+    public static final String PARAM_REASON_TYPE_DO = "REASON02";
+    public static final String PARAM_APP_ID = "appId";
 
     public static final String PARAM_PROCESS_TYPE = "processType";
     public static final String PARAM_APPLICATION_DATE = "applicationDate";
@@ -40,4 +43,16 @@ public final class RevocationConstants {
     public static final String PARAM_POSTAL_CODE = "postalCode";
     public static final String PARAM_UNIT_NO = "unitNo";
     public static final String PARAM_STREET_NAME = "streetName";
+
+    //application status
+    public static final String PARAM_APPLICATION_STATUS_APPROVE = "BSBAPST009";
+    public static final String PARAM_APPLICATION_STATUS_REJECT = "BSBAPST008";
+    public static final String PARAM_APPLICATION_STATUS_ROUTE_BACK = "BSBAPST001";
+    public static final String PARAM_APPLICATION_STATUS_ROUTE_TO_HM = "BSBAPST003";
+    public static final String PARAM_APPLICATION_STATUS_PENDING_AO = "BSBAPST002";
+    //facility status and approval status
+    public static final String PARAM_FACILITY_STATUS_REVOKED = "FACSTA007";
+    public static final String PARAM_APPROVAL_STATUS_REVOKED = "APPRSTA003";
+
+    public static final String PARAM_APPLICATION_TYPE_REVOCATION = "BSBAPTY006";
 }
