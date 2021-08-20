@@ -25,7 +25,7 @@
 <c:set var="premBusinessMap" value="${premAlignBusinessMap}"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set var="businessDto" value="${premBusinessMap[appGrpPremisesDto.premisesIndexNo]}"/>
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel-group <c:if test="${isRfi && !appGrpPremisesDto.rfiCanEdit}">hidden</c:if>" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading " id="business-heading"  role="tab">
                 <h4 class="panel-title">
