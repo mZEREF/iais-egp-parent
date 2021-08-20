@@ -16,6 +16,8 @@ import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityAdmin;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,10 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -62,13 +61,17 @@ public class BiosafetyEnquiryDelegator {
             switch (count){
                 case "app":
                     ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
-                    log.info(StringUtil.changeForLog("delegator applicationInfoDto----"+applicationResultDto.toString()));
                     ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
                     break;
                 case "fn":
                     FacilityResultDto facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
-                    ParamUtil.setRequestAttr(bpc.request,"facilityInfoDto",facilityInfoDto);
+                    ParamUtil.setRequestAttr(bpc.request,"facilityInfoDto",facilityInfoDto.getBsbFac());
                     break;
+                case "on":
+                    ApprovedFacilityCerResultDto approvedFacilityCerResultDto = biosafetyEnquiryClient.queryApprovedByOrgName(searchNo).getEntity();
+                    ParamUtil.setRequestAttr(bpc.request,"afcInfoDto",approvedFacilityCerResultDto.getBsbAFC());
+                    break;
+
         }
         ParamUtil.setRequestAttr(bpc.request, "count",count);
 

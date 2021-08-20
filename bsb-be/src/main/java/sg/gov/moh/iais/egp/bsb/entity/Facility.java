@@ -62,13 +62,21 @@ public class Facility {
 
     private Date employmentStartDt;
 
+    private Organization organization;
+
     private String scheduleType;
 
     private String uenNo;
 
     private String approval;
 
+    private String approvalType;
+
     private String approvalStatus;
+
+    private Date approvalSubmissionDate;
+
+    private Date approvalDate;
 
     private Date expiryDt;
 

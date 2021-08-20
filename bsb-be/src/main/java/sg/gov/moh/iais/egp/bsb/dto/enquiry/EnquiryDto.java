@@ -95,6 +95,8 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
 
     private Date approvedDateTo;
 
+    private String action;
+
 
     public void clearAllFields() {
         id = "";

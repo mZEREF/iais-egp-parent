@@ -139,22 +139,156 @@
                                             <tr name="basicData">
                                                 <td><c:out  value="${status.index + 1}"/></td>
                                                 <td><c:out  value="${items.facilityName}"/></td>
-                                                <td><c:out value="${items.facilityAddress}"/></td>
+                                                <td><c:out value="${items.blkNo}"/> <c:out value="${items.streetName}"/> <c:out value="${items.floorNo}"/>-<c:out value="${items.unitNo}"/> <c:out value="${items.postalCode}"/></td>
                                                 <td><iais:code code="${items.facilityClassification}"></iais:code></td>
                                                 <td><iais:code code="${items.facilityType}"></iais:code></td>
-                                                <td><c:out  value="${items.biologicalAgent}"/></td>
-                                                <td><iais:code code="${items.riskLevelOfTheBiologicalAgent}"></iais:code></td>
-                                                <td><fmt:formatDate value='${items.facilityExpiryDate}' pattern='dd/MM/yyyy'/></td>
+                                                <td><c:out  value="${items.biological.name}"/></td>
+                                                <td><iais:code code="${items.biological.riskLevel}"></iais:code></td>
+                                                <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
                                                 <td>
-                                                    <c:if test="${items.gazettedArea == 'Y'}">
+                                                    <c:if test="${items.isProtected == 'Y'}">
                                                         <c:out  value="yes"/></c:if>
-                                                    <c:if test="${items.gazettedArea =='N'}">
+                                                    <c:if test="${items.isProtected =='N'}">
                                                         <c:out  value="No"/></c:if>
                                                 </td>
-                                                <td><c:out  value="${items.facilityOperator}"/></td>
-                                                <td><c:out  value="${items.facilityAdmin}"/></td>
-                                                <td><iais:code code="${items.currentFacilityStatus}"></iais:code></td>
-                                                <td><c:out  value="${items.approvedFacilityCertifier}"/></td>
+                                                <td><c:out  value="${items.operatorName}"/></td>
+
+                                                <td>
+                                            <c:forEach var="admins" items="${items.admins}" varStatus="status">
+                                               <c:choose>
+                                                   <c:when test="${status.last}">
+                                                       <c:out value="${admins.name}"></c:out>
+                                                   </c:when>
+                                                   <c:otherwise>
+                                                       <c:out value="${admins.name}"></c:out>,
+                                                   </c:otherwise>
+                                               </c:choose>
+                                            </c:forEach>
+                                                </td>
+                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                <td><c:out  value="${items.approval}"/></td>
+                                                <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                            </tr>
+                                            </c:forEach>
+
+                                        </tbody>
+                                    </table>
+                                </c:if>
+                                <c:if test="${count=='on'}">
+                                    <table class="table">
+                                        <thead>
+                                        <tr align="center">
+                                            <iais:sortableHeader needSort="false" field=""
+                                                                 value="S/N"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Organisation Name"
+                                                                 value="Organisation Name"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Organisation Address"
+                                                                 value="Organisation Address"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="AFC Status"
+                                                                 value="AFC Status"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Administrator"
+                                                                 value="Administrator"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Approved Date"
+                                                                 value="Approved Date"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Expiry Date"
+                                                                 value="Expiry Date"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Action"
+                                                                 value="Action"/>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="form-horizontal">
+                                        <c:forEach var="items" items="${afcInfoDto}" varStatus="status">
+                                            <tr name="basicData">
+                                                <td><c:out  value="${status.index + 1}"/></td>
+                                                <td><iais:code code="${items.organization.name}"></iais:code></td>
+                                                <td><c:out value="${items.organization.blkNo}"/> <c:out value="${items.organization.streetName}"/> <c:out value="${items.organization.buildingName}"/> <c:out value="${items.organization.floorNo}"/>-<c:out value="${items.organization.unitNo}"/> </td>
+                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                <td>
+                                                    <c:forEach var="admins" items="${items.admins}" varStatus="status">
+                                                        <c:choose>
+                                                            <c:when test="${status.last}">
+                                                                <c:out value="${admins.name}"></c:out>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:out value="${admins.name}"></c:out>,
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:forEach>
+                                                </td>
+                                                <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
+                                                <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
+                                                <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                            </tr>
+                                        </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:if>
+                                <c:if test="${count=='an'}">
+                                    <table class="table">
+                                        <thead>
+                                        <tr align="center">
+                                            <iais:sortableHeader needSort="false" field=""
+                                                                 value="S/N"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Approval Type"
+                                                                 value="Approval Type"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Approval Status"
+                                                                 value="Approval Status"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Classification"
+                                                                 value="Facility Classification"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Type"
+                                                                 value="Facility Type"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Name"
+                                                                 value="Facility Name"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Address"
+                                                                 value="Facility Address"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Facility Status"
+                                                                 value="Facility Status"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Biological Agent/Toxin"
+                                                                 value="Biological Agent/Toxin"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Nature of the sample"
+                                                                 value="Nature of the sample"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Risk Level of the Biological Agent/Toxin"
+                                                                 value="Risk Level of the Biological Agent/Toxin"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Physical Possession of BA/T"
+                                                                 value="Physical Possession of BA/T"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="Action"
+                                                                 value="Action"/>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="form-horizontal">
+                                        <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
+                                            <tr name="basicData">
+                                                <td><c:out  value="${status.index + 1}"/></td>
+                                                <td><iais:code code="${items.approvalType}"></iais:code></td>
+                                                <td><iais:code code="${items.approvalStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityClassification}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityType}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityName}"></iais:code></td>
+                                                <td><c:out value="${items.blkNo}"/> <c:out value="${items.streetName}"/> <c:out value="${items.floorNo}"/>-<c:out value="${items.unitNo}"/> <c:out value="${items.postalCode}"/></td>
+                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.biological.name}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiological.sampleNature}"></iais:code></td>
+                                                <td><iais:code code="${items.biological.riskLevel}"></iais:code></td>
+                                                <td></td>
                                                 <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
                                             </tr>
                                         </c:forEach>
