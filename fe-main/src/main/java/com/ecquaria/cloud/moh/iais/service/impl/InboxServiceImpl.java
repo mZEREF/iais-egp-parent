@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -527,12 +526,12 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
         LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
-        if(licenceViewDto!=null){
-            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
-            String licenseeId = licenceDto.getLicenseeId();
-            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
-            licenceViewDto.setLicenseeDto(licenseeDto);
-        }
+//        if(licenceViewDto!=null){
+//            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
+//            String licenseeId = licenceDto.getLicenseeId();
+//            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
+//            licenceViewDto.setLicenseeDto(licenseeDto);
+//        }
         return licenceViewDto;
     }
 
