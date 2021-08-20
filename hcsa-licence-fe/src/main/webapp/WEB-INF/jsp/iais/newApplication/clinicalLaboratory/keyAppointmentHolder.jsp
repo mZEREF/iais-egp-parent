@@ -178,6 +178,10 @@
         addDisabled();
         removeKeyAppointmentHolder();
         $('select.assignSel').trigger('change');
+        var keyAppointmentHolderLength = $('.keyAppointmentHolderContent').length;
+        if (keyAppointmentHolderLength >= '${keyAppointmentHolderConfigDto.maximumCount}') {
+            $('.addKeyAppointmentHolderDiv').addClass('hidden');
+        }
         initEnd = true;
     });
 
