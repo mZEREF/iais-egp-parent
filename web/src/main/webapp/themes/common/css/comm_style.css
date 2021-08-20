@@ -76,3 +76,7 @@ p, span {
 .form-horizontal label.control-font-label {
     font-weight: normal !important;
 }
+
+.hidden {
+    display:none !important;
+}
