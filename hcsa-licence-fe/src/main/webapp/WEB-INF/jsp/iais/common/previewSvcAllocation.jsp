@@ -1,7 +1,4 @@
 <c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-    <c:if test="${stepSchem.stepCode == 'SVST003'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
-    </c:if>
     <c:if test="${stepSchem.stepCode == 'SVST001'}">
         <c:set var="svcScopePageName" value="${stepSchem.stepName}"/>
     </c:if>

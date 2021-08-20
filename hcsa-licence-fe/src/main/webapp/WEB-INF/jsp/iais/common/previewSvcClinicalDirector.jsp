@@ -1,15 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ZiXian
-  Date: 2021/4/25
-  Time: 18:00
-  To change this template use File | Settings | File Templates.
---%>
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-<c:if test="${stepSchem.stepCode == 'SVST009'}">
-    <c:set var="currStepName" value="${stepSchem.stepName}"/>
-</c:if>
-</c:forEach>
 <div class="amended-service-info-gp">
     <label style="font-size: 2.2rem">Key Clinical Personnel</label>
     <div class="amend-preview-info">

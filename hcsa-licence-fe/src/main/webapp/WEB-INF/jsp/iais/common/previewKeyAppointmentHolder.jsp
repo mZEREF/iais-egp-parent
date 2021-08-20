@@ -1,8 +1,3 @@
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.appSvcKeyAppointmentHolderDtoList}">
-    <c:if test="${hcsaServiceStepSchemeDto.stepCode == 'SVST014'}">
-        <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}"/>
-    </c:if>
-</c:forEach>
 <div class="amended-service-info-gp">
     <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">

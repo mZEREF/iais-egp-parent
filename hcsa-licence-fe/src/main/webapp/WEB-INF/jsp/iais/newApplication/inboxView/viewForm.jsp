@@ -7,6 +7,7 @@
             <div class="pop-up">
               <div class="pop-up-body">
                   <c:forEach items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
+                    <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}" scope="request"/>
                     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST001'}">
                       <%@include file="../../common/previewSvcDisciplines.jsp"%>
                     </c:if><%--STEP_LABORATORY_DISCIPLINES--%>
