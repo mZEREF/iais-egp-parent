@@ -1,7 +1,10 @@
+<c:set var="isRfi" value="${requestInformationConfig != null}"/>
+
+<input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
+
 <div class="row">
     <div class="col-xs-12 col-md-12 text-right">
         <c:if test="${AppSubmissionDto.needEditController }">
-            <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
                     <a class="back" id="RfcSkip" href="javascript:void(0);">
@@ -54,7 +57,7 @@
 
                             <div class="col-md-4 col-xs-7 text-right">
                                 <c:if test="${index - keyAppointmentHolderConfigDto.mandatoryCount >=0}">
-                                    <div class="removeKeyAppointmentHolderBtn <c:if test="${canEdit}">hidden</c:if>">
+                                    <div class="removeKeyAppointmentHolderBtn">
                                         <h4 class="text-danger">
                                             <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                         </h4>
@@ -87,7 +90,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row <c:if test="${AppSubmissionDto.needEditController && '-1' != AppSvcKeyAppointmentHolderDto.assignSelect && not empty AppSvcKeyAppointmentHolderDto.assignSelect}">hidden</c:if>">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-5">
@@ -105,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="keyAppointmentHolder <c:if test="${'-1' == AppSvcKeyAppointmentHolderDto.assignSelect || empty AppSvcKeyAppointmentHolderDto.assignSelect}">hidden</c:if>">
+                <div class="keyAppointmentHolder">
                     <div class="row">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
@@ -158,7 +161,6 @@
 
                 </div>
             </div>
-
         </c:forEach>
 
         <div class="addKeyAppointmentHolderDiv">
@@ -172,16 +174,13 @@
 <script>
     var initEnd = false;
     $(function () {
+        refreshBtn();
         assignSel();
         addKeyAppointmentHolder();
         doEdit();
         addDisabled();
         removeKeyAppointmentHolder();
         $('select.assignSel').trigger('change');
-        var keyAppointmentHolderLength = $('.keyAppointmentHolderContent').length;
-        if (keyAppointmentHolderLength >= '${keyAppointmentHolderConfigDto.maximumCount}') {
-            $('.addKeyAppointmentHolderDiv').addClass('hidden');
-        }
         initEnd = true;
     });
 
@@ -251,8 +250,8 @@
             $currContent.find('div.nice-select').removeClass('disabled');
             $currContent.find('input[type="text"]').css('border-color', '');
             $currContent.find('input[type="text"]').css('color', '');
-            $currContent.find('.removeKeyAppointmentHolderBtn').removeClass('hidden');
             $('#isEditHiddenVal').val('1');
+            refreshBtn();
         });
     };
 
@@ -286,24 +285,47 @@
 
     function refreshKeyAppointmentHolder() {
         console.log("refreshKeyAppointmentHolder start")
-        var keyAppointmentHolderLength = $('.keyAppointmentHolderContent').length;
+        var $content = $('div.keyAppointmentHolderContent');
+        refreshIndex($content);
+        var keyAppointmentHolderLength = $content.length;
         $('input[name="keyAppointmentHolderLength"]').val(keyAppointmentHolderLength);
-        if (keyAppointmentHolderLength <= '${keyAppointmentHolderConfigDto.mandatoryCount}') {
-            $('.removeKeyAppointmentHolderBtn').hide();
-        } else {
-            $('.removeKeyAppointmentHolderBtn').show();
-        }
-        if ("${AppSubmissionDto.appType == 'APTY002' || 'true' == canEdit}"){
-            // display add more
-            if (keyAppointmentHolderLength < '${keyAppointmentHolderConfigDto.maximumCount}') {
-                $('.addKeyAppointmentHolderDiv').removeClass('hidden');
-            }else{//hidden add more
-                $('.addKeyAppointmentHolderDiv').addClass('hidden');
+        $content.each(function (k,v) {
+            if (keyAppointmentHolderLength <= 1 && k == 0) {
+                $(this).find('.assign-psn-item').html('');
+            } else {
+                $(this).find('.assign-psn-item').html(k + 1);
             }
+        });
+        refreshBtn();
+    }
+
+    function refreshBtn() {
+        var $content = $('div.keyAppointmentHolderContent');
+        var kahLength = $content.length;
+        $('input[name="keyAppointmentHolderLength"]').val(kahLength);
+        console.info("length: " + kahLength);
+        var isEdit =  $('#isEditHiddenVal').val();
+        $content.each(function (index,v) {
+            if (index < '${keyAppointmentHolderConfigDto.mandatoryCount}') {
+                $(v).find('.removeKeyAppointmentHolderBtn').remove();
+            } else if ('1' == isEdit) {
+                $(v).find('.removeKeyAppointmentHolderBtn').show();
+            } else {
+                $(v).find('.removeKeyAppointmentHolderBtn').hide();
+            }
+        });
+
+        <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">
+        // display add more
+        if (kahLength < '${keyAppointmentHolderConfigDto.maximumCount}') {
+            $('.addKeyAppointmentHolderDiv').show();
+        } else {//hidden add more
+            $('.addKeyAppointmentHolderDiv').hide();
         }
-        if (keyAppointmentHolderLength <= 1) {
-            $('.keyAppointmentHolderContent:eq(0) .assign-psn-item').html('');
-        }
+        </c:if>
+        <c:if test="${!canShowAddBtn}">
+        $('.addKeyAppointmentHolderDiv').remove();
+        </c:if>
     }
 
     var loadSelectKah = function ($CurrentPsnEle, idType, idNo) {

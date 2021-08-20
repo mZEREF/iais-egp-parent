@@ -4,7 +4,7 @@
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="${isRFi ? '1' : '0'}"/>
-<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
+<input id="isEditHiddenVal" type="hidden" name="isEdit" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
 
 <div class="row">
     <div class="form-group">
@@ -21,7 +21,6 @@
             </div>
             <div class="col-md-7 col-xs-7 text-right">
                 <c:if test="${AppSubmissionDto.needEditController }">
-                    <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                     <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                         <div class="app-font-size-16">
                             <a class="back" id="RfcSkip" href="javascript:void(0);">
@@ -57,40 +56,11 @@
         <%@include file="sectionLeaderDetail.jsp" %>
     </c:forEach>
 
-    <c:if test="${!isRfi}">
-        <c:choose>
-            <c:when test="${!empty sectionLeaderList}">
-                <c:set var="slLength" value="${sectionLeaderList.size()}"/>
-            </c:when>
-            <c:otherwise>
-                <c:choose>
-                    <c:when test="${AppSubmissionDto.needEditController}">
-                        <c:set var="slLength" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                        <c:set var="slLength" value="${sectionLeaderConfig.mandatoryCount}"/>
-                    </c:otherwise>
-                </c:choose>
-            </c:otherwise>
-        </c:choose>
-        <c:set var="needAddPsn" value="true"/>
-        <c:choose>
-            <c:when test="${sectionLeaderConfig.status =='CMSTAT003'}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-            <c:when test="${cdLength >= sectionLeaderConfig.maximumCount}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
-                <c:set var="needAddPsn" value="false"/>
-            </c:when>
-        </c:choose>
-        <div class="col-md-12 col-xs-12 addSectionLeaderDiv" style="${!needAddPsn ? 'display:none;' : ''}">
-            <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Another ${stepName}</span>
-            </span>
-        </div>
-    </c:if>
+    <div class="col-md-12 col-xs-12 addSectionLeaderDiv" style="${!needAddPsn ? 'display:none;' : ''}">
+        <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
+            <span style="">+ Add Another ${stepName}</span>
+        </span>
+    </div>
     <script type="text/javascript">
         $(document).ready(function() {
             initSectionLeader();
@@ -106,11 +76,12 @@
             addSectionLeaderBtn();
             removeSectionLeader();
             doEdite();
-            refreshAddBtn();
+            refreshBtn();
         }
 
         function refreshSectionLeaderIndex() {
             var slLength = $('.sectionLaderContent').length;
+            $('input[name="slLength"]').val(slLength);
             console.info("length: " + slLength)
             var $content = $('div.sectionLaderContent');
             refreshIndex($content);
@@ -123,14 +94,20 @@
             });
         }
 
-        function refreshAddBtn() {
-            var slLength = $('.sectionLaderContent').length;
+        function refreshBtn() {
+            var $content = $('div.sectionLaderContent');
+            var slLength = $content.length;
             $('input[name="slLength"]').val(slLength);
-            if (slLength <= '${sectionLeaderConfig.mandatoryCount}') {
-                $('.addSectionLeaderDiv').hide();
-            } else {
-                $('.addSectionLeaderDiv').show();
-            }
+            var isEdit =  $('#isEditHiddenVal').val();
+            $content.each(function (index,v) {
+                if (index < '${sectionLeaderConfig.mandatoryCount}') {
+                    $(v).find('.removeSectionLeaderDiv').remove();
+                } else if ('1' == isEdit) {
+                    $(v).find('.removeSectionLeaderDiv').show();
+                } else {
+                    $(v).find('.removeSectionLeaderDiv').hide();
+                }
+            });
             <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">
             // display add more
             if (slLength < '${sectionLeaderConfig.maximumCount}') {
@@ -199,9 +176,10 @@
             $('.edit-content a').click(function () {
                 var $currContent = $(this).closest('div.sectionLaderContent');
                 unDisableContent($currContent);
-                $(this).hide();
                 $('#isEditHiddenVal').val('1');
                 $currContent.find('.isPartEdit').val('1');
+                refreshBtn();
+                $(this).hide();
             });
         }
     </script>
