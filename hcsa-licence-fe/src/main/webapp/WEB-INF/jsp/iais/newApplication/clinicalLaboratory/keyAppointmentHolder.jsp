@@ -98,7 +98,7 @@
                                 <span class="mandatory">*</span>
                             </div>
 
-                            <div class="col-sm-5 col-md-7" id="assignSelect">
+                            <div class="col-sm-5 col-md-7">
                                 <div class="">
                                     <iais:select cssClass="assignSel"  name="assignSel${index}" options="KeyAppointmentHolderAssignSelect" needSort="false" value="${AppSvcKeyAppointmentHolderDto.assignSelect}"></iais:select>
                                     <span id="error_assignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
@@ -180,7 +180,11 @@
         doEdit();
         addDisabled();
         removeKeyAppointmentHolder();
-        $('select.assignSel').trigger('change');
+        $('.assignSel').closest('div.row').each(function (idx, ele){
+            if ($(ele).is(':visible')) {
+                $(ele).find('select.assignSel').trigger('change');
+            }
+        });
         initEnd = true;
     });
 
