@@ -86,12 +86,12 @@
                                                             </th>
                                                             <iais:sortableHeader needSort="true" field="UEN"
                                                                                  value="UEN"/>
-                                                            <iais:sortableHeader needSort="true" field="LICENCE_NO"
-                                                                                 value="Licence No."/>
-                                                            <iais:sortableHeader needSort="true" field="SVC_NAME"
-                                                                                 value="Service Type"/>
-                                                            <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
-                                                                                 value="Licensee"/>
+                                                            <iais:sortableHeader needSort="true" field="Licence No."
+                                                                                 value="LICENCE_NO"/>
+                                                            <iais:sortableHeader needSort="true" field="Service Type"
+                                                                                 value="SVC_NAME"/>
+                                                            <iais:sortableHeader needSort="true" field="Licensee"
+                                                                                 value="LICENSEE_NAME"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
@@ -113,8 +113,8 @@
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="FILE_NAME"
                                                                                  value="GIRO Form"/>
-                                                            <iais:sortableHeader needSort="false" field="REMARKS"
-                                                                                 value="Internal Remarks"/>
+                                                            <iais:sortableHeader needSort="false" field="Internal Remarks"
+                                                                                 value="REMARKS"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">
@@ -180,9 +180,6 @@
                                                                                 <iais:downloadLink fileRepoIdName="fileRo${docStatus.index}" fileRepoId="${giroDoc.fileRepoId}" docName="${giroDoc.docName}"/>
                                                                                 <br>
                                                                             </c:forEach>
-                                                                        </td>
-                                                                        <td>
-                                                                            <c:out value="${pool.remarks}"/>
                                                                         </td>
                                                                     </tr>
                                                                 </c:forEach>

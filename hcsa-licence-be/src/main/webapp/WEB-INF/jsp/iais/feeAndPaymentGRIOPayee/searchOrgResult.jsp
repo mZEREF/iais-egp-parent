@@ -100,12 +100,12 @@
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="UEN_NO"
                                                                                  value="UEN"/>
-                                                            <iais:sortableHeader needSort="true" field="LICENCE_NO"
-                                                                                 value="Licence No."/>
-                                                            <iais:sortableHeader needSort="true" field="SVC_NAME"
-                                                                                 value="Service Type"/>
-                                                            <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
-                                                                                 value="Licensee"/>
+                                                            <iais:sortableHeader needSort="true" field="Licence No."
+                                                                                 value="LICENCE_NO"/>
+                                                            <iais:sortableHeader needSort="true" field="Service Type"
+                                                                                 value="SVC_NAME"/>
+                                                            <iais:sortableHeader needSort="true" field="Licensee"
+                                                                                 value="LICENSEE_NAME"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">

@@ -242,7 +242,12 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 }
             }
         }
-        File[] files = filePath.listFiles((dir, name) -> name.endsWith(RequestForInformationConstants.FILE_FORMAT));
+        File[] files = filePath.listFiles((dir, name) -> {
+            if (name.endsWith(RequestForInformationConstants.FILE_FORMAT)) {
+                return true;
+            }
+            return false;
+        });
         if (files != null && files.length > 0) {
             for (File f : files) {
                 if (f.exists() && f.isFile()) {
@@ -250,12 +255,12 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 }
             }
         }
-        try {
-            files = file.listFiles((dir, name) -> name.endsWith(RequestForInformationConstants.FILE_FORMAT));
-        }catch (NullPointerException e){
-            log.error(e.getMessage());
-        }
-
+        files = file.listFiles((dir, name) -> {
+            if (name.endsWith(RequestForInformationConstants.FILE_FORMAT)) {
+                return true;
+            }
+            return false;
+        });
         if (files != null && files.length > 0) {
             for (File f : files) {
                 if (f.exists() && f.isFile()) {
