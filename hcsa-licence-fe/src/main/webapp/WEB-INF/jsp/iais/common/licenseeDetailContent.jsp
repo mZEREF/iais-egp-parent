@@ -96,6 +96,7 @@
           var postalCode = $postalCodeEle.find('.postalCode').val();
           retrieveAddr(postalCode, $(this).closest('div.licenseeContent').find('div.address'));
       });
+    $('.retrieveAddr').trigger('click');
   });
 
   function checkAddressManatory() {
