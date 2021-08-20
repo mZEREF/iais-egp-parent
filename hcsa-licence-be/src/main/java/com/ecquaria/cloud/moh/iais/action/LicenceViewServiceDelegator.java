@@ -1492,19 +1492,19 @@ public class LicenceViewServiceDelegator {
         olAppSvcPrincipalOfficersDtoList.addAll(oldDpoAppSvcPrincipalOfficersDto);
         oldAppSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(olAppSvcPrincipalOfficersDtoList);
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
-        // section leader
-        List<AppSvcPersonnelDto> appSvcSectionLeaderList = getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
-        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
-        appSvcPersonnelDtoList(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
-        oldAppSvcRelatedInfoDto.setAppSvcSectionLeaderList(oldAppSvcSectionLeaderList);
-        appSvcRelatedInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
         // Svc Personnel
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = getList(appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = getList(oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
         appSvcPersonnelDtoList(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
         oldAppSvcRelatedInfoDto.setAppSvcPersonnelDtoList(oldAppSvcPersonnelDtoList);
         appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(appSvcPersonnelDtoList);
-        // Svc Laboratory Disciplines
+        // section leader
+        List<AppSvcPersonnelDto> appSvcSectionLeaderList = getList(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = getList(oldAppSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+        appSvcPersonnelDtoList(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
+        oldAppSvcRelatedInfoDto.setAppSvcSectionLeaderList(oldAppSvcSectionLeaderList);
+        appSvcRelatedInfoDto.setAppSvcSectionLeaderList(appSvcSectionLeaderList);
+        // Svc Laboratory Disciplines && Allocation
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(
                 0).getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(
@@ -1913,28 +1913,17 @@ public class LicenceViewServiceDelegator {
         if (appSvcDisciplineAllocationDtoList == null || oldAppSvcDisciplineAllocationDtoList == null) {
             return;
         }
-        if(appSvcDisciplineAllocationDtoList.size() == oldAppSvcDisciplineAllocationDtoList.size()){
-           if (appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList)){
-               return;
-           }
-           List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
-           List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList=new ArrayList<>(oldAppSvcDisciplineAllocationDtoList.size());
-           setCopyAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,oldPremiseVal,map);
-           setCopyAppSvcDisciplineAllocationDtoList(oldAppSvcDisciplineAllocationDtoList,appSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,premiseVal,map);
-           appSvcDisciplineAllocationDtoList.clear();
-           oldAppSvcDisciplineAllocationDtoList.clear();
-           appSvcDisciplineAllocationDtoList.addAll(copyAppSvcDisciplineAllocationDtoList);
-           oldAppSvcDisciplineAllocationDtoList.addAll(copyOldAppSvcDisciplineAllocationDtoList);
-        }else {
-            List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
-            List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList=new ArrayList<>(oldAppSvcDisciplineAllocationDtoList.size());
-            setCopyAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,oldPremiseVal,map);
-            setCopyAppSvcDisciplineAllocationDtoList(oldAppSvcDisciplineAllocationDtoList,appSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,premiseVal,map);
-            appSvcDisciplineAllocationDtoList.clear();
-            oldAppSvcDisciplineAllocationDtoList.clear();
-            appSvcDisciplineAllocationDtoList.addAll(copyAppSvcDisciplineAllocationDtoList);
-            oldAppSvcDisciplineAllocationDtoList.addAll(copyOldAppSvcDisciplineAllocationDtoList);
+        if (appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList)){
+            return;
         }
+        List<AppSvcDisciplineAllocationDto> copyAppSvcDisciplineAllocationDtoList=new ArrayList<>(appSvcDisciplineAllocationDtoList.size());
+        List<AppSvcDisciplineAllocationDto> copyOldAppSvcDisciplineAllocationDtoList=new ArrayList<>(oldAppSvcDisciplineAllocationDtoList.size());
+        setCopyAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,oldPremiseVal,map);
+        setCopyAppSvcDisciplineAllocationDtoList(oldAppSvcDisciplineAllocationDtoList,appSvcDisciplineAllocationDtoList,copyOldAppSvcDisciplineAllocationDtoList,copyAppSvcDisciplineAllocationDtoList,premiseVal,map);
+        appSvcDisciplineAllocationDtoList.clear();
+        oldAppSvcDisciplineAllocationDtoList.clear();
+        appSvcDisciplineAllocationDtoList.addAll(copyAppSvcDisciplineAllocationDtoList);
+        oldAppSvcDisciplineAllocationDtoList.addAll(copyOldAppSvcDisciplineAllocationDtoList);
     }
 
     private static void removePriDocFileIdIsNull( List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ){
@@ -1988,10 +1977,12 @@ public class LicenceViewServiceDelegator {
                     break;
                 }
             }
-            if(!flag){
+            if (!flag) {
                 copyAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto);
-                AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1=(AppSvcDisciplineAllocationDto)CopyUtil.copyMutableObject(appSvcDisciplineAllocationDto);
+                AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(
+                        appSvcDisciplineAllocationDto);
                 appSvcDisciplineAllocationDto1.setCheck(false);
+                appSvcDisciplineAllocationDto1.setSectionLeaderName(null);
                 appSvcDisciplineAllocationDto1.setPremiseVal(premiseVal);
                 copyOldAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto1);
             }
@@ -2026,36 +2017,21 @@ public class LicenceViewServiceDelegator {
        }
     }
 
-    private void sortAppSvcChckListDto(AppSvcChckListDto appSvcChckListDto){
-
-    }
-
     private void creatAppsvcChckList(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList) {
         if (appSvcChckListDtoList == null || oldAppSvcChckListDtoList == null) {
             return;
         }
-        if(appSvcChckListDtoList.size()==oldAppSvcChckListDtoList.size()){
-            if(appSvcChckListDtoList.equals(oldAppSvcChckListDtoList)){
-                return;
-            }
-            List<AppSvcChckListDto> copyAppSvcChckListDtoList=new ArrayList<>(appSvcChckListDtoList.size());
-            List<AppSvcChckListDto> copyOldAppSvcChckListDtoList=new ArrayList<>(oldAppSvcChckListDtoList.size());
-            copy(appSvcChckListDtoList,oldAppSvcChckListDtoList,copyAppSvcChckListDtoList,copyOldAppSvcChckListDtoList);
-            copy(oldAppSvcChckListDtoList,appSvcChckListDtoList,copyOldAppSvcChckListDtoList,copyAppSvcChckListDtoList);
-            appSvcChckListDtoList.clear();
-            oldAppSvcChckListDtoList.clear();
-            appSvcChckListDtoList.addAll(copyAppSvcChckListDtoList);
-            oldAppSvcChckListDtoList.addAll(copyOldAppSvcChckListDtoList);
-        }else {
-            List<AppSvcChckListDto> copyAppSvcChckListDtoList=IaisCommonUtils.genNewArrayList();
-            List<AppSvcChckListDto> copyOldAppSvcChckListDtoList=IaisCommonUtils.genNewArrayList();
-            copy(appSvcChckListDtoList,oldAppSvcChckListDtoList,copyAppSvcChckListDtoList,copyOldAppSvcChckListDtoList);
-            copy(oldAppSvcChckListDtoList,appSvcChckListDtoList,copyOldAppSvcChckListDtoList,copyAppSvcChckListDtoList);
-            appSvcChckListDtoList.clear();
-            oldAppSvcChckListDtoList.clear();
-            appSvcChckListDtoList.addAll(copyAppSvcChckListDtoList);
-            oldAppSvcChckListDtoList.addAll(copyOldAppSvcChckListDtoList);
+        if(appSvcChckListDtoList.equals(oldAppSvcChckListDtoList)){
+            return;
         }
+        List<AppSvcChckListDto> copyAppSvcChckListDtoList=IaisCommonUtils.genNewArrayList();
+        List<AppSvcChckListDto> copyOldAppSvcChckListDtoList=IaisCommonUtils.genNewArrayList();
+        copy(appSvcChckListDtoList,oldAppSvcChckListDtoList,copyAppSvcChckListDtoList,copyOldAppSvcChckListDtoList);
+        copy(oldAppSvcChckListDtoList,appSvcChckListDtoList,copyOldAppSvcChckListDtoList,copyAppSvcChckListDtoList);
+        appSvcChckListDtoList.clear();
+        oldAppSvcChckListDtoList.clear();
+        appSvcChckListDtoList.addAll(copyAppSvcChckListDtoList);
+        oldAppSvcChckListDtoList.addAll(copyOldAppSvcChckListDtoList);
 
 
     }
@@ -2063,6 +2039,7 @@ public class LicenceViewServiceDelegator {
     private void copy(List<AppSvcChckListDto> appSvcChckListDtoList, List<AppSvcChckListDto> oldAppSvcChckListDtoList,List<AppSvcChckListDto> copyAppSvcChckListDtoList, List<AppSvcChckListDto> copyOldAppSvcChckListDtoList) {
         for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
             String chkName = appSvcChckListDto.getChkName();
+            // check this check item is in the old check list or not
             boolean flag=false;
             for(AppSvcChckListDto oldAppSvcChckListDto : oldAppSvcChckListDtoList){
                 if(chkName.equals(oldAppSvcChckListDto.getChkName())){
@@ -2079,7 +2056,10 @@ public class LicenceViewServiceDelegator {
                 copyOldAppSvcChckListDtoList.add(appSvcChckListDto1);
             }
         }
+        // the copyAppSvcChckListDtoList size will be the same with appSvcChckListDtoList size
+        // and appSvcChckListDtoList will be empty
         appSvcChckListDtoList.removeAll(copyAppSvcChckListDtoList);
+        // copyOldAppSvcChckListDtoList will add the check item which it doesn't have by chkName
         oldAppSvcChckListDtoList.removeAll(copyOldAppSvcChckListDtoList);
     }
 
