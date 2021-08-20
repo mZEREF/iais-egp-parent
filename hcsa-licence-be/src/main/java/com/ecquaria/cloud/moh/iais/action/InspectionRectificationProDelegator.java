@@ -425,11 +425,17 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
         if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
             bestPractice = ncRecommendationDto.getBestPractice();
         }
+        //get Observation
+        String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+        if(StringUtil.isEmpty(observation)) {
+            observation = "-";
+        }
         inspectionReportDto.setBestPractice(bestPractice);
         inspectionReportDto.setInspectors(inspectorUser.getInspectors());
         inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
         inspectionReportDto.setInspectorLeads(inspectorLeads);
         inspectionReportDto.setNcCount(ncCount);
+        inspectionReportDto.setObservation(observation);
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

@@ -76,7 +76,7 @@
                                                                      value="${appCessHci.reason}" cssClass="nice-select cessationReasons"/>
                                                     </iais:value>
                                                 </iais:row>
-                                                <div id="${num.count}reason${uid.count}" hidden>
+                                                <div id="${num.count}reason${uid.count}" style="display: none;">
                                                     <iais:row>
                                                         <iais:field value="Others" mandatory="true"/>
                                                         <iais:value width="7">
@@ -239,13 +239,13 @@
                                                         <span id="error_${num.count}patNoConfirm${uid.count}" name="iaisErrorMsg" class="error-msg"></span>
                                                     </div>
                                                 </div>--%>
-                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-4">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                     <div class="col-xs-6 col-sm-4 col-md-3">
                                                         <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>

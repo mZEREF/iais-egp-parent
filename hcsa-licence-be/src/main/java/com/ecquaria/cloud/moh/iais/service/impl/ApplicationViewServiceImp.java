@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
@@ -47,14 +48,15 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -527,6 +529,21 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     appovedNum.add(applicationDto);
                 }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equalsIgnoreCase(applicationDto.getStatus())){
                     rejectNum.add(applicationDto);
+                    if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                        List<AppEditSelectDto> appEditSelectDtos = applicationClient.getAppEditSelectDto(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC).getEntity();
+                        boolean changePrem=false;
+                        for (AppEditSelectDto edit:appEditSelectDtos
+                        ) {
+                            if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
+                                changePrem=true;
+                            }
+                        }
+                        if(changePrem){
+                            List<ApplicationDto> apps=IaisCommonUtils.genNewArrayList();
+                            apps.add(applicationDto);
+                            applicationClient.clearHclcodeByAppIds(apps);
+                        }
+                    }
                 }
             }
             if(appovedNum.size() > 0 && rejectNum.size() >0){
@@ -534,14 +551,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                             applicationDto.setNeedNewLicNo(true);
-                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                                 applicationDtoMain.setNeedNewLicNo(true);
-                             }
-                         }
+                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                        applicationDto.setNeedNewLicNo(true);
+                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                            applicationDtoMain.setNeedNewLicNo(true);
+                        }
                     }
-                applicationClient.clearHclcodeByAppIds(appovedNum);
+                }
             }
         }
         log.info("-----------clearApprovedHclCodeByExistRejectApp end------");
