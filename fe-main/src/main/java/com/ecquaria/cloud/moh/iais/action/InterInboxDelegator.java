@@ -1192,7 +1192,7 @@ public class InterInboxDelegator {
             }
         }*/
         //EAS and MTS licence only one active/approve licence
-        if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+        if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)&&applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
             List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
             if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){

@@ -8,6 +8,7 @@ html {
 @media only screen and (min-width : 1201px) {
     .container {
         width: 1280px;
+        max-width: 1290px;
     }
 }
 
@@ -680,13 +681,15 @@ header .container .sg-gov-logo a img {
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle:after {
     content: "";
-font-family: FontAwesome, sans-serif;    font-weight: 400;
+    font-family: fontawesome;
+    font-weight: 400;
     font-size: 3rem;
     color: #333333;
     line-height: 22px;
     display: inline-block;
     margin-left: 12px;
     position: absolute;
+    border: none;
 }
 .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle:hover:after {
     color: #989898;
@@ -941,7 +944,8 @@ font-family: FontAwesome, sans-serif;    font-weight: 400;
 }
 .profile-dropdown .profile-btn:after {
     content: "";
-font-family: FontAwesome, sans-serif;    font-weight: 400;
+    font-family: fontawesome;
+    font-weight: 400;
     font-size: 3rem;
     color: #333333;
     line-height: 22px;
@@ -1510,9 +1514,11 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
     display: block;
 }
 .panel-group .panel.panel-default > .panel-heading h4 a:before {
-font-family: FontAwesome, sans-serif;    content: "";
+    font-family: FontAwesome;
+    content: "";
     font-size: 4rem;
     color: #147aab;
+    line-height: 20px;
     font-weight: 400;
     vertical-align: middle;
     position: absolute;
@@ -1546,7 +1552,8 @@ font-family: FontAwesome, sans-serif;    content: "";
 }
 .panel-group .panel.panel-default > .panel-heading.completed h4 a:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 22px;
+    font-family: fontawesome;
+    width: 22px;
     height: 22px;
     border: 0;
     background-color: #168926;
@@ -1563,7 +1570,8 @@ font-family: FontAwesome, sans-serif;    width: 22px;
 }
 .panel-group .panel.panel-default > .panel-heading.incompleted h4 a:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 22px;
+    font-family: fontawesome;
+    width: 22px;
     height: 22px;
     border: 0;
     background-color: #c4322b;
@@ -1825,6 +1833,7 @@ input[type=number]::-webkit-outer-spin-button {
     position: relative;
 }
 .form-check input.form-check-input {
+    height: auto;
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -1897,7 +1906,8 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check .form-check-label .check-square:before {
     content: "";
-font-family: FontAwesome, sans-serif;    position: absolute;
+    font-family: fontawesome;
+    position: absolute;
     width: 16px;
     height: 16px;
     top: 0;
@@ -2327,7 +2337,8 @@ span.error-msg {
 }
 .nice-select:after {
     content: "";
-font-family: FontAwesome, sans-serif;    font-size: 30px;
+    font-family: fontawesome;
+    font-size: 30px;
     color: #6c6c6c;
     -webkit-transform-origin: 0 0;
     -ms-transform-origin: 0 0;
@@ -2464,6 +2475,7 @@ font-family: FontAwesome, sans-serif;    font-size: 30px;
     background: white;
     /* Old browsers */
     display: flex;
+    flex-wrap: inherit;
     width: 100%;
     -webkit-box-shadow: 0px 5px 24px 0px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0px 5px 24px 0px rgba(0, 0, 0, 0.2);
@@ -2541,7 +2553,8 @@ font-family: FontAwesome, sans-serif;    font-size: 30px;
 }
 .tab-gp .tab-content .preview-info.incompleted p:first-child:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 22px;
+    font-family: fontawesome;
+    width: 22px;
     height: 22px;
     border: 0;
     background-color: #DB3D35;
@@ -2671,7 +2684,8 @@ font-family: FontAwesome, sans-serif;    width: 22px;
 .tab-gp .tab-nav-mobile .swiper-button-prev:before,
 .tab-gp .tab-nav-mobile .swiper-button-next:before {
     font-size: 3.4rem;
-font-family: FontAwesome, sans-serif;    display: block;
+    font-family: fontawesome;
+    display: block;
     width: 16px;
     height: 26px;
     line-height: 26px;
@@ -2720,7 +2734,8 @@ font-family: FontAwesome, sans-serif;    display: block;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.complete a:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 27px;
+    font-family: fontawesome;
+    width: 27px;
     height: 27px;
     border: 2px solid white;
     background-color: #168926;
@@ -2741,7 +2756,8 @@ font-family: FontAwesome, sans-serif;    width: 27px;
 }
 .tab-gp.steps-tab .nav.nav-tabs li.incomplete a:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 27px;
+    font-family: fontawesome;
+    width: 27px;
     height: 27px;
     border: 2px solid white;
     background-color: #c4322b;
@@ -2782,6 +2798,7 @@ font-family: FontAwesome, sans-serif;    width: 27px;
     color: #333333;
     position: absolute;
     display: block;
+    margin-left: auto;
     margin-right: auto;
     font-weight: 600;
     margin-bottom: 0;
@@ -2809,6 +2826,7 @@ font-family: FontAwesome, sans-serif;    width: 27px;
     width: 200px;
     float: left;
     background-color: white;
+    display: inherit;
 }
 .tab-gp.side-tab ul.nav.nav-pills.nav-stacked li {
     padding-left: 0;
@@ -2927,9 +2945,9 @@ font-family: FontAwesome, sans-serif;    width: 27px;
     color: #333333;
     flex-basis: 100%;
     position: relative;
+    padding-left: 0;
     text-align: center;
     padding: 0 10px;
-    padding-left: 0;
 }
 .progress-tracker li:before {
     content: "";
@@ -3104,7 +3122,8 @@ font-family: FontAwesome, sans-serif;    width: 27px;
 }
 .table-gp table.table > thead > tr > th span.sort:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.4rem;
     color: #666;
 }
@@ -3113,7 +3132,8 @@ font-family: FontAwesome, sans-serif;    margin-left: 10px;
 }
 .table-gp table.table > thead > tr > th span.desc:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
     display: inline-block;
@@ -3124,7 +3144,8 @@ font-family: FontAwesome, sans-serif;    margin-left: 10px;
 }
 .table-gp table.table > thead > tr > th span.asc:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
     display: inline-block;
@@ -3156,7 +3177,8 @@ font-family: FontAwesome, sans-serif;    margin-left: 10px;
 .table-gp table.table > tbody > tr > td p a[data-toggle=collapse]:after {
     content: "";
     position: absolute;
-font-family: FontAwesome, sans-serif;    font-size: 2.4rem;
+    font-family: fontawesome;
+    font-size: 2.4rem;
     line-height: 22px;
     right: -25px;
     display: inline-block;
@@ -3340,7 +3362,8 @@ font-family: FontAwesome, sans-serif;    font-size: 2.4rem;
 }
 .table-sm table.table > thead > tr > th span.sort:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.4rem;
     color: #BFBFBF;
 }
@@ -3349,7 +3372,8 @@ font-family: FontAwesome, sans-serif;    margin-left: 10px;
 }
 .table-sm table.table > thead > tr > th span.desc:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
     display: inline-block;
@@ -3360,7 +3384,8 @@ font-family: FontAwesome, sans-serif;    margin-left: 10px;
 }
 .table-sm table.table > thead > tr > th span.asc:after {
     content: "";
-font-family: FontAwesome, sans-serif;    margin-left: 10px;
+    font-family: fontawesome;
+    margin-left: 10px;
     font-size: 1.6rem;
     color: #147aab;
     display: inline-block;
@@ -3909,6 +3934,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 @media only screen and (min-width : 768px) and (max-width : 992px) {
     .tab-search.license-search .licence-btns {
         flex: 1;
+        width: auto;
         margin-right: 0;
         order: 1;
         margin-top: 0;
@@ -4324,7 +4350,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
     content: "";
-font: normal normal normal 14px/1 FontAwesome, sans-serif;    /*color: #a2d9e7;*/
+    font:normal normal normal 14px/1 FontAwesome;
+    /*color: #a2d9e7;*/
     font-size: 30px;
     width: 6px;
     height: 6px;
@@ -4383,6 +4410,7 @@ font: normal normal normal 14px/1 FontAwesome, sans-serif;    /*color: #a2d9e7;*
 }
 .license-info-box {
     margin-top: 10px;
+    width: 100%;
 }
 .cesform-box .license-info {
     width: 100%;
@@ -4407,7 +4435,8 @@ font: normal normal normal 14px/1 FontAwesome, sans-serif;    /*color: #a2d9e7;*
 }
 .cesform-box .license-info p.lic-no:before {
     content: "";
-font: normal normal normal 14px/1 FontAwesome, sans-serif;    color: #a2d9e7;
+    font:normal normal normal 14px/1 FontAwesome;
+    color: #a2d9e7;
     font-size: 30px;
     width: 6px;
     height: 6px;
@@ -4419,7 +4448,8 @@ font: normal normal normal 14px/1 FontAwesome, sans-serif;    color: #a2d9e7;
 }
 .cesform-box .license-info p.serv-name:before {
     content: "";
-font: normal normal normal 14px/1 FontAwesome, sans-serif;    color: #a2d9e7;
+    font:normal normal normal 14px/1 FontAwesome;
+    color: #a2d9e7;
     font-size: 30px;
     width: 6px;
     height: 6px;
@@ -5196,6 +5226,7 @@ table select.form-control.control-input {
 }
 .control-item-container input.control-input[type=checkbox],
 .control-item-container input.control-input[type=radio] {
+    height: auto;
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -5217,6 +5248,11 @@ table select.form-control.control-input {
     min-height: 22px;
     line-height: 22px !important;
     font-family: "Open Sans", sans-serif;
+    color: #333333;
+    font-size: 1.6rem;
+    font-weight: 400;
+    position: relative;
+    padding-left: 30px;
 }
 @media only screen and (max-width : 767px) {
     .control-item-container input.control-input[type=checkbox] + label.control-label,
@@ -5291,7 +5327,8 @@ table select.form-control.control-input {
 .control-item-container input.control-input[type=checkbox] + label.control-label .check-square:before,
 .control-item-container input.control-input[type=radio] + label.control-label .check-square:before {
     content: "";
-font-family: FontAwesome, sans-serif;    position: absolute;
+    font-family: fontawesome;
+    position: absolute;
     width: 18px;
     height: 18px;
     top: 0;
@@ -5472,7 +5509,8 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
     content: "";
-font-family: FontAwesome, sans-serif;    width: 22px;
+    font-family: fontawesome;
+    width: 22px;
     height: 22px;
     border: 0;
     background-color: #b01b17;
@@ -5653,8 +5691,14 @@ section.logo img {
     font-weight: 700;
     text-transform:uppercase;
 }
+.vehicle-number {
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px;
+ }
+
 .lic-footer {
-    margin-top: 150px;
+    margin-top: 12.5%;
     margin-bottom: 50px;
     padding: 5px;
 }
@@ -5662,6 +5706,7 @@ section.logo img {
     font-size: 11pt;
     text-align: center;
 }
+.table-info-display .nav { float: right; }
 
 /************** DSS Fixes 2 Feb/2021 *************/
 
@@ -5708,22 +5753,25 @@ section.logo img {
         transition: all 0.3s ease;
     }
     .nav ul.pagination > li > a, .nav ul.pagination > li span {
-        font-size: 1.4rem;
-        padding: 6px 8px;
+    font-size: 1.4rem;
+    padding: 6px 8px;
     }
 
     .table-gp table.table > tbody > tr > td p {
         margin-bottom: 0;
         line-height: 25px;
     }
+
     .table-info-display {
-        margin: 20px 15px 25px 12px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;
+    margin: 20px 15px 25px 12px;
+    background: #efefef;
+    padding: 8px;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
     }
+
+   /* .table-info-display.nav { float: right; }*/
 }
 
 
@@ -5799,14 +5847,5 @@ section.logo img {
   }
 }*/
 
-p, span {
-    word-wrap: break-word;
-}
-
-.container-footer {
-    margin-top: 15px;
-    padding-top: 30px;
-    border-top: 1px solid #BABABA;
-}
 
 

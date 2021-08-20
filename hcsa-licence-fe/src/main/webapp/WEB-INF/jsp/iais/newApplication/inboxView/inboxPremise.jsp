@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-heading" id="headingPremise" role="tab">
-        <h4 class="panel-title"><a role="button" class="collapse collapsed" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Mode of Service Delivery</a></h4>
+        <h4 class="panel-title"><a role="button" class="collapsed" data-toggle="collapse" href="#collapsePremise" aria-expanded="true" aria-controls="collapsePremise">Mode of Service Delivery</a></h4>
     </div>
     <div class="panel-collapse collapse" id="collapsePremise" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">

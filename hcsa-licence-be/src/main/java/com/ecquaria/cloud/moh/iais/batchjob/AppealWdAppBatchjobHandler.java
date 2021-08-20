@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -41,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -88,8 +88,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
-    @Autowired
-    private ApplicationViewService applicationViewService;
+
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
@@ -234,6 +233,22 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         if(oldApplicationDto != null){
             log.info(StringUtil.changeForLog("withdrawal old application id : " + oldApplicationDto.getId()));
             String oldAppGrpId = oldApplicationDto.getAppGrpId();
+
+            if(oldApplicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
+                List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(oldApplicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
+                boolean changePrem=false;
+                for (AppEditSelectDto edit:appEditSelectDtos
+                ) {
+                    if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
+                        changePrem=true;
+                    }
+                }
+                if(changePrem){
+                    List<ApplicationDto> apps=IaisCommonUtils.genNewArrayList();
+                    apps.add(oldApplicationDto);
+                    applicationClient.clearHclcodeByAppIds(apps);
+                }
+            }
             String currentOldApplicationNo = oldApplicationDto.getApplicationNo();
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationService.getAppPremisesCorrelationByAppGroupId(oldAppGrpId);

@@ -4,9 +4,9 @@
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                        <li class="complete" role="presentation"><a href="#" aria-controls="tabInbox" role="tab" data-toggle="tab" onclick="appToMsgPage()">Inbox (${unreadAndresponseNum})</a></li>
-                        <li class="active" role="presentation"><a href="#" aria-controls="tabApp" role="tab" data-toggle="tab">Applications</a></li>
-                        <li class="incomplete" role="presentation"><a href="#" aria-controls="tabLic" role="tab" data-toggle="tab" onclick="appToLicPage()">Licences</a></li>
+                        <li class="complete" role="presentation"><a aria-controls="tabInbox" role="tab" data-toggle="tab" onclick="appToMsgPage()">Inbox (${unreadAndresponseNum})</a></li>
+                        <li class="active" role="presentation"><a aria-controls="tabApp" role="tab" data-toggle="tab">Applications</a></li>
+                        <li class="incomplete" role="presentation"><a aria-controls="tabLic" role="tab" data-toggle="tab" onclick="appToLicPage()">Licences</a></li>
                     </ul>
                     <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">

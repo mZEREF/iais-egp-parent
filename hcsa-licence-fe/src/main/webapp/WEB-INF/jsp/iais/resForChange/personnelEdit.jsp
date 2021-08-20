@@ -111,7 +111,7 @@
                                     <span class="error-msg" name="errorMsg" id="error_editSelect"></span>
                                 </div>
                                 <br/>
-                                <div class="form-check-gp" id="editSelect" hidden>
+                                <div class="form-check-gp" id="editSelect" style="display:none;">
                                     <p class="form-check-title">What would you like to edit?<span style="color: red">*</span></p>
                                     <div class="form-check progress-step-check" style="width: 33%">
                                         <input class="form-check-input" id="checkitem1"
@@ -127,7 +127,7 @@
                                         <label class="form-check-label" for="checkitem2"><span
                                                 class="check-circle"></span>Replace with Another Personnel</label>
                                     </div>
-                                    <a class="cancel" id="cancel">Cancel</a>
+                                    <a class="cancel" id="cancel" href="javascript:void(0);">Cancel</a>
                                 </div>
                                 <br/><br/>
                                 <div id="show" class="form-horizontal">
@@ -211,7 +211,7 @@
                                         </iais:value>
                                     </iais:row>
                                 </div>
-                                <div id="update" class="form-horizontal" hidden>
+                                <div id="update" class="form-horizontal" style="display:none;">
                                     <iais:row>
                                         <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
@@ -286,7 +286,7 @@
                                         </iais:value>
                                     </iais:row>
                                 </div>
-                                <div id="replace" class="form-horizontal" hidden>
+                                <div id="replace" class="form-horizontal" style="display:none;">
                                     <iais:row>
                                         <iais:field value="Assign or add another personnel " width="12"/>
                                         <iais:value width="7" cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -298,7 +298,7 @@
                                     </iais:row>
                                 </div>
                                 <br/><br/><br/><br/>
-                                <div id="newPerson" hidden class="form-horizontal">
+                                <div id="newPerson" style="display:none;" class="form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
@@ -369,7 +369,7 @@
                                         </iais:value>
                                     </iais:row>
                                 </div>
-                                <div id="newPersonExist" hidden class="form-horizontal">
+                                <div id="newPersonExist" style="display:none;" class="form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
@@ -450,7 +450,7 @@
                         <br/>
                         <div class="row">
                             <div class="col-xs-12 col-sm-6 ">
-                                <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" id="back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div class="col-xs-12 col-sm-6 text-right">
                                 <div class="button-group">

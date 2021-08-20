@@ -94,7 +94,8 @@ public class SubLicenseeValidator implements CustomizeValidator {
         if (errorMap.isEmpty() && IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(subLicenseeDto.getAssignSelect())
                 && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-            boolean needVal = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equalsIgnoreCase(appSubmissionDto.getAppType()) /*&& !NewApplicationHelper.checkIsRfi(request)*/;
+            boolean needVal = appSubmissionDto != null &&
+                    ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
             Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                     NewApplicationDelegator.LICENSEE_MAP);
             if (needVal && psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {

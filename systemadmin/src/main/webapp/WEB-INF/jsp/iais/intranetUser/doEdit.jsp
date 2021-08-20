@@ -191,9 +191,8 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser"
-                     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>

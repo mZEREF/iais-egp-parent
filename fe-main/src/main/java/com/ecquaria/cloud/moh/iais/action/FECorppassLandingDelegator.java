@@ -170,11 +170,8 @@ public class FECorppassLandingDelegator {
         boolean isKeyPerson = userSession.isKeyAppointment();
         if (isKeyPerson){
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
-        }else {
-            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "N");
         }
-
+        ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
     }
 
     /**
