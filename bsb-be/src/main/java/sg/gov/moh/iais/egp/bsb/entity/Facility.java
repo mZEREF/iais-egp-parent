@@ -80,7 +80,7 @@ public class Facility {
 
     private String modifiedBy;
 
-    private String RISK_LEVEL;
+    private String riskLevel;
 
     private String riskLevelComments;
 
