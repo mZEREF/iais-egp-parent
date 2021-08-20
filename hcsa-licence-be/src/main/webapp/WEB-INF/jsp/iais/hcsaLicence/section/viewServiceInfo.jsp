@@ -16,6 +16,12 @@
   p {
     margin: 0 0 0px;
   }
+  .check-square{
+      border-color: #999999 !important;
+  }
+  .check-square:before{
+      color: #999999 !important;
+  }
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">
@@ -156,8 +162,8 @@
       <c:forEach var="appSvcLaboratoryDisciplinesDto"
                  items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
-          <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Mode of Service Delivery ${status.index+1}</span>
-          <div class="col-xs-10">
+          <p><label class="preview-title col-xs-2 col-md-3" style="padding-right: 0%;padding-left: 0px;">Mode of Service Delivery ${status.index+1}:</label>
+          <div class="col-xs-2 col-md-3">
             <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}"><c:out
                     value="${appGrpPremisesDtoList[status.index].address}"/></span>
           <br>
@@ -170,7 +176,7 @@
 
           <div class="form-check-gp">
             <div class="row">
-              <div class="col-xs-12" style="margin-left: 2%">
+              <div class="col-xs-12" style="margin-left: 0px;padding-left: 0px;">
                 <c:set var="oldAppSvcChckListDtoList"
                        value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList}" />
                 <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
@@ -178,7 +184,7 @@
                     <p class="form-check-label " aria-label="premise-1-cytology">
                     <div class="col-xs-12 col-md-12">
                         <span class="newVal " attr="${checkList.chkName}${checkList.check}">
-                             <input style="cursor: default" class="form-check-input"
+                             <input style="cursor: default;" class="form-check-input"
                                     <c:if test="${checkList.check}">checked</c:if> type="checkbox" disabled>
                               <label class="form-check-label"><span class="check-square"></span>${checkList.chkName}</label>
                         </span>
