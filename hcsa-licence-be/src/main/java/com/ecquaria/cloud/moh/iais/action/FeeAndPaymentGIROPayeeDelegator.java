@@ -155,7 +155,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setHciName(gai.getHciName());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
-                giroAccountInfoViewDto.setRemarks(gai.getInternetRemarks());
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
             }
             searchGiroDtoResult.setRows(giroAccountInfoViewDtos);
