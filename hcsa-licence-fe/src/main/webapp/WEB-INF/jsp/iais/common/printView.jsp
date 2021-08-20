@@ -62,7 +62,7 @@
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
-                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
+                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse" style="text-decoration: none;"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
                                                             </div>
 
                                                             <div class=" panel-collapse collapse in" id="collapseServiceInfo${submisonStat.index}${svcStat.index}" role="tabpanel" aria-labelledby="headingServiceInfo">
@@ -97,7 +97,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-
+        $('.panel-collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
             btn.each(function(index, ele) {
