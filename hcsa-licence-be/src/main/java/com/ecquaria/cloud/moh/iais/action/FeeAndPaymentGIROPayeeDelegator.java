@@ -92,9 +92,9 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"licensee",null);
-        ParamUtil.setSessionAttr(request,"uen",null);
-        ParamUtil.setSessionAttr(request,"licenceNo",null);
+        ParamUtil.setSessionAttr(request,"cusRefNo",null);
+        ParamUtil.setSessionAttr(request,"hciCode",null);
+        ParamUtil.setSessionAttr(request,"hciName",null);
         ParamUtil.setSessionAttr(request,"uenNo",null);
         ParamUtil.setSessionAttr(request,"hciSession",null);
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
@@ -109,21 +109,17 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void prePayeeResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String uen= ParamUtil.getString(request,"uen");
-        String licensee =ParamUtil.getString(request,"licensee");
-        String licenceNo =ParamUtil.getString(request,"licenceNo");
-        ParamUtil.setSessionAttr(request,"uen",uen);
-        ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
+        String hciCode= ParamUtil.getString(request,"hciCode");
+        String cusRefNo =ParamUtil.getString(request,"cusRefNo");
+        ParamUtil.setSessionAttr(request,"hciCode",hciCode);
+        ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
-        if(uen!=null) {
-            filter.put("uen", uen);
+        if(hciCode!=null) {
+            filter.put("hciCode", hciCode);
         }
-        if(licensee!=null) {
-            filter.put("licensee", licensee);
-        }
-        if(licenceNo!=null) {
-            filter.put("licenceNo", licenceNo);
+        if(cusRefNo!=null) {
+            filter.put("cusRefNo", cusRefNo);
         }
         giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
@@ -155,10 +151,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
-                giroAccountInfoViewDto.setLicenceNo(gai.getLicenceNo());
-                giroAccountInfoViewDto.setLicenseeName(gai.getLicenseeName());
-                giroAccountInfoViewDto.setSvcName(gai.getSvcName());
-                giroAccountInfoViewDto.setUen(gai.getUen());
+                giroAccountInfoViewDto.setHciCode(gai.getHciCode());
+                giroAccountInfoViewDto.setHciName(gai.getHciName());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
                 giroAccountInfoViewDto.setRemarks(gai.getInternetRemarks());
@@ -203,21 +197,20 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"bankName",null);
         ParamUtil.setSessionAttr(request,"bankAccountNo",null);
         ParamUtil.setSessionAttr(request,"cusRefNo",null);
-        ParamUtil.setSessionAttr(request,"remarks",null);
         ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
-        String licenceNo= ParamUtil.getString(request,"licenceNo");
-        String licensee =ParamUtil.getString(request,"licensee");
+        String hciCode= ParamUtil.getString(request,"hciCode");
+        String hciName =ParamUtil.getString(request,"hciName");
         String uenNo =ParamUtil.getString(request,"uenNo");
-        ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
-        ParamUtil.setSessionAttr(request,"licensee",licensee);
+        ParamUtil.setSessionAttr(request,"hciCode",hciCode);
+        ParamUtil.setSessionAttr(request,"hciName",hciName);
         ParamUtil.setSessionAttr(request,"uenNo",uenNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
-        if(licenceNo!=null) {
-            filter.put("licenceNo", licenceNo);
+        if(hciCode!=null) {
+            filter.put("hciCode", hciCode);
         }
-        if(licensee!=null) {
-            filter.put("licensee", licensee);
+        if(hciName!=null) {
+            filter.put("hciName", hciName);
         }
         if(uenNo!=null) {
             filter.put("uenNo", uenNo);
@@ -268,7 +261,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 orgPremParam.addFilter("opv.ID"+indx, s);
                 indx++;
             }
-            orgPremParam.addParam("licIds",typeStr);
+            orgPremParam.addParam("orgIds",typeStr);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
@@ -310,14 +303,12 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String bankName= ParamUtil.getString(request,"bankName");
         String bankAccountNo =ParamUtil.getString(request,"bankAccountNo");
         String cusRefNo =ParamUtil.getString(request,"cusRefNo");
-        String remarks =ParamUtil.getString(request,"remarks");
         ParamUtil.setSessionAttr(request,"acctName",acctName);
         ParamUtil.setSessionAttr(request,"bankCode",bankCode);
         ParamUtil.setSessionAttr(request,"branchCode",branchCode);
         ParamUtil.setSessionAttr(request,"bankName",bankName);
         ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
         ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
-        ParamUtil.setSessionAttr(request,"remarks",remarks);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(acctName)){//60
@@ -490,8 +481,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
-            giroAccountInfoDto.setLicenceId(opv.getId());
-            giroAccountInfoDto.setInternetRemarks(remarks);
+            giroAccountInfoDto.setHciName(opv.getHciName());
+            giroAccountInfoDto.setHciCode(opv.getHciCode());
             giroAccountInfoDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
             giroAccountInfoDtoList.add(giroAccountInfoDto);
         }

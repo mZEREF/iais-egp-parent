@@ -25,13 +25,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
-import com.ecquaria.cloud.moh.iais.service.client.GiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgGiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -75,9 +76,11 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    GiroAccountBeClient giroAccountBeClient;
+    OrgGiroAccountBeClient giroAccountBeClient;
     @Autowired
     private NotificationHelper notificationHelper;
+    @Autowired
+    private ApplicationClient applicationClient;
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
