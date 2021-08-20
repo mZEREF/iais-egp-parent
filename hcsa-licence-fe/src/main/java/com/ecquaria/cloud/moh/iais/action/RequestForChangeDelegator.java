@@ -168,6 +168,9 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("the getSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(uen)){
+            if(isSameUEN(uen,licenceDto)){
+                result.add(new SelectOption("new","Add a new individual licensee"));
+            }
             OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
             if(organizationDto != null){
                 List<SubLicenseeDto>  subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
@@ -184,9 +187,7 @@ public class RequestForChangeDelegator {
         }else {
             log.info(StringUtil.changeForLog("The uen is null"));
         }
-        if(isSameUEN(uen,licenceDto)){
-            result.add(new SelectOption("new","Add a new individual licensee"));
-        }
+
         log.info(StringUtil.changeForLog("the getSelect end ...."));
         return result;
     }
