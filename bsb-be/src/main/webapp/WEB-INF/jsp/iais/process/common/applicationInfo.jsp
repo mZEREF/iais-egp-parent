@@ -7,39 +7,39 @@
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Application No.</td>
-                        <td class="col-xs-6" style="padding-left : 20px">App001</td>
+                        <td class="col-xs-6" style="padding-left : 20px">${applicationInfo.applicationNo}</td>
                     </tr>
                     <tr>
                         <td align="right">Application Type</td>
-                        <td style="padding-left : 20px">New</td>
+                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.appType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Process Type</td>
-                        <td style="padding-left : 20px">Facility Registration</td>
+                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.processType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility Type</td>
-                        <td style="padding-left : 20px">Certified Facility (MCF)</td>
+                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.facility.facilityType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility Name/Address</td>
-                        <td style="padding-left : 20px">ABC</td>
+                        <td style="padding-left : 20px">${applicationInfo.facility.facilityName} / Block ${applicationInfo.facility.blkNo} ${applicationInfo.facility.streetName} ${applicationInfo.facility.floorNo}-${applicationInfo.facility.unitNo} Singapore ${applicationInfo.facility.postalCode}</td>
                     </tr>
                     <tr>
                         <td align="right">Agents/Toxins</td>
-                        <td style="padding-left : 20px">BRUCELLA CANIS</td>
+                        <td style="padding-left : 20px">${applicationInfo.facility.biological.name}</td>
                     </tr>
                     <tr>
                         <td align="right">Submission Date</td>
-                        <td style="padding-left : 20px">14/07/2021</td>
+                        <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.applicationDt}' pattern='dd/MM/yyyy'/></td>
                     </tr>
                     <tr>
                         <td align="right">Application Status</td>
-                        <td style="padding-left : 20px">Pending Duty Officer</td>
+                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.status}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility/Approval Expiry Date</td>
-                        <td style="padding-left : 20px">14/09/2021</td>
+                        <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -91,8 +91,3 @@
 <div align="left">
     <a class="back" href="/system-admin-web/eservice/INTRANET/MohDutyApprovingInbox?"><em class="fa fa-angle-left"></em> Back</a>
 </div>
-<script type="text/javascript">
-    /*function doOpenApp() {
-        window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
-    }*/
-</script>

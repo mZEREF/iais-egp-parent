@@ -15,7 +15,6 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <h2>
-<%--                                <span><iais:message key="BISACKNEW001" escape="true"/></span>--%>
                                 <span>You have successfully completed your task</span>
                             </h2>
                         </div>
@@ -32,9 +31,3 @@
         </div>
     </form>
 </div>
-
-<script type="text/javascript">
-    function back() {
-        SOP.Crud.cfxSubmit("mainForm");
-    }
-</script>

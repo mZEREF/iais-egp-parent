@@ -2,6 +2,10 @@ package sg.gov.moh.iais.egp.bsb.entity;
 
 
 import lombok.Data;
+
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
@@ -75,4 +79,20 @@ public class Facility {
     private Date modifiedAt;
 
     private String modifiedBy;
+
+    private String RISK_LEVEL;
+
+    private String riskLevelComments;
+
+    private Date erpReportDt;
+
+    private Date redTeamingReportDt;
+
+    private Date lentivirusReportDt;
+
+    private Date internalInspectionReportDt;
+
+    private Date validityStartDt;
+
+    private Date validityEndDt;
 }

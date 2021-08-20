@@ -137,6 +137,8 @@ public final class MasterCodeUtil {
     //FacilityInfo
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
     public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
+    public static final String CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION = "CCF9305C-34A5-4BBC-9DD0-30E3557A9B08";
+    public static final String CATE_ID_Bsb_Selected_Approved_Facility_Certifier = "17996E55-AA7A-4642-8E89-79A051126138";
 
     //AO Processing Decision
     public static final String CATE_ID_BSB_PROCESSING_DECISION = "3AF18C9A-9C45-4C59-96D4-419847F51CA7";
