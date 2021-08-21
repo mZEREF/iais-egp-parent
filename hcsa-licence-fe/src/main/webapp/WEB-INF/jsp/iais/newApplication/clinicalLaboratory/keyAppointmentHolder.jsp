@@ -27,6 +27,9 @@
         <p>Key appointment holders are the governing body and generally the controlling mind and will of the licensee.They have the authority to provide high-level management and clinical direction but do not directly influence day-to-day operations on the ground</p>
 
         <c:choose>
+            <c:when test="${empty AppSvcKeyAppointmentHolderDtoList && keyAppointmentHolderConfigDto.mandatoryCount > 1}">
+                <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
+            </c:when>
             <c:when test="${empty AppSvcKeyAppointmentHolderDtoList}">
                 <c:set var="pageLength" value="1"/>
             </c:when>
@@ -51,7 +54,7 @@
                         <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-8">
                                 <div class="cgo-header">
-                                    <strong>Key Appointment Holder <label class="assign-psn-item"><c:if test="${AppSvcKeyAppointmentHolderDtoList.size() > 1}">${index+1}</c:if></label></strong>
+                                    <strong>Key Appointment Holder <label class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></label></strong>
                                 </div>
                             </div>
 

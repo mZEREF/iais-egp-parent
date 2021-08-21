@@ -194,11 +194,20 @@ public class LicenceViewServiceDelegator {
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
         if (appSubmissionDto != null && appEditSelectDto != null && appEditSelectDto.isLicenseeEdit()) {
-            Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
-                    .map(SubLicenseeDto::getLicenseeType)
-                    .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
-            if (!licenseeType.isPresent()) {
-                appEditSelectDto.setLicenseeEdit(false);
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(type));
+                if (licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
+                }
+            } else {
+                Optional<String> licenseeType = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                        .map(SubLicenseeDto::getLicenseeType)
+                        .filter(type -> OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(type));
+                if (!licenseeType.isPresent()) {
+                    appEditSelectDto.setLicenseeEdit(false);
+                }
             }
         }
         AppEditSelectDto rfiAppEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("rfiAppEditSelectDto");

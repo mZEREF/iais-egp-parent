@@ -349,8 +349,7 @@ public class ClinicalLaboratoryDelegator {
 
     public void prepareSectionLeader(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("PrepareSectionLeader start ...."));
-        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        String currSvcId = getCurrentServiceId(bpc);
         // Section Leader config
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currSvcId,
                 ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
@@ -364,7 +363,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     public void doSectionLeader(BaseProcessClass bpc) {
-        String currSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        String currSvcId = getCurrentServiceId(bpc);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currSvcId, null);
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
@@ -415,7 +414,7 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPersonnelDto> getSectionLeadersFromPage(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("Get Section Leader start ..."));
-        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        String currentSvcId = getCurrentServiceId(request);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.APPSUBMISSIONDTO);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
@@ -3957,6 +3956,14 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto");
             ParamUtil.setRequestAttr(request, "hcsaSvcSubtypeOrSubsumedDtos", hcsaSvcSubtypeOrSubsumedDtos);
         }
+    }
+
+    private String getCurrentServiceId(BaseProcessClass bpc){
+        return getCurrentServiceId(bpc.request);
+    }
+
+    private String getCurrentServiceId(HttpServletRequest request){
+       return (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(AppSubmissionDto appSubmissionDto, String currentSvcId, String appNo) {

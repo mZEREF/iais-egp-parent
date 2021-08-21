@@ -38,6 +38,9 @@
 
 <div class="row">
     <c:choose>
+    <c:when test="${empty sectionLeaderList && sectionLeaderConfig.mandatoryCount > 1}">
+        <c:set var="pageLength" value="${sectionLeaderConfig.mandatoryCount}"/>
+    </c:when>
     <c:when test="${empty sectionLeaderList}">
         <c:set var="pageLength" value="1"/>
     </c:when>
