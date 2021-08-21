@@ -2763,7 +2763,7 @@ public class NewApplicationDelegator {
                     .filter(source -> licenceId.equals(source.getLicenceId()))
                     .findAny();
             if (optional.isPresent()) {
-                reSetChangeSelectDto(dto.getChangeSelectDto(), optional.get().getChangeSelectDto());
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
             } else {
                 notInNonAuto.add(dto);
             }
@@ -2775,30 +2775,12 @@ public class NewApplicationDelegator {
                     .filter(source -> licenceId.equals(source.getLicenceId()))
                     .findAny();
             if (optional.isPresent()) {
-                reSetChangeSelectDto(dto.getChangeSelectDto(), optional.get().getChangeSelectDto());
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
             } else {
                 notInAuto.add(dto);
             }
         });
         autoSaveList.addAll(notInAuto);
-    }
-
-    private void reSetChangeSelectDto(AppEditSelectDto source, AppEditSelectDto target) {
-        if (source == null || target == null) {
-            return;
-        }
-        if (source.isLicenseeEdit()) {
-            target.setLicenseeEdit(true);
-        }
-        if (source.isPremisesEdit()) {
-            target.setPremisesEdit(true);
-        }
-        if (source.isDocEdit()) {
-            target.setDocEdit(true);
-        }
-        if (source.isServiceEdit()) {
-            target.setServiceEdit(true);
-        }
     }
 
     private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList,

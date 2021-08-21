@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -66,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.CopyUtil;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -113,6 +113,64 @@ public class NewApplicationHelper {
         });
     }
 
+    public static void reSetDataByAppEditSelectDto(AppSubmissionDto scourceDto, AppSubmissionDto targetDto) {
+        if (scourceDto == null || targetDto == null) {
+            return;
+        }
+        AppEditSelectDto source = scourceDto.getChangeSelectDto();
+        AppEditSelectDto target = targetDto.getChangeSelectDto();
+        if (source == null || target == null) {
+            return;
+        }
+        if (source.isLicenseeEdit()) {
+            target.setLicenseeEdit(true);
+            targetDto.setSubLicenseeDto(MiscUtil.transferEntityDto(scourceDto.getSubLicenseeDto(), SubLicenseeDto.class));
+        }
+        if (source.isPremisesEdit()) {
+            target.setPremisesEdit(true);
+        }
+        if (source.isDocEdit()) {
+            target.setDocEdit(true);
+        }
+        if (source.isServiceEdit()) {
+            target.setServiceEdit(true);
+            List<AppSvcRelatedInfoDto> sourceSvcInfoList = scourceDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcRelatedInfoDto> targetSvcInfoList = targetDto.getAppSvcRelatedInfoDtoList();
+            handleAppSvcRelatedInfoDtos(sourceSvcInfoList, targetSvcInfoList, source.getPersonnelEditList());
+        }
+    }
+
+    private static void handleAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> sourceSvcInfoList,
+            List<AppSvcRelatedInfoDto> targetSvcInfoList, List<String> personnelEditList) {
+        if (sourceSvcInfoList == null || sourceSvcInfoList.isEmpty() || targetSvcInfoList == null || targetSvcInfoList.isEmpty()
+                || personnelEditList == null || personnelEditList.isEmpty()) {
+            return;
+        }
+        AppSvcRelatedInfoDto sourceSvcInfo = sourceSvcInfoList.get(0);
+        AppSvcRelatedInfoDto targetSvcInfo = targetSvcInfoList.get(0);
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
+            targetSvcInfo.setAppSvcCgoDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcCgoDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
+            targetSvcInfo.setAppSvcMedAlertPersonList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcMedAlertPersonList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
+            targetSvcInfo.setAppSvcPrincipalOfficersDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) {
+            targetSvcInfo.setAppSvcClinicalDirectorDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcClinicalDirectorDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
+            targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(
+                            sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList()));
+        }
+    }
+
     public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
         Integer maxFileIndex = 0;
         if (checkGlobal && request != null) {
@@ -136,7 +194,7 @@ public class NewApplicationHelper {
     }
 
     public static void reSetMaxFileIndex(int maxSeqNum) {
-        getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+        reSetMaxFileIndex(maxSeqNum, MiscUtil.getCurrentRequest());
     }
 
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
@@ -444,7 +502,7 @@ public class NewApplicationHelper {
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || rfi != null){
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 Object sessionAttr = ParamUtil.getSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
                 if(sessionAttr==null){
                     ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
