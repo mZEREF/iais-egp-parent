@@ -2633,7 +2633,6 @@ public class NewApplicationDelegator {
         if (serviceIsChange) {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String licenseeId = loginContext.getLicenseeId();
-            Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto);
             //sync other application
             if (!notAutoSaveAppsubmission.isEmpty()) {
@@ -2641,7 +2640,6 @@ public class NewApplicationDelegator {
             }
             personAppSubmissionList.stream().forEach(dto -> {
                 dto.setAppGrpNo(groupNo);
-                NewApplicationHelper.syncPsnData(dto, personMap);
             });
             addToAuto(personAppSubmissionList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }

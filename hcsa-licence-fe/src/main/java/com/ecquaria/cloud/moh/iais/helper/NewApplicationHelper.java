@@ -124,7 +124,7 @@ public class NewApplicationHelper {
         }
         if (source.isLicenseeEdit()) {
             target.setLicenseeEdit(true);
-            targetDto.setSubLicenseeDto(MiscUtil.transferEntityDto(scourceDto.getSubLicenseeDto(), SubLicenseeDto.class));
+            targetDto.setSubLicenseeDto((SubLicenseeDto) CopyUtil.copyMutableObject(scourceDto.getSubLicenseeDto()));
         }
         if (source.isPremisesEdit()) {
             target.setPremisesEdit(true);
