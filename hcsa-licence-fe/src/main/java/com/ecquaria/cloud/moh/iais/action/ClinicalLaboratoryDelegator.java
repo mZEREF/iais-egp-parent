@@ -224,7 +224,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, action);
         }
 
-
         String crudActionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if (StringUtil.isEmpty(crudActionType)) {
             crudActionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -236,7 +235,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "jump");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
         }
-
 
         log.debug(StringUtil.changeForLog("the do prepareJumpPage end ...."));
     }
@@ -254,11 +252,11 @@ public class ClinicalLaboratoryDelegator {
                 .orElseGet(HcsaServiceStepSchemeDto::new);
         String currentStepName = Optional.ofNullable(step)
                 .map(HcsaServiceStepSchemeDto::getStepName)
-                .orElseGet(() -> HcsaConsts.BUSINESS_NAME);
+                .orElse(HcsaConsts.BUSINESS_NAME);
         log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " Start ---"));
         String currentStep = Optional.ofNullable(step)
                 .map(HcsaServiceStepSchemeDto::getStepCode)
-                .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+                .orElse(HcsaConsts.STEP_BUSINESS_NAME);
         if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
             prepareBusiness(bpc);
         } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
@@ -307,11 +305,11 @@ public class ClinicalLaboratoryDelegator {
                 .orElseGet(HcsaServiceStepSchemeDto::new);
         String currentStepName = Optional.ofNullable(step)
                 .map(HcsaServiceStepSchemeDto::getStepName)
-                .orElseGet(() -> HcsaConsts.BUSINESS_NAME);
+                .orElse(HcsaConsts.BUSINESS_NAME);
         log.info(StringUtil.changeForLog("--- Do " + currentStepName + " Start ---"));
         String currentStep = Optional.ofNullable(step)
                 .map(HcsaServiceStepSchemeDto::getStepCode)
-                .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+                .orElse(HcsaConsts.STEP_BUSINESS_NAME);
         String pageStep = ParamUtil.getString(bpc.request, "currentStep");
         if (currentStep.equals(pageStep)) {
             log.warn(StringUtil.changeForLog("Wrong page step - " + pageStep));
@@ -389,17 +387,28 @@ public class ClinicalLaboratoryDelegator {
                 });
                 currSvcInfoDto.setAppSvcDisciplineAllocationDtoList(allocationList);
             }
+            reSetChangesForApp(appSubmissionDto);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
             bpc.request.setAttribute(SECTION_LEADER_LIST, appSvcSectionLeaderList);
         }
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        Map<String, String> map = null;
+        Map<String, String> errorMap = null;
         if ("next".equals(action)) {
-            map = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList());
+            errorMap = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList());
+            if (!isRfi) {
+                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currSvcId,
+                        ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+                int psnLength = Optional.ofNullable(currSvcInfoDto.getAppSvcSectionLeaderList())
+                        .map(List::size)
+                        .orElse(0);
+                errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER,
+                        errorMap, psnLength, "errorSECLDR", HcsaConsts.SECTION_LEADER);
+            }
         }
-        if (map != null && !map.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
+        if (errorMap != null && !errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_SECTION_LEADER);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
         }
         log.debug(StringUtil.changeForLog("doSectionLeader end ..."));
     }
@@ -1563,58 +1572,46 @@ public class ClinicalLaboratoryDelegator {
         boolean isRfi = requestInformationConfig != null;
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
+        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         if (isGetDataFromPage) {
-            String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
             List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = genAppSvcKeyAppointmentHolder(bpc.request, appType);
             currentSvcRelatedDto.setAppSvcKeyAppointmentHolderDtoList(appSvcKeyAppointmentHolderList);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
-            String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
-            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-            Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
-            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-            if ("next".equals(nextStep)) {
-                reSetChangesForApp(appSubmissionDto);
-                Map<String, String> errorMap = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap, svcCode);
-                //validate mandatory count
-                int psnLength = 0;
-                if(!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)){
-                    psnLength = appSvcKeyAppointmentHolderList.size();
-                }
-                List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                if(!isRfi){
-                    errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, errorMap, psnLength, "psnMandatory", ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
-                }
-
-                if (!errorMap.isEmpty()) {
-                    //set audit
-                    bpc.request.setAttribute("errormapIs", "error");
-                    NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
-                    Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
-                    return;
-                } else {
-                    //sync person dropdown and submisson dto
-                    personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcKeyAppointmentHolderList, svcCode);
-                }
-            }else{
-                //sync person dropdown and submisson dto
-                personMap = syncDropDownAndPsn(personMap, appSubmissionDto, appSvcKeyAppointmentHolderList, svcCode);
-            }
-            //remove dirty psn dropdown info
-            Map<String, AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto, licPersonMap, personMap);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
-            //remove dirty psn doc info
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-            currentSvcRelatedDto = removeDirtyPsnDoc(currentSvcRelatedDto, svcDocConfigDtos, appSvcKeyAppointmentHolderList, ApplicationConsts.DUP_FOR_PERSON_MAP);
-            setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
-
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+            reSetChangesForApp(appSubmissionDto);
         }
+        String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if ("next".equals(nextStep)) {
+            Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList =
+                    currentSvcRelatedDto.getAppSvcKeyAppointmentHolderDtoList();
+            errorMap = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList,
+                    licPersonMap, svcCode);
+            //validate mandatory count
+            int psnLength = 0;
+            if (!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)) {
+                psnLength = appSvcKeyAppointmentHolderList.size();
+            }
+            List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currentSvcId,
+                    ApplicationConsts.PERSONNEL_PSN_KAH);
+            if (!isRfi) {
+                errorMap = NewApplicationHelper.psnMandatoryValidate(psnConfig, ApplicationConsts.PERSONNEL_PSN_KAH, errorMap,
+                        psnLength, "psnMandatory", HcsaConsts.KEY_APPOINTMENT_HOLDER);
+            }
+        }
+        if (!errorMap.isEmpty()) {
+            //set audit
+            bpc.request.setAttribute("errormapIs", "error");
+            NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(), appSubmissionDto.getLicenceNo());
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
+        } else {
+            //sync person dropdown and submisson dto
+            syncDropDownAndPsn(appSubmissionDto, currentSvcRelatedDto.getAppSvcKeyAppointmentHolderDtoList(), null, bpc.request);
+        }
+        setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
         log.debug(StringUtil.changeForLog("the do doKeyAppointmentHolder end ...."));
     }
 
@@ -3996,15 +3993,23 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void setAppSvcRelatedInfoMap(HttpServletRequest request, String currentSvcId, AppSvcRelatedInfoDto appSvcRelatedInfoDto) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        if (appSubmissionDto != null) {
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
-                for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
-                    if (currentSvcId.equals(svcRelatedInfoDto.getServiceId())) {
-                        svcRelatedInfoDto = appSvcRelatedInfoDto;
-                        break;
-                    }
+        setAppSvcRelatedInfoMap(request, currentSvcId, appSvcRelatedInfoDto, null);
+    }
+
+    private void setAppSvcRelatedInfoMap(HttpServletRequest request, String currentSvcId, AppSvcRelatedInfoDto appSvcRelatedInfoDto,
+            AppSubmissionDto appSubmissionDto) {
+        if (appSubmissionDto == null) {
+            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        }
+        if (appSubmissionDto == null) {
+            return;
+        }
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if (appSvcRelatedInfoDtos != null && !appSvcRelatedInfoDtos.isEmpty()) {
+            for (AppSvcRelatedInfoDto svcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                if (currentSvcId.equals(svcRelatedInfoDto.getServiceId())) {
+                    svcRelatedInfoDto = appSvcRelatedInfoDto;
+                    break;
                 }
             }
         }
