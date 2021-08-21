@@ -86,6 +86,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1995,11 +1996,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     String svcName = appSubmissionDto1.getServiceName();
                     if (appSubmissionDto1.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                         if (svcName == null) {
-                            LicenceDto licenceDto = licenceClient.getLicBylicNo(appSubmissionDto1.getLicenceNo()).getEntity();
-                            svcName = licenceDto.getSvcName();
+                            LicenceDto licenceDto = licenceClient.getLicBylicId(appSubmissionDto1.getLicenceId()).getEntity();
+                            svcName = licenceDto != null ? licenceDto.getSvcName() : null;
                         }
-                        List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(
-                                Collections.singletonList(svcName)).getEntity();
+                        List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(svcName)).getEntity();
                         if (svcDto != null && !svcDto.isEmpty()) {
                             svcCode.add(svcDto.get(0).getSvcCode());
                         }

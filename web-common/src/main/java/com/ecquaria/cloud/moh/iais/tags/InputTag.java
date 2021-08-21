@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspTagException;
  * @date 9/27/2019
  */
 public class InputTag extends DivTagSupport{
-    private static final long serialVersionUID = 11272491464349676L;
+    private static final long serialVersionUID = -698233506237359748L;
 
     private String type;
     private String name;
@@ -20,6 +20,7 @@ public class InputTag extends DivTagSupport{
     private String autocomplete;
     private String maxLength;
     private String onclick;
+    private String placeholder;
     private boolean needErrorSpan;
     private boolean needDisabled;
 
@@ -44,6 +45,7 @@ public class InputTag extends DivTagSupport{
         setOnclick(null);
         setNeedErrorSpan(true);
         setNeedDisabled(false);
+        setPlaceholder(null);
     }
 
     @Override
@@ -82,6 +84,9 @@ public class InputTag extends DivTagSupport{
         }
         if(needDisabled){
             html.append(" disabled=\"true\"");
+        }
+        if (!StringUtil.isEmpty(placeholder)) {
+            html.append(" placeholder=\"").append(placeholder).append('\"');
         }
         if (!StringUtil.isEmpty(onclick)) {
             html.append(" onclick=\"").append(onclick).append('\"');
@@ -137,4 +142,8 @@ public class InputTag extends DivTagSupport{
     public void setOnclick(String onclick) {
         this.onclick = onclick;
     }
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
+    }
+
 }

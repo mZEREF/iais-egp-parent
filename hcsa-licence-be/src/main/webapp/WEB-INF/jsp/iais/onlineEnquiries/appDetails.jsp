@@ -258,6 +258,7 @@
                                                                 <th scope="col" style="text-align: center">Mode of Service Delivery</th>
                                                                 <th scope="col" style="text-align: center">Service / Granular Service</th>
                                                                 <th scope="col" style="text-align: center">Clinical Governance Officers</th>
+                                                                <th scope="col" style="text-align: center">Section Leader</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
@@ -282,6 +283,9 @@
                                                                             </td>
                                                                             <td style="text-align: center">
                                                                                 <p style="padding-left: 15px;">${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
+                                                                            </td>
+                                                                            <td style="text-align: center">
+                                                                                <p style="padding-left: 15px;">${disciplineAllocation.sectionLeaderName}<c:if test="${empty disciplineAllocation.sectionLeaderName}">-</c:if></p>
                                                                             </td>
                                                                         </tr>
                                                                     </c:forEach>

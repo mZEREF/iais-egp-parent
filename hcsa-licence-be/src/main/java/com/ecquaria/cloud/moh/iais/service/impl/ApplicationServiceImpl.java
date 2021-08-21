@@ -674,7 +674,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "Mode of Service Delivery";
             }
             if(appEditSelectDto.isDocEdit()){
-                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
+                editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
             }
             if(appEditSelectDto.isServiceEdit()){
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Service Related Information - " + applicationViewDto.getServiceType();

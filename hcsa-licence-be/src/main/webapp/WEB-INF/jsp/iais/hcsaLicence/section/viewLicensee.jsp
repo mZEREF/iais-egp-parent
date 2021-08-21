@@ -122,9 +122,9 @@
                             </div>
                             <div class="col-md-6">
                                 <span class="oldVal" attr="${oldDto.idNumber}">
-                                    <c:out value="${old.idNumber}" />
+                                    <c:out value="${oldDto.idNumber}" />
                                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
-                                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
                                         <jsp:param name="methodName" value="showThisTableOld"/>
                                     </jsp:include>
                                 </span>
@@ -136,7 +136,7 @@
                         <jsp:param name="cssClass" value="new-img-show"/>
                     </jsp:include>
                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
                         <jsp:param name="cssClass" value="old-img-show"/>
                     </jsp:include>
                 </c:if>
@@ -170,7 +170,7 @@
                         <jsp:param name="cssClass" value="new-img-show"/>
                     </jsp:include>
                     <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
-                        <jsp:param name="idNo" value="${old.idNumber}"/>
+                        <jsp:param name="idNo" value="${oldDto.idNumber}"/>
                         <jsp:param name="cssClass" value="old-img-show"/>
                     </jsp:include>
                 </c:if>

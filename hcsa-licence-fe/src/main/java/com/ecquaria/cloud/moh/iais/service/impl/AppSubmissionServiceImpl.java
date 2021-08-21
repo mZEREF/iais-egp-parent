@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
@@ -814,6 +815,28 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
+            return errorMap;
+        }
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request != null) {
+            request.setAttribute(ClinicalLaboratoryDelegator.SECTION_LEADER_LIST, appSvcSectionLeaderList);
+        }
+        for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
+            ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
+                    ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+            if (result != null) {
+                int index = i;
+                Map<String, String> map = result.retrieveAll();
+                map.forEach((k, v) -> errorMap.put(k + index, v));
+            }
+        }
+        return errorMap;
+    }
+
+    @Override
     public List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds) {
         List<AppSvcVehicleDto> vehicles = applicationFeClient.getActiveVehicles().getEntity();
         if (vehicles == null || vehicles.isEmpty()) {
@@ -832,6 +855,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         });
         return result;
     }
+
 
     private boolean isIn(String appId, List<LicAppCorrelationDto> licAppCorrList) {
         if (licAppCorrList == null || licAppCorrList.isEmpty()) {
@@ -2300,7 +2324,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             coMap.put("premises", "premises");
         }
         // service info
-        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
         dto.stream().forEach(obj -> {
@@ -2432,7 +2455,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         }
                     }
                 }
-                validateVehicle.doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(), null);
+                validateVehicle.doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
             } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
                 // Clinical Director
                 String currSvcCode = dto.getServiceCode();
@@ -2458,8 +2481,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     sB.append(serviceId);
                     log.info("govenMap is error");
                 }
-            //} else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList());
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                    errorMap.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "error");
+                    sB.append(serviceId);
+                    log.info("section leader is error");
+                }
             } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
@@ -2470,8 +2500,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
-            //} else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
-                // Key Appointment Holder
+            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                        bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> map = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap,
+                        dto.getServiceCode());
+                log.info(JsonUtil.parseToJson(map));
+                if (!map.isEmpty()) {
+                    sB.append(serviceId);
+                    errorMap.put("KeyAppointmentHolder", "error");
+                }
             } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                 doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
@@ -2511,7 +2550,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
-        log.info(sB.toString());
+        log.info(StringUtil.changeForLog(sB.toString()));
+        log.info(StringUtil.changeForLog("Error Mwssage in doCheckBox for [" + dto.getServiceCode() + "] : " + errorMap));
         return errorMap;
     }
 
@@ -2555,6 +2595,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     .map(AppSvcChargesPageDto::getOtherChargesDtos)
                     .orElseGet(() -> null);
             validatePersonMandatoryCount(otherChargesDtos, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType)) {
+            List<AppSvcPersonnelDto> sectionLeaderList = dto.getAppSvcSectionLeaderList();
+            validatePersonMandatoryCount(sectionLeaderList, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = dto.getAppSvcKeyAppointmentHolderDtoList();
+            validatePersonMandatoryCount(appSvcKeyAppointmentHolderDtoList, errorMap, psnType, mandatoryCount, serviceId, sB);
         }
     }
 
@@ -2786,6 +2832,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPersonnelDto> appSlList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
             if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtoList) && !StringUtil.isEmpty(premisesIndexNo)){
                 log.info(StringUtil.changeForLog("appSvcLaboratoryDisciplinesDtoList size:"+appSvcLaboratoryDisciplinesDtoList.size()));
                 for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
@@ -2820,6 +2867,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if(idNo.equals(appSvcCgoDto.getIdNo())){
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!IaisCommonUtils.isEmpty(appSlList) && !StringUtil.isEmpty(allocation.getSlIndex())) {
+                                    for (AppSvcPersonnelDto avpd : appSlList) {
+                                        if(allocation.getSlIndex().equals(avpd.getIndexNo())){
+                                            appSvcDisciplineAllocationDto.setSectionLeaderName(avpd.getName());
                                             break;
                                         }
                                     }
@@ -3190,8 +3245,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else {
             for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list) {
                 String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String slIndex = appSvcDisciplineAllocationDto.getSlIndex();
+                boolean hasError = false;
                 if (StringUtil.isEmpty(idNo)) {
                     map.put("idNo", "idNo empty");
+                    hasError = true;
+                }
+                if (StringUtil.isEmpty(slIndex)) {
+                    map.put("slIndex", "slIndex empty");
+                    hasError = true;
+                }
+                if (hasError) {
                     sB.append(serviceId);
                     return;
                 }
@@ -3756,7 +3820,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         coMap.put("document", "");
         coMap.put("information", "");
         coMap.put("previewli", "");
-        session.setAttribute("coMap", coMap);
+        session.setAttribute(NewApplicationConstant.CO_MAP, coMap);
         //request For Information Loading
         session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");

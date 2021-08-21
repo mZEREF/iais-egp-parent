@@ -9,27 +9,27 @@
         <div class="col-xs-8 col-sm-6 col-md-5">
             <p> <span>${serListDto.inspectionDate}</span></p>
             <div hidden>
-                <iais:datePicker id="inspectionDate" name = "inspectionDate"  value="${serListDto.inspectionDate}"></iais:datePicker>
+            <iais:datePicker id="inspectionDate" name = "inspectionDate"  value="${serListDto.inspectionDate}"></iais:datePicker>
             </div>
             <span class="error-msg" id="error_inspectionDate" name="iaisErrorMsg"></span>
         </div>
     </div>
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label">Inspection Start Time (HH MM)</label>
-        <c:choose>
-            <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                <div class="col-xs-8 col-sm-6 col-md-5">
-                    <div style="margin-left: -15px" class="col-md-6">
-                        <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="--"></iais:select>
-                    </div>
-                    <div class="col-md-6">
-                        <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="--"></iais:select>
-                    </div>
-                    <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
+            <c:choose>
+                <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+               <div class="col-xs-8 col-sm-6 col-md-5">
+                <div style="margin-left: -15px" class="col-md-6">
+                    <iais:select name="startHour" options="hhSelections" value="${serListDto.startHour}" firstOption="--"></iais:select>
                 </div>
+                <div class="col-md-6">
+                    <iais:select name="startHourMin" options="ddSelections" value="${serListDto.startMin}" firstOption="--"></iais:select>
+                </div>
+                   <span class="error-msg" id="error_sTime" name="iaisErrorMsg"></span>
+               </div>
             </c:when>
-            <c:otherwise>
-                <div class="col-xs-8 col-sm-6 col-md-5">
+                <c:otherwise>
+               <div class="col-xs-8 col-sm-6 col-md-5">
                     <p> <span>
                         <c:if test="${(empty serListDto.startHour) && (empty serListDto.startMin)}">
                         </c:if>
@@ -37,9 +37,9 @@
                       ${serListDto.startHour} : ${serListDto.startMin}
                   </c:if>
                 </div>
-            </c:otherwise>
-        </c:choose>
-    </div>
+                </c:otherwise>
+            </c:choose>
+        </div>
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label" >Inspection End Time (HH MM)</label>
         <c:choose> <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
@@ -54,19 +54,19 @@
                 <span class="error-msg" id="error_timevad" name="iaisErrorMsg"></span>
             </div>
         </c:when>
-            <c:otherwise>
-                <div class="col-xs-8 col-sm-6 col-md-5">
-                    <p> <span>
+        <c:otherwise>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <p> <span>
                   <c:if test="${(empty serListDto.endHour) && (empty serListDto.endMin)}">
                   </c:if>
                   <c:if test="${(not empty serListDto.endHour) && (not empty serListDto.endMin)}">
-                      ${serListDto.endHour} : ${serListDto.endMin}
-                  </c:if>
+                    ${serListDto.endHour} : ${serListDto.endMin}
+                 </c:if>
                 </span>
-                    </p>
-                </div>
-            </c:otherwise>
-        </c:choose>
+            </p>
+        </div>
+        </c:otherwise>
+       </c:choose>
     </div>
 
     <div class="form-group">
@@ -123,90 +123,90 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">Letter Written to Licensee</label>
-        <div class="col-xs-8 col-sm-6 col-md-5" >
-            <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                <p>
-                    <c:if test="${ not empty  serListDto.appPremisesSpecialDocDto.fileRepoId}">
-                        <span ><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
-                    </c:if>
-                </p>
-            </c:if>
-            <div class="file-upload-gp" <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"> hidden</c:if>>
-                <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                <span id="licFileName"> <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
-                <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
+            <label class="col-xs-12 col-md-4 control-label">Letter Written to Licensee</label>
+            <div class="col-xs-8 col-sm-6 col-md-5" >
+                  <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+                      <p>
+                          <c:if test="${ not empty  serListDto.appPremisesSpecialDocDto.fileRepoId}">
+                      <span ><a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
+                          </c:if>
+                      </p>
+                  </c:if>
+                <div class="file-upload-gp" <c:if test="${applicationViewDto.applicationDto.status == ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"> hidden</c:if>>
+                    <input id="selectedFileView" name="selectedFileView" type="file" style="display: none;" aria-label="selectedFile" onclick="javascript:fileClicked(event)" onchange="javascript:fileChangedIns(event)"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                    <span id="licFileName"> <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo888&fileRo888=<iais:mask name="fileRo888" value="${serListDto.appPremisesSpecialDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())}" title="Download" class="downloadFile">&nbsp; <c:out value="${serListDto.appPremisesSpecialDocDto.docName}"/></a></span>
+                    <span id="licFileNameDe" <c:if test="${empty serListDto.appPremisesSpecialDocDto}">hidden</c:if> >
                                 &nbsp;&nbsp;<button type="button" class="btn btn-secondary-del btn-sm" onclick="javascript:doDeleteFile()">
                                                  Delete</button>
                 </span>
-                <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
-                <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
-                <br/> <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
-                <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+                    <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
+                    <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
+                    <br/> <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
+                    <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
+                </div>
             </div>
         </div>
-    </div>
 
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label">TCU</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
-            <p><input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${serListDto.tcuFlag}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);">
-                <label class="form-check-label" for="tcuType" ><span class="check-square"></span></label>
-            </p>
+           <p><input type="checkbox" id="tcuType"  value="tcuType"  <c:if test="${serListDto.tcuFlag}">checked</c:if>  name="tcuType" onclick="javascript: showTcuLabel(this);">
+               <label class="form-check-label" for="tcuType" ><span class="check-square"></span></label>
+           </p>
         </div>
     </div>
 
     <div class="form-group" id="tcuLabel" >
         <label class="col-xs-12 col-md-4 control-label">TCU Date <c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
-        <c:choose>
-            <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                <div class="col-xs-8 col-sm-6 col-md-5">
-                    <iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker>
-                    <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="col-xs-8 col-sm-6 col-md-5">
-                    <p> <span>${serListDto.tuc}</span></p>
-                </div>
-            </c:otherwise>
-        </c:choose>
+     <c:choose>
+    <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <iais:datePicker id = "tuc" name = "tuc" value="${serListDto.tuc}"></iais:datePicker>
+            <span class="error-msg" id="error_tcuDate" name="iaisErrorMsg"></span>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+        <p> <span>${serListDto.tuc}</span></p>
+        </div>
+    </c:otherwise>
+     </c:choose>
     </div>
 
     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK == applicationViewDto.applicationDto.applicationType && ApplicationConsts.AUDIT_TYPE_THEMATIC != applicationViewDto.licPremisesAuditDto.auditType}">
-        <div class="form-group">
-            <label class="col-xs-12 col-md-4 control-label">To include findings in risk score framework?</label>
-            <div class="col-xs-8 col-sm-6 col-md-5">
-                <p><input type="checkbox" id="framework" name="framework" onchange="javascirpt:changeframework();"
-                          value="0"    <c:if test="${applicationViewDto.licPremisesAuditDto.inRiskSocre == 0}">checked</c:if>  >
-                    <label class="form-check-label" for="framework" ><span class="check-square"></span></label>
-                </p>
-            </div>
+    <div class="form-group">
+        <label class="col-xs-12 col-md-4 control-label">To include findings in risk score framework?</label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <p><input type="checkbox" id="framework" name="framework" onchange="javascirpt:changeframework();"
+               value="0"    <c:if test="${applicationViewDto.licPremisesAuditDto.inRiskSocre == 0}">checked</c:if>  >
+                <label class="form-check-label" for="framework" ><span class="check-square"></span></label>
+            </p>
         </div>
-        <div class="form-group" id="frameworkOp" hidden>
-            <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
-            <div class="col-xs-8 col-sm-6 col-md-5">
-                <c:choose>
-                    <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
-                        <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
-                                     value="${applicationViewDto.licPremisesAuditDto.includeRiskType}"/>
-                        <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
-                    </c:when>
-                    <c:otherwise>
-                        <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
-                                     value="${applicationViewDto.licPremisesAuditDto.includeRiskType}" disabled="true"/>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+    </div>
+    <div class="form-group" id="frameworkOp" hidden>
+        <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <c:choose>
+                <c:when test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}">
+                    <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
+                                 value="${applicationViewDto.licPremisesAuditDto.includeRiskType}"/>
+                    <span id="error_periods" name="iaisErrorMsg" class="error-msg"></span>
+                </c:when>
+                <c:otherwise>
+                    <iais:select name="periods" options="frameworknOption" firstOption="Please Select" onchange="javascirpt:changeFramewordOption(this.value);"
+                                 value="${applicationViewDto.licPremisesAuditDto.includeRiskType}" disabled="true"/>
+                </c:otherwise>
+            </c:choose>
         </div>
-        <div class="form-group" id="frameworkRe" hidden>
-            <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
-            <div class="col-xs-8 col-sm-6 col-md-5">
-                <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
-                <br/>
-                <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
-            </div>
+    </div>
+    <div class="form-group" id="frameworkRe" hidden>
+        <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
+            <br/>
+            <span id="error_frameworkRemarks" name="iaisErrorMsg" class="error-msg"></span>
         </div>
+    </div>
     </c:if>
 
 </div>

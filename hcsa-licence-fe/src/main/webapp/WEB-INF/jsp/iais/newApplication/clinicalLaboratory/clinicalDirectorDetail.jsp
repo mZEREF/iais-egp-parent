@@ -1,14 +1,16 @@
 <div class="clinicalDirectorContent">
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <input type="hidden" class="psnEditField" name="psnEditField${index}" value="<c:out value="${clinicalDirectorDto.psnEditFieldStr}" />"/>
-    <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.cgoIndexNo}"/>
+    <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.indexNo}"/>
     <input type="hidden" class="licPerson" name="licPerson" value="${clinicalDirectorDto.licPerson ? '1' : '0'}"/>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
                 <p>
                 <div class="text-right app-font-size-16">
-                    <a class="edit cdEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                    <a class="edit cdEdit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
                 </div>
                 </p>
             </c:if>

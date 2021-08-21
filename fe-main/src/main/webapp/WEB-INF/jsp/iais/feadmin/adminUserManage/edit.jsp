@@ -96,9 +96,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
         <c:if test="${fromMyinfo == 'Y'}" >
-        $('#name').prop('readonly', true);
-        $('#mobileNo').prop('readonly', true);
-        $('#email').prop('readonly', true);
+            $('#name').prop('readonly', true);
+            $('#mobileNo').prop('readonly', true);
+            $('#email').prop('readonly', true);
         </c:if>
     });
 
@@ -115,9 +115,9 @@
 
     function reLoadMyInfoTodo() {
         if(verifyTaken()){
-            $("#action").val("getMyInfo");
-            var mainPoolForm = document.getElementById('mainForm');
-            mainPoolForm.submit();
+        $("#action").val("getMyInfo");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
         }else {
             // To obtain authorization
             showWaiting();

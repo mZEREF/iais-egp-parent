@@ -207,7 +207,7 @@ public class MyInfoAjax {
 	private  MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
 		if (StringUtil.isEmpty(response))
 			return dto;
-
+		
 		JSONObject jsonObject = JSONObject.fromObject(response);
 		JSONObject jsonObjectRegadd = jsonObject.getJSONObject("regadd");
 		if (!jsonObjectRegadd.isNullObject()) {
@@ -288,7 +288,7 @@ public class MyInfoAjax {
             baseStr = MyinfoUtil.getBaseString(idNum, list, clientId, singPassEServiceId, txnNo);
             log.info(StringUtil.changeForLog("baseString =====> " + baseStr));
             sig.update(baseStr.getBytes(StandardCharsets.UTF_8));
-            byte[] signedData= sig.sign();
+            byte[] signedData= sig.sign(); 
             String finalStr= Base64.encodeBytes(signedData);
             log.info(StringUtil.changeForLog("Base64 signedData =====> " + finalStr));
             authorization = MyinfoUtil.getAuthorization(realm, finalStr.replace("\n",""), appId, nonce, timestamp);
