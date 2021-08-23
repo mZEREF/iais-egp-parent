@@ -3623,7 +3623,7 @@ public class NewApplicationHelper {
     }
 
     private static Map<String,String> doPsnCommValidate(Map<String,String> errMap,String idType,String idNo,boolean licPerson,Map<String,AppSvcPersonAndExtDto> licPersonMap,String errKey,String svcCode){
-        if(!StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
+        if(needPsnCommValidate() && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if(appSvcPersonAndExtDto != null){
@@ -3634,6 +3634,13 @@ public class NewApplicationHelper {
         }
         return errMap;
     }
+
+    private static boolean needPsnCommValidate(){
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+    }
+
 
     private static AppSvcChckListDto getSvcChckListDtoByConfigId(String configId,List<AppSvcChckListDto> appSvcChckListDtos){
         AppSvcChckListDto  result = null;
