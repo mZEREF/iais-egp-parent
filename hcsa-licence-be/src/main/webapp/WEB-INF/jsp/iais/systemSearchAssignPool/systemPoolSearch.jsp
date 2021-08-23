@@ -122,7 +122,7 @@
                             <td>
                               <p>
                                 <c:out value="${superPool.appGroupNo}"/>
-                                <a href="#" class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (systemSearchParam.pageNo - 1) * systemSearchParam.pageSize}"
                                    onclick="javascript:systemUserByGroupId('<iais:mask name="appGroupId" value="${superPool.id}"/>','${(status.index + 1) + (systemSearchParam.pageNo - 1) * systemSearchParam.pageSize}')">

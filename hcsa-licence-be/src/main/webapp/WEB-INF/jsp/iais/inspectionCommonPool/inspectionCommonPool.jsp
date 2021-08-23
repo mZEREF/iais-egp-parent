@@ -121,7 +121,7 @@
                             <td>
                               <p>
                                 <c:out value="${pool.appGroupNo}"/>
-                                <a href="#" class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
                                    onclick="javascript:commonPoolByGroupId('<iais:mask name="appGroupNo" value="${pool.appGroupNo}"/>','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">

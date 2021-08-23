@@ -188,7 +188,7 @@
                                varStatus="status">
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
-                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
+                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right"
                                                                                                    data-toggle="collapse" aria-expanded="false"
                                                                                                    data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
                                                                                                    onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
@@ -342,11 +342,11 @@
                         }
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else if ('2' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
                         } else {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +

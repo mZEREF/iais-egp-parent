@@ -150,7 +150,7 @@
                             <td>
                               <p>
                                 <c:out value="${superPool.appGroupNo}"/>
-                                <a href="#" class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
                                    onclick="javascript:reassignByGroupId('<iais:mask name="appGroupId"
