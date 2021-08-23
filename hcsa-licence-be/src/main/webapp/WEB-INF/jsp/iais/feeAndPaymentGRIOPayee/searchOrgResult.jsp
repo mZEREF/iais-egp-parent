@@ -100,12 +100,12 @@
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="UEN_NO"
                                                                                  value="UEN"/>
-                                                            <iais:sortableHeader needSort="true" field="Licence No."
-                                                                                 value="LICENCE_NO"/>
-                                                            <iais:sortableHeader needSort="true" field="Service Type"
-                                                                                 value="SVC_NAME"/>
-                                                            <iais:sortableHeader needSort="true" field="Licensee"
-                                                                                 value="LICENSEE_NAME"/>
+                                                            <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                                                 value="Licence No."/>
+                                                            <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                                                 value="Service Type"/>
+                                                            <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                                                 value="Licensee"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">
@@ -129,7 +129,7 @@
                                                                                    id="orgPer${status.index + 1}"
                                                                                    type="checkbox"
                                                                                    name="opIds"
-                                                                                   value="${pool.orgId}">
+                                                                                   value="${pool.id}">
                                                                             <label class="form-check-label"
                                                                                    for="orgPer${status.index + 1}"><span
                                                                                     class="check-square"></span>
@@ -158,7 +158,7 @@
                                             </div>
                                             <div class="row">&nbsp;</div>
                                             <iais:action style="text-align:right;">
-                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
 
                                                 <button type="button" class="btn btn-primary SelectBtn"
                                                         disabled

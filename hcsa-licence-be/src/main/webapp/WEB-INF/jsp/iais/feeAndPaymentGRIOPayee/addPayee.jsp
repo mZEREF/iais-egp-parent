@@ -57,16 +57,16 @@
                                             <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr align="center">
-                                                    <th scope="col" style="width:2%">&nbsp;</th>
+                                                    <th scope="col" style="display: none"></th>
                                                     <iais:sortableHeader needSort="true"
                                                                          field="UEN_NO"
                                                                          value="UEN"/>
-                                                    <iais:sortableHeader needSort="true" field="Licence No."
-                                                                         value="LICENCE_NO"/>
-                                                    <iais:sortableHeader needSort="true" field="Service Type"
-                                                                         value="SVC_NAME"/>
-                                                    <iais:sortableHeader needSort="true" field="Licensee"
-                                                                         value="LICENSEE_NAME"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                                         value="Licence No."/>
+                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                                         value="Service Type"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                                         value="Licensee"/>
                                                 </tr>
                                                 </thead>
                                                 <tbody class="form-horizontal">
@@ -84,18 +84,6 @@
                                                                    items="${hciSession.rows}"
                                                                    varStatus="status">
                                                             <tr>
-                                                                <td class="form-check"
-                                                                    onclick="javascript:controlCease()">
-                                                                    <input class="form-check-input licenceCheck"
-                                                                           id="orgPer${status.index + 1}"
-                                                                           type="checkbox"
-                                                                           name="opIds"
-                                                                           value="${pool.orgId}">
-                                                                    <label class="form-check-label"
-                                                                           for="orgPer${status.index + 1}"><span
-                                                                            class="check-square"></span>
-                                                                    </label>
-                                                                </td>
                                                                 <td >
                                                                     <c:out value="${pool.uenNo}"/>
                                                                 </td>
@@ -194,7 +182,7 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Internal Remarks " mandatory="true"/>
+                                        <iais:field value="Internal Remarks " />
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
                                                 <textarea  maxlength="4000"  style=" font-weight:normal;" name="remarks" >${remarks}</textarea>
@@ -205,7 +193,7 @@
                                 </iais:section>
 
                                 <iais:action style="text-align:right;">
-                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
 
                                     <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Preview and Submit</button>
                                 </iais:action>
