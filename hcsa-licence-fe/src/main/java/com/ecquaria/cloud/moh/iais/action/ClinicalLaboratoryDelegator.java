@@ -2265,7 +2265,9 @@ public class ClinicalLaboratoryDelegator {
                             appSvcPsnDto.setName(name);
                         }
                         */
-                        appSvcPsnDto.setName(name);
+                        if (!appSvcPsnDto.isLicPerson()){
+                            appSvcPsnDto.setName(name);
+                        }
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
                         if(!IaisCommonUtils.isEmpty(specialtyList)){
