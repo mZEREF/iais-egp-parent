@@ -33,7 +33,7 @@
                                                          value="Licence No."/>
                                     <iais:sortableHeader needSort="true" field="SVC_NAME"
                                                          value="Service Type"/>
-                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME" style="width:10%"
                                                          value="Licensee"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NAME"
