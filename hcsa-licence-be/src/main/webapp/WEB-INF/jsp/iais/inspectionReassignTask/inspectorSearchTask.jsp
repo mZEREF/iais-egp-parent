@@ -150,7 +150,7 @@
                             <td>
                               <p>
                                 <c:out value="${superPool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
+                                <a href="#" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
                                    onclick="javascript:reassignByGroupId('<iais:mask name="appGroupId"
@@ -259,7 +259,7 @@
                             '<tbody>';
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doReassignTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href="#" onclick="javascript:doReassignTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +
