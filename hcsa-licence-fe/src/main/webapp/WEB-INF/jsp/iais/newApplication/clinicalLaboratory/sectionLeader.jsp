@@ -15,7 +15,7 @@
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
                     <div style="font-weight: 600;font-size: 2.2rem">
-                        <strong><c:out value="${stepName}"/></strong>
+                        <c:out value="${stepName}"/>
                     </div>
                 </label>
             </div>
