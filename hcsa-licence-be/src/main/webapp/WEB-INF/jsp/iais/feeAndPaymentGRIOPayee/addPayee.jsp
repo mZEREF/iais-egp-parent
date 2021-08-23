@@ -56,16 +56,16 @@
                                         <div class="table-gp">
                                             <table aria-describedby="" class="table">
                                                 <thead>
-                                                <tr align="center">
+                                                <tr >
                                                     <th scope="col" style="display: none"></th>
-                                                    <iais:sortableHeader needSort="true"
+                                                    <iais:sortableHeader needSort="false"
                                                                          field="UEN_NO"
                                                                          value="UEN"/>
-                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                    <iais:sortableHeader needSort="false" field="LICENCE_NO"
                                                                          value="Licence No."/>
-                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                    <iais:sortableHeader needSort="false" field="SVC_NAME"
                                                                          value="Service Type"/>
-                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                    <iais:sortableHeader needSort="false" field="LICENSEE_NAME"
                                                                          value="Licensee"/>
                                                 </tr>
                                                 </thead>
@@ -159,7 +159,7 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">GIRO Form <span class="mandatory">*</span></label>
+                                        <iais:field value="GIRO Form " mandatory="true"/>
                                         <div class="document-upload-gp col-sm-7 col-md-4 col-xs-10">
                                             <div class="document-upload-list">
                                                 <div class="file-upload-gp">
@@ -185,7 +185,7 @@
                                         <iais:field value="Internal Remarks " />
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
-                                                <textarea  maxlength="4000"  style=" font-weight:normal;" name="remarks" >${remarks}</textarea>
+                                                <textarea rows="7" cols="70" maxlength="4000"  style=" font-weight:normal;" name="remarks" >${remarks}</textarea>
                                                 <div><span  id="error_remarks" name="iaisErrorMsg" class="error-msg" ></span></div>
                                             </label>
                                         </div>

@@ -45,16 +45,16 @@
                                         <div class="table-gp">
                                             <table aria-describedby="" class="table">
                                                 <thead>
-                                                <tr align="center">
+                                                <tr >
                                                     <th scope="col" style="display: none"></th>
-                                                    <iais:sortableHeader needSort="true"
+                                                    <iais:sortableHeader needSort="false"
                                                                          field="UEN_NO"
                                                                          value="UEN"/>
-                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                    <iais:sortableHeader needSort="false" field="LICENCE_NO"
                                                                          value="Licence No."/>
-                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                    <iais:sortableHeader needSort="false" field="SVC_NAME"
                                                                          value="Service Type"/>
-                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                    <iais:sortableHeader needSort="false" field="LICENSEE_NAME"
                                                                          value="Licensee"/>
                                                 </tr>
                                                 </thead>

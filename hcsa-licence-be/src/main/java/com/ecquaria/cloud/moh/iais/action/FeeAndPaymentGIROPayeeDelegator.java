@@ -165,10 +165,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
             }
             searchGiroDtoResult.setRows(giroAccountInfoViewDtos);
-            ParamUtil.setSessionAttr(request,"searchGiroAccountParam",giroAccountParam);
             ParamUtil.setRequestAttr(request,"searchGiroDtoResult",searchGiroDtoResult);
 
         }
+        ParamUtil.setSessionAttr(request,"searchGiroAccountParam",giroAccountParam);
+
     }
     public void deletePayee(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;

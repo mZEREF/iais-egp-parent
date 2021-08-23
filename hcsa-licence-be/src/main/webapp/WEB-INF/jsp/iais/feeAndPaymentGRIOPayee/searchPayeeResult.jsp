@@ -80,7 +80,7 @@
                                                 <div class="table-gp">
                                                     <table aria-describedby="" class="table">
                                                         <thead>
-                                                        <tr align="center">
+                                                        <tr >
                                                             <th scope="col" style="width:2%">
 
                                                             </th>
