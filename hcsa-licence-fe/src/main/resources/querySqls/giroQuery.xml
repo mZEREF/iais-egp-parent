@@ -13,7 +13,7 @@
             FROM hcsal.dbo.licence lic
             JOIN hcsal.dbo.giro_account_info gai on lic.ID =gai.LICENCE_ID
             JOIN hcsal.dbo.sub_licensee_info sli on lic.SUB_LICENSEE_ID =sli.ID ) gaiView
-            where gai.STATUS = 'CMSTAT001'
+            where gaiView.STATUS = 'CMSTAT001'
 
         ]]>
     </sql>

@@ -18,23 +18,23 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="components">
+                    <div class="row">&nbsp;</div>
                     <iais:pagination param="searchGiroAccountParam" result="searchGiroDtoResult"/>
                     <div class="table-responsive">
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
                                 <thead>
-                                <tr align="center">
-                                    <th scope="col" style="width:2%">
+                                <tr >
+                                    <th scope="col" style="display: none">
 
                                     </th>
-                                    <iais:sortableHeader needSort="true" field="UEN"
-                                                         value="UEN"/>
-                                    <iais:sortableHeader needSort="true" field="Licence No."
-                                                         value="LICENCE_NO"/>
-                                    <iais:sortableHeader needSort="true" field="Service Type"
-                                                         value="SVC_NAME"/>
-                                    <iais:sortableHeader needSort="true" field="Licensee"
-                                                         value="LICENSEE_NAME"/>
+
+                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                         value="Licence No."/>
+                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                         value="Service Type"/>
+                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                         value="Licensee"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NAME"
                                                          value="Account Name"/>
@@ -50,14 +50,6 @@
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NO"
                                                          value="Bank Account No."/>
-                                    <iais:sortableHeader needSort="true"
-                                                         field="DDA_REF_NO"
-                                                         value="Customer Reference No."/>
-                                    <iais:sortableHeader needSort="false"
-                                                         field="FILE_NAME"
-                                                         value="GIRO Form"/>
-                                    <iais:sortableHeader needSort="false" field="Internal Remarks"
-                                                         value="REMARKS"/>
                                 </tr>
                                 </thead>
                                 <tbody class="form-horizontal">
@@ -110,15 +102,6 @@
 
                     </div>
                     <div class="row">&nbsp;</div>
-                    <iais:action style="text-align:right;">
-                        <button type="button" class="btn btn-primary AddAcctBtn"
-                                onclick="javascript:doAddAcct();">Add
-                        </button>
-                        <button type="button" class="btn btn-primary DeleteBtn"
-                                disabled
-                                onclick="javascript:doDelete();">Delete
-                        </button>
-                    </iais:action>
                 </div>
             </div>
         </div>
