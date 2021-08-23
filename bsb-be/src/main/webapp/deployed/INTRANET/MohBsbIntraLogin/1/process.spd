@@ -16,7 +16,7 @@
     <JavaCode defClass="" executor="" methodName="preLogin_OnStepProcess_0" name="preLogin_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="ToBsbTaskList" processname="MohBiosafetyEnquiry" project="INTRANET" version="-1" x="400" y="480">
+  <InvokeStep defClass="" executor="" icon="" name="ToBsbTaskList" processname="MohBsbTaskList" project="INTRANET" version="-1" x="400" y="480">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
