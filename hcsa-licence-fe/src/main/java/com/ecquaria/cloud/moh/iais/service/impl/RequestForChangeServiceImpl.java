@@ -965,8 +965,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
 
                         String email = appGrpPremisesDtoList.get(i).getConveyanceEmail();
-                        if(!ValidationUtils.isEmail(email)){
-                            errorMap.put("conveyanceEmail"+i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                        if(StringUtil.isEmpty(email)){
+                            errorMap.put("conveyanceEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email ", "field"));
+                        }else {
+                            if(!ValidationUtils.isEmail(email)){
+                                errorMap.put("conveyanceEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                            }
                         }
 
                         String conveyanceVehicleNo = appGrpPremisesDtoList.get(i).getConveyanceVehicleNo();
@@ -1243,8 +1247,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
 
                         String email = appGrpPremisesDtoList.get(i).getOffSiteEmail();
-                        if(!ValidationUtils.isEmail(email)){
-                            errorMap.put("offSiteEmail"+i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                        if(StringUtil.isEmpty(email)){
+                            errorMap.put("offSiteEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email ", "field"));
+                        }else {
+                            if(!ValidationUtils.isEmail(email)){
+                                errorMap.put("offSiteEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                            }
                         }
 
                         String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
