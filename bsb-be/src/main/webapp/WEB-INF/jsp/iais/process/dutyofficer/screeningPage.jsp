@@ -2,14 +2,16 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="action_type" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -106,7 +108,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="6">
-                                                                                <iais:select name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION" firstOption="Please Select" value=""></iais:select>
+                                                                                <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION" firstOption="Please Select" value=""></iais:select>
+                                                                                <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -167,7 +170,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/system-admin-web/eservice/INTRANET/MohDutyApprovingInbox?"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohDOScreening"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">Submit</button>
@@ -188,7 +191,6 @@
             </div>
         </div>
     </form>
-    <iais:confirm msg="GENERAL_ACK018" needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport"></iais:confirm>
 </div>
 <%@include file="/WEB-INF/jsp/iais/process/common/uploadFile.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

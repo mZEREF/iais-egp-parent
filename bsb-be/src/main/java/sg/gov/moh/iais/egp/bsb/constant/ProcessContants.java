@@ -7,7 +7,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class ProcessContants {
     private ProcessContants() {}
 
-    public static final String APPLICATION_INFO = "applicationInfo";
+    public static final String APPLICATION_INFO_ATTR = "applicationInfo";
 
     public static final String REMARKS = "remarks";
     public static final String RISK_LEVEL = "riskLevel";

@@ -89,5 +89,5 @@
     </div>
 </div>
 <div align="left">
-    <a class="back" href="/system-admin-web/eservice/INTRANET/MohDutyApprovingInbox?"><em class="fa fa-angle-left"></em> Back</a>
+    <a class="back" id="back" href="#"></em> Back</a>
 </div>
