@@ -752,15 +752,7 @@ public class WithOutRenewalDelegator {
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
-            PreOrPostInspectionResultDto preOrPostInspectionResultDto1 = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-            if (preOrPostInspectionResultDto1 == null) {
-                appSubmissionDto.setPreInspection(true);
-                appSubmissionDto.setRequirement(true);
-            } else {
-                appSubmissionDto.setPreInspection(preOrPostInspectionResultDto1.isPreInspection());
-                appSubmissionDto.setRequirement(preOrPostInspectionResultDto1.isRequirement());
-            }
-
+            setPreInspectionAndRequirement(appSubmissionDto);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             boolean eqGrpPremisesResult;
             if(appGrpPremisesDtoList != null){
@@ -1080,33 +1072,11 @@ public class WithOutRenewalDelegator {
         appSubmissionDtoByLicenceId.setGroupLic(groupLic);
         appSubmissionDtoByLicenceId.setPartPremise(groupLic);
         appSubmissionDtoByLicenceId.setAmount(0.0);
-        AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-        AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
-        appGrpPremisesDtos.add(copyMutableObject);
-        if (groupLic) {
-            appGrpPremisesDtos.get(0).setGroupLicenceFlag(licId);
-        }
-        if (flag) {
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtos) {
-                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
-                    appGrpPremisesDto1.setSelfAssMtFlag(4);
-                }
-            }
-        }
-        appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),groupLic,flag,rfcAppEditSelectDto.isPremisesEdit(),licId);
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
         appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDtoByLicenceId.setPreInspection(true);
-            appSubmissionDtoByLicenceId.setRequirement(true);
-        } else {
-            appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
+        setPreInspectionAndRequirement(appSubmissionDtoByLicenceId);
         appSubmissionDtoByLicenceId.setAutoRfc(flag);
         rfcAppEditSelectDto.setServiceEdit(false);
         rfcAppEditSelectDto.setDocEdit(false);
@@ -1139,7 +1109,36 @@ public class WithOutRenewalDelegator {
             }
         }
     }
-
+    private void setPremisesEditAndReSetAppGrpPremisesDto(AppSubmissionDto appSubmissionDtoByLicenceId,AppGrpPremisesDto appGrpPremisesDto, boolean groupLic ,boolean flag,boolean premisesEdit,String licId) throws CloneNotSupportedException {
+        if(premisesEdit){
+            List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
+            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+            appGrpPremisesDtos.add(copyMutableObject);
+            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+        if (groupLic) {
+            appGrpPremisesDtos.get(0).setGroupLicenceFlag(licId);
+        }
+        if (flag) {
+            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtos) {
+                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                    appGrpPremisesDto1.setSelfAssMtFlag(4);
+                }
+            }
+        }
+    }
+    private void setPreInspectionAndRequirement(AppSubmissionDto appSubmissionDtoByLicenceId){
+        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
+        if (preOrPostInspectionResultDto == null) {
+            appSubmissionDtoByLicenceId.setPreInspection(true);
+            appSubmissionDtoByLicenceId.setRequirement(true);
+        } else {
+            appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+            appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
+        }
+    }
     private void setCheckRepeatAppData(List<AppSubmissionDto> saveutoAppSubmissionDto){
         if(IaisCommonUtils.isNotEmpty(saveutoAppSubmissionDto)){
             boolean checkRepeatAppData = false;
@@ -1774,15 +1773,7 @@ public class WithOutRenewalDelegator {
     public void markPostInspection(BaseProcessClass bpc) {
         log.info("**** the markPostInspection start  ******");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDto");
-        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDto);
-        if (preOrPostInspectionResultDto == null) {
-            appSubmissionDto.setPreInspection(true);
-            appSubmissionDto.setRequirement(true);
-        } else {
-
-            appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-            appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
-        }
+        setPreInspectionAndRequirement(appSubmissionDto);
         log.info("**** the markPostInspection end ******");
     }
 
