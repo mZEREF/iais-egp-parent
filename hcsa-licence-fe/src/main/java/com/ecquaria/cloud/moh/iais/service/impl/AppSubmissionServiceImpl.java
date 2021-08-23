@@ -2497,6 +2497,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 dolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
             } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
                 validateCharges.doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
+            } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
+                        dto.getServiceCode());
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
@@ -2511,10 +2515,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     sB.append(serviceId);
                     errorMap.put("KeyAppointmentHolder", "error");
                 }
-            } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
-                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-                doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
-                        dto.getServiceCode());
             } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
                 Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(

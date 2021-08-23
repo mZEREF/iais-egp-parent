@@ -274,12 +274,12 @@ public class ClinicalLaboratoryDelegator {
             prepareDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
             prePareCharges(bpc);
+        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+            prepareServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
             preparePrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
             prepareKeyAppointmentHolder(bpc);
-        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
-            prepareServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             prePareMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
@@ -331,12 +331,12 @@ public class ClinicalLaboratoryDelegator {
             doDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
             doCharges(bpc);
+        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+            doServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
             doPrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
             doKeyAppointmentHolder(bpc);
-        } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
-            doServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
             doMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {

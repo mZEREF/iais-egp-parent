@@ -61,9 +61,9 @@ public class ConfigServiceDelegator {
         SEQ_MAP.put(HcsaConsts.STEP_SECTION_LEADER, 6);
         SEQ_MAP.put(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, 7);
         SEQ_MAP.put(HcsaConsts.STEP_CHARGES, 8);
-        SEQ_MAP.put(HcsaConsts.STEP_PRINCIPAL_OFFICERS, 9);
-        SEQ_MAP.put(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, 10);
-        SEQ_MAP.put(HcsaConsts.STEP_SERVICE_PERSONNEL, 11);
+        SEQ_MAP.put(HcsaConsts.STEP_SERVICE_PERSONNEL, 9);
+        SEQ_MAP.put(HcsaConsts.STEP_PRINCIPAL_OFFICERS, 10);
+        SEQ_MAP.put(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, 11);
         SEQ_MAP.put(HcsaConsts.STEP_MEDALERT_PERSON, 12);
         SEQ_MAP.put(HcsaConsts.STEP_DOCUMENTS, 13);
         SEQ_MAP = Collections.unmodifiableMap(SEQ_MAP);
