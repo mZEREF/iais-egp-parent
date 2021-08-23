@@ -220,16 +220,20 @@
                             </c:if>
                         </div>
                         <div class="row">&nbsp;</div>
-                        <div class="row" height="1"
-                             style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                             id="selectDecisionMsg">
-                            <iais:message key="CESS_ERR006" escape="flase"></iais:message>
-                        </div>
-                        <div class="row" height="1"
-                             style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
-                             id="selectDecisionMsgActive">
-                            <iais:message key="CESS_ERR005" escape="flase"></iais:message>
-                        </div>
+                        <iais:row id="selectDecisionMsg" style="display: none">
+                            <div class="row" height="1"
+                                 style="font-size: 1.6rem; color: #D22727; padding-left: 20px">
+                                <iais:message key="CESS_ERR006"
+                                              escape="flase"></iais:message>
+                            </div>
+                        </iais:row>
+                        <iais:row id="selectDecisionMsgActive" style="display: none">
+                            <div class="row" height="1"
+                                 style="font-size: 1.6rem; color: #D22727; padding-left: 20px">
+                                <iais:message key="CESS_ERR005"
+                                              escape="flase"></iais:message>
+                            </div>
+                        </iais:row>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
                                href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
