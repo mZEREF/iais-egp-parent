@@ -181,8 +181,7 @@ public class MyInfoAjax {
 		String clientId = ConfigHelper.getString("myinfo.common.client.id");
 		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
 		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
-		String privateKeyContent = ConfigHelper.getString("myinfo.common.private.key.content");
-		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri,privateKeyContent);
+		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
 		return myInfoTakenDto;
 	}
 	public MyInfoDto getMyInfo(String NircNum, HttpServletRequest request){

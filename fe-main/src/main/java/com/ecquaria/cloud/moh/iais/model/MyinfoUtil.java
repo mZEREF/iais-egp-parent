@@ -294,8 +294,8 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
 	}
 
-	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri,String privateKeyContent){
-		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state +", privateKeyContent :" + privateKeyContent));
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
+		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
 		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
 		if(!authlevel .equalsIgnoreCase("L2")){
 			return "";
@@ -316,9 +316,9 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
-	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri,String privateKeyContent){
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
-		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri,privateKeyContent);
+		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
 		if(StringUtil.isEmpty(authorizationHeader)){
 			log.info("--------getTakenCallMyInfo authorizationHeader is null-------------");
 			return null;
