@@ -1,3 +1,8 @@
+<style>
+    .form-check {
+        display: revert;
+    }
+</style>
 <div class="row">
     <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="tab-content">
