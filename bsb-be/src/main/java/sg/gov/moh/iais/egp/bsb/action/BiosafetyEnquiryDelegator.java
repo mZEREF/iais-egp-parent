@@ -17,7 +17,6 @@ import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityAdmin;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,7 +70,6 @@ public class BiosafetyEnquiryDelegator {
                     ApprovedFacilityCerResultDto approvedFacilityCerResultDto = biosafetyEnquiryClient.queryApprovedByOrgName(searchNo).getEntity();
                     ParamUtil.setRequestAttr(bpc.request,"afcInfoDto",approvedFacilityCerResultDto.getBsbAFC());
                     break;
-
         }
         ParamUtil.setRequestAttr(bpc.request, "count",count);
 
@@ -141,6 +139,10 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(request,"download","Application-information-file");
         }else if("fn".equals(count)) {
             ParamUtil.setRequestAttr(request, "download", "Facility-information-file");
+        }else if("an".equals(count)){
+            ParamUtil.setRequestAttr(request,"download","Approval-information-file");
+        } else if("on".equals(count)){
+            ParamUtil.setRequestAttr(request,"download","Approved-certifier-information_file");
         }
         // get search DTO
         EnquiryDto searchDto = getSearchDto(request);
@@ -212,7 +214,13 @@ public class BiosafetyEnquiryDelegator {
         String approvalType = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_TYPE);
         Date approvalSubmissionDateFrom = Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_SUBMISSION_DATE_FROM)));
         Date approvalSubmissionDateTo = Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_SUBMISSION_DATE_TO)));
-
+        String organisationName = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_ORGANISATION_NAME);
+        String facilityAdministrator = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_FACILITY_ADMINISTRATOR);
+        String afcStatus = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_AFC_STATUS);
+        String teamMemberName = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_TEAM_MEMBER_NAME);
+        String teamMemberID = ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_TEAM_MEMBER_ID);
+        Date approvedDateFrom = Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_FROM)));
+        Date approvedDateTo =  Formatter.parseDate(ParamUtil.getString(request,ParamUtil.getString(request,BioSafetyEnquiryConstants.PARAM_APPROVED_DATE_TO)));
         if (StringUtil.isNotEmpty(applicationNo)) {
             enquiryDto.setApplicationNo(applicationNo);
         }
@@ -339,6 +347,33 @@ public class BiosafetyEnquiryDelegator {
         }else if("an".equals(count)){
             enquiryDto.setApprovalSubmissionDateTo(new Date());
         }
+        if(StringUtil.isNotEmpty(organisationName)){
+            enquiryDto.setOrganisationName(organisationName);
+        }
+        if(StringUtil.isNotEmpty(facilityAdministrator)){
+            enquiryDto.setOrganisationName(facilityAdministrator);
+        }
+        if(StringUtil.isNotEmpty(afcStatus)){
+            enquiryDto.setOrganisationName(afcStatus);
+        }
+        if(StringUtil.isNotEmpty(teamMemberName)){
+            enquiryDto.setOrganisationName(teamMemberName);
+        }
+        if(StringUtil.isNotEmpty(teamMemberID)){
+            enquiryDto.setOrganisationName(teamMemberID);
+        }
+        if(approvedDateFrom != null){
+            enquiryDto.setApprovedDateFrom(approvedDateFrom);
+        } else if ("on".equals(count)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR,-1);
+            enquiryDto.setApprovedDateFrom(calendar.getTime());
+        }
+        if(approvedDateTo != null){
+            enquiryDto.setApprovedDateTo(approvedDateTo);
+        }else if("on".equals(count)){
+            enquiryDto.setApprovedDateTo(new Date());
+        }
         if("app".equals(count)){
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
@@ -360,6 +395,15 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, approvalResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(approvalResultDto.getBsbApproval().toString()+"==========facility"));
         }
+
+        if("on".equals(count)){
+            ApprovedFacilityCerResultDto facilityCerResultDto = biosafetyEnquiryClient.getAFC(enquiryDto).getEntity();
+            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_RESULT,facilityCerResultDto.getBsbAFC());
+            ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_SEARCH,enquiryDto);
+            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, facilityCerResultDto.getPageInfo());
+            log.info(StringUtil.changeForLog(facilityCerResultDto.getBsbAFC().toString()+"==========facility"));
+        }
+
 
 
     }

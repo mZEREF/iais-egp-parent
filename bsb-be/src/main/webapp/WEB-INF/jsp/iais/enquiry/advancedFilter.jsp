@@ -328,7 +328,7 @@
                     <iais:row>
                         <iais:field value="Facility Administrator"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" maxlength="132" style=" font-weight:normal;"/>
+                            <input name="facilityAdministrator" type="text" maxlength="132" style=" font-weight:normal;"/>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -340,25 +340,25 @@
                     <iais:row>
                         <iais:field value="Team Member Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" maxlength="132" style=" font-weight:normal;"/>
+                            <input name="teamMemberName" type="text" maxlength="132" style=" font-weight:normal;"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Team Member ID"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" maxlength="10" style=" font-weight:normal;"/>
+                            <input name="teamMemberID" type="text" maxlength="10" style=" font-weight:normal;"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approved_to_date"></iais:datePicker>
+                            <iais:datePicker name="approvedDateFrom"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approval_to_date"></iais:datePicker>
+                            <iais:datePicker name="approvedDateTo"></iais:datePicker>
                         </div >
                     </iais:row>
 
