@@ -27,21 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwe.JsonWebEncryption;
-import org.jose4j.jws.JsonWebSignature;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -54,6 +39,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.encoders.Base64;
+import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwe.JsonWebEncryption;
+import org.jose4j.jws.JsonWebSignature;
+import org.springframework.context.ApplicationContext;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 /**
@@ -275,8 +275,10 @@ public class MyinfoUtil {
 			log.error(e.getMessage(),e);
 			nonceValue = timestamp;
 		}
+		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
 		TreeMap<String, String> baseParams = new TreeMap<>();
-		baseParams.put(AcraConsts.SP_ESVCID + "=", spEsvcId);
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
@@ -291,32 +293,45 @@ public class MyinfoUtil {
 		authHeaderParams.put(AcraConsts.APP_ID + "=", clientId);
 		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
-		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType + " " + validToken;
 	}
 
-	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri) throws NoSuchAlgorithmException {
 		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
 		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
 		if(!authlevel .equalsIgnoreCase("L2")){
 			return "";
 		}
+		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		String nonce = timestamp +	(secureRandom.nextInt(9000) + 1000);
     	TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
 		baseParams.put(AcraConsts.CODE + "=", code);
 		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
+		baseParams.put("app_id=", appId);
+		baseParams.put("nonce=", nonce);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		baseParams.put("timestamp=", timestamp);
+		baseParams.put("state=", state);
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
 		log.info(StringUtil.changeForLog("Token auth base string ==> " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
 		log.info(StringUtil.changeForLog("Token auth signature ==> " + signature));
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
-		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put("app_id=", appId);
+		authHeaderParams.put("nonce=", nonce);
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put("timestamp=", timestamp);
+
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
-	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri) throws NoSuchAlgorithmException {
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
 		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
 		if(StringUtil.isEmpty(authorizationHeader)){
@@ -326,10 +341,14 @@ public class MyinfoUtil {
 			log.info(StringUtil.changeForLog("Token Auth Header ==> " + authorizationHeader));
 		}
 		ResponseEntity<MyInfoTakenDto> resEntity;
-		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		header.setCacheControl(CacheControl.noCache());
+		header.set("Authorization", authorizationHeader);
 		HttpStatus httpStatus;
 		try {
-			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,handleRequestBody(getTokenDto),null, header,MyInfoTakenDto.class,null);
+			String eicUrl = ConfigHelper.getString("myinfo.taken.requestUrl",requestUrl);
+			resEntity = IaisCommonUtils.callEicGatewayWithBody(eicUrl , HttpMethod.POST,handleRequestBody(getTokenDto),null, header,MyInfoTakenDto.class,null);
 			AuditTrailDto auditTrailDto = new AuditTrailDto();
 			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
 			auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
