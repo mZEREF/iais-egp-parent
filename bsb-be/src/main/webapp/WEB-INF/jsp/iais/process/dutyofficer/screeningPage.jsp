@@ -179,7 +179,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/screenHistory.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/process/common/processingHistory.jsp"%>
                                             </div>
                                         </div>
                                     </div>

@@ -214,7 +214,7 @@ public class AORevocationDelegator {
 
         //get history list
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY, (Serializable) historyDtoList);
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
     }
 
     /**
