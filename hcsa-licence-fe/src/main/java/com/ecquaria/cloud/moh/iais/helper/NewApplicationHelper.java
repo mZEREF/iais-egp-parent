@@ -512,7 +512,7 @@ public class NewApplicationHelper {
         return appSubmissionDto;
     }
     //todo change
-    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode) {
+    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode, SubLicenseeDto subLicenseeDto) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         int poIndex=0;
@@ -762,6 +762,15 @@ public class NewApplicationHelper {
                         }
                         if (!ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
+                        }
+                    }
+                }
+                if (subLicenseeDto != null){
+                    String subLicenseeIdType = subLicenseeDto.getIdType();
+                    String subLicenseeIdNumber = subLicenseeDto.getIdNumber();
+                    if (StringUtil.isNotEmpty(subLicenseeIdType) && StringUtil.isNotEmpty(subLicenseeIdNumber)) {
+                        if (subLicenseeIdType.equals(idType) && subLicenseeIdNumber.equals(idNo)) {
+                            oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
                         }
                     }
                 }

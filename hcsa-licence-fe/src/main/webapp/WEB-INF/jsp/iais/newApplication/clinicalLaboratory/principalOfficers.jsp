@@ -435,6 +435,7 @@
                                                     <div class="col-sm-5 col-md-8" id="assignSelect${suffix}">
                                                         <iais:select cssClass="deputyPoSelect"  name="deputyPoSelect" options="DeputyPrincipalOfficersAssignSelect" needSort="false" value="${deputy.assignSelect}" ></iais:select>
                                                         <span id="error_deputyAssignSelect${status.index}" name="iaisErrorMsg" class="error-msg"></span>
+                                                        <span id="error_conflictError${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                                                     </div>
                                                 </div>
                                             </div>
