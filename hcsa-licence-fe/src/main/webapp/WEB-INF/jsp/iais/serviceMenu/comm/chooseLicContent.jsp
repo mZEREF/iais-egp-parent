@@ -20,13 +20,13 @@
         <div class="table-responsive">
         <table aria-describedby="" class="table">
             <thead>
-            <tr style="font-size: 16px;">
-                <th scope="col"></th>
-                <th scope="col"><strong>Licence No.</strong></th>
-                <th scope="col"><strong>Type</strong></th>
-                <th scope="col"><strong>Mode of Service Delivery</strong></th>
-                <th scope="col" style="width:17%;"><strong>Expires on</strong></th>
-            </tr>
+                <tr style="font-size: 16px;">
+                    <th scope="col"></th>
+                    <th scope="col"><strong>Licence No.</strong></th>
+                    <th scope="col"><strong>Type</strong></th>
+                    <th scope="col"><strong>Mode of Service Delivery</strong></th>
+                    <th scope="col" style="width:17%;"><strong>Expires on</strong></th>
+                </tr>
             </thead>
 
             <tbody id="licBodyDiv"></tbody>

@@ -74,8 +74,8 @@
                         <iais:row>
                             <iais:field value="ID No" width="12" required="true"/>
                             <iais:value width="12">
-                                <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
-                                <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
+                                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
+                                    <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>

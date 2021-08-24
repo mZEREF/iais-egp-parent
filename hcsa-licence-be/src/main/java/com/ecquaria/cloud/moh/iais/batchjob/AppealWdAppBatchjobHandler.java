@@ -238,7 +238,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(oldApplicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
                 boolean changePrem=false;
                 for (AppEditSelectDto edit:appEditSelectDtos
-                ) {
+                     ) {
                     if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
                         changePrem=true;
                     }

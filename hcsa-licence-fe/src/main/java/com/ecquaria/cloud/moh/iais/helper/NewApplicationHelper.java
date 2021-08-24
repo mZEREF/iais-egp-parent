@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -66,7 +67,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.CopyUtil;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -113,6 +113,64 @@ public class NewApplicationHelper {
         });
     }
 
+    public static void reSetDataByAppEditSelectDto(AppSubmissionDto scourceDto, AppSubmissionDto targetDto) {
+        if (scourceDto == null || targetDto == null) {
+            return;
+        }
+        AppEditSelectDto source = scourceDto.getChangeSelectDto();
+        AppEditSelectDto target = targetDto.getChangeSelectDto();
+        if (source == null || target == null) {
+            return;
+        }
+        if (source.isLicenseeEdit()) {
+            target.setLicenseeEdit(true);
+            targetDto.setSubLicenseeDto((SubLicenseeDto) CopyUtil.copyMutableObject(scourceDto.getSubLicenseeDto()));
+        }
+        if (source.isPremisesEdit()) {
+            target.setPremisesEdit(true);
+        }
+        if (source.isDocEdit()) {
+            target.setDocEdit(true);
+        }
+        if (source.isServiceEdit()) {
+            target.setServiceEdit(true);
+            List<AppSvcRelatedInfoDto> sourceSvcInfoList = scourceDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcRelatedInfoDto> targetSvcInfoList = targetDto.getAppSvcRelatedInfoDtoList();
+            handleAppSvcRelatedInfoDtos(sourceSvcInfoList, targetSvcInfoList, source.getPersonnelEditList());
+        }
+    }
+
+    private static void handleAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> sourceSvcInfoList,
+            List<AppSvcRelatedInfoDto> targetSvcInfoList, List<String> personnelEditList) {
+        if (sourceSvcInfoList == null || sourceSvcInfoList.isEmpty() || targetSvcInfoList == null || targetSvcInfoList.isEmpty()
+                || personnelEditList == null || personnelEditList.isEmpty()) {
+            return;
+        }
+        AppSvcRelatedInfoDto sourceSvcInfo = sourceSvcInfoList.get(0);
+        AppSvcRelatedInfoDto targetSvcInfo = targetSvcInfoList.get(0);
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
+            targetSvcInfo.setAppSvcCgoDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcCgoDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
+            targetSvcInfo.setAppSvcMedAlertPersonList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcMedAlertPersonList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
+            targetSvcInfo.setAppSvcPrincipalOfficersDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) {
+            targetSvcInfo.setAppSvcClinicalDirectorDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcClinicalDirectorDtoList()));
+        }
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
+            targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(
+                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(
+                            sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList()));
+        }
+    }
+
     public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
         Integer maxFileIndex = 0;
         if (checkGlobal && request != null) {
@@ -136,7 +194,7 @@ public class NewApplicationHelper {
     }
 
     public static void reSetMaxFileIndex(int maxSeqNum) {
-        getMaxFileIndex(maxSeqNum, true, MiscUtil.getCurrentRequest());
+        reSetMaxFileIndex(maxSeqNum, MiscUtil.getCurrentRequest());
     }
 
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId,List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos){
@@ -444,7 +502,7 @@ public class NewApplicationHelper {
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
                     || rfi != null){
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 Object sessionAttr = ParamUtil.getSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
                 if(sessionAttr==null){
                     ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
@@ -454,7 +512,7 @@ public class NewApplicationHelper {
         return appSubmissionDto;
     }
     //todo change
-    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode) {
+    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode, SubLicenseeDto subLicenseeDto) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         int poIndex=0;
@@ -704,6 +762,15 @@ public class NewApplicationHelper {
                         }
                         if (!ValidationUtils.isEmail(emailAddr)) {
                             oneErrorMap.put("deputyEmailAddr"+dpoIndex, "GENERAL_ERR0014");
+                        }
+                    }
+                }
+                if (subLicenseeDto != null){
+                    String subLicenseeIdType = subLicenseeDto.getIdType();
+                    String subLicenseeIdNumber = subLicenseeDto.getIdNumber();
+                    if (StringUtil.isNotEmpty(subLicenseeIdType) && StringUtil.isNotEmpty(subLicenseeIdNumber)) {
+                        if (subLicenseeIdType.equals(idType) && subLicenseeIdNumber.equals(idNo)) {
+                            oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
                         }
                     }
                 }
@@ -1122,6 +1189,89 @@ public class NewApplicationHelper {
         return errMap;
     }
 
+    public static Map<String, String> doValidateKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList, Map<String, AppSvcPersonAndExtDto> licPersonMap, String svcCode){
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderList)){
+            return errMap;
+        }
+        List<String> stringList=IaisCommonUtils.genNewArrayList();
+        for(int i = 0; i < appSvcKeyAppointmentHolderList.size(); i++){
+            AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolder = appSvcKeyAppointmentHolderList.get(i);
+            String assignSelect = appSvcKeyAppointmentHolder.getAssignSelect();
+            if("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)){
+                errMap.put("assignSel" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a MedAlert Person","field"));
+            }else {
+                String idTyp = appSvcKeyAppointmentHolder.getIdType();
+                String idNo = appSvcKeyAppointmentHolder.getIdNo();
+                boolean licPerson = appSvcKeyAppointmentHolder.isLicPerson();
+                String idTypeNoKey = "idTypeNo" + i;
+                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey, svcCode);
+                boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
+                StringBuilder stringBuilder1=new StringBuilder();
+
+                if("-1".equals(idTyp) || StringUtil.isEmpty(idTyp)){
+                    errMap.put("idType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
+                }
+
+                String salutation = appSvcKeyAppointmentHolder.getSalutation();
+                if(StringUtil.isEmpty(salutation)){
+                    errMap.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
+                }
+
+                String name = appSvcKeyAppointmentHolder.getName();
+                if(StringUtil.isEmpty(name)){
+                    errMap.put("name" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
+                }else {
+                    if(name.length() > 66){
+                        String general_err0041 = repLength("Name", "66");
+                        errMap.put("name" + i, general_err0041);
+                    }
+                }
+
+                if(StringUtil.isEmpty(idNo)){
+                    errMap.put("idNo" + i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
+                }else {
+                    if(idNo.length() > 9){
+                        String general_err0041 = repLength("ID No.","9");
+                        errMap.put("idNo" + i, general_err0041);
+                    }
+                    if(OrganizationConstants.ID_TYPE_FIN.equals(idTyp)){
+                        if(!SgNoValidator.validateFin(idNo)){
+                            errMap.put("idNo" + i,"RFC_ERR0012");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo" + i,"NEW_ERR0012");
+                            }
+                        }
+                    }
+                    if(OrganizationConstants.ID_TYPE_NRIC.equals(idTyp)){
+                        if(!SgNoValidator.validateNric(idNo)){
+                            errMap.put("idNo" + i,"RFC_ERR0012");
+                        }
+                        stringBuilder1.append(idTyp).append(idNo);
+                        if(newErr0006 && !StringUtil.isEmpty(stringBuilder1.toString())){
+                            if(stringList.contains(stringBuilder1.toString())){
+                                errMap.put("idNo" + i,"NEW_ERR0012");
+                            }
+                        }
+                    }
+                }
+
+                if(!StringUtil.isEmpty(stringBuilder1.toString())){
+                    if(!stringList.contains(stringBuilder1.toString())){
+                        stringList.add( stringBuilder1.toString());
+                    }
+                }
+
+            }
+
+        }
+        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+        return errMap;
+    }
+
     public static List<AppSvcPrincipalOfficersDto> transferCgoToPsnDtoList(List<AppSvcPrincipalOfficersDto> appSvcCgoDtos){
         List<AppSvcPrincipalOfficersDto> psnDtos = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isEmpty(appSvcCgoDtos)){
@@ -1182,15 +1332,17 @@ public class NewApplicationHelper {
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                 newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
                 personMap.put(personMapKey,newPersonAndExtDto);
-            }else{
+            } else {
                 //set different page column
                 person.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
                 person.setName(psnDto.getName());
                 person.setIdType(psnDto.getIdType());
                 person.setIdNo(psnDto.getIdNo());
-                person.setMobileNo(psnDto.getMobileNo());
-                person.setEmailAddr(psnDto.getEmailAddr());
+                if (!ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnDto.getPsnType())) {
+                    person.setMobileNo(psnDto.getMobileNo());
+                    person.setEmailAddr(psnDto.getEmailAddr());
+                }
                 String designation = psnDto.getDesignation();
                 if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnDto.getPsnType())) {
                     person.setDesignation(designation);
@@ -2509,7 +2661,7 @@ public class NewApplicationHelper {
                     }else{
                         List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
                         for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
-                            String psnIndexNo = psnDto.getCgoIndexNo();
+                            String psnIndexNo = psnDto.getIndexNo();
                             AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,"","",psnIndexNo);
                             if(appSvcDocDto == null){
                                 String specErrKey = errKey + psnIndexNo +suffix;
@@ -2530,7 +2682,7 @@ public class NewApplicationHelper {
                             }else{
                                 List<AppSvcPrincipalOfficersDto> psnDtoList = NewApplicationHelper.getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
                                 for(AppSvcPrincipalOfficersDto psnDto:psnDtoList){
-                                    String psnIndexNo = psnDto.getCgoIndexNo();
+                                    String psnIndexNo = psnDto.getIndexNo();
                                     AppSvcDocDto appSvcDocDto = getSvcDtoByConfigIdAndPsnIndexNo(appSvcDocDtos,configId,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),psnIndexNo);
                                     if(appSvcDocDto == null){
                                             String specErrKey = errKey + premIndexNo + psnIndexNo +suffix;
@@ -2824,7 +2976,7 @@ public class NewApplicationHelper {
                 if(!IaisCommonUtils.isEmpty(spDtos)){
                     for(AppSvcPersonnelDto spDto:spDtos){
                         AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
-                        psnDto.setCgoIndexNo(spDto.getCgoIndexNo());
+                        psnDto.setIndexNo(spDto.getIndexNo());
                         psnDtoList.add(psnDto);
                     }
                 }
@@ -3480,7 +3632,7 @@ public class NewApplicationHelper {
     }
 
     private static Map<String,String> doPsnCommValidate(Map<String,String> errMap,String idType,String idNo,boolean licPerson,Map<String,AppSvcPersonAndExtDto> licPersonMap,String errKey,String svcCode){
-        if(!StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
+        if(needPsnCommValidate() && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
             if(appSvcPersonAndExtDto != null){
@@ -3491,6 +3643,13 @@ public class NewApplicationHelper {
         }
         return errMap;
     }
+
+    private static boolean needPsnCommValidate(){
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+    }
+
 
     private static AppSvcChckListDto getSvcChckListDtoByConfigId(String configId,List<AppSvcChckListDto> appSvcChckListDtos){
         AppSvcChckListDto  result = null;
@@ -3900,7 +4059,7 @@ public class NewApplicationHelper {
             List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(appSvcRelatedInfoDto,dupForPerson);
             int psnCount = 1;
             for(AppSvcPrincipalOfficersDto psn:psnList){
-                String psnIndex = psn.getCgoIndexNo();
+                String psnIndex = psn.getIndexNo();
                 String displayTitle = titleTemplate.replace("${psn}",psnName+" "+psnCount+": ");
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos,configId,premIndex,psnIndex);
                 setSvcDocDisplayTitle(appSvcDocDtoList,displayTitle);

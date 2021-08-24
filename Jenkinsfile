@@ -1166,7 +1166,7 @@ def runAutomatedTests(){
                 String CHOICES_RETRY = 'Retry Automated Test'
                 String CHOICES_FAIL = 'Fail the Build'
                 String CHOICES_CONTINUE = 'Continue to Next Stage'
-                
+
                 def availableChoices = [CHOICES_RETRY, CHOICES_FAIL, CHOICES_CONTINUE] as String[]
 
                 docker
@@ -1195,13 +1195,13 @@ def runAutomatedTests(){
                             if(exitCode != 0){
                                 // non-zero exit code, invoke humans
                                 sendEmailNotificationForAutomatedTestNonZeroExit()
-                                
+
                                 def choice = doGateKatalon(
                                     availableChoices,
-                                    'Run Automated Tests', 
-                                    'automatedTestGate', 
-                                    'Automated Testing reports a non-zero exit code.', 
-                                    'Select a course of action.', 
+                                    'Run Automated Tests',
+                                    'automatedTestGate',
+                                    'Automated Testing reports a non-zero exit code.',
+                                    'Select a course of action.',
                                     'Comments submitted here would be recorded (unless "Abort" was used).')
 
                                 println("choice: [" + choice + "]");
@@ -1251,7 +1251,7 @@ def runAutomatedTests(){
 def doGateKatalon(String[] availableChoices, String stageName, String inputId, String message, String choiceDescription, String commentDescription){
     def CHOICES_NONE = '- Please Select -'
     def tmp = [CHOICES_NONE] as String[]
-    def finalChoices = tmp + availableChoices    
+    def finalChoices = tmp + availableChoices
 
     println("final choices: " + finalChoices)
 

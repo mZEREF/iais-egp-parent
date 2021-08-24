@@ -30,4 +30,6 @@ public class NewApplicationConstant {
 
     public static final String TITLE_MODE_OF_SVCDLVY = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
 
+    public static final String CO_MAP = "coMap";
+
 }

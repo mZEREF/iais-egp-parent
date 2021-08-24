@@ -142,7 +142,7 @@
                                                                             <thead>
                                                                             <tr>
                                                                                 <th scope="col" style="display: none"></th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                                                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
@@ -166,7 +166,7 @@
                                                                                             <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                                                                                             <td>
                                                                                                 <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
-                                                                                                    <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
+                                                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
                                                                                                     </a>
                                                                                                 </p>
                                                                                             </td>
@@ -290,7 +290,7 @@
                         if ("true" == dashSupportFlag) {
                             html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>';

@@ -21,7 +21,8 @@
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
         var licPerson = $loadingContent.find('input.licPerson').val();
-        var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+        var needControlName = licPerson != "1";
+        console.log("isNeedControlName: " + needControlName + " assignSelectVal:" + assignSelectVal + " licPerson:" + licPerson + " appType:" + appType);
         var emptyData = {};
         if(prgNo == "" || prgNo == null || prgNo == undefined){
             clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);

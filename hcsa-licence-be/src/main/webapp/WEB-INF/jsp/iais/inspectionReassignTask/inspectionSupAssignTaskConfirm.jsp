@@ -44,7 +44,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:action>
-                    <a class="back" id="Back" onclick="javascript:doInspectionReassignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspectionReassignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionReassignTaskConfirmSubmit()">Submit</button>
                   </iais:action>
                 </iais:section>

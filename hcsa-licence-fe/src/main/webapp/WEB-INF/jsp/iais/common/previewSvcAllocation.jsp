@@ -1,7 +1,4 @@
 <c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-    <c:if test="${stepSchem.stepCode == 'SVST003'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
-    </c:if>
     <c:if test="${stepSchem.stepCode == 'SVST001'}">
         <c:set var="svcScopePageName" value="${stepSchem.stepName}"/>
     </c:if>
@@ -22,6 +19,7 @@
                                     <th scope="col" >Mode of Service Delivery</th>
                                     <th scope="col" >${svcScopePageName}</th>
                                     <th scope="col" >Clinical Governance Officers</th>
+                                    <th scope="col" > Section Leader</th>
                                 </tr>
                                 </thead>
                                 <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
@@ -39,6 +37,9 @@
                                     </td>
                                     <td>
                                         <p>${disciplineAllocation.cgoSelName}</p>
+                                    </td>
+                                    <td>
+                                        <p>${disciplineAllocation.sectionLeaderName}</p>
                                     </td>
                                 </tr>
                                 </c:forEach>

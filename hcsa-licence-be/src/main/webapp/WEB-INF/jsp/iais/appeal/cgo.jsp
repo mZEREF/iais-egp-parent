@@ -49,7 +49,7 @@
                     </tr>
                     </thead>
                     <input type="hidden" name="isPartEdit" value="0"/>
-                    <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                    <input type="hidden" name="indexNo" value="${currentCgo.indexNo}"/>
                     <input type="hidden" name="existingPsn" value="0"/>
                     <c:choose>
                       <c:when test="${currentCgo.licPerson}">

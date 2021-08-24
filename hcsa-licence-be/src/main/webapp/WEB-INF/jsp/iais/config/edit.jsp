@@ -361,6 +361,40 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <iais:input type="hidden" name="secldrId" value="${SECLDR.id}"/>
+            <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount9"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount9"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
+            <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount10"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount10"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${serviceDocSize}" maxlength="2" name="NumberDocument" maxlength="2">

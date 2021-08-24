@@ -92,7 +92,7 @@
                       </div>
                     </div>
                     <iais:action >
-                      <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                      <a href="#" class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateAgain()">Find new Date</button>
                       <span style="float:right">&nbsp;</span>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateConfirm()">Confirm System-proposed Date</button>
@@ -117,7 +117,7 @@
                     <br>
                     <br>
                     <iais:action >
-                      <a class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                      <a href="#" class="back" id="Back" onclick="javascript:officerReSchedulingDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:officerReSchedulingDateYes()">Yes</button>
                     </iais:action>
                   </c:if>

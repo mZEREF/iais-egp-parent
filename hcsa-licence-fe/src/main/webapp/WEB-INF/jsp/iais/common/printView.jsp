@@ -14,7 +14,7 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-    font-family: FontAwesome, sans-serif;        position: absolute;
+        font-family: FontAwesome, sans-serif;        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;
@@ -62,7 +62,7 @@
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
-                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
+                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse" style="text-decoration: none;"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
                                                             </div>
 
                                                             <div class=" panel-collapse collapse in" id="collapseServiceInfo${submisonStat.index}${svcStat.index}" role="tabpanel" aria-labelledby="headingServiceInfo">
@@ -76,7 +76,7 @@
                                                         </div>
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
-                                                    <%@include file="../common/declarations.jsp"%>
+                                                        <%@include file="../common/declarations.jsp"%>
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -97,7 +97,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-
+        $('#accordion').find('.collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
             btn.each(function(index, ele) {
@@ -107,7 +107,7 @@
         // textarea
         $('textarea', '#declarations').each(function(index, ele){
             $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
-                + $(ele).val() + '</div>');
+                    + $(ele).val() + '</div>');
             $(ele).remove();
         });
 

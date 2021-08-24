@@ -148,7 +148,7 @@
                             </div>
                         </div>
                         <div id="reason"
-                             <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
+                             <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">style="display: none"</c:if>>
                             <div class="row">
                                 <div class="center-content">
                                     <label class="col-md-4" style="font-size:2rem">Remarks <c:if

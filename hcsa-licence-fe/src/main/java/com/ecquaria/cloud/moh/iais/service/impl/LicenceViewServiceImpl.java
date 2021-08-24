@@ -35,18 +35,6 @@ public class LicenceViewServiceImpl implements LicenceViewService {
     private OrganizationLienceseeClient organizationLienceseeClient;
 
     @Override
-    public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
-        LicenceViewDto licenceViewDto =  licenceClient.getLicenceViewByLicenceId(licenceId).getEntity();
-        if(licenceViewDto!=null){
-            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
-            String licenseeId = licenceDto.getLicenseeId();
-            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
-            licenceViewDto.setLicenseeDto(licenseeDto);
-        }
-        return licenceViewDto;
-    }
-
-    @Override
     public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId) {
         return organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
     }

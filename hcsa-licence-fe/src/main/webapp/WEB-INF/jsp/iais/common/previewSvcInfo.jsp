@@ -1,4 +1,5 @@
 <c:forEach items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}" var="hcsaServiceStepSchemeDto">
+    <c:set var="currStepName" value="${hcsaServiceStepSchemeDto.stepName}" scope="request"/>
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST001'}">
         <%@include file="previewSvcDisciplines.jsp"%>
     </c:if><%--STEP_LABORATORY_DISCIPLINES--%>
@@ -31,5 +32,11 @@
     </c:if>
     <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST012'}">
         <%@include file="previewSvcBusiness.jsp"%>
+    </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST013'}">
+        <%@include file="previewSectionLeader.jsp"%>
+    </c:if>
+    <c:if test="${hcsaServiceStepSchemeDto.stepCode=='SVST014'}">
+        <%@include file="previewKeyAppointmentHolder.jsp"%>
     </c:if>
 </c:forEach>

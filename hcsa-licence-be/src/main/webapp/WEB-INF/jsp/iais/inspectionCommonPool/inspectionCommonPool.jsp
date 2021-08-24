@@ -97,7 +97,7 @@
                     <thead>
                     <tr align="center">
                       <th scope="col" style="display: none"></th>
-                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
@@ -121,7 +121,7 @@
                             <td>
                               <p>
                                 <c:out value="${pool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
                                    data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
                                    onclick="javascript:commonPoolByGroupId('<iais:mask name="appGroupNo" value="${pool.appGroupNo}"/>','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
@@ -252,7 +252,7 @@
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
                             html += '<td><input type="checkbox" name="comPoolMulCheck" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].appStatus + '" value="' + res.rows[i].applicationNo + '" onclick="commonPoolCheckBox(' + divid + ')"></td>'
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +

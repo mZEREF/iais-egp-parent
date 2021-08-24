@@ -5,7 +5,7 @@
             <div class="cgo-content">
                 <table class="assignContent control-grid" style="width:100%;">
                     <input type="hidden" name="isPartEdit" value="1"/>
-                    <input type="hidden" name="cgoIndexNo" value=""/>
+                    <input type="hidden" name="indexNo" value=""/>
                     <input class="licPerson" type="hidden" name="licPerson" value="0"/>
                     <input type="hidden" name="existingPsn" value="0"/>
                     <tbody>

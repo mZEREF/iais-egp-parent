@@ -269,8 +269,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
                     psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES);
                 }else if(HcsaConsts.STEP_CHARGES_OTHER.equals(stepCode)){
                     psnTypes.add(ApplicationConsts.PERSONNEL_CHARGES_OTHER);
+                } else if (HcsaConsts.STEP_SECTION_LEADER.equals(stepCode)) {
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+                } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(stepCode)) {
+                    psnTypes.add(ApplicationConsts.PERSONNEL_PSN_KAH);
                 }
-
             }
         }
         specicalPersonDto.setServiceId(svcId);

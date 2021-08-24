@@ -127,17 +127,17 @@ public class InspectionCheckListValidation extends CheckListCommonValidate imple
     }
     private boolean serviceSpecFillUpVad(Map<String, String> errMap,InspectionSpecServiceDto inspectionSpecServiceDto){
         if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
-            int flagNum = 0;
-            if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
-                for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
-                    if(!fillServiceVad(fDto,errMap)){
-                        flagNum++;
-                    };
+                int flagNum = 0;
+                if(!IaisCommonUtils.isEmpty(inspectionSpecServiceDto.getFdtoList())){
+                    for(InspectionFillCheckListDto fDto:inspectionSpecServiceDto.getFdtoList()){
+                        if(!fillServiceVad(fDto,errMap)){
+                            flagNum++;
+                        };
+                    }
                 }
-            }
-            if(flagNum>0){
-                return false;
-            }
+                if(flagNum>0){
+                    return false;
+                }
         }
         return true;
     }

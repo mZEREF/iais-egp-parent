@@ -442,7 +442,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
             if (Objects.nonNull(licenseeIndividualDto)) {
-                licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+                licenseeIndividualDto.setSalutation(StringUtil.isEmpty(feUserDto.getSalutation()) ? "-" : feUserDto.getSalutation());
                 licenseeIndividualDto.setIdType(feUserDto.getIdType());
                 licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
                 licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());

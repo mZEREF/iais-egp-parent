@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -45,7 +46,7 @@ public class MyInfoTransferStationDelegate {
      * @param bpc
      * @throws
      */
-    public void transmit(BaseProcessClass bpc){
+    public void transmit(BaseProcessClass bpc) throws NoSuchAlgorithmException {
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
         HttpServletRequest request = bpc.request;

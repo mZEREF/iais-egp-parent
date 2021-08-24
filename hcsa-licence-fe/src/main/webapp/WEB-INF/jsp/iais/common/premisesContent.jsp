@@ -247,7 +247,7 @@
                     </div>
                 </div>
                 <iais:row cssClass="onSiteSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list :" width="4" mandatory="true"/>
                     <iais:value id="onSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == onSite}">
@@ -260,7 +260,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="conveyanceSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list :" width="4" mandatory="true"/>
                     <iais:value id="conveyanceSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == conv}">
@@ -273,7 +273,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="offSiteSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list :" width="4" mandatory="true"/>
                     <iais:value id="offSiteSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == offSite}">
@@ -286,7 +286,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="easMtsSelect hidden">
-                    <iais:field value="Add or select a mode of service delivery from the list : " width="12" mandatory="true"/>
+                    <iais:field value="Add or select a mode of service delivery from the list :" width="4" mandatory="true"/>
                     <iais:value id="easMtsSelect"  cssClass="col-xs-11 col-sm-7 col-md-5">
                         <c:choose>
                             <c:when test="${appGrpPremisesDto.premisesType == easMts}">
@@ -324,20 +324,20 @@
                         </div>
                     </div>
                     <iais:row>
-                        <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
+                        <iais:field value="Fire Safety Certificate Issued Date" width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
                             <iais:datePicker cssClass="fireIssuedDate" name="${premValue}onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Business Name " mandatory="true" width="11"/>
-                        <iais:value width="11" cssClass="col-md-5 disabled">
+                        <iais:field value="Business Name" mandatory="true" width="4"/>
+                        <iais:value width="7" cssClass="col-xs-10 col-md-5 disabled">
                             <iais:input cssClass="" maxLength="100" type="text" name="onSiteHciName" id="sitePremiseName" value="${appGrpPremisesDto.hciName}"></iais:input>
                             <span id="error_hciName${status.index}" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
-                        <iais:field value="Postal Code " mandatory="true" width="12"/>
+                        <iais:field value="Postal Code" mandatory="true" width="4"/>
                         <iais:value  cssClass="col-md-5">
                             <iais:input cssClass="postalCode" maxLength="6" type="text"  name="onSitePostalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
                             <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
@@ -348,21 +348,21 @@
 
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Address Type " mandatory="true" width="12"/>
+                        <iais:field value="Address Type" mandatory="true" width="4"/>
                         <iais:value id="onSiteAddressType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                             <iais:select cssClass="onSiteAddressType" name="onSiteAddressType" id="onSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.addrType}" ></iais:select>
                             <span class="error-msg" name="iaisErrorMsg" id="error_addrType${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Block / House No." width="12"/>
+                        <iais:field value="Block / House No." width="4"/>
                         <iais:value cssClass="col-md-5">
                             <iais:input cssClass="siteBlkNo" maxLength="10"  type="text" name="onSiteBlkNo" id="siteBlkNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_blkNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor / Unit No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <div class="row">
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -382,7 +382,7 @@
                             <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                                 <div class="operationDiv">
                                     <iais:row>
-                                        <iais:field value="" width="12"/>
+                                        <iais:field value="" width="4"/>
                                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                             <div class="row">
                                                 <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -409,35 +409,35 @@
                         </c:if>
                         <!--prem operational -->
                         <iais:row cssClass="addOpDiv">
-                            <iais:field value="" width="12"/>
+                            <iais:field value="" width="4"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                 <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
                             </iais:value>
                         </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field value="Street Name " mandatory="true" width="10"/>
-                        <iais:value width="10" cssClass="col-md-5">
+                        <iais:field value="Street Name" mandatory="true" width="4"/>
+                        <iais:value width="5" cssClass="col-md-5">
                             <iais:input cssClass="siteStreetName" maxLength="32" type="text" name="onSiteStreetName" id="siteStreetName" value="${appGrpPremisesDto.streetName}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_streetName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Building Name" width="12"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:field value="Building Name" width="4"/>
+                        <iais:value width="5" cssClass="col-md-5">
                             <iais:input cssClass="siteBuildingName" maxLength="66" type="text" name="onSiteBuildingName" id="siteBuildingName" value="${appGrpPremisesDto.buildingName}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_buildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Office Telephone No. " mandatory="true" width="12"/>
+                        <iais:field value="Office Telephone No." mandatory="true" width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                             <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_offTelNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="other-lic-content co-location-div">
-                        <iais:field value="Are you co-locating with another licensee? " mandatory="true" width="12" style="width:34%;"/>
+                        <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="4" style="width:34%;"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
                             <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
                             <div class="form-check col-sm-3">
@@ -879,21 +879,21 @@
             <div class="new-premise-form-conv hidden">
                 <div class="form-horizontal">
                     <iais:row>
-                        <iais:field value="Business Name " mandatory="true" width="11"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:field value="Business Name" mandatory="true" width="4"/>
+                        <iais:value width="7" cssClass="col-xs-10 col-md-5">
                             <iais:input cssClass="hciName" maxLength="100" type="text" name="conveyanceHciName" value="${appGrpPremisesDto.conveyanceHciName}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceHciName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Vehicle No. " mandatory="true" width="12"/>
+                        <iais:field value="Vehicle No." mandatory="true" width="4"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="10" type="text" name="conveyanceVehicleNo" id="vehicleNo" value="${appGrpPremisesDto.conveyanceVehicleNo}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
-                        <iais:field value="Postal Code " mandatory="true" width="12"/>
+                        <iais:field value="Postal Code" mandatory="true" width="4"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="6" cssClass="postalCode" type="text" name="conveyancePostalCode"  value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
@@ -904,21 +904,21 @@
 
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Address Type " mandatory="true" width="12"/>
+                        <iais:field value="Address Type" mandatory="true" width="4"/>
                         <iais:value id="conveyanceAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                             <iais:select name="conveyanceAddrType" cssClass="conveyanceAddressType" id="siteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select"  value="${appGrpPremisesDto.conveyanceAddressType}"></iais:select>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceAddressType${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Block / House No." width="12"/>
+                        <iais:field value="Block / House No." width="4"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="10" cssClass="conveyanceBlkNo" type="text" name="conveyanceBlkNo" id="conveyanceBlkNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBlockNos${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor / Unit No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <div class="row">
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -938,7 +938,7 @@
                         <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                             <div class="operationDiv">
                                 <iais:row>
-                                    <iais:field value="" width="12"/>
+                                    <iais:field value="" width="4"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <div class="row">
                                             <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -965,28 +965,28 @@
                     </c:if>
                     <!--prem operational -->
                     <iais:row cssClass="addOpDiv">
-                        <iais:field value="" width="12"/>
+                        <iais:field value="" width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
                         </iais:value>
                     </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field value="Street Name " mandatory="true" width="10"/>
-                        <iais:value width="10" cssClass="col-md-5">
+                        <iais:field value="Street Name" mandatory="true" width="4"/>
+                        <iais:value width="5" cssClass="col-md-5">
                             <iais:input maxLength="32" cssClass="conveyanceStreetName" type="text" name="conveyanceStreetName"  value="${appGrpPremisesDto.conveyanceStreetName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceStreetName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Building Name " width="12"/>
-                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                        <iais:field value="Building Name" width="4"/>
+                        <iais:value cssClass="col-xs-5 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="conveyanceBuildingName" type="text" name="conveyanceBuildingName" id="conveyanceBuildingName" value="${appGrpPremisesDto.conveyanceBuildingName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Email " width="12"/>
+                        <iais:field value="Email" mandatory="true" width="4"/>
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="320" cssClass="conveyanceEmail" type="text" name="conveyanceEmail" id="conveyanceEmail" value="${appGrpPremisesDto.conveyanceEmail}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceEmail${status.index}"></span>
@@ -1420,14 +1420,14 @@
             <div class="new-premise-form-off-site hidden">
                 <div class="form-horizontal">
                     <iais:row>
-                        <iais:field value="Business Name " mandatory="true" width="11"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:field value="Business Name" mandatory="true" width="4"/>
+                        <iais:value width="7" cssClass="col-xs-10 col-md-5">
                             <iais:input cssClass="hciName" maxLength="100" type="text" name="offSiteHciName" value="${appGrpPremisesDto.offSiteHciName}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_offSiteHciName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
-                        <iais:field value="Postal Code " mandatory="true" width="12"/>
+                        <iais:field value="Postal Code" mandatory="true" width="4"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="6" cssClass="postalCode" type="text" name="offSitePostalCode"  value="${appGrpPremisesDto.offSitePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
@@ -1438,21 +1438,21 @@
 
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Address Type " mandatory="true" width="12"/>
+                        <iais:field value="Address Type" mandatory="true" width="4"/>
                         <iais:value id="offSiteAddrType${premValue}" cssClass="col-xs-7 col-sm-4 col-md-5 addressType">
                             <iais:select name="offSiteAddrType" cssClass="offSiteAddressType" id="offSiteAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.offSiteAddressType}"></iais:select>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteAddressType${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Block / House No." width="12"/>
+                        <iais:field value="Block / House No." width="4"/>
                         <iais:value width="11" cssClass="col-md-5">
                             <iais:input maxLength="10" cssClass="offSiteBlkNo" type="text" name="offSiteBlkNo" id="offSiteBlkNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Floor / Unit No." width="12"/>
+                        <iais:field value="Floor / Unit No." width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <div class="row">
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -1472,7 +1472,7 @@
                         <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                             <div class="operationDiv">
                                 <iais:row>
-                                    <iais:field value="" width="12"/>
+                                    <iais:field value="" width="4"/>
                                     <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                         <div class="row">
                                             <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -1499,28 +1499,28 @@
                     </c:if>
                     <!--prem operational -->
                     <iais:row cssClass="addOpDiv">
-                        <iais:field value="" width="12"/>
+                        <iais:field value="" width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                             <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
                         </iais:value>
                     </iais:row>
                     </div>
                     <iais:row>
-                        <iais:field value="Street Name " mandatory="true" width="10"/>
-                        <iais:value width="10" cssClass="col-md-5">
+                        <iais:field value="Street Name" mandatory="true" width="4"/>
+                        <iais:value width="5" cssClass="col-md-5">
                             <iais:input maxLength="32" cssClass="offSiteStreetName" type="text" name="offSiteStreetName"  value="${appGrpPremisesDto.offSiteStreetName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteStreetName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Building Name " width="12"/>
-                        <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
+                        <iais:field value="Building Name" width="4"/>
+                        <iais:value cssClass="col-xs-5 col-sm-7 col-md-5 ">
                             <iais:input maxLength="66" cssClass="offSiteBuildingName" type="text" name="offSiteBuildingName" id="offSiteBuildingName" value="${appGrpPremisesDto.offSiteBuildingName}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBuildingName${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field value="Email " width="12"/>
+                        <iais:field value="Email" mandatory="true" width="4"/>
                         <iais:value cssClass="col-xs-11 col-sm-7 col-md-5 ">
                             <iais:input maxLength="320" cssClass="offSiteEmail" type="text" name="offSiteEmail" id="offSiteEmail" value="${appGrpPremisesDto.offSiteEmail}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteEmail${status.index}"></span>
@@ -1960,14 +1960,14 @@
                 <div class="new-premise-form-eas-mts hidden">
                     <div class="form-horizontal">
                         <iais:row>
-                            <iais:field value="Business Name " mandatory="true" width="11"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:field value="Business Name" mandatory="true" width="4"/>
+                            <iais:value width="7" cssClass="col-xs-10 col-md-5">
                                 <iais:input cssClass="hciName" maxLength="100" type="text" name="easMtsHciName" value="${appGrpPremisesDto.easMtsHciName}"></iais:input>
                                 <span  class="error-msg"  name="iaisErrorMsg" id="error_easMtsHciName${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="postalCodeDiv">
-                            <iais:field value="Postal Code " mandatory="true" width="12"/>
+                            <iais:field value="Postal Code" mandatory="true" width="4"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="6" cssClass="postalCode" type="text" name="easMtsPostalCode"  value="${appGrpPremisesDto.easMtsPostalCode}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPostalCode${status.index}"></span>
@@ -1978,21 +1978,21 @@
 
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Address Type " mandatory="true" width="12"/>
+                            <iais:field value="Address Type" mandatory="true" width="4"/>
                             <iais:value id="easMtsAddrType${premValue}" width="11" cssClass="col-md-5">
                                 <iais:select name="easMtsAddrType" cssClass="easMtsAddressType" id="easMtsAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.easMtsAddressType}"></iais:select>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsAddressType${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Block / House No." width="12"/>
+                            <iais:field value="Block / House No." width="4"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="10" cssClass="easMtsBlkNo" type="text" name="easMtsBlkNo" id="easMtsBlkNo" value="${appGrpPremisesDto.easMtsBlockNo}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBlockNo${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Floor / Unit No." width="12"/>
+                            <iais:field value="Floor / Unit No." width="4"/>
                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                 <div class="row">
                                     <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -2012,7 +2012,7 @@
                                 <c:forEach var="operationDto" items="${appGrpPremisesDto.appPremisesOperationalUnitDtos}" varStatus="opStat">
                                     <div class="operationDiv">
                                         <iais:row>
-                                            <iais:field value="" width="12"/>
+                                            <iais:field value="" width="4"/>
                                             <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                                 <div class="row">
                                                     <iais:value cssClass="col-xs-12 col-md-5 ">
@@ -2039,28 +2039,28 @@
                             </c:if>
                             <!--prem operational -->
                             <iais:row cssClass="addOpDiv">
-                                <iais:field value="" width="12"/>
+                                <iais:field value="" width="4"/>
                                 <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
                                     <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
                                 </iais:value>
                             </iais:row>
                         </div>
                         <iais:row>
-                            <iais:field value="Street Name " mandatory="true" width="10"/>
-                            <iais:value width="10" cssClass="col-xs-7 col-sm-7 col-md-7 ">
+                            <iais:field value="Street Name" mandatory="true" width="4"/>
+                            <iais:value width="5" cssClass="col-xs-7 col-sm-7 col-md-7 ">
                                 <iais:input maxLength="32" cssClass="easMtsStreetName" type="text" name="easMtsStreetName"  value="${appGrpPremisesDto.easMtsStreetName}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsStreetName${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Building Name " width="12"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:field value="Building Name" width="4"/>
+                            <iais:value width="5" cssClass="col-md-5">
                                 <iais:input maxLength="66" cssClass="easMtsBuildingName" type="text" name="easMtsBuildingName" id="easMtsBuildingName" value="${appGrpPremisesDto.easMtsBuildingName}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBuildingName${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="For public/in-house use only? " mandatory="true" width="12"/>
+                            <iais:field value="For public/in-house use only?" mandatory="true" width="4"/>
                             <iais:value width="11" cssClass="col-md-7" style="margin-left:-1%;">
                                 <input type="hidden" name="easMtsUseOnlyVal" value="${appGrpPremisesDto.easMtsUseOnly}"/>
                                 <div class="form-check col-sm-4">
@@ -2077,14 +2077,14 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Public Email " mandatory="true" width="12"/>
+                            <iais:field value="Public Email" mandatory="true" width="4"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubEmail${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Public Hotline " mandatory="true" width="12"/>
+                            <iais:field value="Public Hotline" mandatory="true" width="4"/>
                             <iais:value width="11" cssClass="col-md-5">
                                 <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubHotline${status.index}"></span>

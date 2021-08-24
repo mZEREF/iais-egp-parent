@@ -13,7 +13,7 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#previewLicensee${empty documentIndex ? "" : documentIndex}">
+            <a class="collapsed" style="text-decoration: none;" data-toggle="collapse" data-parent="#accordion" href="#previewLicensee${empty documentIndex ? "" : documentIndex}">
                 Licensee Details
             </a>
         </h4>

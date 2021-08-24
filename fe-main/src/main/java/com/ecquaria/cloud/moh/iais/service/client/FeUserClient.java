@@ -81,8 +81,8 @@ public interface FeUserClient {
 
     @GetMapping(path = "/iais-internet-user/uen-track/{uen}/{nricNumber}/permit-status/{isPermit}")
     FeignResponseEntity<Boolean> setPermitLoginStatusInUenTrack(@PathVariable("uen") String uen,
-                                                                @PathVariable("nricNumber") String nricNumber,
-                                                                @PathVariable("isPermit") Boolean isPermit);
+                                                             @PathVariable("nricNumber") String nricNumber,
+                                                             @PathVariable("isPermit") Boolean isPermit);
 
     @GetMapping(path = "/iais-internet-user/expire/singpass/list", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getExpireSingPassList();
