@@ -6,7 +6,7 @@
 <c:set var="style" value="${empty param.style ? '' : param.style}" />
 
 <c:if test="${not empty profRegNo && not empty listHashMap[profRegNo]}" >
-    <div class="row new-img-show" style="display: none">
+    <div class="disciplinary-record new-img-show" style="display: none">
         <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 100%;margin-top: 5%;${style}">
             <label style="font-weight: normal">
                 The Professional has existing disciplinary records in PRS
