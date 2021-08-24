@@ -12,7 +12,6 @@
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <%--        <input name="appId" id="appId" value="" hidden>--%>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">

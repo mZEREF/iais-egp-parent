@@ -178,11 +178,12 @@ $(function () {
 
     $("#backToSubmit2").click(function (){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
+        $("[name='action_type']").val("doBack");
+        $("#mainForm").submit();
     });
 
     $("#backToSubmit1").click(function (){
         showWaiting();
-        document.getElementById("mainForm").submit();
+        $("#mainForm").submit();
     });
 });
