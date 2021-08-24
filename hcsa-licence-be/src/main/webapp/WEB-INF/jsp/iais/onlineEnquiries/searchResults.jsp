@@ -139,13 +139,13 @@
                                                     </td>
                                                     <td>
                                                         <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
-                                                        <c:if test="${pool.appCorrId!=null}"><a
+                                                        <c:if test="${pool.appCorrId!=null}"><a href="#"
                                                                 onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
                                                     </td>
                                                     <td><c:out
                                                             value="${pool.applicationType}"/></td>
                                                     <td>
-                                                        <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a
+                                                        <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a href="#"
                                                                 onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
                                                         <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
                                                     </td>
