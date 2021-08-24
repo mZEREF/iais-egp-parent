@@ -283,6 +283,7 @@ public class MyinfoUtil {
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
+		baseParams.put(AcraConsts.SP_ESVCID + "=", spEsvcId);
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
 		log.info(StringUtil.changeForLog("Myinfo person base string => " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
