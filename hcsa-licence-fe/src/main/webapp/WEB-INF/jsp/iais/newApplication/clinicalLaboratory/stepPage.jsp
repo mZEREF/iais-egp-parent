@@ -47,7 +47,7 @@
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST001'}">
                                                             <div class="laboratory-disciplines">
-                                                                <p><strong class="app-font-size-22">${currStepName}</strong></p>
+                                                                <p style="font-weight: 600;font-size: 2.2rem">${currStepName}</p>
                                                                 <c:choose>
                                                                     <c:when test="${'RDS' ==currentSvcCode}">
                                                                         <p><iais:message key="NEW_ACK027"/></p>
