@@ -76,7 +76,7 @@ function doAdvSearch() {
 
 function doAdvAfterSearch(){
     showWaiting();
-    $("[name='action_type']").val("doAdvSearch");
+    $("[name='action_type']").val("afterSearch");
     $("#mainForm").submit();
 }
 

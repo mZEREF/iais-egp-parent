@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="AdvSearch" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="12" minorVersion="0" name="AdvSearch" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="70" y="50">
@@ -146,7 +146,7 @@
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="600" y="310">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDetail" value="&quot;doDetail&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDetail" value="&quot;appDetail&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AdvSearchDoPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doAdvAfterSearch" value="&quot;afterSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AdvSearchSort" value="&quot;sort&quot;"/>

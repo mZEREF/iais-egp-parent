@@ -74,7 +74,7 @@ public class Facility implements Serializable {
     private String approvalType;
 
     private String approvalStatus;
-    
+
     private String selectedAfc;
 
     private Date approvalSubmissionDate;

@@ -1,4 +1,5 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %><%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 2/13/2020
@@ -11,6 +12,7 @@
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%--<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-enquiry.js"></script>--%>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -24,6 +26,7 @@
 
 <div class="main-content">
   <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="prRegNo" value="">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
@@ -102,8 +105,13 @@
           </div>
         </div>
       </div>
-      <a onclick="javascript:SOP.Crud.cfxSubmit('mainForm','back');"><em
+      <a onclick="javascript:doBack()"><em
               class="fa fa-angle-left"> </em> Back</a>
     </div>
   </form>
 </div>
+<script>
+  function doBack() {
+    SOP.Crud.cfxSubmit('mainForm', 'back');
+  }
+</script>

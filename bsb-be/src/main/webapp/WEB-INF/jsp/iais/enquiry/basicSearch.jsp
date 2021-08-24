@@ -17,9 +17,7 @@
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">

@@ -37,7 +37,7 @@ import java.util.*;
 public class BiosafetyEnquiryDelegator {
     private final String SEARCH_CATALOG = "bsbBe";
     private static final String KEY_ENQUIRY_SEARCH_DTO = "enquiryDto";
-    private static final String KEY_INBOX_MSG_PAGE_INFO = "pageInfo";
+    private static final String KEY_PAGE_INFO = "pageInfo";
     private static final String KEY_ACTION_VALUE = "action_value";
     private static final String KEY_ACTION_ADDT = "action_additional";
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
@@ -61,14 +61,17 @@ public class BiosafetyEnquiryDelegator {
                 case "app":
                     ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
                     ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
+                    ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
                     break;
                 case "fn":
                     FacilityResultDto facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
                     ParamUtil.setRequestAttr(bpc.request,"facilityInfoDto",facilityInfoDto.getBsbFac());
+                    ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, facilityInfoDto.getPageInfo());
                     break;
                 case "on":
                     ApprovedFacilityCerResultDto approvedFacilityCerResultDto = biosafetyEnquiryClient.getAfcByOrgName(searchNo).getEntity();
                     ParamUtil.setRequestAttr(bpc.request,"afcInfoDto",approvedFacilityCerResultDto.getBsbAFC());
+                    ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, approvedFacilityCerResultDto.getPageInfo());
                     break;
         }
         ParamUtil.setRequestAttr(bpc.request, "count",count);
@@ -378,21 +381,21 @@ public class BiosafetyEnquiryDelegator {
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, applicationResultDto.getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(applicationResultDto.getBsbApp().toString()+"===================application"));
         }
         if("fn".equals(count)){
             FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT,facilityResultDto.getBsbFac());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH,enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, facilityResultDto.getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, facilityResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(facilityResultDto.getBsbFac().toString()+"==========facility"));
         }
         if("an".equals(count)){
             ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_RESULT,approvalResultDto.getBsbApproval());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_SEARCH,enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, approvalResultDto.getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, approvalResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(approvalResultDto.getBsbApproval().toString()+"==========facility"));
         }
 
@@ -400,7 +403,7 @@ public class BiosafetyEnquiryDelegator {
             ApprovedFacilityCerResultDto facilityCerResultDto = biosafetyEnquiryClient.getAFC(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_RESULT,facilityCerResultDto.getBsbAFC());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_SEARCH,enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_INBOX_MSG_PAGE_INFO, facilityCerResultDto.getPageInfo());
+            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, facilityCerResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(facilityCerResultDto.getBsbAFC().toString()+"==========facility"));
         }
 
@@ -527,13 +530,12 @@ public class BiosafetyEnquiryDelegator {
             List<FacilityBiological> queryList = approvalResultDto.getBsbApproval();
             List<ApprovalInfoDto> approvalInfoDtos = new ArrayList<>();
 
-            SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
             for (FacilityBiological facilityBiological : queryList) {
                 ApprovalInfoDto approvalInfoDto = new ApprovalInfoDto();
                 approvalInfoDto.setFacilityAddress(facilityBiological.getFacility().getBlkNo()+""+facilityBiological.getFacility().getStreetName()+""+facilityBiological.getFacility().getFloorNo()+"-"+facilityBiological.getFacility().getUnitNo()+""+facilityBiological.getFacility().getPostalCode());
                 approvalInfoDto.setApprovalType(facilityBiological.getFacility().getApprovalType());
                 approvalInfoDto.setApprovalStatus(facilityBiological.getFacility().getApprovalStatus());
-                approvalInfoDto.setAgent(sdf.format(facilityBiological.getFacility().getBiological().getName()));
+                approvalInfoDto.setAgent(facilityBiological.getFacility().getBiological().getName());
                 approvalInfoDto.setFacilityName(facilityBiological.getFacility().getFacilityName());
                 approvalInfoDto.setFacilityClassification(facilityBiological.getFacility().getFacilityClassification());
                 approvalInfoDto.setFacilityStatus(facilityBiological.getFacility().getFacilityStatus());

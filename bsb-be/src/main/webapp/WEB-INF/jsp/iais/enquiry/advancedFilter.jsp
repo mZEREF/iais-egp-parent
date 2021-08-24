@@ -322,43 +322,43 @@
                     <iais:row>
                         <iais:field value="Organisation Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="organisationName" options="organisationName" firstOption="Please Select"></iais:select>
+                            <iais:select name="organisationName" options="organisationName" firstOption="Please Select" value="${approvedSearchParam.organisationName}"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Administrator"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="facilityAdministrator" type="text" maxlength="132" style=" font-weight:normal;"/>
+                            <input name="facilityAdministrator" type="text" maxlength="132" value="${approvedSearchParam.facilityAdministrator}" style=" font-weight:normal;"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="AFC Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="afcStatus" codeCategory="CATE_ID_BSB_FACILITY_STATUS" firstOption="Please Select"></iais:select>
+                            <iais:select name="afcStatus" codeCategory="CATE_ID_BSB_FACILITY_STATUS" firstOption="Please Select" value="${approvedSearchParam.afcStatus}"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Team Member Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="teamMemberName" type="text" maxlength="132" style=" font-weight:normal;"/>
+                            <input name="teamMemberName" type="text" maxlength="132" style=" font-weight:normal;" value="${approvedSearchParam.teamMemberName}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Team Member ID"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input name="teamMemberID" type="text" maxlength="10" style=" font-weight:normal;"/>
+                            <input name="teamMemberID" type="text" maxlength="10" style=" font-weight:normal;" value="${approvedSearchParam.teamMemberID}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvedDateFrom"></iais:datePicker>
+                            <iais:datePicker name="approvedDateFrom" dateVal="${approvedSearchParam.approvedDateFrom}"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvedDateTo"></iais:datePicker>
+                            <iais:datePicker name="approvedDateTo" dateVal="${approvedSearchParam.approvedDateTo}"></iais:datePicker>
                         </div >
                     </iais:row>
 

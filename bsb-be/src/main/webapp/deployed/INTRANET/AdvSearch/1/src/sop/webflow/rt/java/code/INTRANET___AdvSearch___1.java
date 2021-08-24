@@ -34,6 +34,7 @@ public class INTRANET___AdvSearch___1 extends BaseProcessClass {
 
 	public void doAdvAfterSearch_OnStepProcess_0() throws Exception {
 	// 		doAdvAfterSearch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preAfterAdvSearch", this);
 	}
 
 	public void prepareDetail_OnStepProcess_0() throws Exception {
