@@ -294,7 +294,7 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
 	}
 
-	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri){
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri) throws NoSuchAlgorithmException {
 		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
 		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
 		if(!authlevel .equalsIgnoreCase("L2")){
@@ -316,7 +316,7 @@ public class MyinfoUtil {
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
-	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri){
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri) throws NoSuchAlgorithmException {
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
 		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
 		if(StringUtil.isEmpty(authorizationHeader)){

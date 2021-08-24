@@ -180,7 +180,7 @@ public class MyInfoAjax {
 		String priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
 		String clientId = ConfigHelper.getString("myinfo.common.client.id");
 		String clientSecret =  ConfigHelper.getString("myinfo.common.client.secret");
-		String requestUrl = ConfigHelper.getString("myinfo.taken.requestUrl");
+		String requestUrl = ConfigHelper.getString("myinfo.taken.authUrl");
 		MyInfoTakenDto myInfoTakenDto = MyinfoUtil.getTakenCallMyInfo(AcraConsts.POST_METHOD,grantType,code, priclientkey,clientSecret,requestUrl,clientId,state,redirectUri);
 		return myInfoTakenDto;
 	}
