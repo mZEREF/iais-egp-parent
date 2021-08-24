@@ -12,6 +12,8 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_FACILITY_INFO_RESULT = "facInfoSearchResult";
     public static final String PARAM_APPROVAL_INFO_SEARCH = "approvalSearchParam";
     public static final String PARAM_APPROVAL_INFO_RESULT = "approvalSearchResult";
+    public static final String PARAM_APPROVED_CERTIFIER_INFO_SEARCH = "approvedSearchParam";
+    public static final String PARAM_APPROVED_CERTIFIER_INFO_RESULT = "approvedSearchResult";
 
 
 
@@ -48,7 +50,9 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_APPROVAL_STATUS = "approvalStatus";
     public static final String PARAM_ORGANISATION_NAME = "organisationName";
     public static final String PARAM_FACILITY_ADMINISTRATOR = "facilityAdministrator";
-    public static final String PARAM_AFC_STATUS = "AfcStatus";
+    public static final String PARAM_AFC_STATUS = "afcStatus";
     public static final String PARAM_TEAM_MEMBER_NAME = "teamMemberName";
     public static final String PARAM_TEAM_MEMBER_ID = "teamMemberID";
+    public static final String PARAM_APPROVED_DATE_FROM = "approvedDateFrom";
+    public static final String PARAM_APPROVED_DATE_TO = "approvedDateTo";
 }
