@@ -344,15 +344,65 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
                     </td>
                     <td>
-                      <div class="col-xs-12">
-                          <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
-                              ${appSvcClinicalDirectorDto.name}
-                          </span>
-                          <br>
-                          <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
-                              ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
-                          </span>
+                      <div class="col-xs-12 img-show">
+                      <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
+                        <c:out value="${appSvcClinicalDirectorDto.name}"/>
+                        <c:if test="${not empty proHashMap[appSvcClinicalDirectorDto.profRegNo]}">
+                          <c:if test="${proHashMap[appSvcClinicalDirectorDto.profRegNo].name==appSvcClinicalDirectorDto.name}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                          <c:if test="${proHashMap[appSvcClinicalDirectorDto.profRegNo].name!=appSvcClinicalDirectorDto.name}">
+                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
+                          </c:if>
+                        </c:if>
+
+                      </span>
+                        <br>
+                        <span class="oldVal "
+                              attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"
+                              style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
+                        <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
+                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                          </c:if>
+                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
+                             <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
+                                  width="25" height="25" alt="NETS">
+                          </c:if>
+                        </c:if>
+
+                      </span>
                       </div>
+                      <c:if test="${not empty proHashMap[appSvcClinicalDirectorDto.profRegNo]}">
+                        <div class="row new-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                            <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                            </label><span style="position: absolute;right: 0px;color: black"
+                                          onclick="closeThis(this)">X</span>
+                            <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                              <tr>
+                                <td>${proHashMap[appSvcClinicalDirectorDto.profRegNo].name}</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+                      <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
+                        <div class="row old-img-show" style="display: none">
+                          <div style="position: absolute;z-index: 100;background-color: #F5F5F5;margin-left:20%;width: 35%">
+                            <label style="font-weight: normal">The name of this personnel as listed in PRS is:
+                            </label><span style="position: absolute;right: 0px;color: black"
+                                          onclick="closeThis(this)">X</span>
+                            <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
+                              <tr>
+                                <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name}</td>
+                              </tr>
+
+                            </table>
+                          </div>
+                        </div>
+                      </c:if>
+
                     </td>
                   </tr>
                   <tr>
