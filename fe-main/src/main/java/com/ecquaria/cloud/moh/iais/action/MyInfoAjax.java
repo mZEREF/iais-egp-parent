@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.lowagie.text.pdf.codec.Base64;
+import java.security.NoSuchAlgorithmException;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,7 +115,7 @@ public class MyInfoAjax {
 	public void setVerifyTakenAndAuthoriseApiUrl(HttpServletRequest request,String redirectUriPostfix){
 		setVerifyTakenAndAuthoriseApiUrl(request,redirectUriPostfix,"");
 	}
-	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix,String nric){
+	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix,String nric) throws NoSuchAlgorithmException {
 		String myinfoOpen = ConfigHelper.getString("myinfo.true.open");
 		if (!AppConsts.YES.equalsIgnoreCase( myinfoOpen)) {
 			log.info("-----------myinfo.true.open is No-------");
@@ -171,11 +172,11 @@ public class MyInfoAjax {
 	}
 
 
-	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix){
+	public MyInfoDto noTakenCallMyInfo(BaseProcessClass bpc,String redirectUriPostfix) throws NoSuchAlgorithmException {
 	   return  noTakenCallMyInfo(bpc,redirectUriPostfix,"");
 	}
 
-	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri){
+	private MyInfoTakenDto getTakenCallMyInfo(String code,String state,String redirectUri) throws NoSuchAlgorithmException {
 		String grantType = ConfigHelper.getString("myinfo.taken.grant.type","authorization_code");
 		String priclientkey = ConfigHelper.getString("myinfo.common.priclientkey");
 		String clientId = ConfigHelper.getString("myinfo.common.client.id");
@@ -338,16 +339,18 @@ public class MyInfoAjax {
 		String keyStore = ConfigHelper.getString("myinfo.common.priclientkey");
 		String	clientId = ConfigHelper.getString("myinfo.common.client.id");
 		String spEsvcId = ConfigHelper.getString("myinfo.common.sp.esvcId");
-		String  uri = ConfigHelper.getString("myinfo.person.url")+nric+'/';
+		String  uri = ConfigHelper.getString("myinfo.person.authUrl")+nric+'/';
 		String attrs =MyinfoUtil.getAttrsStringByListAttrs(getAttrList());
 		String authorizationHeader = MyinfoUtil.generateAuthorizationHeaderForMyInfo(AcraConsts.GET_METHOD,clientId,attrs,keyStore,spEsvcId,uri,takenType,taken);
 		log.info(StringUtil.changeForLog("Myinfo person header => " + authorizationHeader));
 		Map <String,Object> param = IaisCommonUtils.genNewHashMap();
 		param.put(AcraConsts.CLIENT_ID, clientId);
 		param.put(AcraConsts.ATTRIBUTE, attrs);
+		param.put(AcraConsts.SP_ESVCID, spEsvcId);
 		ResponseEntity<String> resEntity;
 		try {
-			resEntity = IaisCommonUtils.callEicGatewayWithParam(uri, HttpMethod.GET, param, MediaType.APPLICATION_JSON, null,
+			String eicUrl = ConfigHelper.getString("myinfo.person.url") + nric + '/';
+			resEntity = IaisCommonUtils.callEicGatewayWithParam(eicUrl, HttpMethod.GET, param, MediaType.APPLICATION_JSON, null,
 					authorizationHeader, null, null, String.class);
 			AuditTrailDto auditTrailDto = new AuditTrailDto();
 			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
