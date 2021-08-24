@@ -480,3 +480,44 @@ function unDisableContent(targetSelector) {
         }
     });
 }
+
+function refreshIndex(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    if ($(targetSelector).length == 0) {
+        return;
+    }
+    $(targetSelector).each(function (k,v) {
+        var $ele = $(v);
+        var $selector = $ele.find(':input');
+        if ($selector.length == 0) {
+            $ele.text(k + 1);
+            return;
+        }
+        $selector.each(function () {
+            var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+            var orgName = $input.attr('name');
+            var orgId = $input.attr('id');
+            if (isEmpty(orgName)) {
+                orgName = orgId;
+            }
+            if (isEmpty(orgName)) {
+                return;
+            }
+            var result = /([a-zA-Z_]*)/g.exec(orgName);
+            var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+            $input.prop('name', name + k);
+            if (orgName == orgId) {
+                $input.prop('id', name + k);
+            }
+            var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+            if ($errorSpan.length > 0) {
+                $errorSpan.prop('id', 'error_' + name + k);
+            }
+            if (tag == 'select') {
+                $input.niceSelect("update");
+            }
+        });
+    });
+}

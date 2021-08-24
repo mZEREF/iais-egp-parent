@@ -72,11 +72,11 @@ public interface OrgUserManageService {
     FeUserDto syncFeUserFromBe(FeUserDto feUserDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/8/12
-     * @Param: userSession
-     * @return: String
-     * @Descripation: getActiveUserAndRoleFlag
-     */
+      * @author: shicheng
+      * @Date 2021/8/12
+      * @Param: userSession
+      * @return: String
+      * @Descripation: getActiveUserAndRoleFlag
+      */
     String getActiveUserAndRoleFlag(FeUserDto userSession);
 }

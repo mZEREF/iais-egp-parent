@@ -532,10 +532,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                     if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
                         List<AppEditSelectDto> appEditSelectDtos = applicationClient.getAppEditSelectDto(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC).getEntity();
                         boolean changePrem=false;
-                        for (AppEditSelectDto edit:appEditSelectDtos
-                        ) {
-                            if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
-                                changePrem=true;
+                        for (AppEditSelectDto edit : appEditSelectDtos) {
+                            if (edit.isPremisesEdit() || edit.isPremisesListEdit()) {
+                                changePrem = true;
                             }
                         }
                         if(changePrem){
@@ -551,13 +550,13 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                        applicationDto.setNeedNewLicNo(true);
-                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                            applicationDtoMain.setNeedNewLicNo(true);
-                        }
+                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                             applicationDto.setNeedNewLicNo(true);
+                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                                 applicationDtoMain.setNeedNewLicNo(true);
+                             }
+                         }
                     }
-                }
             }
         }
         log.info("-----------clearApprovedHclCodeByExistRejectApp end------");

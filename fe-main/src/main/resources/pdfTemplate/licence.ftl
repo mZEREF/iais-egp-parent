@@ -168,7 +168,6 @@
       margin-top: 10px;
       word-wrap:break-word;
       word-break:break-all;
-      margin-left: 10px;
     }
     .lic-dateinfo {
       margin-top: 20px;

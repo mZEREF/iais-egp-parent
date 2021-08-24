@@ -7,10 +7,10 @@
 
 <div class="form-horizontal licenseeContent">
     <iais:row>
-        <iais:value width="6">
+        <iais:value width="6" cssClass="col-md-6">
             <strong class="app-font-size-22 premHeader">Licensee Details</strong>
         </iais:value>
-        <iais:value width="6" cssClass="text-right editDiv">
+        <iais:value width="6" cssClass="col-md-6 text-right editDiv">
             <c:if test="${canEdit}">
                 <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
                 <a id="edit" class="text-right app-font-size-16">
@@ -24,7 +24,7 @@
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
-                <iais:value width="7">
+                <iais:value width="7" cssClass="col-md-7">
                     <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" cssClass="assignSel"/>
                 </iais:value>
             </iais:row>
@@ -35,7 +35,7 @@
 
         <iais:row cssClass="licenseeType">
             <iais:field width="5" mandatory="true" value="Licensee Type"/>
-            <iais:value width="7">
+            <iais:value width="7" cssClass="col-md-7">
                 <iais:select name="licenseeType" firstOption="Please Select" codeCategory="CATE_ID_LICENSEE_SUB_TYPE"
                              cssClass="not-disabled licenseeTypeSel" value="${dto.licenseeType}" />
             </iais:value>

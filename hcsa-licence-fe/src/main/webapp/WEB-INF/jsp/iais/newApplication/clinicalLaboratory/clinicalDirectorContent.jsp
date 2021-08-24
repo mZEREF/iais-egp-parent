@@ -28,7 +28,9 @@
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -369,6 +371,7 @@
         } else if('newOfficer' == assignSelVal) {
             $content.removeClass('hidden');
             clearFields($content);
+            $content.closest('div.clinicalDirectorContent').find('input.licPerson').val('0');
         } else {
             $content.removeClass('hidden');
             var arr = assignSelVal.split(',');
@@ -388,6 +391,7 @@
             return;
         }
         console.info("11111111111111");
+        console.log(data);
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
@@ -397,10 +401,10 @@
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
                 // alert(licPerson);
-                if ('1' == licPerson){
-                    $current.find('input.licPerson').val('1');
+                if (licPerson){
+                    $current.closest('div.clinicalDirectorContent').find('input.licPerson').val('1');
                 }else{
-                    $current.find('input.licPerson').val('0');
+                    $current.closest('div.clinicalDirectorContent').find('input.licPerson').val('0');
                 }
             } else if(i == 'speciality'){
                 var speciality = data.speciality;

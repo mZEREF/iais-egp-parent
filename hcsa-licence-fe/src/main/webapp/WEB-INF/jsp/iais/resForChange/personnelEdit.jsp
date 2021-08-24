@@ -73,6 +73,9 @@
                                                     <c:when test="${'CD'==psnType}">
                                                         <p> </p>
                                                     </c:when>
+                                                    <c:when test="${'KAH'==psnType}">
+                                                        <p> </p>
+                                                    </c:when>
                                                 </c:choose>
                                             </c:forEach>
                                         </td>
@@ -97,6 +100,9 @@
                                                     </c:when>
                                                     <c:when test="${'CD'==psnType}">
                                                         <p>Clinical Director</p>
+                                                    </c:when>
+                                                    <c:when test="${'KAH'==psnType}">
+                                                        <p>Key Appointment Holder</p>
                                                     </c:when>
                                                 </c:choose>
                                             </c:forEach>

@@ -1229,6 +1229,7 @@ public class LicenceApproveBatchjob {
             for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos) {
                 LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto, LicSvcSpecificPersonnelDto.class);
                 licSvcSpecificPersonnelDto.setAppSvcPsnId(licSvcSpecificPersonnelDto.getId());
+                licSvcSpecificPersonnelDto.setId(null);
                 result.add(licSvcSpecificPersonnelDto);
             }
         }
@@ -1471,6 +1472,8 @@ public class LicenceApproveBatchjob {
                             if(appGrpPersonnelDto!= null){
                                 LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
                                 licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
+                                //licPremisesScopeAllocationDto.setLicPremScopeId(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId());
+                                licPremisesScopeAllocationDto.setLicPremSvcPersonId(appSvcPremisesScopeAllocationDto.getAppSvcPersonId());
                                 licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
                             }else{
                                 log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:"

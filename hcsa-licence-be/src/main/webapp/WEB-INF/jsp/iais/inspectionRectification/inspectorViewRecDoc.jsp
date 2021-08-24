@@ -74,7 +74,7 @@
                       <label style="font-size: 16px">Inspector Lead</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectorLeadStr}"/></span>
+                        <span style="font-size: 16px"><c:out value="${inspectionReportDto.inspectorLeadStr}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -178,7 +178,7 @@
                   </div>
                   <p></p>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspRecCheckListView()">View Checklist</button>
                   </iais:action>
                 </iais:section>

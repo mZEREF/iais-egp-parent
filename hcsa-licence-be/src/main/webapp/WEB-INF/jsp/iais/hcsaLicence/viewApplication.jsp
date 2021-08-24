@@ -97,7 +97,7 @@
 </div>
 <script>
     function closeThis(obj){
-        $(obj).closest('div.row').attr("style","display:none");
+        $(obj).closest('div.disciplinary-record').hide();
     }
 
     $(document).ready(function () {

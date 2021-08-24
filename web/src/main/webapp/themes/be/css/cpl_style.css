@@ -1958,6 +1958,12 @@ input[type=number]::-webkit-outer-spin-button {
 .form-check input.form-check-input:disabled {
   cursor: not-allowed;
 }
+.form-check input.form-check-input:disabled + .form-check-label span.check-circle{
+  border-color: #999999;
+}
+.form-check input.form-check-input:checked:disabled + .form-check-label span.check-circle:before{
+  background-color: #999999;
+}
 .form-check input.form-check-input:hover + .form-check-label {
   border: 0;
 }

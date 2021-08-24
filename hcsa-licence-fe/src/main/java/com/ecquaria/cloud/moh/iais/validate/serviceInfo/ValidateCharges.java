@@ -110,9 +110,7 @@ public class ValidateCharges implements ValidateFlow {
                 }
             }
             String maxAmount = otherChargesDtos.get(i).getMaxAmount();
-            if(StringUtil.isEmpty(maxAmount)){
-                map.put("otherAmountMax"+i,errMsg);
-            }else {
+            if(!StringUtil.isEmpty(maxAmount)){
                 if(maxAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("otherAmountMax"+i,general_err0041);

@@ -88,7 +88,7 @@
                         </div>
                         <div class="row" style="padding-bottom: 40px;">
                             <div class="col-xs-12 col-md-12">
-                                <a id="BackMain"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="#" id="BackMain"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                         </div>
                     </div>
