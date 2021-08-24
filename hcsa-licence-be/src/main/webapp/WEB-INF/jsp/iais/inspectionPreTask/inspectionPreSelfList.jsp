@@ -96,7 +96,7 @@
                     </div>
                   </c:forEach>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doInspectionPreSelfBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspectionPreSelfBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                   </iais:action>
                 </iais:section>
               </iais:body>
