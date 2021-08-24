@@ -2503,7 +2503,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         dto.getServiceCode());
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
+                AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+                doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, appSubmissionDto.getSubLicenseeDto(), serviceId, sB);
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
                 Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
@@ -3291,7 +3292,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto, String serviceId, StringBuilder sB) {
+    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto, SubLicenseeDto subLicenseeDto, String serviceId, StringBuilder sB) {
         if (poDto == null) {
             log.info("podto is null");
             if (hcsaSvcPersonnelDtos != null) {
@@ -3472,6 +3473,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         oneErrorMap.put("deputyEmailAddr" + dpoIndex, "GENERAL_ERR0014");
                     } else if (emailAddr.length() > 66) {
 
+                    }
+                }
+                if (subLicenseeDto != null){
+                    String subLicenseeIdType = subLicenseeDto.getIdType();
+                    String subLicenseeIdNumber = subLicenseeDto.getIdNumber();
+                    if (StringUtil.isNotEmpty(subLicenseeIdType) && StringUtil.isNotEmpty(subLicenseeIdNumber)) {
+                        if (subLicenseeIdType.equals(idType) && subLicenseeIdNumber.equals(idNo)) {
+                            oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
+                        }
                     }
                 }
                 dpoIndex++;
