@@ -243,12 +243,20 @@
                         </div>
                         <div class="col-md-6">
                             <div class="col-md-6">
-                              <span class="newVal " attr="${Board.idNo}">${Board.idNo}
-                                  <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                              </span>
+                                <span class="newVal " attr="${Board.idNo}">
+                                    ${Board.idNo}
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${Board.idNo}"/>
+                                        <jsp:param name="methodName" value="showThisTableNew"/>
+                                    </jsp:include>
+                                </span>
                             </div>
                         </div>
                     </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${Board.idNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -288,12 +296,20 @@
                         </div>
                         <div class="col-md-6">
                             <div  class="col-md-6">
-                            <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}
-                                <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </span>
+                                <span  class="newVal " attr="${Authorised.idNumber}">
+                                    ${Authorised.idNumber}
+                                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecordMark.jsp">
+                                        <jsp:param name="idNo" value="${Authorised.idNumber}"/>
+                                        <jsp:param name="methodName" value="showThisTableNew"/>
+                                    </jsp:include>
+                                </span>
                             </div>
                         </div>
                     </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/disciplinaryRecords.jsp">
+                        <jsp:param name="idNo" value="${Authorised.idNumber}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
 
                     <div class="row">
                         <div class="col-md-6">

@@ -6,7 +6,7 @@
 <c:set var="style" value="${empty param.style ? '' : param.style}" />
 
 <c:if test="${not empty idNo && not empty hashMap[idNo]}" >
-    <div class="row ${cssClass}" style="display: none">
+    <div class="disciplinary-record ${cssClass}" style="display: none">
         <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 100%;margin-top: 5%;${style}">
             <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label>
             <span style="position: absolute;right: 0px;color: black" onclick="javascript:closeThis(this);">X&nbsp;</span>
