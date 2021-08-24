@@ -97,7 +97,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-        $('.panel-collapse').collapse('show');
+        $('#accordion').find('.collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
             btn.each(function(index, ele) {
