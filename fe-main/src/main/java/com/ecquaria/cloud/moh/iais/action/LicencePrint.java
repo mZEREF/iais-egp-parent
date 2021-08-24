@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import java.io.ByteArrayOutputStream;
@@ -53,7 +54,12 @@ public class LicencePrint {
                 map.put("licenceNo",licenceViewDto.getLicenceNo());
                 map.put("licenseeName",licenceViewDto.getLicenseeName());
                 map.put("serviceName",licenceViewDto.getServiceName());
-                map.put("hivTesting",licenceViewDto.getHivTesting());
+                if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
+                    map.put("hivTesting","<br/>");
+                }else{
+                    map.put("hivTesting",licenceViewDto.getHivTesting());
+                }
+
                 //map.put("hciName",licenceViewDto.getHciName());
                 map.put("businessName",licenceViewDto.getBusinessName());
                 map.put("address",licenceViewDto.getAddress());
