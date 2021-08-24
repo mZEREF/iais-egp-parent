@@ -24,7 +24,7 @@
     <div class="col-xs-12">
         <p style="font-weight: 600;font-size: 2.2rem">Key Appointment Holder</p>
         <hr>
-        <p>Key appointment holders are the governing body and generally the controlling mind and will of the licensee.They have the authority to provide high-level management and clinical direction but do not directly influence day-to-day operations on the ground</p>
+        <p><iais:message key="NEW_ACK029"/></p>
 
         <c:choose>
             <c:when test="${empty AppSvcKeyAppointmentHolderDtoList && keyAppointmentHolderConfigDto.mandatoryCount > 1}">
