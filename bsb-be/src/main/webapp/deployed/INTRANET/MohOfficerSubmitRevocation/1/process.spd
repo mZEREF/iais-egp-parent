@@ -1,62 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohOfficerSubmitRevocation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="250" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="submit" x="830" y="200">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="updateNum" x="600" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="updateNum_OnStepProcess_0" name="updateNum_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="updateNum_OnStepProcess_0" name="updateNum_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="back" x="720" y="200">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="revocationDetail" stageIndicator="" x="580" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="updateInventory" stageIndicator="" x="370" y="240">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewAck" stageIndicator="" x="830" y="300">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(790,120)(850,220)}</position>
@@ -100,23 +102,24 @@
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/revocationDetail" componentIfTrue="/Pages/WebPage/updateInventory" defClass="" executor="" icon="" leftOperand="1" name="Cond1" operator="=" rightOperand="1" x="400" y="100">
-   <Description/>
+   <Description />
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="770" y="100">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSubmit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/back" value="&quot;doBack&quot;"/>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="770" y="100">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSubmit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/back" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="720" y="300">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

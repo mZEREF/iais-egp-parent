@@ -30,7 +30,7 @@ public interface RevocationClient {
     FeignResponseEntity<Application> saveApplication(@RequestBody Application application);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);
+    FeignResponseEntity<ResponseDto<ApplicationMisc>> saveApplicationMisc(@RequestBody ApplicationMisc misc);
 
     @GetMapping(value = "/bsb-application/app/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AOQueryResultDto> doQuery(@SpringQueryMap ApprovalOfficerQueryDto queryDto);

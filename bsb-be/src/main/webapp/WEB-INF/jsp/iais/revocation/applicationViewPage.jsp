@@ -9,9 +9,15 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+<%--        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
+
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -88,7 +94,8 @@
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="500"></textarea>
-                                                                                        <span id="error_reason"
+                                                                                        <span data-err-ind="reason"
+                                                                                              id="error_reason"
                                                                                               name="iaisErrorMsg"
                                                                                               class="error-msg"></span>
                                                                                     </div>
@@ -142,6 +149,5 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <%@include file="uploadFile.jsp" %>

@@ -110,7 +110,8 @@ $(function () {
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
         }else{
-            SOP.Crud.cfxSubmit("mainForm","doSubmit");
+            $("[name='action_type']").val("doSubmit");
+            $("#mainForm").submit();
         }
     });
 

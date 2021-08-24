@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
@@ -23,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 
 /**
  * @author Zhu Tangtang
@@ -96,7 +99,10 @@ public class DORevocationDelegator {
         miscDto.setApplication(app);
         miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
 
-        revocationClient.saveApplicationMisc(miscDto);
+        ResponseDto<ApplicationMisc> miscResponseDto= revocationClient.saveApplicationMisc(miscDto).getEntity();
+        if("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
+            ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, miscResponseDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
+        }
 
         //get user name
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
