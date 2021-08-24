@@ -51,7 +51,7 @@
                                 <p>
                                     <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.document, StandardCharsets.UTF_8.toString())}"
                                        title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span> </a>
-                                    <a onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
+                                    <a href="javascript:void(0);" onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
                                 </p>
                             </td>
                             <td width="10%">
@@ -119,7 +119,7 @@
                                         <p>
                                             <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
                                                title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
-                                            <a  onclick="doVerifyFileGo('${interalFile.fileRepoId}')"><c:out
+                                            <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')"><c:out
                                                     value="${interalFile.docName}.${interalFile.docType}"></c:out>
                                             </a>
                                         </p>
