@@ -27,23 +27,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwe.JsonWebEncryption;
-import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -98,69 +89,10 @@ public class MyinfoUtil {
 		if(StringUtil.isEmpty(encipheredData)){
 			return encipheredData;
 		}
-		JsonWebEncryption jwe = new JsonWebEncryption();
-		jwe.setCompactSerialization(encipheredData);
-		log.info(StringUtil.changeForLog("JWE Algorithm ================> " + jwe.getAlgorithmHeaderValue()));
-		log.info(StringUtil.changeForLog("JWE Enc ===============> " + jwe.getEncryptionMethodHeaderParameter()));
-		jwe.setAlgorithmConstraints(
-				new AlgorithmConstraints(
-						AlgorithmConstraints.ConstraintType.WHITELIST,
-						jwe.getAlgorithmHeaderValue())
-		);
 
-		jwe.setContentEncryptionAlgorithmConstraints(
-				new AlgorithmConstraints(
-						AlgorithmConstraints.ConstraintType.WHITELIST,
-						jwe.getEncryptionMethodHeaderParameter())
-		);
-		String  keyStore = ConfigHelper.getString("myinfo.jwe.priclientkey");
-		jwe.setKey(getPrivateKey(keyStore));
+		String privateKey = ConfigHelper.getString("myinfo.common.priclientkey");
 
-		encipheredData = jwe.getPlaintextString();
-		log.info(StringUtil.changeForLog("Get the payload from the JWE =======>" + encipheredData));
-
-		String  jwskeyStore = ConfigHelper.getString("myinfo.jws.pubclientkey");
-		PublicKey pubKey = getPublicKey(jwskeyStore);
-		// Create a new JsonWebSignature
-		JsonWebSignature jws = new JsonWebSignature();
-		// Set the compact serialization on the JWS
-		jws.setCompactSerialization( encipheredData);
-		// Set the verification key
-		jws.setKey(pubKey);
-		// Check the signature
-		boolean signatureVerified = jws.verifySignature();
-		//Get the payload, or signed content, from the JWS
-		if(signatureVerified){
-			encipheredData = jws.getPayload();
-		}else {
-			log.debug("jws check is failed");
-		}
-		return  encipheredData;
-	}
-
-	public static PrivateKey getPrivateKey(String clientKeystore) {
-	    PrivateKey privateKey = null;
-		byte[] encodedKey = Base64.decode(clientKeystore);
-		try {
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedKey);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-	        privateKey = (PrivateKey)kf.generatePrivate(keySpec);
-		} catch (Exception e){
-			log.info(e.getMessage(),e);
-		}
-		return privateKey;
-	}
-	public static PublicKey getPublicKey(String clientKeystore) {
-		PublicKey publicKey = null;
-		byte[] encodedKey = Base64.decode(clientKeystore);
-		try {
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedKey);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			publicKey  = (PublicKey)kf.generatePublic(keySpec);
-		} catch (Exception e){
-			log.info(e.getMessage(),e);
-		}
-		return publicKey;
+		return SignatureUtil.decryptToken(encipheredData, privateKey).getPayload().toString();
 	}
 
 	public static String getBaseString( String idNum, List<String> attrs, String clientId, String singpassEserviceId, String txnNo){
