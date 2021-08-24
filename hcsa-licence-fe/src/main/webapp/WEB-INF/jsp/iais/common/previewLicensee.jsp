@@ -18,7 +18,7 @@
             </a>
         </h4>
     </div>
-    <div id="previewLicensee${empty documentIndex ? "" : documentIndex}" class="panel-collapse collapse">
+    <div id="previewLicensee${empty documentIndex ? "" : documentIndex}" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
             <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.licenseeEdit)
             && empty printView && subLicenseeDto.licenseeType ne soloType}">

@@ -14,7 +14,7 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-    font-family: FontAwesome, sans-serif;        position: absolute;
+        font-family: FontAwesome, sans-serif;        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;
@@ -76,7 +76,7 @@
                                                         </div>
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
-                                                    <%@include file="../common/declarations.jsp"%>
+                                                        <%@include file="../common/declarations.jsp"%>
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -97,7 +97,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-        $('.panel-collapse').collapse('show');
+        $('#accordion').find('.collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
             btn.each(function(index, ele) {
@@ -107,7 +107,7 @@
         // textarea
         $('textarea', '#declarations').each(function(index, ele){
             $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
-                + $(ele).val() + '</div>');
+                    + $(ele).val() + '</div>');
             $(ele).remove();
         });
 
