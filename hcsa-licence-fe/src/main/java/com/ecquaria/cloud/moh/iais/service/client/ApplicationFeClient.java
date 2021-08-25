@@ -155,6 +155,11 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-application/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
+    /**
+     *  only for RFI applicaiton
+     * @param appNo
+     * @return
+     */
     @RequestMapping(path = "/iais-submission/appSubmissionDto/{appNo}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);
 
