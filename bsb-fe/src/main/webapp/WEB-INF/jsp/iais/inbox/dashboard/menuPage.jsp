@@ -4,7 +4,7 @@
             <ul class="nav nav-tabs nav-menu">
                 <li class="active"><a href="#"><span>Dashboard</span></a></li>
                 <menu:load id="inbox-top-menus">
-                    <menu:include name="INTER_INBOX"/>
+                    <menu:include name="BSB_INTER_INBOX"/>
                 </menu:load>
                 <menu:iterate id="inbox-top-menus" var="item" varStatus="status" >
                 <c:choose>
@@ -62,12 +62,6 @@
                                 </li>
                             </c:otherwise>
                         </c:choose>
-                        <li class="divider" role="separator"></li>
-                        <li><a href="/main-web/eservice/INTERNET/MohAccessmentGuide">Step-by-step guide to eServices</a></li>
-                        <br/>
-                        <li>
-                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=toMOHAlert">Go To MOH Alert</a>
-                        </li>
                         </ol>
                     </c:if>
                 </c:when>
@@ -76,18 +70,18 @@
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" href="javascript:"><span>${item.displayLabel}</span></a>
                     <ol class="dropdown-menu">
                         </c:if>
-                        <c:if test="${nextDepth == currDepth}">
-                        <li>
-                            <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','licPageMenu')">
-                                <egov-smc:commonLabel><c:out
-                                        value="${item.displayLabel}"/></egov-smc:commonLabel>
-                            </a>
-                        </li>
-                        </c:if>
-                        </c:otherwise>
-                        </c:choose>
-                        </c:if>
-                        </menu:iterate>
+                <c:if test="${nextDepth == currDepth}">
+                <li>
+                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','licPageMenu')">
+                        <egov-smc:commonLabel><c:out
+                                value="${item.displayLabel}"/></egov-smc:commonLabel>
+                    </a>
+                </li>
+                </c:if>
+                </c:otherwise>
+                </c:choose>
+                </c:if>
+                </menu:iterate>
             </ul>
         </div>
     </div>
