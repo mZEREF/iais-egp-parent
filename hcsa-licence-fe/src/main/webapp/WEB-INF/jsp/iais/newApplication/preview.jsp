@@ -268,9 +268,8 @@
 
     });
 
-    function preview(){
+    function preview() {
         // window.print();
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var txt = '';
         <c:if test="${empty viewPrint}">
         $(':checked, textarea','#declarations').each(function(){
@@ -279,15 +278,30 @@
         $("input[name='effectiveDt']").each(function (){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
-        if (url.indexOf('?') < 0) {
-            url += '?';
-            if (txt != '') {
-                txt = txt.substring()
-            }
-        }
         </c:if>
-        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
-        window.open(url +rfc+ txt,'_blank');
+        var url = '${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        var rfc = "RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        if (url.indexOf('?') < 0) {
+            url += '?' + rfc;
+        } else {
+            url += '&' + rfc;
+        }
+        if (isEmpty(txt)) {
+            window.open(url,'_blank');
+        } else {
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/init-print',
+                'dataType': 'json',
+                'data': txt,
+                'type': 'POST',
+                'success': function (data) {
+                    window.open(url,'_blank');
+                },
+                'error':function (data) {
+                    console.log("err: " + data);
+                }
+            });
+        }
     };
 
     function saveDraft() {
