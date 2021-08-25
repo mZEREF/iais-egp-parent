@@ -1940,6 +1940,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDto.setServiceId(svcId);
             appSvcRelatedInfoDto.setServiceCode(svcCode);
+            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(svcId);
             if(hcsaSvcSubtypeOrSubsumedDtos!=null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);

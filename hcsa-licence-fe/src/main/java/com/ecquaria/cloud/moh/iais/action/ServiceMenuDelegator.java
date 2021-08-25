@@ -830,6 +830,7 @@ public class ServiceMenuDelegator {
                         newSpeBaseSvcNames.add(baseServiceDto.getSvcName());
                         //for reload
                         baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                        baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                         baseReloadDto.setLicPremisesId("");
                         baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
                     }else{
@@ -852,6 +853,7 @@ public class ServiceMenuDelegator {
                             appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                             //for reload
                             baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                            baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                             baseReloadDto.setLicPremisesId(appAlignLicQueryDto.getPremisesId());
                             baseReloadDto.setHciCode(appAlignLicQueryDto.getHciCode());
                             baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
@@ -1169,7 +1171,9 @@ public class ServiceMenuDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
