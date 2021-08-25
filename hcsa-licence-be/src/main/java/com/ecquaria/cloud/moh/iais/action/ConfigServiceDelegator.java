@@ -357,7 +357,7 @@ public class ConfigServiceDelegator {
         addStepSchemeDto(businessName != null && String.valueOf(1).equals(businessName), HcsaConsts.STEP_BUSINESS_NAME,
                 HcsaConsts.BUSINESS_NAME, hcsaServiceStepSchemeDtos);
         addStepSchemeDto(cgoDto.getMandatoryCount() > 0 && cgoDto.getMaximumCount() > 0, HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
-                HcsaConsts.CLINICAL_GOVERNANCE_OFFICER, hcsaServiceStepSchemeDtos);
+                HcsaConsts.CLINICAL_GOVERNANCE_OFFICERS, hcsaServiceStepSchemeDtos);
         addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && cgoDto.getMandatoryCount() > 0 && cgoDto.getMaximumCount() > 0,
                 HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
         addStepSchemeDto(svcPersonnelDto.getMandatoryCount() > 0 && svcPersonnelDto.getMaximumCount() > 0,
