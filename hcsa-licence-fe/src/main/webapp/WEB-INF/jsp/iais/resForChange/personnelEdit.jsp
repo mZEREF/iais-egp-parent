@@ -34,8 +34,11 @@
                                 <br/>
                                 <br/>
                                 <div>
-                                    <p style="font-size: 3rem"><c:out value="${onePersonnel.psnName}"/>,&nbsp;<c:out
-                                            value="${onePersonnel.idNo}"/>&nbsp;(<iais:code code="${onePersonnel.idType}"/>)</p>
+                                    <p style="font-size: 3rem">
+                                        <c:out value="${oldPersonnelDto.psnName}"/>,&nbsp
+                                        <c:out value="${oldPersonnelDto.idNo}"/>&nbsp;
+                                        (<iais:code code="${oldPersonnelDto.idType}"/>)
+                                    </p>
                                     <h4>Changes made will be applied to all licences associated with this personnel.
                                         Please note that payment is required for each affected licence.</h4>
                                 </div>
