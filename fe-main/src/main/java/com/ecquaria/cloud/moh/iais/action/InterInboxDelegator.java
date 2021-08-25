@@ -105,6 +105,7 @@ public class InterInboxDelegator {
     AppInboxClient appInboxClient;
     @Autowired
     AssessmentGuideService assessmentGuideService;
+    private static final  String LIC_PRINT_FLAG = "InterInboxDelegator_lic_print_flag";
     public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
 
     private static String msgStatus[] = {
@@ -123,6 +124,7 @@ public class InterInboxDelegator {
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         initInboxDto(bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
+        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,IaisEGPHelper.isActiveMigrated() ? AppConsts.NO : AppConsts.YES);
     }
 
     public void initToPage(BaseProcessClass bpc){

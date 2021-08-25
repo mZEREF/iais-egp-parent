@@ -243,7 +243,9 @@
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-cease">Cease</a>
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-amend">Amend</a>
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-appeal">Appeal</a>
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
+                            <c:if test="${InterInboxDelegator_lic_print_flag == '1'}">
+                                <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>
