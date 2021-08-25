@@ -1831,6 +1831,7 @@ public class NewApplicationHelper {
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap,svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap,svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), personMap,svcCode);
             }
         }
         return appSubmissionDto;
@@ -3514,10 +3515,22 @@ public class NewApplicationHelper {
                 person.setName(selPerson.getName());
                 person.setIdType(selPerson.getIdType());
                 person.setIdNo(selPerson.getIdNo());
-                person.setMobileNo(selPerson.getMobileNo());
-                person.setEmailAddr(selPerson.getEmailAddr());
-                person.setDesignation(selPerson.getDesignation());
-                person.setOtherDesignation(selPerson.getOtherDesignation());
+                String mobileNo = selPerson.getMobileNo();
+                if(!StringUtil.isEmpty(mobileNo)){
+                    person.setMobileNo(mobileNo);
+                }
+                String emailAddr = selPerson.getEmailAddr();
+                if(!StringUtil.isEmpty(mobileNo)){
+                    person.setEmailAddr(emailAddr);
+                }
+                String designation = selPerson.getDesignation();
+                if(!StringUtil.isEmpty(designation)){
+                    person.setDesignation(designation);
+                }
+                String otherDesignation = selPerson.getOtherDesignation();
+                if(!StringUtil.isEmpty(otherDesignation)){
+                    person.setOtherDesignation(otherDesignation);
+                }
                 String professionType = selPerson.getProfessionType();
                 if(!StringUtil.isEmpty(professionType)){
                     person.setProfessionType(professionType);
@@ -3550,7 +3563,6 @@ public class NewApplicationHelper {
                 if (!StringUtil.isEmpty(officeTelNo)) {
                     person.setOfficeTelNo(officeTelNo);
                 }
-
                 person.setNeedSpcOptList(selPerson.isNeedSpcOptList());
                 List<SelectOption> spcOptList = selPerson.getSpcOptList();
                 if(!IaisCommonUtils.isEmpty(spcOptList)){

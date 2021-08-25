@@ -3538,17 +3538,16 @@ public class NewApplicationDelegator {
                     }
 
                 }
-
                 // KAH
                 List<AppSvcPrincipalOfficersDto> kahList = appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList();
                 List<AppSvcPrincipalOfficersDto> oldKahList = oldAppSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList();
                 List<String> newKahIdNos = IaisCommonUtils.genNewArrayList();
                 List<String> oldKahIdNos = IaisCommonUtils.genNewArrayList();
                 if (!IaisCommonUtils.isEmpty(kahList) && !IaisCommonUtils.isEmpty(oldKahList)) {
-                    for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
+                    for (AppSvcPrincipalOfficersDto item : kahList) {
                         newKahIdNos.add(item.getIdNo());
                     }
-                    for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
+                    for (AppSvcPrincipalOfficersDto item : oldKahList) {
                         oldKahIdNos.add(item.getIdNo());
                     }
                     if (!newKahIdNos.equals(oldKahIdNos)) {
@@ -3557,7 +3556,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-
         return isAuto;
     }
 
