@@ -45,7 +45,7 @@
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:value width="18">
+                                <iais:value width="18" cssClass="form-check">
                                     <input id="hciChk" type="radio"
                                            name="searchChk" value="1"
                                            <c:if test="${count=='1'}">checked</c:if> /><label for="hciChk">&nbsp;HCI Name</label>
