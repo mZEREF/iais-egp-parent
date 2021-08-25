@@ -6832,3 +6832,11 @@ header .container {
   height: 100vh; 
   background-color: rgba(0, 0, 0, 0.7) !important; 
 }
+
+.table-gp .form-check {
+     margin-top:0px;  
+     margin-bottom: 0px;
+     display: table-cell;
+}
+
+ 
