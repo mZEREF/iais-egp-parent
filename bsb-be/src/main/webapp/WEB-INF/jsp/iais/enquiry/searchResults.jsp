@@ -64,26 +64,37 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                       <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
-                                        <tr name="basicData">
-                                            <td><c:out  value="${status.index + 1}"/></td>
-                                            <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
-                                            <td><iais:code code="${items.appType}"></iais:code></td>
-                                            <td><iais:code code="${items.status}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.applicationDt}' pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
-                                            <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
-                                            <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
-                                            <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
-                                            <td><c:out value="${items.facility.biological.name}"></c:out></td>
-                                            <td><iais:code code="${items.facility.biological.riskLevel}"></iais:code></td>
-                                            <td><iais:code code="${items.processType}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.hmVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                            <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
-                                        </tr>
-                                       </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${empty appInfoSearchResult}">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
+                                                    <tr name="basicData">
+                                                        <td><c:out  value="${status.index + 1}"/></td>
+                                                        <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
+                                                        <td><iais:code code="${items.appType}"></iais:code></td>
+                                                        <td><iais:code code="${items.status}"></iais:code></td>
+                                                        <td><fmt:formatDate value='${items.applicationDt}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
+                                                        <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
+                                                        <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
+                                                        <td><c:out value="${items.facility.biological.name}"></c:out></td>
+                                                        <td><iais:code code="${items.facility.biological.riskLevel}"></iais:code></td>
+                                                        <td><iais:code code="${items.processType}"></iais:code></td>
+                                                        <td><fmt:formatDate value='${items.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><fmt:formatDate value='${items.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><fmt:formatDate value='${items.hmVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                        <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </tbody>
                                     </table>
                                 </c:if>

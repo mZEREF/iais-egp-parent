@@ -1,1 +1,1 @@
-<%@include file = "/WEB-INF/jsp/iais/inventoryManagement/basicSearch.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/inventory/basicSearch.jsp"%>
