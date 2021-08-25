@@ -366,62 +366,34 @@
                     </td>
                     <td>
                       <div class="col-xs-6 img-show">
-                        <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
-                          <c:out value="${appSvcClinicalDirectorDto.name}"/>
-                          <c:if test="${not empty proHashMap[appSvcClinicalDirectorDto.profRegNo]}">
-                            <c:if test="${proHashMap[appSvcClinicalDirectorDto.profRegNo].name==appSvcClinicalDirectorDto.name}">
-                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
-                            <c:if test="${proHashMap[appSvcClinicalDirectorDto.profRegNo].name!=appSvcClinicalDirectorDto.name}">
-                              <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                            </c:if>
-                          </c:if>
-                        </span>
+                      <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
+                        <c:out value="${appSvcClinicalDirectorDto.name}"/>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                          <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                          <jsp:param name="personName" value="${appSvcClinicalDirectorDto.name}"/>
+                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                        </jsp:include>
+                      </span>
                       </div>
                       <div class="col-xs-6 img-show">
-                          <span class="oldVal "
-                                attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"
-                                style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
-                          <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
-                            <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
-                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
-                            <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}">
-                               <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                    width="25" height="25" alt="NETS">
-                            </c:if>
-                          </c:if>
-                        </span>
+                      <span class="oldVal "
+                            attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"
+                            style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                          <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                          <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"/>
+                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                        </jsp:include>
+                      </span>
                       </div>
-                      <c:if test="${not empty proHashMap[appSvcClinicalDirectorDto.profRegNo]}">
-                        <div class="row new-img-show" style="display: none">
-                          <div class="prs-name">
-                            <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                            </label><span style="position: absolute;right: 0px;color: black"
-                                          onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                              <tr>
-                                <td>${proHashMap[appSvcClinicalDirectorDto.profRegNo].name}</td>
-                              </tr>
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
-                      <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo]}">
-                        <div class="row old-img-show" style="display: none">
-                          <div class="prs-name">
-                            <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                            </label><span style="position: absolute;right: 0px;color: black"
-                                          onclick="closeThis(this)">X</span>
-                            <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                              <tr>
-                                <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo].name}</td>
-                              </tr>
-
-                            </table>
-                          </div>
-                        </div>
-                      </c:if>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                        <jsp:param name="cssClass" value="new-img-show"/>
+                      </jsp:include>
+                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                        <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                        <jsp:param name="cssClass" value="old-img-show"/>
+                      </jsp:include>
                     </td>
                   </tr>
                   <tr>
@@ -927,63 +899,32 @@
                     <div class="col-xs-6 img-show">
                       <span class="newVal " attr="${cgo.name}">
                         <c:out value="${cgo.name}"/>
-                        <c:if test="${not empty proHashMap[cgo.profRegNo]}">
-                          <c:if test="${proHashMap[cgo.profRegNo].name==cgo.name}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
-                          <c:if test="${proHashMap[cgo.profRegNo].name!=cgo.name}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                          </c:if>
-                        </c:if>
-
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                          <jsp:param name="profRegNo" value="${cgo.profRegNo}"/>
+                          <jsp:param name="personName" value="${cgo.name}"/>
+                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                        </jsp:include>
                       </span>
                     </div>
                     <div class="col-xs-6 img-show">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}
-                        <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name==currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}">
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                          </c:if>
-                          <c:if test="${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name!=currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}">
-                             <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableOldService(this)"
-                                  width="25" height="25" alt="NETS">
-                          </c:if>
-                        </c:if>
-
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                            <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                            <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                        </jsp:include>
                       </span>
                     </div>
-                    <c:if test="${not empty proHashMap[cgo.profRegNo]}">
-                      <div class="disciplinary-record new-img-show" style="display: none">
-                        <div class="prs-name">
-                          <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                          </label><span style="position: absolute;right: 0px;color: black"
-                                        onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                            <tr>
-                              <td>${proHashMap[cgo.profRegNo].name}</td>
-                            </tr>
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-                    <c:if test="${not empty proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo]}">
-                      <div class="disciplinary-record old-img-show" style="display: none">
-                        <div class="prs-name">
-                          <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                          </label><span style="position: absolute;right: 0px;color: black"
-                                        onclick="closeThis(this)">X</span>
-                          <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                            <tr>
-                              <td>${proHashMap[currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo].name}</td>
-                            </tr>
-
-                          </table>
-                        </div>
-                      </div>
-                    </c:if>
-
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${cgo.profRegNo}"/>
+                      <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                      <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
                   </td>
                 </tr>
 
@@ -1486,59 +1427,34 @@
                       </td>
                       <td>
                         <div class="col-xs-6 img-show">
-                            <span class="newVal" attr="${appSvcPersonnelDtoList.name}">
-                              <c:out value="${appSvcPersonnelDtoList.name}"/>
-                              <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                                <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name==appSvcPersonnelDtoList.name}">
-                                  <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                </c:if>
-                                <c:if test="${proHashMap[appSvcPersonnelDtoList.profRegNo].name!=appSvcPersonnelDtoList.name}">
-                                  <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                                </c:if>
-                              </c:if>
-                            </span>
-                        </div>
-                        <div class="col-xs-6 img-show">
-                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
-                                <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
-                                <c:if test="${not empty proHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                                    <c:if test="${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name==oldAppSvcPersonnelDtoList.name}">
-                                       <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
-                          </c:if>
-                          <c:if test="${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name!=oldAppSvcPersonnelDtoList.name}">
-                            <img src="/hcsa-licence-web/img/2020109171436.png" onclick="showThisTableNewService(this)" width="25" height="25" alt="NETS">
-                          </c:if>
-                          </c:if>
-                          </span>
-                        </div>
-                        <c:if test="${not empty proHashMap[appSvcPersonnelDtoList.profRegNo]}">
-                          <div class="disciplinary-record new-img-show" style="display: none">
-                            <div class="prs-name">
-                              <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                              </label><span style="position: absolute;right: 0px;color: black"
-                                            onclick="closeThis(this)">X</span>
-                              <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                                <tr>
-                                  <td>${proHashMap[appSvcPersonnelDtoList.profRegNo].name}</td>
-                                </tr>
-                              </table>
-                            </div>
+                        <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
+                          <c:out value="${appSvcPersonnelDtoList.name}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                            <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
+                        </span>
                           </div>
-                        </c:if>
-                        <c:if test="${not empty proHashMap[oldAppSvcPersonnelDtoList.profRegNo]}">
-                          <div class="disciplinary-record old-img-show" style="display: none">
-                            <div class="prs-name">
-                              <label style="font-weight: normal">The name of this personnel as listed in PRS is:
-                              </label><span style="position: absolute;right: 0px;color: black"
-                                            onclick="closeThis(this)">X</span>
-                              <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
-                                <tr>
-                                  <td>${proHashMap[oldAppSvcPersonnelDtoList.profRegNo].name}</td>
-                                </tr>
-                              </table>
-                            </div>
-                          </div>
-                        </c:if>
+                          <div class="col-xs-6 img-show">
+                        <span class="oldVal "
+                              attr="${oldAppSvcPersonnelDtoList.name}"
+                              style="display: none">${oldAppSvcPersonnelDtoList.name}
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
+                        </span>
+                        </div>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                          <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                          <jsp:param name="cssClass" value="new-img-show"/>
+                        </jsp:include>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                          <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                          <jsp:param name="cssClass" value="old-img-show"/>
+                        </jsp:include>
                       </td>
                     </tr>
                     <tr>
@@ -1912,17 +1828,35 @@
                         </p>
                       </td>
                       <td>
-
-                        <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                              <c:out value="${appSvcPersonnelDtoList.name}"/>
-                            </span>
+                        <div class="col-xs-6 img-show">
+                        <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
+                          <c:out value="${appSvcPersonnelDtoList.name}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                            <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
+                        </span>
                         </div>
-                        <div class="col-xs-6">
-                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
-                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
-                            </span>
+                        <div class="col-xs-6 img-show">
+                        <span class="oldVal "
+                              attr="${oldAppSvcPersonnelDtoList.name}"
+                              style="display: none">${oldAppSvcPersonnelDtoList.name}
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                            <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
+                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                          </jsp:include>
+                        </span>
                         </div>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                          <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                          <jsp:param name="cssClass" value="new-img-show"/>
+                        </jsp:include>
+                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                          <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                          <jsp:param name="cssClass" value="old-img-show"/>
+                        </jsp:include>
                       </td>
                     </tr>
                     <tr>
