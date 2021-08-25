@@ -1274,15 +1274,10 @@ public class WithOutRenewalDelegator {
         if(rfcAppSubmissionDtos!=null){
             for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
-                boolean autoRfc = appSubmissionDto.isAutoRfc();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if(entity!=null&& !entity.isEmpty()){
                     for(ApplicationDto applicationDto : entity){
-                        if(autoRfc){
-                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                        }else {
-                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-                        }
+                        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                     }
                     String grpId = entity.get(0).getAppGrpId();
                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();

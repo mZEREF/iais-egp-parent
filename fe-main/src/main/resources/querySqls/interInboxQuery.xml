@@ -54,7 +54,7 @@
 
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
-         SELECT *
+         SELECT B.*,AG.IS_AUTO_APPROVE as IS_AUTO_APPROVE
             FROM (SELECT
                     app.id,
                     app.application_no,
@@ -86,7 +86,7 @@
                     (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1,null
                 from
                     app_grp_submission_draft AS A
-                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B
+                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B LEFT join application_group AG on B.app_grp_id =AG.ID
              WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
              AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
              AND B.STATUS != 'APST074'
