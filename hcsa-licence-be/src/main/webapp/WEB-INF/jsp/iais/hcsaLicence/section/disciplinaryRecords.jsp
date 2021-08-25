@@ -14,7 +14,7 @@
                 <table aria-describedby="" border="1px"
                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                     <tr>
-                        <td>Indentification No.</td>
+                        <th scope="col">Indentification No.</th>
                         <td>Case No.</td>
                         <td>Case Type Description</td>
                         <td>Case Status Description</td>

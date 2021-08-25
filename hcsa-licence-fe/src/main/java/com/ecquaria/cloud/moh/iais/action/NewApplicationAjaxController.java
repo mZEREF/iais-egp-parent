@@ -1256,7 +1256,7 @@ public class NewApplicationAjaxController {
         AjaxResDto ajaxResDto = new AjaxResDto();
         ajaxResDto.setResCode("200");
         int slLength = ParamUtil.getInt(request, "slLength");
-        log.info("The index: " + slLength);
+        log.info(StringUtil.changeForLog("The index: " + slLength));
         String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml").getSqlStr();
         html = html.replace("${stepName}", HcsaConsts.SECTION_LEADER);
         html = html.replace("${index}", String.valueOf(slLength));

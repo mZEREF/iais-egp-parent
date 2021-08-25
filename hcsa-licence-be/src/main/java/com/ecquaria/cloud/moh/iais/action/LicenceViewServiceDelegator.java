@@ -609,12 +609,13 @@ public class LicenceViewServiceDelegator {
         professionalParameterDto.setTimestamp(format);
         professionalParameterDto.setSignature("2222");
         List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
+        String msg=MessageUtil.getMessageDesc("GENERAL_ERR0048");
         if(!list.isEmpty()){
             try {
                 disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient",MessageUtil.getMessageDesc("GENERAL_ERR0048"));
+                request.setAttribute("beEicGatewayClient",msg);
             }
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -627,7 +628,7 @@ public class LicenceViewServiceDelegator {
                         signature2.date(), signature2.authorization()).getEntity();
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient",MessageUtil.getMessageDesc("GENERAL_ERR0048"));
+                request.setAttribute("beEicGatewayClient",msg);
                 log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
             }
         }
