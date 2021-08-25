@@ -494,7 +494,7 @@
                     <div class="clear"></div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-md-4 control-label">Email </label>
+                    <label class="col-xs-12 col-md-4 control-label">Email <span class="mandatory">*</span></label>
                     <div class=" col-xs-11 col-sm-7 col-md-5 ">
                         <input type="text" id="conveyanceEmail" name="conveyanceEmail"
                                class="conveyanceEmail" maxlength="320" autocomplete="off">
