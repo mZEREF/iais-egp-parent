@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -160,4 +161,13 @@ public interface InspectionRectificationProService {
       * @Descripation: getApptNonWorkingDateByAppNo
       */
     List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/8/25
+      * @Param: inspEmailFieldDtos
+      * @return: List<InspEmailFieldDto>
+      * @Descripation: sortInspEmailFieldDtoByCategory
+      */
+    List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos);
 }

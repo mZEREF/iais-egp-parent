@@ -186,6 +186,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         String appNo = applicationDto.getApplicationNo();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appPremisesCorrelationDto);
+        inspEmailFieldDtos = inspectionRectificationProService.sortInspEmailFieldDtoByCategory(inspEmailFieldDtos);
         //get rec date
         List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = inspectionRectificationProService.getApptNonWorkingDateByAppNo(appNo);
         AppPremisesRecommendationDto appPremisesRecommendationDto = insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
