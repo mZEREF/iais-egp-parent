@@ -4268,13 +4268,13 @@ public class ClinicalLaboratoryDelegator {
                 if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setSalutation(salutation);
                 }
-                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit) && name != null) {
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setName(name);
                 }
                 if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdType(idType);
                 }
-                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit) && idNo != null) {
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
                 }
                 if (StringUtil.isEmpty(indexNo)) {
