@@ -16,7 +16,10 @@ import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,15 +31,15 @@ import java.util.List;
  * @author : LiRan
  * @date : 2021/8/20
  */
-@Delegator(value = "DOScreeningDelegator")
+@Delegator(value = "aoScreeningDelegator")
 @Slf4j
-public class DOScreeningDelegator {
+public class AOScreeningDelegator {
     private final ProcessClient processClient;
 
     private final RevocationClient revocationClient;
 
     @Autowired
-    public DOScreeningDelegator(ProcessClient processClient,RevocationClient revocationClient) {
+    public AOScreeningDelegator(ProcessClient processClient, RevocationClient revocationClient) {
         this.processClient = processClient;
         this.revocationClient = revocationClient;
     }
@@ -51,8 +54,6 @@ public class DOScreeningDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         Application application = processClient.getApplicationById("05EF1B40-E3E2-EB11-8B7D-000C293F0C88").getEntity();
-        String facilityId = application.getFacility().getId();
-        FeignResponseEntity<List<FacilityBiologicalAgent>> facilityBiologicalAgentsByFacilityId = processClient.findFacilityBiologicalAgentsByFacilityId(facilityId);
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
         ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
