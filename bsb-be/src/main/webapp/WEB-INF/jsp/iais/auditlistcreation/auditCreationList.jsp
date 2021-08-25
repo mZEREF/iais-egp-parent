@@ -12,7 +12,6 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <div class="main-content" style="min-height: 73vh;">
-
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
@@ -116,6 +115,13 @@
                                     </tr>
                                 </c:forEach>
                             </table>
+
+                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                            <div align="right">
+                                <button name="submitBtn" id="createList" type="button" class="btn btn-primary">
+                                    Create List
+                                </button>
+                            </div>
                         </div>
                     </iais:body>
                 </div>
@@ -126,3 +132,10 @@
 <%--        <iais:confirm msg="" needCancel="false" callBack="aocancel()" popupOrder="approveAo"></iais:confirm>--%>
     </form>
 </div>
+<script>
+    $("#createList").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("createList");
+        $("#mainForm").submit();
+    });
+</script>
