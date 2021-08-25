@@ -278,7 +278,7 @@
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.profRegNo}">
                             ${appSvcClinicalDirectorDto.profRegNo}
                             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                              <jsp:param name="idNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                              <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
                               <jsp:param name="methodName" value="showThisTableNewService"/>
                             </jsp:include>
                         </span>
@@ -287,7 +287,7 @@
                         <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}">
                             ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}
                             <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                              <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                              <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
                               <jsp:param name="methodName" value="showThisTableOldService"/>
                             </jsp:include>
                         </span>
@@ -382,7 +382,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                           <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
                           <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"/>
-                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                          <jsp:param name="methodName" value="showThisTableOldService"/>
                         </jsp:include>
                       </span>
                       </div>
@@ -913,7 +913,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
                             <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                            <jsp:param name="methodName" value="showThisTableOldService"/>
                         </jsp:include>
                       </span>
                     </div>
@@ -1057,7 +1057,7 @@
                       <span class="newVal " attr="${cgo.profRegNo}">
                         <c:out value="${cgo.profRegNo}"/>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                          <jsp:param name="idNo" value="${cgo.profRegNo}"/>
+                          <jsp:param name="profRegNo" value="${cgo.profRegNo}"/>
                           <jsp:param name="methodName" value="showThisTableNewService"/>
                         </jsp:include>
                       </span>
@@ -1068,7 +1068,7 @@
                             style="display: none">
                         <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                          <jsp:param name="idNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                          <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
                           <jsp:param name="methodName" value="showThisTableOldService"/>
                         </jsp:include>
                       </span>
@@ -1443,7 +1443,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                            <jsp:param name="methodName" value="showThisTableOldService"/>
                           </jsp:include>
                         </span>
                         </div>
@@ -1467,7 +1467,7 @@
                             <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}">
                               <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
                               <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                <jsp:param name="idNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
                                 <jsp:param name="methodName" value="showThisTableNewService"/>
                               </jsp:include>
                             </span>
@@ -1476,7 +1476,7 @@
                             <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
                                 ${oldAppSvcPersonnelDtoList.profRegNo}
                                 <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                  <jsp:param name="idNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                                   <jsp:param name="methodName" value="showThisTableOldService"/>
                                 </jsp:include>
                             </span>
@@ -1796,7 +1796,7 @@
                             <span class="newVal" attr="${appSvcPersonnelDtoList.profRegNo}">
                               <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
                               <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                <jsp:param name="idNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
                                 <jsp:param name="methodName" value="showThisTableNewService"/>
                               </jsp:include>
                             </span>
@@ -1805,7 +1805,7 @@
                             <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
                                 ${oldAppSvcPersonnelDtoList.profRegNo}
                                 <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                  <jsp:param name="idNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                                   <jsp:param name="methodName" value="showThisTableOldService"/>
                                 </jsp:include>
                             </span>
@@ -1845,7 +1845,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                            <jsp:param name="methodName" value="showThisTableOldService"/>
                           </jsp:include>
                         </span>
                         </div>
