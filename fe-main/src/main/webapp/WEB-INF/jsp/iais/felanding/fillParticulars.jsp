@@ -57,13 +57,6 @@
                                 </div>
 
                                 <div class="text-right text-center-mobile">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div align="left">
-                                                <a class="back" href="#" onclick="Utils.submit('mainForm', 'doBack')"><em class="fa fa-angle-left"></em> Back</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                    <%-- <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
                                     <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
