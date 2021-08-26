@@ -540,21 +540,19 @@ public class LicenceViewServiceDelegator {
                 idNoSet.add(v.getIdNo());
             }
         }
-
-        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-
-      /*  List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
+        // board member and authorised person
         List<LicenseeKeyApptPersonDto> boardMember = appSubmissionDto.getBoardMember();
-        if(authorisedPerson!=null){
-           for(OrgUserDto orgUserDto : authorisedPerson){
-               idNoSet.add(orgUserDto.getIdNumber());
-           }
-        }
-        if(boardMember!=null){
-            for(LicenseeKeyApptPersonDto apptPersonDto : boardMember){
-                idNoSet.add(apptPersonDto.getIdNo());
+        if (boardMember != null) {
+            for (LicenseeKeyApptPersonDto v : boardMember) {
+                idNoSet.add(v.getIdNo());
             }
-        }*/
+        }
+        List<OrgUserDto> authorisedPerson = appSubmissionDto.getAuthorisedPerson();
+        if (authorisedPerson != null) {
+            for (OrgUserDto orgUserDto : authorisedPerson) {
+                idNoSet.add(orgUserDto.getIdNumber());
+            }
+        }
         if (oldAppSubmissionDto != null) {
             // licensee
             subLicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
@@ -601,6 +599,7 @@ public class LicenceViewServiceDelegator {
             }
         }
         list.addAll(redNo);
+        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
         professionalParameterDto.setRegNo(list);
         idList.addAll(idNoSet);
         professionalParameterDto.setClientId("22222");
