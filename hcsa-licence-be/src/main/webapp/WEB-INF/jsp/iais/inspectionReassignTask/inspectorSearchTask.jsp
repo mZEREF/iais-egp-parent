@@ -120,7 +120,7 @@
                 <div class="table-gp">
                   <table aria-describedby="" class="table">
                     <thead>
-                    <tr align="center">
+                    <tr>
                       <th scope="col" style="display: none"></th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO"
@@ -143,7 +143,7 @@
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="superPool" items="${supTaskSearchResult.rows}" varStatus="status">
-                          <tr align="center" style="display: table-row;"
+                          <tr style="display: table-row;"
                               id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
                             <td class="row_no"><c:out
                                     value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
