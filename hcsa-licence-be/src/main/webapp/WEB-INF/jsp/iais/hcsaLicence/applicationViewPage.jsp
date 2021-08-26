@@ -354,7 +354,7 @@
                                                                                         <p>
                                                                                             <c:choose>
                                                                                                 <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
-                                                                                                    <input class="form-check-input" id="fastTracking"
+                                                                                                    <input class="" id="fastTracking"
                                                                                                     <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                                            checked disabled
                                                                                                     </c:if>
