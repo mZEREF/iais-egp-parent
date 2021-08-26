@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -64,6 +65,18 @@ public class NewApprovalDelegator {
         if (StringUtil.isEmpty(action)) {
             action = "PrepareForms";
         }
+        List<SelectOption> biologicalSchedule1 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_1);
+        List<SelectOption> biologicalSchedule2 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_2);
+        List<SelectOption> biologicalSchedule3 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_3);
+        List<SelectOption> biologicalSchedule4 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_4);
+        List<SelectOption> biologicalSchedule5 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_5);
+        List<SelectOption> biologicalSchedule6 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_6);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule1", (Serializable) biologicalSchedule1);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule2", (Serializable) biologicalSchedule2);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule3", (Serializable) biologicalSchedule3);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule4", (Serializable) biologicalSchedule4);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule5", (Serializable) biologicalSchedule5);
+        ParamUtil.setSessionAttr(request, "biologicalSchedule6", (Serializable) biologicalSchedule6);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("prepare(action):"+action));
     }
@@ -118,6 +131,14 @@ public class NewApprovalDelegator {
     public void doPreview(BaseProcessClass bpc) {
     }
 
+    public List<String> stringArrayToList(String[] strings){
+        List<String> list = null;
+        if (!StringUtil.isEmpty(strings)){
+            list = Arrays.asList(strings);
+        }
+        return list;
+    }
+
     public void doForms(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
@@ -126,20 +147,8 @@ public class NewApprovalDelegator {
         String schedule = ParamUtil.getString(request, ApprovalApplicationConstants.SCHEDULE);
         String estimatedMaximumVolume = ParamUtil.getString(request, ApprovalApplicationConstants.ESTIMATED_MAXIMUM_VOLUME);
         String methodOrSystemUsedForLargeScaleProduction = ParamUtil.getString(request, ApprovalApplicationConstants.METHOD_OR_SYSTEM_USER_FOR_LARGE_SCALE_PRODUCTION);
-        String listOfAgentsOrToxins = ParamUtil.getString(request, ApprovalApplicationConstants.LIST_OF_AGENTS_OR_TOXINS);
-        String[] biologicalIdArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.BIOLOGICAL_ID);
-        List<String> biologicalIdList = null;
-        StringBuilder biologicalIdBuilder = new StringBuilder();
-        if (!StringUtil.isEmpty(biologicalIdArray)){
-            biologicalIdList = Arrays.asList(biologicalIdArray);
-            for (int i = 0; i < biologicalIdArray.length; i++) {
-                biologicalIdBuilder.append(biologicalIdArray[i]);
-                if (i != (biologicalIdArray.length-1)){
-                    biologicalIdBuilder.append(",");
-                }
-            }
-        }
-        String biologicalId = biologicalIdBuilder.toString();
+        String[] listOfAgentsOrToxinsArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.LIST_OF_AGENTS_OR_TOXINS);
+        List<String> listOfAgentsOrToxins = stringArrayToList(listOfAgentsOrToxinsArray);
         String[] natureArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE);
         List<String> natureList = null;
         StringBuilder natureBuilder = new StringBuilder();
@@ -185,7 +194,6 @@ public class NewApprovalDelegator {
         facility.setId(facilityId);
         facility.setFacilityName(facilityName);
         approvalApplicationDto.setFacility(facility);
-        approvalApplicationDto.setBiologicalId(biologicalId);
         if(task.equals("APPRTY001")){
             approvalApplicationDto.setSampleNature(natureOfTheSample);
             approvalApplicationDto.setSampleNatureOth(others);
@@ -200,7 +208,7 @@ public class NewApprovalDelegator {
             approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
         }
         approvalApplicationDto.setSchedule(schedule);
-        approvalApplicationDto.setListOfAgentsOrToxins(listOfAgentsOrToxins);
+//        approvalApplicationDto.setListOfAgentsOrToxins(listOfAgentsOrToxins);
         approvalApplicationDto.setProcurementMode(modeOfProcurement);
         if (modeOfProcurement != null){
             if (modeOfProcurement.equals("BMOP001")){
@@ -228,7 +236,6 @@ public class NewApprovalDelegator {
         approvalApplicationDto.setCheckbox1(checkbox1);
         approvalApplicationDto.setCheckbox2(checkbox2);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
-        ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.AGENTS_OR_TOXINS_LIST_ATTR, (Serializable) biologicalIdList);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.NATURE_LIST_ATTR, (Serializable) natureList);
 //        String propertyName = "";
 //        if (modeOfProcurement == null) {
@@ -311,5 +318,15 @@ public class NewApprovalDelegator {
         approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
+    public List<SelectOption> getSelectOptionList(String schedule){
+        List<BiologicalQueryDto> biological = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
+        List<SelectOption> biologicalSchedule =  IaisCommonUtils.genNewArrayList();
+        if (biological != null && biological.size() > 0){
+            for (BiologicalQueryDto dto : biological) {
+                biologicalSchedule.add(new SelectOption(dto.getId(),dto.getName()));
+            }
+        }
+        return biologicalSchedule;
+    }
 }
 

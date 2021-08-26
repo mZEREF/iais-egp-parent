@@ -53,27 +53,48 @@ $(function() {
             $("[name='ModeOfProcurement_Import']").hide();
         }
     })
+    var selectValueSchedule = $("#schedule").val();
+    if (selectValueSchedule == "SCHTYPE001"){
+        $("#select1").show();
+    }else if (selectValueSchedule == "SCHTYPE002"){
+        $("#select2").show();
+    }else if (selectValueSchedule == "SCHTYPE003"){
+        $("#select3").show();
+    }else if (selectValueSchedule == "SCHTYPE004"){
+        $("#select4").show();
+    }else if (selectValueSchedule == "SCHTYPE005"){
+        $("#select5").show();
+    }else if (selectValueSchedule == "SCHTYPE006") {
+        $("#select6").show();
+    }
+
     $("#schedule").change(function() {
         var schedule = $(this).val();
-        $.post('/bsb-fe/bio-info/bio.do',
-            {schedule: schedule},
-            function (data){
-                var result = data.result;
-                if(result == 'success'){
-                    var queryResult = data.queryResult;
-                    var optionString = '';
-                    var optionString1 = '';
-                    for (var i = 0; i < queryResult.length; i++) {
-                        optionString += '<option value=" + queryResult[i].id + ">' + queryResult[i].name + '</option>';
-                        optionString1+= '<label class="multi-select-menuitem" for="listOfAgentsOrToxins_'+i+'" role="menuitem">'+'<input id="listOfAgentsOrToxins_'+i+'" type="checkbox" value="'+queryResult[i].id+'">'+queryResult[i].name+'</label>'
-                    }
-                    $("#listOfAgentsOrToxins").html(optionString);
-                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").children(".multi-select-menuitems").html(optionString1);
-                }else{
-                    $("#listOfAgentsOrToxins").next().children(".multi-select-menu").children(".multi-select-menuitems").html("");
-                }
-            }
-        )
+        if (schedule == "SCHTYPE001"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select1").show();
+        }else if (schedule == "SCHTYPE002"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select2").show();
+        }else if (schedule == "SCHTYPE003"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select3").show();
+        }else if (schedule == "SCHTYPE004"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select4").show();
+        }else if (schedule == "SCHTYPE005"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select5").show();
+        }else if (schedule == "SCHTYPE006"){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select6").show();
+        }
     })
     $("#Next").click(function (){
         var pageValue = $("#page_id").val();

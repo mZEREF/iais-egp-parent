@@ -68,7 +68,12 @@
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7 control-font-label">
                                                                         <input type="hidden" id="biologicalId" name="biologicalId" value="">
-                                                                        <iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select>
+                                                                        <div id="select1" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule1" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select2" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule2" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select3" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule3" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select4" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule4" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select5" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule5" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select6" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule6" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
                                                                         <span id="error_biologicalId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>

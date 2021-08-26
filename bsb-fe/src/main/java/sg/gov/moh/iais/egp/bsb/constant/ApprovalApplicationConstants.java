@@ -46,4 +46,12 @@ public class ApprovalApplicationConstants {
 
     public static final String AGENTS_OR_TOXINS_LIST_ATTR = "agentsOrToxinsList";
     public static final String NATURE_LIST_ATTR = "natureList";
+
+    public static final String SCHEDULE_1 = "SCHTYPE001";
+    public static final String SCHEDULE_2 = "SCHTYPE002";
+    public static final String SCHEDULE_3 = "SCHTYPE003";
+    public static final String SCHEDULE_4 = "SCHTYPE004";
+    public static final String SCHEDULE_5 = "SCHTYPE005";
+    public static final String SCHEDULE_6 = "SCHTYPE006";
+
 }

@@ -144,8 +144,6 @@ public class ApprovalApplicationDto implements Serializable {
     @CustomMsg(placeHolders ="field" ,replaceVals= "End Work Activities Date")
     private Date endDate;
 
-    private String applicationNo;
-
     private String appType;
 
     private String processType;
