@@ -60,9 +60,6 @@
                                    <%-- <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
                                     <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
-                                    <c:if test="${empty myinfo_sinpass_login_evaluate}">
-                                        <a class="btn btn-primary save" id="reLoadEdh" onclick="javascript:reLoadEdhTodo()">Refresh Data</a>
-                                    </c:if>
                                     <a class="btn btn-primary next" href="javascript:void(0);"
                                        onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                                 </div>
@@ -108,7 +105,4 @@
         checkAddressManatory();
     });
 
-    function reLoadEdhTodo() {
-        Utils.submit('mainForm', 'doSubmit');
-    }
 </script>
