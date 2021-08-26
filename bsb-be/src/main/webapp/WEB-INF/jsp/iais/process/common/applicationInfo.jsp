@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td align="right">Agents/Toxins</td>
-                        <td style="padding-left : 20px">${applicationInfo.facility.biological.name}</td>
+                        <td style="padding-left : 20px">${biological}</td>
                     </tr>
                     <tr>
                         <td align="right">Submission Date</td>

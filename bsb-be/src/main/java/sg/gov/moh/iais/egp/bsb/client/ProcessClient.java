@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
 
 import java.util.List;
@@ -30,4 +31,7 @@ public interface ProcessClient {
 
     @GetMapping(path = "/facilityBiologicalAgent/{facilityId}")
     FeignResponseEntity<List<FacilityBiologicalAgent>> findFacilityBiologicalAgentsByFacilityId(@PathVariable(name = "facilityId") String facilityId);
+
+    @PostMapping(path = "/bio_info/biologicalIdList",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<Biological>> getBiologicalsById(@RequestBody List<String> biologicalIdList);
 }

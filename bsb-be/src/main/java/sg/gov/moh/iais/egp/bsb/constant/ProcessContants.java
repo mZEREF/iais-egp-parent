@@ -21,6 +21,8 @@ public class ProcessContants {
     public static final String VALIDITY_START_DATE = "validityStartDate";
     public static final String VALIDITY_END_DATE = "validityEndDate";
 
+    public static final String BIOLOGICAL = "biological";
+
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
 
 }
