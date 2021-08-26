@@ -52,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -140,7 +141,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -1066,10 +1066,9 @@ public class NewApplicationDelegator {
         bpc.request.setAttribute("transfer",appSubmissionDto.getTransferFlag());
         ParamUtil.setRequestAttr(bpc.request,"IsCharity",NewApplicationHelper.isCharity(bpc.request));
         boolean isGiroAcc = false;
-        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+        List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, appSubmissionDto);
+        if (!IaisCommonUtils.isEmpty(giroAccSel)) {
             isGiroAcc = true;
-            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
             ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
         }
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);

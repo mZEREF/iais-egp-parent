@@ -383,6 +383,14 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountsByLicIds(List<String> licIdList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<PremisesDto>> getPremisesDtoByHciNameAndPremType(String hciName, String premType, String licenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

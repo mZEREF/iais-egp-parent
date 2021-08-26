@@ -168,6 +168,9 @@ public interface LicenceClient {
     @PostMapping(value = "/hcsa-licence/giro-info",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountByHciCodeAndOrgId(@RequestBody List<String> hciCodeList,@RequestParam("orgId") String orgId);
 
+    @PostMapping(value = "/hcsa-licence/giro-info-licId",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<GiroAccountInfoDto>> getGiroAccountsByLicIds(@RequestBody List<String> licIdList);
+
     @GetMapping(value = "/hcsa-licence-rfc/premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesDto>> getPremisesDtoByHciNameAndPremType(@RequestParam("hciName") String hciName, @RequestParam("premType") String premType, @RequestParam("licenseeId")String licenseeId);
 
