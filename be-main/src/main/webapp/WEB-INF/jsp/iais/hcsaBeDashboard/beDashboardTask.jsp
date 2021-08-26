@@ -190,7 +190,7 @@
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                         <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right"
                                                                                                    data-toggle="collapse" aria-expanded="false"
-                                                                                                   data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                                   data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
                                                                                                    onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
@@ -310,7 +310,7 @@
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="7" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" aria-expanded="true" style="">' +
                         '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';

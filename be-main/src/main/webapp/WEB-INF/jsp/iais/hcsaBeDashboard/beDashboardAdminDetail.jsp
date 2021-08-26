@@ -166,7 +166,7 @@
                                                                                             <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                                                                                             <td>
                                                                                                 <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
-                                                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" data-toggle="collapse" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
+                                                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
                                                                                                     </a>
                                                                                                 </p>
                                                                                             </td>
@@ -258,7 +258,7 @@
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="7" class="hiddenRow">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
                         '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                         '<thead>' +
                         '<tr>';
