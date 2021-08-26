@@ -501,8 +501,12 @@ public class LicenceViewServiceDelegator {
         // licensee
         SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
         if (subLicenseeDto != null) {
-            idNoSet.add(subLicenseeDto.getUenNo());
-            idNoSet.add(subLicenseeDto.getIdNumber());
+            if (!StringUtil.isEmpty(subLicenseeDto.getUenNo())) {
+                idNoSet.add(subLicenseeDto.getUenNo());
+            }
+            if (!StringUtil.isEmpty(subLicenseeDto.getIdNumber())) {
+                idNoSet.add(subLicenseeDto.getIdNumber());
+            }
         }
         if(appSvcCgoDtoList!=null){
             for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList){
