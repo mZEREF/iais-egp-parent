@@ -14,6 +14,8 @@ public class FacilityBiologicalAgent implements Serializable {
 
 	private FacilitySchedule facilitySchedule;
 
+	private String riskLevel;
+
 	private String biologicalId;
 
 	private List<FacilityAgentSample> facilityAgentSamples;

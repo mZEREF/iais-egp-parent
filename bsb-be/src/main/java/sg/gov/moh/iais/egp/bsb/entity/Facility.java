@@ -3,9 +3,6 @@ package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +17,10 @@ public class Facility implements Serializable {
     private List<FacilityDoc> docs;
 
     private List<FacilityAdmin> admins;
+
+    private List<FacilitySchedule> facilitySchedules;
+
+    private List<Application> applications;
 
     private List<FacilityAuthoriser> authorizers;
 
