@@ -33,7 +33,8 @@
             <li><span><iais:service value="${specifiedItem}"></iais:service></span> (<iais:code code="CDN004"/>)</li>
           </c:forEach>
         </ul>
-        <div class="gray-content-box">
+       <%--
+       <div class="gray-content-box">
           <div class="h3-with-desc">
             <h3>Licensee and Key Personnel</h3>
             <p>The following details are common to all services in your healthcare organisation. To make any changes, please contact your company administrator.</p>
@@ -62,6 +63,7 @@
 
           </div>
         </div>
+        --%>
         <h3>Before You Begin</h3>
         <ul class="">
           <li>
