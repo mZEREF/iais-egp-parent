@@ -39,7 +39,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DOCheckDtPage" stageIndicator="" x="360" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AOCheckDtPage" stageIndicator="" x="360" y="100">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -57,10 +57,10 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
    <position>{(120,120)(250,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/DOCheckDtPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
+  <SynchronousLink destinationName="/Pages/WebPage/AOCheckDtPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
    <position>{(250,120)(380,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/DOCheckDtPage" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AOCheckDtPage" style="oblique">
    <position>{(380,120)(520,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareSwitch" style="oblique">

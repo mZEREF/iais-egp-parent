@@ -12,14 +12,10 @@
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___AdminChangeAuditDt___2 extends BaseProcessClass {
+public class INTRANET___AOProcessSelfAudit___0 extends BaseProcessClass {
 
-	public void step1_OnStepProcess_0() throws Exception {
-	// 		Step1->OnStepProcess
-	}
-
-	public void submit_OnStepProcess_0() throws Exception {
-	// 		submit->OnStepProcess
+	public void start_OnStepProcess_0() throws Exception {
+	// 		start->OnStepProcess
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
@@ -28,6 +24,14 @@ public class INTRANET___AdminChangeAuditDt___2 extends BaseProcessClass {
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
 	// 		prepareSwitch->OnStepProcess
+	}
+
+	public void approved_OnStepProcess_0() throws Exception {
+	// 		approved->OnStepProcess
+	}
+
+	public void routeBack_OnStepProcess_0() throws Exception {
+	// 		routeBack->OnStepProcess
 	}
 
 }
