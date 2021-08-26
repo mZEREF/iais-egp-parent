@@ -54,6 +54,7 @@
 
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
+           SELECT * FROM (
          SELECT B.*,AG.IS_AUTO_APPROVE as IS_AUTO_APPROVE
             FROM (SELECT
                     app.id,
@@ -96,7 +97,7 @@
              AND B.STATUS != 'APST081'
              AND B.STATUS != 'APST083'
              AND B.APP_TYPE != 'APTY007'
-            <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
+            <#if id??> AND CHARINDEX(:id,B.app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
@@ -106,6 +107,7 @@
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
+            ) a
         ]]>
     </sql>
 
