@@ -188,6 +188,7 @@
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 var data = {};
                 fillForm('onSite',data,$premContent);
                 fillForm('conveyance',data,$premContent);
