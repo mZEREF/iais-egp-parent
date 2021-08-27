@@ -81,7 +81,7 @@
 
 
         <iais:action style="text-align:left;">
-          <a class="back" onclick="doCancel()();"><em class="fa fa-angle-left"></em> Back</a>
+          <a href="#" class="back" onclick="doCancel()();"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
 
       </div>

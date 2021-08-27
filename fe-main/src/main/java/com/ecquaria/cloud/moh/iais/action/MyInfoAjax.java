@@ -49,7 +49,7 @@ public class MyInfoAjax {
 			ParamUtil.setSessionAttr(request,"myinfoTrueOpen",null);
 			return ;
 		}
-        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
+		ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
 		ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
 		ParamUtil.setSessionAttr(request,"myinfoTrueOpen","Y");
 		nric = getNric(nric, request);
@@ -122,7 +122,7 @@ public class MyInfoAjax {
 
 	private String getNric(String nric,HttpServletRequest request){
 		if(StringUtil.isNotEmpty(nric)){
-           return nric;
+			return nric;
 		}
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
 		if(loginContext != null){
@@ -156,38 +156,38 @@ public class MyInfoAjax {
 
 	public void  setTakenSession(Map<String,String> map,HttpServletRequest request){
 		for (Map.Entry<String, String> m : map.entrySet()) {
-           ParamUtil.setSessionAttr(request,m.getKey(),m.getValue());
+			ParamUtil.setSessionAttr(request,m.getKey(),m.getValue());
 		}
 	}
 	private  MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
 		if (StringUtil.isEmpty(response))
 			return dto;
-		
+
 		JSONObject jsonObject = JSONObject.fromObject(response);
 		JSONObject jsonObjectRegadd = jsonObject.getJSONObject("regadd");
 		if (!jsonObjectRegadd.isNullObject()) {
-		    String floor = getStringKeyByObjName("floor",jsonObjectRegadd);
-		    if (!StringUtil.isEmpty(floor) && !"null".equalsIgnoreCase(floor))
+			String floor = getStringKeyByObjName("floor",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(floor) && !"null".equalsIgnoreCase(floor))
 				dto.setFloor(floor);
 
-		    String postal = getStringKeyByObjName("postal",jsonObjectRegadd);
-            if (!StringUtil.isEmpty(postal) && !"null".equalsIgnoreCase(postal))
+			String postal = getStringKeyByObjName("postal",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(postal) && !"null".equalsIgnoreCase(postal))
 				dto.setPostalCode(postal);
 
-            String unit = getStringKeyByObjName("unit",jsonObjectRegadd);
-            if (!StringUtil.isEmpty(unit) && !"null".equalsIgnoreCase(unit))
+			String unit = getStringKeyByObjName("unit",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(unit) && !"null".equalsIgnoreCase(unit))
 				dto.setUnitNo(unit);
 
-            String block = getStringKeyByObjName("block",jsonObjectRegadd);
-            if (!StringUtil.isEmpty(block) && !"null".equalsIgnoreCase(block))
-               dto.setBlockNo(block);
+			String block = getStringKeyByObjName("block",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(block) && !"null".equalsIgnoreCase(block))
+				dto.setBlockNo(block);
 
-            String building = getStringKeyByObjName("building",jsonObjectRegadd);
-            if (!StringUtil.isEmpty(building) && !"null".equalsIgnoreCase(building))
+			String building = getStringKeyByObjName("building",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(building) && !"null".equalsIgnoreCase(building))
 				dto.setBuildingName(building);
 
-            String street = getStringKeyByObjName("street",jsonObjectRegadd);
-            if (!StringUtil.isEmpty(street) && !"null".equalsIgnoreCase(street))
+			String street = getStringKeyByObjName("street",jsonObjectRegadd);
+			if (!StringUtil.isEmpty(street) && !"null".equalsIgnoreCase(street))
 				dto.setStreetName(street);
 
 		}
@@ -290,7 +290,7 @@ public class MyInfoAjax {
 		}catch (Exception e){
 			log.error(e.getMessage(), e);
 		}
-        return null;
+		return null;
 	}
 
 	public MyInfoDto getMyInfoData(HttpServletRequest request){

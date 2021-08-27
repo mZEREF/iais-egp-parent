@@ -134,32 +134,32 @@ public interface InspectionRectificationProService {
     FileRepoDto getFileReportById(String fileRepoId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/6/3
-      * @Param: adhocItemId
-      * @return: AdhocChecklistItemDto
-      * @Descripation: getAdhocChecklistItemById
-      */
+     * @author: shicheng
+     * @Date 2020/6/3
+     * @Param: adhocItemId
+     * @return: AdhocChecklistItemDto
+     * @Descripation: getAdhocChecklistItemById
+     */
     AdhocChecklistItemDto getAdhocChecklistItemById(String adhocItemId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/6/3
-      * @Param: itemId
-      * @return: ChecklistItemDto
-      * @Descripation: getChklItemById
-      */
+     * @author: shicheng
+     * @Date 2020/6/3
+     * @Param: itemId
+     * @return: ChecklistItemDto
+     * @Descripation: getChklItemById
+     */
     ChecklistItemDto getChklItemById(String itemId);
 
     FileRepoDto getCheckListFileRealName(FileRepoDto fileRepoDto, String refNo, String status, String checkListFileType);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/13
-      * @Param: appNo
-      * @return: List<ApptNonWorkingDateDto>
-      * @Descripation: getApptNonWorkingDateByAppNo
-      */
+     * @author: shicheng
+     * @Date 2021/3/13
+     * @Param: appNo
+     * @return: List<ApptNonWorkingDateDto>
+     * @Descripation: getApptNonWorkingDateByAppNo
+     */
     List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo);
 
     /**

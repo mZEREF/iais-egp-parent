@@ -1,6 +1,6 @@
 /*
  * MyInfo TUO RESTAPI (Staging)
- * ** STAGING ENVIRONMENT ONLY **  REST API for retrieving Person data from MyInfo for Tell-Us-Once.  **Note - this is an initial specification and is subject to changes through the course of the TUO implementation.** 
+ * ** STAGING ENVIRONMENT ONLY **  REST API for retrieving Person data from MyInfo for Tell-Us-Once.  **Note - this is an initial specification and is subject to changes through the course of the TUO implementation.**
  *
  * OpenAPI spec version: 1.0
  * Contact: eric_chang@tech.gov.sg
@@ -68,26 +68,26 @@ public class MyinfoUtil {
 	public static final  String SINGPASS_LOGIN                = "myinfo_sinpass_login_evaluate";
 	public static final  String NO_GET_NAME_SHOW_NAME           = "-";
 	/**
-     * Retrieves Person data from MyInfo
-     *
-     * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
-     * @throws Exception
-     */
-    public static String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo) throws Exception {
+	 * Retrieves Person data from MyInfo
+	 *
+	 * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
+	 * @throws Exception
+	 */
+	public static String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo) throws Exception {
 		ApplicationContext context = SpringContextHelper.getContext();
-    	if (context == null){
-    		return null;
+		if (context == null){
+			return null;
 		}
 
 		MyInfoClient myInfoClient = context.getBean(MyInfoClient.class);
 
-    	String  encipheredData =myInfoClient.searchDataByIdNumber(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo).getBody();
-        return decodeEncipheredData(encipheredData);
-    }
+		String  encipheredData =myInfoClient.searchDataByIdNumber(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo).getBody();
+		return decodeEncipheredData(encipheredData);
+	}
 
-    public static String decodeEncipheredData(String encipheredData) throws Exception {
-    	if(StringUtil.isEmpty(encipheredData)){
-    		return encipheredData;
+	public static String decodeEncipheredData(String encipheredData) throws Exception {
+		if(StringUtil.isEmpty(encipheredData)){
+			return encipheredData;
 		}
 
 		String privateKey = ConfigHelper.getString("myinfo.common.priclientkey");
@@ -97,12 +97,12 @@ public class MyinfoUtil {
 
 	public static String getBaseString( String idNum, List<String> attrs, String clientId, String singpassEserviceId, String txnNo){
 		StringBuilder sb = new StringBuilder();
-			String ipAddress = ConfigHelper.getString("myinfo.ip.address.basestring.gateway");
-			sb.append("GET&").append(ipAddress);
-			String idnum = "/" + idNum + "/";
-			sb.append(idnum);
-		   sb.append("?attributes=");
-		   if (attrs.size() > 0) {
+		String ipAddress = ConfigHelper.getString("myinfo.ip.address.basestring.gateway");
+		sb.append("GET&").append(ipAddress);
+		String idnum = "/" + idNum + "/";
+		sb.append(idnum);
+		sb.append("?attributes=");
+		if (attrs.size() > 0) {
 			for (int i = 0; i < attrs.size(); i++) {
 				if (i == (attrs.size() - 1)) {
 					sb.append(attrs.get(i));
@@ -110,22 +110,22 @@ public class MyinfoUtil {
 					sb.append(attrs.get(i)).append(',');
 				}
 			}
-		   }
-		    sb.append("&client_id=").append(clientId);
-		   sb.append("&singpassEserviceId=").append(singpassEserviceId);
-			sb.append("&txnNo=").append(txnNo);
+		}
+		sb.append("&client_id=").append(clientId);
+		sb.append("&singpassEserviceId=").append(singpassEserviceId);
+		sb.append("&txnNo=").append(txnNo);
 		return sb.toString();
 	}
 
 	public static String getAuthorization(String realm, String signature, String appId, long nonce, long timestamp) {
 		StringBuilder sb = new StringBuilder();
-			sb.append("Apex_l2_Eg realm=\"").append(realm );
-			sb.append("\",apex_l2_eg_app_id=\"").append(appId);
-			sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
-			sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
-			sb.append(",apex_l2_eg_signature=\"").append(signature);
-			sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
-			sb.append("\",apex_l2_eg_version=\"1.0\"");
+		sb.append("Apex_l2_Eg realm=\"").append(realm );
+		sb.append("\",apex_l2_eg_app_id=\"").append(appId);
+		sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
+		sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
+		sb.append(",apex_l2_eg_signature=\"").append(signature);
+		sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
+		sb.append("\",apex_l2_eg_version=\"1.0\"");
 		return sb.toString();
 	}
 
@@ -172,7 +172,7 @@ public class MyinfoUtil {
 
 	public static String getAuthoriseApiUrl(String authApiUrl,String nric,String clientId,String attributes,String spEsvcId,String purpose,String state,String redirectUrl){
 		String authoriseUrl = authApiUrl + "/" + nric + "/"+
-		         "?client_id=" + clientId +
+				"?client_id=" + clientId +
 				"&attributes=" + attributes +
 				"&sp_esvcId=" + spEsvcId +
 				"&purpose=" + purpose +
@@ -239,7 +239,7 @@ public class MyinfoUtil {
 		String timestamp = String.valueOf(System.currentTimeMillis());
 		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
 		String nonce = timestamp +	(secureRandom.nextInt(9000) + 1000);
-    	TreeMap<String, String> baseParams = new TreeMap<>();
+		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
 		baseParams.put(AcraConsts.CODE + "=", code);
 		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
