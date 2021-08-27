@@ -23,11 +23,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.GrioXml.InvoiceDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -729,72 +726,31 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public String getGiroAccountByGroupNo(String groupNo){
-        ApplicationGroupDto applicationGroupDto = applicationFeClient.getAppGrpByAppNo(groupNo+"-01").getEntity();
-        if( applicationGroupDto == null){
+
+        ApplicationDto applicationDto = applicationFeClient.getApplicationDtoByAppNo(groupNo+"-01").getEntity();
+        if( applicationDto == null){
             return "";
         }
-
-        AppGroupMiscDto grpMisc = applicationFeClient.getAppGroupMiscDtoByGrpIdAndTypeAndStatus(applicationGroupDto.getId(),
-                ApplicationConsts.APP_GROUP_MISC_TYPE_GIRO_ACCOUNT_NUMBER, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-        if(grpMisc != null && StringUtil.isNotEmpty(grpMisc.getMiscValue())){
-            return grpMisc.getMiscValue();
+        if(StringUtil.isNotEmpty(applicationDto.getOriginLicenceId())){
+            List<String> licIds = IaisCommonUtils.genNewArrayList();
+            licIds.add(applicationDto.getOriginLicenceId());
+            List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
+            GiroAccountInfoDto orgGiroAccountInfoDto = null;
+            if(IaisCommonUtils.isNotEmpty(giroAccountInfoDtos)){
+                orgGiroAccountInfoDto = giroAccountInfoDtos.get(0);
+            }
+            if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
+                return orgGiroAccountInfoDto.getAcctNo();
+            }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
+                return  ConfigHelper.getString("col.giro.test.account","");
+            }
         }
 
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        OrgGiroAccountInfoDto orgGiroAccountInfoDto = organizationLienceseeClient.getGiroAccByLicenseeId(licenseeId).getEntity().get(0);;
-        if(orgGiroAccountInfoDto!= null && !StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())&& AppConsts.COMMON_STATUS_ACTIVE.equalsIgnoreCase(orgGiroAccountInfoDto.getStatus())){
-            return orgGiroAccountInfoDto.getAcctNo();
-        }else if(orgGiroAccountInfoDto!= null && StringUtil.isEmpty(orgGiroAccountInfoDto.getAcctNo())){
-            return  ConfigHelper.getString("col.giro.test.account","");
-        }
+
         return "";
-       /* String submitBy = applicationGroupDto.getSubmitBy();
-        OrgUserDto orgUserDto = organizationLienceseeClient.retrieveOneOrgUserAccount(submitBy).getEntity();
-        if(orgUserDto == null){
-            return "";
-        }
-        String accNo = getAccountNoByOrgIdAndAppGroupId(orgUserDto.getOrgId(),applicationGroupDto.getId());
-        if(!StringUtil.isEmpty(accNo)){
-            return accNo;
-        }else {
-            return  ConfigHelper.getString("col.giro.test.account","");
-        }*/
     }
 
-  /*  private String getAccountNoByOrgIdAndAppGroupId(String orgId,String appGroupId){
-        if(StringUtil.isEmpty(orgId)){
-            return "";
-        }
-        List<ApplicationDto> applicationDtos = applicationFeClient.listApplicationByGroupId(appGroupId).getEntity();
-        String acc = "";
-        List<String> hciCodeList = IaisCommonUtils.genNewArrayList(applicationDtos.size());
-        for(ApplicationDto applicationDto : applicationDtos){
-            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationFeClient.getCorrelationByAppNo(applicationDto.getApplicationNo()).getEntity();
-            AppGrpPremisesDto appGrpPremisesDto = applicationFeClient.getAppGrpPremisesByCorrId(appPremisesCorrelationDto.getId()).getEntity();
-            String hciCode = appGrpPremisesDto.getHciCode();
-            if(StringUtil.isEmpty(hciCode)){
-                return "";
-            }else {
-                hciCodeList.add(hciCode);
-            }
-        }
 
-        List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountByHciCodeAndOrgId( hciCodeList,orgId).getEntity();
-        if( !IaisCommonUtils.isEmpty(giroAccountInfoDtos)){
-            for(GiroAccountInfoDto giroAccountInfoDto : giroAccountInfoDtos){
-                if(StringUtil.isEmpty(giroAccountInfoDto.getAcctNo())){
-                    return "";
-                }
-               if(StringUtil.isEmpty(acc)){
-                       acc = giroAccountInfoDto.getAcctNo();
-               }else if( !StringUtil.isEmpty(acc) && !acc.equalsIgnoreCase(giroAccountInfoDto.getAcctNo())){
-                    return "";
-               }
-            }
-        }
-
-        return acc;
-    }*/
     private boolean genXmlFileToSftp(String xmlData,String fileName,String path){
         try{
             if(!StringUtil.isEmpty(path)){
