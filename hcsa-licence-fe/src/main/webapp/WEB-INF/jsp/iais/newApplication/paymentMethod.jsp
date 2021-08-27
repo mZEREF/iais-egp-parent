@@ -40,7 +40,7 @@
     <div class="col-xs-12 giro-acct-div hidden">
         <iais:field value="Giro Account "  mandatory="true" width="12"/>
         <iais:value cssClass="col-md-5">
-            <iais:select name="giroAccount" options="giroAccSel" firstOption="Please Select" value="${AppSubmissionDto.giroAcctNum}" />
+            <iais:select name="giroAccount" options="giroAccSel"  value="${AppSubmissionDto.giroAcctNum}" />
         </iais:value>
     </div>
 </c:if>
