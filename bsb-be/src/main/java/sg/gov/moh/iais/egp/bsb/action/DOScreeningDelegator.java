@@ -17,11 +17,11 @@ import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,11 +52,21 @@ public class DOScreeningDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         Application application = processClient.getApplicationById("05EF1B40-E3E2-EB11-8B7D-000C293F0C88").getEntity();
-        String facilityId = application.getFacility().getId();
-        List<Biological> biologicalsList = processClient.getBiologicalListByFacilityId(facilityId).getEntity();
-        String biologicalName = JoinBiologicalName.joinBiologicalName(biologicalsList);
+        List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
+        List<Biological> biologicalList = new ArrayList<>();
+        if (facilityScheduleList != null && facilityScheduleList.size() > 0){
+            for (int i = 0; i < facilityScheduleList.size(); i++) {
+                List<FacilityBiologicalAgent> facilityBiologicalAgentList = facilityScheduleList.get(i).getFacilityBiologicalAgents();
+                if (facilityBiologicalAgentList != null && facilityBiologicalAgentList.size() > 0){
+                    for (int j = 0; j < facilityBiologicalAgentList.size(); j++) {
+                        String biologicalId = facilityBiologicalAgentList.get(j).getBiologicalId();
+                        biologicalList.add(processClient.getBiologicalById(biologicalId).getEntity());
+                    }
+                }
+            }
+        }
+        application.setBiologicalList(biologicalList);
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-        ParamUtil.setSessionAttr(request, ProcessContants.BIOLOGICAL, biologicalName);
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
         ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
     }
@@ -184,7 +194,9 @@ public class DOScreeningDelegator {
         HttpServletRequest request = bpc.request;
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String processingDecision = ParamUtil.getString(request, ProcessContants.PROCESSING_DECISION);
+        String remarks = ParamUtil.getString(request, ProcessContants.REMARKS);
         RoutingHistory routingHistory = new RoutingHistory();
+        routingHistory.setInternalRemarks(remarks);
         routingHistory.setProcessDecision(processingDecision);
         routingHistory.setActionBy(loginContext.getUserName());
         return routingHistory;

@@ -199,7 +199,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/system-admin-web/eservice/INTRANET/MohApprovingScreen?"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">Submit</button>

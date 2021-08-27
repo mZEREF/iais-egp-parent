@@ -14,6 +14,8 @@ public class Application implements Serializable {
 
     private List<ApplicationMisc> appMiscs;
 
+    private List<Biological> biologicalList;
+
     private Facility facility;
 
     private String biologicalName;

@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohDOScreening"><em class="fa fa-angle-left"></em> Back</a>
+    <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
     <div align="right">
         <button name="preview" id="preview" type="button" class="btn btn-primary" data-toggle="modal" data-target="#preview">Preview</button>
         <button name="reload" id="reload" type="button" class="btn btn-primary" data-toggle="modal" data-target="#reload">Reload</button>

@@ -26,10 +26,6 @@
                         <td style="padding-left : 20px">${applicationInfo.facility.facilityName} / Block ${applicationInfo.facility.blkNo} ${applicationInfo.facility.streetName} ${applicationInfo.facility.floorNo}-${applicationInfo.facility.unitNo} Singapore ${applicationInfo.facility.postalCode}</td>
                     </tr>
                     <tr>
-                        <td align="right">Agents/Toxins</td>
-                        <td style="padding-left : 20px">${biological}</td>
-                    </tr>
-                    <tr>
                         <td align="right">Submission Date</td>
                         <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.applicationDt}' pattern='dd/MM/yyyy'/></td>
                     </tr>
@@ -46,13 +42,6 @@
             </div>
         </div>
     </div>
-</div>
-<div align="center">
-    <a   href="javascript:void(0);" onclick="javascript:doOpenApp()">
-        <button type="button" class="btn btn-primary">
-            View Application
-        </button>
-    </a>
 </div>
 <div>&nbsp</div>
 <div class="panel panel-default">
@@ -88,6 +77,47 @@
         </div>
     </div>
 </div>
+<div align="center">
+    <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
+        <button type="button" class="btn btn-primary">
+            View Application
+        </button>
+    </a>
+</div>
+<div>&nbsp</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><strong>List of Agent / Toxin</strong></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-gp">
+                <table class="table table-bordered" style="margin-bottom: 0">
+                    <thead>
+                    <tr>
+                        <th style="text-align:center;width:5%" align="center">S/N</th>
+                        <th style="text-align:center;">Schedule</th>
+                        <th style="text-align:center;">Biological Agent / Toxin</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="item" items="${applicationInfo.biologicalList}" varStatus="status">
+                        <tr>
+                            <td align="center">
+                                <p><c:out value="${status.index + 1}"/></p>
+                            </td>
+                            <td align="center">
+                                <p><iais:code code="${item.schedule}"></iais:code></p>
+                            </td>
+                            <td align="center">
+                                <p><c:out value="${item.name}"/></p>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <div align="left">
-    <a class="back" id="back" href="#"></em> Back</a>
+    <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
 </div>

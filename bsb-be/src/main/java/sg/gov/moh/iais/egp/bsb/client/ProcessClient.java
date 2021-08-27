@@ -29,7 +29,7 @@ public interface ProcessClient {
     @PostMapping(path = "/bsb_MohOfficer/AOScreening/DoScreeningDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DoScreeningDto> updateFacilityByMohProcess(@RequestBody DoScreeningDto dto);
 
-    @GetMapping(path = "/bsb_MohOfficer/Info/{facilityId}")
-    FeignResponseEntity<List<Biological>> getBiologicalListByFacilityId(@PathVariable(name = "facilityId") String facilityId);
+    @GetMapping(path = "/bio_info/info/{biologicalId}")
+    FeignResponseEntity<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
 
 }
