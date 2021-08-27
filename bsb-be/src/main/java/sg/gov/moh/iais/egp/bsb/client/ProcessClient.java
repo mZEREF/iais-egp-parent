@@ -23,15 +23,13 @@ import java.util.List;
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
 public interface ProcessClient {
 
-    @GetMapping(path = "/bsb-MohOfficer/AOScreening/{applicationId}")
+    @GetMapping(path = "/bsb_MohOfficer/AOScreening/{applicationId}")
     FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "applicationId") String applicationId);
 
-    @PostMapping(path = "/bsb-MohOfficer/AOScreening/DoScreeningDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/bsb_MohOfficer/AOScreening/DoScreeningDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<DoScreeningDto> updateFacilityByMohProcess(@RequestBody DoScreeningDto dto);
 
-    @GetMapping(path = "/facilityBiologicalAgent/{facilityId}")
-    FeignResponseEntity<List<FacilityBiologicalAgent>> findFacilityBiologicalAgentsByFacilityId(@PathVariable(name = "facilityId") String facilityId);
+    @GetMapping(path = "/bsb_MohOfficer/Info/{facilityId}")
+    FeignResponseEntity<List<Biological>> getBiologicalListByFacilityId(@PathVariable(name = "facilityId") String facilityId);
 
-    @PostMapping(path = "/bio_info/biologicalIdList",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<Biological>> getBiologicalsById(@RequestBody List<String> biologicalIdList);
 }

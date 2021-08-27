@@ -17,11 +17,11 @@ import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,26 +53,10 @@ public class DOScreeningDelegator {
         HttpServletRequest request = bpc.request;
         Application application = processClient.getApplicationById("05EF1B40-E3E2-EB11-8B7D-000C293F0C88").getEntity();
         String facilityId = application.getFacility().getId();
-        List<FacilityBiologicalAgent> facilityBiologicalAgentList = processClient.findFacilityBiologicalAgentsByFacilityId(facilityId).getEntity();
-        List<String> biogicalIdList = new ArrayList<>();
-        if (facilityBiologicalAgentList != null && facilityBiologicalAgentList.size() > 0){
-            for (int i = 0; i < facilityBiologicalAgentList.size(); i++) {
-                biogicalIdList.add(facilityBiologicalAgentList.get(i).getBiologicalId());
-            }
-        }
-        List<Biological> biologicalsById = processClient.getBiologicalsById(biogicalIdList).getEntity();
-        StringBuilder stringBuilder = new StringBuilder();
-        if (biologicalsById != null && biologicalsById.size() > 0){
-            for (int i = 0; i < biologicalsById.size(); i++) {
-                stringBuilder.append(biologicalsById.get(i).getName());
-                if (i < biologicalsById.size()-1){
-                    stringBuilder.append(",");
-                }
-            }
-        }
-        String biological = stringBuilder.toString();
+        List<Biological> biologicalsList = processClient.getBiologicalListByFacilityId(facilityId).getEntity();
+        String biologicalName = JoinBiologicalName.joinBiologicalName(biologicalsList);
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-        ParamUtil.setSessionAttr(request, ProcessContants.BIOLOGICAL, biological);
+        ParamUtil.setSessionAttr(request, ProcessContants.BIOLOGICAL, biologicalName);
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
         ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
     }
