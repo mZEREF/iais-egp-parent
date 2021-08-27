@@ -474,7 +474,7 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <tr id="period" hidden>
+                            <tr id="period" >
                                 <td class="col-xs-4">
                                     <p>Period <strong style="color:#ff0000;"> *</strong></p>
                                 </td>
@@ -487,7 +487,7 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <tr id="selfPeriod" hidden>
+                            <tr id="selfPeriod">
                                 <td class="col-xs-4">
                                     <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
                                 </td>
