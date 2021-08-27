@@ -29,14 +29,14 @@
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
 
   <div class="container form-horizontal" style="margin-top:1%">
-    <iais:row>
+    <iais:row cssClass="col-xs-4">
       <label class="control-label float-left" for="premType">Type</label>
-      <div class="col-xs-12 col-md-4 col-lg-4 premTypeDiv" id="premTypeDiv">
+      <div class="col-xs-10 col-md-9 col-lg-8 premTypeDiv" id="premTypeDiv">
         <iais:select name="premType"  value="${premiseDoSearch}" options="applicationType" firstOption="All"></iais:select>
       </div>
     </iais:row>
-    <iais:row>
-      <div class="col-xs-12 col-md-12 col-lg-12 text-right">
+    <iais:row cssClass="col-xs-8">
+      <div class="text-right">
         <a class="btn btn-secondary" id="premiseClear" href="javascript:void(0);">Clear</a>
         <a class="btn btn-primary" id="premiseSearch" href="javascript:void(0);">search</a>
       </div>
@@ -60,10 +60,8 @@
             <c:forEach var="prem" items="${PremisesListDtos}" varStatus="status">
               <tr class="premTr">
                 <td>
-                  <a class="premAddr">
-                    <c:out value="${prem.address}"/>
-                    <em class="fa fa-pencil-square-o"></em>
-                  </a>
+                  <a class="premAddr"><c:out value="${prem.address}"/></a>
+                  <span><em class="fa fa-pencil-square-o"></em></span>
                   <input type="hidden" class="statusIndex" name="statusIndex" value="${status.index}" />
                   <input type="hidden" class="licId" name="licId${status.index}" value="<iais:mask name="licId${status.index}" value="${prem.licenceId}" />" />
                   <input type="hidden" class="premisesId" name="premisesId${status.index}" value="<iais:mask name="premisesId${status.index}" value="${prem.premisesId}"/>" />
