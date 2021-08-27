@@ -101,14 +101,14 @@
                                                                                  field="ACCT_NAME"
                                                                                  value="Account Name"/>
                                                             <iais:sortableHeader needSort="true"
+                                                                                 field="BANK_NAME"
+                                                                                 value="Bank Name"/>
+                                                            <iais:sortableHeader needSort="true"
                                                                                  field="BANK_CODE"
                                                                                  value="Bank Code"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="BRANCH_CODE"
                                                                                  value="Branch Code"/>
-                                                            <iais:sortableHeader needSort="true"
-                                                                                 field="BANK_NAME"
-                                                                                 value="Bank Name"/>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NO"
                                                                                  value="Bank Account No."/>
@@ -116,8 +116,8 @@
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="FILE_NAME"
                                                                                  value="GIRO Form"/>
-                                                            <iais:sortableHeader needSort="false" field="Internal Remarks"
-                                                                                 value="REMARKS"/>
+                                                            <iais:sortableHeader needSort="false" field="REMARKS"
+                                                                                 value="Internal Remarks"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">
@@ -163,13 +163,13 @@
                                                                             <c:out value="${pool.acctName}"/>
                                                                         </td>
                                                                         <td>
+                                                                            <c:out value="${pool.bankName}"/>
+                                                                        </td>
+                                                                        <td>
                                                                             <c:out value="${pool.bankCode}"/>
                                                                         </td>
                                                                         <td>
                                                                             <c:out value="${pool.branchCode}"/>
-                                                                        </td>
-                                                                        <td>
-                                                                            <c:out value="${pool.bankName}"/>
                                                                         </td>
                                                                         <td>
                                                                             <c:out value="${pool.acctNo}"/>
