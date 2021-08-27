@@ -9,7 +9,7 @@
 
             FROM giroAccountInfoView gai
             where gai.STATUS = 'CMSTAT001'
-            <#if uen??> AND charindex(:uen, gai.UEN) >0 </#if>
+            <#if uen??> AND charindex(:uen, gai.UEN_NO) >0 </#if>
             <#if licensee??> AND charindex(:licensee, gai.LICENSEE_NAME) >0 </#if>
             <#if licenceNo??> AND charindex(:licenceNo, gai.LICENCE_NO) >0 </#if>
 
