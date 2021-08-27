@@ -74,7 +74,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <iais:value width="10"><p>Normal risk</p></iais:value>
+                                                                                <iais:value width="10"><p>${applicationInfo.facility.riskLevel}</p></iais:value>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -82,7 +82,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Comments on Risk Level Assessment" required="false" width="12"/>
                                                                             <iais:value width="10">
-                                                                                <iais:value width="10"><p>xxx</p></iais:value>
+                                                                                <iais:value width="10"><p>${applicationInfo.facility.riskLevelComments}</p></iais:value>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

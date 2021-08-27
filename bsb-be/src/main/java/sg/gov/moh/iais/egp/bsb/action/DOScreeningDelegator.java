@@ -143,14 +143,14 @@ public class DOScreeningDelegator {
         String facilityId = oldApplication.getFacility().getId();
         String appType = oldApplication.getAppType();
         String processType = oldApplication.getProcessType();
-        Date applicationDt = new Date();
         Application newApplication = new Application();
         Facility facility = new Facility();
         facility.setId(facilityId);
         newApplication.setFacility(facility);
         newApplication.setAppType(appType);
         newApplication.setProcessType(processType);
-        newApplication.setApplicationDt(applicationDt);
+        newApplication.setApplicationDt(new Date());
+        newApplication.setApprovalDate(new Date());
         return newApplication;
     }
 
