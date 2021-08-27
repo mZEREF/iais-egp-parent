@@ -4242,4 +4242,36 @@ public class NewApplicationHelper {
         return appIds;
     }
 
+
+    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
+                           List<AppSubmissionDto> notAutoSaveAppsubmission) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
+            Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                notInNonAuto.add(dto);
+            }
+        });
+        List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
+        notInNonAuto.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
+            Optional<AppSubmissionDto> optional = autoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                notInAuto.add(dto);
+            }
+        });
+        autoSaveList.addAll(notInAuto);
+    }
 }

@@ -2514,7 +2514,7 @@ public class NewApplicationDelegator {
                 requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, draftNo, groupNo,
                         changeSelectDto, null, bpc.request);
             });
-            addToAuto(licenseeAffectedList, autoSaveAppsubmission, notAutoSaveAppsubmission);
+            NewApplicationHelper.addToAuto(licenseeAffectedList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }
 
         // for next condition step
@@ -2535,7 +2535,7 @@ public class NewApplicationDelegator {
             personAppSubmissionList.stream().forEach(dto -> {
                 dto.setAppGrpNo(groupNo);
             });
-            addToAuto(personAppSubmissionList, autoSaveAppsubmission, notAutoSaveAppsubmission);
+            NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission, notAutoSaveAppsubmission);
         }
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
@@ -2654,37 +2654,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 
-    private void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
-            List<AppSubmissionDto> notAutoSaveAppsubmission) {
-        if (sourceList == null) {
-            return;
-        }
-        List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
-            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
-            Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
-                    .filter(source -> licenceId.equals(source.getLicenceId()))
-                    .findAny();
-            if (optional.isPresent()) {
-                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
-            } else {
-                notInNonAuto.add(dto);
-            }
-        });
-        List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
-        notInNonAuto.stream().forEach(dto -> {
-            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
-            Optional<AppSubmissionDto> optional = autoSaveList.stream()
-                    .filter(source -> licenceId.equals(source.getLicenceId()))
-                    .findAny();
-            if (optional.isPresent()) {
-                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
-            } else {
-                notInAuto.add(dto);
-            }
-        });
-        autoSaveList.addAll(notInAuto);
-    }
+
 
     private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldPremisesDtoList, LicenceDto licence, double amount, String draftNo, String appGroupNo,
