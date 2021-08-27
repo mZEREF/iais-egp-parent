@@ -2,25 +2,29 @@
 <sqls catalog="giroPayee">
     <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
         <![CDATA[
-            SELECT distinct gai.ID, gai.ORGANIZATION_ID,
+            SELECT distinct gai.ID,gai.UEN_NO UEN,gai.LICENCE_ID, gai.LICENCE_NO,
+            gai.SVC_NAME,gai.LICENSEE_NAME,gai.REMARKS,
             gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
             gai.DDA_REF_NO
 
-            FROM org_giro_account_info gai
+            FROM giroAccountInfoView gai
             where gai.STATUS = 'CMSTAT001'
-            <#if cusRefNo??> AND charindex(:cusRefNo, gai.DDA_REF_NO) >0 </#if>
+            <#if uen??> AND charindex(:uen, gai.UEN) >0 </#if>
+            <#if licensee??> AND charindex(:licensee, gai.LICENSEE_NAME) >0 </#if>
+            <#if licenceNo??> AND charindex(:licenceNo, gai.LICENCE_NO) >0 </#if>
 
         ]]>
     </sql>
 
     <sql key = "searchByOrgPremView" remarks="search by Organization Premises View">
         <![CDATA[
-            SELECT distinct opv.ID OP_ID, opv.UEN_NO
-            from organization opv
+            SELECT distinct opv.ID , opv.ORG_ID, opv.LICENCE_NO, opv.UEN_NO, opv.SVC_NAME, opv.LICENSEE_NAME
+            from UenLicView opv
             where 1 = 1
-            and opv.UEN_NO is not null and opv.UEN_NO !=''
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
-            <#if orgIds??> AND ${orgIds} </#if>
+            <#if licensee??> AND charindex(:licensee, opv.LICENCE_NO) >0 </#if>
+            <#if licenceNo??> AND charindex(:licenceNo, opv.LICENSEE_NAME) >0 </#if>
+            <#if licIds??> AND ${licIds} </#if>
 
         ]]>
     </sql>

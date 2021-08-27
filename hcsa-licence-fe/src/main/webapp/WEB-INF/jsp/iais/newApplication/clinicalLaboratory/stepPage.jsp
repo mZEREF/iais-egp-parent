@@ -77,19 +77,19 @@
                                                                 <%@include file="chargesContent.jsp"%>
                                                             </div>
                                                         </c:when>
+                                                        <c:when test="${currentStep == 'SVST006'}">
+                                                            <div class="clinical-governance-officer">
+                                                                <!--start -->
+                                                                <%@include file="servicePersonnel.jsp" %>
+                                                                <!--end -->
+                                                            </div>
+                                                        </c:when>
                                                         <c:when test="${currentStep == 'SVST004'}">
                                                             <%@include file="principalOfficers.jsp"%>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST014'}">
                                                             <div class="key-appointment-holder">
                                                                 <%@include file="keyAppointmentHolder.jsp"%>
-                                                            </div>
-                                                        </c:when>
-                                                        <c:when test="${currentStep == 'SVST006'}">
-                                                            <div class="clinical-governance-officer">
-                                                                <!--start -->
-                                                                <%@include file="servicePersonnel.jsp" %>
-                                                                <!--end -->
                                                             </div>
                                                         </c:when>
                                                         <c:when test="${currentStep == 'SVST007'}">

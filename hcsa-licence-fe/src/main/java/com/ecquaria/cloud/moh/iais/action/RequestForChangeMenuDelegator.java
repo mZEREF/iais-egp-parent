@@ -1295,10 +1295,9 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         if(mainSubmisDto != null){
             boolean isGiroAcc = false;
-            List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-            if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, mainSubmisDto);
+            if (!IaisCommonUtils.isEmpty(giroAccSel)) {
                 isGiroAcc = true;
-                List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
                 ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
             }
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);

@@ -40,7 +40,9 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-transition-property: -webkit-transform;
+  transition-property: -webkit-transform;
   -o-transition-property: transform;
+  transition-property: transform;
   transition-property: transform, -webkit-transform;
   -webkit-box-sizing: content-box;
   box-sizing: content-box;
@@ -69,7 +71,9 @@
   height: 100%;
   position: relative;
   -webkit-transition-property: -webkit-transform;
+  transition-property: -webkit-transform;
   -o-transition-property: transform;
+  transition-property: transform;
   transition-property: transform, -webkit-transform;
 }
 .swiper-slide-invisible-blank {
@@ -86,7 +90,9 @@
   -ms-flex-align: start;
   align-items: flex-start;
   -webkit-transition-property: height, -webkit-transform;
+  transition-property: height, -webkit-transform;
   -o-transition-property: transform, height;
+  transition-property: transform, height;
   transition-property: transform, height, -webkit-transform;
 }
 /* 3D Effects */
@@ -308,7 +314,9 @@ button.swiper-pagination-bullet {
 .swiper-container-vertical > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
   display: inline-block;
   -webkit-transition: 200ms top, 200ms -webkit-transform;
+  transition: 200ms top, 200ms -webkit-transform;
   -o-transition: 200ms transform, 200ms top;
+  transition: 200ms transform, 200ms top;
   transition: 200ms transform, 200ms top, 200ms -webkit-transform;
 }
 .swiper-container-horizontal > .swiper-pagination-bullets .swiper-pagination-bullet {
@@ -323,12 +331,16 @@ button.swiper-pagination-bullet {
 }
 .swiper-container-horizontal > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
   -webkit-transition: 200ms left, 200ms -webkit-transform;
+  transition: 200ms left, 200ms -webkit-transform;
   -o-transition: 200ms transform, 200ms left;
+  transition: 200ms transform, 200ms left;
   transition: 200ms transform, 200ms left, 200ms -webkit-transform;
 }
 .swiper-container-horizontal.swiper-container-rtl > .swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
   -webkit-transition: 200ms right, 200ms -webkit-transform;
+  transition: 200ms right, 200ms -webkit-transform;
   -o-transition: 200ms transform, 200ms right;
+  transition: 200ms transform, 200ms right;
   transition: 200ms transform, 200ms right, 200ms -webkit-transform;
 }
 /* Progress */

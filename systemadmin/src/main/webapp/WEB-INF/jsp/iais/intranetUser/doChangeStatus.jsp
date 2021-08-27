@@ -27,7 +27,7 @@
                 <div class="col-xs-1 col-md-1"></div>
                 <div class="col-xs-2 col-md-2">
                     <div class="text-left">
-                        <a class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                        <a href="#" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                 </div>
                 <div class="col-xs-8 col-md-8">

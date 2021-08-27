@@ -716,10 +716,9 @@ public class WithOutRenewalDelegator {
         targetSubmisnDto.setAppGrpPremisesDtoList(allPremiseList);
         //sor
         boolean isGiroAcc = false;
-        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+        List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, null);
+        if (!IaisCommonUtils.isEmpty(giroAccSel)) {
             isGiroAcc = true;
-            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
             ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
         }
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
@@ -773,7 +772,7 @@ public class WithOutRenewalDelegator {
                 }
             }
 
-            if ( (eqGrpPremisesResult && appSubmissionDtos.size() == 1) || appEditSelectDto.isLicenseeEdit()) {
+            if ((eqGrpPremisesResult && appSubmissionDtos.size() == 1) || appEditSelectDto.isLicenseeEdit()) {
                 appEditSelectDto.setPremisesEdit(eqGrpPremisesResult);
                 if(appGrpPremisesDtoList != null){
                     if (eqGrpPremisesResult) {
