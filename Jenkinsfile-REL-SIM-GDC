@@ -928,7 +928,7 @@ def runAutomatedTests(){
                                 -runMode=console \
                                 -projectPath="${CHECKOUT_DIRECTORY}/iais-qa/moh_iais.prj" \
                                 -retry=0 \
-                                -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
+                                -testSuitePath="Test Suites/Automation Test Suite - CICD" \
                                 -executionProfile="SG_SIT" \
                                 -browserType="$browserType" \
                                 -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
