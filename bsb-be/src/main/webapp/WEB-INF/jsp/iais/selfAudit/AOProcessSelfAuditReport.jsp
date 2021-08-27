@@ -29,6 +29,10 @@
                                                    role="tab"
                                                    data-toggle="tab">Info</a>
                                             </li>
+                                            <li class="complete" id="document" role="presentation">
+                                                <a href="#tabDocuments"
+                                                   aria-controls="tabDocuments" role="tab"
+                                                   data-toggle="tab">Documents</a></li>
                                             <li class="incomplete" id="process" role="presentation">
                                                 <a href="#tabProcessing"
                                                    aria-controls="tabProcessing" role="tab"
@@ -39,6 +43,10 @@
                                                 <div class="swiper-slide"><a href="#tabInfo" aria-controls="tabInfo"
                                                                              role="tab"
                                                                              data-toggle="tab">Info</a></div>
+                                                <div class="swiper-slide"><a href="#tabDocuments" id="doDocument"
+                                                                             aria-controls="tabDocuments"
+                                                                             role="tab" data-toggle="tab">Documents</a>
+                                                </div>
                                                 <div class="swiper-slide"><a href="#tabProcessing" id="doProcess"
                                                                              aria-controls="tabProcessing"
                                                                              role="tab" data-toggle="tab">Processing</a>
@@ -49,14 +57,17 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="facilityInfo.jsp" %>
+                                                <%@include file="../auditDt/facilityInfo.jsp" %>
+                                            </div>
+                                            <div class="tab-pane" id="tabDocuments" role="tabpanel">
+                                                <%@include file="tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
                                                     <strong>
-                                                        <h4>Processing Audit Date</h4>
+                                                        <h4>Process Status Update</h4>
                                                     </strong>
                                                 </div>
                                                 <form method="post" action=<%=process.runtime.continueURL()%>>
@@ -66,78 +77,73 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <%--                                                                    <c:forEach var="item" items="${revocationDetail}">--%>
                                                                     <input name="applicationId" id="applicationId"
                                                                            value="" hidden>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Request Audit Date"
-                                                                                        required="false"/>
+                                                                            <div><iais:field value="Audit type" required="false" width="12"/></div>
+                                                                            <iais:value width="10">
+                                                                                <p>Audit type1</p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Audit Date" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <p>07/07/2021</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <%--                                                                    </c:forEach>--%>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div id="ReasonFalse"><iais:field
-                                                                                    value="Reason for Change Audit Date"
-                                                                                    required="false"
-                                                                                    width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <p>Reason for Change Audit Date,Reason for Change Audit Date</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Facility Admin's Remark"
+                                                                            <iais:field value="Scenario Category"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Facility Admin's Remark,Facility Admin's Remark</p>
+                                                                                <p><iais:code code="Category A"></iais:code></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <%--Required if decision is reject--%>
-                                                                            <div><iais:field
-                                                                                    value="Reason for rejection"
-                                                                                    required="true"
-                                                                                    width="12"/></div>
+                                                                            <iais:field value="Current Status"
+                                                                                        required="false"/>
                                                                             <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
-                                                                                        <textarea id="Reason"
-                                                                                                  name="AORemarks"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="300"></textarea>
-                                                                                        <span id="error_Reason"
-                                                                                              name="iaisErrorMsg"
-                                                                                              class="error-msg"></span>
-                                                                                    </div>
-                                                                                </div>
+                                                                                <p><iais:code code="Active"></iais:code></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO remarks" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p>DO remarks,DO remarks</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div><iais:field value="Remarks" required="false" width="12"/></div>
+                                                                            <iais:field value="AO Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <div class="input-group">
-                                                                                    <div class="ax_default text_area">
-                                                                                        <textarea id="Remarks"
-                                                                                                  name="AORemarks"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="300"></textarea>
-                                                                                    </div>
-                                                                                </div>
+                                                                                <textarea id="remark"
+                                                                                name="remark"
+                                                                                cols="70"
+                                                                                rows="5"
+                                                                                maxlength="300"></textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
+
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Final Remarks" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <input name="finalRemark" id="finalRemark" type="checkbox">
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+
                                                                     <div id="processingDecision">
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision"
@@ -145,9 +151,9 @@
                                                                             <iais:value width="10">
                                                                                 <iais:select name="decision"
                                                                                              id="decision"
-                                                                                             codeCategory="CATE_ID_BSB_CHANGE_DATE_DO"
+                                                                                             codeCategory="CATE_ID_BSB_DO_AUDIT_AO"
                                                                                              firstOption="Please Select"/>
-                                                                                <span id="error_decision"
+                                                                                <span id="error_scenarioCategory"
                                                                                       name="iaisErrorMsg"
                                                                                       class="error-msg"></span>
                                                                             </iais:value>
@@ -168,6 +174,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
+                                                <%@include file="processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
@@ -184,7 +191,7 @@
 <script>
     $("#submitButton").click(function (){
         showWaiting();
-        $("[name='action_type']").val("doVerified");
+        $("[name='action_type']").val("doApproved");
         $("#mainForm").submit();
     })
 </script>

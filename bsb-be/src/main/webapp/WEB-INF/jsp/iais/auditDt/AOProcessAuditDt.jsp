@@ -49,7 +49,7 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="auditDtInfo.jsp" %>
+                                                <%@include file="facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
@@ -122,23 +122,6 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
-                                                                    <div id="processingDecision">
-                                                                        <iais:row>
-                                                                            <iais:field value="Processing Decision"
-                                                                                        required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:select name="decision"
-                                                                                             id="decision"
-                                                                                             codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
-                                                                                             firstOption="Please Select"/>
-                                                                                <span id="error_decision"
-                                                                                      name="iaisErrorMsg"
-                                                                                      class="error-msg"></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-
                                                                     <div>
                                                                         <iais:row>
                                                                             <%--Required if decision is reject--%>
@@ -162,7 +145,6 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
                                                                     <div>
                                                                         <iais:row>
                                                                             <div><iais:field value="AO Remarks" required="false" width="12"/></div>
@@ -176,6 +158,21 @@
                                                                                                   maxlength="300"></textarea>
                                                                                     </div>
                                                                                 </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div id="processingDecision">
+                                                                        <iais:row>
+                                                                            <iais:field value="Processing Decision"
+                                                                                        required="true"/>
+                                                                            <iais:value width="10">
+                                                                                <iais:select name="decision"
+                                                                                             id="decision"
+                                                                                             codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
+                                                                                             firstOption="Please Select"/>
+                                                                                <span id="error_decision"
+                                                                                      name="iaisErrorMsg"
+                                                                                      class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

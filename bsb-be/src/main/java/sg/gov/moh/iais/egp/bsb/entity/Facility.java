@@ -20,6 +20,8 @@ public class Facility implements Serializable {
 
     private List<FacilitySchedule> facilitySchedules;
 
+    private List<FacilityBiologicalAgent> facilityBiologicalAgents;
+
     private List<Application> applications;
 
     private List<FacilityAuthoriser> authorizers;

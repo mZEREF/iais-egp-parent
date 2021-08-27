@@ -10,15 +10,15 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
-import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
-import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
+import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +47,9 @@ public class AORevocationDelegator {
 
     @Autowired
     private RevocationClient revocationClient;
+
+    @Autowired
+    private ProcessClient processClient;
 
     /**
      * StartStep: startStep
@@ -78,8 +81,27 @@ public class AORevocationDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
+            //get facilityId
+            String facId="";
             for (Application application : applications) {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
+                facId=application.getFacility().getId();
+                List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
+                List<Biological> biologicalList = new ArrayList<>();
+                //get Biological by facilityIds
+                if (facilityScheduleList != null && facilityScheduleList.size() > 0){
+                    for (int i = 0; i < facilityScheduleList.size(); i++) {
+                        List<FacilityBiologicalAgent> facilityBiologicalAgentList = facilityScheduleList.get(i).getFacilityBiologicalAgents();
+                        if (facilityBiologicalAgentList != null && facilityBiologicalAgentList.size() > 0){
+                            for (int j = 0; j < facilityBiologicalAgentList.size(); j++) {
+                                String biologicalId = facilityBiologicalAgentList.get(j).getBiologicalId();
+                                biologicalList.add(processClient.getBiologicalById(biologicalId).getEntity());
+                            }
+                        }
+                    }
+                }
+                String bioNames = JoinBiologicalName.joinBiologicalName(biologicalList);
+                application.setBiologicalName(bioNames);
             }
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, applications);
         } else {

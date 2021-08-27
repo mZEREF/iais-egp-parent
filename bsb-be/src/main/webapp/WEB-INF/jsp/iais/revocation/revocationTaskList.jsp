@@ -58,7 +58,8 @@
                                 <iais:row>
                                     <iais:field value="Facility Address"/>
                                     <iais:value width="18">
-                                        <input type="text" name="facilityAddress" id="facilityAddress" value="${facilityAddress}"/>
+                                        <input type="text" name="facilityAddress" id="facilityAddress"
+                                               value="${facilityAddress}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -89,13 +90,15 @@
                                 <iais:row>
                                     <iais:field value="Application Date"/>
                                     <iais:value width="18">
-                                        <iais:datePicker id="applicationDate" name="applicationDate" dateVal="${applicationDate}"></iais:datePicker>
+                                        <iais:datePicker id="applicationDate" name="applicationDate"
+                                                         dateVal="${applicationDate}"></iais:datePicker>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Application No."/>
                                     <iais:value width="18">
-                                        <input type="text" name="applicationNo" id="applicationNo" value="${applicationNo}"/>
+                                        <input type="text" name="applicationNo" id="applicationNo"
+                                               value="${applicationNo}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -142,7 +145,7 @@
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name/Address" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.biological.name" value="Biological Agents/Toxins" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Biological Agents/Toxins" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="applicationDt" value="Application Date (dd/mm/yyyy)" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.expiryDt" value="Facility / Approval Expiry Date (dd/mm/yyyy)" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="status" value="Application Status" isFE="false"/>
@@ -157,7 +160,7 @@
                                         <td><c:out value="${item.facility.facilityName}/${item.facility.facilityAddress}"/></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td><iais:code code="${item.processType}"></iais:code></td>
-                                        <td><c:out value="${item.facility.biological.name}"/></td>
+                                        <td><c:out value="${item.biologicalName}"/></td>
                                         <td><fmt:formatDate value='${item.applicationDt}' pattern='dd/MM/yyyy'/></td>
                                         <td><fmt:formatDate value='${item.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
                                         <td><iais:code code="${item.status}"></iais:code></td>
