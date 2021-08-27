@@ -60,8 +60,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row img-show" style="${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
-                                '' : 'display: none;'}">
+                    <div class="row img-show ${curDto.licenseeType == companyType || oldDto.licenseeType == companyType ?
+                                '' : 'hidden'}">
                         <div class="col-md-6">UEN No.</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
