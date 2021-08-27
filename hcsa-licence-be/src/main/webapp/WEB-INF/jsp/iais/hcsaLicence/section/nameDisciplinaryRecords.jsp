@@ -6,7 +6,7 @@
 
 <c:if test="${not empty proHashMap[profRegNo]}">
     <div class="disciplinary-record ${cssClass}" style="display: none">
-        <div class="prs-name">
+        <div style="position: absolute;z-index: 100;background-color: #F5F5F5;width: 40%">
             <label style="font-weight: normal">The name of this personnel as listed in PRS is:
             </label><span style="position: absolute;right: 0px;color: black"
                           onclick="javascript:closeThis(this)">X</span>

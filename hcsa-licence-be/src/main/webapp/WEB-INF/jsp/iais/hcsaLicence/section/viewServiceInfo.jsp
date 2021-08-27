@@ -23,25 +23,6 @@
     color: #999999 !important;
   }
 
-  .prs-name {
-    position:absolute;
-    z-index:100;
-    background-color:#F5F5F5;
-    padding-left:15px;
-    margin-top:8%;
-    width:50%;
-  }
-
-  @media  only screen and (max-width: 767px) {
-    .prs-name {
-      position:absolute;
-      z-index:100;
-      background-color:#F5F5F5;
-      padding-left:15px;
-      margin-top:18%;
-      width:50%;
-    }
-  }
 </style>
 <div class="panel-main-content service-pannel">
 <input style="display: none" value="${NOT_VIEW}" id="view">
@@ -371,7 +352,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                           <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
                           <jsp:param name="personName" value="${appSvcClinicalDirectorDto.name}"/>
-                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                          <jsp:param name="methodName" value="showThisNameTableNewService"/>
                         </jsp:include>
                       </span>
                       </div>
@@ -382,7 +363,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                           <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
                           <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"/>
-                          <jsp:param name="methodName" value="showThisTableOldService"/>
+                          <jsp:param name="methodName" value="showThisNameTableOldService"/>
                         </jsp:include>
                       </span>
                       </div>
@@ -902,7 +883,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                           <jsp:param name="profRegNo" value="${cgo.profRegNo}"/>
                           <jsp:param name="personName" value="${cgo.name}"/>
-                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                          <jsp:param name="methodName" value="showThisNameTableNewService"/>
                         </jsp:include>
                       </span>
                     </div>
@@ -913,7 +894,7 @@
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
                             <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/>
-                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                            <jsp:param name="methodName" value="showThisNameTableOldService"/>
                         </jsp:include>
                       </span>
                     </div>
@@ -1432,7 +1413,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                            <jsp:param name="methodName" value="showThisNameTableNewService"/>
                           </jsp:include>
                         </span>
                           </div>
@@ -1443,7 +1424,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                            <jsp:param name="methodName" value="showThisNameTableOldService"/>
                           </jsp:include>
                         </span>
                         </div>
@@ -1834,7 +1815,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableNewService"/>
+                            <jsp:param name="methodName" value="showThisNameTableNewService"/>
                           </jsp:include>
                         </span>
                         </div>
@@ -1845,7 +1826,7 @@
                           <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
                             <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
                             <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                            <jsp:param name="methodName" value="showThisNameTableOldService"/>
                           </jsp:include>
                         </span>
                         </div>
@@ -2455,6 +2436,20 @@
     } else {
       $target.find("div.disciplinary-record").children("div").css("margin-left", "-29%");
     }
+    $(obj).closest('div.img-show').closest('td').find('div.old-img-show').show();
+  }
+
+  function showThisNameTableNewService(obj) {
+    var $target = $(obj).closest('td');
+    var h = $target.css('height');
+    $target.find("div.disciplinary-record").children("div").css("margin-top", h);
+    $(obj).closest('div.img-show').closest('td').find("div.new-img-show").show();
+  }
+
+  function showThisNameTableOldService(obj) {
+    var $target = $(obj).closest('td');
+    var h = $target.css('height');
+    $target.find("div.disciplinary-record").children("div").css("margin-top", h);
     $(obj).closest('div.img-show').closest('td').find('div.old-img-show').show();
   }
 
