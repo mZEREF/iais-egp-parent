@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -632,7 +633,6 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "noRecord", "Y");
         }
         List<SelectOption> personelRoles = getPsnType();
-        Collections.sort(personelRoles);
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
@@ -740,7 +740,7 @@ public class RequestForChangeMenuDelegator {
             requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, 0.0D, draftNo, appGroupNo,
                     appEditSelectDto, null, bpc.request);
             if ("replace".equals(editSelect)) {
-                replacePersonnelDate(appSubmissionDto, newPerson);
+                replacePersonnelDate(appSubmissionDto, newPerson, oldPersonnelDto.getIdNo());
             } else {
                 setPersonnelDate(appSubmissionDto, personnelEditDto);
             }
@@ -1125,6 +1125,8 @@ public class RequestForChangeMenuDelegator {
         personelRoles.add(sp3);
         personelRoles.add(sp4);
         personelRoles.add(sp5);
+        personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.KEY_APPOINTMENT_HOLDER));
+        Collections.sort(personelRoles);
         return personelRoles;
     }
 
@@ -1293,10 +1295,9 @@ public class RequestForChangeMenuDelegator {
         AppSubmissionDto mainSubmisDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
         if(mainSubmisDto != null){
             boolean isGiroAcc = false;
-            List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-            if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, mainSubmisDto);
+            if (!IaisCommonUtils.isEmpty(giroAccSel)) {
                 isGiroAcc = true;
-                List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
                 ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
             }
             ParamUtil.setRequestAttr(bpc.request, "IsGiroAcc", isGiroAcc);
@@ -1895,7 +1896,6 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean compareHciName(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
-
         String newHciName = "";
         String oldHciName = "";
         String newVehicleNo="";
@@ -1926,173 +1926,86 @@ public class RequestForChangeMenuDelegator {
 
         return true;
     }
+
     private AppSubmissionDto setPersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelListDto.getLicPsnTypeDtoMaps();
         String licenceNo = appSubmissionDto.getLicenceNo();
         List<String> psnTypes = licPsnTypeDtoMaps.get(licenceNo).getPsnTypes();
+        if (psnTypes == null || psnTypes.isEmpty()) {
+            return appSubmissionDto;
+        }
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
-                    if (appSvcCgoDto.getIdNo().equals(personnelListDto.getIdNo())) {
-                        appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                        appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
-                        appSvcCgoDto.setOtherDesignation(personnelListDto.getOtherDesignation());
-                        appSvcCgoDto.setName(personnelListDto.getPsnName());
-                        appSvcCgoDto.setSalutation(personnelListDto.getSalutation());
-                    }
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                    String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                    if (psnTypes.contains(psnType)) {
-                        if (appSvcPrincipalOfficersDto.getIdNo().equals(personnelListDto.getIdNo())) {
-                            appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                            appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                            appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                            appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                            appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
-                            appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
-                            appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
-                        }
-                    }
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-            if (appSvcMedAlertPersonList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
-                    if (appSvcPrincipalOfficersDto.getIdNo().equals(personnelListDto.getIdNo())) {
-                        appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
-                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
-                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
-                    }
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if(appSvcClinicalDirectorDtoList!=null){
-                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
-                    if(v.getIdNo().equals(personnelListDto.getIdNo())){
-                     v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                     v.setEmailAddr(personnelListDto.getEmailAddr());
-                     v.setMobileNo(personnelListDto.getMobileNo());
-                     v.setDesignation(personnelListDto.getDesignation());
-                     v.setOtherDesignation(personnelListDto.getOtherDesignation());
-                     v.setName(personnelListDto.getPsnName());
-                     v.setSalutation(personnelListDto.getSalutation());
-                    }
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
-            if (appSvcKeyAppointmentHolderList != null) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcKeyAppointmentHolderList) {
-                    if (appSvcPrincipalOfficersDto.getIdNo().equals(personnelListDto.getIdNo())) {
-                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
-                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
-                    }
-                }
+            for (String psnType : psnTypes) {
+                reSetPersonnels(appSvcRelatedInfoDto, personnelListDto, psnType, null);
             }
         }
         return appSubmissionDto;
     }
 
-    private AppSubmissionDto replacePersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto) {
+    private AppSubmissionDto replacePersonnelDate(AppSubmissionDto appSubmissionDto, PersonnelListDto personnelListDto,
+            String oldIdNo) {
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelListDto.getLicPsnTypeDtoMaps();
         String licenceNo = appSubmissionDto.getLicenceNo();
         List<String> psnTypes = licPsnTypeDtoMaps.get(licenceNo).getPsnTypes();
+        if (psnTypes == null || psnTypes.isEmpty()) {
+            return appSubmissionDto;
+        }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        String idNo = personnelListDto.getIdNo();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
-            //cgo
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcCgoDtos) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtos) {
-                    appSvcCgoDto.setIdNo(personnelListDto.getIdNo());
-                    appSvcCgoDto.setIdType(personnelListDto.getIdType());
-                    appSvcCgoDto.setName(personnelListDto.getPsnName());
-                    appSvcCgoDto.setSalutation(personnelListDto.getSalutation());
-                    appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
-                    appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
-                    appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
-                    appSvcCgoDto.setOtherDesignation(personnelListDto.getOtherDesignation());
-                    appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                }
-            }
-            //po Dpo
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos) && (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO) || psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO))) {
-                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                    String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                    if (psnTypes.contains(psnType)) {
-                        appSvcPrincipalOfficersDto.setIdNo(personnelListDto.getIdNo());
-                        appSvcPrincipalOfficersDto.setIdType(personnelListDto.getIdType());
-                        appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
-                        appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
-                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                        appSvcPrincipalOfficersDto.setOtherDesignation(personnelListDto.getOtherDesignation());
-                        appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                    }
-                }
-            }
-            //MAP
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-            if (!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
-                for (AppSvcPrincipalOfficersDto appSvcMedAlertPerson : appSvcMedAlertPersonList) {
-                    appSvcMedAlertPerson.setIdNo(personnelListDto.getIdNo());
-                    appSvcMedAlertPerson.setIdType(personnelListDto.getIdType());
-                    appSvcMedAlertPerson.setName(personnelListDto.getPsnName());
-                    appSvcMedAlertPerson.setSalutation(personnelListDto.getSalutation());
-                    appSvcMedAlertPerson.setMobileNo(personnelListDto.getMobileNo());
-                    appSvcMedAlertPerson.setEmailAddr(personnelListDto.getEmailAddr());
-                    appSvcMedAlertPerson.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                }
-            }
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if(appSvcClinicalDirectorDtoList!=null){
-                for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
-                    v.setIdNo(personnelListDto.getIdNo());
-                    v.setIdType(personnelListDto.getIdType());
-                    v.setName(personnelListDto.getPsnName());
-                    v.setSalutation(personnelListDto.getSalutation());
-                    v.setMobileNo(personnelListDto.getMobileNo());
-                    v.setEmailAddr(personnelListDto.getEmailAddr());
-                    v.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                    v.setDesignation(personnelListDto.getDesignation());
-                    v.setOtherDesignation(personnelListDto.getOtherDesignation());
-                }
-            }
-            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtoList)) {
-                for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                    appSvcDisciplineAllocationDto.setIdNo(idNo);
-                }
-            }
-            //KAH
-            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList();
-            if (!IaisCommonUtils.isEmpty(appSvcKeyAppointmentHolderDtoList) && psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
-                for (AppSvcPrincipalOfficersDto appSvcKeyAppointmentHolderDto : appSvcKeyAppointmentHolderDtoList) {
-                    appSvcKeyAppointmentHolderDto.setIdNo(personnelListDto.getIdNo());
-                    appSvcKeyAppointmentHolderDto.setIdType(personnelListDto.getIdType());
-                    appSvcKeyAppointmentHolderDto.setName(personnelListDto.getPsnName());
-                    appSvcKeyAppointmentHolderDto.setSalutation(personnelListDto.getSalutation());
-                    appSvcKeyAppointmentHolderDto.setMobileNo(personnelListDto.getMobileNo());
-                    appSvcKeyAppointmentHolderDto.setEmailAddr(personnelListDto.getEmailAddr());
-                }
+            for (String psnType : psnTypes) {
+                reSetPersonnels(appSvcRelatedInfoDto, personnelListDto, psnType, oldIdNo);
             }
         }
         return appSubmissionDto;
+    }
+
+    private void reSetPersonnels(AppSvcRelatedInfoDto targetReletedInfo, PersonnelListDto newPerson, String psnType, String oldIdNo) {
+        if (targetReletedInfo == null || newPerson == null || psnType == null) {
+            return;
+        }
+        if (oldIdNo == null) {
+            oldIdNo = newPerson.getIdNo();
+        }
+        boolean changePersonnel = !Objects.equals(oldIdNo, newPerson.getIdNo());
+        List<AppSvcPrincipalOfficersDto> targetList = null;
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+            targetList = targetReletedInfo.getAppSvcCgoDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
+            targetList = targetReletedInfo.getAppSvcMedAlertPersonList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)
+                || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
+            targetList = targetReletedInfo.getAppSvcPrincipalOfficersDtoList();
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+            targetList = targetReletedInfo.getAppSvcClinicalDirectorDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            targetList = targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        }
+        if (!IaisCommonUtils.isEmpty(targetList)) {
+            for (AppSvcPrincipalOfficersDto target : targetList) {
+                if (Objects.equals(target.getIdNo(), oldIdNo) && Objects.equals(target.getPsnType(), psnType)) {
+                    if (changePersonnel) {
+                        target.setIdNo(newPerson.getIdNo());
+                        target.setIdType(newPerson.getIdType());
+                    }
+                    target.setName(newPerson.getPsnName());
+                    target.setSalutation(newPerson.getSalutation());
+                    target.setMobileNo(newPerson.getMobileNo());
+                    target.setEmailAddr(newPerson.getEmailAddr());
+                }
+            }
+        }
+        if (changePersonnel && ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = targetReletedInfo.getAppSvcDisciplineAllocationDtoList();
+            if (appSvcDisciplineAllocationDtoList != null) {
+                String idNo = newPerson.getIdNo();
+                for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+                    if (Objects.equals(appSvcDisciplineAllocationDto.getIdNo(), oldIdNo)) {
+                        appSvcDisciplineAllocationDto.setIdNo(idNo);
+                    }
+                }
+            }
+        }
     }
 
     private void requestForInformation(BaseProcessClass bpc, String appNo) throws CloneNotSupportedException {

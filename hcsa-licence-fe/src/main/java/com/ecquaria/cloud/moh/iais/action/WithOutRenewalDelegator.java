@@ -279,6 +279,7 @@ public class WithOutRenewalDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
                 //set AppSvcRelatedInfoDtoList chkName
                 List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(svcId);
@@ -715,10 +716,9 @@ public class WithOutRenewalDelegator {
         targetSubmisnDto.setAppGrpPremisesDtoList(allPremiseList);
         //sor
         boolean isGiroAcc = false;
-        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+        List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(appSubmissionDtos, null);
+        if (!IaisCommonUtils.isEmpty(giroAccSel)) {
             isGiroAcc = true;
-            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
             ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
         }
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
@@ -772,7 +772,7 @@ public class WithOutRenewalDelegator {
                 }
             }
 
-            if ( (eqGrpPremisesResult && appSubmissionDtos.size() == 1) || appEditSelectDto.isLicenseeEdit()) {
+            if ((eqGrpPremisesResult && appSubmissionDtos.size() == 1) || appEditSelectDto.isLicenseeEdit()) {
                 appEditSelectDto.setPremisesEdit(eqGrpPremisesResult);
                 if(appGrpPremisesDtoList != null){
                     if (eqGrpPremisesResult) {
@@ -1273,15 +1273,10 @@ public class WithOutRenewalDelegator {
         if(rfcAppSubmissionDtos!=null){
             for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
-                boolean autoRfc = appSubmissionDto.isAutoRfc();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
                 if(entity!=null&& !entity.isEmpty()){
                     for(ApplicationDto applicationDto : entity){
-                        if(autoRfc){
-                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                        }else {
-                            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-                        }
+                        applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                     }
                     String grpId = entity.get(0).getAppGrpId();
                     ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();

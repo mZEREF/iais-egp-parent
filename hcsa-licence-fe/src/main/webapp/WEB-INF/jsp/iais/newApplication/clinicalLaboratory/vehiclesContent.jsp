@@ -155,15 +155,14 @@
     $(document).ready(function () {
         addVehicle();
         removeVehicle();
-        doEdite();
 
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
         //rfc,renew,rfi
         if (('APTY005' == appType || 'APTY004' == appType) || '1' == rfiObj) {
             disabledPage();
+            doEdite();
         }
-
         refreshVehicle();
     });
 
@@ -249,15 +248,23 @@
     }
 
     var doEdite = function () {
-        $('a.vehicleEdit').click(function () {
-            var $currContent = $(this).closest('div.vehicleContent');
-            $currContent.find('input.isPartEdit').val('1');
-            $currContent.find('.edit-content').addClass('hidden');
-            $currContent.find('input[type="text"]').prop('disabled', false);
-            $currContent.find('div.nice-select').removeClass('disabled');
-            $currContent.find('input[type="text"]').css('border-color', '');
-            $currContent.find('input[type="text"]').css('color', '');
-            $('#isEditHiddenVal').val('1');
+        $('.vehicleContent').each(function (){
+            var $vehicleContent = $(this);
+            $vehicleContent.find('input[type="text"]').each(function (){
+                var $input = $(this);
+                if ($input.is(':visible')) {
+                    var v = $input.val();
+                    if (v == null || v == 'undefined' || v == ''){
+                        $vehicleContent.find('input.isPartEdit').val('1');
+                        $vehicleContent.find('.edit-content').addClass('hidden');
+                        $vehicleContent.find('input[type="text"]').prop('disabled', false);
+                        $vehicleContent.find('div.nice-select').removeClass('disabled');
+                        $vehicleContent.find('input[type="text"]').css('border-color', '');
+                        $vehicleContent.find('input[type="text"]').css('color', '');
+                        $('#isEditHiddenVal').val('1');
+                    }
+                }
+            });
         });
     }
 

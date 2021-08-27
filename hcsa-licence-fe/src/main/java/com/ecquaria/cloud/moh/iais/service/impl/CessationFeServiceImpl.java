@@ -703,6 +703,7 @@ private RequestForChangeService requestForChangeService;
         log.info(StringUtil.changeForLog("The baseServiceId is -->:"+baseServiceId));
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSvcRelatedInfoDtoList.get(0).setServiceName(hcsaServiceDto.getSvcName());
         appSvcRelatedInfoDtoList.get(0).setBaseServiceId(baseServiceId);
 
         appSubmissionDto.setAppGrpNo(grpNo);
@@ -782,6 +783,7 @@ private RequestForChangeService requestForChangeService;
         String svcCode = hcsaServiceDto.getSvcCode();
         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto1.getId());
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+        appSvcRelatedInfoDtoList.get(0).setServiceName(hcsaServiceDto.getSvcName());
         appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_CESSATION);

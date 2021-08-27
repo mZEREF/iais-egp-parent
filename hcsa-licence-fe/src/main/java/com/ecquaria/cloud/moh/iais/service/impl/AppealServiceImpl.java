@@ -351,6 +351,7 @@ public class AppealServiceImpl implements AppealService {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>(1);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         appSvcRelatedInfoDto.setServiceCode(serviceByServiceName.getSvcCode());
+        appSvcRelatedInfoDto.setServiceName(serviceByServiceName.getSvcName());
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         appSubmissionDto.setServiceName(serviceName);

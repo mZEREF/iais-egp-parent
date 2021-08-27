@@ -398,6 +398,23 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         //AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
+        //get Observation
+        String observation = fillupChklistService.getObservationByAppPremCorrId(appPremisesCorrelationId);
+        StringBuilder observationSb=new StringBuilder();
+        if(StringUtil.isEmpty(observation)) {
+            observationSb.append('-');
+        }else {
+            String[] observations=new String[]{};
+            observations=observation.split("\n");
+            if(!StringUtil.isEmpty(observation)){
+                observationSb =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    observationSb.append(rk).append("<br>");
+                }
+            }
+        }
+        inspectionReportDto.setObservation(observationSb.toString());
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         for (PremisesDto appGrpPremise:licPremisesDto

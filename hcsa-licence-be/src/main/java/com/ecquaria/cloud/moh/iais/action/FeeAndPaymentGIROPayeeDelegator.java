@@ -92,13 +92,14 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"cusRefNo",null);
-        ParamUtil.setSessionAttr(request,"hciCode",null);
-        ParamUtil.setSessionAttr(request,"hciName",null);
+        ParamUtil.setSessionAttr(request,"licensee",null);
+        ParamUtil.setSessionAttr(request,"uen",null);
+        ParamUtil.setSessionAttr(request,"licenceNo",null);
         ParamUtil.setSessionAttr(request,"uenNo",null);
         ParamUtil.setSessionAttr(request,"hciSession",null);
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
-
+        ParamUtil.setSessionAttr(request,"licenceNoSer",null);
+        ParamUtil.setSessionAttr(request,"licenseeName",null);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -109,17 +110,22 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void prePayeeResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String hciCode= ParamUtil.getString(request,"hciCode");
-        String cusRefNo =ParamUtil.getString(request,"cusRefNo");
-        ParamUtil.setSessionAttr(request,"hciCode",hciCode);
-        ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
+        String uen= ParamUtil.getString(request,"uen");
+        String licensee =ParamUtil.getString(request,"licensee");
+        String licenceNo =ParamUtil.getString(request,"licenceNo");
+        ParamUtil.setSessionAttr(request,"uen",uen);
+        ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
+        ParamUtil.setSessionAttr(request,"licensee",licensee);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
-        if(hciCode!=null) {
-            filter.put("hciCode", hciCode);
+        if(uen!=null) {
+            filter.put("uen", uen);
         }
-        if(cusRefNo!=null) {
-            filter.put("cusRefNo", cusRefNo);
+        if(licensee!=null) {
+            filter.put("licensee", licensee);
+        }
+        if(licenceNo!=null) {
+            filter.put("licenceNo", licenceNo);
         }
         giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
@@ -151,17 +157,21 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountInfoViewDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
                 giroAccountInfoViewDto.setBankName(gai.getBankName());
                 giroAccountInfoViewDto.setBranchCode(gai.getBranchCode());
-                giroAccountInfoViewDto.setHciCode(gai.getHciCode());
-                giroAccountInfoViewDto.setHciName(gai.getHciName());
+                giroAccountInfoViewDto.setLicenceNo(gai.getLicenceNo());
+                giroAccountInfoViewDto.setLicenseeName(gai.getLicenseeName());
+                giroAccountInfoViewDto.setSvcName(gai.getSvcName());
+                giroAccountInfoViewDto.setUen(gai.getUen());
                 giroAccountInfoViewDto.setId(gai.getId());
                 giroAccountInfoViewDto.setCustomerReferenceNo(gai.getCustomerReferenceNo());
+                giroAccountInfoViewDto.setRemarks(gai.getInternetRemarks());
                 giroAccountInfoViewDtos.add(giroAccountInfoViewDto);
             }
             searchGiroDtoResult.setRows(giroAccountInfoViewDtos);
-            ParamUtil.setSessionAttr(request,"searchGiroAccountParam",giroAccountParam);
             ParamUtil.setRequestAttr(request,"searchGiroDtoResult",searchGiroDtoResult);
 
         }
+        ParamUtil.setSessionAttr(request,"searchGiroAccountParam",giroAccountParam);
+
     }
     public void deletePayee(BaseProcessClass bpc) {
         HttpServletRequest request=bpc.request;
@@ -196,20 +206,21 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"bankName",null);
         ParamUtil.setSessionAttr(request,"bankAccountNo",null);
         ParamUtil.setSessionAttr(request,"cusRefNo",null);
+        ParamUtil.setSessionAttr(request,"remarks",null);
         ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
-        String hciCode= ParamUtil.getString(request,"hciCode");
-        String hciName =ParamUtil.getString(request,"hciName");
+        String licenceNo= ParamUtil.getString(request,"licenceNoSer");
+        String licensee =ParamUtil.getString(request,"licenseeName");
         String uenNo =ParamUtil.getString(request,"uenNo");
-        ParamUtil.setSessionAttr(request,"hciCode",hciCode);
-        ParamUtil.setSessionAttr(request,"hciName",hciName);
+        ParamUtil.setSessionAttr(request,"licenceNoSer",licenceNo);
+        ParamUtil.setSessionAttr(request,"licenseeName",licensee);
         ParamUtil.setSessionAttr(request,"uenNo",uenNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
-        if(hciCode!=null) {
-            filter.put("hciCode", hciCode);
+        if(licenceNo!=null) {
+            filter.put("licenceNo", licenceNo);
         }
-        if(hciName!=null) {
-            filter.put("hciName", hciName);
+        if(licensee!=null) {
+            filter.put("licensee", licensee);
         }
         if(uenNo!=null) {
             filter.put("uenNo", uenNo);
@@ -260,7 +271,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 orgPremParam.addFilter("opv.ID"+indx, s);
                 indx++;
             }
-            orgPremParam.addParam("orgIds",typeStr);
+            orgPremParam.addParam("licIds",typeStr);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
@@ -301,13 +312,15 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String branchCode =ParamUtil.getString(request,"branchCode");
         String bankName= ParamUtil.getString(request,"bankName");
         String bankAccountNo =ParamUtil.getString(request,"bankAccountNo");
-        String cusRefNo =ParamUtil.getString(request,"cusRefNo");
+        //String cusRefNo =ParamUtil.getString(request,"cusRefNo");
+        String remarks =ParamUtil.getString(request,"remarks");
         ParamUtil.setSessionAttr(request,"acctName",acctName);
         ParamUtil.setSessionAttr(request,"bankCode",bankCode);
         ParamUtil.setSessionAttr(request,"branchCode",branchCode);
         ParamUtil.setSessionAttr(request,"bankName",bankName);
         ParamUtil.setSessionAttr(request,"bankAccountNo",bankAccountNo);
-        ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
+        //ParamUtil.setSessionAttr(request,"cusRefNo",cusRefNo);
+        ParamUtil.setSessionAttr(request,"remarks",remarks);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
         if(StringUtil.isEmpty(acctName)){//60
@@ -371,16 +384,23 @@ public class FeeAndPaymentGIROPayeeDelegator {
 //                errorMap.put("bankName", MessageUtil.getMessageDesc("USER_ERR003"));
 //            }
 //        }
-        if(StringUtil.isEmpty(cusRefNo)){//35
-            errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
-        }else {
-            if(cusRefNo.length()>35){
-                repMap.put("number","35");
-                repMap.put("fieldNo","Customer Reference No");
-                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
-            }
-            if(!isAlphanumeric(cusRefNo)){
-                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+//        if(StringUtil.isEmpty(cusRefNo)){//35
+//            errorMap.put("cusRefNo", MessageUtil.replaceMessage("GENERAL_ERR0006","cusRefNo","field"));
+//        }else {
+//            if(cusRefNo.length()>35){
+//                repMap.put("number","35");
+//                repMap.put("fieldNo","Customer Reference No");
+//                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+//            }
+//            if(!isAlphanumeric(cusRefNo)){
+//                errorMap.put("cusRefNo", MessageUtil.getMessageDesc("USER_ERR003"));
+//            }
+//        }
+        if(!StringUtil.isEmpty(remarks)){//4000
+            if(remarks.length()>4000){
+                repMap.put("number","4000");
+                repMap.put("fieldNo","Internal Remarks");
+                errorMap.put("remarks", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
         }
 
@@ -475,13 +495,13 @@ public class FeeAndPaymentGIROPayeeDelegator {
             giroAccountInfoDto.setAcctName(acctName);
             giroAccountInfoDto.setAcctNo(bankAccountNo);
             giroAccountInfoDto.setBranchCode(branchCode);
-            giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
-            giroAccountInfoDto.setDdaRefNo(cusRefNo);
+            //giroAccountInfoDto.setCustomerReferenceNo(cusRefNo);
+            //giroAccountInfoDto.setDdaRefNo(cusRefNo);
             giroAccountInfoDto.setBankCode(bankCode);
             giroAccountInfoDto.setBankName(MasterCodeUtil.getCodeDesc(bankName));
             giroAccountInfoDto.setOrganizationId(opv.getOrgId());
-            giroAccountInfoDto.setHciName(opv.getHciName());
-            giroAccountInfoDto.setHciCode(opv.getHciCode());
+            giroAccountInfoDto.setLicenceId(opv.getId());
+            giroAccountInfoDto.setInternetRemarks(remarks);
             giroAccountInfoDto.setGiroAccountFormDocDtoList(giroAccountFormDocDtoList);
             giroAccountInfoDtoList.add(giroAccountInfoDto);
         }
@@ -544,7 +564,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         List<GiroAccountInfoDto> giroAccountInfoDtoList1= giroAccountService.createGiroAccountInfo(giroAccountInfoDtoList);
 
         try {
-        eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
+            eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
         }catch (Exception e){
             log.debug("no found fe org :{}",giroAccountInfoDtoList1.get(0).getOrganizationId());
         }

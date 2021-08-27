@@ -458,6 +458,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             String svcCode = hsd.getSvcCode();
             appSvcRelatedInfoDtoList.get(0).setServiceId(hsd.getId());
             appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            appSvcRelatedInfoDtoList.get(0).setServiceName(hsd.getSvcName());
         }
 
         appSubmissionDto.setAppGrpId(null);

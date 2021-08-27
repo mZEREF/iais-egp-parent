@@ -309,6 +309,7 @@ public class FESingpassLandingDelegator {
 
     public boolean reLoadMyInfoData( HttpServletRequest request){
         log.info(StringUtil.changeForLog("------------------reLoadMyInfoData start -----------"));
+        ParamUtil.setRequestAttr(request, MyinfoUtil.SINGPASS_LOGIN, IaisEGPConstant.YES);
         if(AppConsts.YES .equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) || AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
             FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String identityNo = userSession.getIdentityNo();
@@ -340,7 +341,6 @@ public class FESingpassLandingDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return true;
         }
-        ParamUtil.setRequestAttr(request, MyinfoUtil.SINGPASS_LOGIN, IaisEGPConstant.YES);
         return false;
     }
 
