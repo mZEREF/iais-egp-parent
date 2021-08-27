@@ -59,8 +59,8 @@
                                     <label>
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
-                                               name="licensee" maxlength="35"
-                                               value="${licensee}"/>
+                                               name="licenseeName" maxlength="35"
+                                               value="${licenseeName}"/>
                                     </label>
                                 </iais:value>
                             </iais:row>
@@ -70,8 +70,8 @@
                                     <label>
                                         <input type="text"
                                                style="width:180%; font-weight:normal;"
-                                               name="licenceNo" maxlength="35"
-                                               value="${licenceNo}"/>
+                                               name="licenceNoSer" maxlength="35"
+                                               value="${licenceNoSer}"/>
                                     </label>
                                 </iais:value>
                             </iais:row>

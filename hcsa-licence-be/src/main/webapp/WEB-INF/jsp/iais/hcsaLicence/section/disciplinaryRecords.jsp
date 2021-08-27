@@ -14,16 +14,16 @@
                 <table aria-describedby="" border="1px"
                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                     <tr>
-                        <th scope="col">Indentification No.</th>
-                        <td>Case No.</td>
-                        <td>Case Type Description</td>
-                        <td>Case Status Description</td>
-                        <td>Offence Description</td>
-                        <td>Outcome Description</td>
-                        <td>Outcome Issue Date</td>
-                        <td>Prosecution Outcome Description</td>
-                        <td>Created Date</td>
-                        <td>Update Date</td>
+                        <th scope="col" style="font-weight:normal">Indentification No.</th>
+                        <th scope="col" style="font-weight:normal">Case No.</th>
+                        <th scope="col" style="font-weight:normal">Case Type Description</th>
+                        <th scope="col" style="font-weight:normal">Case Status Description</th>
+                        <th scope="col" style="font-weight:normal">Offence Description</th>
+                        <th scope="col" style="font-weight:normal">Outcome Description</th>
+                        <th scope="col" style="font-weight:normal">Outcome Issue Date</th>
+                        <th scope="col" style="font-weight:normal">Prosecution Outcome Description</th>
+                        <th scope="col" style="font-weight:normal">Created Date</th>
+                        <th scope="col" style="font-weight:normal">Update Date</th>
                     </tr>
                     <c:forEach items="${hashMap[idNo]}" var="map">
                         <tr>
