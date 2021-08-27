@@ -1940,6 +1940,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDto.setServiceId(svcId);
             appSvcRelatedInfoDto.setServiceCode(svcCode);
+            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(svcId);
             if(hcsaSvcSubtypeOrSubsumedDtos!=null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
@@ -2424,21 +2425,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
                 // business name
-                List<AppSvcBusinessDto> appSvcBusinessDtoList = IaisCommonUtils.genNewArrayList();
-                if (!IaisCommonUtils.isEmpty(dtos)) {
-                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
-                        List<AppSvcBusinessDto> appSvcBusinessDtos = appSvcRelatedInfoDto.getAppSvcBusinessDtoList();
-                        if (!IaisCommonUtils.isEmpty(appSvcBusinessDtos)) {
-                            appSvcBusinessDtoList.addAll(appSvcBusinessDtos);
-                        }
-                    }
-                }
+                List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
                 Map<String,String> businessNameErrorMap = IaisCommonUtils.genNewHashMap();
                 NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, businessNameErrorMap);
                 if (!businessNameErrorMap.isEmpty()) {
+                    errorMap.putAll(businessNameErrorMap);
                     errorMap.put("Business Name", "error");
                     sB.append(serviceId);
-                    log.info("businessNameErrorMap is error");
                 }
             } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
                 // Vehicles
@@ -2475,11 +2468,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
                         dto.getServiceCode());
-                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
                 if (!govenMap.isEmpty()) {
+                    errorMap.putAll(govenMap);
                     errorMap.put("CGO", "error");
                     sB.append(serviceId);
-                    log.info("govenMap is error");
                 }
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
@@ -2488,7 +2480,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     errorMap.putAll(map);
                     errorMap.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "error");
                     sB.append(serviceId);
-                    log.info("section leader is error");
                 }
             } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
@@ -2511,9 +2502,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> map = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap,
                         dto.getServiceCode());
-                log.info(JsonUtil.parseToJson(map));
                 if (!map.isEmpty()) {
                     sB.append(serviceId);
+                    errorMap.putAll(map);
                     errorMap.put("KeyAppointmentHolder", "error");
                 }
             } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
@@ -2522,9 +2513,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap,
                         dto.getServiceCode());
-                log.info(JsonUtil.parseToJson(map));
                 if (!map.isEmpty()) {
                     sB.append(serviceId);
+                    errorMap.putAll(map);
                     errorMap.put("Medaler", "error");
                 }
             } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
@@ -2547,6 +2538,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         svcDocErrMap);
                 if (svcDocErrMap.size() > 0) {
                     sB.append(serviceId);
+                    errorMap.putAll(svcDocErrMap);
                     errorMap.put("svcDoc", "error");
                 }
             }

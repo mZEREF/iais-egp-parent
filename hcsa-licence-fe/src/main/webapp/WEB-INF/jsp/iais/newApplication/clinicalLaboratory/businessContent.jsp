@@ -26,7 +26,11 @@
 
 <c:set var="premBusinessMap" value="${premAlignBusinessMap}"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-    <c:set var="businessDto" value="${premBusinessMap[appGrpPremisesDto.premisesIndexNo]}"/>
+    <c:forEach var="premBusinessItem" items="${premBusinessMap}" varStatus="premBusinessStatus">
+        <c:if test="${premBusinessItem.key == appGrpPremisesDto.premisesIndexNo}">
+            <c:set var="businessDto" value="${premBusinessItem.value}"/>
+        </c:if>
+    </c:forEach>
     <div class="panel-group <c:if test="${isRfi && !appGrpPremisesDto.rfiCanEdit}">hidden</c:if>" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading " id="business-heading"  role="tab">

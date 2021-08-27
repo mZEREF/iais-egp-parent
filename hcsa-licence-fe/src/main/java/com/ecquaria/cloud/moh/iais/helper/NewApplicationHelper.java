@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
@@ -86,6 +87,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * NewApplicationHelper
@@ -1831,6 +1833,7 @@ public class NewApplicationHelper {
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap,svcCode);
                 syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap,svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcKeyAppointmentHolderDtoList(), personMap,svcCode);
             }
         }
         return appSubmissionDto;
@@ -2400,14 +2403,52 @@ public class NewApplicationHelper {
         return licenseeId;
     }
 
-    public static List<SelectOption> genGiroAccSel(List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos){
+    public static List<SelectOption> getGiroAccOptions(List<GiroAccountInfoDto> giroAccountInfoDtos) {
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
-            for(OrgGiroAccountInfoDto orgGiroAccountInfoDto:orgGiroAccountInfoDtos){
-                selectOptionList.add(new SelectOption(orgGiroAccountInfoDto.getAcctNo(), orgGiroAccountInfoDto.getAcctNo()));
+        if (!IaisCommonUtils.isEmpty(giroAccountInfoDtos)) {
+            for (GiroAccountInfoDto giroAccountInfoDto : giroAccountInfoDtos) {
+                selectOptionList.add(new SelectOption(giroAccountInfoDto.getAcctNo(), giroAccountInfoDto.getAcctNo()));
             }
         }
         return selectOptionList;
+    }
+
+    public static List<SelectOption> getGiroAccOptions(List<AppSubmissionDto> appSubmissionDtos,
+            AppSubmissionDto appSubmissionDto) {
+        List<GiroAccountInfoDto> giroAccountInfoDtos = getGiroAccount(appSubmissionDtos, appSubmissionDto);
+        return getGiroAccOptions(giroAccountInfoDtos);
+    }
+
+    private static List<GiroAccountInfoDto> getGiroAccount(List<AppSubmissionDto> appSubmissionDtos,
+            AppSubmissionDto appSubmissionDto) {
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        if (appSubmissionDtos != null && !appSubmissionDtos.isEmpty()) {
+            appSubmissionDtos.stream()
+                    .filter(dto -> !StringUtil.isEmpty(dto.getLicenceId()))
+                    .forEach(dto -> licIds.add(dto.getLicenceId()));
+
+        } else if (appSubmissionDto != null) {
+            if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
+                licIds.add(appSubmissionDto.getLicenceId());
+            }
+        }
+        if (licIds.isEmpty()) {
+            return IaisCommonUtils.genNewArrayList();
+        }
+        int size = appSubmissionDtos != null && !appSubmissionDtos.isEmpty() ? appSubmissionDtos.size() : 1;
+        List<GiroAccountInfoDto> result = IaisCommonUtils.genNewArrayList();
+        LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
+        List<GiroAccountInfoDto> giroAccountInfoDtos = licenceClient.getGiroAccountsByLicIds(licIds).getEntity();
+        if (giroAccountInfoDtos != null && !giroAccountInfoDtos.isEmpty()) {
+            giroAccountInfoDtos.stream()
+                    .collect(Collectors.groupingBy(GiroAccountInfoDto::getAcctNo))
+                    .forEach((k, list) -> {
+                        if (list.size() == size) {
+                            result.add(list.get(0));
+                        }
+                    });
+        }
+        return result;
     }
 
     public static boolean newAndNotRfi(HttpServletRequest request,String appType){
@@ -3514,10 +3555,22 @@ public class NewApplicationHelper {
                 person.setName(selPerson.getName());
                 person.setIdType(selPerson.getIdType());
                 person.setIdNo(selPerson.getIdNo());
-                person.setMobileNo(selPerson.getMobileNo());
-                person.setEmailAddr(selPerson.getEmailAddr());
-                person.setDesignation(selPerson.getDesignation());
-                person.setOtherDesignation(selPerson.getOtherDesignation());
+                String mobileNo = selPerson.getMobileNo();
+                if(!StringUtil.isEmpty(mobileNo)){
+                    person.setMobileNo(mobileNo);
+                }
+                String emailAddr = selPerson.getEmailAddr();
+                if(!StringUtil.isEmpty(mobileNo)){
+                    person.setEmailAddr(emailAddr);
+                }
+                String designation = selPerson.getDesignation();
+                if(!StringUtil.isEmpty(designation)){
+                    person.setDesignation(designation);
+                }
+                String otherDesignation = selPerson.getOtherDesignation();
+                if(!StringUtil.isEmpty(otherDesignation)){
+                    person.setOtherDesignation(otherDesignation);
+                }
                 String professionType = selPerson.getProfessionType();
                 if(!StringUtil.isEmpty(professionType)){
                     person.setProfessionType(professionType);
@@ -3550,7 +3603,6 @@ public class NewApplicationHelper {
                 if (!StringUtil.isEmpty(officeTelNo)) {
                     person.setOfficeTelNo(officeTelNo);
                 }
-
                 person.setNeedSpcOptList(selPerson.isNeedSpcOptList());
                 List<SelectOption> spcOptList = selPerson.getSpcOptList();
                 if(!IaisCommonUtils.isEmpty(spcOptList)){

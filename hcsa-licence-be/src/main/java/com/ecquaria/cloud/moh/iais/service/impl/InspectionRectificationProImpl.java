@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
@@ -80,6 +81,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -566,6 +568,41 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             }
         }
         return null;
+    }
+
+    @Override
+    public List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos) {
+        List<InspEmailFieldDto> sortInspEmailFieldDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(inspEmailFieldDtos)) {
+            List<String> categorys = IaisCommonUtils.genNewArrayList();
+            for(InspEmailFieldDto inspEmailFieldDto : inspEmailFieldDtos) {
+                if(inspEmailFieldDto != null) {
+                    String category = inspEmailFieldDto.getServiceName();
+                    if(StringUtil.isEmpty(category)) {
+                        sortInspEmailFieldDtos.add(inspEmailFieldDto);
+                    } else {
+                        if(!categorys.contains(category)) {
+                            categorys.add(category);
+                        }
+                    }
+                }
+            }
+            if(!IaisCommonUtils.isEmpty(categorys)) {
+                Collections.sort(categorys);
+                for(InspEmailFieldDto inspEmailFieldDto : inspEmailFieldDtos) {
+                    if(inspEmailFieldDto != null) {
+                        String serviceName = inspEmailFieldDto.getServiceName();
+                        for (String category : categorys) {
+                            if(serviceName.equals(category)) {
+                                sortInspEmailFieldDtos.add(inspEmailFieldDto);
+                            }
+                        }
+                    }
+                }
+            }
+            return sortInspEmailFieldDtos;
+        }
+        return inspEmailFieldDtos;
     }
 
     private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {

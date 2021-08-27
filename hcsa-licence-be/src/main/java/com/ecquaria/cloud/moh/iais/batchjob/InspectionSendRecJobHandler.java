@@ -148,6 +148,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
                     if(jobRemindMsgTrackingDto2 == null) {
                         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(aDto.getId());
+                        inspEmailFieldDtos = inspectionRectificationProService.sortInspEmailFieldDtoByCategory(inspEmailFieldDtos);
                         String applicantId;
                         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(aDto.getApplicationType()) ||
                                 ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(aDto.getApplicationType())) {

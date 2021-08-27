@@ -53,7 +53,7 @@ $(document).ready(function() {
     $('a').each(function () {
         var h = $(this).attr('href');
         if (isEmpty(h)) {
-            $(this).attr('href', 'javascript:void(0);');
+            $(this).attr('href', 'javascript:void(0)');
         }
     });
 });

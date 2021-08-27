@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -60,6 +59,17 @@ import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -77,16 +87,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /**
@@ -431,7 +431,7 @@ public class ClinicalLaboratoryDelegator {
             String indexNo = ParamUtil.getString(request, "indexNo" + i);
             boolean fromPage = false;
             boolean fromOld = false;
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && !isRfi) {
+            if (!isRfi&&ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) ) {
                 fromPage = true;
             } else if (AppConsts.YES.equals(isPartEdit)) {
                 fromPage = true;
@@ -872,10 +872,6 @@ public class ClinicalLaboratoryDelegator {
             }
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
-            //64688
-            //
-            if(reloadDisciplineAllocationMap != null){
-            }
             for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
                 switch (hcsaServiceStepSchemeDto.getStepCode()){
                     case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
@@ -1884,11 +1880,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
-        boolean isRfi = false;
-        if (requestInformationConfig != null) {
-            isRfi = true;
-        }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
@@ -4055,7 +4047,6 @@ public class ClinicalLaboratoryDelegator {
                 String qualification = "";
                 String wrkExpYear = "";
                 String professionalRegnNo = "";
-
                 if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
                     if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
                         name = names[i];
@@ -4064,8 +4055,6 @@ public class ClinicalLaboratoryDelegator {
                     } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                         name = names[i];
                     }
-
-
                 } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                     if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
                         designation = designations[i];
@@ -4097,7 +4086,6 @@ public class ClinicalLaboratoryDelegator {
                     wrkExpYear = wrkExpYears[i];
                 }
 
-                appSvcPersonnelDto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
                 appSvcPersonnelDto.setDesignation(designation);
                 if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation)){
                     appSvcPersonnelDto.setOtherDesignation(otherDesignationss[i]);
@@ -4268,13 +4256,13 @@ public class ClinicalLaboratoryDelegator {
                 if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setSalutation(salutation);
                 }
-                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit) && name != null) {
+                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setName(name);
                 }
                 if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdType(idType);
                 }
-                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit) && idNo != null) {
+                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
                 }
                 if (StringUtil.isEmpty(indexNo)) {

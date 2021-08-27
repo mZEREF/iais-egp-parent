@@ -8,7 +8,7 @@
 
 <div class="row">
     <div class="form-group">
-        <h4><iais:message key="NEW_ERR0033"/></h4>
+        <h4><iais:message key="NEW_ACK030"/></h4>
     </div>
     <div class="form-group">
         <div class="row control control-caption-horizontal">

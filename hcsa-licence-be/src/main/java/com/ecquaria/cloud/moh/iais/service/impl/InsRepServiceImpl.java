@@ -160,7 +160,7 @@ public class InsRepServiceImpl implements InsRepService {
         String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
         StringBuilder observationSb=new StringBuilder();
         if(StringUtil.isEmpty(observation)) {
-            observationSb.append("-");
+            observationSb.append('-');
         }else {
             String[] observations=new String[]{};
             observations=observation.split("\n");

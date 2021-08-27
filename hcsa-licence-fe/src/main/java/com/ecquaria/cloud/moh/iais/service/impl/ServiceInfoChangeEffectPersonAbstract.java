@@ -92,97 +92,26 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appEditSelectDto.setServiceEdit(true);
             List<String> personnelEditList = IaisCommonUtils.genNewArrayList();
             AppSvcRelatedInfoDto appSvcRelatedInfoDto2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0);
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList2 = appSvcRelatedInfoDto2.getAppSvcCgoDtoList();
-            boolean isPersonnelEdit = false;
-            if(!list1.isEmpty()){
-                if (appSvcCgoDtoList2 != null && appSvcCgoDtoList != null) {
-                    for(AppSvcPrincipalOfficersDto var1 : appSvcCgoDtoList2){
-                        for(AppSvcPrincipalOfficersDto var2 : appSvcCgoDtoList){
-                            if(var1.getIdNo().equals(var2.getIdNo())){
-                                appSvcCgoDtoList2.set(appSvcCgoDtoList2.indexOf(var1),var2);
-                                isPersonnelEdit = true;
-                            }
-                        }
-                    }
-                    if (isPersonnelEdit) {
-                        appSvcRelatedInfoDto2.setAppSvcCgoDtoList(appSvcCgoDtoList2);
-                        personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-                    }
-                }
+            if (!list1.isEmpty()) {
+                reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, personnelEditList);
             }
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcMedAlertPersonList();
-            if(!list2.isEmpty()){
-                isPersonnelEdit = false;
-                if (appSvcMedAlertPersonList2 != null && appSvcMedAlertPersonList != null) {
-                    for(AppSvcPrincipalOfficersDto var1 : appSvcMedAlertPersonList2){
-                        for(AppSvcPrincipalOfficersDto var2 : appSvcMedAlertPersonList){
-                            if(var1.getIdNo().equals(var2.getIdNo())){
-                                appSvcMedAlertPersonList2.set(appSvcMedAlertPersonList2.indexOf(var1),var2);
-                                isPersonnelEdit = true;
-                            }
-                        }
-                    }
-                    if (isPersonnelEdit) {
-                        appSvcRelatedInfoDto2.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList2);
-                        personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-                    }
-                }
+            if (!list2.isEmpty()) {
+                reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, personnelEditList);
             }
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList2 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcPrincipalOfficersDtoList();
-            if(!list3.isEmpty()){
-                isPersonnelEdit = false;
-                if (appSvcPrincipalOfficersDtoList2 != null && appSvcPrincipalOfficersDtoList != null) {
-                    for(AppSvcPrincipalOfficersDto var1 : appSvcPrincipalOfficersDtoList2){
-                        for(AppSvcPrincipalOfficersDto var2 : appSvcPrincipalOfficersDtoList){
-                            if(var1.getIdNo().equals(var2.getIdNo())){
-                                appSvcPrincipalOfficersDtoList2.set(appSvcPrincipalOfficersDtoList2.indexOf(var1),var2);
-                                isPersonnelEdit = true;
-                            }
-                        }
-                    }
-                    if (isPersonnelEdit) {
-                        appSvcRelatedInfoDto2.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList2);
-                        personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                    }
-                }
+            if (!list3.isEmpty()) {
+                reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                        ApplicationConsts.PERSONNEL_PSN_TYPE_PO, personnelEditList);
             }
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList1 = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList();
-            if(!list4.isEmpty()){
-                isPersonnelEdit = false;
-                if(appSvcClinicalDirectorDtoList!=null && appSvcClinicalDirectorDtoList1!=null){
-                    for (AppSvcPrincipalOfficersDto var1 : appSvcClinicalDirectorDtoList1) {
-                        for (AppSvcPrincipalOfficersDto var2 : appSvcClinicalDirectorDtoList) {
-                            if(var1.getIdNo().equals(var2.getIdNo())){
-                                appSvcClinicalDirectorDtoList1.set(appSvcClinicalDirectorDtoList1.indexOf(var1),var2);
-                                isPersonnelEdit = true;
-                            }
-                        }
-                    }
-                    if (isPersonnelEdit) {
-                        appSvcRelatedInfoDto2.setAppSvcClinicalDirectorDtoList(appSvcClinicalDirectorDtoList1);
-                        personnelEditList.add(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
-                    }
-                }
+            if (!list4.isEmpty()) {
+                reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                        ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, personnelEditList);
             }
             // KAH
-            List<AppSvcPrincipalOfficersDto> kahList1 =
-                    appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcKeyAppointmentHolderDtoList();
             if (!list5.isEmpty()) {
-                isPersonnelEdit = false;
-                if (kahList != null && kahList1 != null) {
-                    for (AppSvcPrincipalOfficersDto var1 : kahList1) {
-                        for (AppSvcPrincipalOfficersDto var2 : kahList) {
-                            if (var1.getIdNo().equals(var2.getIdNo())) {
-                                kahList1.set(kahList1.indexOf(var1), var2);
-                                isPersonnelEdit = true;
-                            }
-                        }
-                    }
-                    if (isPersonnelEdit) {
-                        appSvcRelatedInfoDto2.setAppSvcKeyAppointmentHolderDtoList(kahList1);
-                        personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_KAH);
-                    }
-                }
+                reSetPersonnels(appSvcRelatedInfoDto, appSvcRelatedInfoDto2,
+                        ApplicationConsts.PERSONNEL_PSN_KAH, personnelEditList);
             }
             appEditSelectDto.setPersonnelEditList(personnelEditList);
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
@@ -201,6 +130,48 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
 
         return appSubmissionDtoList;
+    }
+
+    private void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String psnType,
+            List<String> personnelEditList) {
+        if (sourceReletedInfo == null || targetReletedInfo == null) {
+            return;
+        }
+        boolean isPersonnelEdit = false;
+        List<AppSvcPrincipalOfficersDto> sourceList = null;
+        List<AppSvcPrincipalOfficersDto> targetList = null;
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcCgoDtoList();
+            targetList = targetReletedInfo.getAppSvcCgoDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcMedAlertPersonList();
+            targetList = targetReletedInfo.getAppSvcMedAlertPersonList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcPrincipalOfficersDtoList();
+            targetList = targetReletedInfo.getAppSvcPrincipalOfficersDtoList();
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcClinicalDirectorDtoList();
+            targetList = targetReletedInfo.getAppSvcClinicalDirectorDtoList();
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            sourceList = sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+            targetList = targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        }
+        if (targetList != null && sourceList != null) {
+            for (AppSvcPrincipalOfficersDto target : targetList) {
+                for (AppSvcPrincipalOfficersDto source : sourceList) {
+                    if (Objects.equals(target.getIdNo(), source.getIdNo())) {
+                        source.setIndexNo(target.getIndexNo());
+                        source.setCurPersonelId(target.getCurPersonelId());
+                        targetList.set(targetList.indexOf(target), source);
+                        isPersonnelEdit = true;
+                        break;
+                    }
+                }
+            }
+            if (isPersonnelEdit) {
+                personnelEditList.add(psnType);
+            }
+        }
     }
 
     private List<String> changeKeyAppointmentHolder(List<AppSvcPrincipalOfficersDto> kahList,
