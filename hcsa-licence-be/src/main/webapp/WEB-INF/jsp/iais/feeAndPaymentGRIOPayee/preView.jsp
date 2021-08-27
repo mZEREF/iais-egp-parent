@@ -95,38 +95,38 @@
                                     </div>
 
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Account Name <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Account Name </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${acctName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Name <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Name </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <iais:code code="${bankName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Code <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Code </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankCode}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Branch Code <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Branch Code </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${branchCode}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Account No. <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Account No. </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankAccountNo}"/>
                                         </div>
                                     </iais:row>
 
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">GIRO Form <span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">GIRO Form </label>
                                         <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
                                             <div class="document-upload-list">
                                                 <div class="file-upload-gp">
