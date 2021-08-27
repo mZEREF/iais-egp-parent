@@ -33,7 +33,7 @@
                 <div class="row form-horizontal">
                     <div class="bg-title col-xs-12 col-md-12">
                         <h2>
-                            <span>Add a GIRO Payee</span>
+                            <span>Enter GIRO Payee Details</span>
                         </h2>
                     </div>
                     <div class="col-xs-12 col-md-12">
@@ -48,7 +48,6 @@
                             </div>
                         </iais:row>
                         <div class="row">&nbsp;</div>
-                        <div class="row"><h3>Enter GIRO Payee Details</h3></div>
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
@@ -116,6 +115,13 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
+                                        <iais:field value="Bank Name " mandatory="true"/>
+                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                            <iais:select name="bankName" options="bankNameSelectOptions" firstOption="Please Select" value="${bankName}" needSort="true" ></iais:select>
+                                            <span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </div >
+                                    </iais:row>
+                                    <iais:row>
                                         <iais:field value="Bank Code "  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
@@ -134,13 +140,6 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Bank Name " mandatory="true"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <iais:select name="bankName" options="bankNameSelectOptions" firstOption="Please Select" value="${bankName}" needSort="true" ></iais:select>
-                                            <span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span>
-                                        </div >
-                                    </iais:row>
-                                    <iais:row>
                                         <iais:field value="Bank Account No. " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
@@ -149,15 +148,7 @@
                                             </label>
                                         </div>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Customer Reference No. " mandatory="true"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
-                                                <div><span  id="error_cusRefNo" name="iaisErrorMsg" class="error-msg" ></span></div>
-                                            </label>
-                                        </div>
-                                    </iais:row>
+
                                     <iais:row>
                                         <iais:field value="GIRO Form " mandatory="true"/>
                                         <div class="document-upload-gp col-sm-7 col-md-4 col-xs-10">

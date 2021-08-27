@@ -112,9 +112,7 @@
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="ACCT_NO"
                                                                                  value="Bank Account No."/>
-                                                            <iais:sortableHeader needSort="true"
-                                                                                 field="DDA_REF_NO"
-                                                                                 value="Customer Reference No."/>
+
                                                             <iais:sortableHeader needSort="false"
                                                                                  field="FILE_NAME"
                                                                                  value="GIRO Form"/>
@@ -176,9 +174,7 @@
                                                                         <td>
                                                                             <c:out value="${pool.acctNo}"/>
                                                                         </td>
-                                                                        <td>
-                                                                            <c:out value="${pool.customerReferenceNo}"/>
-                                                                        </td>
+
                                                                         <td>
                                                                             <c:forEach items="${pool.giroAccountFormDocDtoList}"
                                                                                        var="giroDoc" varStatus="docStatus">
