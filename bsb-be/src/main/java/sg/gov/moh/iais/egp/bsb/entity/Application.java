@@ -16,6 +16,8 @@ public class Application implements Serializable {
 
     private Facility facility;
 
+    private String biologicalName;
+
     private String applicationNo;
 
     private String appType;
