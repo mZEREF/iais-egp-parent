@@ -84,7 +84,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="prelogin-title">
-              <h1>Integrated Application and <br class="hidden-xs"> Inspection System (IAIS)</h1>
+              <h1>Healthcare Application and <br class="hidden-xs"> Licensing Portal (HALP)</h1>
               <p class="component-desc">Manage all licence-related matters associated with your healthcare services.</p>
             </div>
             <!-- Revised Pre-login Start Here -->
