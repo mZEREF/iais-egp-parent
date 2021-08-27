@@ -22,8 +22,8 @@
             from UenLicView opv
             where 1 = 1
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
-            <#if licensee??> AND charindex(:licensee, opv.LICENCE_NO) >0 </#if>
-            <#if licenceNo??> AND charindex(:licenceNo, opv.LICENSEE_NAME) >0 </#if>
+            <#if licensee??> AND charindex(:licensee, opv.LICENSEE_NAME) >0 </#if>
+            <#if licenceNo??> AND charindex(:licenceNo, opv.LICENCE_NO) >0 </#if>
             <#if licIds??> AND ${licIds} </#if>
 
         ]]>
