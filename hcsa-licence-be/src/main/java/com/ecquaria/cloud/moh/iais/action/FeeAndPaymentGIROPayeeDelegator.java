@@ -98,7 +98,8 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"uenNo",null);
         ParamUtil.setSessionAttr(request,"hciSession",null);
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
-
+        ParamUtil.setSessionAttr(request,"licenceNoSer",null);
+        ParamUtil.setSessionAttr(request,"licenseeName",null);
         String p = systemParamConfig.getPagingSize();
         String defaultValue = IaisEGPHelper.getPageSizeByStrings(p)[0];
         pageSize= Integer.valueOf(defaultValue);
@@ -114,6 +115,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         String licenceNo =ParamUtil.getString(request,"licenceNo");
         ParamUtil.setSessionAttr(request,"uen",uen);
         ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
+        ParamUtil.setSessionAttr(request,"licensee",licensee);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
         if(uen!=null) {
@@ -206,11 +208,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"cusRefNo",null);
         ParamUtil.setSessionAttr(request,"remarks",null);
         ParamUtil.setSessionAttr(request,"giroAccountInfoDtoList", null);
-        String licenceNo= ParamUtil.getString(request,"licenceNo");
-        String licensee =ParamUtil.getString(request,"licensee");
+        String licenceNo= ParamUtil.getString(request,"licenceNoSer");
+        String licensee =ParamUtil.getString(request,"licenseeName");
         String uenNo =ParamUtil.getString(request,"uenNo");
-        ParamUtil.setSessionAttr(request,"licenceNo",licenceNo);
-        ParamUtil.setSessionAttr(request,"licensee",licensee);
+        ParamUtil.setSessionAttr(request,"licenceNoSer",licenceNo);
+        ParamUtil.setSessionAttr(request,"licenseeName",licensee);
         ParamUtil.setSessionAttr(request,"uenNo",uenNo);
 
         Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
