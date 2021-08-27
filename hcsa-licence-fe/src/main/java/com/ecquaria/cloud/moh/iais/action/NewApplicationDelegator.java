@@ -2445,15 +2445,6 @@ public class NewApplicationDelegator {
             if (!isValid) {
                 return;
             }
-            // 70572
-            if (appEditSelectDto.isChangeHciName() && !appSubmissionDtos.isEmpty()) {
-                appSubmissionDtos.forEach(dto -> {
-                    dto.setAppDeclarationDocDtos(MiscUtil.transferEntityDtos(appSubmissionDto.getAppDeclarationDocDtos(),
-                            AppDeclarationDocDto.class));
-                    dto.setAppDeclarationMessageDto(MiscUtil.transferEntityDto(appSubmissionDto.getAppDeclarationMessageDto(),
-                            AppDeclarationMessageDto.class));
-                });
-            }
         }
 
         //judge is the preInspection
