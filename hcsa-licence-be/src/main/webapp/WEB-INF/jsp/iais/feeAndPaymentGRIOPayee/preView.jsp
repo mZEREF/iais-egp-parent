@@ -46,48 +46,36 @@
                                                 <thead>
                                                 <tr >
                                                     <th scope="col" style="display: none"></th>
-                                                    <iais:sortableHeader needSort="false"
+                                                    <iais:sortableHeader needSort="true"
                                                                          field="UEN_NO"
                                                                          value="UEN"/>
-                                                    <iais:sortableHeader needSort="false" field="LICENCE_NO"
+                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
                                                                          value="Licence No."/>
-                                                    <iais:sortableHeader needSort="false" field="SVC_NAME"
+                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
                                                                          value="Service Type"/>
-                                                    <iais:sortableHeader needSort="false" field="LICENSEE_NAME"
+                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
                                                                          value="Licensee"/>
                                                 </tr>
                                                 </thead>
-                                                <tbody class="form-horizontal">
-                                                <c:choose>
-                                                    <c:when test="${empty hciSession.rows}">
-                                                        <tr>
-                                                            <td colspan="15">
-                                                                <iais:message key="GENERAL_ACK018"
-                                                                              escape="true"/>
-                                                            </td>
-                                                        </tr>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <c:forEach var="pool"
-                                                                   items="${hciSession.rows}"
-                                                                   varStatus="status">
-                                                            <tr>
-                                                                <td >
-                                                                    <c:out value="${pool.uenNo}"/>
-                                                                </td>
-                                                                <td>
-                                                                    <c:out value="${pool.licenceNo}"/>
-                                                                </td>
-                                                                <td >
-                                                                    <c:out value="${pool.svcName}"/>
-                                                                </td>
-                                                                <td>
-                                                                    <c:out value="${pool.licenseeName}"/>
-                                                                </td>
-                                                            </tr>
-                                                        </c:forEach>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <tbody id="sortLicSession" class="form-horizontal">
+                                                <c:forEach var="pool"
+                                                           items="${hciSession.rows}"
+                                                           varStatus="status">
+                                                    <tr>
+                                                        <td >
+                                                            <c:out value="${pool.uenNo}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenceNo}"/>
+                                                        </td>
+                                                        <td >
+                                                            <c:out value="${pool.svcName}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenseeName}"/>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -175,5 +163,34 @@
         showWaiting();
         $("[name='crud_action_type']").val("submit");
         $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $.post(
+            '${pageContext.request.contextPath}/sort-licence-session',
+            {
+                crud_action_value : sortFieldName,
+                crud_action_additional : sortType
+            },
+            function (data) {
+                if(data == null){
+                    return;
+                }
+                let res = data.orgPremResult;
+                let html = '';
+                console.log(res.rowCount);
+                for (let i = 0; i < res.rowCount; i++) {
+
+                    html +=
+                        '<tr><td>' + res.rows[i].uenNo + '</td>' +
+                        '<td>' + res.rows[i].licenceNo + '</td>' +
+                        '<td>' + res.rows[i].svcName + '</td>' +
+                        '<td>' + res.rows[i].licenseeName + '</td>' +
+                        '</tr>';
+                }
+                console.log(html);
+                $('#sortLicSession').html(html)
+            }
+        );
     }
 </script>
