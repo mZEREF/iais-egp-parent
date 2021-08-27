@@ -872,10 +872,6 @@ public class ClinicalLaboratoryDelegator {
             }
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
-            //64688
-            //
-            if(reloadDisciplineAllocationMap != null){
-            }
             for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
                 switch (hcsaServiceStepSchemeDto.getStepCode()){
                     case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
@@ -1884,11 +1880,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
-        Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
-        boolean isRfi = false;
-        if (requestInformationConfig != null) {
-            isRfi = true;
-        }
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
@@ -4055,7 +4047,6 @@ public class ClinicalLaboratoryDelegator {
                 String qualification = "";
                 String wrkExpYear = "";
                 String professionalRegnNo = "";
-
                 if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
                     if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_MEDICAL_PHYSICIST.equals(personnelSel)) {
                         name = names[i];
@@ -4064,8 +4055,6 @@ public class ClinicalLaboratoryDelegator {
                     } else if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                         name = names[i];
                     }
-
-
                 } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                     if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
                         designation = designations[i];
@@ -4097,7 +4086,6 @@ public class ClinicalLaboratoryDelegator {
                     wrkExpYear = wrkExpYears[i];
                 }
 
-                appSvcPersonnelDto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
                 appSvcPersonnelDto.setDesignation(designation);
                 if(NewApplicationConstant.DESIGNATION_OTHERS.equals(designation)){
                     appSvcPersonnelDto.setOtherDesignation(otherDesignationss[i]);
