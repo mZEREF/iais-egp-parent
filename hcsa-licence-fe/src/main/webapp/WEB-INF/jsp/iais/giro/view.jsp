@@ -39,14 +39,14 @@
                                                          field="ACCT_NAME"
                                                          value="Account Name"/>
                                     <iais:sortableHeader needSort="true"
+                                                         field="BANK_NAME" style="width:8%"
+                                                         value="Bank Name"/>
+                                    <iais:sortableHeader needSort="true"
                                                          field="BANK_CODE"
                                                          value="Bank Code"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="BRANCH_CODE" style="width:8%"
                                                          value="Branch Code"/>
-                                    <iais:sortableHeader needSort="true"
-                                                         field="BANK_NAME" style="width:8%"
-                                                         value="Bank Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NO"
                                                          value="Bank Account No."/>
@@ -101,6 +101,12 @@
                         </div>
 
                     </div>
+                    <div class="row">
+                        <iais:action style="text-align:left;">
+                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                        </iais:action>
+                    </div>
+
                     <div class="row">&nbsp;</div>
                 </div>
             </div>
