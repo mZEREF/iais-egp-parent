@@ -99,10 +99,10 @@
                                 </c:if>
                             </div>
                         </div>
-                        <div id="newappModal" class="modal fade" role="dialog">
+                        <div id="newappModal" class="modal fade" role="dialog" style="height: 80%;top:30px">
                             <div class="modal-dialog">
                                 <!-- Modal content-->
-                                <div class="modal-content">
+                                <div class="modal-content" style="top:30px">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <div class="modal-title" style="font-size: 2rem;">Select application for
