@@ -1084,7 +1084,7 @@ public class InterInboxDelegator {
             else{
                 inParams.add(applicationStatus);
             }
-            SqlHelper.builderInSql(inboxParam, "status", "appStatus", inParams);
+            SqlHelper.builderInSql(inboxParam, "B.status", "appStatus", inParams);
 //            inboxParam.addFilter("appStatus", applicationStatus,true);
         }
         if(applicationNo != null){
