@@ -54,6 +54,7 @@ $(function() {
         }
     })
     var selectValueSchedule = $("#schedule").val();
+    console.log(selectValueSchedule);
     if (selectValueSchedule == "SCHTYPE001"){
         $("#select1").show();
     }else if (selectValueSchedule == "SCHTYPE002"){

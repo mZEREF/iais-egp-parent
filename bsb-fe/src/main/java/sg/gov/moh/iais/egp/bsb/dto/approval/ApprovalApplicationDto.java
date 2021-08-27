@@ -8,6 +8,7 @@ import sg.gov.moh.iais.egp.bsb.entity.Facility;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author : LiRan
@@ -159,5 +160,7 @@ public class ApprovalApplicationDto implements Serializable {
     @NotBlank(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     @NotNull(message = "Please Check 'Declaration of Compliance with BATA Transport Regulations' to proceed", profiles = {"possessLocal","possessImport","possessLocalOthers","possessImportOthers","largeLocal","largeImport","special"})
     private String checkbox2;
+
+    private List<String> biologicalIdList;
 
 }

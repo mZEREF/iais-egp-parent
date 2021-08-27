@@ -148,7 +148,7 @@ public class NewApprovalDelegator {
         String estimatedMaximumVolume = ParamUtil.getString(request, ApprovalApplicationConstants.ESTIMATED_MAXIMUM_VOLUME);
         String methodOrSystemUsedForLargeScaleProduction = ParamUtil.getString(request, ApprovalApplicationConstants.METHOD_OR_SYSTEM_USER_FOR_LARGE_SCALE_PRODUCTION);
         String[] listOfAgentsOrToxinsArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.LIST_OF_AGENTS_OR_TOXINS);
-        List<String> listOfAgentsOrToxins = stringArrayToList(listOfAgentsOrToxinsArray);
+        List<String> biologicalIdList = stringArrayToList(listOfAgentsOrToxinsArray);
         String[] natureArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE);
         List<String> natureList = null;
         StringBuilder natureBuilder = new StringBuilder();
@@ -208,7 +208,7 @@ public class NewApprovalDelegator {
             approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
         }
         approvalApplicationDto.setSchedule(schedule);
-//        approvalApplicationDto.setListOfAgentsOrToxins(listOfAgentsOrToxins);
+        approvalApplicationDto.setBiologicalIdList(biologicalIdList);
         approvalApplicationDto.setProcurementMode(modeOfProcurement);
         if (modeOfProcurement != null){
             if (modeOfProcurement.equals("BMOP001")){
