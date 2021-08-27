@@ -42,10 +42,10 @@
                                                          field="BANK_CODE"
                                                          value="Bank Code"/>
                                     <iais:sortableHeader needSort="true"
-                                                         field="BRANCH_CODE"
+                                                         field="BRANCH_CODE" style="width:8%"
                                                          value="Branch Code"/>
                                     <iais:sortableHeader needSort="true"
-                                                         field="BANK_NAME"
+                                                         field="BANK_NAME" style="width:8%"
                                                          value="Bank Name"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NO"
