@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -63,6 +64,7 @@ public class FePrintViewDelegator {
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
+                AppSubmissionDto newAppSubmissionDto = null;
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                     String rfc_eqHciNameChange = request.getParameter(RFC_EQHCINAMECHANGE);
                     if(RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)){
@@ -73,8 +75,27 @@ public class FePrintViewDelegator {
                     RenewDto renewDto=new RenewDto();
                     renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                     request.setAttribute("renewDto",renewDto);
+                } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    String rfiAppNo = appSubmissionDto.getRfiAppNo();
+                    if (!StringUtil.isEmpty(rfiAppNo)) {
+                        newAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+                        if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
+                            List<AppSvcRelatedInfoDto> newList = IaisCommonUtils.genNewArrayList(1);
+                            appSvcRelatedInfoDtoList.stream()
+                                    .filter(dto -> rfiAppNo.equals(dto.getAppNo()))
+                                    .findAny()
+                                    .ifPresent(dto -> newList.add(dto));
+                            newAppSubmissionDto.setAppSvcRelatedInfoDtoList(newList);
+                        }
+
+                    }
                 }
-                appSubmissionDtoList.add(appSubmissionDto);
+                if (newAppSubmissionDto != null) {
+                    appSubmissionDtoList.add(newAppSubmissionDto);
+                } else {
+                    appSubmissionDtoList.add(appSubmissionDto);
+                }
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
