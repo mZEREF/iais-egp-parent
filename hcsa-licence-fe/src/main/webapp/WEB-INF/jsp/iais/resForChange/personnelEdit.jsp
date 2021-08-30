@@ -190,15 +190,17 @@
                                             </iais:row>
                                         </c:if>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="8" type="text"
-                                                        name="mobileNoShow"
-                                                        value="${personnelEditDto.mobileNo}"
-                                                        needDisabled="true"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                            name="mobileNoShow"
+                                                            value="${personnelEditDto.mobileNo}"
+                                                            needDisabled="true"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
@@ -210,15 +212,17 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Email Address " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="320" type="text"
-                                                        name="emailAddrShow"
-                                                        value="${personnelEditDto.emailAddr}"
-                                                        needDisabled="true"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Email Address " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="320" type="text"
+                                                            name="emailAddrShow"
+                                                            value="${personnelEditDto.emailAddr}"
+                                                            needDisabled="true"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                 </div>
                                 <div id="update" class="form-horizontal" style="display:none;">
                                     <iais:row>
@@ -271,13 +275,15 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="mobileNo"
-                                                        value="${personnelEditDto.mobileNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="8" type="text" name="mobileNo"
+                                                            value="${personnelEditDto.mobileNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
@@ -287,13 +293,15 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Email Address " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="320" type="text" name="emailAddr"
-                                                        value="${personnelEditDto.emailAddr}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Email Address " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="320" type="text" name="emailAddr"
+                                                            value="${personnelEditDto.emailAddr}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                 </div>
                                 <div id="replace" class="form-horizontal" style="display:none;">
                                     <iais:row>
@@ -354,13 +362,15 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="mobileNo1"
-                                                        value="${newPerson.mobileNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="8" type="text" name="mobileNo1"
+                                                            value="${newPerson.mobileNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
@@ -370,13 +380,15 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Email Address " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="320" type="text" name="emailAddr1"
-                                                        value="${newPerson.emailAddr}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Email Address " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="320" type="text" name="emailAddr1"
+                                                            value="${newPerson.emailAddr}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                 </div>
                                 <div id="newPersonExist" style="display:none;" class="form-horizontal">
                                     <iais:row>
@@ -427,14 +439,16 @@
                                             </iais:row>
 
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="8" type="text"
-                                                        name="mobileNo2"
-                                                        value="${newPerson.mobileNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                            name="mobileNo2"
+                                                            value="${newPerson.mobileNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <c:if test="${psnTypes.contains('PO') || psnTypes.contains('DPO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
@@ -445,14 +459,16 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <iais:row>
-                                        <iais:field value="Email Address " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="320" type="text"
-                                                        name="emailAddr2"
-                                                        value="${newPerson.emailAddr}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${onlyKAH != '1'}">
+                                        <iais:row>
+                                            <iais:field value="Email Address " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="320" type="text"
+                                                            name="emailAddr2"
+                                                            value="${newPerson.emailAddr}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                 </div>
                             </div>
                         </div>
