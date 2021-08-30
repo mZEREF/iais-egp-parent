@@ -1,9 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import lombok.Data;
-import org.springframework.data.domain.Page;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
 
 import java.util.List;
 
@@ -16,5 +15,5 @@ import java.util.List;
 public class FacilityResultDto {
     private PageInfo pageInfo;
 
-    private List<Facility> bsbFac;
+    private List<FacilityBiologicalAgent> bsbFac;
 }

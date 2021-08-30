@@ -20,4 +20,6 @@ public class FacilityBiologicalAgent implements Serializable {
 
 	private List<FacilityAgentSample> facilityAgentSamples;
 
+	private String bioName;
+
 }

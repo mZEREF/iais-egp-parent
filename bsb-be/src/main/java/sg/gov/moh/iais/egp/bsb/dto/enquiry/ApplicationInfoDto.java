@@ -23,16 +23,16 @@ public class ApplicationInfoDto implements Serializable{
     private String applicationNo;
 
     @ExcelProperty(cellIndex = 2, cellName = "Application Type")
-    private String applicationType;
+    private String appType;
 
     @ExcelProperty(cellIndex = 3, cellName = "Application Status")
-    private String applicationStatus;
+    private String appStatus;
 
     @ExcelProperty(cellIndex = 4, cellName = "Application Submission Date")
-    private String applicationSubmissionDate;
+    private Date applicationDt;
 
     @ExcelProperty(cellIndex = 5, cellName = "Approval  Date")
-    private String approvalDate;
+    private Date approvalDate;
 
     @ExcelProperty(cellIndex = 6, cellName = "Facility Classfiication")
     private String facilityClassification;
@@ -44,20 +44,22 @@ public class ApplicationInfoDto implements Serializable{
     private String facilityName;
 
     @ExcelProperty(cellIndex = 9, cellName = "Biological Agent/Login")
-    private String biologicalAgent;
+    private String bioName;
 
     @ExcelProperty(cellIndex = 10, cellName = "Risk Level Of The Biological Agent/Login")
-    private String riskLevelOfTheBiologicalAgent;
+    private String riskLevel;
 
     @ExcelProperty(cellIndex = 11, cellName = "Process Type")
     private String processType;
 
+    private String scheduleType;
+
     @ExcelProperty(cellIndex = 12, cellName = "Verified By DO")
-    private String verifiedByDO;
+    private Date doVerifiedDt;
 
     @ExcelProperty(cellIndex = 13, cellName = "Verified By AO")
-    private String verifiedByAO;
+    private Date aoVerifiedDt;
 
     @ExcelProperty(cellIndex = 14, cellName = "Verified By HM")
-    private String verifiedByHM;
+    private Date hmVerifiedDt;
 }
