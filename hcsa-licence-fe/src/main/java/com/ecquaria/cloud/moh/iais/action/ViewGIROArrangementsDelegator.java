@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoViewDt
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -22,6 +24,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ApplyGiroFromDelegateo
@@ -53,7 +56,11 @@ public class ViewGIROArrangementsDelegator {
 
     public void info(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
+        Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String orgId = loginContext.getOrgId();
+        filter.put("org_id", orgId);
+        giroAccountParameter.setFilters(filter);
         SearchParam giroAccountParam = SearchResultHelper.getSearchParam(request, giroAccountParameter,true);
         CrudHelper.doPaging(giroAccountParam,bpc.request);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");

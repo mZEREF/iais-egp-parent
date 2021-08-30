@@ -2,7 +2,7 @@
 <sqls catalog="giroPayee">
     <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
         <![CDATA[
-            SELECT distinct gai.ID,gai.UEN_NO UEN,gai.LICENCE_ID, gai.LICENCE_NO,
+            SELECT distinct gai.ID,gai.UEN_NO UEN,gai.LICENCE_ID,SUBSTRING ( gai.LICENCE_NO, 0, 14 )  LICENCE_NO ,
             gai.SVC_NAME,gai.LICENSEE_NAME,gai.REMARKS,
             gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
             gai.DDA_REF_NO
@@ -18,7 +18,7 @@
 
     <sql key = "searchByOrgPremView" remarks="search by Organization Premises View">
         <![CDATA[
-            SELECT distinct opv.ID , opv.ORG_ID, opv.LICENCE_NO, opv.UEN_NO, opv.SVC_NAME, opv.LICENSEE_NAME
+            SELECT distinct opv.ID , opv.ORG_ID,SUBSTRING ( opv.LICENCE_NO, 0, 14 )  LICENCE_NO , opv.UEN_NO, opv.SVC_NAME, opv.LICENSEE_NAME
             from UenLicView opv
             where 1 = 1
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
