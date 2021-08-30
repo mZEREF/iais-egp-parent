@@ -30,6 +30,6 @@ public interface ProcessClient {
     ResponseDto<DoScreeningDto> updateFacilityByMohProcess(@RequestBody DoScreeningDto dto);
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")
-    FeignResponseEntity<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
+    ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
 
 }
