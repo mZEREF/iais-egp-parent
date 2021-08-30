@@ -105,6 +105,8 @@
 
     </table>
     <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>
+    <br>
+    <span class="error-msg" name="iaisErrorMsg" id="error_SL"></span>
   </div>
 </div>
 
