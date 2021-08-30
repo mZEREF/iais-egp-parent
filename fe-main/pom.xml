@@ -99,6 +99,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <dependentWarExcludes>
+                        WEB-INF/lib/jsr305-3.0.1.jar
+                        WEB-INF/lib/core-renderer-R8.jar
+                        WEB-INF/lib/bcmail-jdk14-1.64.jar
+                        WEB-INF/lib/bcprov-jdk14-1.64.jar
+                    </dependentWarExcludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
