@@ -45,4 +45,6 @@ public class Application implements Serializable {
     private Date modifiedAt;
 
     private String modifiedBy;
+
+    private String bioName;
 }

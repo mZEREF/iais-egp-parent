@@ -35,7 +35,7 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/fac_info/approval")
     FeignResponseEntity<List<String>> queryDistinctApproval();
 
-    @GetMapping(path = "/fac_bio_agent/{applicationNo}")
+    @GetMapping(path = "/app_info/{applicationNo}")
     ResponseDto<ApplicationResultDto> queryApplicationByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
     @GetMapping(path = "/fac_info/{facilityName}")
@@ -44,7 +44,7 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/bio_info/{schedule}")
     FeignResponseEntity<List<BiologicalDto>> queryBiologicalBySchedule(@PathVariable(name = "schedule") String schedule);
 
-    @GetMapping(value = "/fac_bio_agent/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/app_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApplicationResultDto> getApp(@SpringQueryMap EnquiryDto dto);
 
     @GetMapping(value = "/fac_info/query/fac", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
@@ -62,7 +62,7 @@ public interface BiosafetyEnquiryClient {
     @PostMapping(path ="/bio_info/biologicalIdList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<List<Biological>> getBiologicalsById(@RequestBody List<String> biologicalIdList);
 
-    @GetMapping(path ="/bio_info/{bioName}")
+    @GetMapping(path ="/bio_info/name/{bioName}")
     ResponseDto<Biological> getBiologicalByName(@PathVariable(name = "bioName") String bioName);
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")

@@ -232,23 +232,34 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                        <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
-                                            <tr name="basicData">
-                                                <td><c:out  value="${status.index + 1}"/></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalType}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalStatus}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityClassification}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityType}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityName}"></iais:code></td>
-                                                <td><c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.blkNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.streetName}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.floorNo}"/>-<c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.unitNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.postalCode}"/></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityStatus}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.biologicalId}"></iais:code></td>
-                                                <td><iais:code code="${items.sampleNature}"></iais:code></td>
-                                                <td><iais:code code="${items.facilityBiologicalAgent.riskLevel}"></iais:code></td>
-                                                <td></td>
-                                                <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
-                                            </tr>
-                                        </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${empty approvalSearchResult}">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
+                                                    <tr name="basicData">
+                                                        <td><c:out  value="${status.index + 1}"/></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalType}"></iais:code></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalStatus}"></iais:code></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityClassification}"></iais:code></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityType}"></iais:code></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityName}"></iais:code></td>
+                                                        <td><c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.blkNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.streetName}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.floorNo}"/>-<c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.unitNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.postalCode}"/></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityStatus}"></iais:code></td>
+                                                        <td><iais:code code="${items.bioName}"></iais:code></td>
+                                                        <td><iais:code code="${items.sampleNature}"></iais:code></td>
+                                                        <td><iais:code code="${items.facilityBiologicalAgent.riskLevel}"></iais:code></td>
+                                                        <td></td>
+                                                        <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </tbody>
                                     </table>
                                 </c:if>
@@ -282,29 +293,40 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                        <c:forEach var="items" items="${approvedSearchResult}" varStatus="status">
-                                            <tr name="basicData">
-                                                <td><c:out  value="${status.index + 1}"/></td>
-                                                <td><iais:code code="${items.organization.name}"></iais:code></td>
-                                                <td><c:out value="${items.organization.blkNo}"/> <c:out value="${items.organization.streetName}"/> <c:out value="${items.organization.buildingName}"/> <c:out value="${items.organization.floorNo}"/>-<c:out value="${items.organization.unitNo}"/> </td>
-                                                <td><iais:code code="${items.facilityStatus}"></iais:code></td>
-                                                <td>
-                                                    <c:forEach var="admins" items="${items.admins}" varStatus="status">
-                                                    <c:choose>
-                                                        <c:when test="${status.last}">
-                                                            <c:out value="${admins.name}"></c:out>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:out value="${admins.name}"></c:out>,
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                     </c:forEach>
-                                                </td>
-                                                <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
-                                                <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
-                                                <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
-                                            </tr>
-                                        </c:forEach>
+                                        <c:choose>
+                                            <c:when test="${empty appInfoSearchResult}">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="items" items="${approvedSearchResult}" varStatus="status">
+                                                    <tr name="basicData">
+                                                        <td><c:out  value="${status.index + 1}"/></td>
+                                                        <td><iais:code code="${items.organization.name}"></iais:code></td>
+                                                        <td><c:out value="${items.organization.blkNo}"/> <c:out value="${items.organization.streetName}"/> <c:out value="${items.organization.buildingName}"/> <c:out value="${items.organization.floorNo}"/>-<c:out value="${items.organization.unitNo}"/> </td>
+                                                        <td><iais:code code="${items.facilityStatus}"></iais:code></td>
+                                                        <td>
+                                                            <c:forEach var="admins" items="${items.admins}" varStatus="status">
+                                                                <c:choose>
+                                                                    <c:when test="${status.last}">
+                                                                        <c:out value="${admins.name}"></c:out>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${admins.name}"></c:out>,
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </c:forEach>
+                                                        </td>
+                                                        <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
+                                                        <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
+                                                        <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </tbody>
                                     </table>
                                 </c:if>
