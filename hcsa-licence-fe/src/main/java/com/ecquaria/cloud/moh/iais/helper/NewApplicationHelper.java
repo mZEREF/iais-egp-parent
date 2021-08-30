@@ -79,6 +79,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3059,14 +3060,13 @@ public class NewApplicationHelper {
             }
         }
         //do sort
-        if(!IaisCommonUtils.isEmpty(reloadMap)){
-            reloadMap.forEach((k,v)->{
-                if(v != null && v.size() > 1){
-                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+        if (!IaisCommonUtils.isEmpty(reloadMap)) {
+            reloadMap.forEach((k, v) -> {
+                if (v != null && v.size() > 1) {
+                    Collections.sort(v, Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum));
                 }
             });
         }
-
         return reloadMap;
     }
 
@@ -3091,10 +3091,10 @@ public class NewApplicationHelper {
             }
         }
         //do sort
-        if(!IaisCommonUtils.isEmpty(reloadMap)){
-            reloadMap.forEach((k,v)->{
-                if(v != null && v.size() > 1){
-                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+        if (!IaisCommonUtils.isEmpty(reloadMap)) {
+            reloadMap.forEach((k, v) -> {
+                if (v != null && v.size() > 1) {
+                    Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum));
                 }
             });
         }

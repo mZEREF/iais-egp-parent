@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -95,6 +96,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * LicenceViewServiceDelegator
@@ -1226,7 +1228,6 @@ public class LicenceViewServiceDelegator {
                     List<AppSvcPrincipalOfficersDto> j_DPO = new ArrayList<>(appSvcPrincipalOfficersDtoList.size());
                     for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
                         if ("PO".equals(appSvcPrincipalOfficersDto.getPsnType())) {
-
                             i_PO.add(appSvcPrincipalOfficersDto);
                         } else if ("DPO".equals(appSvcPrincipalOfficersDto.getPsnType())) {
                             j_DPO.add(appSvcPrincipalOfficersDto);
@@ -1240,7 +1241,7 @@ public class LicenceViewServiceDelegator {
                 }
                 Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
                 sortSvcDoc(multipleSvcDoc);
-                multipleSvcDoc = translateForShow(multipleSvcDoc);
+                multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
                 appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
             }
             Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
@@ -1279,32 +1280,34 @@ public class LicenceViewServiceDelegator {
         if (appGrpPrimaryDocDtos == null) {
             appGrpPrimaryDocDtos = new ArrayList<>();
         }
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+        oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         Map<String, List<AppGrpPrimaryDocDto>> oldMultipleGrpPrimaryDoc = oldAppSubmissionDto.getMultipleGrpPrimaryDoc();
         dealMapPrimaryDoc(multipleGrpPrimaryDoc, oldMultipleGrpPrimaryDoc);
-        sortPremiseDoc(multipleGrpPrimaryDoc);
-        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
         multipleGrpPrimaryDoc.forEach((k, v) -> {
             List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = oldMultipleGrpPrimaryDoc.get(k);
             copyPremiseDoc(v, grpPrimaryDocDtos);
         });
-        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        oldAppSubmissionDto.setAppGrpPrimaryDocDtos(oldAppGrpPrimaryDocDtos);
+        sortPremiseDoc(multipleGrpPrimaryDoc);
+        sortPremiseDoc(oldMultipleGrpPrimaryDoc);
+        appSubmissionDto.setMultipleGrpPrimaryDoc(handlePrimaryDocs(multipleGrpPrimaryDoc));
+        oldAppSubmissionDto.setMultipleGrpPrimaryDoc(handlePrimaryDocs(oldMultipleGrpPrimaryDoc));
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         Map<String, List<AppSvcDocDto>> multipleSvcDoc = appSvcRelatedInfoDto.getMultipleSvcDoc();
         Map<String, List<AppSvcDocDto>> oldMultipleSvcDoc = oldAppSvcRelatedInfoDto.getMultipleSvcDoc();
         dealMapSvcDoc(multipleSvcDoc, oldMultipleSvcDoc);
-        sortSvcDoc(multipleSvcDoc);
-        sortSvcDoc(oldMultipleSvcDoc);
         Map<String, List<AppSvcDocDto>> finalOldMultipleSvcDoc = oldMultipleSvcDoc;
         multipleSvcDoc.forEach((k, v) -> {
             List<AppSvcDocDto> appSvcDocDtos = finalOldMultipleSvcDoc.get(k);
             copyServiceDoc(v, appSvcDocDtos);
         });
         log.info(StringUtil.changeForLog("The multipleSvcDoc  show change"));
-        multipleSvcDoc = translateForShow(multipleSvcDoc);
-        oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc);
+        sortSvcDoc(multipleSvcDoc);
+        sortSvcDoc(oldMultipleSvcDoc);
+        multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
+        oldMultipleSvcDoc = translateForShow(oldMultipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
         appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
         oldAppSvcRelatedInfoDto.setMultipleSvcDoc(oldMultipleSvcDoc);
         // CGO
@@ -1517,6 +1520,7 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
+
     private <T> Set difference(Set<T> set,Set<T> oldSet){
         Set<T> s=new HashSet<>();
         s.addAll(set);
@@ -1524,7 +1528,7 @@ public class LicenceViewServiceDelegator {
         return s;
     }
 
-    private  void dealWithMultipleDoc(AppSubmissionDto appSubmissionDto){
+    private void dealWithMultipleDoc(AppSubmissionDto appSubmissionDto) {
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
         if(multipleGrpPrimaryDoc==null){
@@ -1544,36 +1548,40 @@ public class LicenceViewServiceDelegator {
             dealWithMultipleDoc(appSubmissionDto.getOldAppSubmissionDto());
         }
     }
-    private void dealWithGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ,Map<String, List<AppGrpPrimaryDocDto>>multipleGrpPrimaryDoc){
-        if(appGrpPrimaryDocDtos==null){
+
+    private void dealWithGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos ,Map<String, List<AppGrpPrimaryDocDto>>multipleGrpPrimaryDoc) {
+        if (appGrpPrimaryDocDtos == null) {
             return;
         }
-        for(AppGrpPrimaryDocDto v : appGrpPrimaryDocDtos){
+        for (AppGrpPrimaryDocDto v : appGrpPrimaryDocDtos) {
             String svcDocId = v.getSvcDocId();
             HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
             String dupForPrem = entity.getDupForPrem();
-            if("1".equals(dupForPrem)){
-                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get("Presmises 1: "+v.getSvcComDocName());
-                if(grpPrimaryDocDtos==null){
-                    grpPrimaryDocDtos=new ArrayList<>();
+            if (StringUtil.isEmpty(v.getSvcComDocId())) {
+                v.setSvcComDocId(svcDocId);
+            }
+            if ("1".equals(dupForPrem)) {
+                List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(ApplicationConsts.TITLE_MODE_OF_SVCDLVY +
+                        " 1: " + v.getSvcComDocName());
+                if (grpPrimaryDocDtos == null) {
+                    grpPrimaryDocDtos = new ArrayList<>();
                     grpPrimaryDocDtos.add(v);
-                    multipleGrpPrimaryDoc.put("Presmises 1: "+v.getSvcComDocName(),grpPrimaryDocDtos);
-                }else {
+                    multipleGrpPrimaryDoc.put(ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + v.getSvcComDocName(),
+                            grpPrimaryDocDtos);
+                } else {
                     grpPrimaryDocDtos.add(v);
                 }
-            }else if("0".equals(dupForPrem)){
+            } else if ("0".equals(dupForPrem)) {// common
                 List<AppGrpPrimaryDocDto> grpPrimaryDocDtos = multipleGrpPrimaryDoc.get(v.getSvcComDocName());
-                if(grpPrimaryDocDtos==null){
-                    grpPrimaryDocDtos=new ArrayList<>();
+                if (grpPrimaryDocDtos == null) {
+                    grpPrimaryDocDtos = new ArrayList<>();
                     grpPrimaryDocDtos.add(v);
-                    multipleGrpPrimaryDoc.put(v.getSvcComDocName(),grpPrimaryDocDtos);
-                }else {
+                    multipleGrpPrimaryDoc.put(v.getSvcComDocName(), grpPrimaryDocDtos);
+                } else {
                     grpPrimaryDocDtos.add(v);
                 }
             }
-
         }
-
     }
 
     private void groupWithSvcDoc(List<AppSvcDocDto> appSvcDocDtoLit, Map<String, List<AppSvcDocDto>> multipleSvcDoc){
@@ -1608,16 +1616,60 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
-    private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
+
+    private Map<String, List<AppGrpPrimaryDocDto>> handlePrimaryDocs(Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc) {
+        if (multipleGrpPrimaryDoc == null || multipleGrpPrimaryDoc.isEmpty()) {
+            return multipleGrpPrimaryDoc;
+        }
+        String someSvcComDocId = null;
+        for (Map.Entry<String, List<AppGrpPrimaryDocDto>> entry : multipleGrpPrimaryDoc.entrySet()) {
+            List<AppGrpPrimaryDocDto> dtos = entry.getValue();
+            if (dtos != null && !dtos.isEmpty()) {
+                someSvcComDocId = dtos.get(0).getSvcComDocId();
+                break;
+            }
+        }
+        Map<String, List<AppGrpPrimaryDocDto>> result = IaisCommonUtils.genNewLinkedHashMap();
+        if (!StringUtil.isEmpty(someSvcComDocId)) {
+            List<HcsaSvcDocConfigDto> docConfigDtos = hcsaConfigClient.getPrimaryDocConfigList(someSvcComDocId).getEntity();
+            Collections.sort(docConfigDtos, Comparator.comparing(HcsaSvcDocConfigDto::getDispOrder));
+            for (HcsaSvcDocConfigDto docConfig : docConfigDtos) {
+                String docTitle = docConfig.getDocTitle();
+                List<String> keys = multipleGrpPrimaryDoc.keySet().stream()
+                        .filter(k -> k.indexOf(docTitle) >= 0)
+                        .sorted()
+                        .collect(Collectors.toList());
+                for (String key : keys) {
+                    result.put(key, multipleGrpPrimaryDoc.get(key));
+                }
+            }
+        }
+        return result;
+    }
+
+    private Map<String, List<AppSvcDocDto>> translateForShow(Map<String, List<AppSvcDocDto>> multipleSvcDoc,
+            String serviceId) {
         log.info(StringUtil.changeForLog("The translateForShow start ..."));
-        Map<String, List<AppSvcDocDto>> result = IaisCommonUtils.genNewHashMap();
+        Map<String, List<AppSvcDocDto>> result = IaisCommonUtils.genNewLinkedHashMap();
+        Map<String, List<AppSvcDocDto>> temp = IaisCommonUtils.genNewLinkedHashMap();
         Map<String,Integer> nums = IaisCommonUtils.genNewHashMap();
-        if(multipleSvcDoc!=null){
-            multipleSvcDoc.forEach((k,v)->{
-                List<AppSvcDocDto> appSvcDocDtos = multipleSvcDoc.get(k);
-                if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+        if (multipleSvcDoc != null && !multipleSvcDoc.isEmpty()) {
+            List<HcsaSvcDocConfigDto> docConfigDtos = getAllHcsaSvcDocs(serviceId);
+            Collections.sort(docConfigDtos, Comparator.comparing(HcsaSvcDocConfigDto::getDispOrder));
+            for (HcsaSvcDocConfigDto docConfig : docConfigDtos) {
+                String svcDocId = docConfig.getId();
+                List<String> keys = multipleSvcDoc.keySet().stream()
+                        .filter(k -> k.indexOf(svcDocId) >= 0)
+                        .sorted()
+                        .collect(Collectors.toList());
+                for (String key : keys) {
+                    temp.put(key, multipleSvcDoc.get(key));
+                }
+            }
+            temp.forEach((k,appSvcDocDtos)->{
+                if (!IaisCommonUtils.isEmpty(appSvcDocDtos)) {
                     AppSvcDocDto appSvcDocDto = appSvcDocDtos.get(0);
-                   String  personType = k.substring(0,k.indexOf(':'));
+                    String  personType = k.substring(0,k.indexOf(':'));
                     log.info(StringUtil.changeForLog("The translateForShow personType is -->:"+personType));
                     Integer num = nums.get(personType);
                     if(num == null){
@@ -1636,7 +1688,6 @@ public class LicenceViewServiceDelegator {
         log.info(StringUtil.changeForLog("The translateForShow end ..."));
         return result;
     }
-
 
     private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num) {
         log.info(StringUtil.changeForLog("The dealWithSvcDoc start ..."));
@@ -2019,20 +2070,19 @@ public class LicenceViewServiceDelegator {
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                 primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
+                primaryDocDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                 appGrpPrimaryDocDtos.add(primaryDocDto);
             }
-
         }else if(appGrpPrimaryDocDtos!=null && oldAppGrpPrimaryDocDtos==null){
             oldAppGrpPrimaryDocDtos=new ArrayList<>(appGrpPrimaryDocDtos.size());
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                 AppGrpPrimaryDocDto primaryDocDto =new AppGrpPrimaryDocDto();
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                 primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
+                primaryDocDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                 oldAppGrpPrimaryDocDtos.add(primaryDocDto);
             }
-
         }else if(appGrpPrimaryDocDtos!=null && oldAppGrpPrimaryDocDtos!=null){
-
             primaryDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
         }
     }
@@ -2070,6 +2120,7 @@ public class LicenceViewServiceDelegator {
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                 primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
                 primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
+                primaryDocDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                 o.add(primaryDocDto);
             }
             if(!flag&&flag1){
@@ -2078,6 +2129,7 @@ public class LicenceViewServiceDelegator {
                 primaryDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcDocId());
                 primaryDocDto.setFileRepoId(appGrpPrimaryDocDto.getFileRepoId());
                 primaryDocDto.setSvcComDocName(appGrpPrimaryDocDto.getSvcComDocName());
+                primaryDocDto.setSeqNum(appGrpPrimaryDocDto.getSeqNum());
                 n.add(primaryDocDto);
             }
         }
@@ -2097,6 +2149,7 @@ public class LicenceViewServiceDelegator {
                 AppSvcDocDto svcDocDto=new AppSvcDocDto();
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+                svcDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                 appSvcDocDtoLit.add(svcDocDto);
             }
         }else if(appSvcDocDtoLit!=null&&oldAppSvcDocDtoLit==null){
@@ -2105,10 +2158,10 @@ public class LicenceViewServiceDelegator {
                 AppSvcDocDto svcDocDto=new AppSvcDocDto();
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+                svcDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                 oldAppSvcDocDtoLit.add(svcDocDto);
             }
         }else if(appSvcDocDtoLit!=null&&oldAppSvcDocDtoLit!=null){
-
             serviceDoc(appSvcDocDtoLit,oldAppSvcDocDtoLit);
         }
     }
@@ -2155,6 +2208,7 @@ public class LicenceViewServiceDelegator {
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                 svcDocDto.setUpFileName(appSvcDocDto.getUpFileName());
+                svcDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                 o.add(svcDocDto);
             }
             if(!flag&&flag1){
@@ -2163,6 +2217,7 @@ public class LicenceViewServiceDelegator {
                 svcDocDto.setSvcDocId(appSvcDocDto.getSvcDocId());
                 svcDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
                 svcDocDto.setUpFileName(appSvcDocDto.getUpFileName());
+                svcDocDto.setSeqNum(appSvcDocDto.getSeqNum());
                 n.add(svcDocDto);
             }
         }
@@ -2557,20 +2612,15 @@ public class LicenceViewServiceDelegator {
         return appSvcCgoDto;
     }
 
-    private void sortPremiseDoc( Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc){
-        if(multipleGrpPrimaryDoc!=null){
-            multipleGrpPrimaryDoc.forEach((k,v)->{
-                if(v!=null){
-                    Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
-                }
-            });
+    private void sortPremiseDoc(Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc) {
+        if (multipleGrpPrimaryDoc != null) {
+            multipleGrpPrimaryDoc.forEach((k, v) -> Collections.sort(v, Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum)));
         }
     }
-    private void sortSvcDoc(Map<String, List<AppSvcDocDto>> multipleSvcDoc){
-        if(multipleSvcDoc!=null){
-            multipleSvcDoc.forEach((k,v)->{
-                Collections.sort(v,(s1,s2)->(s1.getSeqNum().compareTo(s2.getSeqNum())));
-            });
+
+    private void sortSvcDoc(Map<String, List<AppSvcDocDto>> multipleSvcDoc) {
+        if (multipleSvcDoc != null) {
+            multipleSvcDoc.forEach((k, v) -> Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum)));
         }
     }
 
@@ -2644,5 +2694,18 @@ public class LicenceViewServiceDelegator {
                 return 2;
             default:return -1;
         }
+    }
+
+    public List<HcsaSvcDocConfigDto> getAllHcsaSvcDocs(String serviceId) {
+        Map<String, String> docMap = IaisCommonUtils.genNewHashMap();
+        if (StringUtil.isEmpty(serviceId)) {
+            docMap.put("common", "0");
+            docMap.put("premises", "1");
+        } else {
+            docMap.put("svc", serviceId);
+            docMap.put("common", "0");
+        }
+        String docMapJson = JsonUtil.parseToJson(docMap);
+        return hcsaConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
     }
 }

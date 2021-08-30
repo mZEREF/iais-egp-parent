@@ -1554,7 +1554,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         NewApplicationHelper.reSetMaxFileIndex(maxSeqNum);
-        appGrpPrimaryDocDtos.sort(Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum));
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
     }
 
