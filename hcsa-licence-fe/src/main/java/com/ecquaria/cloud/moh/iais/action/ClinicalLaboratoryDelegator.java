@@ -3825,6 +3825,7 @@ public class ClinicalLaboratoryDelegator {
             return;
         }
         Map<String, String> cgoMap = new HashMap<>();
+        Map<String, String> slMap = new HashMap<>();
         for (int i = 0; i < daList.size(); i++) {
             String idNo = daList.get(i).getIdNo();
             if (StringUtil.isEmpty(idNo)) {
@@ -3832,8 +3833,11 @@ public class ClinicalLaboratoryDelegator {
             } else {
                 cgoMap.put(idNo, idNo);
             }
-            if (StringUtil.isEmpty(daList.get(i).getSlIndex())) {
+            String indexNo = daList.get(i).getSlIndex();
+            if (StringUtil.isEmpty(indexNo)) {
                 map.put("disciplineAllocationSl" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Section Leader","field"));
+            } else {
+                slMap.put(indexNo, indexNo);
             }
         }
         if(map.isEmpty()){
@@ -3867,6 +3871,42 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String replace = error.replace("{CGO Name}", substring);
                     map.put("CGO", replace);
+                }
+            }
+
+            List<AppSvcPersonnelDto> sectionLeaderDtoList = IaisCommonUtils.genNewArrayList();
+            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : getAppSubmissionDto(request).getAppSvcRelatedInfoDtoList()){
+                sectionLeaderDtoList.addAll(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+            }
+            List<AppSvcPersonnelDto> sectionLeaderDtos = IaisCommonUtils.genNewArrayList();
+            if (sectionLeaderDtoList != null) {
+                if (daList.size() < sectionLeaderDtoList.size()) {
+                    return;
+                }
+                if (daList.size() >= sectionLeaderDtoList.size()) {
+                    slMap.forEach((k, v) -> {
+                        for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                            String indexNo = sectionLeaderDto.getIndexNo();
+                            if (k.equals(indexNo)) {
+                                sectionLeaderDtos.add(sectionLeaderDto);
+                            }
+                        }
+                    });
+                }
+                sectionLeaderDtoList.removeAll(sectionLeaderDtos);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                    stringBuilder.append(sectionLeaderDto.getName()).append(',');
+                }
+                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                    String string = stringBuilder.toString();
+                    String substring = string.substring(0, string.lastIndexOf(','));
+                    String error = MessageUtil.getMessageDesc("NEW_ERR0011");
+                    if (substring.contains(",")) {
+                        error = error.replaceFirst("is", "are");
+                    }
+                    String replace = error.replace("{CGO Name}", substring);
+                    map.put("SL", replace);
                 }
             }
         }
