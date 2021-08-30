@@ -22,7 +22,7 @@
                 <div class="row form-horizontal">
                     <div class="bg-title col-xs-12 col-md-12">
                         <h2>
-                            <span>Enter GIRO Payee Details</span>
+                            <span>Preview GIRO Payee Details</span>
                         </h2>
                     </div>
                     <div class="col-xs-12 col-md-12">
