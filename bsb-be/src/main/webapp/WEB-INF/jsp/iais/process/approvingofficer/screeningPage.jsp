@@ -90,7 +90,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO Processing Decision" required="false"/>
                                                                             <iais:value width="6">
-                                                                                <iais:value width="10"><p>Screened by DO</p></iais:value>
+                                                                                <iais:value width="10"><p>${doProcessDecision}</p></iais:value>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -100,7 +100,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="aoRemarks" cols="70" rows="7" maxlength="500"></textarea>
+                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"></textarea>
                                                                                     </div>
                                                                                 </div>
                                                                             </iais:value>
@@ -110,12 +110,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Reviewing Decision" required="true"/>
                                                                             <iais:value width="6">
-                                                                                <select>
-                                                                                    <option value="-1">Please Select</option>
-                                                                                    <option value="1">Approve for Inspection</option>
-                                                                                    <option value="2">Reject</option>
-                                                                                    <option value="3">Route Back to Duty Officer</option>
-                                                                                    <option value="4">Route to Higher Management</option>
+                                                                                <select name="processingDecision">
                                                                                 </select>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
@@ -125,7 +120,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="ERP Report" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="eRPReport" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="erpReport"></iais:datePicker>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -134,7 +129,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Red Teaming Report" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="redTeamingReport" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="redTeamingReport"></iais:datePicker>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -143,7 +138,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Lentivirus Report" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="lentivirusReport" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="lentivirusReport"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -151,7 +146,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Internal Inspection Report" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="internalInspectionReport" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="internalInspectionReport"></iais:datePicker>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -160,11 +155,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <select>
-                                                                                    <option value="-1">Please Select</option>
-                                                                                    <option value="1">Approve</option>
-                                                                                    <option value="2">Reject</option>
-                                                                                </select>
+                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedApprovedFacilityCertifier" disabled="false" codeCategory="CATE_ID_Bsb_Selected_Approved_Facility_Certifier" firstOption="Please Select"></iais:select>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -172,7 +163,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="validityStartDate" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="validityStartDate"></iais:datePicker>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -181,7 +172,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="validityEndDate" value=""></iais:datePicker>
+                                                                                <iais:datePicker name="validityEndDate"></iais:datePicker>
                                                                                 <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>

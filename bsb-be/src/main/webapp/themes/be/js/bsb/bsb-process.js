@@ -23,5 +23,12 @@ $(function () {
         $("[name='action_type']").val("back");
         $('#mainForm').submit();
     })
-
+    $("#clearButton").click(function (){
+        $("div,textarea").val("");
+        $(".date_picker").val("");
+        $("#riskLevel option:first").prop("selected",'selected');
+        $("#processingDecision option:first").prop("selected",'selected');
+        $("#selectedApprovedFacilityCertifier option:first").prop("selected",'selected');
+        $("#beInboxFilter .current").text("Please Select");
+    })
 })

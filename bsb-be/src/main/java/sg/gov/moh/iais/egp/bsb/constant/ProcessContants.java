@@ -22,5 +22,7 @@ public class ProcessContants {
     public static final String VALIDITY_END_DATE = "validityEndDate";
 
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
+    public static final String DO_PROCESS_DECISION = "doProcessDecision";
+
 
 }

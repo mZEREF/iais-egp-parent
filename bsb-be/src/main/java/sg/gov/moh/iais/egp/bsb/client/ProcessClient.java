@@ -4,17 +4,12 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
-
-import java.util.List;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
 /**
  * @author : LiRan
@@ -27,9 +22,15 @@ public interface ProcessClient {
     FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "applicationId") String applicationId);
 
     @PostMapping(path = "/bsb_MohOfficer/AOScreening/DoScreeningDto",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<DoScreeningDto> updateFacilityByMohProcess(@RequestBody DoScreeningDto dto);
+    ResponseDto<DoScreeningDto> updateFacilityByMohProcess(@RequestBody DoScreeningDto doScreeningDto);
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
+
+    @GetMapping(path = "/app_info/applicationNo")
+    FeignResponseEntity<String> getAndCreateApplicationNo();
+
+    @GetMapping(path = "/bsb_MohOfficer/routingHistory")
+    FeignResponseEntity<RoutingHistory> getRoutingHistoryByApplicationNoAndAppStatus(@RequestParam(name = "applicationNo") String applicationNo, @RequestParam(name = "appStatus") String appStatus);
 
 }

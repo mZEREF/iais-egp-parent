@@ -30,4 +30,19 @@ public class DoScreeningDto {
     private Date validityEndDt;
 
     private String selectedAfc;
+
+    private String applicationId;
+
+    private String applicationNo;
+
+    private String status;
+
+    private String appStatus;
+
+    private String remarks;
+
+    private String processDecision;
+
+    private String actionBy;
+
 }

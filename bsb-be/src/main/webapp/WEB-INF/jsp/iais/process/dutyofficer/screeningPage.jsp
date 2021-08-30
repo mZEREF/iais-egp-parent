@@ -70,7 +70,7 @@
                                                 <form method="post" action=<%=process.runtime.continueURL()%>>
                                                     <div class="row">
                                                         <div class="col-xs-12">
-                                                            <div class="table-gp">
+                                                            <div class="table-gp" id="beInboxFilter">
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
@@ -88,7 +88,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:select name="riskLevel" disabled="false" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value=""></iais:select>
+                                                                                <iais:select id="riskLevel" name="riskLevel" disabled="false" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select"></iais:select>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -108,7 +108,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="6">
-                                                                                <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION" firstOption="Please Select" value=""></iais:select>
+                                                                                <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_DO_SCREENING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
                                                                                 <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
@@ -117,7 +117,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="ERP Report" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="erpReport" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="erpReport"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -125,7 +125,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Red Teaming Report" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="redTeamingReport" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="redTeamingReport"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -133,7 +133,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Lentivirus Report" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="lentivirusReport" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="lentivirusReport"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -141,7 +141,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Internal Inspection Report" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="internalInspectionReport" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="internalInspectionReport"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -149,7 +149,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:select name="selectedApprovedFacilityCertifier" disabled="false" codeCategory="CATE_ID_Bsb_Selected_Approved_Facility_Certifier" firstOption="Please Select" value=""></iais:select>
+                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedApprovedFacilityCertifier" disabled="false" codeCategory="CATE_ID_Bsb_Selected_Approved_Facility_Certifier" firstOption="Please Select"></iais:select>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -157,7 +157,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="validityStartDate" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="validityStartDate"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -165,7 +165,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="true"></iais:field>
                                                                             <iais:value width="6">
-                                                                                <iais:datePicker name="validityEndDate" dateVal=""></iais:datePicker>
+                                                                                <iais:datePicker name="validityEndDate"></iais:datePicker>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
