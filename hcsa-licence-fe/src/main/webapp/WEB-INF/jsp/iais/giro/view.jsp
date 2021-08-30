@@ -25,6 +25,19 @@
                             <table aria-describedby="" class="table">
                                 <thead>
                                 <tr >
+                                    <style>
+                                        .glyphicon {
+                                            position: relative;
+                                            top: -5px;
+                                            display: inline-block;
+                                            font-family: 'Glyphicons Halflings', serif;
+                                            font-style: normal;
+                                            font-weight: normal;
+                                            line-height: 1;
+                                            -webkit-font-smoothing: antialiased;
+                                            -moz-osx-font-smoothing: grayscale;
+                                        }
+                                    </style>
                                     <th scope="col" style="display: none">
 
                                     </th>
@@ -45,7 +58,7 @@
                                                          field="BANK_CODE"
                                                          value="Bank Code"/>
                                     <iais:sortableHeader needSort="true"
-                                                         field="BRANCH_CODE" style="width:8%"
+                                                         field="BRANCH_CODE" style="width:9%"
                                                          value="Branch Code"/>
                                     <iais:sortableHeader needSort="true"
                                                          field="ACCT_NO"

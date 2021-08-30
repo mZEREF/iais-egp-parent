@@ -2,7 +2,7 @@
 <sqls catalog="giroPayee">
     <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
         <![CDATA[
-            SELECT distinct gaiView.ID,gaiView.UEN_NO UEN,gaiView.LICENCE_ID, gaiView.LICENCE_NO,
+            SELECT distinct gaiView.ID,gaiView.UEN_NO UEN,gaiView.LICENCE_ID, SUBSTRING ( gaiView.LICENCE_NO, 0, 14 )  LICENCE_NO,
             gaiView.SVC_NAME,gaiView.LICENSEE_NAME,gaiView.REMARKS,
             gaiView.BANK_CODE, gaiView.BANK_NAME, gaiView.BRANCH_CODE, gaiView.ACCT_NAME, gaiView.ACCT_NO,
             gaiView.DDA_REF_NO
@@ -14,6 +14,7 @@
             JOIN hcsal.dbo.giro_account_info gai on lic.ID =gai.LICENCE_ID
             JOIN hcsal.dbo.sub_licensee_info sli on lic.SUB_LICENSEE_ID =sli.ID
             where lic.STATUS = 'LICEST001'
+            <#if org_id??>and gai.ORGANIZATION_ID = :org_id</#if>
             ) gaiView
             where gaiView.STATUS = 'CMSTAT001'
 

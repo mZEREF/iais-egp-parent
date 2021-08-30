@@ -3909,6 +3909,9 @@ public class NewApplicationHelper {
     }
 
     public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+        if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
+            return;
+        }
         for(int i = 0; i< appSvcBusinessDtos.size(); i++){
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if(StringUtil.isEmpty(businessName)){
