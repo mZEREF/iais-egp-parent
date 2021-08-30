@@ -209,8 +209,10 @@
     <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
     if (testMode.toUpperCase().startsWith("PROD")){%>
     var prd = "<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>";
+    var prdSing = "<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>";
     <%}else{%>
     var prd = "";
+    var prdSing = "";
     <%}%>
     var oldSys = "<%=ConfigHelper.getString("moh.halp.old.internet.web", "#")%>";
     if (isEmpty(oldSys)) {
@@ -236,8 +238,8 @@
     } else {
         $('#corppass').attr("href", prd);
         $('#corppass').removeAttr("onclick");
-        $('#singpass').attr("href", "javascript:void(0);");
-        $('#singpass').attr("onclick", "Utils.submit('mainForm','singpassLogin');");
+        $('#singpass').attr("href", prdSing);
+        $('#singpass').removeAttr("onclick");
     }
   }
 </script>
