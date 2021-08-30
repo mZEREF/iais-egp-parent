@@ -87,20 +87,7 @@ public class AORevocationDelegator {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
                 facId=application.getFacility().getId();
                 List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
-                List<Biological> biologicalList = new ArrayList<>();
-                //get Biological by facilityIds
-                if (facilityScheduleList != null && facilityScheduleList.size() > 0){
-                    for (int i = 0; i < facilityScheduleList.size(); i++) {
-                        List<FacilityBiologicalAgent> facilityBiologicalAgentList = facilityScheduleList.get(i).getFacilityBiologicalAgents();
-                        if (facilityBiologicalAgentList != null && facilityBiologicalAgentList.size() > 0){
-                            for (int j = 0; j < facilityBiologicalAgentList.size(); j++) {
-                                String biologicalId = facilityBiologicalAgentList.get(j).getBiologicalId();
-                                biologicalList.add(processClient.getBiologicalById(biologicalId).getEntity());
-                            }
-                        }
-                    }
-                }
-                String bioNames = JoinBiologicalName.joinBiologicalName(biologicalList);
+                String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
                 application.setBiologicalName(bioNames);
             }
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, applications);
