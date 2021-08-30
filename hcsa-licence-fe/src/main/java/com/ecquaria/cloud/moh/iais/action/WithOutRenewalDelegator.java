@@ -780,9 +780,9 @@ public class WithOutRenewalDelegator {
         //do app submit
         String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
         appSubmissionDtos1.addAll(appSubmissionDtos);
-        /*ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);*/
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
+            setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,null);
         }
         int i=0;
         for( AppFeeDetailsDto detailsDto : appFeeDetailsDto){
@@ -808,17 +808,11 @@ public class WithOutRenewalDelegator {
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
             Long auto = System.currentTimeMillis();
             autoAppSubmissionDtos.get(0).setAuditTrailDto(currentAuditTrailDto);
-            List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
             String autoGrpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
             for(AppSubmissionDto appSubmissionDto : autoAppSubmissionDtos){
-                appSubmissionDto.setAppGrpNo(autoGrpNo);
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
-                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                        appGrpPremisesDto.setSelfAssMtFlag(4);
-                    }
-                }
+                setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,autoGrpNo);
             }
+            List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
             AuditTrailDto at = AuditTrailHelper.getCurrentAuditTrailDto();
             at.setModule(AuditTrailConsts.MODULE_RENEW);
             at.setFunctionName(AuditTrailConsts.FUNCTION_RENEW);
@@ -873,6 +867,27 @@ public class WithOutRenewalDelegator {
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
+    }
+    private void setRfcSubInfo(AppSubmissionDto appSubmissionDtoNew,AppSubmissionDto dto,String autoGrpNo){
+        if(StringUtil.isNotEmpty(autoGrpNo)){
+            dto.setAppGrpNo(autoGrpNo);
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDtoNew.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)){
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    appGrpPremisesDto.setSelfAssMtFlag(4);
+                }
+            }
+        }
+        dto.setEffectiveDateStr(appSubmissionDtoNew.getEffectiveDateStr());
+        dto.setEffectiveDate(appSubmissionDtoNew.getEffectiveDate());
+        if (appSubmissionDtoNew.getAppDeclarationMessageDto() != null) {
+            dto.setAppDeclarationMessageDto(appSubmissionDtoNew.getAppDeclarationMessageDto());
+            dto.setAppDeclarationDocDtos(appSubmissionDtoNew.getAppDeclarationDocDtos());
+            if (appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt() != null) {
+                dto.setEffectiveDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt());
+                dto.setEffectiveDateStr(Formatter.formatDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt()));
+            }
+        }
     }
 
    private void setGiroAcc(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request){
