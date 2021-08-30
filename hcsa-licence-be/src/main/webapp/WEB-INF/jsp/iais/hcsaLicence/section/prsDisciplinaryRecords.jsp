@@ -16,16 +16,16 @@
                 <table aria-describedby="" border="1px"
                        style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff;text-align: center">
                     <tr>
-                        <th scope="col">Professional Regn. No.</th>
-                        <th scope="col">Complaints</th>
-                        <th scope="col">Final Outcome</th>
-                        <th scope="col">Fine Amounts</th>
-                        <th scope="col">Restrictive Practice Start Date</th>
-                        <th scope="col">Restrictive Practice End Date</th>
-                        <th scope="col">Suspension Start Date</th>
-                        <th scope="col">Suspension End Date</th>
-                        <th scope="col">Other disciplinary action Start Date</th>
-                        <th scope="col">Other Disciplinary action End Date</th>
+                        <th scope="col" style="font-weight:lighter">Professional Regn. No.</th>
+                        <th scope="col" style="font-weight:lighter">Complaints</th>
+                        <th scope="col" style="font-weight:lighter">Final Outcome</th>
+                        <th scope="col" style="font-weight:lighter">Fine Amounts</th>
+                        <th scope="col" style="font-weight:lighter">Restrictive Practice Start Date</th>
+                        <th scope="col" style="font-weight:lighter">Restrictive Practice End Date</th>
+                        <th scope="col" style="font-weight:lighter">Suspension Start Date</th>
+                        <th scope="col" style="font-weight:lighter">Suspension End Date</th>
+                        <th scope="col" style="font-weight:lighter">Other disciplinary action Start Date</th>
+                        <th scope="col" style="font-weight:lighter">Other Disciplinary action End Date</th>
                     </tr>
                     <c:forEach items="${listHashMap[profRegNo]}" var="list">
                         <tr>
