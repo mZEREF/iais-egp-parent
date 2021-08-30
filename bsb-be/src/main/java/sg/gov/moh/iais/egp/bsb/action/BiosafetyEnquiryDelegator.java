@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -59,9 +60,9 @@ public class BiosafetyEnquiryDelegator {
         if(StringUtil.isEmpty(searchNo)){ searchNo = "null";}
             switch (count){
                 case "app":
-                    ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
-                    ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
-                    ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
+//                    ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
+//                    ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
+//                    ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
                     break;
                 case "fn":
                     FacilityResultDto facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
@@ -270,8 +271,8 @@ public class BiosafetyEnquiryDelegator {
         if (StringUtil.isNotEmpty(facilityName)) {
             enquiryDto.setFacilityName(facilityName);
         }
-        if (StringUtil.isNotEmpty(facilityName)) {
-            enquiryDto.setFacilityName(biologicalAgent);
+        if (StringUtil.isNotEmpty(biologicalAgent)) {
+            enquiryDto.setBiologicalAgent(biologicalAgent);
         }
         if (StringUtil.isNotEmpty(scheduleType)) {
             enquiryDto.setScheduleType(scheduleType);
@@ -518,52 +519,52 @@ public class BiosafetyEnquiryDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-    @GetMapping(value = "/Approval-information-file")
-    public @ResponseBody
-    void apprFileHandler(HttpServletRequest request, HttpServletResponse response) {
-        log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        File file = null;
-        EnquiryDto enquiryDto = getSearchDto(request);
-        ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
-        log.debug("indicates that a record has been selected ");
-        if (!Objects.isNull(approvalResultDto)){
-            List<FacilityBiological> queryList = approvalResultDto.getBsbApproval();
-            List<ApprovalInfoDto> approvalInfoDtos = new ArrayList<>();
-
-            for (FacilityBiological facilityBiological : queryList) {
-                ApprovalInfoDto approvalInfoDto = new ApprovalInfoDto();
-                approvalInfoDto.setFacilityAddress(facilityBiological.getFacility().getBlkNo()+""+facilityBiological.getFacility().getStreetName()+""+facilityBiological.getFacility().getFloorNo()+"-"+facilityBiological.getFacility().getUnitNo()+""+facilityBiological.getFacility().getPostalCode());
-                approvalInfoDto.setApprovalType(facilityBiological.getFacility().getApprovalType());
-                approvalInfoDto.setApprovalStatus(facilityBiological.getFacility().getApprovalStatus());
-                approvalInfoDto.setAgent(facilityBiological.getFacility().getBiological().getName());
-                approvalInfoDto.setFacilityName(facilityBiological.getFacility().getFacilityName());
-                approvalInfoDto.setFacilityClassification(facilityBiological.getFacility().getFacilityClassification());
-                approvalInfoDto.setFacilityStatus(facilityBiological.getFacility().getFacilityStatus());
-                approvalInfoDto.setFacilityType(facilityBiological.getFacility().getFacilityType());
-                approvalInfoDto.setNatureOfTheSample(facilityBiological.getSampleNature());
-                approvalInfoDto.setRiskLevelOfTheBiologicalAgent(facilityBiological.getFacility().getBiological().getRiskLevel());
-                approvalInfoDtos.add(approvalInfoDto);
-            }
-            approvalInfoDtos.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
-            approvalInfoDtos.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
-            approvalInfoDtos.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
-            approvalInfoDtos.forEach(i -> i.setApprovalType(MasterCodeUtil.getCodeDesc(i.getApprovalType())));
-            approvalInfoDtos.forEach(i -> i.setApprovalStatus(MasterCodeUtil.getCodeDesc(i.getApprovalStatus())));
-            approvalInfoDtos.forEach(i -> i.setNatureOfTheSample(MasterCodeUtil.getCodeDesc(i.getNatureOfTheSample())));
-            try {
-                file = ExcelWriter.writerToExcel(approvalInfoDtos, ApprovalInfoDto.class, "Approval Information_Search_Template");
-            } catch (Exception e) {
-                log.error("=======>fileHandler error >>>>>", e);
-            }
-        }
-        try {
-            FileUtils.writeFileResponseContent(response, file);
-            FileUtils.deleteTempFile(file);
-        } catch (IOException e) {
-            log.debug(e.getMessage());
-        }
-        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-    }
+//    @GetMapping(value = "/Approval-information-file")
+//    public @ResponseBody
+//    void apprFileHandler(HttpServletRequest request, HttpServletResponse response) {
+//        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+//        File file = null;
+//        EnquiryDto enquiryDto = getSearchDto(request);
+//        ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
+//        log.debug("indicates that a record has been selected ");
+//        if (!Objects.isNull(approvalResultDto)){
+//            List<FacilityBiological> queryList = approvalResultDto.getBsbApproval();
+//            List<ApprovalInfoDto> approvalInfoDtos = new ArrayList<>();
+//
+//            for (FacilityBiological facilityBiological : queryList) {
+//                ApprovalInfoDto approvalInfoDto = new ApprovalInfoDto();
+//                approvalInfoDto.setFacilityAddress(facilityBiological.getFacility().getBlkNo()+""+facilityBiological.getFacility().getStreetName()+""+facilityBiological.getFacility().getFloorNo()+"-"+facilityBiological.getFacility().getUnitNo()+""+facilityBiological.getFacility().getPostalCode());
+//                approvalInfoDto.setApprovalType(facilityBiological.getFacility().getApprovalType());
+//                approvalInfoDto.setApprovalStatus(facilityBiological.getFacility().getApprovalStatus());
+//                approvalInfoDto.setAgent(facilityBiological.getFacility().getBiological().getName());
+//                approvalInfoDto.setFacilityName(facilityBiological.getFacility().getFacilityName());
+//                approvalInfoDto.setFacilityClassification(facilityBiological.getFacility().getFacilityClassification());
+//                approvalInfoDto.setFacilityStatus(facilityBiological.getFacility().getFacilityStatus());
+//                approvalInfoDto.setFacilityType(facilityBiological.getFacility().getFacilityType());
+//                approvalInfoDto.setNatureOfTheSample(facilityBiological.getSampleNature());
+//                approvalInfoDto.setRiskLevelOfTheBiologicalAgent(facilityBiological.getFacility().getBiological().getRiskLevel());
+//                approvalInfoDtos.add(approvalInfoDto);
+//            }
+//            approvalInfoDtos.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
+//            approvalInfoDtos.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
+//            approvalInfoDtos.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
+//            approvalInfoDtos.forEach(i -> i.setApprovalType(MasterCodeUtil.getCodeDesc(i.getApprovalType())));
+//            approvalInfoDtos.forEach(i -> i.setApprovalStatus(MasterCodeUtil.getCodeDesc(i.getApprovalStatus())));
+//            approvalInfoDtos.forEach(i -> i.setNatureOfTheSample(MasterCodeUtil.getCodeDesc(i.getNatureOfTheSample())));
+//            try {
+//                file = ExcelWriter.writerToExcel(approvalInfoDtos, ApprovalInfoDto.class, "Approval Information_Search_Template");
+//            } catch (Exception e) {
+//                log.error("=======>fileHandler error >>>>>", e);
+//            }
+//        }
+//        try {
+//            FileUtils.writeFileResponseContent(response, file);
+//            FileUtils.deleteTempFile(file);
+//        } catch (IOException e) {
+//            log.debug(e.getMessage());
+//        }
+//        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+//    }
 
     @GetMapping(value = "/Approved-certifier-information-file")
     public @ResponseBody

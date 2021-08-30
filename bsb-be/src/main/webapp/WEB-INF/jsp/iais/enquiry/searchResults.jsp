@@ -75,26 +75,26 @@
                                             <c:otherwise>
                                                 <%int i =1;%>
                                                 <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status1">
-                                                <c:forEach var="apps" items="${items.facilitySchedule.facility.applications}" varStatus="status2">
-                                                    <tr name="basicData">
-                                                        <td><c:out  value="<%=i++%>"/></td>
-                                                        <td><a onclick="javascript:doAppInfo()"><c:out  value="${apps.applicationNo}"/></a></td>
-                                                        <td><iais:code code="${apps.appType}"></iais:code></td>
-                                                        <td><iais:code code="${apps.status}"></iais:code></td>
-                                                        <td><fmt:formatDate value='${apps.applicationDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${apps.approvalDate}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><iais:code code="${items.facilitySchedule.facility.facilityClassification}"></iais:code></td>
-                                                        <td><iais:code code="${items.facilitySchedule.facility.facilityType}"></iais:code></td>
-                                                        <td><iais:code code="${items.facilitySchedule.facility.facilityName}"></iais:code></td>
-                                                        <td><c:out value="${items.biologicalId}"></c:out></td>
-                                                        <td><iais:code code="${items.riskLevel}"></iais:code></td>
-                                                        <td><iais:code code="${apps.processType}"></iais:code></td>
-                                                        <td><fmt:formatDate value='${apps.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${apps.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><fmt:formatDate value='${apps.hmVerifiedDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
-                                                    </tr>
-                                                </c:forEach>
+                                                    <c:forEach var="apps" items="${items.facility.applications}" varStatus="status2">
+                                                        <tr name="basicData">
+                                                            <td><c:out  value="<%=i++%>"/></td>
+                                                            <td><a onclick="javascript:doAppInfo()"><c:out  value="${apps.applicationNo}"/></a></td>
+                                                            <td><iais:code code="${apps.appType}"></iais:code></td>
+                                                            <td><iais:code code="${apps.status}"></iais:code></td>
+                                                            <td><fmt:formatDate value='${apps.applicationDt}' pattern='dd/MM/yyyy'/></td>
+                                                            <td><fmt:formatDate value='${apps.approvalDate}' pattern='dd/MM/yyyy'/></td>
+                                                            <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
+                                                            <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
+                                                            <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
+                                                            <td><c:out value="${items.biologicalId}"></c:out></td>
+                                                            <td><iais:code code="${items.riskLevel}"></iais:code></td>
+                                                            <td><iais:code code="${apps.processType}"></iais:code></td>
+                                                            <td><fmt:formatDate value='${apps.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                            <td><fmt:formatDate value='${apps.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                            <td><fmt:formatDate value='${apps.hmVerifiedDt}' pattern='dd/MM/yyyy'/></td>
+                                                            <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
+                                                        </tr>
+                                                    </c:forEach>
                                                 </c:forEach>
                                             </c:otherwise>
                                         </c:choose>
@@ -235,16 +235,16 @@
                                         <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
                                             <tr name="basicData">
                                                 <td><c:out  value="${status.index + 1}"/></td>
-                                                <td><iais:code code="${items.facility.approvalType}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.approvalStatus}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
-                                                <td><c:out value="${items.facility.blkNo}"/> <c:out value="${items.facility.streetName}"/> <c:out value="${items.facility.floorNo}"/>-<c:out value="${items.facility.unitNo}"/> <c:out value="${items.facility.postalCode}"/></td>
-                                                <td><iais:code code="${items.facility.facilityStatus}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.biological.name}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalType}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.approvalStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityClassification}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityType}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityName}"></iais:code></td>
+                                                <td><c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.blkNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.streetName}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.floorNo}"/>-<c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.unitNo}"/> <c:out value="${items.facilityBiologicalAgent.facilitySchedule.facility.postalCode}"/></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.facilitySchedule.facility.facilityStatus}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.biologicalId}"></iais:code></td>
                                                 <td><iais:code code="${items.sampleNature}"></iais:code></td>
-                                                <td><iais:code code="${items.facility.biological.riskLevel}"></iais:code></td>
+                                                <td><iais:code code="${items.facilityBiologicalAgent.riskLevel}"></iais:code></td>
                                                 <td></td>
                                                 <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
                                             </tr>

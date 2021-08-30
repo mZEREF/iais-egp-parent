@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import java.util.List;
 
@@ -58,4 +59,12 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path ="/afc/{orgName}")
     ResponseDto<ApprovedFacilityCerResultDto> getAfcByOrgName(@PathVariable(name = "orgName") String orgName);
 
+    @PostMapping(path ="/bio_info/biologicalIdList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<List<Biological>> getBiologicalsById(@RequestBody List<String> biologicalIdList);
+
+    @GetMapping(path ="/bio_info/{bioName}")
+    ResponseDto<Biological> getBiologicalByName(@PathVariable(name = "bioName") String bioName);
+
+    @GetMapping(path = "/bio_info/info/{biologicalId}")
+    ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
 }

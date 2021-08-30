@@ -17,5 +17,5 @@ import java.util.List;
 public class ApplicationResultDto {
     private PageInfo pageInfo;
 
-    private List<Application> bsbApp;
+    private List<FacilityBiologicalAgent> bsbApp;
 }
