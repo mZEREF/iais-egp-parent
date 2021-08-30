@@ -78,6 +78,7 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -805,12 +806,7 @@ public class ClinicalLaboratoryDelegator {
                 reloadDocMap.put(reloadDocMapKey,appSvcDocDtos1);
             }
             //do sort
-
-            reloadDocMap.forEach((k,v)->{
-                Collections.sort(v,(s1, s2)->(
-                        s1.getSeqNum().compareTo(s2.getSeqNum())
-                ));
-            });
+            reloadDocMap.forEach((k, v) -> Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum)));
         }
         ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) reloadDocMap);
         //set dupForPsn attr
@@ -958,7 +954,6 @@ public class ClinicalLaboratoryDelegator {
                         }else{
                             reloadDisciplineAllocationMap = newReloadMap;
                         }
-
                         break;
                     case HcsaConsts.STEP_DOCUMENTS:
                         break;
@@ -977,13 +972,6 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
             //set svc doc title
             Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-            /*if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                reloadSvcDocMap.forEach((k,v)->{
-                    if(v != null && v.size() > 1){
-                        Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
-                    }
-                });
-            }*/
             appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);

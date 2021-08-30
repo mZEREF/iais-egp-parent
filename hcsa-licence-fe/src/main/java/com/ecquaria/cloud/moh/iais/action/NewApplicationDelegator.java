@@ -137,6 +137,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -776,9 +777,7 @@ public class NewApplicationDelegator {
      */
     public void prepareDocuments(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
-        Object attribute1 = bpc.request.getAttribute(RfcConst.SWITCH);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         AppSubmissionDto oldAppSubDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
@@ -816,12 +815,7 @@ public class NewApplicationDelegator {
                 reloadDocMap.put(reloadDocMapKey,appGrpPrimaryDocDtos1);
             }
             //do sort
-
-            reloadDocMap.forEach((k,v)->{
-                Collections.sort(v,(s1,s2)->(
-                    s1.getSeqNum().compareTo(s2.getSeqNum())
-                    ));
-            });
+            reloadDocMap.forEach((k,v)->Collections.sort(v, Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum)));
         }
         ParamUtil.setSessionAttr(bpc.request,"docReloadMap", (Serializable) reloadDocMap);
 
@@ -2977,7 +2971,6 @@ public class NewApplicationDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
                 appGrp.setPayMethod(payMethod);
                 serviceConfigService.updatePaymentStatus(appGrp);
-
                 //
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
