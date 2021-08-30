@@ -742,7 +742,7 @@ public class WithOutRenewalDelegator {
 
                     if(appEditSelectDto.isLicenseeEdit()){
                         //gen lic change rfc
-                        autoAppSubmissionDtos.addAll(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,licenseeId,appSubmissionDtos.get(0),MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class)));
+                        NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,licenseeId,appSubmissionDtos.get(0),MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class)), autoAppSubmissionDtos, noAutoAppSubmissionDtos);
                     }
 
                     if(appEditSelectDto.isServiceEdit()){
@@ -971,6 +971,7 @@ public class WithOutRenewalDelegator {
                 rfcAppEditSelectDto.setLicenseeEdit(true);
                 setRfcSubmissionDtoLicEdit(appSubmissionDtoChange,licenseeId,rfcAppEditSelectDto,appSubmissionDto);
                 appSubmissionDtoChange.setAutoRfc(true);
+                NewApplicationHelper.reSetAdditionalFields(appSubmissionDto,rfcAppEditSelectDto);
             }
         return appSubmissionDtos;
     }
