@@ -99,15 +99,13 @@
                                 </c:if>
                             </div>
                         </div>
-                        <div id="newappModal" class="modal fade" role="dialog" style="height: 80%;top:30px">
-                            <div class="modal-dialog">
+                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
                                 <!-- Modal content-->
                                 <div class="modal-content" style="top:30px">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <div class="modal-title" style="font-size: 2rem;">Select application for
-                                            withdrawal
-                                        </div>
+                                        <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Select application for withdrawal</div>
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                                     </div>
                                     <div id="withdrawPagDiv"></div>
                                     <table aria-describedby="" class="table">
