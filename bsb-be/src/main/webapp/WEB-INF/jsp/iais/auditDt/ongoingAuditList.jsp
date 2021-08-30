@@ -62,11 +62,14 @@
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field value="Audit Type"/>
+                                    <iais:field value="Audit Type" required="true"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
                                                      value="${auditType}"
                                                      codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
+                                        <span id="error_auditType"
+                                              name="iaisErrorMsg"
+                                              class="error-msg"></span>
                                     </iais:value>
                                 </iais:row>
 

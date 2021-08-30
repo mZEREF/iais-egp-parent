@@ -61,6 +61,18 @@
                                     </iais:value>
                                 </iais:row>
 
+                                <iais:row>
+                                    <iais:field value="Audit Type" required="true"/>
+                                    <iais:value width="18">
+                                        <iais:select name="auditType" id="auditType"
+                                                     value="${auditType}"
+                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
+                                        <span id="error_auditType"
+                                              name="iaisErrorMsg"
+                                              class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
+
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">
                                         Clear
@@ -87,7 +99,7 @@
                                     <iais:sortableHeader needSort="false" field="" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="facility.facilityType" value="Facility type" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Date of Last Audit" isFE="false"/>
-<%--                                    <iais:sortableHeader needSort="false" field="" value="Audit Type" isFE="false"/>--%>
+                                    <iais:sortableHeader needSort="false" field="" value="Audit Type" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Scenario Category" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Audit Outcome" isFE="false"/>
                                 </tr>
@@ -98,23 +110,26 @@
                                         <td><input type="checkbox"></td>
                                         <td>facilityName</td>
                                         <td><iais:code code="Facility Classification"></iais:code></td>
-                                        <td><iais:code code="Facility type"></iais:code></td>
-                                        <td>
+                                        <td><iais:code code="facility.facilityType"></iais:code></td>
+                                        <td>07/09/2021
 <%--                                            <fmt:formatDate value='' pattern='dd/MM/yyyy'/>--%>
-                                            07/09/2021
                                         </td>
-<%--                                        <td><iais:code code="Audit Type"></iais:code></td>--%>
+                                        <td><iais:code code="Audit Type"></iais:code></td>
                                         <td><c:out value="Scenario Category"/></td>
                                         <td><c:out value="Audit Outcome"/></td>
                                     </tr>
 <%--                                </c:forEach>--%>
                             </table>
 
-                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                            <div align="right">
-                                <button name="submitBtn" id="createList" type="button" class="btn btn-primary">
-                                    Create List
-                                </button>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <a class="back" id="backToAuditCreation" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                </div>
+                                <div align="right">
+                                    <button name="submitBtn3" id="submitBtn" type="button" class="btn btn-primary">
+                                        Submit
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </iais:body>
@@ -127,9 +142,9 @@
     </form>
 </div>
 <script>
-    $("#createList").click(function (){
+    $("#submitBtn").click(function (){
         showWaiting();
-        $("[name='action_type']").val("createList");
+        $("[name='action_type']").val("doCancel");
         $("#mainForm").submit();
     });
 </script>
