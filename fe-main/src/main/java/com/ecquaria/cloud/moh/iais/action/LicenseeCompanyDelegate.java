@@ -45,14 +45,16 @@ import java.util.Map;
 public class LicenseeCompanyDelegate {
 
     @Autowired
-    OrgUserManageService orgUserManageService;
+    private  OrgUserManageService orgUserManageService;
     @Autowired
-    MyInfoAjax myInfoAjax;
+    private MyInfoAjax myInfoAjax;
 
     @Autowired
     private LicenceInboxClient licenceClient;
     @Autowired
-    SoloEditValidator soloEditValidator;
+    private SoloEditValidator soloEditValidator;
+
+    private final static String SOLO_lOGIN_NAME = "solo_login_name";
     /**
      * StartStep: doStart
      *
@@ -60,6 +62,7 @@ public class LicenseeCompanyDelegate {
      * @throws
      */
     public void start(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,SOLO_lOGIN_NAME,null);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohLicenseeCompanyDetail/Prepare");
     }
 
@@ -167,13 +170,28 @@ public class LicenseeCompanyDelegate {
             ParamUtil.setRequestAttr(request,"licensee",licenseeDto);
         }else {
             LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-            FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
-            licenseeDto.setMobileNo(feUserDto.getMobileNo());
+            getLicDataUserIdForSolo(request,loginContext,licenseeDto);
             ParamUtil.setRequestAttr(request,"licensee",licenseeDto);
         }
         ParamUtil.setSessionAttr(bpc.request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,null);
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
     }
+
+     private String getLicDataUserIdForSolo(HttpServletRequest request,LoginContext loginContext, LicenseeDto licenseeDto){
+         if(licenseeDto.getLicenseeIndividualDto() != null){
+             FeUserDto feUserDto =   orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType());
+             licenseeDto.setMobileNo(feUserDto.getMobileNo());
+             if( loginContext.getNricNum().equalsIgnoreCase(licenseeDto.getLicenseeIndividualDto().getIdNo())){
+                 //no need SOLO_lOGIN_NAME,can get login user get
+                 ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,null);
+             }else {
+                 ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,feUserDto.getDisplayName());
+             }
+             return licenseeDto.getLicenseeIndividualDto().getIdNo();
+         }
+         log.info(StringUtil.changeForLog("----- loginId is " + loginContext.getLoginId() + " no solo id "));
+         return "";
+     }
 
      private void setSoloPageDto(HttpServletRequest request, LicenseeDto licenseeDto){
         licenseeDto.setPostalCode(ParamUtil.getString(request,"postalCode"));

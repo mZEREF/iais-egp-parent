@@ -35,17 +35,24 @@
                         <div class="col-xs-12">
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
+                                    <c:if test="${empty solo_login_name}">
                                     <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
                                     <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
+                                    </c:if>
+                                   <c:if test="${not empty solo_login_name}">
+                                       <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContentSoloView.jsp"%>
+                                   </c:if>
                                     <div class="application-tab-footer">
                                         <div class="row">
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                                             </div>
+                                         <c:if test="${empty solo_login_name}">
                                             <div class="text-right col-xs-9 col-md-9">
                                                     <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
                                                 <input type="hidden" id="saveDataSolo" name="saveDataSolo" >
                                             </div>
+                                          </c:if>
                                         </div>
                                     </div>
                                 </div>
