@@ -105,7 +105,7 @@
                         <span id="error_postalCode0" class="error-msg" name="iaisErrorMsg"></span>
                     </div>
                     <div class="col-xs-7 col-sm-6 col-md-3">
-                        <p><a class="retrieveAddr" id="onSite">Retrieve your address</a></p>
+                        <p><a class="retrieveAddr" id="onSite" href="javascript:void(0);">Retrieve your address</a></p>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -151,7 +151,7 @@
                     <div class="form-group addOpDiv">
                         <label class="col-xs-12 col-md-4 control-label"></label>
                         <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -280,7 +280,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -346,7 +346,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -388,7 +388,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -425,7 +425,7 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode(00)"></span>
                     </div>
                     <div class="col-xs-7 col-sm-6 col-md-3">
-                        <p><a class="retrieveAddr" id="conveyance">Retrieve your address</a></p>
+                        <p><a class="retrieveAddr" id="conveyance" href="javascript:void(0);">Retrieve your address</a></p>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -470,7 +470,7 @@
                     <div class="form-group addOpDiv">
                         <label class="col-xs-12 col-md-4 control-label"></label>
                         <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -573,7 +573,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -639,7 +639,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -681,7 +681,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -710,7 +710,7 @@
                                class="postalCode" maxlength="6" autocomplete="off">
                     </div>
                     <div class="col-xs-7 col-sm-6 col-md-3">
-                        <p><a class="retrieveAddr" id="offSite">Retrieve your address</a></p>
+                        <p><a class="retrieveAddr" id="offSite" href="javascript:void(0);">Retrieve your address</a></p>
                     </div>
                     <div class="clear"></div>
                 </div>
@@ -754,7 +754,7 @@
                     <div class="form-group addOpDiv">
                         <label class="col-xs-12 col-md-4 control-label"></label>
                         <div class=" col-xs-7 col-sm-4 col-md-5 ">
-                            <span class="addOperational"><a style="text-decoration:none;">+ Add Additional Floor/Unit No.</a></span>
+                            <span class="addOperational"><a style="text-decoration:none;" href="javascript:void(0);">+ Add Additional Floor/Unit No.</a></span>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -858,7 +858,7 @@
                     </div>
                     <div class="form-group addWeeklyDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addWeekly" style="text-decoration:none;">+ Add</a>
+                            <a class="addWeekly" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -924,7 +924,7 @@
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addPubHolDay" style="text-decoration:none;">+ Add</a>
+                            <a class="addPubHolDay" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 
@@ -966,7 +966,7 @@
 
                     <div class="form-group addEventDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
-                            <a class="addEvent" style="text-decoration:none;">+ Add</a>
+                            <a class="addEvent" style="text-decoration:none;" href="javascript:void(0);">+ Add</a>
                         </div>
                         <div class=" col-xs-8 col-sm-4 col-md-8">
 

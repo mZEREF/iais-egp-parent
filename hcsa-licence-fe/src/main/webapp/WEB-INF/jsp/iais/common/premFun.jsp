@@ -587,7 +587,7 @@
             <!--reset premval -->
             $pageContentEle.find('div.premContent').each(function (k,v) {
                 $(this).find('input[name="premValue"]').val(k);
-                $(this).find('strong.premHeader').html('Premises '+(k+1));
+                $(this).find('strong.premHeader').html('Mode of Service Delivery '+(k+1));
             });
         });
 
