@@ -895,7 +895,7 @@
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code" mandatory="true" width="4"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:value cssClass="col-md-5">
                             <iais:input maxLength="6" cssClass="postalCode" type="text" name="conveyancePostalCode"  value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
                         </iais:value>
@@ -1429,7 +1429,7 @@
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code" mandatory="true" width="4"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:value cssClass="col-md-5">
                             <iais:input maxLength="6" cssClass="postalCode" type="text" name="offSitePostalCode"  value="${appGrpPremisesDto.offSitePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
                         </iais:value>
@@ -1969,7 +1969,7 @@
                         </iais:row>
                         <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code" mandatory="true" width="4"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:value cssClass="col-md-5">
                                 <iais:input maxLength="6" cssClass="postalCode" type="text" name="easMtsPostalCode"  value="${appGrpPremisesDto.easMtsPostalCode}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPostalCode${status.index}"></span>
                             </iais:value>
