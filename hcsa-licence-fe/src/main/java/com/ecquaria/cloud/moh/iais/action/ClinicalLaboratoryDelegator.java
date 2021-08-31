@@ -3875,9 +3875,9 @@ public class ClinicalLaboratoryDelegator {
             }
 
             List<AppSvcPersonnelDto> sectionLeaderDtoList = IaisCommonUtils.genNewArrayList();
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : getAppSubmissionDto(request).getAppSvcRelatedInfoDtoList()){
-                sectionLeaderDtoList.addAll(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
-            }
+            String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(request, currentSvcId);
+            sectionLeaderDtoList.addAll(currentSvcRelatedDto.getAppSvcSectionLeaderList());
             List<AppSvcPersonnelDto> sectionLeaderDtos = IaisCommonUtils.genNewArrayList();
             if (sectionLeaderDtoList != null) {
                 if (daList.size() < sectionLeaderDtoList.size()) {
