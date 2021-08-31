@@ -3482,17 +3482,19 @@ public class NewApplicationHelper {
 
     private static void setPremAddressForSvcScope(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcLaboratoryDisciplinesDto> newAppSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos) {
                     String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                     String premval = appSvcLaboratoryDisciplinesDto.getPremiseVal();
                     if (!StringUtil.isEmpty(premIndexNo) && premIndexNo.equals(premval)) {
                         appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                        newAppSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                     }
                 }
             }
-            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtos);
+            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(newAppSvcLaboratoryDisciplinesDtoList);
         }
     }
 
