@@ -100,7 +100,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <packagingExcludes>**/core-renderer-R8.jar,**/bcmail-jdk14-1.64.jar,**/bcprov-jdk14-1.64.jar</packagingExcludes>
+                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</packagingExcludes>
+                    <warSourceExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</warSourceExcludes>
                 </configuration>
             </plugin>
             <plugin>
