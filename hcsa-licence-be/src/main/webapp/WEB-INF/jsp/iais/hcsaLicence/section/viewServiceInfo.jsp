@@ -182,7 +182,7 @@
                      value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList}" />
               <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
                 <div class="form-check ">
-                  <div class="form-check-label " aria-label="premise-1-cytology">
+                  <div aria-label="premise-1-cytology">
                     <div class="col-xs-6 col-md-6">
                         <span class="newVal " attr="${checkList.chkName}${checkList.check}">
                           <c:if test="${checkList.check}">
