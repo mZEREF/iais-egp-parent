@@ -31,15 +31,15 @@
                     <th scope="col" >No.</th>
                     <th scope="col" >Regulation Clause Number</th>
                     <th scope="col" width="30%">Item</th>
-                    <th scope="col" class="text-center">Yes</th>
-                    <th scope="col" class="text-center">No</th>
-                    <th scope="col" class="text-center">N/A</th>
+                    <th scope="col" class="text-left">Yes</th>
+                    <th scope="col" class="text-left">No</th>
+                    <th scope="col" class="text-left">N/A</th>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                         <th scope="col" >Self-assessment Answer</th>
                     </c:if>
                     <th scope="col" >Findings/NCs</th>
                     <th scope="col" >Actions Required</th>
-                    <th scope="col" class="text-center">Rectified</th>
+                    <th scope="col" class="text-left">Rectified</th>
                     <th scope="col" ></th>
                 </tr>
                 </thead>
@@ -105,8 +105,8 @@
                             <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}comRemark" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
-                        <td class="text-center">
-                            <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                        <td class="text-left">
+                            <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">style="display: none;" </c:if>>
                                 <div class="form-check">
                                     <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                 </div>
