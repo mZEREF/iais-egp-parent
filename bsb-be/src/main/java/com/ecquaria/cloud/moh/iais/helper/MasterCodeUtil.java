@@ -160,6 +160,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_DO_AUDIT_DO                  = "FF506BE2-43EF-EB32-3B7D-000C336F0C35";
     public static final String CATE_ID_BSB_DO_AUDIT_AO                  = "FF506BE2-43EF-EB32-2B7D-000C336F0C25";
     public static final String CATE_ID_BSB_AUDIT_TYPE                   = "FF506BE2-43E2-EB32-2B7D-000C336F0C25";
+    public static final String CATE_ID_BSB_TYPE_OF_TRANSACTION          = "89BB7BD1-C2C5-4A67-B5B7-C804FDC227EF";
 
     /**
      * @description: refresh the master codes into cache

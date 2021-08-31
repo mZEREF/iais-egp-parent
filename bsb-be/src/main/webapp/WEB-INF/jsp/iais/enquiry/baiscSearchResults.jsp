@@ -7,8 +7,8 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-                        <iais:pagination param="biosafetyEnquirySearchParam" result="biosafetyEnquirySearchResult"/>
-                        <div class="table-responsive">
+                        <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
+                         <div class="table-responsive">
                             <div class="table-gp">
                                 <c:if test="${count=='app'}">
                                     <table class="table">

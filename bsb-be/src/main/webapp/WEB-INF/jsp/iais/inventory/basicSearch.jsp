@@ -3,17 +3,24 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inventory.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="col-lg-12 col-xs-12">
             <div class="center-content">
                 <div class="intranet-content">
@@ -46,15 +53,15 @@
                             <iais:row>
                                 <iais:value width="18" >
                                     <input id="biologicalAgentChk" type="radio"
-                                           <c:if test="${count=='1'}">checked</c:if>
+                                           <c:if test="${count=='agent'}">checked</c:if>
                                            name="searchChk"
-                                           value="1"/>
+                                           value="agent"/>
                                     <label for="biologicalAgentChk">&nbsp;Search by Biological Agent/Toxin</label>
                                 </iais:value>
                                 <iais:value width="18">
                                     <input id="transactionDateChk" type="radio"
-                                           name="searchChk" value="2"
-                                           <c:if test="${count=='2'}">checked</c:if> />
+                                           name="searchChk" value="date"
+                                           <c:if test="${count=='date'}">checked</c:if> />
                                     <label for="transactionDateChk">&nbsp; Search by Transaction Date</label>
                                 </iais:value>
                             </iais:row>
@@ -69,7 +76,7 @@
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
                                     <button type="button" class="btn btn-secondary" type="button"
-                                            onclick="javascript:doClear();">Clear
+                                            onclick="javascript:doBasicClear();">Clear
                                     </button>
                                     <button type="button" class="btn btn-primary" type="button"
                                             onclick="javascript:doSearch();">Search
@@ -91,47 +98,5 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
 
-    function doClear() {
-        $("#selectSearchChkMsg").hide();
-        $('input[name="searchNo"]').val("");
-        $('input[type="radio"]').prop("checked", false);
-    }
 
-    function doAdvancedSearch() {
-        showWaiting();
-        var chk = $("[name='searchChk']:checked");
-        var dropIds = new Array();
-        chk.each(function () {
-            dropIds.push($(this).val());
-        });
-        if (dropIds.length === 0) {
-            $("#selectSearchChkMsg").show();
-            dismissWaiting();
-        } else {
-            SOP.Crud.cfxSubmit("mainForm", "advSearch");
-        }
-    }
-
-    function jumpToPagechangePage() {
-        search();
-    }
-
-    function doSearch() {
-        showWaiting();
-        var chk = $("[name='searchChk']:checked");
-        var dropIds = new Array();
-        chk.each(function () {
-            dropIds.push($(this).val());
-        });
-        if (dropIds.length === 0) {
-            $("#selectSearchChkMsg").show();
-            dismissWaiting();
-        } else {
-            SOP.Crud.cfxSubmit("mainForm", "doSearch");
-        }
-    }
-    function doHisInfo() {
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "adjust");
-    }
 </script>

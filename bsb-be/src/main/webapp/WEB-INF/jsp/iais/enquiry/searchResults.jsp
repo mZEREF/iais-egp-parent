@@ -302,7 +302,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty appInfoSearchResult}">
+                                            <c:when test="${empty approvedSearchResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>

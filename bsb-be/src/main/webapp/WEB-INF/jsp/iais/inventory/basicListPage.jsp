@@ -1,16 +1,23 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inventory.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -252,33 +259,5 @@
     </form>
 </div>
 <script type="text/javascript">
-        function doAdjust(){
-            var flag = true;
-            if($("select[name= 'adjustment_type']").val() == null || $("select[name= 'adjustment_type']").val() == ""){
-                $("#errMsg01").html("This field is mandatory");
-                flag = false;
-            }
-            if($("select[name='type_of_transfer']").val() == null || $("select[name='type_of_transfer']").val() == ""){
-                $("#errMsg02").html("This field is mandatory");
-                flag = false;
-            }
-            if($("input[name= 'initial_quantity']").val() == null || $("input[name= 'initial_quantity']").val() == ""){
-                $("#errMsg03").html("This field is mandatory");
-                flag = false;
-            }
-            if($("input[name='quantity_to_change']").val() == null || $("input[name='quantity_to_change']").val() == ""){
-                $("#errMsg04").html("This field is mandatory");
-                flag = false;
-            }
-            if(flag){
-                SOP.Crud.cfxSubmit('mainForm', 'basicAdjust');
-            }
-        }
-        function doClear(){
-            $('select[firstOption="Please Select"] option:first').prop("selected",'selected');
-            for(var i=1;i<=4;i++){
-                $("#errMsg0"+i).html("");
-            }
-            $("input[type='text']").val("");
-        }
+
 </script>

@@ -457,61 +457,61 @@ public class BiosafetyEnquiryDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-//    @GetMapping(value = "/Facility-information-file")
-//    public @ResponseBody
-//    void facFileHandler(HttpServletRequest request, HttpServletResponse response) {
-//        log.debug(StringUtil.changeForLog("fileHandler start ...."));
-//        File file = null;
-//        EnquiryDto enquiryDto = getSearchDto(request);
-//        FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
-//        log.debug("indicates that a record has been selected ");
-//        if (!Objects.isNull(facilityResultDto)){
-//            List<Facility> queryList = facilityResultDto.getBsbFac();
-//            List<FacilityInfoDto> facilityInfoDtos = new ArrayList<>();
-//
-//            SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
-//            for (Facility facility : queryList) {
-//                StringBuilder stringBuilder = new StringBuilder();
-//                FacilityInfoDto facilityInfoDto = new FacilityInfoDto();
-//                facilityInfoDto.setFacilityAddress(facility.getBlkNo()+""+facility.getStreetName()+""+facility.getFloorNo()+"-"+facility.getUnitNo()+""+facility.getPostalCode());
-//                for (int i = 0; i < facility.getAdmins().size(); i++) {
-//                    if (i + 1 <= facility.getAdmins().size()) {
-//                        stringBuilder.append(facility.getAdmins().get(i).getName()).append(",");
-//                    } else {
-//                        stringBuilder.append(facility.getAdmins().get(i).getName());
-//                    }
-//                }
-//                facilityInfoDto.setFacilityAdmin(stringBuilder.toString());
-//                facilityInfoDto.setFacilityType(facility.getFacilityType());
-//                facilityInfoDto.setFacilityName(facility.getFacilityName());
-//                facilityInfoDto.setFacilityExpiryDate(sdf.format(facility.getExpiryDt()));
-//                facilityInfoDto.setFacilityClassification(facility.getFacilityClassification());
-//                facilityInfoDto.setApprovedFacilityCertifier(facility.getApproval());
-//                facilityInfoDto.setFacilityOperator(facility.getOperatorName());
-//                facilityInfoDto.setCurrentFacilityStatus(facility.getFacilityStatus());
-//                facilityInfoDto.setBiologicalAgent(facility.getBiological().getName());
-//                facilityInfoDto.setGazettedArea(facility.getIsProtected());
-//                facilityInfoDto.setRiskLevelOfTheBiologicalAgent(facility.getBiological().getRiskLevel());
-//                facilityInfoDtos.add(facilityInfoDto);
-//            }
-//            facilityInfoDtos.forEach(i -> i.setGazettedArea(MasterCodeUtil.getCodeDesc(i.getGazettedArea())));
-//            facilityInfoDtos.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
-//            facilityInfoDtos.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
-//            facilityInfoDtos.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
-//            try {
-//                file = ExcelWriter.writerToExcel(facilityInfoDtos, FacilityInfoDto.class, "Facility Information_Search_Template");
-//            } catch (Exception e) {
-//                log.error("=======>fileHandler error >>>>>", e);
-//            }
-//        }
-//        try {
-//            FileUtils.writeFileResponseContent(response, file);
-//            FileUtils.deleteTempFile(file);
-//        } catch (IOException e) {
-//            log.debug(e.getMessage());
-//        }
-//        log.debug(StringUtil.changeForLog("fileHandler end ...."));
-//    }
+    @GetMapping(value = "/Facility-information-file")
+    public @ResponseBody
+    void facFileHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
+        EnquiryDto enquiryDto = getSearchDto(request);
+        FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
+        log.debug("indicates that a record has been selected ");
+        if (!Objects.isNull(facilityResultDto)){
+            List<FacilityBiologicalAgent> queryList = facilityResultDto.getBsbFac();
+            List<FacilityInfoDto> facilityInfoDtos = new ArrayList<>();
+
+            SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
+            for (FacilityBiologicalAgent facility : queryList) {
+                StringBuilder stringBuilder = new StringBuilder();
+                FacilityInfoDto facilityInfoDto = new FacilityInfoDto();
+                facilityInfoDto.setFacilityAddress(facility.getFacility().getBlkNo()+""+facility.getFacility().getStreetName()+""+facility.getFacility().getFloorNo()+"-"+facility.getFacility().getUnitNo()+""+facility.getFacility().getPostalCode());
+                for (int i = 0; i < facility.getFacility().getAdmins().size(); i++) {
+                    if (i + 1 <= facility.getFacility().getAdmins().size()) {
+                        stringBuilder.append(facility.getFacility().getAdmins().get(i).getName()).append(",");
+                    } else {
+                        stringBuilder.append(facility.getFacility().getAdmins().get(i).getName());
+                    }
+                }
+                facilityInfoDto.setFacilityAdmin(stringBuilder.toString());
+                facilityInfoDto.setFacilityType(facility.getFacility().getFacilityType());
+                facilityInfoDto.setFacilityName(facility.getFacility().getFacilityName());
+                facilityInfoDto.setFacilityExpiryDate(sdf.format(facility.getFacility().getExpiryDt()));
+                facilityInfoDto.setFacilityClassification(facility.getFacility().getFacilityClassification());
+                facilityInfoDto.setApprovedFacilityCertifier(facility.getFacility().getApproval());
+                facilityInfoDto.setFacilityOperator(facility.getFacility().getOperatorName());
+                facilityInfoDto.setCurrentFacilityStatus(facility.getFacility().getFacilityStatus());
+                facilityInfoDto.setBiologicalAgent(biosafetyEnquiryClient.getBiologicalById(facility.getBiologicalId()).getEntity().getName());
+                facilityInfoDto.setGazettedArea(facility.getFacility().getIsProtected());
+                facilityInfoDto.setRiskLevelOfTheBiologicalAgent(facility.getRiskLevel());
+                facilityInfoDtos.add(facilityInfoDto);
+            }
+            facilityInfoDtos.forEach(i -> i.setGazettedArea(MasterCodeUtil.getCodeDesc(i.getGazettedArea())));
+            facilityInfoDtos.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
+            facilityInfoDtos.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
+            facilityInfoDtos.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
+            try {
+                file = ExcelWriter.writerToExcel(facilityInfoDtos, FacilityInfoDto.class, "Facility Information_Search_Template");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 
     @GetMapping(value = "/Approval-information-file")
     public @ResponseBody

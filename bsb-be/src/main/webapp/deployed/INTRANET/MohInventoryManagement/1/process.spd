@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="MohInventoryManagement" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="10" minorVersion="0" name="MohInventoryManagement" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="310" y="190">
@@ -35,14 +35,14 @@
     <JavaCode defClass="" executor="" methodName="preBasicData_OnStepProcess_0" name="preBasicData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doBasicAdjustment" x="130" y="500">
+  <AutomaticStep defClass="" executor="" icon="" name="doBasicAdjustment" x="110" y="500">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doBasicAdjustment_OnStepProcess_0" name="doBasicAdjustment_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreBasicList" x="140" y="260">
+  <AutomaticStep defClass="" executor="" icon="" name="PreBasicList" x="140" y="280">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -69,7 +69,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicListPage" stageIndicator="" x="140" y="350">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicListPage" stageIndicator="" x="130" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -124,44 +124,44 @@
    <position>{(600,210)(335,93)(330,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/BasicListPage" style="rectanular">
-   <position>{(160,370)(180,450)}</position>
+   <position>{(150,380)(160,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreBasicData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
-   <position>{(180,450)(-79,454)(-80,393)(-100,210)}</position>
+   <position>{(160,450)(-79,454)(-80,393)(-100,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicAdjustment" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
-   <position>{(180,450)(150,520)}</position>
+   <position>{(160,450)(130,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/BasicListPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doBasicAdjustment" style="rectanular">
-   <position>{(150,520)(322,509)(160,370)}</position>
+   <position>{(130,520)(322,509)(150,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreBasicList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(180,210)(160,280)}</position>
+   <position>{(180,210)(160,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/BasicListPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreBasicList" style="rectanular">
-   <position>{(160,280)(160,370)}</position>
+   <position>{(160,300)(150,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="680" y="380">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="680" y="380">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doAdjustment" value="&quot;doAdjustment&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="580" y="190">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="580" y="190">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/PreHistoryData" value="&quot;adjust&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreBasicData" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;search&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="160" y="190">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch3" x="160" y="190">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;advSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreBasicData" value="&quot;doSearch&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreBasicList" value="&quot;adjust&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="160" y="430">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch4" x="140" y="430">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/PreBasicData" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doBasicAdjustment" value="&quot;basicAdjust&quot;"/>

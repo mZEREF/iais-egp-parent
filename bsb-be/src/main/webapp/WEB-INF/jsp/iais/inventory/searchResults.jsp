@@ -1,31 +1,5 @@
 
 <div class="row">
-    <style>
-        .nice-select {
-            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efefef+0,ffffff+100 */
-            background: #efefef;
-            /* Old browsers */
-            background: -moz-linear-gradient(left, #efefef 0%, white 100%);
-            /* FF3.6-15 */
-            background: -webkit-linear-gradient(left, #efefef 0%, white 100%);
-            /* Chrome10-25,Safari5.1-6 */
-            background: linear-gradient(to right, #efefef 0%, white 100%);
-            border: 1px solid #6c6c6c;
-            border-radius: 14px;
-            font-size: 1.6rem;
-            padding: 14px 40px 14px 15px;
-            height: auto;
-            line-height: 22px;
-            width: 100%;
-            -webkit-transition: all 0.1s ease;
-            -moz-transition: all 0.1s ease;
-            -ms-transition: all 0.1s ease;
-            -o-transition: all 0.1s ease;
-            transition: all 0.1s ease;
-            white-space: normal;
-            text-overflow: inherit;
-        }
-    </style>
     <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="tab-content">
             <div class="row">
@@ -34,11 +8,10 @@
                         <h3>
                             <span>Search Results</span>
                         </h3>
-
-                        <iais:pagination param="SearchParam" result="SearchResult"/>
+                        <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-responsive">
                             <div class="table-gp">
-                                <c:if test="${count == '1'}">
+                                <c:if test="${count == 'agent'}">
                                 <table class="table">
                                     <thead>
                                     <tr align="center">
@@ -65,19 +38,38 @@
                                     </tr>
                                     </thead>
                                     <tbody class="form-horizontal">
-                                    <tr name="basicData">
-                                        <td>1</td>
-                                        <td>Biological Agent/Toxin</td>
-                                        <td>Complete</td>
-                                        <td>ERFWH-AJEW-IQO1</td>
-                                        <td>Yes</td>
-                                        <td>Export</td>
-                                        <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
-                                    </tr>
+                                    <c:choose>
+                                        <c:when test="${empty inventoryResult}">
+                                            <tr>
+                                                <td colspan="6">
+                                                    <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                </td>
+                                            </tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach var="items" items="${inventoryResult}" varStatus="status">
+                                                <tr name="basicData">
+                                                    <td><c:out  value="${status.index + 1}"/></td>
+                                                    <td><c:out  value="${items.facilitySchedule.facility.facilityName}"/></td>
+                                                    <td><c:out value="${items.bioName}"></c:out></td>
+                                                    <td>15000.000</td>
+                                                    <td>
+                                                        <c:if test="${items.facilitySchedule.facility.isProtected == 'Y'}">
+                                                            <c:out value="yes"/>
+                                                        </c:if>  <c:if test="${items.facilitySchedule.facility.isProtected == 'N'}">
+                                                        <c:out value="no"/>
+                                                    </c:if>
+                                                    </td>
+                                                    <td>Export</td>
+                                                    <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
                                     </tbody>
                                 </table>
                                 </c:if>
-                                <c:if test="${count == '2'}">
+                                <c:if test="${count == 'date'}">
                                     <table class="table">
                                         <thead>
                                         <tr align="center">
@@ -119,10 +111,6 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                </c:if>
-                                <c:if test="${count == '0'}">
-                                    <iais:message key="GENERAL_ACK018"
-                                                  escape="true"/>
                                 </c:if>
                             </div>
                         </div>
