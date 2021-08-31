@@ -13,6 +13,19 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+    .glyphicon {
+        position: relative;
+        top: 15px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings',sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -36,7 +49,6 @@
                                 The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
                             </div>
                         </iais:row>
-                        <div class="row">&nbsp;</div>
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
