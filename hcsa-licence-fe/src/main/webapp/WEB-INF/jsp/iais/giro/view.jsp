@@ -116,7 +116,7 @@
                     </div>
                     <div class="row">
                         <iais:action style="text-align:left;">
-                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?init_to_page=initLic"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                         </iais:action>
                     </div>
 
