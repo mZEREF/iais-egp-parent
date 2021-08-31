@@ -129,9 +129,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		//sample Dynamic QR
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		int minute = cal.get(Calendar.MINUTE);
-		cal.set(Calendar.MINUTE, minute + expiryMinutes);
+		cal.add(Calendar.MINUTE, expiryMinutes);
 		String expiryDate = df.format(cal.getTime());
 
 		double amount = Double.parseDouble(amo)/100;
