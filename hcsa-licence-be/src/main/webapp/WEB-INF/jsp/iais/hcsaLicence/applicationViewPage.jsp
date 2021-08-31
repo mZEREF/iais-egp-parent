@@ -136,7 +136,7 @@
                                                                             <div id="chooseInspectionBox">
                                                                                 <iais:row>
                                                                                     <label class="col-xs-0 col-md-4 control-label">
-                                                                                        To use recent inspection report?<a onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
+                                                                                        To use recent inspection report?<a href="javascript:void(0);" onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
                                                                                     </label>
                                                                                     <iais:value width="10">
                                                                                         <p>
