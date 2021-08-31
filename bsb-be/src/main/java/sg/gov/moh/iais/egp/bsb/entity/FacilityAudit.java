@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
+
 import java.util.Date;
 
 
@@ -21,5 +22,11 @@ public class FacilityAudit extends BaseEntity {
 
     private String status;
 
-    private Date auditDate;
+    private Date auditDt;
+
+    private String changeReason;
+
+    private String scenarioCategory;
+
+    private String auditOutcome;
 }
