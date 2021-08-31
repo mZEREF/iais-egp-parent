@@ -825,6 +825,7 @@ public class WithOutRenewalDelegator {
         }
 
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
+            appSubmissionDto.setAutoRfc(false);
             appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
         }
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
