@@ -1188,8 +1188,8 @@
               </p>
               <span class="col-xs-6"></span>
               <table aria-describedby="" class="col-xs-12">
-                <th scope="col" style="display: none"></th>
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                     </p>
