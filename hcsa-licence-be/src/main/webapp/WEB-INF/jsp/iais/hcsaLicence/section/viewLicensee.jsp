@@ -92,7 +92,7 @@
                         <jsp:param name="idNo" value="${oldDto.uenNo}"/>
                         <jsp:param name="cssClass" value="old-img-show"/>
                     </jsp:include>
-                    <div class="row" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'display: none;'}">
+                    <div class="row ${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' : 'hidden'}">
                         <div class="col-md-6">ID Type</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
@@ -107,8 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row img-show" style="${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' :
-                     'display: none;'}">
+                    <div class="row img-show ${curDto.licenseeType == individualType || oldDto.licenseeType == individualType ? '' :'hidden'}">
                         <div class="col-md-6">ID No.</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
