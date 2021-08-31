@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
@@ -31,12 +32,9 @@ import java.util.List;
 public class AOScreeningDelegator {
     private final ProcessClient processClient;
 
-    private final RevocationClient revocationClient;
-
     @Autowired
-    public AOScreeningDelegator(ProcessClient processClient, RevocationClient revocationClient) {
+    public AOScreeningDelegator(ProcessClient processClient) {
         this.processClient = processClient;
-        this.revocationClient = revocationClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -52,9 +50,7 @@ public class AOScreeningDelegator {
         List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
         application.setBiologicalList(biologicalList);
-        List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-        String doProcessDecision = processClient.getRoutingHistoryByApplicationNoAndAppStatus(application.getApplicationNo(), application.getStatus()).getEntity().getProcessDecision();
-        ParamUtil.setRequestAttr(request, ProcessContants.DO_PROCESS_DECISION,doProcessDecision);
+        List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(application.getApplicationNo()).getEntity();
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
         ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
     }
@@ -114,6 +110,8 @@ public class AOScreeningDelegator {
         //set field value
         DoScreeningDto doScreeningDto = new DoScreeningDto();
         doScreeningDto.setFacilityId(facilityId);
+        doScreeningDto.setRiskLevel(application.getFacility().getRiskLevel());
+        doScreeningDto.setRiskLevelComments(application.getFacility().getRiskLevelComments());
         doScreeningDto.setErpReportDt(Formatter.parseDate(erpReport));
         doScreeningDto.setRedTeamingReportDt(Formatter.parseDate(redTeamingReport));
         doScreeningDto.setLentivirusReportDt(Formatter.parseDate(lentivirusReport));

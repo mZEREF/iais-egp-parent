@@ -11,6 +11,8 @@ import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
+import java.util.List;
+
 /**
  * @author : LiRan
  * @date : 2021/8/20
@@ -30,7 +32,6 @@ public interface ProcessClient {
     @GetMapping(path = "/app_info/applicationNo")
     FeignResponseEntity<String> getAndCreateApplicationNo();
 
-    @GetMapping(path = "/bsb_MohOfficer/routingHistory")
-    FeignResponseEntity<RoutingHistory> getRoutingHistoryByApplicationNoAndAppStatus(@RequestParam(name = "applicationNo") String applicationNo, @RequestParam(name = "appStatus") String appStatus);
-
+    @GetMapping(path = "/bsb_MohOfficer/routingHistory/{applicationNo}")
+    FeignResponseEntity<List<RoutingHistory>> getRoutingHistoriesByApplicationNo(@RequestParam(name = "applicationNo") String applicationNo);
 }

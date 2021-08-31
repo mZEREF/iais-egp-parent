@@ -1,5 +1,5 @@
 $(function () {
-    $("#submitButton").click(function (){
+    $("#doScreeningSubmitButton").click(function (){
         var selectValue = $("#processingDecision").val();
         $(".error-msg").html("");
         if(selectValue == "DOSPD001"){
@@ -13,6 +13,52 @@ $(function () {
         }else if(selectValue == "DOSPD003"){
             showWaiting();
             $("[name='action_type']").val("reject");
+            $('#mainForm').submit();
+        }else{
+            $("#error_processingDecision").html("This Is Mandatory")
+        }
+    })
+    $("#aoScreeningSubmitButton").click(function (){
+        var selectValue = $("#processingDecision").val();
+        $(".error-msg").html("");
+        if(selectValue == "AOSPDD001"){
+            showWaiting();
+            $("[name='action_type']").val("approvalForInspection");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD002"){
+            showWaiting();
+            $("[name='action_type']").val("reject");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD003"){
+            showWaiting();
+            $("[name='action_type']").val("routeBackToDO");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD004"){
+            showWaiting();
+            $("[name='action_type']").val("routeToHM");
+            $('#mainForm').submit();
+        }else{
+            $("#error_processingDecision").html("This Is Mandatory")
+        }
+    })
+    $("#hmScreeningSubmitButton").click(function (){
+        var selectValue = $("#processingDecision").val();
+        $(".error-msg").html("");
+        if(selectValue == "AOSPDD001"){
+            showWaiting();
+            $("[name='action_type']").val("approvalForInspection");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD002"){
+            showWaiting();
+            $("[name='action_type']").val("reject");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD003"){
+            showWaiting();
+            $("[name='action_type']").val("routeBackToDO");
+            $('#mainForm').submit();
+        }else if(selectValue == "AOSPDD004"){
+            showWaiting();
+            $("[name='action_type']").val("routeToHM");
             $('#mainForm').submit();
         }else{
             $("#error_processingDecision").html("This Is Mandatory")

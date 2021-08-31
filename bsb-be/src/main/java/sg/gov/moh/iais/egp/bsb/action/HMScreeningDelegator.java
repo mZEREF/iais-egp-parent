@@ -11,10 +11,12 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
+import sg.gov.moh.iais.egp.bsb.entity.FacilitySchedule;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -26,13 +28,13 @@ import java.util.List;
  * @author : LiRan
  * @date : 2021/8/20
  */
-@Delegator(value = "DOScreeningDelegator")
+@Delegator(value = "hmScreeningDelegator")
 @Slf4j
-public class DOScreeningDelegator {
+public class HMScreeningDelegator {
     private final ProcessClient processClient;
 
     @Autowired
-    public DOScreeningDelegator(ProcessClient processClient) {
+    public HMScreeningDelegator(ProcessClient processClient) {
         this.processClient = processClient;
     }
 
@@ -54,15 +56,6 @@ public class DOScreeningDelegator {
         ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
     }
 
-    public void screenedByDO(BaseProcessClass bpc) throws ParseException{
-        HttpServletRequest request = bpc.request;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
-        String status = "BSBAPST002";
-        doScreeningDtoByForm.setStatus(status);
-        processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
-        //TODO validate
-    }
-
     public void reject(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
@@ -71,21 +64,19 @@ public class DOScreeningDelegator {
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
-    public void requestForInformation(BaseProcessClass bpc) throws ParseException{
+    public void approve(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
-        String status = "BSBAPST004";
+        String status = "BSBAPST001";
         doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
-    private DoScreeningDto getDtoByForm(BaseProcessClass bpc) throws ParseException{
+    private DoScreeningDto getDtoByForm(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR);
         //facility info
         String facilityId = application.getFacility().getId();
-        String riskLevel = ParamUtil.getString(request, ProcessContants.RISK_LEVEL);
-        String commentsOnRiskLevelAssessment = ParamUtil.getString(request, ProcessContants.COMMENTS_ON_RISK_LEVEL_ASSESSMENT);
         String erpReport = ParamUtil.getString(request, ProcessContants.ERP_REPORT);
         String redTeamingReport = ParamUtil.getString(request, ProcessContants.RED_TEAMING_REPORT);
         String lentivirusReport = ParamUtil.getString(request, ProcessContants.LENTIVIRUS_REPORT);
@@ -104,8 +95,8 @@ public class DOScreeningDelegator {
         //set field value
         DoScreeningDto doScreeningDto = new DoScreeningDto();
         doScreeningDto.setFacilityId(facilityId);
-        doScreeningDto.setRiskLevel(riskLevel);
-        doScreeningDto.setRiskLevelComments(commentsOnRiskLevelAssessment);
+        doScreeningDto.setRiskLevel(application.getFacility().getRiskLevel());
+        doScreeningDto.setRiskLevelComments(application.getFacility().getRiskLevelComments());
         doScreeningDto.setErpReportDt(Formatter.parseDate(erpReport));
         doScreeningDto.setRedTeamingReportDt(Formatter.parseDate(redTeamingReport));
         doScreeningDto.setLentivirusReportDt(Formatter.parseDate(lentivirusReport));
