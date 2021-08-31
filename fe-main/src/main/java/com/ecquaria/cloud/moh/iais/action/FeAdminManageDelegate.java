@@ -232,7 +232,7 @@ public class FeAdminManageDelegate {
                 LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
                 MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
-                boolean amendLicensee = licenseeDto!=null && licenseeDto.getLicenseeIndividualDto() != null && loginContext.getNricNum().equalsIgnoreCase( licenseeDto.getLicenseeIndividualDto().getIdNo());
+                boolean amendLicensee = licenseeDto!=null && licenseeDto.getLicenseeIndividualDto() != null && loginContext.getNricNum().equalsIgnoreCase( licenseeDto.getLicenseeIndividualDto().getIdNo()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdNumber());
                 if (!needRefersh) {
                     myInfoDto = null;
                 }
