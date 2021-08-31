@@ -2586,7 +2586,7 @@ span.error-msg {
   font-family: "Open Sans", sans-serif;
 }
 .nice-select ul.list {
-  max-height: 300px;
+  max-height: 250px;
   -webkit-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
@@ -2606,6 +2606,7 @@ span.error-msg {
   -o-transform: none;
   transform: none;
   z-index: 99999;
+  overflow-y: scroll;
 }
 .nice-select ul.list li {
   min-height: 50px;
