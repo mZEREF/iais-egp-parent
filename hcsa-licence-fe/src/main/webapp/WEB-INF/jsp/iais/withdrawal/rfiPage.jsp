@@ -8,6 +8,12 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
+<style>
+    .modal-header .close {
+        padding: 1rem 1rem;
+        margin: 0rem 0rem 0rem auto;
+    }
+</style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <c:if test="${ apply_page_print=='Y'}">

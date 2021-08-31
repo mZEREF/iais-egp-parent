@@ -36,6 +36,10 @@
         border:1px solid #d1d1d1;
         margin-bottom: 0;
     }
+    .modal-header .close {
+        padding: 1rem 1rem;
+        margin: 0rem 0rem 0rem auto;
+    }
 </style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
