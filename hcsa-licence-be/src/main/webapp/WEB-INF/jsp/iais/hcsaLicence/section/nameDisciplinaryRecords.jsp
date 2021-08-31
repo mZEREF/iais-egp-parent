@@ -12,6 +12,7 @@
                           onclick="javascript:closeThis(this)">X</span>
             <table aria-describedby="" border="1px" class="col-xs-12" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;background-color: #ffffff">
                 <tr>
+                    <th scope="col" style="display: none"></th>
                     <td>${proHashMap[profRegNo].name}</td>
                 </tr>
             </table>

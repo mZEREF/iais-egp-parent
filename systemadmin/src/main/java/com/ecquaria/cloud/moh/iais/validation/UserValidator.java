@@ -93,12 +93,13 @@ public class UserValidator implements CustomizeValidator {
                 String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
                 if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
                     List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(dto.getIdentityNo(), idType);
+                    String identityNoErr=MessageUtil.getMessageDesc("USER_ERR015");
                     if (dto.getId() == null) { // create
                         Optional<FeUserDto> user = userList.stream()
                                 .filter(feUserDto -> !AppConsts.COMMON_STATUS_DELETED.equals(feUserDto.getStatus()))
                                 .findAny();
                         if (user.isPresent()) {
-                            map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                            map.put("identityNo", identityNoErr);
                         }
                     } else { // edit
                         Optional<FeUserDto> user = userList.stream()
@@ -106,7 +107,7 @@ public class UserValidator implements CustomizeValidator {
                                         && !dto.getId().equals(feUserDto.getId()))
                                 .findAny();
                         if (user.isPresent()) {
-                            map.put("identityNo", MessageUtil.getMessageDesc("USER_ERR015"));
+                            map.put("identityNo", identityNoErr);
                         }
                     }
                 }
