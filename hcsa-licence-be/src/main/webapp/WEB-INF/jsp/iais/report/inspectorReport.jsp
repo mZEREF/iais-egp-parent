@@ -562,7 +562,7 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id="engageRemarks" hidden>
+                        <tr id="engageRemarks" style="display: none;">
                             <td class="col-xs-4">
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
@@ -619,7 +619,7 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id="engageRemarks" hidden>
+                        <tr id="engageRemarks" style="display: none;">
                             <td class="col-xs-4">
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
