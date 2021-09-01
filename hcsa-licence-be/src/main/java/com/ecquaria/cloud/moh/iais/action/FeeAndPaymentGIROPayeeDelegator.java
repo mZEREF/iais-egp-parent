@@ -39,6 +39,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -272,6 +274,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 indx++;
             }
             orgPremParam.addParam("licIds",typeStr);
+            ParamUtil.setSessionAttr(request,"giroLicIds",orgPerIds);
 
             CrudHelper.doPaging(orgPremParam,bpc.request);
             QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
@@ -596,5 +599,35 @@ public class FeeAndPaymentGIROPayeeDelegator {
         eicRequestTrackingDto.setRefNo(refNo);
         giroAccountService.updateGiroAccountInfoTrackingDto(eicRequestTrackingDto);
         giroAccountService.syncFeGiroAcctDto(giroAccountInfoDtoList1);
+    }
+
+    @PostMapping(value = "/sort-licence-session")
+    public @ResponseBody
+    Map<String, Object> sortLicSession(HttpServletRequest request){
+
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            orgPremParameter.setSortType(sortType);
+            orgPremParameter.setSortField(sortFieldName);
+        }
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
+        SearchResult<OrganizationPremisesViewQueryDto> orgPremResult;
+        String [] orgPerIds= (String[]) ParamUtil.getSessionAttr(request,"giroLicIds");
+        SearchParam orgPremParam = SearchResultHelper.getSearchParam(request, orgPremParameter,true);
+        String typeStr = SqlHelper.constructInCondition("opv.ID",orgPerIds.length);
+        int indx = 0;
+        for (String s : orgPerIds){
+            orgPremParam.addFilter("opv.ID"+indx, s);
+            indx++;
+        }
+        orgPremParam.addParam("licIds",typeStr);
+
+        QueryHelp.setMainSql("giroPayee","searchByOrgPremView",orgPremParam);
+        orgPremResult = giroAccountService.searchOrgPremByParam(orgPremParam);
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("orgPremResult",orgPremResult);
+        return map;
     }
 }

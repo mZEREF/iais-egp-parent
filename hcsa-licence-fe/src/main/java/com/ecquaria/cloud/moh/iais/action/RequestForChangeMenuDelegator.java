@@ -681,7 +681,12 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
+        String onlyKAH = "0";
+        if (psnTypes.size() == 1 && psnTypes.contains("KAH")){
+            onlyKAH = "1";
+        }
         ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
+        ParamUtil.setRequestAttr(bpc.request, "onlyKAH", onlyKAH);
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
@@ -822,6 +827,13 @@ public class RequestForChangeMenuDelegator {
         for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
             psnTypes.addAll(dto.getPsnTypes());
         }
+        boolean onlyKAH = true;
+        for (String psnType : psnTypes){
+            if(!"KAH".equals(psnType)){
+                onlyKAH = false;
+                break;
+            }
+        }
         personnelEditDto.setEmailAddr(email);
         personnelEditDto.setMobileNo(mobile);
         personnelEditDto.setSalutation(salutation);
@@ -849,14 +861,14 @@ public class RequestForChangeMenuDelegator {
             newPerson.setMobileNo(mobile1);
             newPerson.setOfficeTelNo(officeTelNo1);
             newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
-            if (StringUtil.isEmpty(email1)) {
+            if (StringUtil.isEmpty(email1) && !onlyKAH) {
                 errMap.put("emailAddr1", emailMsg);
             } else if (!StringUtil.isEmpty(email1)) {
                 if (!ValidationUtils.isEmail(email1)) {
                     errMap.put("emailAddr1", "GENERAL_ERR0014");
                 }
             }
-            if (StringUtil.isEmpty(mobile1)) {
+            if (StringUtil.isEmpty(mobile1) && !onlyKAH) {
                 errMap.put("mobileNo1", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
             } else if (!StringUtil.isEmpty(mobile1)) {
                 if (!mobile1.matches("^[8|9][0-9]{7}$")) {
@@ -917,14 +929,14 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(psnName)) {
                 errMap.put("psnName", MessageUtil.replaceMessage("GENERAL_ERR0006", "Name", "field"));
             }
-            if (StringUtil.isEmpty(email)) {
+            if (StringUtil.isEmpty(email) && !onlyKAH) {
                 errMap.put("emailAddr", emailMsg);
             } else if (!StringUtil.isEmpty(email)) {
                 if (!ValidationUtils.isEmail(email)) {
                     errMap.put("emailAddr", "GENERAL_ERR0014");
                 }
             }
-            if (StringUtil.isEmpty(mobile)) {
+            if (StringUtil.isEmpty(mobile) && !onlyKAH) {
                 errMap.put("mobileNo", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
             } else if (!StringUtil.isEmpty(mobile)) {
                 if (!mobile.matches("^[8|9][0-9]{7}$")) {
@@ -974,14 +986,14 @@ public class RequestForChangeMenuDelegator {
                 newPerson.setOfficeTelNo(psn.getOfficeTelNo());
                 newPerson.setLicPsnTypeDtoMaps(licPsnTypeDtoMaps);
 
-                if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
+                if (StringUtil.isEmpty(newPerson.getEmailAddr()) && !onlyKAH) {
                     errMap.put("emailAddr2", emailMsg);
                 } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
                     if (!ValidationUtils.isEmail(newPerson.getEmailAddr())) {
                         errMap.put("emailAddr2", "GENERAL_ERR0014");
                     }
                 }
-                if (StringUtil.isEmpty(newPerson.getMobileNo())) {
+                if (StringUtil.isEmpty(newPerson.getMobileNo()) && !onlyKAH) {
                     errMap.put("mobileNo2", MessageUtil.replaceMessage("GENERAL_ERR0006", "Mobile No.", "field"));
                 } else if (!StringUtil.isEmpty(newPerson.getMobileNo())) {
                     if (!newPerson.getMobileNo().matches("^[8|9][0-9]{7}$")) {

@@ -78,6 +78,7 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -805,12 +806,7 @@ public class ClinicalLaboratoryDelegator {
                 reloadDocMap.put(reloadDocMapKey,appSvcDocDtos1);
             }
             //do sort
-
-            reloadDocMap.forEach((k,v)->{
-                Collections.sort(v,(s1, s2)->(
-                        s1.getSeqNum().compareTo(s2.getSeqNum())
-                ));
-            });
+            reloadDocMap.forEach((k, v) -> Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum)));
         }
         ParamUtil.setSessionAttr(bpc.request,"svcDocReloadMap", (Serializable) reloadDocMap);
         //set dupForPsn attr
@@ -958,7 +954,6 @@ public class ClinicalLaboratoryDelegator {
                         }else{
                             reloadDisciplineAllocationMap = newReloadMap;
                         }
-
                         break;
                     case HcsaConsts.STEP_DOCUMENTS:
                         break;
@@ -977,13 +972,6 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
             //set svc doc title
             Map<String,List<AppSvcDocDto>> reloadSvcDocMap = NewApplicationHelper.genSvcDocReloadMap(svcDocConfig,appGrpPremisesDtos,appSvcRelatedInfoDto);
-            /*if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                reloadSvcDocMap.forEach((k,v)->{
-                    if(v != null && v.size() > 1){
-                        Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
-                    }
-                });
-            }*/
             appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
 
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
@@ -3837,6 +3825,7 @@ public class ClinicalLaboratoryDelegator {
             return;
         }
         Map<String, String> cgoMap = new HashMap<>();
+        Map<String, String> slMap = new HashMap<>();
         for (int i = 0; i < daList.size(); i++) {
             String idNo = daList.get(i).getIdNo();
             if (StringUtil.isEmpty(idNo)) {
@@ -3844,8 +3833,11 @@ public class ClinicalLaboratoryDelegator {
             } else {
                 cgoMap.put(idNo, idNo);
             }
-            if (StringUtil.isEmpty(daList.get(i).getSlIndex())) {
+            String indexNo = daList.get(i).getSlIndex();
+            if (StringUtil.isEmpty(indexNo)) {
                 map.put("disciplineAllocationSl" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Section Leader","field"));
+            } else {
+                slMap.put(indexNo, indexNo);
             }
         }
         if(map.isEmpty()){
@@ -3879,6 +3871,42 @@ public class ClinicalLaboratoryDelegator {
                     }
                     String replace = error.replace("{CGO Name}", substring);
                     map.put("CGO", replace);
+                }
+            }
+
+            List<AppSvcPersonnelDto> sectionLeaderDtoList = IaisCommonUtils.genNewArrayList();
+            String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(request, currentSvcId);
+            sectionLeaderDtoList.addAll(currentSvcRelatedDto.getAppSvcSectionLeaderList());
+            List<AppSvcPersonnelDto> sectionLeaderDtos = IaisCommonUtils.genNewArrayList();
+            if (sectionLeaderDtoList != null) {
+                if (daList.size() < sectionLeaderDtoList.size()) {
+                    return;
+                }
+                if (daList.size() >= sectionLeaderDtoList.size()) {
+                    slMap.forEach((k, v) -> {
+                        for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                            String indexNo = sectionLeaderDto.getIndexNo();
+                            if (k.equals(indexNo)) {
+                                sectionLeaderDtos.add(sectionLeaderDto);
+                            }
+                        }
+                    });
+                }
+                sectionLeaderDtoList.removeAll(sectionLeaderDtos);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                    stringBuilder.append(sectionLeaderDto.getName()).append(',');
+                }
+                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                    String string = stringBuilder.toString();
+                    String substring = string.substring(0, string.lastIndexOf(','));
+                    String error = MessageUtil.getMessageDesc("NEW_ERR0011");
+                    if (substring.contains(",")) {
+                        error = error.replaceFirst("is", "are");
+                    }
+                    String replace = error.replace("{CGO Name}", substring);
+                    map.put("SL", replace);
                 }
             }
         }

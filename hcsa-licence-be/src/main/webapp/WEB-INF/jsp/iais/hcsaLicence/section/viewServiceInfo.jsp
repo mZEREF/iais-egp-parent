@@ -182,7 +182,7 @@
                      value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList}" />
               <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
                 <div class="form-check ">
-                  <div class="form-check-label " aria-label="premise-1-cytology">
+                  <div aria-label="premise-1-cytology">
                     <div class="col-xs-6 col-md-6">
                         <span class="newVal " attr="${checkList.chkName}${checkList.check}">
                           <c:if test="${checkList.check}">
@@ -338,15 +338,15 @@
                         <span class="oldVal "  style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].salutation}">
                           <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].salutation}"></iais:code>
                         </span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
-                    </td>
-                    <td>
-                      <div class="col-xs-6 img-show">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-xs-6">
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
+                  </td>
+                  <td>
+                    <div class="col-xs-6 img-show">
                       <span class="newVal " attr="${appSvcClinicalDirectorDto.name}">
                         <c:out value="${appSvcClinicalDirectorDto.name}"/>
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
@@ -355,8 +355,8 @@
                           <jsp:param name="methodName" value="showThisNameTableNewService"/>
                         </jsp:include>
                       </span>
-                      </div>
-                      <div class="col-xs-6 img-show">
+                    </div>
+                    <div class="col-xs-6 img-show">
                       <span class="oldVal "
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].name}
@@ -366,23 +366,23 @@
                           <jsp:param name="methodName" value="showThisNameTableOldService"/>
                         </jsp:include>
                       </span>
-                      </div>
-                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
-                        <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
-                        <jsp:param name="cssClass" value="new-img-show"/>
-                      </jsp:include>
-                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
-                        <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
-                        <jsp:param name="cssClass" value="old-img-show"/>
-                      </jsp:include>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
-                    </td>
-                    <td>
-                      <div class="col-xs-6">
+                    </div>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${appSvcClinicalDirectorDto.profRegNo}"/>
+                      <jsp:param name="cssClass" value="new-img-show"/>
+                    </jsp:include>
+                    <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                      <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index].profRegNo}"/>
+                      <jsp:param name="cssClass" value="old-img-show"/>
+                    </jsp:include>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="col-xs-6">
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
+                  </td>
+                  <td>
+                    <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.idType}">
                             <iais:code code="${appSvcClinicalDirectorDto.idType}"></iais:code>
                         </span>
@@ -892,9 +892,9 @@
                             attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"
                             style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}
                         <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                            <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
-                            <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/>
-                            <jsp:param name="methodName" value="showThisNameTableOldService"/>
+                          <jsp:param name="profRegNo" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                          <jsp:param name="personName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].name}"/>
+                          <jsp:param name="methodName" value="showThisNameTableOldService"/>
                         </jsp:include>
                       </span>
                     </div>
@@ -1188,8 +1188,8 @@
               </p>
               <span class="col-xs-6"></span>
               <table aria-describedby="" class="col-xs-12">
-
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                     </p>
@@ -1416,8 +1416,8 @@
                             <jsp:param name="methodName" value="showThisNameTableNewService"/>
                           </jsp:include>
                         </span>
-                          </div>
-                          <div class="col-xs-6 img-show">
+                        </div>
+                        <div class="col-xs-6 img-show">
                         <span class="oldVal "
                               attr="${oldAppSvcPersonnelDtoList.name}"
                               style="display: none">${oldAppSvcPersonnelDtoList.name}
@@ -2109,6 +2109,7 @@
               <table aria-describedby="" class="col-xs-12">
 
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                     </p>

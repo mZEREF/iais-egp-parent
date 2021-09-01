@@ -188,6 +188,7 @@
             }else if("-1" == premSelectVal){
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
                 $premContent.find('.new-premise-form-on-site').addClass('hidden');
+                $premContent.find('.new-premise-form-off-site').addClass('hidden');
                 var data = {};
                 fillForm('onSite',data,$premContent);
                 fillForm('conveyance',data,$premContent);
@@ -586,7 +587,7 @@
             <!--reset premval -->
             $pageContentEle.find('div.premContent').each(function (k,v) {
                 $(this).find('input[name="premValue"]').val(k);
-                $(this).find('strong.premHeader').html('Premises '+(k+1));
+                $(this).find('strong.premHeader').html('Mode of Service Delivery '+(k+1));
             });
         });
 

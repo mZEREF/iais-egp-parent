@@ -85,7 +85,7 @@
                                                                             <tr>
                                                                                 <td class="row_no">&nbsp;<c:out value="${status.index + 1}"/></td>
                                                                                 <td>
-                                                                                    <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
+                                                                                    <a href="#" onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
                                                                                 </td>
                                                                                 <td>
                                                                                     <p>${compliance.riskTag}</p>
@@ -114,7 +114,7 @@
 
                                     </div>
                                 </div>
-                                <a  onclick="javascript:doBack();" ><em class="fa fa-angle-left"> </em> Back</a>
+                                <a href="#" onclick="javascript:doBack();" ><em class="fa fa-angle-left"> </em> Back</a>
                             </div>
                         </iais:body>
                     </div>

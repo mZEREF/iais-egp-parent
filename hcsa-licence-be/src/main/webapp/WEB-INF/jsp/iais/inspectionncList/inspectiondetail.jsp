@@ -183,7 +183,7 @@
             </p>
         </div>
     </div>
-    <div class="form-group" id="frameworkOp" hidden>
+    <div class="form-group" id="frameworkOp" style="display: none;">
         <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <c:choose>
@@ -199,7 +199,7 @@
             </c:choose>
         </div>
     </div>
-    <div class="form-group" id="frameworkRe" hidden>
+    <div class="form-group" id="frameworkRe" style="display: none;">
         <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>
