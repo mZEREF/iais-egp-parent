@@ -99,16 +99,29 @@
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
-                                        <tr name="basicData">
-                                            <td>1</td>
-                                            <td>Biological Agent/Toxin</td>
-                                            <td>BBC</td>
-                                            <td>NPA</td>
-                                            <td>complete</td>
-                                            <td>06/18/2021</td>
-                                            <td>active</td>
-                                            <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
-                                        </tr>
+                                        <c:choose>
+                                            <c:when test="${empty inventoryResult}">
+                                                <tr>
+                                                    <td colspan="6">
+                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:forEach var="items" items="${inventoryResult}" varStatus="status">
+                                                    <tr name="basicData">
+                                                        <td><c:out  value="${status.index + 1}"/></td>
+                                                        <td><c:out value="${items.bioName}"></c:out></td>
+                                                        <td>BBC</td>
+                                                        <td>NPA</td>
+                                                        <td>complete</td>
+                                                        <td>06/18/2021</td>
+                                                        <td>active</td>
+                                                        <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </c:otherwise>
+                                        </c:choose>
                                         </tbody>
                                     </table>
                                 </c:if>

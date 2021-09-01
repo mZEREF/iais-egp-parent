@@ -13,7 +13,6 @@ import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryAgentResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDtResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDto;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
-import sg.gov.moh.iais.egp.bsb.util.BiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +37,7 @@ public class InventoryDelegator {
     private static final String KEY_ACTION_ADDT = "action_additional";
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-    private static final String PACKAGE_NAME_BIO_AGENT = "sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent";
+//    private static final String PACKAGE_NAME_BIO_AGENT = "sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent";
     @Autowired
     private InventoryClient inventoryClient;
 
@@ -136,7 +135,10 @@ public class InventoryDelegator {
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryAgentResultDto.getPageInfo());
      }else if("date".equals(count)){
          InventoryDtResultDto inventoryDtResultDto = inventoryClient.findInventoryByDt(inventoryDto).getEntity();
-         List<FacilityBiologicalAgent> facilityBiologicalAgents = BiologicalName.setBioName(PACKAGE_NAME_BIO_AGENT,FacilityBiologicalAgent.class,inventoryDtResultDto.getBsbDt(),inventoryClient);
+         List<FacilityBiologicalAgent> facilityBiologicalAgents = inventoryDtResultDto.getBsbDt();
+         for (FacilityBiologicalAgent agent : facilityBiologicalAgents) {
+             agent.setBioName(inventoryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
+         }
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,facilityBiologicalAgents);
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryDtResultDto.getPageInfo());

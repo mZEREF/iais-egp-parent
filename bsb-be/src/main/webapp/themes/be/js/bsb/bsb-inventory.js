@@ -21,13 +21,6 @@ function doAdjust(){
         $("#mainForm").submit();
     }
 }
-function doClear(){
-    $('select[firstOption="Please Select"] option:first').prop("selected",'selected');
-    for(var i=1;i<=4;i++){
-        $("#errMsg0"+i).html("");
-    }
-    $("input[type='text']").val("");
-}
 
 function doBasicClear() {
     showWaiting();
@@ -76,7 +69,6 @@ function doHisInfo() {
 
 
 function doClear(){
-    showWaiting();
     $('select option[firstOption="Please Select"] option:first').prop("selected",'selected');
     for(var i=1;i<=4;i++){
         $("#errMsg0"+i).html("");

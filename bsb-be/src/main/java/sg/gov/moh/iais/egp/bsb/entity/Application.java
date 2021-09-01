@@ -47,4 +47,6 @@ public class Application implements Serializable {
     private String modifiedBy;
 
     private String bioName;
+
+    private String riskLevel;
 }

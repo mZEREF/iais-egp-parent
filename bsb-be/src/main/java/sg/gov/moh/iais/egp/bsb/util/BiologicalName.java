@@ -1,10 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.egp.bsb.client.InventoryClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

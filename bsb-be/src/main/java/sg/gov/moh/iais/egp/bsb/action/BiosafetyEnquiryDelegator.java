@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
+import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
@@ -49,6 +50,8 @@ public class BiosafetyEnquiryDelegator {
     private static Integer pageSize = SystemParamUtil.getDefaultPageSize();
    @Autowired
    private BiosafetyEnquiryClient biosafetyEnquiryClient;
+   @Autowired
+   private ProcessClient processClient;
 
     /**
      *  AutoStep: prepareBasicSearch
@@ -387,6 +390,11 @@ public class BiosafetyEnquiryDelegator {
         }
         if("app".equals(count)){
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
+            for (Application application : applicationResultDto.getBsbApp()){
+            application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(),processClient));
+            application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(),processClient));
+
+            }
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
@@ -435,13 +443,32 @@ public class BiosafetyEnquiryDelegator {
         EnquiryDto enquiryDto = getSearchDto(request);
         ApplicationResultDto results = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
         if (!Objects.isNull(results)){
-            List<ApplicationInfoDto> queryList = results.getBsbApp();
-            queryList.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
-            queryList.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
-            queryList.forEach(i->i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
-            queryList.forEach(i->i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
-            queryList.forEach(i -> i.setRiskLevel(MasterCodeUtil.getCodeDesc(i.getRiskLevel())));
-            queryList.forEach(i -> i.setProcessType(MasterCodeUtil.getCodeDesc(i.getProcessType())));
+            List<Application> queryList = results.getBsbApp();
+            List<ApplicationInfoDto> applicationInfoDtos = new ArrayList<>();
+            for (Application application : queryList) {
+                application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(),processClient));
+                application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(),processClient));
+                ApplicationInfoDto applicationInfoDto = new ApplicationInfoDto();
+                applicationInfoDto.setApplicationNo(application.getApplicationNo());
+                applicationInfoDto.setRiskLevel(application.getRiskLevel());
+                applicationInfoDto.setAppType(application.getAppType());
+                applicationInfoDto.setProcessType(application.getProcessType());
+                applicationInfoDto.setFacilityName(application.getFacility().getFacilityName());
+                applicationInfoDto.setFacilityClassification(application.getFacility().getFacilityClassification());
+                applicationInfoDto.setFacilityType(application.getFacility().getFacilityType());
+                applicationInfoDto.setApplicationDt(application.getApplicationDt());
+                applicationInfoDto.setApprovalDate(application.getApprovalDate());
+                applicationInfoDto.setBioName(application.getRiskLevel());
+                applicationInfoDto.setDoVerifiedDt(application.getDoVerifiedDt());
+                applicationInfoDto.setHmVerifiedDt(application.getHmVerifiedDt());
+                applicationInfoDto.setAoVerifiedDt(application.getAoVerifiedDt());
+                applicationInfoDtos.add(applicationInfoDto);
+            }
+            applicationInfoDtos.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
+            applicationInfoDtos.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
+            applicationInfoDtos.forEach(i->i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
+            applicationInfoDtos.forEach(i->i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
+            applicationInfoDtos.forEach(i -> i.setProcessType(MasterCodeUtil.getCodeDesc(i.getProcessType())));
             try {
                 file = ExcelWriter.writerToExcel(queryList, ApplicationInfoDto.class, "Application Information_Search_Template");
             } catch (Exception e) {

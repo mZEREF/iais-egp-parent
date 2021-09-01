@@ -78,14 +78,26 @@
                                                             <td><c:out  value="${status.index+1}"/></td>
                                                             <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
                                                             <td><iais:code code="${items.appType}"></iais:code></td>
-                                                            <td><iais:code code="${items.appStatus}"></iais:code></td>
+                                                            <td><iais:code code="${items.status}"></iais:code></td>
                                                             <td><fmt:formatDate value='${items.applicationDt}' pattern='dd/MM/yyyy'/></td>
                                                             <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
-                                                            <td><iais:code code="${items.facilityClassification}"></iais:code></td>
-                                                            <td><iais:code code="${items.facilityType}"></iais:code></td>
-                                                            <td><iais:code code="${items.facilityName}"></iais:code></td>
+                                                            <td><iais:code code="${items.facility.facilityClassification}"></iais:code></td>
+                                                            <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
+                                                            <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
                                                             <td><c:out value="${items.bioName}"></c:out></td>
-                                                            <td><iais:code code="${items.riskLevel}"></iais:code></td>
+                                                            <td>
+<%--                                                                <c:forEach items="${items.facility.facilitySchedules}" var="schedules" varStatus="s1">--%>
+<%--                                                                    <c:forEach items="${schedules.facilityBiologicalAgents}" var="agent" varStatus="s2">--%>
+<%--                                                                        <c:if test="${s1.last || s2.last}">--%>
+<%--                                                                        <iais:code code="${agent.riskLevel}"></iais:code>--%>
+<%--                                                                        </c:if>--%>
+<%--                                                                        <c:if test="${!s1.last || !s2.last}">--%>
+<%--                                                                            <iais:code code="${agent.riskLevel}"></iais:code>,--%>
+<%--                                                                        </c:if>--%>
+<%--                                                                    </c:forEach>--%>
+<%--                                                                </c:forEach>--%>
+                                                            <iais:code code="${items.riskLevel}"></iais:code>
+                                                            </td>
                                                             <td><iais:code code="${items.processType}"></iais:code></td>
                                                             <td><fmt:formatDate value='${items.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
                                                             <td><fmt:formatDate value='${items.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>

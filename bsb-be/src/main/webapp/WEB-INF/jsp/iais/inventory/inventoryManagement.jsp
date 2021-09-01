@@ -40,37 +40,37 @@
                             <iais:row>
                                 <iais:field value="Schedule Type"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="scheduleType" id="scheduleType" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" firstOption="Please Select"></iais:select>
+                                    <iais:select name="scheduleType" id="scheduleType" codeCategory="CATE_ID_BSB_SCHEDULE_TYPE" value="${inventoryParam.scheduleType}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Biological Agent/Toxin"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="biologicalAgent" options="biologicalAgent" firstOption="Please Select"></iais:select>
+                                    <iais:select name="biologicalAgent" options="biologicalAgent" value="${inventoryParam.biologicalAgent}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Type of Transaction"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="transactionType" codeCategory="CATE_ID_BSB_TYPE_OF_TRANSACTION" firstOption="Please Select"></iais:select>
+                                    <iais:select name="transactionType" codeCategory="CATE_ID_BSB_TYPE_OF_TRANSACTION" value="${inventoryParam.transactionType}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Date of Transaction From"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:datePicker name = "transactionDateFrom"></iais:datePicker>
+                                    <iais:datePicker name = "transactionDateFrom" dateVal="${inventoryParam.transactionDtFrom}"></iais:datePicker>
                                 </div >
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Date of Transaction To"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:datePicker name = "transactionDateTo"></iais:datePicker>
+                                    <iais:datePicker name = "transactionDateTo" dateVal="${inventoryParam.transactionDtTo}"></iais:datePicker>
                                 </div >
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Facility Name"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="facilityName" options="facilityName"  firstOption="Please Select" multiSelect="true"></iais:select>
+                                    <iais:select name="facilityName" options="facilityName" multiValues="${inventoryParam.facilityName}"  firstOption="Please Select" multiSelect="true"></iais:select>
                                 </div >
                             </iais:row>
                         </iais:section>
@@ -87,31 +87,31 @@
                                 <iais:row>
                                     <iais:field value="Transaction Date From"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:datePicker name = "transactionDateFrom"></iais:datePicker>
+                                        <iais:datePicker name = "transactionDateFrom" dateVal="${inventoryParam.transactionDtFrom}"></iais:datePicker>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Transaction Date To "/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:datePicker name = "transactionDateTo"></iais:datePicker>
+                                        <iais:datePicker name = "transactionDateTo" dateVal="${inventoryParam.transactionDtTo}"></iais:datePicker>
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Sending Facility "/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="sendFacility" options="sendingFacility"  firstOption="Please Select"></iais:select>
+                                        <iais:select name="sendFacility" options="sendingFacility" value="${inventoryParam.sendFacility}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Receiving Facility"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="recFacility" options="receivingFacility" firstOption="Please Select"></iais:select>
+                                        <iais:select name="recFacility" options="receivingFacility" value="${inventoryParam.recFacility}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Name of Biological Agent/Toxin"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="biologicalAgent" options="biologicalAgent"  firstOption="Please Select"></iais:select>
+                                        <iais:select name="biologicalAgent" options="biologicalAgent" value="${inventoryParam.biologicalAgent}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                             </iais:section>
