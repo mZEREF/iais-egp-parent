@@ -207,6 +207,9 @@ public class NewApplicationDelegator {
 
     public static final String CURR_ORG_USER_ACCOUNT = "currOrgUserAccount";
 
+    public static final String APP_SUBMISSIONS = "appSubmissionDtos";
+    public static final String ACK_APP_SUBMISSIONS = "ackPageAppSubmissionDto";
+
     @Autowired
     private ServiceConfigService serviceConfigService;
     @Autowired
@@ -965,7 +968,7 @@ public class NewApplicationDelegator {
     public void preparePayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute(APP_SUBMISSIONS);
         HashMap<String, String> coMap  = bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP)==null ?
                 null : (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
 
@@ -1018,7 +1021,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAmountStr(amountStr);
         }
         if (appSubmissionDtos != null) {
-            bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos);
+            bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtos);
         }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             Set<String> premTypes = IaisCommonUtils.genNewHashSet();
@@ -1416,7 +1419,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doPayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         //for relation Licences when RFC the premises.
-        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("ackPageAppSubmissionDto");
+        List<AppSubmissionDto> ackSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute(ACK_APP_SUBMISSIONS);
         String switch2 = "loading";
         String pmtMethod = appSubmissionDto.getPaymentMethod();
         if (StringUtil.isEmpty(pmtMethod)) {
@@ -1433,25 +1436,25 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("Payment result: " + result + "; reqRefNo: " + pmtRefNo
                 + "; Draft No.: " + appSubmissionDto.getDraftNo()));
         if (!StringUtil.isEmpty(result)) {
-            log.info(StringUtil.changeForLog("payment result:" + result));
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
                 try {
-                    if(appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                        List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
-                        if(appSubmissionDtos1==null||appSubmissionDtos1.size()==0){
-                            appSubmissionDtos1=IaisCommonUtils.genNewArrayList();
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+                        List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
+                                APP_SUBMISSIONS);
+                        if (appSubmissionDtos1 == null || appSubmissionDtos1.size() == 0) {
+                            appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
                             appSubmissionDtos1.add(appSubmissionDto);
                         }
                         requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1, appSubmissionDto.getPaymentMethod());
                     }
                 } catch (Exception e) {
-                    log.info(e.getMessage(), e);
+                    log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
 
                 List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
-                if (appSubmissionDtos != null) {
-                    for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
+                if (ackSubmissionDtos != null) {
+                    for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
                         ApplicationGroupDto appGrp = new ApplicationGroupDto();
                         appGrp.setId(appSubmissionDto1.getAppGrpId());
                         appGrp.setPmtRefNo(pmtRefNo);
@@ -1503,7 +1506,6 @@ public class NewApplicationDelegator {
                     errorMap.put("pay",MessageUtil.getMessageDesc("NEW_ERR0024"));
                     NewApplicationHelper.setAudiErrMap(NewApplicationHelper.checkIsRfi(bpc.request),appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-
                 }
                 //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
                 switch2 = "loading";
@@ -2194,7 +2196,7 @@ public class NewApplicationDelegator {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
             appSubmissionDto.setAmountStr("N/A");
             appSubmissionDtos.add(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", (Serializable) appSubmissionDtos);
+            ParamUtil.setSessionAttr(bpc.request, ACK_APP_SUBMISSIONS, (Serializable) appSubmissionDtos);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
@@ -2639,16 +2641,14 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         log.info(StringUtil.changeForLog("------ Save Data End ------"));
-        bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtoList);
-        bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmissionDto);
+        bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtoList);
+        bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmissionDto);
         bpc.request.getSession().setAttribute(ALL_SVC_NAMES, svcNameSet);
 
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
-
-
 
     private boolean checkAffectedAppSubmissions(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldPremisesDtoList, LicenceDto licence, double amount, String draftNo, String appGroupNo,
@@ -2730,7 +2730,7 @@ public class NewApplicationDelegator {
                 try {
                     if (appSubmissionDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)) {
                         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
-                                "appSubmissionDtos");
+                                APP_SUBMISSIONS);
                         if (appSubmissionDtos == null || appSubmissionDtos.size() == 0) {
                             appSubmissionDtos = IaisCommonUtils.genNewArrayList();
                             appSubmissionDtos.add(appSubmissionDto);
@@ -2741,7 +2741,7 @@ public class NewApplicationDelegator {
                     log.error(e.getMessage(), e);
                 }
             }
-        }else {
+        } else {
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
             appSubmissionDto.setAppGrpNo(null);
@@ -2953,25 +2953,24 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
                 + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
         //68099
-        List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+        List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request,"ackPageAppSubmissionDto", (Serializable) ackPageAppSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
+            String appGrpId = appSubmissionDto.getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+            appGrp.setPayMethod(payMethod);
+            serviceConfigService.updatePaymentStatus(appGrp);
             if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                String appGrpId = appSubmissionDto.getAppGrpId();
-                ApplicationGroupDto appGrp = new ApplicationGroupDto();
-                appGrp.setId(appGrpId);
-                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                appGrp.setPayMethod(payMethod);
-                serviceConfigService.updatePaymentStatus(appGrp);
-                //
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
             }
@@ -2984,7 +2983,6 @@ public class NewApplicationDelegator {
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
             return;
         }
-        String a = appSubmissionDto.getPaymentMethod();
         appSubmissionDto.setPaymentMethod(payMethod);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
@@ -3012,7 +3010,7 @@ public class NewApplicationDelegator {
                 IaisEGPHelper.redirectUrl(bpc.response, url);
                 //ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
-                log.info(e.getMessage(), e);
+                log.info(StringUtil.changeForLog(e.getMessage()), e);
             }
             return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
@@ -3090,37 +3088,14 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
+        List<AppSubmissionDto> ackPageAppSubmissionDto =(List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
         String draftNo = "";
         if(appSubmissionDto != null) {
             draftNo = appSubmissionDto.getDraftNo();
             if (ackPageAppSubmissionDto == null) {
                 List<AppSubmissionDto> ackPageAppSubmission = new ArrayList<>(1);
                 ackPageAppSubmission.add(appSubmissionDto);
-                bpc.request.getSession().setAttribute("ackPageAppSubmissionDto", ackPageAppSubmission);
-            } else {
-                for (AppSubmissionDto appSubmissionDto1 : ackPageAppSubmissionDto) {
-                    Double amount = appSubmissionDto1.getAmount();
-                    String appGrpNo = appSubmissionDto1.getAppGrpNo();
-                    if (MiscUtil.doubleEquals(0.0, amount)) {
-                        log.info(StringUtil.changeForLog("The 0.0 amount app grp number: "+ appGrpNo));
-                        List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
-                        if (entity != null && !entity.isEmpty()) {
-                            for (ApplicationDto applicationDto : entity) {
-                                if (!isRfiStatus(applicationDto.getStatus())) {
-                                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-                                }
-                            }
-                            String grpId = entity.get(0).getAppGrpId();
-                            ApplicationGroupDto applicationGroupDto = applicationFeClient.getApplicationGroup(grpId).getEntity();
-                            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            applicationFeClient.saveApplicationDtos(entity);
-                            applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
-                        }
-                    } else {
-                        log.info(StringUtil.changeForLog("The app grp number: "+ appGrpNo));
-                    }
-                }
+                bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmission);
             }
         }
         if(draftNo!=null){
@@ -3133,11 +3108,9 @@ public class NewApplicationDelegator {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
-
                     applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }else {
                     if(AppConsts.COMMON_STATUS_ACTIVE.equals(applicationSubDraftDto.getStatus())){
-
                         applicationFeClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }
@@ -3164,12 +3137,6 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         }
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
-    }
-
-    private boolean isRfiStatus(String status) {
-        return ApplicationConsts.PENDING_ASO_REPLY.equals(status)
-                || ApplicationConsts.PENDING_PSO_REPLY.equals(status)
-                || ApplicationConsts.PENDING_INP_REPLY.equals(status);
     }
 
     /**
