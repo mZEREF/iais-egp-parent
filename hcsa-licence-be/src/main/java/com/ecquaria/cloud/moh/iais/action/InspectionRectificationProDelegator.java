@@ -412,34 +412,49 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             fileRepoDto = inspectionRectificationProService.getCheckListFileRealName(fileRepoDto, taskDto.getRefNo(), AppConsts.COMMON_STATUS_ACTIVE, ApplicationConsts.APP_DOC_TYPE_CHECK_LIST);
             inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
         }
-        //get inspector lead
-        List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
-        String inspectorLeadShow = getInspectorLeadShowByList(inspectorLeads);
-        //get inspectors
-        InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
-        //get nc count
-        int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
-        //set best Practice
-        AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_TCU).getEntity();
-        String bestPractice = "-";
-        if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
-            bestPractice = ncRecommendationDto.getBestPractice();
-        }
-        //get Observation
-        String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
-        if(StringUtil.isEmpty(observation)) {
-            observation = "-";
-        }
-        inspectionReportDto.setBestPractice(bestPractice);
-        inspectionReportDto.setInspectors(inspectorUser.getInspectors());
-        inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
-        inspectionReportDto.setInspectorLeads(inspectorLeads);
-        inspectionReportDto.setNcCount(ncCount);
-        inspectionReportDto.setObservation(observation);
+        //set show data for view checklist
+        inspectionReportDto = setViewCheckListData(taskDto, inspectionReportDto, loginContext);
+
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", fileRepoDto);
+    }
+
+    private InspectionReportDto setViewCheckListData(TaskDto taskDto, InspectionReportDto inspectionReportDto, LoginContext loginContext) {
+        if(inspectionReportDto != null) {
+            //get inspector lead
+            List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+            String inspectorLeadShow = getInspectorLeadShowByList(inspectorLeads);
+            //get inspectors
+            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+            //get nc count
+            int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
+            //set best Practice
+            AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_TCU).getEntity();
+            String bestPractice = "-";
+            if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
+                bestPractice = ncRecommendationDto.getBestPractice();
+            }
+            //get Observation
+            String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+            if(StringUtil.isEmpty(observation)) {
+                observation = "-";
+            }
+            //get task Remarks
+            String taskRemarks = "-";
+            if (!StringUtil.isEmpty(ncRecommendationDto.getRemarks())) {
+                taskRemarks = ncRecommendationDto.getRemarks();
+            }
+            inspectionReportDto.setObservation(observation);
+            inspectionReportDto.setBestPractice(bestPractice);
+            inspectionReportDto.setTaskRemarks(taskRemarks);
+            inspectionReportDto.setInspectors(inspectorUser.getInspectors());
+            inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
+            inspectionReportDto.setInspectorLeads(inspectorLeads);
+            inspectionReportDto.setNcCount(ncCount);
+        }
+        return inspectionReportDto;
     }
 
     private String getInspectorLeadShowByList(List<String> inspectorLeads) {
