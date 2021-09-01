@@ -15,7 +15,7 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___MohAOScreening___1 extends BaseProcessClass {
 	
-	private static final String DELEGATOR ="aoScreeningDelegator";
+	private static final String DELEGATOR ="mohProcessingDelegator";
 
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess
@@ -34,7 +34,7 @@ public class INTRANET___MohAOScreening___1 extends BaseProcessClass {
 
 	public void reject_OnStepProcess_0() throws Exception {
 	// 		reject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "reject", this);
+		EngineHelper.delegate(DELEGATOR, "aoReject", this);
 	}
 
 	public void routeBackToDO_OnStepProcess_0() throws Exception {

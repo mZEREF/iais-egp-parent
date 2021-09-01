@@ -12,7 +12,7 @@ $(function () {
             $('#mainForm').submit();
         }else if(selectValue == "DOSPD003"){
             showWaiting();
-            $("[name='action_type']").val("reject");
+            $("[name='action_type']").val("doReject");
             $('#mainForm').submit();
         }else{
             $("#error_processingDecision").html("This Is Mandatory")
@@ -21,19 +21,19 @@ $(function () {
     $("#aoScreeningSubmitButton").click(function (){
         var selectValue = $("#processingDecision").val();
         $(".error-msg").html("");
-        if(selectValue == "AOSPDD001"){
+        if(selectValue == "AOSPD001"){
             showWaiting();
             $("[name='action_type']").val("approvalForInspection");
             $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD002"){
+        }else if(selectValue == "AOSPD002"){
             showWaiting();
-            $("[name='action_type']").val("reject");
+            $("[name='action_type']").val("aoReject");
             $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD003"){
+        }else if(selectValue == "AOSPD003"){
             showWaiting();
             $("[name='action_type']").val("routeBackToDO");
             $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD004"){
+        }else if(selectValue == "AOSPD004"){
             showWaiting();
             $("[name='action_type']").val("routeToHM");
             $('#mainForm').submit();
@@ -44,25 +44,59 @@ $(function () {
     $("#hmScreeningSubmitButton").click(function (){
         var selectValue = $("#processingDecision").val();
         $(".error-msg").html("");
-        if(selectValue == "AOSPDD001"){
+        if(selectValue == "HMSPD001"){
             showWaiting();
-            $("[name='action_type']").val("approvalForInspection");
+            $("[name='action_type']").val("hmApprove");
             $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD002"){
+        }else if(selectValue == "HMSPD002"){
             showWaiting();
-            $("[name='action_type']").val("reject");
-            $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD003"){
-            showWaiting();
-            $("[name='action_type']").val("routeBackToDO");
-            $('#mainForm').submit();
-        }else if(selectValue == "AOSPDD004"){
-            showWaiting();
-            $("[name='action_type']").val("routeToHM");
+            $("[name='action_type']").val("hmReject");
             $('#mainForm').submit();
         }else{
             $("#error_processingDecision").html("This Is Mandatory")
         }
+    })
+    $("#doProcessingSubmitButton").click(function (){
+        var selectValue = $("#processingDecision").val();
+        $(".error-msg").html("");
+        if(selectValue == "DOPPD001"){
+            showWaiting();
+            $("[name='action_type']").val("recommendApproval");
+            $('#mainForm').submit();
+        }else if(selectValue == "DOPPD002"){
+            showWaiting();
+            $("[name='action_type']").val("recommendRejection");
+            $('#mainForm').submit();
+        }else if(selectValue == "DOPPD003"){
+            showWaiting();
+            $("[name='action_type']").val("requestForInformation");
+            $('#mainForm').submit();
+        }else{
+            $("#error_processingDecision").html("This Is Mandatory")
+        }
+    })
+    $("#aoProcessingSubmitButton").click(function (){
+        var selectValue = $("#processingDecision").val();
+        $(".error-msg").html("");
+        // if(selectValue == "AOSPD001"){
+        //     showWaiting();
+        //     $("[name='action_type']").val("approvalForInspection");
+        //     $('#mainForm').submit();
+        // }else if(selectValue == "AOSPD002"){
+        //     showWaiting();
+        //     $("[name='action_type']").val("aoReject");
+        //     $('#mainForm').submit();
+        // }else if(selectValue == "AOSPD003"){
+        //     showWaiting();
+        //     $("[name='action_type']").val("routeBackToDO");
+        //     $('#mainForm').submit();
+        // }else if(selectValue == "AOSPD004"){
+        //     showWaiting();
+        //     $("[name='action_type']").val("routeToHM");
+        //     $('#mainForm').submit();
+        // }else{
+        //     $("#error_processingDecision").html("This Is Mandatory")
+        // }
     })
     $("#back").click(function (){
         showWaiting();

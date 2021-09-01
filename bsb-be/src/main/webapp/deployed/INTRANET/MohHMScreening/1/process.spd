@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohHMScreening" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="240" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <ReturnInvokeProcessStep defClass="" executor="" icon="" name="back" x="460" y="220">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
   </ReturnInvokeProcessStep>
-  <AutomaticStep defClass="" executor="" icon="" name="approve" x="600" y="220">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="hmApprove" x="600" y="220">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="reject" x="760" y="200">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="hmReject" x="760" y="200">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ScreeningPage" stageIndicator="" x="340" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="600" y="400">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
    <position>{(120,120)(260,120)}</position>
@@ -64,34 +64,35 @@
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(620,100)(480,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hmApprove" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(620,100)(620,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/hmReject" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(620,100)(780,220)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/reject" style="oblique">
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hmReject" style="oblique">
    <position>{(780,220)(620,420)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/approve" style="oblique">
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/hmApprove" style="oblique">
    <position>{(620,240)(620,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SuccessPage" style="oblique">
    <position>{(620,420)(480,240)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="600" y="80">
-   <Description/>
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;back&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/approve" value="&quot;approve&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/reject" value="&quot;reject&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;back&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/hmApprove" value="&quot;approve&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/hmReject" value="&quot;hmReject&quot;" />
   </Switch>
  </Switches>
- <Branches/>
- <Merges/>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

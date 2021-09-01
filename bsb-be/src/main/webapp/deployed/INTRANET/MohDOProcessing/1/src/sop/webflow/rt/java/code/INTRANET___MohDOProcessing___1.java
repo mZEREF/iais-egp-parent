@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___MohHMScreening___1 extends BaseProcessClass {
+public class INTRANET___MohDOProcessing___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="mohProcessingDelegator";
 	
@@ -27,14 +27,19 @@ public class INTRANET___MohHMScreening___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
-	public void approve_OnStepProcess_0() throws Exception {
-	// 		approve->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hmApprove", this);
+	public void recommendApproval_OnStepProcess_0() throws Exception {
+	// 		recommendApproval->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "recommendApproval", this);
 	}
 
-	public void reject_OnStepProcess_0() throws Exception {
-	// 		reject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "hmReject", this);
+	public void recommendRejection_OnStepProcess_0() throws Exception {
+	// 		recommendRejection->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "recommendRejection", this);
+	}
+
+	public void requestForInformation_OnStepProcess_0() throws Exception {
+	// 		requestForInformation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
 	}
 
 }

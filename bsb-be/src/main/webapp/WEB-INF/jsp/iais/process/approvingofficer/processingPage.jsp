@@ -75,6 +75,14 @@
                                                                     <div>&nbsp</div>
                                                                     <div>
                                                                         <iais:row>
+                                                                            <iais:field value="DO Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:value width="10"><p></p></iais:value>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
                                                                             <iais:value width="10">
                                                                                 <iais:value width="10"><p><iais:code code="${applicationInfo.facility.riskLevel}"></iais:code></p></iais:value>
@@ -91,39 +99,84 @@
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="DO Recommendation" required="false" width="12"/>
-                                                                            <iais:value width="10"><p></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="AO Review Decision" required="false"/>
+                                                                            <iais:field value="ERP Report" required="true"></iais:field>
                                                                             <iais:value width="10">
-                                                                                <iais:value width="10"><p><iais:code code="${applicationInfo.status}"></iais:code></p></iais:value>
+                                                                                <iais:datePicker name="erpReport"></iais:datePicker>
+                                                                                <span class="error-msg" name="errorMsg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div id="AORemarks">
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Red Teaming Report" required="true"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:datePicker name="redTeamingReport"></iais:datePicker>
+                                                                                <span class="error-msg" name="errorMsg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Lentivirus Report" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:datePicker name="lentivirusReport"></iais:datePicker>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Internal Inspection Report" required="true"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:datePicker name="internalInspectionReport"></iais:datePicker>
+                                                                                <span class="error-msg" name="errorMsg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:select id="selectedApprovedFacilityCertifier" name="selectedApprovedFacilityCertifier" disabled="false" codeCategory="CATE_ID_BSB_SELECTED_APPROVED_FACILITY_CERTIFER" firstOption="Please Select"></iais:select>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Validity Start Date" required="true"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:datePicker name="validityStartDate"></iais:datePicker>
+                                                                                <span class="error-msg" name="errorMsg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Validity End Date" required="true"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <iais:datePicker name="validityEndDate"></iais:datePicker>
+                                                                                <span class="error-msg" name="errorMsg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Reviewing Decision" required="true"/>
+                                                                            <iais:value width="10">
+                                                                                <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_AO_SCREENING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
+                                                                                <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" required="false" width="12"/>
-                                                                            <iais:value width="10"><p></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Validity Start Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><fmt:formatDate value='${applicationInfo.facility.validityStartDt}' pattern='dd/MM/yyyy'/></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Validity End Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p><fmt:formatDate value='${applicationInfo.facility.validityEndDt}' pattern='dd/MM/yyyy'/></p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="HM Remarks" required="false" width="12"/>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
@@ -133,21 +186,11 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Processing Decision" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_HM_SCREENING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
-                                                                                <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
-                                                                    <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
-                                                                    <button name="submitBtn" id="hmScreeningSubmitButton" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="submitBtn" id="aoProcessingSubmitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>
