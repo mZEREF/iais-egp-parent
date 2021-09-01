@@ -11,6 +11,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="main-content" style="min-height: 73vh;">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -36,7 +37,7 @@
                                     <iais:field value="Facility Name"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityName" id="facilityName"
-                                                     value="${facilityName}"
+                                                     value="${auditSearch.facilityName}"
                                                      options="facilityName"
                                                      firstOption="Please Select"/>
                                     </iais:value>
@@ -46,7 +47,7 @@
                                     <iais:field value="Facility classification"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${facilityClassification}"
+                                                     value="${auditSearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
                                                      firstOption="Please Select"/>
                                     </iais:value>
@@ -56,7 +57,7 @@
                                     <iais:field value="Facility Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${facilityType}"
+                                                     value="${auditSearch.facilityType}"
                                                      codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -65,7 +66,7 @@
                                     <iais:field value="Audit Type" required="true"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
-                                                     value="${auditType}"
+                                                     value="${auditSearch.auditType}"
                                                      codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
                                         <span id="error_auditType"
                                               name="iaisErrorMsg"
@@ -106,8 +107,9 @@
                                 </thead>
                                     <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
+                                    <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
-                                        <td><input type="checkbox"></td>
+                                        <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
                                         <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
@@ -131,27 +133,5 @@
                 </div>
             </div>
         </div>
-        <input name="appId" id="appId" value="" hidden>
     </form>
 </div>
-<script>
-    $("#createList").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("createList");
-        $("#mainForm").submit();
-    });
-
-    $("#searchBtn").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doSearch");
-        $("#mainForm").submit();
-    });
-
-    $("#clearBtn").click(function () {
-        $("#facilityClassification option:first").prop("selected",'selected');
-        $("#facilityType option:first").prop("selected",'selected');
-        $("#auditType option:first").prop("selected",'selected');
-        $("#facilityName option:first").prop("selected",'selected');
-        $("#beInboxFilter .current").text("Please Select");
-    });
-</script>

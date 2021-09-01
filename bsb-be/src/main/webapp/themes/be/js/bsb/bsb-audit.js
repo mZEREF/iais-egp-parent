@@ -1,10 +1,3 @@
-function doProcess(id){
-    showWaiting();
-    $("#appId").val(id);
-    $("[name='action_type']").val("doProcess");
-    $("#mainForm").submit();
-}
-
 function openUploadDoc(){
     $('#uploadDoc').dialog('open');
 };
@@ -99,94 +92,48 @@ function callAjaxUploadFile(){
 }
 
 $(function () {
-    $("#clearButton1").click(function () {
-        $('#ReasonId').val("");
-        $('#AORemarks').val("");
-    });
-
-    $("#submitButton1").click(function () {
-        showWaiting();
-        var reasonValue = $("#ReasonId").val();
-        if (reasonValue == "" || reasonValue == null) {
-            $("#error_reason").html("Please enter the reason");
-        }else{
-            $("[name='action_type']").val("doSubmit");
+    $("#createList").click(function (){
+        $("[name='action_type']").val("createList");
+        if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
             $("#mainForm").submit();
+        }else{
+            alert("please select one");
         }
     });
 
-    $("#searchBtn2").click(function () {
+    $("#searchBtn").click(function (){
         showWaiting();
         $("[name='action_type']").val("doSearch");
         $("#mainForm").submit();
     });
 
-    $("#clearBtn2").click(function () {
-        $('#facilityName').val("");
-        $('#facilityAddress').val("");
-        $('#applicationNo').val("");
-        $('#applicationStatus').val("");
-        $("#applicationDate").val("");
+    $("#clearBtn").click(function () {
         $("#facilityClassification option:first").prop("selected",'selected');
         $("#facilityType option:first").prop("selected",'selected');
-        $("#processType option:first").prop("selected",'selected');
-        $("#applicationType option:first").prop("selected",'selected');
+        $("#auditType option:first").prop("selected",'selected');
+        $("#facilityName option:first").prop("selected",'selected');
         $("#beInboxFilter .current").text("Please Select");
     });
 
-    $("#clearButton3").click(function () {
-        $('#number').val("");
-        $("#toxinsSelect option:first").prop("selected",'selected');
-        $("#stateSelect option:first").prop("selected",'selected');
-        $("#clearSelect .current").text("Please Select");
-    });
-
-    $("#submitButton3").click(function () {
-        showWaiting();
-        document.getElementById("mainForm").submit();
-    });
-
-    $("#submitButton").click(function () {
-
-        var optionValue = $("#decision option:selected").val();
-        if (optionValue == "BSBAOPD001") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "approve");
-        }
-        if (optionValue == "BSBAOPD002") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "reject");
-        }
-        if (optionValue == "BSBAOPD003") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "routeBack");
-        }
-        if (optionValue == "BSBAOPD004") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "submit");
-        }
+    $("#submitAudit").click(function () {
+        $("[name='action_type']").val("doSubmit");
+        var optionValue = $("#auditType option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options!");
+            $("#auditTypeError").html("Please select valid options!");
+        }else {
+            showWaiting();
+            $("#mainForm").submit();
         }
     });
 
-    $("#backToTask").click(function (){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
-    });
-
-    $("#backToProcess").click(function (){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm");
-    });
-
-    $("#backToSubmit2").click(function (){
+    $("#backToAuditCreation").click(function (){
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
 
-    $("#backToSubmit1").click(function (){
+    $("#backToCreateAuditList").click(function (){
         showWaiting();
         $("#mainForm").submit();
     });

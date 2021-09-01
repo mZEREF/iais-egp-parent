@@ -19,11 +19,15 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,6 +44,8 @@ public class AuditDelegator {
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+
+    private static final String FACILITY_LIST = "facilityList";
 
     @Autowired
     private AuditClient auditClient;
@@ -61,6 +67,7 @@ public class AuditDelegator {
     }
 
     /**
+     * AuditListCreationList
      * AutoStep: prepareData
      *
      * @param bpc
@@ -106,12 +113,60 @@ public class AuditDelegator {
         searchDto.setFacilityType(facilityType);
         searchDto.setAuditType(auditType);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
-        //Select back the query criteria
-        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, facilityName);
-        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_CLASSIFICATION, facilityClassification);
-        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_TYPE, facilityType);
-        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_AUDIT_TYPE, auditType);
     }
+
+    /**
+     * CreateAuditList
+     * AutoStep: prepareData
+     *
+     * @param bpc
+     */
+    public void prepareData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
+        String[] facIds =  ParamUtil.getMaskedStrings(request, "facId");
+        List<String> facList=new ArrayList<>();
+        for (String facId : facIds) {
+            if (StringUtil.isNotEmpty(facId)){
+                facList.add(facId);
+            }
+        }
+        List<String> list = repeatListWayTwo(facList);
+        List<Facility> facilityList=new ArrayList<>();
+        for (String fId : list) {
+            Facility facility = auditClient.getFacilityById(fId).getEntity();
+            facilityList.add(facility);
+        }
+        ParamUtil.setSessionAttr(request, FACILITY_LIST, (Serializable) facilityList);
+    }
+
+    /**
+     * CreateAuditList
+     * AutoStep: prepareData
+     *
+     * @param bpc
+     */
+    public void doCreate(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        FacilityAudit facilityAudit = new FacilityAudit();
+        List<Facility> facilityList = (List<Facility>)ParamUtil.getSessionAttr(request, FACILITY_LIST);
+        String auditType = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_TYPE);
+        String remarks = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        facilityAudit.setAuditType(auditType);
+        facilityAudit.setStatus("AUDITST001");
+        facilityAudit.setRemarks(remarks);
+        String facId=null;
+        if (facilityList.size()>0||facilityList!=null){
+            for (Facility facility : facilityList) {
+                facId=facility.getId();
+                Facility fac = new Facility();
+                fac.setId(facId);
+                facilityAudit.setFacility(fac);
+                auditClient.saveFacilityAudit(facilityAudit);
+            }
+        }
+    }
+
 
     /**
      * AutoStep: page
@@ -172,6 +227,13 @@ public class AuditDelegator {
             selectModel.add(new SelectOption(facName,facName));
         }
         ParamUtil.setRequestAttr(request, "facilityName", selectModel);
+    }
+
+    public static List<String> repeatListWayTwo(List<String> list){
+        HashSet set = new HashSet(list);
+        list.clear();
+        list.addAll(set);
+        return list;
     }
 
 }

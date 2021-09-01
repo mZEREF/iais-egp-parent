@@ -52,21 +52,21 @@
                                     <iais:field value="Facility Name"/>
                                     <iais:value width="18">
                                         <input type="text" name="facilityName" id="facilityName"
-                                               value="${facilityName}"/>
+                                               value="${applicationSearch.facilityName}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Facility Address"/>
                                     <iais:value width="18">
                                         <input type="text" name="facilityAddress" id="facilityAddress"
-                                               value="${facilityAddress}"/>
+                                               value="${applicationSearch.facilityAddress}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Facility classification"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${facilityClassification}"
+                                                     value="${applicationSearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
                                                      firstOption="Please Select"/>
                                     </iais:value>
@@ -75,7 +75,7 @@
                                     <iais:field value="Facility Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${facilityType}"
+                                                     value="${applicationSearch.facilityType}"
                                                      codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -83,7 +83,7 @@
                                     <iais:field value="Process Type"/>
                                     <iais:value width="18">
                                         <iais:select name="processType" id="processType"
-                                                     value="${processType}"
+                                                     value="${applicationSearch.processType}"
                                                      codeCategory="CATE_ID_BSB_PRO_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -91,21 +91,21 @@
                                     <iais:field value="Application Date"/>
                                     <iais:value width="18">
                                         <iais:datePicker id="applicationDate" name="applicationDate"
-                                                         dateVal="${applicationDate}"></iais:datePicker>
+                                                         dateVal="${applicationSearch.applicationDate}"></iais:datePicker>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Application No."/>
                                     <iais:value width="18">
                                         <input type="text" name="applicationNo" id="applicationNo"
-                                               value="${applicationNo}"/>
+                                               value="${applicationSearch.applicationNo}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Application Type"/>
                                     <iais:value width="18">
                                         <iais:select name="applicationType" id="applicationType"
-                                                     value="${applicationType}"
+                                                     value="${applicationSearch.applicationType}"
                                                      codeCategory="CATE_ID_BSB_APP_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -113,7 +113,7 @@
                                     <iais:field value="Application Status"/>
                                     <iais:value width="18">
                                         <iais:select name="applicationStatus" id="applicationStatus"
-                                                     value="${applicationStatus}"
+                                                     value="${applicationSearch.applicationStatus}"
                                                      codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>

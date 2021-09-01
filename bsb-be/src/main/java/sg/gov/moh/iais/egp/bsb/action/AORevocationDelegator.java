@@ -128,37 +128,28 @@ public class AORevocationDelegator {
         searchDto.setApplicationNo(applicationNo);
         searchDto.setApplicationType(applicationType);
         searchDto.setApplicationStatus(applicationStatus);
+        searchDto.setFacilityAddress(facilityAddress);
         searchDto.setPage(0);
         if (StringUtil.isNotEmpty(applicationDt)) {
             applicationDate = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE));
             searchDto.setApplicationDate(applicationDate);
         }
-        if (StringUtil.isNotEmpty(facilityAddress)) {
-            String[] strArr = facilityAddress.split(" ");
-            String blockNo = strArr[0];
-            String streetName = strArr[1];
-            String postalCode = strArr[3];
-            searchDto.setBlockNo(blockNo);
-            searchDto.setStreetName(streetName);
-            searchDto.setPostalCode(postalCode);
-
-            String[] arr = strArr[2].split("-");
-            String floorNo = arr[0];
-            String unitNo = arr[1];
-            searchDto.setFloorNo(floorNo);
-            searchDto.setUnitNo(unitNo);
-        }
+//        if (StringUtil.isNotEmpty(facilityAddress)) {
+//            String[] strArr = facilityAddress.split(" ");
+//            String blockNo = strArr[0];
+//            String streetName = strArr[1];
+//            String postalCode = strArr[3];
+//            searchDto.setBlockNo(blockNo);
+//            searchDto.setStreetName(streetName);
+//            searchDto.setPostalCode(postalCode);
+//
+//            String[] arr = strArr[2].split("-");
+//            String floorNo = arr[0];
+//            String unitNo = arr[1];
+//            searchDto.setFloorNo(floorNo);
+//            searchDto.setUnitNo(unitNo);
+//        }
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
-        //Select back the query criteria
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_NAME, facilityName);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_CLASSIFICATION, facilityClassification);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_TYPE, facilityType);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESS_TYPE, processType);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_DATE, applicationDate);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_NO, applicationNo);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_TYPE, applicationType);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_STATUS, applicationStatus);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_FACILITY_ADDRESS, facilityAddress);
     }
 
     /**
