@@ -5,9 +5,9 @@
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${applicationViewDto.systemFileType}">
     <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
     <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closeUploadDoc()">&times;</button>
                 <div class="modal-title" id="myModalLabel" style="font-size: 2rem;">Upload Internal Document</div>
             </div>
