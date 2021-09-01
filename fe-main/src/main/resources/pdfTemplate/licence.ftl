@@ -81,6 +81,9 @@
             <br></br>
             <br></br>
             <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
             <div class="lic-footer">
               <p>This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p>Ministry of Health | Page 1 of 1</p>
@@ -103,7 +106,7 @@
   <meta name="keywords" content=""></meta>
   <style type="text/css">
     @page {
-      size: 1400px 1950px;
+      size: 1400px 2030px;
     }
     * {
       page-break-inside: always;
@@ -124,7 +127,7 @@
     }
     .lic-number {
       text-align: center;
-      margin-top: 380px;
+      margin-top: 420px;
     }
     .lic-number p {
       font-size: 14pt;
