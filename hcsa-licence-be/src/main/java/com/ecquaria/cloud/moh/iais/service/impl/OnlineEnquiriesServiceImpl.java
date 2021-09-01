@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.RegistrationDetailDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -170,7 +171,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(licenceId).getEntity();
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList=IaisCommonUtils.genNewArrayList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmission.getAppSvcRelatedInfoDtoList()
-             ) {
+        ) {
             if(appSvcRelatedInfoDto.getAppSvcSectionLeaderList()!=null){
                 appSvcPersonnelDtoList.addAll(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
             }
@@ -560,10 +561,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
             if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
                 for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
-                    ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                    String adhocQuestion = preInspNc.getAdhocQuestion();
                     ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-                    reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    if (!StringUtil.isEmpty(adhocQuestion)) {
+                        reportNcRectifiedDto.setNc(adhocQuestion);
+                    } else {
+                        ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                        reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
+                    reportNcRectifiedDto.setNcs(preInspNc.getNcs());
+                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
@@ -716,6 +724,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             insRepDto.setRecommendation("-");
         }
         AppPremisesRecommendationDto appPremisesRecommendationDto =initRecommendation(appPremisesCorrelationId, applicationViewDto);
+        if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+        }
         ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess
