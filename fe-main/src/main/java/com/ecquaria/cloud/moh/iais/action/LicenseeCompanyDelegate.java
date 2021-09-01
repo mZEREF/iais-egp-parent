@@ -220,6 +220,7 @@ public class LicenseeCompanyDelegate {
             licenseeDto.setBuildingName(myInfoDto.getBuildingName());
             licenseeDto.setStreetName(myInfoDto.getStreetName());
             licenseeDto.setMobileNo(myInfoDto.getMobileNo());
+            licenseeDto.setEmilAddr(myInfoDto.getEmail());
         }else {
             ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
         }
