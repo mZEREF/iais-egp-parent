@@ -1048,6 +1048,9 @@ public class LicenceViewServiceDelegator {
                 HcsaServiceDto entity = hcsaConfigClient.getActiveHcsaServiceDtoByName(serviceName).getEntity();
                 serviceId=entity.getId();
                 appSvcRelatedInfoDto.setServiceCode(entity.getSvcCode());
+            }else {
+                HcsaServiceDto hcsaServiceDto=hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
             }
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos =
                     applicationViewService.getHcsaSvcSubtypeOrSubsumedByServiceId(serviceId);
