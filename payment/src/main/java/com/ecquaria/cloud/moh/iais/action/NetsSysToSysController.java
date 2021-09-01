@@ -166,9 +166,7 @@ public class NetsSysToSysController {
         //sample Dynamic QR
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        int minute = cal.get(Calendar.MINUTE);
-        cal.set(Calendar.MINUTE, minute + expiryMinutes);
+        cal.add(Calendar.MINUTE, expiryMinutes);
         String expiryDate = df.format(cal.getTime());
         log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
         log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);

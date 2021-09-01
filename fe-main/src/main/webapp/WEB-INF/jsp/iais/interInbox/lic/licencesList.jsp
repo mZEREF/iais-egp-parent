@@ -246,6 +246,9 @@
                             <c:if test="${InterInboxDelegator_lic_print_flag == '1'}">
                                 <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
                             </c:if>
+                            <c:if test="${InterInboxDelegator_lic_print_flag == '0'}">
+                                <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print-only-show">Print</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>

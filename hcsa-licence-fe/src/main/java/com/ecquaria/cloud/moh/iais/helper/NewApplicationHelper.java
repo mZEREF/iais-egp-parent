@@ -79,6 +79,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -3059,14 +3060,13 @@ public class NewApplicationHelper {
             }
         }
         //do sort
-        if(!IaisCommonUtils.isEmpty(reloadMap)){
-            reloadMap.forEach((k,v)->{
-                if(v != null && v.size() > 1){
-                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+        if (!IaisCommonUtils.isEmpty(reloadMap)) {
+            reloadMap.forEach((k, v) -> {
+                if (v != null && v.size() > 1) {
+                    Collections.sort(v, Comparator.comparing(AppGrpPrimaryDocDto::getSeqNum));
                 }
             });
         }
-
         return reloadMap;
     }
 
@@ -3091,10 +3091,10 @@ public class NewApplicationHelper {
             }
         }
         //do sort
-        if(!IaisCommonUtils.isEmpty(reloadMap)){
-            reloadMap.forEach((k,v)->{
-                if(v != null && v.size() > 1){
-                    Collections.sort(v,(s1,s2)->s1.getSeqNum().compareTo(s2.getSeqNum()));
+        if (!IaisCommonUtils.isEmpty(reloadMap)) {
+            reloadMap.forEach((k, v) -> {
+                if (v != null && v.size() > 1) {
+                    Collections.sort(v, Comparator.comparing(AppSvcDocDto::getSeqNum));
                 }
             });
         }
@@ -3482,17 +3482,19 @@ public class NewApplicationHelper {
 
     private static void setPremAddressForSvcScope(List<AppGrpPremisesDto> appGrpPremisesDtos,AppSvcRelatedInfoDto appSvcRelatedInfoDto){
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcLaboratoryDisciplinesDto> newAppSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtos) {
                     String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                     String premval = appSvcLaboratoryDisciplinesDto.getPremiseVal();
                     if (!StringUtil.isEmpty(premIndexNo) && premIndexNo.equals(premval)) {
                         appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(appGrpPremisesDto.getAddress());
+                        newAppSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                     }
                 }
             }
-            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtos);
+            appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(newAppSvcLaboratoryDisciplinesDtoList);
         }
     }
 
@@ -3909,6 +3911,9 @@ public class NewApplicationHelper {
     }
 
     public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+        if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
+            return;
+        }
         for(int i = 0; i< appSvcBusinessDtos.size(); i++){
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
             if(StringUtil.isEmpty(businessName)){
@@ -4242,4 +4247,36 @@ public class NewApplicationHelper {
         return appIds;
     }
 
+
+    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
+                           List<AppSubmissionDto> notAutoSaveAppsubmission) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
+            Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                notInNonAuto.add(dto);
+            }
+        });
+        List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
+        notInNonAuto.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
+            Optional<AppSubmissionDto> optional = autoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                notInAuto.add(dto);
+            }
+        });
+        autoSaveList.addAll(notInAuto);
+    }
 }

@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -310,6 +309,7 @@ public class RetriggerGiroPaymentDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     double rfcAmount = 100;
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                        appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
                         oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);
@@ -330,6 +330,7 @@ public class RetriggerGiroPaymentDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         String applicationType = appSvcRelatedInfoDto.getApplicationType();
+                        appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
                         oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);

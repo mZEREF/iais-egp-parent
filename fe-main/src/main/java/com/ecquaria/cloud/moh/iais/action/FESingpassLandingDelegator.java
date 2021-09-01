@@ -330,6 +330,7 @@ public class FESingpassLandingDelegator {
                     liceInfo.setBuildingName(myInfo.getBuildingName());
                     liceInfo.setStreetName(myInfo.getStreetName());
                     liceInfo.setMobileNo(myInfo.getMobileNo());
+                    liceInfo.setEmilAddr(myInfo.getEmail());
                     ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
