@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryAgentResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDtResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
@@ -35,7 +36,7 @@ public interface InventoryClient {
     ResponseDto<InventoryAgentResultDto> findInventoryByAgentInfo(@SpringQueryMap InventoryDto dto);
 
     @GetMapping(value = "/iny_info/date", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<InventoryAgentResultDto> findInventoryByDate(@SpringQueryMap InventoryDto dto);
+    ResponseDto<InventoryDtResultDto> findInventoryByDt(@SpringQueryMap InventoryDto dto);
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
