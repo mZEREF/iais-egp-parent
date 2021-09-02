@@ -72,10 +72,9 @@
                     <div class=" form-group form-horizontal formgap">
                         <div class="control-label formtext col-md-5 col-xs-5">
                             <label  class="control-label control-set-font control-font-label">Vehicle Number</label>
-                            <span class="mandatory">*</span>
                         </div>
                         <div class="col-md-7 col-xs-12">
-                            <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}" value="${vehicleDto.vehicleName}"></iais:input>
+                            <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}" value="${vehicleDto.dummyVehNum ? '' : vehicleDto.vehicleName}"></iais:input>
                         </div>
                     </div>
                 </div>
@@ -248,6 +247,9 @@
     }
 
     var doEdite = function () {
+        if ('1' == rfiObj){
+            return;
+        }
         $('.vehicleContent').each(function (){
             var $vehicleContent = $(this);
             $vehicleContent.find('input[type="text"]').each(function (){

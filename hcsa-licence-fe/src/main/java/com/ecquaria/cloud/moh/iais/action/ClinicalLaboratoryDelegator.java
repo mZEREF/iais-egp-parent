@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
@@ -3053,6 +3054,18 @@ public class ClinicalLaboratoryDelegator {
                 appSvcVehicleDto.setVehicleName(vehicleName);
                 appSvcVehicleDto.setChassisNum(chassisNum);
                 appSvcVehicleDto.setEngineNum(engineNum);
+                appSvcVehicleDto.setDummyVehNum(StringUtil.isEmpty(vehicleName));
+                if (appSvcVehicleDto.isDummyVehNum()){
+                    String dummyVehNum = "";
+                    AppSvcVehicleDto oldAppSvcVehicleDto = getAppSvcVehicleDtoByIndexNo(appSvcRelatedInfoDto, vehicleIndexNo);
+                    if(oldAppSvcVehicleDto != null){
+                        dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
+                    }
+                    if (StringUtil.isEmpty(dummyVehNum)){
+                        dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);
+                    }
+                    appSvcVehicleDto.setVehicleName(dummyVehNum);
+                }
                 if(StringUtil.isEmpty(vehicleIndexNo)){
                     appSvcVehicleDto.setVehicleIndexNo(UUID.randomUUID().toString());
                 }else{

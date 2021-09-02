@@ -106,12 +106,13 @@
             <td >
               <div class="col-xs-6">
                     <span class="newVal " attr="${appSvcVehicleDto.vehicleName}">
-                        <c:out value="${appSvcVehicleDto.vehicleName}"></c:out>
+                        <c:out value="${appSvcVehicleDto.dummyVehNum ? '' : appSvcVehicleDto.vehicleName}"></c:out>
                     </span>
               </div>
               <div class="col-xs-6">
                     <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}">
-                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}"></c:out>
+                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].dummyVehNum ?
+                          '' : currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}"></c:out>
                     </span>
               </div>
             </td>

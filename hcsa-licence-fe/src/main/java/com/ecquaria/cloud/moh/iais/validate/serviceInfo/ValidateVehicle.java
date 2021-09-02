@@ -49,7 +49,7 @@ public class ValidateVehicle implements ValidateFlow {
                 map.put(VEHICLE_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
             } else if (vehicleName.length() > 10) {
                 map.put(VEHICLE_NAME + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
-            } else if (!VehNoValidator.validateNumber(vehicleName)) {
+            } else if (!currentDto.isDummyVehNum() && !VehNoValidator.validateNumber(vehicleName)) {
                 map.put(VEHICLE_NAME + i, "GENERAL_ERR0017");
             } else {
                 vehicleName = vehicleName.toLowerCase(AppConsts.DFT_LOCALE);

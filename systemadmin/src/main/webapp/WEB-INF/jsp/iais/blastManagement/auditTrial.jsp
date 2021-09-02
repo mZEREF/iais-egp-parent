@@ -30,7 +30,7 @@
                             <thead>
                             <c:choose>
                                 <c:when test="${'Email'.equals(mode)}">
-                                    <tr align="center">
+                                    <tr >
                                         <th scope="col" >S/N</th>
                                         <th scope="col" >Recipient</th>
                                         <th scope="col" >Subject</th>
