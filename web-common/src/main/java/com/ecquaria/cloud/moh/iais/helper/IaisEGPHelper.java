@@ -922,9 +922,8 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static String generateDummyVehicleNum() {
-        Date date = new Date();
-        String dateStr = Formatter.formatDateTime(date, "yyyyMMddHHmmssSSS");
+        String timeStr = String.valueOf(System.currentTimeMillis());
 
-        return dateStr.substring(dateStr.length() - 11);
+        return timeStr.substring(timeStr.length() - 11);
     }
 }
