@@ -921,9 +921,8 @@ public final class IaisEGPHelper extends EGPHelper {
         }
     }
 
-    public static String generateDummyVehicleNum() {
-        String timeStr = String.valueOf(System.currentTimeMillis());
-
-        return timeStr.substring(timeStr.length() - 11);
+    public static String generateDummyVehicleNum(int index) {
+        String timeStr = String.valueOf(System.currentTimeMillis()) + index;
+        return timeStr.substring(timeStr.length() - 10);
     }
 }
