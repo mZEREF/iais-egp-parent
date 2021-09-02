@@ -99,9 +99,12 @@ public class LicenseeCompanyDelegate {
                     OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
                     orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
                 }else{
-                    if("saveDataSolo".equalsIgnoreCase(ParamUtil.getString(bpc.request,"saveDataSolo"))){
+                    String actionStep = ParamUtil.getString(bpc.request,"saveDataSolo");
+                    if("saveDataSolo".equalsIgnoreCase(actionStep)){
                         setSoloPageDto(bpc.request,licenseeDto);
-                    }else {
+                    }else if(MyinfoUtil.CLEAR_MYINFO_ACTION.equalsIgnoreCase(actionStep)){
+                        clearInfo(bpc.request);
+                    } else {
                         MyInfoDto myInfoDto = myInfoAjax.getMyInfo(loginContext.getNricNum(),bpc.request);
                         if(myInfoDto != null){
                             if(!myInfoDto.isServiceDown()){
@@ -124,6 +127,29 @@ public class LicenseeCompanyDelegate {
         }else{
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
         }
+    }
+
+
+    public void clearInfo(HttpServletRequest request){
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        getLicDataUserIdForSolo(request,loginContext,licenseeDto);
+        if(licenseeDto != null){
+            licenseeDto.setMobileNo(null);
+            licenseeDto.setAddrType(null);
+            licenseeDto.setFloorNo(null);
+            licenseeDto.setPostalCode(null);
+            licenseeDto.setUnitNo(null);
+            licenseeDto.setBlkNo(null);
+            licenseeDto.setBuildingName(null);
+            licenseeDto.setStreetName(null);
+            licenseeDto.setMobileNo(null);
+            licenseeDto.setEmilAddr(null);
+            licenseeDto.setFromMyInfo(0);
+            ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.NO);
+        }
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.NO);
     }
 
     public void company(BaseProcessClass bpc) {
@@ -164,6 +190,7 @@ public class LicenseeCompanyDelegate {
                     myInfoDto.setBlockNo(licenseeDto.getBlkNo());
                     myInfoDto.setBuildingName(licenseeDto.getBuildingName());
                     myInfoDto.setStreetName(licenseeDto.getStreetName());
+                    feUserDto.setFromMyInfo(licenseeDto.getFromMyInfo());
                     orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,true);
                 }
             }
@@ -184,6 +211,9 @@ public class LicenseeCompanyDelegate {
              if( loginContext.getNricNum().equalsIgnoreCase(licenseeDto.getLicenseeIndividualDto().getIdNo())){
                  //no need SOLO_lOGIN_NAME,can get login user get
                  ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,null);
+                 licenseeDto.setFromMyInfo(feUserDto.getFromMyInfo());
+                 ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
+                 ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
              }else {
                  ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,feUserDto.getDisplayName());
              }
@@ -194,8 +224,19 @@ public class LicenseeCompanyDelegate {
      }
 
      private void setSoloPageDto(HttpServletRequest request, LicenseeDto licenseeDto){
+         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
+         licenseeDto.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
+         licenseeDto.setEmilAddr(ParamUtil.getString(request,"emailAddr"));
+         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
+             licenseeDto.setFromMyInfo(1);
+             ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
+             ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+             ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.YES);
+             return;
+         }else {
+             licenseeDto.setFromMyInfo(0);
+         }
         licenseeDto.setPostalCode(ParamUtil.getString(request,"postalCode"));
-        licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
         licenseeDto.setBlkNo(ParamUtil.getString(request,"blkNo"));
         licenseeDto.setFloorNo(ParamUtil.getString(request,"floorNo"));
         licenseeDto.setUnitNo(ParamUtil.getString(request,"unitNo"));
@@ -204,6 +245,7 @@ public class LicenseeCompanyDelegate {
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
         licenseeDto.setEmilAddr(ParamUtil.getString(request,"emailAddr"));
+        ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(licenseeDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.YES);
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
     }
@@ -221,6 +263,8 @@ public class LicenseeCompanyDelegate {
             licenseeDto.setStreetName(myInfoDto.getStreetName());
             licenseeDto.setMobileNo(myInfoDto.getMobileNo());
             licenseeDto.setEmilAddr(myInfoDto.getEmail());
+            licenseeDto.setFromMyInfo(1);
+            ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.YES);
         }else {
             ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
         }

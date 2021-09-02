@@ -49,6 +49,7 @@
                                             </div>
                                          <c:if test="${empty solo_login_name}">
                                             <div class="text-right col-xs-9 col-md-9">
+                                                <button type="button" class="btn btn-secondary" onclick="javascript:doClearlicInfo()">Clear</button>
                                                     <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
                                                 <input type="hidden" id="saveDataSolo" name="saveDataSolo" >
                                             </div>
@@ -78,6 +79,12 @@
         $("#saveDataSolo").val("saveDataSolo");
         $('#mainForm').submit();
     })
+
+    function doClearlicInfo(){
+        $("[name='crud_action_type']").val('refresh');
+        $("#saveDataSolo").val("clearMyInfo");
+        $('#mainForm').submit();
+    }
     function reLoadMyInfoTodo() {
         if(verifyTaken()){
             $("[name='crud_action_type']").val('refresh');
