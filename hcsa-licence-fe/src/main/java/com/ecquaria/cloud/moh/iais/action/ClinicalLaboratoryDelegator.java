@@ -50,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -3841,6 +3840,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         if(map.isEmpty()){
+            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
             if (appSvcCgoList != null) {
@@ -3865,7 +3865,7 @@ public class ClinicalLaboratoryDelegator {
                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                     String string = stringBuilder.toString();
                     String substring = string.substring(0, string.lastIndexOf(','));
-                    String error = MessageUtil.getMessageDesc("NEW_ERR0011");
+
                     if (substring.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }
@@ -3901,7 +3901,6 @@ public class ClinicalLaboratoryDelegator {
                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                     String string = stringBuilder.toString();
                     String substring = string.substring(0, string.lastIndexOf(','));
-                    String error = MessageUtil.getMessageDesc("NEW_ERR0011");
                     if (substring.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }

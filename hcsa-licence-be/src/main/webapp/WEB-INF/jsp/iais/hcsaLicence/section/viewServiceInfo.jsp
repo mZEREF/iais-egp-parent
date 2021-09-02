@@ -676,6 +676,7 @@
         <span class="col-xs-6"></span>
         <table aria-describedby="" class="col-xs-12">
           <tr>
+            <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
             </td>
@@ -752,6 +753,7 @@
         <span class="col-xs-6"></span>
         <table aria-describedby="" class="col-xs-12">
           <tr>
+            <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
             </td>
@@ -853,6 +855,7 @@
             <div class="col-xs-12">
               <table aria-describedby="" class="col-xs-12">
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                   </td>
@@ -1815,6 +1818,7 @@
                   </c:when>
                   <c:otherwise>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
                         </p>
@@ -1901,6 +1905,7 @@
               </c:if>
               <table aria-describedby="" class="col-xs-12">
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                   </td>
@@ -2212,6 +2217,7 @@
               <table aria-describedby="" class="col-xs-12">
 
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                     </p>
@@ -2357,6 +2363,7 @@
               <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
                 <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td>
                     <div class="field col-sm-12 control-label formtext"><label>${svcDoc.key}</label></div>
                   </td>
