@@ -39,6 +39,17 @@
     .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
         margin-left: -5px;
     }
+    @media only screen and (max-width: 767px){
+        .table-gp table.table > tbody > tr > td {
+            display: inline-grid;
+            width: 35%;
+            padding: 0;
+            border: 0;
+            margin-bottom: 15px;
+            padding-right: 2%;
+        }
+    }
+
 </style>
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>

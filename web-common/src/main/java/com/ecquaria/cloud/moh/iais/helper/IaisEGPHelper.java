@@ -920,4 +920,10 @@ public final class IaisEGPHelper extends EGPHelper {
             }
         }
     }
+
+    public static String generateDummyVehicleNum() {
+        String timeStr = String.valueOf(System.currentTimeMillis());
+
+        return timeStr.substring(timeStr.length() - 11);
+    }
 }

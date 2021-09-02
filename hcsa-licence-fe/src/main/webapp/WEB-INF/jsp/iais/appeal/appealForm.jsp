@@ -22,10 +22,10 @@
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
     <div id="div_print">
       <div class="form-group">
-        <div class="col-xs-12 col-md-10" style="margin-left: 2%">
+        <div class="col-xs-12 col-md-9" style="margin-left: 2%">
           <label style="font-size: 25px">You are appealing for:</label>
         </div>
-        <div class="col-xs-12 col-sm-1">
+        <div class="col-xs-12 col-sm-2">
           <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
         </div>
         <div  class="col-xs-12 col-md-10">
