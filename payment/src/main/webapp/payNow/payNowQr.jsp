@@ -42,6 +42,9 @@
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
 
     function payNowImgStringRefresh(){
+        if(${GatewayPayNowConfig.timeout=="0"}){
+            return;
+        }
         $.ajax({
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
