@@ -76,17 +76,13 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10">
-                                                                                <iais:value width="10"><p><iais:code code="${applicationInfo.facility.riskLevel}"></iais:code></p></iais:value>
-                                                                            </iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${applicationInfo.facility.riskLevel}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Comments on Risk Level Assessment" required="false" width="12"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:value width="10"><p>${applicationInfo.facility.riskLevelComments}</p></iais:value>
-                                                                            </iais:value>
+                                                                            <iais:value width="10"><p>${applicationInfo.facility.riskLevelComments}</p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -98,9 +94,7 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Review Decision" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:value width="10"><p><iais:code code="${applicationInfo.status}"></iais:code></p></iais:value>
-                                                                            </iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${applicationInfo.status}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div id="AORemarks">
@@ -146,7 +140,9 @@
                                                                 <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
-                                                                    <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
+                                                                    <c:if test="${(applicationInfo.processType=='PROTYPE002' || applicationInfo.processType=='PROTYPE003' || applicationInfo.processType=='PROTYPE004' || applicationInfo.processType=='PROTYPE005')}">
+                                                                        <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
+                                                                    </c:if>
                                                                     <button name="submitBtn" id="hmScreeningSubmitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>

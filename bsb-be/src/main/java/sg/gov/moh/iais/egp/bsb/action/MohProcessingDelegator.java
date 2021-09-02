@@ -47,7 +47,8 @@ public class MohProcessingDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        Application application = processClient.getApplicationById("A0C45E68-F506-EC11-BE6E-000C298D317C").getEntity();
+        String appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
+        Application application = processClient.getApplicationById(appId).getEntity();
         List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
         application.setBiologicalList(biologicalList);

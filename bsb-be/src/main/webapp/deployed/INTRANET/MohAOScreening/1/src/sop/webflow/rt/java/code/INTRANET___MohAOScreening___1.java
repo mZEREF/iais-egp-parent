@@ -47,4 +47,9 @@ public class INTRANET___MohAOScreening___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "routeToHM", this);
 	}
 
+	public void aoApproved_OnStepProcess_0() throws Exception {
+	// 		aoApproved->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "aoApproved", this);
+	}
+
 }

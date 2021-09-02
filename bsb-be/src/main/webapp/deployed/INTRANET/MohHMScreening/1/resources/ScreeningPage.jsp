@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/process/higherManagement/screeningPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/process/hmScreeningPage.jsp"%>

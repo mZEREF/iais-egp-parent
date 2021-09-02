@@ -23,6 +23,6 @@ public class ProcessContants {
 
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
     public static final String DO_PROCESS_DECISION = "doProcessDecision";
-
+    public static final String PARAM_APP_ID = "appId";
 
 }

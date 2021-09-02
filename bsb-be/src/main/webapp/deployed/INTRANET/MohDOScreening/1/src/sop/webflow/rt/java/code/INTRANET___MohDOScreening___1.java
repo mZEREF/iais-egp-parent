@@ -42,4 +42,14 @@ public class INTRANET___MohDOScreening___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "requestForInformation", this);
 	}
 
+	public void recommendApproval_OnStepProcess_0() throws Exception {
+	// 		recommendApproval->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "recommendApproval", this);
+	}
+
+	public void recommendRejection_OnStepProcess_0() throws Exception {
+	// 		recommendRejection->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "recommendRejection", this);
+	}
+
 }
