@@ -124,7 +124,7 @@ public class PaymentServiceImpl implements PaymentService {
      */
     @Override
     public SoapiS2SResponse sendTxnQueryReqToGW( String secretKey,
-                                    String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
+                                                 String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
         String strGWPostURL= gateWayUrl+"/v1/enets/GW2/TxnQuery";
         ObjectMapper mapper = new ObjectMapper();
         String soapiToGW = mapper.writeValueAsString(soapiTxnQueryReq);
@@ -170,5 +170,33 @@ public class PaymentServiceImpl implements PaymentService {
             return null;
 //handle exception flow
         }
+    }
+
+    @Override
+    public void retrievePayNowPayment(PaymentRequestDto paymentRequestDto)  {
+        String appGrpNo;
+        try{
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+        }catch (Exception e){
+            appGrpNo=paymentRequestDto.getReqRefNo();
+        }
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
+        if(paymentDto!=null){
+            paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            paymentClient.saveHcsaPayment(paymentDto);
+        }else{
+            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+        }
+        applicationGroupDto.setPaymentDt(new Date());
+        applicationGroupDto.setPmtRefNo(appGrpNo);
+        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW);
+        applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+            paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
+        paymentClient.updatePaymentResquset(paymentRequestDto);
     }
 }
