@@ -73,7 +73,7 @@ public class SyncFEAuditTrailBatchjobTest {
 
     private List<AuditTrailEntityDto> auditList;
 
-    @Before
+    //@Before
     public void setup() {
         Whitebox.setInternalState(job, "syncAuditTrailRecordsService", service);
         auditList = IaisCommonUtils.genNewArrayList();
