@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -242,7 +243,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 		paymentDto.setReqRefNo(refNo);
 		paymentDto.setTxnRefNo(transNo);
 		paymentDto.setInvoiceNo(invoiceNo);
-
+		paymentDto.setResponseMsg(JsonUtil.parseToJson(paymentIntent));
 		paymentDto.setPmtStatus(status);
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);

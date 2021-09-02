@@ -580,6 +580,24 @@
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }
+        $("textarea[maxlength]").blur(function() {
+            var area=$(this);
+            var max = parseInt(area.attr("maxlength"),10);
+            if (max > 0) {
+                var value = area.val();
+                var valueLength = area.val().length;
+                if (value && value.indexOf("\n") > -1) {
+                    valueLength += value.split('\n').length - 1;
+                }
+                if (valueLength > max) {
+                    var targetVal = value.substr(0, max);
+                    if (value && value.indexOf("\n") > -1) {
+                        targetVal = value.replaceAll("\n", "\r\n").substr(0, max).replaceAll("\r\n", "\n");
+                    }
+                    area.val(targetVal);
+                }
+            }
+        });
     });
 
 </script>

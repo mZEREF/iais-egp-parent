@@ -117,6 +117,7 @@ public class StripeServiceImpl implements StripeService {
         }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(paymentIntent));
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -132,7 +133,7 @@ public class StripeServiceImpl implements StripeService {
             paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
             paymentDto.setTxnRefNo("TRANS");
             paymentDto.setInvoiceNo("1234567");
-
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(paymentIntent));
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -229,7 +230,7 @@ public class StripeServiceImpl implements StripeService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ApiResource.RequestMethod method=ApiResource.RequestMethod.POST;
         RequestOptions options=RequestOptions.getDefault();
-    // Accept
+        // Accept
         headers.set("Accept", "application/json");
         // Accept-Charset
         headers.set("Accept-Charset", ApiResource.CHARSET.name());

@@ -4204,8 +4204,17 @@ public class NewApplicationDelegator {
                     appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
                 }
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-                if (appSvcDisciplineAllocationDtoList != null && dto.getAppSvcDisciplineAllocationDtoList() != null) {
-                    appSvcDisciplineAllocationDtoList.addAll(dto.getAppSvcDisciplineAllocationDtoList());
+                List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                if (appSvcDisciplineAllocationDtoList != null && otherAppSvcDisciplineAllocationDtoList != null) {
+                    for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
+                        for (AppSvcDisciplineAllocationDto otherAppSvcDisciplineAllocationDto : otherAppSvcDisciplineAllocationDtoList) {
+                            if (StringUtil.isNotEmpty(otherAppSvcDisciplineAllocationDto.getSectionLeaderName()) &&
+                                    otherAppSvcDisciplineAllocationDto.getSectionLeaderName().equals(appSvcDisciplineAllocationDto.getSectionLeaderName())) {
+                                otherAppSvcDisciplineAllocationDto.setSlIndex(appSvcDisciplineAllocationDto.getSlIndex());
+                            }
+                        }
+                    }
+                    appSvcDisciplineAllocationDtoList.addAll(otherAppSvcDisciplineAllocationDtoList);
                     appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
                 }
 

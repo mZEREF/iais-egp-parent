@@ -67,6 +67,10 @@ public class MyinfoUtil {
 	public static final  String MYINFO_TRANSFER_CALL_BACK = "myinfo_transfer_call_back";
 	public static final  String SINGPASS_LOGIN                = "myinfo_sinpass_login_evaluate";
 	public static final  String NO_GET_NAME_SHOW_NAME           = "-";
+
+	public static final  String CLEAR_MYINFO_ACTION = "clearMyInfo";
+
+	public static final  String IS_LOAD_MYINFO_DATA  = "isLoadMyInfoData";
 	/**
 	 * Retrieves Person data from MyInfo
 	 *

@@ -138,7 +138,8 @@ public class NetsSysToSysController {
     String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
             String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
             AuditTrailDto auditTrailDto = new AuditTrailDto();
@@ -151,8 +152,7 @@ public class NetsSysToSysController {
             RedirectUtil.redirect(url, request, response);
 
         }
-        String appGrpNo=reqNo;
-        appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+
 
         QRGenerator qrGenerator = new QRGeneratorImpl();
 

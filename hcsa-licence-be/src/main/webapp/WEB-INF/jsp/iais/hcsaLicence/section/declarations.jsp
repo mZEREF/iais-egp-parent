@@ -13,7 +13,7 @@
     <%@include file="../declarations/document.jsp"%>
     <%@include file="../declarations/statements.jsp"%>
   </c:if>
-      <c:set var="renew_rfc_show" value="${( renew_rfc_show=='Y'|| (not empty appSubmissionDto.appDeclarationMessageDto && appSubmissionDto.appDeclarationMessageDto.appType == 'APTY004')) ? 'Y' : 'N'}"/>
+
   <c:if test="${appSubmissionDto.appType == 'APTY005'&&renew_rfc_show=='Y'}">
     <%@include file="../declarations/preliminaryQuestion.jsp"%>
     <%@include file="../declarations/document.jsp"%>
