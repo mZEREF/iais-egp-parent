@@ -308,7 +308,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		paymentDto.setReqRefNo(refNo);
 		paymentDto.setTxnRefNo(transNo);
 		paymentDto.setInvoiceNo(invoiceNo);
-
+		paymentDto.setResponseMsg(txnRes);
 		paymentDto.setPmtStatus(status);
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
