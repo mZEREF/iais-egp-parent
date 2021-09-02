@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -76,6 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(soapiS2SResponse));
             if( "0".equals(soapiS2SResponse.getMsg().getNetsTxnStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -87,6 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }else{
             paymentDto = new PaymentDto();
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(soapiS2SResponse));
             paymentDto.setAmount(paymentRequestDto.getAmount());
             paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
             paymentDto.setTxnRefNo("TRANS");
