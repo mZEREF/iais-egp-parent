@@ -19,7 +19,7 @@
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">
             <thead>
-              <tr align="center">
+              <tr>
                 <th scope="col" width="5%">S/N</th>
                 <th scope="col" width="25%">Vehicle</th>
                 <th scope="col" width="35%">Recommendation</th>
@@ -30,12 +30,12 @@
             <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
               <tr>
                 <td><c:out value="${status.count}"></c:out></td>
-                <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+                <td><c:out value="${appVehicleNo.displayName}"/></td>
                 <td>
-                  <input class="form-check-input vehicle-approve" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
+                  <input class="form-check-input vehicle-approve" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>&nbsp;&nbsp;&nbsp;
                   <label class="form-check-label"><span class="check-circle"></span>Approve</label>
                   &nbsp;
-                  <input class="form-check-input vehicle-reject" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
+                  <input class="form-check-input vehicle-reject" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>&nbsp;&nbsp;&nbsp;
                   <label class="form-check-label"><span class="check-circle"></span>Reject</label>
                   <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>
                 </td>
@@ -59,7 +59,7 @@
         <div class="table-gp" id = "processRecRfi">
           <table aria-describedby="" class="table">
             <thead>
-            <tr align="center">
+            <tr>
               <th scope="col" width="5%">S/N</th>
               <th scope="col" width="30%">Vehicle</th>
               <th scope="col" width="30%">Recommendation</th>
@@ -70,7 +70,7 @@
             <c:forEach var="appVehicleNo" items="${appFlowSvcVehicleDtos}" varStatus="status">
               <tr>
                 <td><c:out value="${status.count}"></c:out></td>
-                <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+                <td><c:out value="${appVehicleNo.displayName}"/></td>
                 <td>
                   <c:choose>
                     <c:when test="${'VEST002' eq appVehicleNo.status}">
