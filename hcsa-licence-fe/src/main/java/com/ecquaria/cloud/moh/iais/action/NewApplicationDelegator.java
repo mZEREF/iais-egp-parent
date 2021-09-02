@@ -407,16 +407,6 @@ public class NewApplicationDelegator {
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             if (!"saveDraft".equals(actionValue)) {
                 appSubmissionService.validateSubLicenseeDto(errorMap, subLicenseeDto, bpc.request);
-                // synchronize the licencsee map
-                /*if (errorMap.isEmpty() && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())) {
-                    Map<String, SubLicenseeDto> licenseeMap = (Map<String, SubLicenseeDto>) bpc.request.getSession().getAttribute(LICENSEE_MAP);
-                    if (licenseeMap != null && !licenseeMap.isEmpty()) {
-                        String personKey = NewApplicationHelper.getPersonKey(subLicenseeDto.getIdType(), subLicenseeDto.getIdNumber());
-                        licenseeMap.computeIfPresent(personKey,
-                                (key, old) -> MiscUtil.transferEntityDto(subLicenseeDto, SubLicenseeDto.class, null, old));
-                        bpc.request.getSession().setAttribute(LICENSEE_MAP, licenseeMap);
-                    }
-                }*/
             }
         }
 
@@ -429,12 +419,10 @@ public class NewApplicationDelegator {
             bpc.request.setAttribute("errormapIs", "error");
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("licensee", "");
-            //coMap.put("serviceConfig", sB.toString());
             bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         } else {
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
             coMap.put("licensee", "licensee");
-            //coMap.put("serviceConfig", sB.toString());
             bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
             String actionAdditional = ParamUtil.getString(bpc.request, "crud_action_additional");
             if ("rfcSaveDraft".equals(actionAdditional)) {
@@ -2932,11 +2920,20 @@ public class NewApplicationDelegator {
             } else {
                 switch2 = "information";
             }
-
+        } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            // 72106
+            String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+            if (!"licensee".equals(action) && !"premises".equals(action)) {
+                AppGrpPremisesDto premisse = appSubmissionDto.getAppGrpPremisesDtoList() != null
+                        && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0 ?
+                        appSubmissionDto.getAppGrpPremisesDtoList().get(0) : null;
+                if (premisse == null || StringUtil.isEmpty(premisse.getPremisesType())) {
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "premises");
+                }
+            }
         }
         ParamUtil.setRequestAttr(bpc.request, "Switch2", switch2);
         log.info(StringUtil.changeForLog("the do controlSwitch end ...."));
-
     }
 
     /**
@@ -3098,11 +3095,8 @@ public class NewApplicationDelegator {
                 bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmission);
             }
         }
-        if(draftNo!=null){
-            AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
-            if(draftAppSubmissionDto!=null){
-                applicationFeClient.deleteDraftByNo(draftNo);
-            }
+        if (draftNo != null) {
+            applicationFeClient.deleteDraftByNo(draftNo);
         }
         if (!StringUtil.isEmpty(appSubmissionDto)&&!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationFeClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
@@ -3174,65 +3168,6 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do prepareJump end ...."));
     }
 
-    //=============================================================================
-    //private method
-    //=============================================================================
-
-    private String getServiceCodeString(List<String> serviceCodeList) {
-        StringBuilder serviceCodeString = new StringBuilder(10);
-        for (String code : serviceCodeList) {
-            serviceCodeString.append(code);
-            serviceCodeString.append('@');
-        }
-        return serviceCodeString.toString();
-    }
-
-    private void sendMessageHelper(String subject, String messageType, String srcSystemId, String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams) {
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(srcSystemId);
-        interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(messageType);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String refNo = feEicGatewayClient.getMessageNo(signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
-        interMessageDto.setRefNo(refNo);
-        interMessageDto.setService_id(serviceId);
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        interMessageDto.setMsgContent(templateMessageByContent);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        feMessageClient.createInboxMessage(interMessageDto);
-    }
-
-    //send email helper
-    private String sendEmailHelper(Map<String, Object> tempMap, String msgTemplateId, String subject, String licenseeId, String clientQueryCode) {
-        MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(msgTemplateId);
-        if (tempMap == null || tempMap.isEmpty() || msgTemplateDto == null
-                || StringUtil.isEmpty(msgTemplateId)
-                || StringUtil.isEmpty(subject)
-                || StringUtil.isEmpty(licenseeId)
-                || StringUtil.isEmpty(clientQueryCode)) {
-            return null;
-        }
-        String mesContext = null;
-        try {
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-        } catch (IOException | TemplateException e) {
-            log.error(e.getMessage(), e);
-        }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(mesContext);
-        emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + subject);
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(clientQueryCode);
-        //send
-        appSubmissionService.feSendEmail(emailDto);
-
-        return mesContext;
-    }
-
     private Map<String, String> doComChange(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         Map<String, String> result = IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
@@ -3282,9 +3217,6 @@ public class NewApplicationDelegator {
         }
         return result;
     }
-
-
-
 
     private AmendmentFeeDto getAmendmentFeeDto(boolean changeHciName, boolean changeLocation, boolean changeVehicles,
             boolean isCharity, boolean changeBusiness) {
@@ -4262,12 +4194,12 @@ public class NewApplicationDelegator {
                             && Objects.equals(p.getName(), dto.getName()))
                     .findAny()
                     .map(PersonnelDto::getPsnIndexNo)
-                    .orElseGet(() -> srcPsnIndexNo);
+                    .orElse(srcPsnIndexNo);
         }
         return psnIndexNo;
     }
 
-    private boolean loadingServiceConfig(BaseProcessClass bpc) throws CloneNotSupportedException {
+    private boolean loadingServiceConfig(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do loadingServiceConfig start ...."));
         //loading the service
         List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
