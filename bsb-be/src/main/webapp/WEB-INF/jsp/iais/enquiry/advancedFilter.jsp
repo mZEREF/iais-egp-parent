@@ -220,7 +220,7 @@
                     <iais:row>
                         <iais:field value="Application No"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <input type="text" id="applicationNo" name="applicationNo" maxlength="66" style=" font-weight:normal"  ;/>
+                            <input type="text" id="applicationNo" name="applicationNo" maxlength="66" style=" font-weight:normal" value="${appInfoSearchParam.applicationNo}"/>
                         </div >
                     </iais:row>
                     <iais:row>

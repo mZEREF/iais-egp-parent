@@ -110,8 +110,3 @@
     </div>
   </form>
 </div>
-<script>
-  function doBack() {
-    SOP.Crud.cfxSubmit('mainForm', 'back');
-  }
-</script>

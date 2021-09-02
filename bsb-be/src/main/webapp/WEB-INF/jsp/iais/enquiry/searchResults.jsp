@@ -20,13 +20,13 @@
                                                                  field="applicationNo"
                                                                  value="Application No"/>
                                             <iais:sortableHeader needSort="true"
-                                                                 field="applicationType"
+                                                                 field="appType"
                                                                  value="Application Type"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field="Application Status"
                                                                  value="Application Status"/>
                                             <iais:sortableHeader needSort="true"
-                                                                 field="applicationSubmissionDate"
+                                                                 field="applicationDt"
                                                                  value="Application Submission Date"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="approvalDate"
@@ -50,13 +50,13 @@
                                                                  field="Process Type"
                                                                  value="Process Type"/>
                                             <iais:sortableHeader needSort="false"
-                                                                 field="Verified By DO"
+                                                                 field="doVerifiedDt"
                                                                  value="Verified By DO"/>
                                             <iais:sortableHeader needSort="false"
-                                                                 field="Verified By AO"
+                                                                 field="aoVerifiedDt"
                                                                  value="Verified By AO"/>
                                             <iais:sortableHeader needSort="false"
-                                                                 field="Verified By HM"
+                                                                 field="hmVerifiedDt"
                                                                  value="Verified By HM"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field="Action"
@@ -85,19 +85,7 @@
                                                             <td><iais:code code="${items.facility.facilityType}"></iais:code></td>
                                                             <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
                                                             <td><c:out value="${items.bioName}"></c:out></td>
-                                                            <td>
-<%--                                                                <c:forEach items="${items.facility.facilitySchedules}" var="schedules" varStatus="s1">--%>
-<%--                                                                    <c:forEach items="${schedules.facilityBiologicalAgents}" var="agent" varStatus="s2">--%>
-<%--                                                                        <c:if test="${s1.last || s2.last}">--%>
-<%--                                                                        <iais:code code="${agent.riskLevel}"></iais:code>--%>
-<%--                                                                        </c:if>--%>
-<%--                                                                        <c:if test="${!s1.last || !s2.last}">--%>
-<%--                                                                            <iais:code code="${agent.riskLevel}"></iais:code>,--%>
-<%--                                                                        </c:if>--%>
-<%--                                                                    </c:forEach>--%>
-<%--                                                                </c:forEach>--%>
-                                                            <iais:code code="${items.riskLevel}"></iais:code>
-                                                            </td>
+                                                            <td><iais:code code="${items.riskLevel}"></iais:code></td>
                                                             <td><iais:code code="${items.processType}"></iais:code></td>
                                                             <td><fmt:formatDate value='${items.doVerifiedDt}' pattern='dd/MM/yyyy'/></td>
                                                             <td><fmt:formatDate value='${items.aoVerifiedDt}' pattern='dd/MM/yyyy'/></td>
@@ -134,8 +122,8 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Risk Level of the Biological Agent/Toxin"
                                                                  value="Risk Level of the Biological Agent/Toxin"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Facility Expiry Date"
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="facilitySchedule.facility.expiryDt"
                                                                  value="Facility Expiry Date"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field="Gazetted Area"
@@ -304,7 +292,7 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Approved Date"
                                                                  value="Approved Date"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="Expiry Date"
                                                                  value="Expiry Date"/>
                                             <iais:sortableHeader needSort="false"

@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
@@ -64,5 +65,31 @@ public class BiologicalName {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public  Method getSetMethod(Class objectClass, String fieldName) {
+        try {
+            Class[] parameterTypes = new Class[1];
+            Field field = objectClass.getDeclaredField(fieldName);
+            parameterTypes[0] = field.getType();
+            StringBuffer sb = new StringBuffer();
+            sb.append("set");
+            sb.append(fieldName.substring(0, 1).toUpperCase());
+            sb.append(fieldName.substring(1));
+            Method method = objectClass.getMethod(sb.toString(), parameterTypes);
+            return method;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public  void invokeSet(Object o, String fieldName, String bioId, BiosafetyEnquiryClient biosafetyEnquiryClient) {
+        Method method = getSetMethod(o.getClass(), fieldName);
+        try {
+            method.invoke(o, new Object[] { biosafetyEnquiryClient.getBiologicalById(bioId).getEntity().getName() });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

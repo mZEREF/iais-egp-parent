@@ -23,6 +23,12 @@ public class INTRANET___MohBiosafetyEnquiry___1 extends BaseProcessClass {
 
 	public void basicSearchDoPage_OnStepProcess_0() throws Exception {
 	// 		BasicSearchDoPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "page", this);
+
+	}
+	public void doSort_OnStepProcess_0() throws Exception {
+		// 		doSort->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "sort", this);
 	}
 
 }

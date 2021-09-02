@@ -67,11 +67,18 @@ public class BiosafetyEnquiryDelegator {
             switch (count){
                 case "app":
                     ApplicationResultDto  applicationResultDto= biosafetyEnquiryClient.queryApplicationByAppNo(searchNo).getEntity();
+                    for (Application application : applicationResultDto.getBsbApp()){
+                        application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(),processClient));
+                        application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(),processClient));
+                    }
                     ParamUtil.setRequestAttr(bpc.request,"applicationInfoDto",applicationResultDto.getBsbApp());
                     ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
                     break;
                 case "fn":
                     FacilityResultDto facilityInfoDto = biosafetyEnquiryClient.queryFacilityByFacName(searchNo).getEntity();
+                    for (FacilityBiologicalAgent agent : facilityInfoDto.getBsbFac()) {
+                        agent.setBioName(biosafetyEnquiryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
+                    }
                     ParamUtil.setRequestAttr(bpc.request,"facilityInfoDto",facilityInfoDto.getBsbFac());
                     ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, facilityInfoDto.getPageInfo());
                     break;
@@ -272,11 +279,7 @@ public class BiosafetyEnquiryDelegator {
             enquiryDto.setFacilityClassification(facilityClassification);
         }
         if (facilityType != null && facilityType.length>0 ) {
-            List<String> facType = IaisCommonUtils.genNewArrayList();
-            for (String s : facilityType) {
-                facType.add(s);
-            }
-            enquiryDto.setFacilityType(facType);
+            enquiryDto.setFacilityType(Arrays.asList(facilityType));
         }
         if (StringUtil.isNotEmpty(facilityName)) {
             enquiryDto.setFacilityName(facilityName);
@@ -334,7 +337,7 @@ public class BiosafetyEnquiryDelegator {
         }
         if(natureOfTheSample != null && natureOfTheSample.length>0){
             StringBuilder stringBuilder = new StringBuilder();
-            List<String> natures = IaisCommonUtils.genNewArrayList();
+            List<String> natures = Arrays.asList(natureOfTheSample);
             for (int i = 0; i < natureOfTheSample.length; i++) {
                 natures.add(natureOfTheSample[i]);
                 if ((i + 1 == natureOfTheSample.length)) {
@@ -393,7 +396,6 @@ public class BiosafetyEnquiryDelegator {
             for (Application application : applicationResultDto.getBsbApp()){
             application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(),processClient));
             application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(),processClient));
-
             }
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
@@ -403,7 +405,7 @@ public class BiosafetyEnquiryDelegator {
         if("fn".equals(count)){
             FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
             for (FacilityBiologicalAgent agent : facilityResultDto.getBsbFac()) {
-                invokeSet(agent,"bioName",agent.getBiologicalId());
+                agent.setBioName(biosafetyEnquiryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
             }
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT,facilityResultDto.getBsbFac());
             ParamUtil.setRequestAttr(request,BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH,enquiryDto);
@@ -452,6 +454,7 @@ public class BiosafetyEnquiryDelegator {
                 applicationInfoDto.setApplicationNo(application.getApplicationNo());
                 applicationInfoDto.setRiskLevel(application.getRiskLevel());
                 applicationInfoDto.setAppType(application.getAppType());
+                applicationInfoDto.setAppStatus(application.getStatus());
                 applicationInfoDto.setProcessType(application.getProcessType());
                 applicationInfoDto.setFacilityName(application.getFacility().getFacilityName());
                 applicationInfoDto.setFacilityClassification(application.getFacility().getFacilityClassification());
@@ -464,13 +467,13 @@ public class BiosafetyEnquiryDelegator {
                 applicationInfoDto.setAoVerifiedDt(application.getAoVerifiedDt());
                 applicationInfoDtos.add(applicationInfoDto);
             }
-            applicationInfoDtos.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
+            applicationInfoDtos.forEach(i -> i.setAppStatus(MasterCodeUtil.getCodeDesc(i.getAppStatus())));
             applicationInfoDtos.forEach(i -> i.setAppType(MasterCodeUtil.getCodeDesc(i.getAppType())));
             applicationInfoDtos.forEach(i->i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
             applicationInfoDtos.forEach(i->i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
             applicationInfoDtos.forEach(i -> i.setProcessType(MasterCodeUtil.getCodeDesc(i.getProcessType())));
             try {
-                file = ExcelWriter.writerToExcel(queryList, ApplicationInfoDto.class, "Application Information_Search_Template");
+                file = ExcelWriter.writerToExcel(applicationInfoDtos, ApplicationInfoDto.class, "Application Information_Search_Template");
             } catch (Exception e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }
@@ -500,28 +503,28 @@ public class BiosafetyEnquiryDelegator {
             for (FacilityBiologicalAgent facility : queryList) {
                 StringBuilder stringBuilder = new StringBuilder();
                 FacilityInfoDto facilityInfoDto = new FacilityInfoDto();
-                facilityInfoDto.setFacilityAddress(facility.getFacility().getBlkNo()+""+facility.getFacility().getStreetName()+""+facility.getFacility().getFloorNo()+"-"+facility.getFacility().getUnitNo()+""+facility.getFacility().getPostalCode());
-                for (int i = 0; i < facility.getFacility().getAdmins().size(); i++) {
-                    if (i + 1 <= facility.getFacility().getAdmins().size()) {
-                        stringBuilder.append(facility.getFacility().getAdmins().get(i).getName()).append(",");
+                facilityInfoDto.setFacilityAddress(facility.getFacilitySchedule().getFacility().getBlkNo()+""+facility.getFacilitySchedule().getFacility().getStreetName()+""+facility.getFacilitySchedule().getFacility().getFloorNo()+"-"+facility.getFacilitySchedule().getFacility().getUnitNo()+""+facility.getFacilitySchedule().getFacility().getPostalCode());
+                for (int i = 0; i < facility.getFacilitySchedule().getFacility().getAdmins().size(); i++) {
+                    if (i + 1 <= facility.getFacilitySchedule().getFacility().getAdmins().size()) {
+                        stringBuilder.append(facility.getFacilitySchedule().getFacility().getAdmins().get(i).getName()).append(",");
                     } else {
-                        stringBuilder.append(facility.getFacility().getAdmins().get(i).getName());
+                        stringBuilder.append(facility.getFacilitySchedule().getFacility().getAdmins().get(i).getName());
                     }
                 }
                 facilityInfoDto.setFacilityAdmin(stringBuilder.toString());
-                facilityInfoDto.setFacilityType(facility.getFacility().getFacilityType());
-                facilityInfoDto.setFacilityName(facility.getFacility().getFacilityName());
-                facilityInfoDto.setFacilityExpiryDate(sdf.format(facility.getFacility().getExpiryDt()));
-                facilityInfoDto.setFacilityClassification(facility.getFacility().getFacilityClassification());
-                facilityInfoDto.setApprovedFacilityCertifier(facility.getFacility().getApproval());
-                facilityInfoDto.setFacilityOperator(facility.getFacility().getOperatorName());
-                facilityInfoDto.setCurrentFacilityStatus(facility.getFacility().getFacilityStatus());
+                facilityInfoDto.setFacilityType(facility.getFacilitySchedule().getFacility().getFacilityType());
+                facilityInfoDto.setFacilityName(facility.getFacilitySchedule().getFacility().getFacilityName());
+                facilityInfoDto.setFacilityExpiryDate(sdf.format(facility.getFacilitySchedule().getFacility().getExpiryDt()));
+                facilityInfoDto.setFacilityClassification(facility.getFacilitySchedule().getFacility().getFacilityClassification());
+                facilityInfoDto.setApprovedFacilityCertifier(facility.getFacilitySchedule().getFacility().getApproval());
+                facilityInfoDto.setFacilityOperator(facility.getFacilitySchedule().getFacility().getOperatorName());
+                facilityInfoDto.setCurrentFacilityStatus(facility.getFacilitySchedule().getFacility().getFacilityStatus());
                 facilityInfoDto.setBiologicalAgent(biosafetyEnquiryClient.getBiologicalById(facility.getBiologicalId()).getEntity().getName());
-                facilityInfoDto.setGazettedArea(facility.getFacility().getIsProtected());
+                facilityInfoDto.setGazettedArea(facility.getFacilitySchedule().getFacility().getIsProtected());
                 facilityInfoDto.setRiskLevelOfTheBiologicalAgent(facility.getRiskLevel());
                 facilityInfoDtos.add(facilityInfoDto);
             }
-            facilityInfoDtos.forEach(i -> i.setGazettedArea(MasterCodeUtil.getCodeDesc(i.getGazettedArea())));
+            facilityInfoDtos.forEach(i -> i.setCurrentFacilityStatus(MasterCodeUtil.getCodeDesc(i.getCurrentFacilityStatus())));
             facilityInfoDtos.forEach(i -> i.setFacilityClassification(MasterCodeUtil.getCodeDesc(i.getFacilityClassification())));
             facilityInfoDtos.forEach(i -> i.setFacilityType(MasterCodeUtil.getCodeDesc(i.getFacilityType())));
             facilityInfoDtos.forEach(i -> i.setRiskLevelOfTheBiologicalAgent(MasterCodeUtil.getCodeDesc(i.getRiskLevelOfTheBiologicalAgent())));
@@ -554,14 +557,14 @@ public class BiosafetyEnquiryDelegator {
 
             for (FacilityAgentSample facilityAgentSample : queryList) {
                 ApprovalInfoDto approvalInfoDto = new ApprovalInfoDto();
-                approvalInfoDto.setFacilityAddress(facilityAgentSample.getFacility().getBlkNo()+""+facilityAgentSample.getFacility().getStreetName()+""+facilityAgentSample.getFacility().getFloorNo()+"-"+facilityAgentSample.getFacility().getUnitNo()+""+facilityAgentSample.getFacility().getPostalCode());
-                approvalInfoDto.setApprovalType(facilityAgentSample.getFacility().getApprovalType());
-                approvalInfoDto.setApprovalStatus(facilityAgentSample.getFacility().getApprovalStatus());
+                approvalInfoDto.setFacilityAddress(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getBlkNo()+""+facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getStreetName()+""+facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getFloorNo()+"-"+facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getUnitNo()+""+facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getPostalCode());
+                approvalInfoDto.setApprovalType(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getApprovalType());
+                approvalInfoDto.setApprovalStatus(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getApprovalStatus());
                 approvalInfoDto.setAgent(biosafetyEnquiryClient.getBiologicalById(facilityAgentSample.getFacilityBiologicalAgent().getBiologicalId()).getEntity().getName());
-                approvalInfoDto.setFacilityName(facilityAgentSample.getFacility().getFacilityName());
-                approvalInfoDto.setFacilityClassification(facilityAgentSample.getFacility().getFacilityClassification());
-                approvalInfoDto.setFacilityStatus(facilityAgentSample.getFacility().getFacilityStatus());
-                approvalInfoDto.setFacilityType(facilityAgentSample.getFacility().getFacilityType());
+                approvalInfoDto.setFacilityName(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getFacilityName());
+                approvalInfoDto.setFacilityClassification(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getFacilityClassification());
+                approvalInfoDto.setFacilityStatus(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getFacilityStatus());
+                approvalInfoDto.setFacilityType(facilityAgentSample.getFacilityBiologicalAgent().getFacilitySchedule().getFacility().getFacilityType());
                 approvalInfoDto.setNatureOfTheSample(facilityAgentSample.getSampleNature());
                 approvalInfoDto.setRiskLevelOfTheBiologicalAgent(facilityAgentSample.getFacilityBiologicalAgent().getRiskLevel());
                 approvalInfoDtos.add(approvalInfoDto);
@@ -642,31 +645,5 @@ public class BiosafetyEnquiryDelegator {
     private EnquiryDto getDefaultSearchDto() {
         EnquiryDto dto = new EnquiryDto();
         return dto;
-    }
-
-    public  Method getSetMethod(Class objectClass, String fieldName) {
-        try {
-            Class[] parameterTypes = new Class[1];
-            Field field = objectClass.getDeclaredField(fieldName);
-            parameterTypes[0] = field.getType();
-            StringBuffer sb = new StringBuffer();
-            sb.append("set");
-            sb.append(fieldName.substring(0, 1).toUpperCase());
-            sb.append(fieldName.substring(1));
-            Method method = objectClass.getMethod(sb.toString(), parameterTypes);
-            return method;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public  void invokeSet(Object o, String fieldName,String bioId) {
-        Method method = getSetMethod(o.getClass(), fieldName);
-        try {
-            method.invoke(o, new Object[] { biosafetyEnquiryClient.getBiologicalById(bioId).getEntity().getName() });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

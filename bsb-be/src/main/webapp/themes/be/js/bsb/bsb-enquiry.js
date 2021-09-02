@@ -88,8 +88,6 @@ function doBack() {
 
 function doAdvClear() {
     $('input[type="text"]').val("");
-    $('select[firstOption="Please Select"] option:first').prop("selected",'selected');
-    $(".current").text("Please Select");
     $("#error_to_date").hide();
     $("#error_start_to_date").hide();
     $("#error_expiry_date").hide();
@@ -97,6 +95,34 @@ function doAdvClear() {
     $("#clearFilterForSearch .multi-select-button").html("-- Select --");
     $("#facilityType option").prop('selected',false);
     $("#natureOfTheSample option").prop('selected',false);
+    $("select[name = 'applicationType'] option:first").prop("selected",'selected');
+    $("select[name = 'applicationStatus'] option:first").prop("selected",'selected');
+    $("select[name = 'facilityClassification'] option:first").prop("selected",'selected');
+    $("select[name = 'facilityType'] option:first").prop("selected",'selected');
+    $("select[name = 'facilityName'] option:first").prop("selected",'selected');
+    $("select[name = 'scheduleType'] option:first").prop("selected",'selected');
+    $("select[name = 'biologicalAgent'] option:first").prop("selected",'selected');
+    $("select[name = 'riskLevelOfTheBiologicalAgent'] option:first").prop("selected",'selected');
+    $("select[name = 'processType'] option:first").prop("selected",'selected');
+    $("select[name = 'gazettedArea'] option:first").prop("selected",'selected');
+    $("select[name = 'facilityStatus'] option:first").prop("selected",'selected');
+    $("select[name = 'approvedFacilityCertifier'] option:first").prop("selected",'selected');
+    $("select[name = 'approvalType'] option:first").prop("selected",'selected');
+    $("select[name = 'approvalStatus'] option:first").prop("selected",'selected');
+    $("select[name = 'organisationName'] option:first").prop("selected",'selected');
+    $("select[name = 'afcStatus'] option:first").prop("selected",'selected');
+    $("input[name = 'applicationSubmissionDateFrom']").val("");
+    $("input[name = 'applicationSubmissionDateTo']").val("");
+    $("input[name = 'approvalDateFrom']").val("");
+    $("input[name = 'approvalDateTo']").val("");
+    $("input[name = 'approvalSubmissionDateFrom']").val("");
+    $("input[name = 'approvalSubmissionDateTo']").val("");
+    $("input[name = 'approvedDateFrom']").val("");
+    $("input[name = 'approvedDateTo']").val("");
+    $("input[name = 'facilityExpiryDateFrom']").val("");
+    $("input[name = 'facilityExpiryDateTo']").val("");
+    $("#clearFilterForSearch .current").text("Please Select");
+
 }
 
 function doAdvAfterSearch() {
@@ -105,22 +131,3 @@ function doAdvAfterSearch() {
     $("#mainForm").submit();
 }
 
-function doAdvAfterClear() {
-    showWaiting();
-    $('input[type="text"]').val("");
-    $('#applicationType option:first').prop("selected", true);
-    $("input[name = 'from_date']").val("");
-    $("input[name = 'to_date']").val("");
-    $("input[name = 'approval_from_date']").val("");
-    $("input[name = 'approval_to_date']").val("")
-    $("input[name = 'approval_sub_from_date']").val("");
-    $("input[name = 'approval_sub_To_date']").val("");
-    $("input[name = 'approved_from_date']").val("");
-    $("input[name = 'approved_to_date']").val("");
-    $("input[name = 'fac_expiry_from_date']").val("");
-    $("input[name = 'fac_expiry_to_date']").val("");
-    $("#clearFilterForSearch input[type='checkbox']").prop('checked', false);
-    $("#clearFilterForSearch .multi-select-button").html("-- Select --");
-    $("#facilityType option").prop('selected',false);
-    $("#natureOfTheSample option").prop('selected',false);
-}
