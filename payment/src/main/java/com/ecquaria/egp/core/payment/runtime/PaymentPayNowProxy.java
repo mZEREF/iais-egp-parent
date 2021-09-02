@@ -181,7 +181,10 @@ public class PaymentPayNowProxy extends PaymentProxy {
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 		}
-
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+			RedirectUtil.redirect(fields.get("vpc_ReturnURL"), bpc.request, bpc.response);
+		}
 		try {
 			StringBuilder bud = new StringBuilder();
 			bud.append(bigsURL).append('?');
@@ -226,10 +229,15 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
 
-
+		String appGrpNo=refNo;
+		try {
+			appGrpNo=refNo.substring(0,'_');
+		}catch (Exception e){
+			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
+		}
 
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(refNo).getEntity();
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
 		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 			paymentRequestDto.setStatus(status);
@@ -240,15 +248,9 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		setPaymentTransStatus(status);
 		PaymentBaiduriProxyUtil.getPaymentClient().updatePaymentResquset(paymentRequestDto);
 
-		String appGrpNo=refNo;
-		try {
-			appGrpNo=refNo.substring(0,'_');
-		}catch (Exception e){
-			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
-		}
 
 		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
-		if(applicationGroupDto!=null){
+		if(applicationGroupDto!=null&&status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
 			applicationGroupDto.setPmtRefNo(refNo);
 			applicationGroupDto.setPaymentDt(new Date());
