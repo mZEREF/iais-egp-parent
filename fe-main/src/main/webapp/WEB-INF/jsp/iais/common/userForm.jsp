@@ -1,8 +1,15 @@
 <iais:row>
-    <iais:field value="Name" width="11" required="true"/>
+    <iais:field value="Name" width="11" required="${isLoadMyInfoData == '1' ? false : true}"/>
     <iais:value width="11">
-        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
-            <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+        <c:choose>
+            <c:when test="${isLoadMyInfoData == '1'}">
+                <label><c:out value="${inter_user_attr.displayName}"/></label>
+            </c:when>
+            <c:otherwise>
+                <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
+                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+            </c:otherwise>
+        </c:choose>
     </iais:value>
 </iais:row>
 <iais:row>

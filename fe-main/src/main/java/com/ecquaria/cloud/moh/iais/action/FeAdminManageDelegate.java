@@ -146,6 +146,7 @@ public class FeAdminManageDelegate {
             isAdmin = "0";
         }
         FeUserDto feUserDto = orgUserManageService.getUserAccount(userId);
+        ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
         ParamUtil.setSessionAttr(bpc.request,UserConstants.SESSION_USER_DTO,feUserDto);
         ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "N");
@@ -169,7 +170,10 @@ public class FeAdminManageDelegate {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
-        } else if ("save".equalsIgnoreCase(action)) {
+        }else if("clearInfo".equalsIgnoreCase(action)) {
+          clearInfo(bpc.request);
+        }
+        else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
             String name = ParamUtil.getString(bpc.request,"name");
             String salutation = ParamUtil.getString(bpc.request,"salutation");
@@ -192,7 +196,11 @@ public class FeAdminManageDelegate {
             }
             feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setIdentityNo(idNo);
-            feUserDto.setDisplayName(name);
+            if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(bpc.request,"loadMyInfoData"))){
+                ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
+            }else {
+                feUserDto.setDisplayName(name);
+            }
             feUserDto.setSalutation(salutation);
             feUserDto.setDesignation(designation);
             feUserDto.setDesignationOther(designationOther);
@@ -233,18 +241,16 @@ public class FeAdminManageDelegate {
                 MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
                 boolean licenseeHave = licenseeDto!=null && licenseeDto.getLicenseeIndividualDto() != null;
-                boolean amendLicensee = licenseeHave && loginContext.getNricNum().equalsIgnoreCase( licenseeDto.getLicenseeIndividualDto().getIdNo()) && loginContext.getNricNum().equalsIgnoreCase(feUserDto.getIdentityNo());
                 if (!needRefersh) {
                     myInfoDto = null;
                 }
-                log.info(StringUtil.changeForLog("AmendLicensee : " + amendLicensee + " - NeedRefersh : " + needRefersh));
                 AuditTrailDto att = IaisEGPHelper.getCurrentAuditTrailDto();
                 att.setOperation(AuditTrailConsts.OPERATION_USER_UPDATE);
                 AuditTrailHelper.callSaveAuditTrail(att);
 
                 Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                 successMap.put("save","suceess");
-                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,amendLicensee);
+                orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,false);
                 if(licenseeHave){
                     ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType()));
                 }
@@ -259,6 +265,20 @@ public class FeAdminManageDelegate {
         }
     }
 
+    public void  clearInfo(HttpServletRequest request){
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        feUserDto.setDisplayName(null);
+        feUserDto.setSalutation(null);
+        feUserDto.setDesignation(null);
+        feUserDto.setDesignationOther(null);
+        feUserDto.setMobileNo(null);
+        feUserDto.setOfficeTelNo(null);
+        feUserDto.setEmail(null);
+        feUserDto.setFromMyInfo(0);
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
+        ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.NO);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
+    }
     private FeUserDto repalceFeUserDtoByMyinfo( HttpServletRequest request){
         log.info("---- relaod feuesr start --------- ");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -270,6 +290,8 @@ public class FeAdminManageDelegate {
                     feUserDto.setEmail(myInfoDto.getEmail());
                     feUserDto.setMobileNo(myInfoDto.getMobileNo());
                     feUserDto.setDisplayName(myInfoDto.getUserName());
+                    feUserDto.setFromMyInfo(1);
+                    ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
                     ParamUtil.setSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum(),myInfoDto);
                 }else {
