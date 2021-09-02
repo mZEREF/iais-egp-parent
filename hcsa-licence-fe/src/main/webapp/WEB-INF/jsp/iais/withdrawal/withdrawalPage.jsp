@@ -26,8 +26,8 @@
         margin-top: 0;
         padding-top: 0;
         border-top: 1px solid #BABABA;
-        margin-left: -90px;
-        margin-right: -90px;
+        margin-left: 0;
+        margin-right: 0;
     }
     .withdraw-content-box {
         background-color: #fafafa;
