@@ -49,12 +49,12 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data + '" />');
                 //$("#payNowImg").attr("src",data);
             },
             error: function (msg) {
-                console.log(msg);
+                //console.log(msg);
             }
         });
     }
