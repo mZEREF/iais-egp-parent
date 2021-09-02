@@ -971,6 +971,9 @@ public class OfficerOnlineEnquiriesDelegator {
         log.info("=======>>>>>preLicDetails>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
         onlineEnquiriesService.setLicInfo(request);
+        if(ParamUtil.getString(bpc.request, "preInspReport")!=null){
+            ParamUtil.setRequestAttr(bpc.request, "preInspReport", "1");
+        }
         // 		preLicDetails->OnStepProcess
     }
 

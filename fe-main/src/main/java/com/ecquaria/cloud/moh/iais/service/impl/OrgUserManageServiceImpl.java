@@ -451,15 +451,19 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
             refreshLicensee(licenseeDto);
+        }
+        updateUserBe(organizationDto);
+
+        //note update sublic must in the end
+        if(amendLicensee){
             log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo Start"));
             licenseeDto.setId(null);
-            String id = refreshSubLicenseeInfo(licenseeDto);
-            log.info(StringUtil.changeForLog("id: " + id));
-            licenseeDto.setId(id);
+            String sublicId = refreshSubLicenseeInfo(licenseeDto);
+            log.info(StringUtil.changeForLog("id: " + sublicId));
+            licenseeDto.setId(sublicId);
             refreshBeSubLicenseeInfo(licenseeDto);
             log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo End"));
         }
-        updateUserBe(organizationDto);
         return licenseeDto;
     }
 

@@ -76,6 +76,7 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
+                                             <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
@@ -123,5 +124,11 @@
             showWaiting();
             callAuthoriseApi();
         }
+    }
+
+    function doClearInfo(){
+        $("#action").val("clearInfo");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
 </script>

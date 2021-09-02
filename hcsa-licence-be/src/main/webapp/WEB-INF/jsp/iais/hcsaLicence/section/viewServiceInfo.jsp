@@ -676,6 +676,7 @@
         <span class="col-xs-6"></span>
         <table aria-describedby="" class="col-xs-12">
           <tr>
+            <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Type of Charge</p>
             </td>
@@ -752,6 +753,7 @@
         <span class="col-xs-6"></span>
         <table aria-describedby="" class="col-xs-12">
           <tr>
+            <th scope="col" style="display: none"></th>
             <td class="col-xs-6">
               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Category</p>
             </td>
@@ -853,6 +855,7 @@
             <div class="col-xs-12">
               <table aria-describedby="" class="col-xs-12">
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                   </td>
@@ -1228,16 +1231,13 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification</p>
                   </td>
                   <td>
-                    <div class="col-xs-6">
+                    <div class="col-xs-12">
                       <span class="newVal " attr="<iais:code code="${sectionLeader.qualification}"/>"><iais:code code="${sectionLeader.qualification}"/></span>
-
+                      <br>
+                      <span class="oldVal "
+                            attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/>"
+                            style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/></span>
                     </div>
-                    <div class="col-xs-6">
-                        <span class="oldVal "
-                              attr="<iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/>"
-                              style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcSectionLeaderList[status.index].qualification}"/></span>
-                    </div>
-
                   </td>
                 </tr>
                 <tr>
@@ -1300,59 +1300,59 @@
               <tr>
                 <c:if test="${stat.first}">
                 <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
-                              <span class="newVal " attr="${appGrpPrem.address}"><c:out value="${appGrpPrem.address}"/>
-                              <br>
-                              </span>
-                  <span class="oldVal"
-                        attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"
+                    <div class="">
+                      <span class="newVal " attr="${appGrpPrem.address}"><c:out value="${appGrpPrem.address}"/>
+                      <br>
+                      </span>
+                      <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"
                         style="display: none">
-                                  <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/>
-                              </span>
-          </div>
-          </td>
-          </c:if>
-          <td style="text-align: center">
-            <div class="">
-                            <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
-                              <c:out value="${disciplineAllocation.chkLstName}"/>
-                            </span>
-              <br>
-              <span class="oldVal "
+                          <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].address}"/>
+                      </span>
+                    </div>
+                </td>
+              </c:if>
+              <td style="text-align: center">
+                <div class="">
+                  <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
+                      <c:out value="${disciplineAllocation.chkLstName}"/>
+                  </span>
+                  <br>
+                  <span class="oldVal "
                     attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"
                     style="display: none">
-                              <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
-                            </span>
-            </div>
-          </td>
-          <td style="text-align: center">
-            <div class="">
-                            <span class="newVal "
-                                  attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}">
-                              <c:out value="${disciplineAllocation.cgoSelName}"/>
-                            </span>
-              <br>
-              <span class="oldVal "
-                    attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}${reloadOld[oldReloadMapValue][stat.index].check}"
-                    style="display: none">
-                              <c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/>
-                            </span>
-            </div>
-          </td>
-          <td style="text-align: center">
-            <div class="">
-                              <span class="newVal" attr="${disciplineAllocation.sectionLeaderName}${disciplineAllocation.check}">
-                                <c:out value="${disciplineAllocation.sectionLeaderName}"/>
-                              </span>
-              <br>
-              <span class="oldVal "
+                    <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                  </span>
+                </div>
+              </td>
+              <td style="text-align: center">
+                <div class="">
+                    <span class="newVal "
+                          attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}">
+                      <c:out value="${disciplineAllocation.cgoSelName}"/>
+                    </span>
+                    <br>
+                    <span class="oldVal "
+                        attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}${reloadOld[oldReloadMapValue][stat.index].check}"
+                        style="display: none">
+                      <c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/>
+                    </span>
+                </div>
+              </td>
+              <td style="text-align: center">
+                <div class="">
+                  <span class="newVal" attr="${disciplineAllocation.sectionLeaderName}${disciplineAllocation.check}">
+                    <c:out value="${disciplineAllocation.sectionLeaderName}"/>
+                  </span>
+                  <br>
+                  <span class="oldVal "
                     attr="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}${reloadOld[oldReloadMapValue][stat.index].check}"
                     style="display: none">
-                                <c:out value="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}"/>
-                              </span>
-            </div>
-          </td>
-          </tr>
-          </c:forEach>
+                    <c:out value="${reloadOld[oldReloadMapValue][stat.index].sectionLeaderName}"/>
+                  </span>
+                </div>
+              </td>
+              </tr>
+            </c:forEach>
           </tbody>
           </c:forEach>
           </table>
@@ -1519,96 +1519,12 @@
                       </td>
                       <td>
                         <div class="col-xs-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}"><c:out
-                                    value="${appSvcPersonnelDtoList.qualification}"/></span>
-                          <br>
-                          <span class="oldVal "
-                                attr="${oldAppSvcPersonnelDtoList.qualification}"
-                                style="display: none">${oldAppSvcPersonnelDtoList.qualification}</span>
-                        </div>
-
-
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Relevant
-                          working experience (Years)</p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}"><c:out
-                                    value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
-                        </div>
-                        <div class="col-xs-6">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
-                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
-                        </div>
-
-                      </td>
-                    </tr>
-
-                  </c:when>
-                  <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT001'}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select
-                          Service Personnel</p>
-                      </td>
-                      <td>
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Radiology
-                          Professional</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                        </p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                              <c:out value="${appSvcPersonnelDtoList.name}"/>
-                            </span>
-                        </div>
-                        <div class="col-xs-6">
-                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
-                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
-                            </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation
-                        </p>
-                      </td>
-                      <td>
-                        <div class="col-xs-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.designation}">
-                                ${appSvcPersonnelDtoList.designation}
-                            </span>
-                          <br>
-                          <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.designation}" style="display: none">
-                              ${oldAppSvcPersonnelDtoList.designation}
+                          <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}">
+                            <c:out value="${appSvcPersonnelDtoList.qualification}"/>
                           </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
-                        </p>
-                      </td>
-                      <td>
-
-                        <div class="col-xs-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}">
-                                ${appSvcPersonnelDtoList.qualification}
-                            </span>
                           <br>
-                          <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}" style="display: none">
+                          <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}"
+                                style="display: none">
                               ${oldAppSvcPersonnelDtoList.qualification}
                           </span>
                         </div>
@@ -1620,32 +1536,36 @@
                           working experience (Years)</p>
                       </td>
                       <td>
-
                         <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}"><c:out
-                                    value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}">
+                              <c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/>
+                            </span>
                         </div>
                         <div class="col-xs-6">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
-                                  style="display: none"><c:out
-                                    value="${oldAppSvcPersonnelDtoList.wrkExpYear}"/></span>
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                         </div>
-
-
                       </td>
                     </tr>
                   </c:when>
-                  <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT002'}">
+
+                  <c:when test="${currentPreviewSvcInfo.serviceCode=='NMA'}">
                     <tr>
                       <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select
                           Service Personnel</p>
                       </td>
                       <td>
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                          <span class="col-xs-6 col-md-6">Radiation Safety Officer</span>
-                        </p>
+                        <div class="col-xs-6">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.personnelType}">
+                              <iais:code code="${appSvcPersonnelDtoList.personnelType}"/>
+                            </span>
+                        </div>
+                        <div class="col-xs-6">
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.personnelType}" style="display: none">
+                              <iais:code code="${oldAppSvcPersonnelDtoList.personnelType}"/>
+                            </span>
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -1666,23 +1586,22 @@
                         </div>
                       </td>
                     </tr>
+                    <c:if test="${appSvcPersonnelDtoList.personnelType == 'SPPT002' || oldAppSvcPersonnelDtoList.personnelType == 'SPPT002'}">
                     <tr>
                       <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
                         </p>
                       </td>
                       <td>
-
                         <div class="col-xs-12">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}"><c:out
-                                    value="${appSvcPersonnelDtoList.qualification}"/>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}">
+                              <c:out value="${appSvcPersonnelDtoList.qualification}"/>
                             </span>
                           <br>
-                          <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}"
-                                style="display: none">${oldAppSvcPersonnelDtoList.qualification}
+                          <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}" style="display: none">
+                              <c:out value="${oldAppSvcPersonnelDtoList.qualification}"/>
                           </span>
                         </div>
-
                       </td>
                     </tr>
                     <tr>
@@ -1691,119 +1610,215 @@
                           working experience (Years)</p>
                       </td>
                       <td>
-
                         <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}"><c:out
-                                    value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
-
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}">
+                              <c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
                         </div>
                         <div class="col-xs-6">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
                                   style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
                         </div>
-
                       </td>
                     </tr>
+                    </c:if>
                   </c:when>
-                  <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT003'}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select
-                          Service Personnel</p>
-                      </td>
-                      <td>
-                        <span class="col-xs-6 col-md-6"> Medical Physicist</span>
-                        </p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                        </p>
-                      </td>
-                      <td>
 
-                        <div class="col-xs-6">
+                  <c:when test="${currentPreviewSvcInfo.serviceCode=='NMI'}">
+                      <tr>
+                          <td class="col-xs-6">
+                              <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select
+                                  Service Personnel</p>
+                          </td>
+                          <td>
+                              <div class="col-xs-6">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.personnelType}">
+                              <iais:code code="${appSvcPersonnelDtoList.personnelType}"/>
+                            </span>
+                              </div>
+                              <div class="col-xs-6">
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.personnelType}" style="display: none">
+                              <iais:code code="${oldAppSvcPersonnelDtoList.personnelType}"/>
+                            </span>
+                              </div>
+                          </td>
+                      </tr>
+                      <c:if test="${appSvcPersonnelDtoList.personnelType == 'SPPT004' || oldAppSvcPersonnelDtoList.personnelType == 'SPPT004'}"
+                            var="hasPrsNo">
+                      <tr>
+                          <td class="col-xs-6">
+                              <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                              </p>
+                          </td>
+                          <td>
+                              <div class="col-xs-6 img-show">
+                        <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
+                          <c:out value="${appSvcPersonnelDtoList.name}"/>
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                              <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                              <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
+                              <jsp:param name="methodName" value="showThisNameTableNewService"/>
+                          </jsp:include>
+                        </span>
+                              </div>
+                              <div class="col-xs-6 img-show">
+                        <span class="oldVal "
+                              attr="${oldAppSvcPersonnelDtoList.name}"
+                              style="display: none">${oldAppSvcPersonnelDtoList.name}
+                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
+                              <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                              <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
+                              <jsp:param name="methodName" value="showThisNameTableOldService"/>
+                          </jsp:include>
+                        </span>
+                              </div>
+                              <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                                  <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="cssClass" value="new-img-show"/>
+                              </jsp:include>
+                              <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
+                                  <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                  <jsp:param name="cssClass" value="old-img-show"/>
+                              </jsp:include>
+                          </td>
+                      </tr>
+                      </c:if>
+                      <c:if test="${not hasPrsNo}">
+                      <tr>
+                          <td class="col-xs-6">
+                              <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
+                              </p>
+                          </td>
+                          <td>
+                              <div class="col-xs-6">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
                               <c:out value="${appSvcPersonnelDtoList.name}"/>
                             </span>
-                        </div>
-                        <div class="col-xs-6">
-                            <span class="oldVal  " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
-                              <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
-                            </span>
-                        </div>
-                      </td>
-                    </tr>
-                  </c:when>
-                  <c:when test="${appSvcPersonnelDtoList.personnelType=='SPPT004'}">
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Select
-                          Service Personnel</p>
-                      </td>
-                      <td>
-
-                        <span class="col-xs-6 col-md-6">Registered Nurse</span></p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
-                        </p>
-                      </td>
-                      <td>
-                        <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                              <c:out value="${appSvcPersonnelDtoList.name}"/>
-                            </span>
-                        </div>
-                        <div class="col-xs-6">
+                              </div>
+                              <div class="col-xs-6">
                             <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
                               <c:out value="${oldAppSvcPersonnelDtoList.name}"/>
                             </span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-xs-6">
-                        <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional
-                          Regn. No.</p>
-                      </td>
-                      <td>
-
-                        <div class="col-xs-6 img-show">
-                            <span class="newVal" attr="${appSvcPersonnelDtoList.profRegNo}">
-                              <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
-                              <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
-                                <jsp:param name="methodName" value="showThisTableNewService"/>
-                              </jsp:include>
-                            </span>
-                        </div>
-                        <div class="col-xs-6 img-show">
-                            <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
-                                ${oldAppSvcPersonnelDtoList.profRegNo}
-                                <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
-                                  <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
-                                  <jsp:param name="methodName" value="showThisTableOldService"/>
-                                </jsp:include>
-                            </span>
-                        </div>
-                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
-                          <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
-                          <jsp:param name="cssClass" value="new-img-show"/>
-                        </jsp:include>
-                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
-                          <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
-                          <jsp:param name="cssClass" value="old-img-show"/>
-                        </jsp:include>
-                      </td>
-                    </tr>
+                              </div>
+                          </td>
+                      </tr>
+                      </c:if>
+                      <c:if test="${appSvcPersonnelDtoList.personnelType == 'SPPT001' || oldAppSvcPersonnelDtoList.personnelType == 'SPPT001'}">
+                          <tr>
+                            <td class="col-xs-6">
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                  Designation
+                                </p>
+                              </td>
+                              <td>
+                                <div class="col-xs-12">
+                                  <span class="newVal " attr="${appSvcPersonnelDtoList.designation}">
+                                    ${appSvcPersonnelDtoList.designation}
+                                  </span>
+                                  <br>
+                                  <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.designation}" style="display: none">
+                                    ${oldAppSvcPersonnelDtoList.designation}
+                                  </span>
+                                </div>
+                            </td>
+                          </tr>
+                      </c:if>
+                      <c:if test="${'Others' == appSvcPersonnelDtoList.designation || 'Others' == oldAppSvcPersonnelDtoList.designation}">
+                          <tr>
+                              <td class="col-xs-6">
+                              </td>
+                              <td>
+                                <div class="col-xs-12">
+                                  <span class="newVal " attr="${appSvcPersonnelDtoList.otherDesignation}">
+                                    ${appSvcPersonnelDtoList.otherDesignation}
+                                  </span>
+                                  <br>
+                                  <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.otherDesignation}" style="display: none">
+                                    ${oldAppSvcPersonnelDtoList.otherDesignation}
+                                  </span>
+                                </div>
+                              </td>
+                          </tr>
+                      </c:if>
+                      <c:if test="${appSvcPersonnelDtoList.personnelType == 'SPPT001' || oldAppSvcPersonnelDtoList.personnelType == 'SPPT001'
+                       || appSvcPersonnelDtoList.personnelType == 'SPPT002' || oldAppSvcPersonnelDtoList.personnelType == 'SPPT002'}">
+                          <tr>
+                              <td class="col-xs-6">
+                                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Qualification
+                                  </p>
+                              </td>
+                              <td>
+                                  <div class="col-xs-12">
+                                      <span class="newVal " attr="${appSvcPersonnelDtoList.qualification}">
+                                        ${appSvcPersonnelDtoList.qualification}
+                                      </span>
+                                      <br>
+                                      <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.qualification}" style="display: none">
+                                        ${oldAppSvcPersonnelDtoList.qualification}
+                                      </span>
+                                  </div>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td class="col-xs-6">
+                                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                      Relevant working experience (Years)
+                                  </p>
+                              </td>
+                              <td>
+                                <div class="col-xs-6">
+                                    <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}">
+                                        <c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/>
+                                    </span>
+                                </div>
+                                <div class="col-xs-6">
+                                    <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.wrkExpYear}" style="display: none">
+                                        <c:out value="${oldAppSvcPersonnelDtoList.wrkExpYear}"/>
+                                    </span>
+                                </div>
+                              </td>
+                          </tr>
+                      </c:if>
+                      <c:if test="${hasPrsNo}">
+                          <tr>
+                              <td class="col-xs-6">
+                                  <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                                      Professional Regn. No.
+                                  </p>
+                              </td>
+                              <td>
+                                  <div class="col-xs-6 img-show">
+                                    <span class="newVal" attr="${appSvcPersonnelDtoList.profRegNo}">
+                                      <c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                      <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                          <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                          <jsp:param name="methodName" value="showThisTableNewService"/>
+                                      </jsp:include>
+                                    </span>
+                                  </div>
+                                  <div class="col-xs-6 img-show">
+                                    <span class="oldVal" attr="${oldAppSvcPersonnelDtoList.profRegNo}" style="display: none">
+                                        ${oldAppSvcPersonnelDtoList.profRegNo}
+                                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecordMark.jsp">
+                                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                            <jsp:param name="methodName" value="showThisTableOldService"/>
+                                        </jsp:include>
+                                    </span>
+                                  </div>
+                                  <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                                      <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
+                                      <jsp:param name="cssClass" value="new-img-show"/>
+                                  </jsp:include>
+                                  <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/prsDisciplinaryRecords.jsp">
+                                      <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
+                                      <jsp:param name="cssClass" value="old-img-show"/>
+                                  </jsp:include>
+                              </td>
+                          </tr>
+                      </c:if>
                   </c:when>
                   <c:otherwise>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name
                         </p>
@@ -1811,33 +1826,14 @@
                       <td>
                         <div class="col-xs-6 img-show">
                         <span class="newVal " attr="${appSvcPersonnelDtoList.name}">
-                          <c:out value="${appSvcPersonnelDtoList.name}"/>
-                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                            <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
-                            <jsp:param name="personName" value="${appSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisNameTableNewService"/>
-                          </jsp:include>
+                            <c:out value="${appSvcPersonnelDtoList.name}"/>
                         </span>
                         </div>
                         <div class="col-xs-6 img-show">
-                        <span class="oldVal "
-                              attr="${oldAppSvcPersonnelDtoList.name}"
-                              style="display: none">${oldAppSvcPersonnelDtoList.name}
-                          <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecordMark.jsp">
-                            <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
-                            <jsp:param name="personName" value="${oldAppSvcPersonnelDtoList.name}"/>
-                            <jsp:param name="methodName" value="showThisNameTableOldService"/>
-                          </jsp:include>
+                        <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.name}" style="display: none">
+                            ${oldAppSvcPersonnelDtoList.name}
                         </span>
                         </div>
-                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
-                          <jsp:param name="profRegNo" value="${appSvcPersonnelDtoList.profRegNo}"/>
-                          <jsp:param name="cssClass" value="new-img-show"/>
-                        </jsp:include>
-                        <jsp:include page="/WEB-INF/jsp/iais/hcsaLicence/section/nameDisciplinaryRecords.jsp">
-                          <jsp:param name="profRegNo" value="${oldAppSvcPersonnelDtoList.profRegNo}"/>
-                          <jsp:param name="cssClass" value="old-img-show"/>
-                        </jsp:include>
                       </td>
                     </tr>
                     <tr>
@@ -1863,18 +1859,16 @@
                           working experience (Years)</p>
                       </td>
                       <td>
-
                         <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}"><c:out
-                                    value="${appSvcPersonnelDtoList.wrkExpYear}"/></span>
-
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.wrkExpYear}">
+                                <c:out value="${appSvcPersonnelDtoList.wrkExpYear}"/>
+                            </span>
                         </div>
                         <div class="col-xs-6">
-                            <span class="oldVal "
-                                  attr="${oldAppSvcPersonnelDtoList.wrkExpYear}"
-                                  style="display: none">${oldAppSvcPersonnelDtoList.wrkExpYear}</span>
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.wrkExpYear}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.wrkExpYear}
+                            </span>
                         </div>
-
                       </td>
                     </tr>
                   </c:otherwise>
@@ -1911,6 +1905,7 @@
               </c:if>
               <table aria-describedby="" class="col-xs-12">
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
                   </td>
@@ -2222,6 +2217,7 @@
               <table aria-describedby="" class="col-xs-12">
 
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td class="col-xs-6">
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation
                     </p>
@@ -2367,6 +2363,7 @@
               <c:forEach var="svcDoc" items="${currentPreviewSvcInfo.multipleSvcDoc}" varStatus="status">
                 <c:set value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.multipleSvcDoc[svcDoc.key]}" var="oldSvcDoc"></c:set>
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <td>
                     <div class="field col-sm-12 control-label formtext"><label>${svcDoc.key}</label></div>
                   </td>

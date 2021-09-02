@@ -2132,7 +2132,7 @@ public class HalpAssessmentGuideDelegator {
         draftAppSearchParam.addFilter("licenseeId", licenseeId, true);
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         inParams.add(ApplicationConsts.APPLICATION_STATUS_DRAFT);
-        SqlHelper.builderInSql(draftAppSearchParam, "status", "appStatus", inParams);
+        SqlHelper.builderInSql(draftAppSearchParam, "B.status", "appStatus", inParams);
         QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
         String repalceService = getRepalceService();
         draftAppSearchParam.setMainSql(draftAppSearchParam.getMainSql().replace("repalceService",repalceService));

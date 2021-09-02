@@ -1284,6 +1284,7 @@ body.navigation-open {
   padding: 10px 25px;
   text-transform: uppercase;
   border-radius: 30px;
+  border: 1px solid grey;
 }
 .btn.btn-sm {
   font-size: .775rem;
@@ -1291,6 +1292,7 @@ body.navigation-open {
   padding: 5px 10px;
   text-transform: uppercase;
   border-radius: 30px;
+  border: 1px solid grey;
 }
 @media only screen and (max-width : 767px) {
   .btn.btn-secondary {

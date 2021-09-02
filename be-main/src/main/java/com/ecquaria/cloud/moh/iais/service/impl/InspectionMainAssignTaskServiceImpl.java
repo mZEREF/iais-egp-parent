@@ -30,17 +30,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.EgpUserCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,6 +102,9 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
 
     @Autowired
     private ApplicationViewMainService applicationViewMainService;
+
+    @Autowired
+    private EgpUserCommonClient egpUserCommonClient;
 
     @Override
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId) {
@@ -388,20 +392,45 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             otherRole = curRole;
         }
         if (!StringUtil.isEmpty(leadRole)) {
-            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(leadRole)) {
-                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
-            } else if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
-                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_BROADCAST_LEAD);
+            if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
+                groupLeadName = "Leader";
             } else {
-                groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
+                Role role = getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, leadRole);
+                if(role != null) {
+                    groupLeadName = role.getName();
+                }
             }
         }
         if (!StringUtil.isEmpty(otherRole)) {
-            groupMemBerName = MasterCodeUtil.getCodeDesc(otherRole);
+            Role role = getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, otherRole);
+            if(role != null) {
+                groupMemBerName = role.getName();
+            }
         }
         groupRoleFieldDto.setGroupLeadName(groupLeadName);
         groupRoleFieldDto.setGroupMemBerName(groupMemBerName);
         return groupRoleFieldDto;
+    }
+
+    private Role getRoleByDomainRoleId(String domain, String roleId) {
+        if(StringUtil.isEmpty(domain) || StringUtil.isEmpty(roleId)){
+            return null;
+        }
+        List<Role> roles = getRolesByDomain(domain);
+        if(!IaisCommonUtils.isEmpty(roles)) {
+            for (Role roleDto : roles) {
+                if(roleDto != null && roleId.equals(roleDto.getId())) {
+                    return roleDto;
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Role> getRolesByDomain(String domain) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        map.put("userDomains", domain);
+        return egpUserCommonClient.search(map).getEntity();
     }
 
     @Override
