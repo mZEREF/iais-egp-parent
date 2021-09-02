@@ -84,13 +84,13 @@ public class SyncFEAuditTrailBatchjobTest {
         Whitebox.setInternalState(job, "auditTrailMainClient", auditTrailMainClient);
     }
 
-    @Test
+    //@Test
     public void testStart() {
         job.start(bpc);
         assertNotNull(bpc);
     }
 
-    @Test
+    //@Test
     public void testPreDate() throws Exception {
         when(auditTrailMainClient.getAuditTrailsByMigrated1()).thenReturn(feignResponseEntity);
         when(feignResponseEntity.getEntity()).thenReturn(auditList);
