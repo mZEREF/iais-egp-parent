@@ -163,13 +163,13 @@
                   <h3>Healthcare Services Act (HCSA)</h3>
                   <ul>
                     <li>
-                      <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
+                      <p><a href="<iais:code code="RELURL001"></iais:code>">About HSCA</a></p>
                     </li>
                     <li>
-                      <p><a href="#">Bill phases & timelines</a></p>
+                      <p><a href="#">FAQ</a></p>
                     </li>
                     <li>
-                      <p><a href="<iais:code code="RELURL002"></iais:code>">Services under IAIS today</a></p>
+                      <p><a href="<iais:code code="RELURL002"></iais:code>">Services under HALP today</a></p>
                     </li>
                   </ul>
                 </div>
