@@ -79,7 +79,7 @@
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="actionType" name="Switch1" x="640" y="110">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="640" y="110">
    <Description />
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSubmit&quot;" />
