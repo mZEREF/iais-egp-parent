@@ -14,7 +14,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___AuditListCreationList___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="auditDelegator";
+	private static final String DELEGATOR ="auditCreationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess

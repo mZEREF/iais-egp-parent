@@ -109,6 +109,7 @@
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
+<%--                                        <input type="hidden" name="auditId" value="<iais:mask name='auditId' value='${item.id}'/>">--%>
                                         <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
                                         <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>

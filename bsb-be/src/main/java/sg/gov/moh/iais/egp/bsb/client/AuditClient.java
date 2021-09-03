@@ -12,8 +12,8 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
 
-/*
- *author: Zhu Tangtang
+/**
+ * @author Zhu Tangtang
  */
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
@@ -22,10 +22,16 @@ public interface AuditClient {
     @GetMapping(value = "/bsb-audit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> doQuery(@SpringQueryMap AuditQueryDto queryDto);
 
-    @GetMapping(path = "/bsb-audit/{id}}")
-    FeignResponseEntity<Facility> getFacilityById(@PathVariable(name = "id") String id);
+    @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
+
+    @GetMapping(path = "/bsb-audit/getFacilityById")
+    FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);
 
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> saveFacilityAudit(@RequestBody FacilityAudit facilityAudit);
+
+//    @GetMapping(path = "/bsb-audit/{id}")
+//    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
 
 }

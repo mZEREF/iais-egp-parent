@@ -19,23 +19,22 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Zhu Tangtang
  */
 @Slf4j
-@Delegator(value = "auditDelegator")
-public class AuditDelegator {
+@Delegator(value = "auditCreationDelegator")
+public class AuditCreationDelegator {
 
     private static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
     private static final String KEY_AUDIT_DATA_LIST = "dataList";
@@ -45,6 +44,7 @@ public class AuditDelegator {
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
+    private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
     private static final String FACILITY_LIST = "facilityList";
 
     @Autowired
@@ -155,18 +155,15 @@ public class AuditDelegator {
         facilityAudit.setAuditType(auditType);
         facilityAudit.setStatus("AUDITST001");
         facilityAudit.setRemarks(remarks);
-        String facId=null;
         if (facilityList.size()>0||facilityList!=null){
             for (Facility facility : facilityList) {
-                facId=facility.getId();
                 Facility fac = new Facility();
-                fac.setId(facId);
+                fac.setId(facility.getId());
                 facilityAudit.setFacility(fac);
                 auditClient.saveFacilityAudit(facilityAudit);
             }
         }
     }
-
 
     /**
      * AutoStep: page
