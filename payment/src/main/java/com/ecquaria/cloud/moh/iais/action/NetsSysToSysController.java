@@ -198,4 +198,35 @@ public class NetsSysToSysController {
         ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
         return imageStreamInBase64Format;
     }
+
+
+    @RequestMapping( value = "/payNowPoll", method = RequestMethod.GET)
+    public @ResponseBody
+    String payNowPoll(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
+        String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+            String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            auditTrailDto.setModule("Payment");
+            auditTrailDto.setFunctionName("payNow Call Back");
+            auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            RedirectUtil.redirect(url, request, response);
+
+        }
+
+
+        String pay_status ;
+        if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+            pay_status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+        }else {
+            pay_status=PaymentTransactionEntity.TRANS_STATUS_PENDING;
+        }
+        return pay_status;
+    }
 }

@@ -18,7 +18,7 @@
                     <div class="personnel-list-gp">
                         <div class="personnel-list">
                             <h2>LICENCE-SPECIFIC ROLES</h2>
-                            <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+                            <form class="form-inline" method="post" id="menuListForm" style="justify-content:space-between" action=<%=process.runtime.continueURL()%>>
                                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <input type="hidden" name="crud_action_type" value="">
                                 <input type="hidden" id="personnelNo" name="personnelNo" value=""/>

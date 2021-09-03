@@ -313,7 +313,7 @@ public class PublicHolidayDelegate {
     private String getPublicCode(String text,List<PublicHolidayDto> publicHolidayDtos){
         if("Chinese New Year".equals(text)){
             for (PublicHolidayDto item:publicHolidayDtos
-                 ) {
+            ) {
                 if("PUHD012".equals(item.getPhCode())){
                     return "PUHD002";
                 }
@@ -355,7 +355,7 @@ public class PublicHolidayDelegate {
         String[] id = ParamUtil.getMaskedStrings(bpc.request,"deleteId");
         List<String> holidayIds = IaisCommonUtils.genNewArrayList();
         for (String item:id
-             ) {
+        ) {
             holidayIds.add(item);
         }
         publicHolidayService.deleteHoliday(holidayIds);
@@ -488,8 +488,16 @@ public class PublicHolidayDelegate {
             }
         }else{
             List<String> yearList = publicHolidayService.getAllYearList();
-            int max = Integer.parseInt(Collections.max(yearList));
-            int min = Integer.parseInt(Collections.min(yearList));
+            int max;
+            int min;
+            if(!IaisCommonUtils.isEmpty(yearList)) {
+                max = Integer.parseInt(Collections.max(yearList));
+                min = Integer.parseInt(Collections.min(yearList));
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                max = calendar.get(Calendar.YEAR);
+                min = calendar.get(Calendar.YEAR);
+            }
             count = count + 2;
             if(max > count){
                 count = max;
