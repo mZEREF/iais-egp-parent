@@ -294,12 +294,12 @@
                         <span class="newVal " attr="${appSvcClinicalDirectorDto.noRegWithProfBoard}">
                           <c:choose>
                             <c:when test="${appSvcClinicalDirectorDto.noRegWithProfBoard=='1'}">
-                              <div class="form-check active">
+                              <div class="form-check active" style="padding-left:0px">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                               </div>
                             </c:when>
                             <c:otherwise>
-                              <div class="form-check ">
+                              <div class="form-check " style="padding-left:0px">
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                               </div>
                             </c:otherwise>
