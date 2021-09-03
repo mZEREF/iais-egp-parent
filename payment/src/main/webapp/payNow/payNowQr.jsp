@@ -40,6 +40,20 @@
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
+    setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
+
+    function payNowPoll(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowPoll",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (msg) {
+                console.log(msg);
+            }
+        });
+    }
 
     function payNowImgStringRefresh(){
         if(${GatewayPayNowConfig.timeout=="0"}){

@@ -760,7 +760,7 @@ public class RequestForInformationDelegator {
     }
 
     @GetMapping(value = "/file-repo")
-    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.debug(StringUtil.changeForLog("file-repo start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
         String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");

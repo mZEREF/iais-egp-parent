@@ -31,10 +31,14 @@
     <sql key = "searchGiroDeduction" remarks="search ">
         <![CDATA[
         SELECT * from (
-        select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
-        a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
-        from hcsala.dbo.application_group as ag , giro_payment_view as a  WHERE ag.GROUP_NO=a.APP_GROUP_NO )
-        t1 where 1=1 and PMT_STATUS in ('PMT09','PMT03')
+            select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
+            a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
+            from application_group as ag
+            join giro_payment_view as a  on ag.GROUP_NO=a.APP_GROUP_NO
+            join application as app on app.APP_GRP_ID=ag.ID
+            where app.STATUS not in ('APST006','APST009','APST045')
+            ) t1
+        where 1=1 and PMT_STATUS in ('PMT09','PMT03')
         <#if groupNo??> and charindex  (:groupNo,APP_GROUP_NO)>0 </#if>
         <#if acctNo??>and charindex  (:acctNo,ACCT_NO) >0</#if>
         <#if amount??>and charindex  (:amount,AMOUNT) >0 </#if>
