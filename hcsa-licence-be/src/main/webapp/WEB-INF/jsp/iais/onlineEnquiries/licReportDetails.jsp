@@ -418,22 +418,22 @@
                                                                                         var="ncRegulations"
                                                                                         varStatus="status">
                                                                                     <tr>
-                                                                                        <td>
+                                                                                        <td style="padding: 15px 25px 15px 0;">
                                                                                             <p><c:out
                                                                                                     value="${status.count}"/></p>
                                                                                         </td>
                                                                                         <c:if test="${specialServiceForChecklistDecide == '1'}">
-                                                                                            <td><c:out value="${ncRegulations.vehicleName}"/></td>
+                                                                                            <td style="padding: 15px 25px 15px 0;"><c:out value="${ncRegulations.vehicleName}"/></td>
                                                                                         </c:if>
-                                                                                        <td>
+                                                                                        <td style="padding: 15px 25px 15px 0;">
                                                                                             <p><c:out
                                                                                                     value="${ncRegulations.nc}"/></p>
                                                                                         </td>
-                                                                                        <td>
+                                                                                        <td style="padding: 15px 25px 15px 0;">
                                                                                             <p><c:out
                                                                                                     value="${ncRegulations.regulation}"/></p>
                                                                                         </td>
-                                                                                        <td>
+                                                                                        <td style="padding: 15px 25px 15px 0;">
                                                                                             <p><c:out value="${ncRegulations.ncs}"/></p>
                                                                                         </td>
                                                                                     </tr>
@@ -513,16 +513,16 @@
                                                                                                 value="${status.count}"/></p>
                                                                                     </td>
                                                                                     <c:if test="${specialServiceForChecklistDecide == '1'}">
-                                                                                        <td><c:out value="${ncRectification.vehicleName}"/></td>
+                                                                                        <td style="padding: 15px 25px 15px 0;"><c:out value="${ncRectification.vehicleName}"/></td>
                                                                                     </c:if>
-                                                                                    <td>
+                                                                                    <td style="padding: 15px 25px 15px 0;">
                                                                                         <p><c:out
                                                                                                 value="${ncRectification.nc}"/></p>
                                                                                     </td>
-                                                                                    <td>
+                                                                                    <td style="padding: 15px 25px 15px 0;">
                                                                                         <p><c:out value="${ncRectification.ncs}"/></p>
                                                                                     </td>
-                                                                                    <td>
+                                                                                    <td style="padding: 15px 25px 15px 0;">
                                                                                         <p><c:out
                                                                                                 value="${ncRectification.rectified}"/></p>
                                                                                     </td>
