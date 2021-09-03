@@ -12,7 +12,7 @@
       <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_ID_TYPE" value="${dto.idType}"
                    cssClass="idTypeSel"/>
     </iais:value>
-    <iais:value width="3" cssClass="col-md-3">
+    <iais:value width="4" cssClass="col-md-4">
       <iais:input maxLength="9" type="text" name="idNumber" value="${dto.idNumber}" />
     </iais:value>
   </iais:row>
