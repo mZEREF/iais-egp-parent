@@ -31,7 +31,7 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="count" value="${count}">
+    <input type="hidden" name="searchChk" value="${count}">
     <div class="container">
       <div class="row" style="margin-left: 80px;width: 800px">
       <div class="panel panel-default">

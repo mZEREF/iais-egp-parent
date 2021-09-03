@@ -149,16 +149,20 @@ public class AuditDateDelegator {
         facilityAudit.setRemarks(remarks);
         for (FacilityAudit audit : facilityAuditList) {
             facilityAudit.setId(audit.getId());
+            facilityAudit.setAuditDt(audit.getAuditDt());
+            facilityAudit.setAuditType(audit.getAuditType());
+            facilityAudit.setStatus(audit.getStatus());
             startDt = audit.getCreatedAt();
             Facility facility = auditClient.getFacilityById(audit.getFacility().getId()).getEntity();
             endDt = facility.getApprovalDate();
         }
         String startDtStr = DateUtil.dateToStr(startDt);
-        String endDtStr = DateUtil.dateToStr(endDt);
+        String endDtStr = DateUtil.addDate(endDt,13);;
         if (DateUtil.checkDateVal(auditDate,startDtStr,endDtStr)){
             //Modifying current Data
         }else{
             //Copy current data to audit_app table and change current data status to suspend
+            auditClient.saveFacilityAuditAppAndUpdateStatus(facilityAudit);
         }
 
     }

@@ -58,7 +58,7 @@ public class BiosafetyEnquiryDelegator {
      */
     public void prepareBasicSearch(BaseProcessClass bpc) {
         String count = ParamUtil.getString(bpc.request, PARAM_SEARCH_CHK);
-        if (StringUtil.isEmpty(PARAM_COUNT)) {
+        if (StringUtil.isEmpty(count)) {
             count = "0";
         }
         String searchNo = ParamUtil.getString(bpc.request, "searchNo");
