@@ -24,4 +24,6 @@ public class ApplicationMisc extends BaseEntity {
     private String reasonContent;
 
     private String remarks;
+
+    private String finalRemarks;
 }

@@ -20,9 +20,17 @@ public class ProcessContants {
     public static final String SELECTED_APPROVED_FACILITY_CERTIFIER = "selectedApprovedFacilityCertifier";
     public static final String VALIDITY_START_DATE = "validityStartDate";
     public static final String VALIDITY_END_DATE = "validityEndDate";
+    public static final String REASON = "reason";
+    public static final String FINAL_REMARKS = "finalRemarks";
 
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
     public static final String DO_PROCESS_DECISION = "doProcessDecision";
     public static final String PARAM_APP_ID = "appId";
+
+    public static final String APPLICATION_MISC = "applicationMisc";
+
+    public static final String APPLICATION_STATUS_1 = "BSBAPST001";
+    public static final String APPLICATION_STATUS_2 = "BSBAPST002";
+    public static final String APPLICATION_STATUS_3 = "BSBAPST003";
 
 }

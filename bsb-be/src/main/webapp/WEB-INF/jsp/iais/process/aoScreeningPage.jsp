@@ -77,7 +77,7 @@
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="DO Remarks" required="false"></iais:field>
-                                                                                <iais:value width="10"><p></p></iais:value>
+                                                                                <iais:value width="10"><p>${applicationMisc.remarks}</p></iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div>
@@ -186,7 +186,7 @@
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="DO Remarks" required="false"></iais:field>
-                                                                                <iais:value width="10"><p></p></iais:value>
+                                                                                <iais:value width="10"><p>${applicationMisc.remarks}</p></iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div>
@@ -278,7 +278,6 @@
                                                                         </div>
                                                                     </c:if>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <button name="submitBtn" id="aoScreeningSubmitButton" type="button" class="btn btn-primary">Submit</button>

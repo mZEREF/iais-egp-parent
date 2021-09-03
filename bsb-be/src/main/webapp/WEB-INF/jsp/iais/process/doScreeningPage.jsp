@@ -261,7 +261,6 @@
                                                                         </div>
                                                                     </c:if>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <button name="submitBtn" id="doScreeningSubmitButton" type="button" class="btn btn-primary">Submit</button>

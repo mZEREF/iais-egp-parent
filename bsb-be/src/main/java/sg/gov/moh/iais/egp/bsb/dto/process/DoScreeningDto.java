@@ -45,4 +45,7 @@ public class DoScreeningDto {
 
     private String actionBy;
 
+    private String reason;
+
+    private String finalRemarks;
 }
