@@ -1401,6 +1401,23 @@
                         </div>
                       </td>
                     </tr>
+                    <c:if test="${'Others' == appSvcPersonnelDtoList.designation || 'Others' == oldAppSvcPersonnelDtoList.designation}">
+                      <tr>
+                        <td class="col-xs-6">
+                        </td>
+                        <td>
+                          <div class="col-xs-12">
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.otherDesignation}">
+                                ${appSvcPersonnelDtoList.otherDesignation}
+                            </span>
+                            <br>
+                            <span class="oldVal " attr="${oldAppSvcPersonnelDtoList.otherDesignation}" style="display: none">
+                                ${oldAppSvcPersonnelDtoList.otherDesignation}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </c:if>
                     <tr>
                       <td class="col-xs-6">
                         <p class="form-check-label" aria-label="premise-1-cytology">
