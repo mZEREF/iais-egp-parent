@@ -161,6 +161,14 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
+                                                                                <iais:field value="Final Remarks" required="true"></iais:field>
+                                                                                <iais:value width="10">
+                                                                                    <iais:select name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select"></iais:select>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                        <div>
+                                                                            <iais:row>
                                                                                 <iais:field value="Remarks" required="false" width="12"/><
                                                                                 <iais:value width="10">
                                                                                     <div class="input-group">
@@ -233,8 +241,9 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:field value="Final Remarks" required="true"></iais:field>
                                                                                 <iais:value width="10">
+                                                                                    <iais:select name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>

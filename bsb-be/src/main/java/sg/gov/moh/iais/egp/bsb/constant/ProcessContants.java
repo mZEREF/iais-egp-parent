@@ -32,5 +32,11 @@ public class ProcessContants {
     public static final String APPLICATION_STATUS_1 = "BSBAPST001";
     public static final String APPLICATION_STATUS_2 = "BSBAPST002";
     public static final String APPLICATION_STATUS_3 = "BSBAPST003";
+    public static final String APPLICATION_STATUS_4 = "BSBAPST004";
+    public static final String APPLICATION_STATUS_5 = "BSBAPST005";
+    public static final String APPLICATION_STATUS_6 = "BSBAPST006";
+    public static final String APPLICATION_STATUS_7 = "BSBAPST007";
+    public static final String APPLICATION_STATUS_8 = "BSBAPST008";
+    public static final String APPLICATION_STATUS_9 = "BSBAPST009";
 
 }

@@ -85,7 +85,7 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="600" y="80">
    <Description />
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;back&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/hmApprove" value="&quot;approve&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/hmApprove" value="&quot;hmApprove&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/hmReject" value="&quot;hmReject&quot;" />
   </Switch>
  </Switches>

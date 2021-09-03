@@ -82,6 +82,12 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
+                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:value width="10"><p><iais:code code="${applicationMisc.finalRemarks}"></iais:code></p></iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                        <div>
+                                                                            <iais:row>
                                                                                 <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
                                                                                 <iais:value width="10"><p><iais:code code="${applicationInfo.facility.riskLevel}"></iais:code></p></iais:value>
                                                                             </iais:row>
@@ -155,17 +161,18 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:field value="Reviewing Decision" required="true"/>
                                                                                 <iais:value width="10">
+                                                                                    <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_AO_SCREENING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
+                                                                                    <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="Reviewing Decision" required="true"/>
+                                                                                <iais:field value="Final Remarks" required="true"></iais:field>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_AO_SCREENING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
-                                                                                    <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
+                                                                                    <iais:select name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -187,6 +194,12 @@
                                                                             <iais:row>
                                                                                 <iais:field value="DO Remarks" required="false"></iais:field>
                                                                                 <iais:value width="10"><p>${applicationMisc.remarks}</p></iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:value width="10"><p><iais:code code="${applicationMisc.finalRemarks}"></iais:code></p></iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div>
@@ -250,17 +263,18 @@
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:field value="Reviewing Decision" required="true"/>
                                                                                 <iais:value width="10">
+                                                                                    <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_AO_PROCESSING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
+                                                                                    <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field value="Reviewing Decision" required="true"/>
+                                                                                <iais:field value="Final Remarks" required="true"></iais:field>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select id="processingDecision" name="processingDecision" disabled="false" codeCategory="CATE_ID_BSB_AO_PROCESSING_PROCESSING_DECISION" firstOption="Please Select"></iais:select>
-                                                                                    <span data-err-ind="searchProcessingDecision" id="error_processingDecision" class="error-msg"></span>
+                                                                                    <iais:select name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>

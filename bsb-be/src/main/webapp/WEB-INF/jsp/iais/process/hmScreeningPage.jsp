@@ -97,12 +97,20 @@
                                                                             <iais:value width="10"><p><iais:code code="${applicationInfo.status}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="AO Remarks" required="false" width="12"/>
-                                                                            <iais:value width="10"><p>${applicationMisc.remarks}</p></iais:value>
-                                                                        </iais:row>
-                                                                    </div>
+                                                                    <c:if test="${applicationMisc.finalRemarks=='FR001'}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="AO Remarks" required="false" width="12"/>
+                                                                                <iais:value width="10"><p>${applicationMisc.remarks}</p></iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                                <iais:value width="10"><p><iais:code code="${applicationMisc.finalRemarks}"></iais:code></p></iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="false"></iais:field>

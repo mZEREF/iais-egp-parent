@@ -63,7 +63,7 @@ public class MohProcessingDelegator {
 
     public void screenedByDO(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST002";
+        String status = ProcessContants.APPLICATION_STATUS_2;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
         //TODO validate
@@ -71,77 +71,77 @@ public class MohProcessingDelegator {
 
     public void doReject(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST008";
+        String status = ProcessContants.APPLICATION_STATUS_8;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void requestForInformation(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST004";
+        String status = ProcessContants.APPLICATION_STATUS_4;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void approvalForInspection(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST005";
+        String status = ProcessContants.APPLICATION_STATUS_5;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void aoReject(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST008";
+        String status = ProcessContants.APPLICATION_STATUS_8;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void routeBackToDO(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST001";
+        String status = ProcessContants.APPLICATION_STATUS_1;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void routeToHM(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST003";
+        String status = ProcessContants.APPLICATION_STATUS_3;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void hmReject(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST002";
+        String status = ProcessContants.APPLICATION_STATUS_2;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void hmApprove(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST002";
+        String status = ProcessContants.APPLICATION_STATUS_2;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void recommendApproval(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST002";
+        String status = ProcessContants.APPLICATION_STATUS_2;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void recommendRejection(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST002";
+        String status = ProcessContants.APPLICATION_STATUS_2;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void aoApproved(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
-        String status = "BSBAPST009";
+        String status = ProcessContants.APPLICATION_STATUS_9;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
