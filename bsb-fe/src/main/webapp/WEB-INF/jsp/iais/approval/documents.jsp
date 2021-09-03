@@ -6,8 +6,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@ include file="common/dashboard.jsp" %>
-<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" id="page_id" name="page_id" value="document_page">
+<form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="crud_action_type" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">

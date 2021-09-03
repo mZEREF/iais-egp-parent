@@ -54,7 +54,6 @@ $(function() {
         }
     })
     var selectValueSchedule = $("#schedule").val();
-    console.log(selectValueSchedule);
     if (selectValueSchedule == "SCHTYPE001"){
         $("#select1").show();
     }else if (selectValueSchedule == "SCHTYPE002"){
@@ -146,13 +145,17 @@ $(function() {
             return;
         }else if(currId == "PrepareForms"){
             $("[name='crud_action_type_form_page']").val("PrepareForms");
-            SOP.Crud.cfxSubmit("mainForm","loading");
+            $("[name='crud_action_type']").val("loading");
+            $('#mainForm').submit();
         }else if(currId == "PrepareDocuments"){
             $("[name='crud_action_type_form_page']").val("PrepareDocuments");
-            SOP.Crud.cfxSubmit("mainForm","loading");
+            $("[name='crud_action_type']").val("loading");
+            $('#mainForm').submit();
         }else if(currId == "PreparePreview"){
             $("[name='crud_action_type_form_page']").val("PreparePreview");
-            SOP.Crud.cfxSubmit("mainForm","loading");
+            $("[name='crud_action_type']").val("loading");
+            $('#mainForm').submit();
         }
     });
+
 })

@@ -131,7 +131,7 @@ public class NewApprovalDelegator {
     public void doPreview(BaseProcessClass bpc) {
     }
 
-    public List<String> stringArrayToList(String[] strings){
+    private List<String> stringArrayToList(String[] strings){
         List<String> list = null;
         if (!StringUtil.isEmpty(strings)){
             list = Arrays.asList(strings);
@@ -270,8 +270,10 @@ public class NewApprovalDelegator {
 
     public void controlSwitch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String crud_action_type_form_page=ParamUtil.getString(request,"crud_action_type_form_page");
+        String crud_action_type_form_page = ParamUtil.getString(request,"crud_action_type_form_page");
+        String crud_action_type = ParamUtil.getString(request,"crud_action_type");
         ParamUtil.setRequestAttr(request,"crud_action_type_form_page",crud_action_type_form_page);
+        ParamUtil.setRequestAttr(request,"crud_action_type",crud_action_type);
     }
 
     public void doSaveDraft(BaseProcessClass bpc) {
@@ -318,7 +320,7 @@ public class NewApprovalDelegator {
         approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
-    public List<SelectOption> getSelectOptionList(String schedule){
+    private List<SelectOption> getSelectOptionList(String schedule){
         List<BiologicalQueryDto> biological = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
         List<SelectOption> biologicalSchedule =  IaisCommonUtils.genNewArrayList();
         if (biological != null && biological.size() > 0){
