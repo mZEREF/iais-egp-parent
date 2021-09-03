@@ -37,7 +37,7 @@
                     <div class="table-responsive">
                       <table aria-describedby="" class="table">
                         <thead>
-                        <tr align="center">
+                        <tr>
                           <th scope="col" >Vehicle Number</th>
                           <th scope="col" >NC Clause</th>
                           <th scope="col" >Checklist Question</th>
