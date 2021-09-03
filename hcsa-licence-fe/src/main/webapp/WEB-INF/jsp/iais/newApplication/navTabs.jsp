@@ -55,7 +55,7 @@
 <%}%>
 
 <c:set var="canClickMainTab" value="${empty AppSubmissionDto || 'APTY002' ne AppSubmissionDto.appType ||
-not empty AppSubmissionDto.appGrpPremisesDtoList.get(0).premisesType}" />
+    AppSubmissionDto.appGrpPremisesDtoList.get(0).filled}" />
 <script type="text/javascript">
 
     $(document).ready(function() {
