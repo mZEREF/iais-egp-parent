@@ -402,7 +402,7 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <label class="col-xs-11 col-md-4 control-label">Business Name <span class="mandatory">*</span></label>
-                    <div class="col-sm-7 col-md-6 col-xs-10 col-md-5">
+                    <div class="col-sm-7 col-md-5 col-xs-10 col-md-5">
                         <input type="text" name="conveyanceHciName" class="hciName" maxlength="100" autocomplete="off"><span id="error_conveyanceHciName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                     <div class="clear"></div>
