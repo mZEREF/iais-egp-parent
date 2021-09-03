@@ -2410,7 +2410,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     errorMap.put(errNameMap.get("time") + count,MessageUtil.getMessageDesc("NEW_ERR0019"));
                 }
 
-
             }
         }
 
@@ -2468,7 +2467,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
             List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
             AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
-            copyMutableObject.setSelfAssMtFlag(ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT);
             appGrpPremisesDtos.add(copyMutableObject);
             if (groupLic) {
                 appGrpPremisesDtos.get(0).setGroupLicenceFlag(licence.getId());
@@ -2476,14 +2474,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
             // check app edit select dto
-            AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
-            editDto.setPremisesEdit(true);
             if (StringUtil.isEmpty(draftNo)) {
                 appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
                 draftNo = appSubmissionDtoByLicenceId.getDraftNo();
             }
             boolean isValid = checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, amount, draftNo, appGroupNo,
-                    editDto, appSubmissionDtos, request);
+                    appEditSelectDto, appSubmissionDtos, request);
             if (!isValid) {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
                 ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
@@ -2513,23 +2509,25 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         }
-        String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", licence.getSvcName());
-        String baseServiceId1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
-        if (StringUtil.isEmpty(baseServiceId1)) {
-            log.info(StringUtil.changeForLog("BaseService is null - " + errorSvcMsg));
-            request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
-            return false;
-        }
-        Boolean changeOtherOperation = isOtherOperation(licence.getId());
-        if (!changeOtherOperation) {
-            log.info(StringUtil.changeForLog("errorRfcPendingApplication"));
-            request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-            return false;
-        }
-        List<ApplicationDto> changeApplicationDtos = getAppByLicIdAndExcludeNew(licence.getId());
-        if (!IaisCommonUtils.isEmpty(changeApplicationDtos)) {
-            request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-            return false;
+        if (request != null) {
+            String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", licence.getSvcName());
+            String baseServiceId1 = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
+            if (StringUtil.isEmpty(baseServiceId1)) {
+                log.info(StringUtil.changeForLog("BaseService is null - " + errorSvcMsg));
+                request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
+                return false;
+            }
+            Boolean changeOtherOperation = isOtherOperation(licence.getId());
+            if (!changeOtherOperation) {
+                log.info(StringUtil.changeForLog("errorRfcPendingApplication"));
+                request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+                return false;
+            }
+            List<ApplicationDto> changeApplicationDtos = getAppByLicIdAndExcludeNew(licence.getId());
+            if (!IaisCommonUtils.isEmpty(changeApplicationDtos)) {
+                request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+                return false;
+            }
         }
 
         appSubmissionDto.setAppGrpNo(appGroupNo);
