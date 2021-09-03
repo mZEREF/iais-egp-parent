@@ -12,6 +12,7 @@ public final class AuditConstants {
 
     public static final String PARAM_AUDIT_SEARCH = "auditSearch";
     public static final String PARAM_AUDIT_TYPE = "auditType";
+    public static final String PARAM_AUDIT_DATE = "auditDate";
 
     public static final String PARAM_REMARKS = "remark";
 

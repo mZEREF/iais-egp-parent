@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.util;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -16,5 +18,78 @@ public class DateUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR,-1);
         return calendar.getTime();
+    }
+
+    public static String addDate(Date date,int addTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_YEAR, addTime);
+        Date dt1 = calendar.getTime();
+        String endDtStr = sdf.format(dt1);
+        return endDtStr;
+    }
+
+    public static String dateToStr(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dtStr = sdf.format(date);
+        return dtStr;
+    }
+
+    public static boolean checkDateVal(String dateStr, String start, String end) {
+        boolean isDateRight = false;
+        Date date = null;
+        Date startDate = null;
+        Date endDate = null;
+        SimpleDateFormat sdf = null;
+
+        if (14 == dateStr.length()) {
+            sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        } else if (8 == dateStr.length()) {
+            sdf = new SimpleDateFormat("yyyyMMdd");
+        } else
+            return false;
+
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            log.error(String.valueOf(e), e);
+        }
+
+        if ((start == null) && (end != null)) {
+            try {
+                endDate = sdf.parse(end);
+            } catch (ParseException ex1) {
+                log.error(String.valueOf(ex1), ex1);
+            }
+            if ((date != null) && (endDate != null))// Check parameters for
+            {
+                if (date.compareTo(endDate) <= 0)
+                    isDateRight = true;
+            }
+        } else if ((start != null) && (end == null)) {
+            try {
+                startDate = sdf.parse(start);
+            } catch (ParseException ex1) {
+                log.error(String.valueOf(ex1), ex1);
+            }
+            if ((date != null) && (startDate != null)) {
+                if (date.compareTo(startDate) >= 0)
+                    isDateRight = true;
+            }
+        } else if ((start != null) && (end != null)) {
+            try {
+                startDate = sdf.parse(start);
+                endDate = sdf.parse(end);
+            } catch (ParseException ex2) {
+                System.out.println(ex2.toString());
+            }
+            if ((startDate != null) && (date != null) && (endDate != null)) {
+                if ((date.compareTo(startDate) >= 0)
+                        && (date.compareTo(endDate) <= 0))
+                    isDateRight = true;
+            }
+        }
+        return isDateRight;
     }
 }

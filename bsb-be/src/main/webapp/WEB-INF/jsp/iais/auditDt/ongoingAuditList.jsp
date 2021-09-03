@@ -95,11 +95,10 @@
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="auditDt" value="Date of Last Audit" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
                                 </tr>
@@ -112,14 +111,11 @@
                                         <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
-                                        <td>
-                                            <fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>
-                                        </td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
                                         <td>
-                                            <p><a id="specifyDt">Specify audit date</a></p>
-                                            <p><a id="changeDt">Change audit date</a></p>
-                                            <p><a id="facSelfAudit">Facility self audit</a></p>
+                                            <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
+                                            <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
+                                            <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -130,5 +126,28 @@
                 </div>
             </div>
         </div>
+        <input name="auditId" id="auditId" value="" hidden>
     </form>
 </div>
+<script>
+    function doSpecifyDt(id){
+        showWaiting();
+        $("#auditId").val(id);
+        $("[name='action_type']").val("specifyDt");
+        $("#mainForm").submit();
+    }
+
+    function dochangeDt(id){
+        showWaiting();
+        $("#auditId").val(id);
+        $("[name='action_type']").val("changeDt");
+        $("#mainForm").submit();
+    }
+
+    function submitReport(id){
+        showWaiting();
+        $("#auditId").val(id);
+        $("[name='action_type']").val("doSelfAudit");
+        $("#mainForm").submit();
+    }
+</script>

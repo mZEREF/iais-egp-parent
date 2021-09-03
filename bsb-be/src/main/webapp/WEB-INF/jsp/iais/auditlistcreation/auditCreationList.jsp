@@ -95,7 +95,7 @@
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>

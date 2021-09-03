@@ -31,7 +31,7 @@ public interface AuditClient {
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> saveFacilityAudit(@RequestBody FacilityAudit facilityAudit);
 
-//    @GetMapping(path = "/bsb-audit/{id}")
-//    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
+    @GetMapping(path = "/bsb-audit/{id}")
+    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
 
 }

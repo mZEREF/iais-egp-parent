@@ -38,7 +38,7 @@
                         <iais:row>
                             <iais:field value="Reasons for change" width="15" required="true"/>
                             <iais:value width="10">
-                                <input value="" name="reason" id="reason" maxlength="100">
+                                <input type="text" value="" name="reason" id="reason" maxlength="100">
                             </iais:value>
                         </iais:row>
 
@@ -48,7 +48,7 @@
                                 <textarea id="remark"
                                           name="remark"
                                           cols="70"
-                                          rows="3"
+                                          rows="4"
                                           maxlength="500"></textarea>
                             </iais:value>
                         </iais:row>

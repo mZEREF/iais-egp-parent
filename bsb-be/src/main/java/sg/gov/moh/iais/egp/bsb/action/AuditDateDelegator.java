@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
@@ -20,14 +21,14 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
+import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author Zhu Tangtang
@@ -45,6 +46,8 @@ public class AuditDateDelegator {
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
     private static final String FACILITY_LIST = "facilityList";
+    private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
+    private static final String AUDIT_ID = "auditId";
 
     @Autowired
     private AuditClient auditClient;
@@ -115,57 +118,50 @@ public class AuditDateDelegator {
     }
 
     /**
-     * CreateAuditList
      * AutoStep: prepareData
      *
      * @param bpc
      */
-    public void prepareData(BaseProcessClass bpc) {
-//        HttpServletRequest request = bpc.request;
-//        ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
-//        String[] facIds =  ParamUtil.getMaskedStrings(request, "facId");
-//        List<String> facList=new ArrayList<>();
-//        for (String facId : facIds) {
-//            if (StringUtil.isNotEmpty(facId)){
-//                facList.add(facId);
-//            }
-//        }
-//        List<String> list = repeatListWayTwo(facList);
-//        List<Facility> facilityList=new ArrayList<>();
-//        for (String fId : list) {
-//            Facility facility = auditClient.getFacilityById(fId).getEntity();
-//            facilityList.add(facility);
-//        }
-//        ParamUtil.setSessionAttr(request, FACILITY_LIST, (Serializable) facilityList);
+    public void prepareSpecifyDtData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_LIST, null);
+        String auditId =  ParamUtil.getMaskedString(request, AUDIT_ID);
+        List<FacilityAudit> facilityAuditList=new ArrayList<>();
+        FacilityAudit audit=new FacilityAudit();
+        audit.setId(auditId);
+        facilityAuditList.add(audit);
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_LIST, (Serializable) facilityAuditList);
     }
 
     /**
-     * CreateAuditList
      * AutoStep: prepareData
      *
      * @param bpc
      */
-    public void doCreate(BaseProcessClass bpc) {
+    public void specifyDt(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAudit facilityAudit = new FacilityAudit();
-        List<Facility> facilityList = (List<Facility>)ParamUtil.getSessionAttr(request, FACILITY_LIST);
-        String auditType = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_TYPE);
+        List<FacilityAudit> facilityAuditList = (List<FacilityAudit>)ParamUtil.getSessionAttr(request, FACILITY_AUDIT_LIST);
         String remarks = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        facilityAudit.setAuditType(auditType);
-        facilityAudit.setStatus("AUDITST001");
+        String auditDate = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_DATE);
+        Date startDt = null;
+        Date endDt = null;
         facilityAudit.setRemarks(remarks);
-        String facId=null;
-        if (facilityList.size()>0||facilityList!=null){
-            for (Facility facility : facilityList) {
-                facId=facility.getId();
-                Facility fac = new Facility();
-                fac.setId(facId);
-                facilityAudit.setFacility(fac);
-                auditClient.saveFacilityAudit(facilityAudit);
-            }
+        for (FacilityAudit audit : facilityAuditList) {
+            facilityAudit.setId(audit.getId());
+            startDt = audit.getCreatedAt();
+            Facility facility = auditClient.getFacilityById(audit.getFacility().getId()).getEntity();
+            endDt = facility.getApprovalDate();
         }
-    }
+        String startDtStr = DateUtil.dateToStr(startDt);
+        String endDtStr = DateUtil.dateToStr(endDt);
+        if (DateUtil.checkDateVal(auditDate,startDtStr,endDtStr)){
+            //Modifying current Data
+        }else{
+            //Copy current data to audit_app table and change current data status to suspend
+        }
 
+    }
 
     /**
      * AutoStep: page
@@ -225,14 +221,7 @@ public class AuditDateDelegator {
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName,facName));
         }
-        ParamUtil.setRequestAttr(request, "facilityName", selectModel);
-    }
-
-    public static List<String> repeatListWayTwo(List<String> list){
-        HashSet set = new HashSet(list);
-        list.clear();
-        list.addAll(set);
-        return list;
+        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
     }
 
 }

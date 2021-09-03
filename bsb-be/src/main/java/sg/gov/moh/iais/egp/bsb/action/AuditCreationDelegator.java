@@ -44,7 +44,7 @@ public class AuditCreationDelegator {
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
-    private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
+    private static final String FACILITY_ID = "facId";
     private static final String FACILITY_LIST = "facilityList";
 
     @Autowired
@@ -124,7 +124,7 @@ public class AuditCreationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
-        String[] facIds =  ParamUtil.getMaskedStrings(request, "facId");
+        String[] facIds =  ParamUtil.getMaskedStrings(request, FACILITY_ID);
         List<String> facList=new ArrayList<>();
         for (String facId : facIds) {
             if (StringUtil.isNotEmpty(facId)){
@@ -223,7 +223,7 @@ public class AuditCreationDelegator {
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName,facName));
         }
-        ParamUtil.setRequestAttr(request, "facilityName", selectModel);
+        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
     }
 
     public static List<String> repeatListWayTwo(List<String> list){
