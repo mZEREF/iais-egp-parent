@@ -2418,8 +2418,9 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
         if (appEditSelectDto.isPremisesEdit()) {
             // reSet amount
-            if (appEditSelectDto.isChangeBusinessName()) {
+            if (appEditSelectDto.isChangeBusinessName() || appEditSelectDto.isChangeVehicle()) {
                 amendmentFeeDto.setChangeBusinessName(Boolean.FALSE);
+                amendmentFeeDto.setChangeInHCIName(appEditSelectDto.isChangeHciName());
                 feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
                 amount = feeDto.getTotal();
             }
@@ -2521,9 +2522,7 @@ public class NewApplicationDelegator {
         boolean appGrpMisc = false;
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
-            if (autoGroupNo == null) {
-                autoGroupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            }
+            autoGroupNo = getRfcGroupNo(autoGroupNo);
             String groupNo = autoGroupNo;
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String licenseeId = loginContext.getLicenseeId();
