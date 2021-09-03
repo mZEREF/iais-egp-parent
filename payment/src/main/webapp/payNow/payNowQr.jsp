@@ -33,13 +33,27 @@
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href=${payNowCallBackUrl}>Cancel</a>
-<%--            <span style="float:right">&nbsp;</span>--%>
-<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
+            <%--            <span style="float:right">&nbsp;</span>--%>
+            <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
+    setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
+
+    function payNowPoll(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowPoll",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (msg) {
+                console.log(msg);
+            }
+        });
+    }
 
     function payNowImgStringRefresh(){
         if(${GatewayPayNowConfig.timeout=="0"}){
