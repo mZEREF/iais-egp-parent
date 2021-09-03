@@ -15,9 +15,11 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 
 public class INTRANET___AppDetail___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="biosafetyEnquiryDelegator";
 
 	public void prepareDetail_OnStepProcess_0() throws Exception {
 	// 		PrepareDetail->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareDetail", this);
 	}
 
 }

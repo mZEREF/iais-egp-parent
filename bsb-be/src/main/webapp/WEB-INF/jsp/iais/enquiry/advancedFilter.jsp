@@ -190,13 +190,13 @@
                     <iais:row>
                         <iais:field value="Approved Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvalDateFrom" dateVal="${approvalSearchParam.approvalDateFrom}"></iais:datePicker>
+                            <iais:datePicker name="approvedDateFrom" dateVal="${approvalSearchParam.approvedDateFrom}"></iais:datePicker>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approved Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvalDateTo" dateVal="${approvalSearchParam.approvalDateTo}"></iais:datePicker>
+                            <iais:datePicker name="approvedDateTo" dateVal="${approvalSearchParam.approvedDateTo}"></iais:datePicker>
                         </div >
                     </iais:row>
                 </iais:section>

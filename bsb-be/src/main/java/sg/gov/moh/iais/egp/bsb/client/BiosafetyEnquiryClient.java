@@ -67,4 +67,5 @@ public interface BiosafetyEnquiryClient {
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
+
 }

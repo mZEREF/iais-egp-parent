@@ -1,6 +1,4 @@
-<div class="row">
-    <div class="tab-pane active" id="tabInbox" role="tabpanel">
-        <div class="tab-content">
+          <input type="hidden" name="appId" id="appId" value="" >
             <div class="row">
                 <div class="col-xs-12">
                     <div class="components">
@@ -76,7 +74,7 @@
                                                 <c:forEach var="items" items="${applicationInfoDto}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out  value="${status.index+1}"/></td>
-                                                        <td><a onclick="javascript:doAppInfo()"><c:out  value="${items.applicationNo}"/></a></td>
+                                                        <td><a onclick="doAppInfo('<iais:mask name="appId" value="${items.id}"/>')"><c:out  value="${items.applicationNo}"/></a></td>
                                                         <td><iais:code code="${items.appType}"></iais:code></td>
                                                         <td><iais:code code="${items.status}"></iais:code></td>
                                                         <td><fmt:formatDate value='${items.applicationDt}' pattern='dd/MM/yyyy'/></td>
@@ -345,6 +343,3 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>

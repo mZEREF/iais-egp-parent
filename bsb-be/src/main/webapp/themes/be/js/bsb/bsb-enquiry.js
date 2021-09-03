@@ -37,8 +37,9 @@ function doSearch() {
     }
 }
 
-function doAppInfo() {
+function doAppInfo(appId) {
     showWaiting();
+    $("#appId").val(appId);
     $("[name='action_type']").val("appDetail");
     $("#mainForm").submit();
 }
@@ -98,7 +99,6 @@ function doAdvClear() {
     $("select[name = 'applicationType'] option:first").prop("selected",'selected');
     $("select[name = 'applicationStatus'] option:first").prop("selected",'selected');
     $("select[name = 'facilityClassification'] option:first").prop("selected",'selected');
-    $("select[name = 'facilityType'] option:first").prop("selected",'selected');
     $("select[name = 'facilityName'] option:first").prop("selected",'selected');
     $("select[name = 'scheduleType'] option:first").prop("selected",'selected');
     $("select[name = 'biologicalAgent'] option:first").prop("selected",'selected');

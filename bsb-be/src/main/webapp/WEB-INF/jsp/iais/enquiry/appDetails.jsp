@@ -12,7 +12,8 @@
 <%@ taglib uri="http://www.ecq.com/iais"   prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%--<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-enquiry.js"></script>--%>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-enquiry.js"></script>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -26,87 +27,138 @@
 
 <div class="main-content">
   <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="prRegNo" value="">
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="searchChk" id="searchChk" value="${count}"/>
-    <div class="bg-title"><h2>Details of Application NO</h2></div>
+    <input type="hidden" name="count" value="${count}">
     <div class="container">
-
-      <div class="row">
-        <div class="col-xs-10" style="height: 100%;margin: 0 auto">
-          <div class="table-gp">
-            <table class="table table-bordered">
-              <tbody>
-              <tr>
-                <td class="col-xs-6" align="right">S/N</td>
-                <td class="col-xs-6" style="padding-left: 15px;">1</td>
-              </tr>
-              <tr>
-                <td align="right">Application No</td>
-                <td style="padding-left: 15px;">EDQHD312Q</td>
-              </tr>
-              <tr>
-                <td align="right">Application Type</td>
-                <td style="padding-left: 15px;">Renewal</td>
-              </tr>
-              <tr>
-                <td align="right">Application Submission Date </td>
-                <td style="padding-left: 15px;">06/17/2021</td>
-              </tr>
-              <tr>
-                <td align="right">Approval Date</td>
-                <td style="padding-left: 15px;">06/13/2021</td>
-              </tr>
-              <tr>
-                <td align="right">Facility Classification</td>
-                <td style="padding-left: 15px;">Certified Facility</td>
-              </tr>
-              <tr>
-                <td align="right">Facility Type</td>
-                <td style="padding-left: 15px;">Certified Facility (HCF)</td>
-              </tr>
-              <tr>
-                <td align="right">Facility Name</td>
-                <td style="padding-left: 15px;">BBC</td>
-              </tr>
-              <tr>
-                <td align="right">Biological Agent/Toxin</td>
-                <td style="padding-left: 15px;">List of BA/T</td>
-              </tr>
-              <tr>
-                <td align="right">Risk Level of the Biological Agent/Toxin</td>
-                <td style="padding-left: 15px;">Enhanced risk</td>
-              </tr>
-              <tr>
-                <td align="right">Process Type</td>
-                <td style="padding-left: 15px;">Facility Registration</td>
-              </tr>
-              <tr>
-                <td align="right">Verified By DO (Date time)</td>
-                <td style="padding-left: 15px;">06/18/2021</td>
-              </tr>
-              <tr>
-                <td align="right">Verified By AO (Date time)</td>
-                <td style="padding-left: 15px;">06/19/2021</td>
-              </tr>
-              <tr>
-                <td align="right">Verified By AO (Date time)</td>
-                <td style="padding-left: 15px;">06/20/2021</td>
-              </tr>
-              <tr>
-                <td align="right">Action</td>
-                <td style="padding-left: 15px;">Revoke</td>
-              </tr>
-              </tbody>
-            </table>
+      <div class="row" style="margin-left: 80px;width: 800px">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Submission Details</strong></div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="table-gp">
+              <table class="table table-bordered" style="margin-bottom: 0">
+                <tbody>
+                <tr>
+                  <td class="col-xs-6" align="right">Application No.</td>
+                  <td class="col-xs-6" style="padding-left : 20px">${applicationInfo.applicationNo}</td>
+                </tr>
+                <tr>
+                  <td align="right">Application Type</td>
+                  <td style="padding-left : 20px"><iais:code code="${applicationInfo.appType}"></iais:code></td>
+                </tr>
+                <tr>
+                  <td align="right">Process Type</td>
+                  <td style="padding-left : 20px"><iais:code code="${applicationInfo.processType}"></iais:code></td>
+                </tr>
+                <tr>
+                  <td align="right">Facility Type</td>
+                  <td style="padding-left : 20px"><iais:code code="${applicationInfo.facility.facilityType}"></iais:code></td>
+                </tr>
+                <tr>
+                  <td align="right">Facility Name/Address</td>
+                  <td style="padding-left : 20px">${applicationInfo.facility.facilityName} / Block ${applicationInfo.facility.blkNo} ${applicationInfo.facility.streetName} ${applicationInfo.facility.floorNo}-${applicationInfo.facility.unitNo} Singapore ${applicationInfo.facility.postalCode}</td>
+                </tr>
+                <tr>
+                  <td align="right">Submission Date</td>
+                  <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.applicationDt}' pattern='dd/MM/yyyy'/></td>
+                </tr>
+                <tr>
+                  <td align="right">Application Status</td>
+                  <td style="padding-left : 20px"><iais:code code="${applicationInfo.status}"></iais:code></td>
+                </tr>
+                <tr>
+                  <td align="right">Facility/Approval Expiry Date</td>
+                  <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-      <a onclick="javascript:doBack()"><em
-              class="fa fa-angle-left"> </em> Back</a>
+      <div>&nbsp</div>
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>Applicant Details</strong></div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="table-gp">
+              <table class="table table-bordered" style="margin-bottom: 0">
+                <tbody>
+                <tr>
+                  <td class="col-xs-6" align="right">Facility/Organisation Name</td>
+                  <td class="col-xs-6" style="padding-left : 20px">ABC</td>
+                </tr>
+                <tr>
+                  <td align="right">Facility/Organisation Address</td>
+                  <td style="padding-left : 20px">Lot 10,Tao Payoh,Jalan 1,106780,Singapore</td>
+                </tr>
+                <tr>
+                  <td align="right">Facility/Organisation Admin</td>
+                  <td style="padding-left : 20px">Mr Admin</td>
+                </tr>
+                <tr>
+                  <td align="right">Telephone</td>
+                  <td style="padding-left : 20px">64825525</td>
+                </tr>
+                <tr>
+                  <td align="right">Email</td>
+                  <td style="padding-left : 20px">Facility@yahoo.com</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+<%--      <div align="center">--%>
+<%--        <a href="javascript:void(0);" onclick="javascript:doOpenApp()">--%>
+<%--          <button type="button" class="btn btn-primary">--%>
+<%--            View Application--%>
+<%--          </button>--%>
+<%--        </a>--%>
+<%--      </div>--%>
+      <div>&nbsp</div>
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>List of Agent / Toxin</strong></div>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="table-gp">
+              <table class="table table-bordered" style="margin-bottom: 0">
+                <thead>
+                <tr>
+                  <th style="text-align:center;width:5%" align="center">S/N</th>
+                  <th style="text-align:center;">Schedule</th>
+                  <th style="text-align:center;">Biological Agent / Toxin</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="item" items="${applicationInfo.biologicalList}" varStatus="status">
+                  <tr>
+                    <td align="center">
+                      <p><c:out value="${status.index + 1}"/></p>
+                    </td>
+                    <td align="center">
+                      <p><iais:code code="${item.schedule}"></iais:code></p>
+                    </td>
+                    <td align="center">
+                      <p><c:out value="${item.name}"/></p>
+                    </td>
+                  </tr>
+                </c:forEach>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div align="left">
+        <a style="float:left;padding-top: 1.1%;" class="back" id="back" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a>
+      </div>
     </div>
   </form>
+</div>
 </div>

@@ -15,6 +15,17 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_APPROVED_CERTIFIER_INFO_SEARCH = "approvedSearchParam";
     public static final String PARAM_APPROVED_CERTIFIER_INFO_RESULT = "approvedSearchResult";
 
+    //common
+    public static final String KEY_ENQUIRY_SEARCH_DTO = "enquiryDto";
+    public static final String KEY_PAGE_INFO = "pageInfo";
+    public static final String KEY_DOWNLOAD = "download";
+
+    //url
+    public static final String URL_APPLICATION_INFO_FILE = "Application-information-file";
+    public static final String URL_FACILITY_INFO_FILE = "Facility-information-file";
+    public static final String URL_APPROVAL_INFO_FILE = "Approval-information-file";
+    public static final String URL_APPROVED_CERTIFIER_INFO_FILE = "Approved-certifier-information-file";
+
 
 
     //PARAM
@@ -55,4 +66,6 @@ public class BioSafetyEnquiryConstants {
     public static final String PARAM_TEAM_MEMBER_ID = "teamMemberID";
     public static final String PARAM_APPROVED_DATE_FROM = "approvedDateFrom";
     public static final String PARAM_APPROVED_DATE_TO = "approvedDateTo";
+
+
 }
