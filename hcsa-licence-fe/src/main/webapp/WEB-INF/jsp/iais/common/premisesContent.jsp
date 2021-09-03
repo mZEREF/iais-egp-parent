@@ -888,7 +888,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field value="Vehicle No." mandatory="true" width="4"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:value width="7" cssClass="col-md-5">
                             <iais:input maxLength="10" type="text" name="conveyanceVehicleNo" id="vehicleNo" value="${appGrpPremisesDto.conveyanceVehicleNo}"></iais:input>
                             <span  class="error-msg"  name="iaisErrorMsg" id="error_conveyanceVehicleNo${status.index}"></span>
                         </iais:value>
@@ -913,7 +913,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field value="Block / House No." width="4"/>
-                        <iais:value width="11" cssClass="col-md-5">
+                        <iais:value width="7" cssClass="col-md-5">
                             <iais:input maxLength="10" cssClass="conveyanceBlkNo" type="text" name="conveyanceBlkNo" id="conveyanceBlkNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBlockNos${status.index}"></span>
                         </iais:value>
