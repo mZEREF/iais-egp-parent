@@ -29,26 +29,25 @@
     <input type="hidden" name="crud_action_value" id="crud_action_value" value="">
 
   <div class="container form-horizontal" style="margin-top:1%">
-    <iais:row cssClass="col-xs-4">
+    <iais:row cssClass="col-md-4">
       <label class="control-label float-left" for="premType">Type</label>
       <div class="col-xs-10 col-md-9 col-lg-8 premTypeDiv" id="premTypeDiv">
         <iais:select name="premType"  value="${premiseDoSearch}" options="applicationType" firstOption="All"></iais:select>
       </div>
     </iais:row>
-    <iais:row cssClass="col-xs-8">
+    <iais:row cssClass="col-md-8">
       <div class="text-right">
         <a class="btn btn-secondary" id="premiseClear" href="javascript:void(0);">Clear</a>
         <a class="btn btn-primary" id="premiseSearch" href="javascript:void(0);">search</a>
       </div>
     </iais:row>
   </div>
-
   <div class="container" >
+    <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
     <div class="col-xs-12">
         <span class="error-msg"><c:out value="${Error_Status}"/></span>
         <div class="table-responsive">
           <table aria-describedby="" class="table " style="margin-right: 20%">
-            <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
             <thead style="align-content: center">
             <tr>
               <th scope="col" style="width: 40%">Address</th>
@@ -84,11 +83,10 @@
 
 
     </div>
-  </div>
-
-  <div class="row col-xs-11 ">
-    <div class="col-xs-12">
-      <a class="back" style="margin-left: 10%" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+    <div class="row col-xs-11 ">
+      <div class="col-xs-12">
+        <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+      </div>
     </div>
   </div>
 
