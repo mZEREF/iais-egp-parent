@@ -1021,7 +1021,20 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
             //0068776
             if (isRfi){
-                appSvcLaboratoryDisciplinesDtoList = currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcLaboratoryDisciplinesDto> otherAppSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
+                String rfiPremiseId = "";
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    if (appGrpPremisesDto.isRfiCanEdit()){
+                        rfiPremiseId = appGrpPremisesDto.getId();
+                        break;
+                    }
+                }
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto1 : currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList()){
+                    if (!rfiPremiseId.equals(appSvcLaboratoryDisciplinesDto1.getPremiseVal())){
+                        otherAppSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto1);
+                    }
+                }
+                appSvcLaboratoryDisciplinesDtoList.addAll(otherAppSvcLaboratoryDisciplinesDtoList);
             }
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -1057,16 +1070,6 @@ public class ClinicalLaboratoryDelegator {
                     appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesValue);
                     appSvcLaboratoryDisciplinesDto.setPremiseGetAddress(premisesAddress);
                     appSvcLaboratoryDisciplinesDto.setAppSvcChckListDtoList(appSvcChckListDtoList);
-                    //0068776
-                    if (isRfi) {
-                        for (int j = appSvcLaboratoryDisciplinesDtoList.size() - 1; j >= 0; j--) {
-                            AppSvcLaboratoryDisciplinesDto item = appSvcLaboratoryDisciplinesDtoList.get(j);
-                            if (premisesType.equals(item.getPremiseType()) && premisesValue.equals(item.getPremiseVal()) &&
-                                    premisesAddress.equals(item.getPremiseGetAddress())) {
-                                appSvcLaboratoryDisciplinesDtoList.remove(item);
-                            }
-                        }
-                    }
                     appSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto);
                 }
                 i++;
