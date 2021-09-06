@@ -508,7 +508,7 @@
                                                                                     var="ncRectification"
                                                                                     varStatus="status">
                                                                                 <tr>
-                                                                                    <td>
+                                                                                    <td style="padding: 15px 25px 15px 0;">
                                                                                         <p><c:out
                                                                                                 value="${status.count}"/></p>
                                                                                     </td>
