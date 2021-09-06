@@ -520,7 +520,7 @@ public class InspectionCheckListCommonMethodDelegator {
                  for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos){
                          InspectionSpecServiceDto inspectionSpecServiceDto = MiscUtil.transferEntityDto(originalInspectionSpecServiceDto,InspectionSpecServiceDto.class);
                          inspectionSpecServiceDto.setIdentify(appSvcVehicleDto.getVehicleName());
-                         inspectionSpecServiceDto.setServiceTab(appSvcVehicleDto.getVehicleName());
+                         inspectionSpecServiceDto.setServiceTab(appSvcVehicleDto.getDisplayName());
                          List<InspectionFillCheckListDto> fdtoList = IaisCommonUtils.genNewArrayList();
                          if(originalInspectionSpecServiceDto.getFdtoList() == null){
                              originalInspectionSpecServiceDto.setFdtoList(IaisCommonUtils.genNewArrayList());

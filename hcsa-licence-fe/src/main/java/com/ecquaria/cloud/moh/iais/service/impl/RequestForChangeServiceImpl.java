@@ -701,6 +701,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("streetName" + i, general_err0041);
                         }
 
+                        String email = appGrpPremisesDtoList.get(i).getEasMtsPubEmail();
+                        if(StringUtil.isEmpty(email)){
+                            errorMap.put("onSiteEmail" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Email ", "field"));
+                        }else {
+                            if(!ValidationUtils.isEmail(email)){
+                                errorMap.put("onSiteEmail" + i, MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                            }
+                        }
+
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
 
                         boolean addrTypeFlag = true;

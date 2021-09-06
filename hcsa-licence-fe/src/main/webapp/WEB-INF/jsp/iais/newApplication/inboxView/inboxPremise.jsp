@@ -122,6 +122,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Email</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsPubEmail}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with another licensee?</span></p>
                                 </div>
                                 <div class="col-md-6">
