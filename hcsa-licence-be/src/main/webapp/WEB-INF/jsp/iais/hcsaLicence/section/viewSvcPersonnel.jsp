@@ -13,7 +13,8 @@
                         <c:set var="oldAppSvcPersonnelDtoList"
                                value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index]}"/>
                         <p>
-                            <strong class="col-xs-6">Service Personnel 
+                            <strong class="col-xs-6">
+                                Service Personnel
                                 <c:if test="${fn:length(currentPreviewSvcInfo.appSvcPersonnelDtoList)>1}">
                                     ${status.index+1}
                                 </c:if>:
