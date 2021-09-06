@@ -19,33 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.PersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -4154,6 +4128,16 @@ public class NewApplicationDelegator {
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
         if (otherList != null && !otherList.isEmpty()) {
             otherList.forEach(dto -> {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+                List<AppSvcPersonnelDto> otherAppSvcPersonnelDtoList = dto.getAppSvcSectionLeaderList();
+                if (appSvcPersonnelDtoList != null && otherAppSvcPersonnelDtoList != null) {
+                    for (AppSvcPersonnelDto otherAppSvcPersonnelDto : otherAppSvcPersonnelDtoList){
+                        if (!isContainAppSvcPersonnelDto(appSvcPersonnelDtoList, otherAppSvcPersonnelDto)){
+                            appSvcPersonnelDtoList.add(otherAppSvcPersonnelDto);
+                        }
+                    }
+                }
+
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                 if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
                     appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
@@ -4162,14 +4146,7 @@ public class NewApplicationDelegator {
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
                 List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
                 if (appSvcDisciplineAllocationDtoList != null && otherAppSvcDisciplineAllocationDtoList != null) {
-                    for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
-                        for (AppSvcDisciplineAllocationDto otherAppSvcDisciplineAllocationDto : otherAppSvcDisciplineAllocationDtoList) {
-                            if (StringUtil.isNotEmpty(otherAppSvcDisciplineAllocationDto.getSectionLeaderName()) &&
-                                    otherAppSvcDisciplineAllocationDto.getSectionLeaderName().equals(appSvcDisciplineAllocationDto.getSectionLeaderName())) {
-                                otherAppSvcDisciplineAllocationDto.setSlIndex(appSvcDisciplineAllocationDto.getSlIndex());
-                            }
-                        }
-                    }
+                    setAppSvcDisciplineAllocationDtoSlIndex(appSvcPersonnelDtoList, otherAppSvcDisciplineAllocationDtoList);
                     appSvcDisciplineAllocationDtoList.addAll(otherAppSvcDisciplineAllocationDtoList);
                     appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
                 }
@@ -4199,6 +4176,35 @@ public class NewApplicationDelegator {
             appSvcRelatedInfoDtos.removeAll(otherList);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         }
+    }
+
+    private void setAppSvcDisciplineAllocationDtoSlIndex(List<AppSvcPersonnelDto> appSvcPersonnelDtoList, List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList) {
+        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) || IaisCommonUtils.isEmpty(otherAppSvcDisciplineAllocationDtoList)){
+            return;
+        }
+        for (AppSvcDisciplineAllocationDto otherAppSvcDisciplineAllocationDto : otherAppSvcDisciplineAllocationDtoList) {
+            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList){
+                if (StringUtil.isNotEmpty(otherAppSvcDisciplineAllocationDto.getSectionLeaderName()) &&
+                        otherAppSvcDisciplineAllocationDto.getSectionLeaderName().equals(appSvcPersonnelDto.getName())) {
+                    otherAppSvcDisciplineAllocationDto.setSlIndex(appSvcPersonnelDto.getIndexNo());
+                }
+            }
+        }
+    }
+
+    private boolean isContainAppSvcPersonnelDto(List<AppSvcPersonnelDto> appSvcPersonnelDtoList, AppSvcPersonnelDto otherAppSvcPersonnelDto) {
+        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) || otherAppSvcPersonnelDto == null){
+            return false;
+        }
+        boolean isContain = false;
+        for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList){
+            if (StringUtil.isNotEmpty(otherAppSvcPersonnelDto.getName()) &&
+                    otherAppSvcPersonnelDto.getName().equals(appSvcPersonnelDto.getName())) {
+                isContain = true;
+                break;
+            }
+        }
+        return isContain;
     }
 
     private String getNewPsnIndexNo(List<PersonnelDto> srcPersonnels, List<PersonnelDto> tarPersonnels, String srcPsnIndexNo) {
