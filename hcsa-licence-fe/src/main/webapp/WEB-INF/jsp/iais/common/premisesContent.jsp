@@ -430,6 +430,13 @@
                         </iais:value>
                     </iais:row>
                     <iais:row>
+                        <iais:field value="Email" mandatory="true" width="4"/>
+                        <iais:value width="5" cssClass="col-md-5">
+                            <iais:input maxLength="320" cssClass="easMtsPubEmail" type="text" name="onSiteEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
+                            <span  class="error-msg" name="iaisErrorMsg" id="error_onSiteEmail${status.index}"></span>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
                         <iais:field value="Office Telephone No." mandatory="true" width="4"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5">
                             <iais:input type="text" name="onSiteOffTelNo" maxLength="8" value="${appGrpPremisesDto.offTelNo}" id="onsitOffice" cssClass="onsitOffice" />

@@ -176,6 +176,14 @@
                     <div class="clear"></div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-md-4 control-label">Email <span class="mandatory">*</span></label>
+                    <div class=" col-xs-11 col-sm-7 col-md-5 ">
+                        <input type="text" id="onSiteEmail" name="onSiteEmail"
+                               class="onSiteEmail" maxlength="320" autocomplete="off">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-md-4 control-label">Office Telephone No. <span
                             class="mandatory">*</span></label>
                     <div class=" col-xs-7 col-sm-4 col-md-5">
