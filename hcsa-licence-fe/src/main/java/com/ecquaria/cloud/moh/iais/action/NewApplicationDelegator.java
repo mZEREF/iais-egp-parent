@@ -173,6 +173,7 @@ public class NewApplicationDelegator {
     public static final String APPLICATION_SVC_PAGE_NAME_SERVICE_PERSONNEL = "APPSPN07";
     public static final String APPLICATION_SVC_PAGE_NAME_MEDALERT_PERSON = "APPSPN08";
     public static final String SELECT_DRAFT_NO = "selectDraftNo";
+    public static final String DRAFT_NUMBER = "DraftNumber";
     //isClickEdit
     public static final String IS_EDIT = "isEdit";
 
@@ -251,7 +252,7 @@ public class NewApplicationDelegator {
         HcsaServiceCacheHelper.flushServiceMapping();
         appSubmissionService.clearSession(bpc.request);
         //fro draft loading
-        String draftNo = ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+        String draftNo = ParamUtil.getMaskedString(bpc.request, DRAFT_NUMBER);
         //for rfi loading
         String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
@@ -2672,7 +2673,7 @@ public class NewApplicationDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?DraftNumber=")
-                .append(MaskUtil.maskValue("DraftNumber",draftNo));
+                .append(MaskUtil.maskValue(DRAFT_NUMBER, draftNo));
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
 
@@ -2918,7 +2919,7 @@ public class NewApplicationDelegator {
         } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             // 72106
             String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-            if (!"licensee".equals(action) && !"premises".equals(action)) {
+            if (!"licensee".equals(action) && !"premises".equals(action) && !"jump".equals(action)) {
                 AppGrpPremisesDto premisse = appSubmissionDto.getAppGrpPremisesDtoList() != null
                         && appSubmissionDto.getAppGrpPremisesDtoList().size() > 0 ?
                         appSubmissionDto.getAppGrpPremisesDtoList().get(0) : null;
@@ -3871,11 +3872,9 @@ public class NewApplicationDelegator {
         return appGrpPremisesDtoList;
     }
 
-
-
     private void loadingDraft(BaseProcessClass bpc, String draftNo) {
         log.info(StringUtil.changeForLog("the do loadingDraft start ...."));
-        Object draftNumber = bpc.request.getSession().getAttribute("DraftNumber");
+        Object draftNumber = bpc.request.getSession().getAttribute(DRAFT_NUMBER);
         if (draftNumber != null) {
             draftNo = (String) draftNumber;
         }
