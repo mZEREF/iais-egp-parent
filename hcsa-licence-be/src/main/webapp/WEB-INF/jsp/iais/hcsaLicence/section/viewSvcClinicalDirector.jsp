@@ -11,9 +11,11 @@
                     <c:forEach var="appSvcClinicalDirectorDto" items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" varStatus="status">
                         <c:set var="oldClinicalDirecotrDto"  value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcClinicalDirectorDtoList[status.index]}" />
                         <p>
-                            <strong class="col-xs-6">Clinical Director<c:if
-                                    test="${fn:length(currentPreviewSvcInfo.appSvcClinicalDirectorDtoList)>1}">
-                                ${status.index+1}</c:if>:
+                            <strong class="col-xs-6">
+                                Clinical Director
+                                <c:if test="${fn:length(currentPreviewSvcInfo.appSvcClinicalDirectorDtoList)>1}">
+                                    ${status.index+1}
+                                </c:if>:
                             </strong>
                             <span class="col-xs-4 col-md-4"></span>
                         </p>
