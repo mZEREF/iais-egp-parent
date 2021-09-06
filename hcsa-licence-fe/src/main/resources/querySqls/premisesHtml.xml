@@ -233,13 +233,13 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                     <div class="col-md-12 col-xs-12">
@@ -252,13 +252,13 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${onSiteWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                     <div class="col-md-12 col-xs-12">
@@ -268,7 +268,7 @@
                             </div>
                             <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
                                         <input class="form-check-input allDay" name="0onSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6 col-xs-6">
@@ -302,13 +302,13 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${onSitePhStartHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${onSitePhStartMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -318,20 +318,20 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${onSitePhEndHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${onSitePhEndMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
                                         <input class="form-check-input allDay" name="0onSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6 col-xs-6">
@@ -532,13 +532,13 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyStartHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyStartMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -548,20 +548,20 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyEndHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyanceWeeklyEndMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
                                         <input class="form-check-input allDay" name="0conveyanceWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6 col-xs-6">
@@ -595,13 +595,13 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyancePhStartHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyancePhStartMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
@@ -611,20 +611,20 @@
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyancePhEndHH}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (HH)
                                     </div>
                                     <div class="col-md-5 col-xs-5">
                                         ${conveyancePhEndMM}
                                     </div>
-                                    <div class="col-md-1 col-xs-1" style="padding-left: unset;padding-top: 14px">
+                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
                                         (MM)
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2">
                                 <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px">
+                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
                                         <input class="form-check-input allDay" name="0conveyancePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
                                     <div class="col-md-6 col-xs-6">
