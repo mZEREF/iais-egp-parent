@@ -763,6 +763,7 @@
             $premSelect.find('.fireIssuedDate').val(data.certIssuedDtStr);
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
+            $premSelect.find('input[name="'+premisesType+'Email"]').val(data.easMtsPubEmail);
             $premSelect.find('input.other-lic').each(function () {
                 if($(this).val() == data.locateWithOthers){
                     $(this).prop("checked",true);

@@ -3334,6 +3334,7 @@ public class NewApplicationDelegator {
         String[] unitNo = ParamUtil.getStrings(request, "onSiteUnitNo");
         String[] buildingName = ParamUtil.getStrings(request, "onSiteBuildingName");
         String[] siteAddressType = ParamUtil.getStrings(request, "onSiteAddressType");
+        String[] siteEmail = ParamUtil.getStrings(request, "onSiteEmail");
         String[] offTelNo = ParamUtil.getStrings(request, "onSiteOffTelNo");
         String[] scdfRefNo = ParamUtil.getStrings(request, "onSiteScdfRefNo");
         String[] isOtherLic = ParamUtil.getStrings(request, "onSiteIsOtherLic");
@@ -3536,6 +3537,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setFloorNo(floorNo[i]);
                 appGrpPremisesDto.setUnitNo(unitNo[i]);
                 appGrpPremisesDto.setBuildingName(buildingName[i]);
+                appGrpPremisesDto.setEasMtsPubEmail(siteEmail[i]);
                 appGrpPremisesDto.setScdfRefNo(scdfRefNo[i]);
                 appGrpPremisesDto.setAddrType(siteAddressType[i]);
                 appGrpPremisesDto.setOffTelNo(offTelNo[i]);
