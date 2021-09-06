@@ -2654,7 +2654,7 @@ public class NewApplicationDelegator {
 
     private String getRfcGroupNo(String groupNo) {
         if (groupNo == null) {
-            appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+            groupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
         return groupNo;
     }
