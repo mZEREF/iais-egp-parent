@@ -112,11 +112,20 @@
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
-                                        <td>
-                                            <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
-                                            <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
-                                            <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
-                                        </td>
+
+                                        <c:choose>
+                                            <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007'}">
+                                                <td>
+                                                </td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <td>
+                                                    <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
+                                                    <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
+                                                    <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
+                                                </td>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </tr>
                                 </c:forEach>
                             </table>

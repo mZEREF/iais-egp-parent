@@ -31,10 +31,16 @@ public interface AuditClient {
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> saveFacilityAudit(@RequestBody FacilityAudit facilityAudit);
 
-    @GetMapping(path = "/bsb-audit/{id}")
-    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
+//    @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
 
-    @PostMapping(path = "/bsb-audit/auditApp",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    void saveFacilityAuditAppAndUpdateStatus(@RequestBody FacilityAudit facilityAudit);
+//    @PostMapping(path = "/bsb-audit/auditApp",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    void saveFacilityAuditAppAndUpdateStatus(@RequestBody FacilityAudit facilityAudit);
+
+//    @PostMapping(value = "/updateDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<FacilityAudit> updateFacilityAudit(@RequestBody FacilityAudit facilityAudit);
+
+    @PostMapping(value = "/bsb-audit/specifyAuditDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> specifyAuditDt(@RequestBody FacilityAudit facilityAudit);
 
 }

@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -47,6 +48,7 @@ public class AuditDateDelegator {
 
     private static final String FACILITY_LIST = "facilityList";
     private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
+    private static final String FACILITY_AUDIT = "facilityAudit";
     private static final String AUDIT_ID = "auditId";
 
     @Autowired
@@ -78,7 +80,7 @@ public class AuditDateDelegator {
         HttpServletRequest request = bpc.request;
         selectOption(request);
         // get search DTO
-        AuditQueryDto searchDto=getSearchDto(request);
+        AuditQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
         ResponseDto<AuditQueryResultDto> searchResult = auditClient.getAllAudit(searchDto);
@@ -124,47 +126,33 @@ public class AuditDateDelegator {
      */
     public void prepareSpecifyDtData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_LIST, null);
-        String auditId =  ParamUtil.getMaskedString(request, AUDIT_ID);
-        List<FacilityAudit> facilityAuditList=new ArrayList<>();
-        FacilityAudit audit=new FacilityAudit();
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT, null);
+        String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
+        FacilityAudit audit = new FacilityAudit();
         audit.setId(auditId);
-        facilityAuditList.add(audit);
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_LIST, (Serializable) facilityAuditList);
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT, audit);
     }
 
     /**
-     * AutoStep: prepareData
+     * AutoStep: submit
+     * specifyDt
      *
      * @param bpc
      */
-    public void specifyDt(BaseProcessClass bpc) {
+    public void specifyDt(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        FacilityAudit facilityAudit = new FacilityAudit();
-        List<FacilityAudit> facilityAuditList = (List<FacilityAudit>)ParamUtil.getSessionAttr(request, FACILITY_AUDIT_LIST);
-        String remarks = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String auditDate = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_DATE);
-        Date startDt = null;
-        Date endDt = null;
-        facilityAudit.setRemarks(remarks);
-        for (FacilityAudit audit : facilityAuditList) {
-            facilityAudit.setId(audit.getId());
-            facilityAudit.setAuditDt(audit.getAuditDt());
-            facilityAudit.setAuditType(audit.getAuditType());
-            facilityAudit.setStatus(audit.getStatus());
-            startDt = audit.getCreatedAt();
-            Facility facility = auditClient.getFacilityById(audit.getFacility().getId()).getEntity();
-            endDt = facility.getApprovalDate();
+        FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, FACILITY_AUDIT);
+        String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
+        String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
+        FacilityAudit audit = new FacilityAudit();
+        audit.setId(facilityAudit.getId());
+        audit.setRemarks(remarks);
+        Date requestAuditDt = null;
+        if (StringUtil.isNotEmpty(auditDate)) {
+            requestAuditDt = Formatter.parseDate(auditDate);
+            audit.setAuditDt(requestAuditDt);
         }
-        String startDtStr = DateUtil.dateToStr(startDt);
-        String endDtStr = DateUtil.addDate(endDt,13);;
-        if (DateUtil.checkDateVal(auditDate,startDtStr,endDtStr)){
-            //Modifying current Data
-        }else{
-            //Copy current data to audit_app table and change current data status to suspend
-            auditClient.saveFacilityAuditAppAndUpdateStatus(facilityAudit);
-        }
-
+        auditClient.specifyAuditDt(audit);
     }
 
     /**
@@ -219,11 +207,11 @@ public class AuditDateDelegator {
         return dto;
     }
 
-    public void selectOption(HttpServletRequest request){
+    public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
         for (String facName : facNames) {
-            selectModel.add(new SelectOption(facName,facName));
+            selectModel.add(new SelectOption(facName, facName));
         }
         ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
     }
