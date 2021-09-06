@@ -9,6 +9,7 @@ import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -31,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
-import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -82,7 +82,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 
-		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("payNow.url");
+		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ ConfigHelper.getString("payNow.url");
 		if (StringHelper.isEmpty(bigsURL)) {
 			throw new PaymentException("payNow.url is not set.");
 		}
@@ -334,17 +334,17 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String prefix = "rvl";
 
-		String version = ConfigUtil.getString(prefix + ".baiduri.version");
-		String command = ConfigUtil.getString(prefix + ".baiduri.command");
-		String accessCode = ConfigUtil.getString(prefix + ".baiduri.accessCode");
+		String version = ConfigHelper.getString(prefix + ".baiduri.version");
+		String command = ConfigHelper.getString(prefix + ".baiduri.command");
+		String accessCode = ConfigHelper.getString(prefix + ".baiduri.accessCode");
 		String merchTxnRef = pd.getSvcRefNo();
-		String merchantId = ConfigUtil.getString(prefix + ".baiduri.merchant");
+		String merchantId = ConfigHelper.getString(prefix + ".baiduri.merchant");
 		String orderInfo = pd.getPaymentDescription();
 		int amount = mul(pd.getAmount(), 100);
-		String currency = ConfigUtil.getString(prefix + ".baiduri.currency");//
-		String locale = ConfigUtil.getString(prefix + ".baiduri.local");
-		String returnURL = ConfigUtil.getString(prefix + ".baiduri.return.url");
-		String returnAuthResponseData = ConfigUtil.getString(prefix + ".baiduri.return.authResponseData");
+		String currency = ConfigHelper.getString(prefix + ".baiduri.currency");//
+		String locale = ConfigHelper.getString(prefix + ".baiduri.local");
+		String returnURL = ConfigHelper.getString(prefix + ".baiduri.return.url");
+		String returnAuthResponseData = ConfigHelper.getString(prefix + ".baiduri.return.authResponseData");
 //		String merchTxnRef = "123456";
 //		String orderInfo = "";
 //		int amount = mul(2.01, 100);
