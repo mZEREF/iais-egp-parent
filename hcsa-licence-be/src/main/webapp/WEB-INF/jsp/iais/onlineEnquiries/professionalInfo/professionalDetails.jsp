@@ -54,7 +54,7 @@
                         </tr>
                         <tr>
                           <td align="right">Registration Accreditations</td>
-                          <td>&nbsp; <iais:code code="${empty professionalInfo.regDit ? '-' : professionalInfo.regDit}"></iais:code></td>
+                          <td>&nbsp;<iais:code code="${empty professionalInfo.regDit ? '-' : professionalInfo.regDit}"></iais:code></td>
                         </tr>
                         <tr>
                           <td align="right">Disciplinary Records</td>
