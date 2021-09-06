@@ -141,7 +141,7 @@
                 </c:if>
                 <%-- SOLO --%>
                 <c:if test="${curDto.licenseeType eq soloType || oldDto.licenseeType eq soloType}">
-                    <div class="row">
+                    <div class="row img-show">
                         <div class="col-md-6">NRIC/FIN</div>
                         <div class="col-md-6">
                             <div class="col-md-6">
