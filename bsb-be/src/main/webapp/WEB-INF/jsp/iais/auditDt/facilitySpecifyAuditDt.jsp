@@ -54,11 +54,11 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
 <script>
     $("#submitSpecifyAuditDt").click(function (){
         showWaiting();
+        $("[name='action_type']").val("doSubmit");
         $("#mainForm").submit();
     });
 </script>
