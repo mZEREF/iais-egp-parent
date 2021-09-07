@@ -430,7 +430,7 @@
                         intraDashboardSubmit('approve');
                     }else{
                         dismissWaiting();
-                        $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
+                        $('#approveAo .modal-body span').html(data.noApprove);
                         $('#approveAo').modal('show');
                     }
                 }
