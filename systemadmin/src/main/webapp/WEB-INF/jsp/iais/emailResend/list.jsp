@@ -60,7 +60,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" >Sender's Email</th>
                                 <th scope="col" >Subject</th>
                                 <th scope="col" >Recipients' List Email</th>
