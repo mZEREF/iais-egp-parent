@@ -67,7 +67,6 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7 control-font-label">
-                                                                        <input type="hidden" id="biologicalId" name="biologicalId" value="">
                                                                         <div id="select0" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
                                                                         <div id="select1" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule1" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
                                                                         <div id="select2" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule2" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>

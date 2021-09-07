@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
+import sg.gov.moh.iais.egp.bsb.entity.FacilitySchedule;
 
 import java.util.List;
 
@@ -29,4 +31,13 @@ public interface ApprovalApplicationClient {
 
     @GetMapping(path = "/bsb-approval/schedule/{schedule}")
     FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
+
+    @GetMapping(path = "/bsb-approval/biologicalName/{id}")
+    FeignResponseEntity<BiologicalQueryDto> getBiologicalById(@PathVariable("id") String id);
+
+    @GetMapping(path = "/bsb-approval/facilitySchedule/{facilityId}")
+    FeignResponseEntity<List<FacilitySchedule>> getFacilityScheduleByFacilityId(@PathVariable("facilityId") String facilityId);
+
+    @GetMapping(path = "/bsb-approval/facilityBiologicalAgent/{facilityScheduleId}")
+    FeignResponseEntity<List<FacilityBiologicalAgent>> getFacilityBiologicalAgentByFacilityScheduleId(@PathVariable("facilityScheduleId") String facilityScheduleId);
 }

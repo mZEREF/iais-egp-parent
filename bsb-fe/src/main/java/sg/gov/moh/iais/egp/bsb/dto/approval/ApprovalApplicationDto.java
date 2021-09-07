@@ -81,4 +81,6 @@ public class ApprovalApplicationDto implements Serializable {
     private List<String> biologicalIdList;
 
     private List<String> natureOfTheSampleList;
+
+    private String biologicalName;
 }

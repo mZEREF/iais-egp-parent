@@ -20,20 +20,29 @@
                     <iais:row>
                         <iais:field value="Schedule" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${approvalApplicationDto.schedule}" />
+                            <iais:code code="${approvalApplicationDto.schedule}"></iais:code>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field value="List of Agents/Toxins" width="5"/>
                         <iais:value width="7" display="true">
-<%--                            <c:out value="${approvalApplicationDto.listOfAgentsOrToxins}" />--%>
+                            <c:out value="${approvalApplicationDto.biologicalName}" />
                         </iais:value>
                     </iais:row>
                     <c:if test="${taskList=='APPRTY001'}">
                         <iais:row>
                             <iais:field value="Nature of the Sample" width="5"/>
                             <iais:value width="7" display="true">
-<%--                                <c:out value="${approvalApplicationDto.sampleNature}" />--%>
+                                <c:forEach var="item" items="${approvalApplicationDto.natureOfTheSampleList}" varStatus="status">
+                                    <c:choose>
+                                        <c:when test="${status.last}">
+                                            <iais:code code="${item}"></iais:code>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <iais:code code="${item}"></iais:code>,
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
                             </iais:value>
                         </iais:row>
                         <c:if test="${approvalApplicationDto.sampleNatureOth != null}">
@@ -59,13 +68,13 @@
                             </iais:value>
                         </iais:row>
                     </c:if>
+                    <iais:row>
+                        <iais:field value="Mode of Procurement" width="5"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${approvalApplicationDto.procurementMode}"></iais:code>
+                        </iais:value>
+                    </iais:row>
                     <c:if test="${(taskList=='APPRTY001' || taskList=='APPRTY002')}">
-                        <iais:row>
-                            <iais:field value="Mode of Procurement" width="5"/>
-                            <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.procurementMode}" />
-                            </iais:value>
-                        </iais:row>
                         <c:if test="${approvalApplicationDto.procurementMode=='BMOP001'}">
                             <iais:row>
                                 <iais:field value="Transfer From Facility Name" width="5"/>
@@ -76,7 +85,7 @@
                             <iais:row>
                                 <iais:field value="Expected Date of Transfer" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.transferExpectedDate}" />
+                                    <fmt:formatDate value='${approvalApplicationDto.transferExpectedDate}' pattern='dd/MM/yyyy'/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -108,7 +117,7 @@
                             <iais:row>
                                 <iais:field value="Expected Date of Import" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.transferExpectedDate}" />
+                                    <fmt:formatDate value='${approvalApplicationDto.transferExpectedDate}' pattern='dd/MM/yyyy'/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -145,7 +154,7 @@
                         <iais:row>
                             <iais:field value="Country" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.transferCountry}" />
+                                <iais:code code="${approvalApplicationDto.transferCountry}"></iais:code>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -195,13 +204,13 @@
                         <iais:row>
                             <iais:field value="Start Date" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.startDate}" />
+                                <fmt:formatDate value='${approvalApplicationDto.startDate}' pattern='dd/MM/yyyy'/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="End Date" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.endDate}" />
+                                <fmt:formatDate value='${approvalApplicationDto.endDate}' pattern='dd/MM/yyyy'/>
                             </iais:value>
                         </iais:row>
                     </c:if>
