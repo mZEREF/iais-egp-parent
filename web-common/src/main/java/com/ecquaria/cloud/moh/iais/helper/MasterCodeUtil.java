@@ -114,14 +114,12 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE         = "BC3A0435-F5A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MEDICATIONS_CHARGES_TYPE                         = "A721D57E-F5A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MISCELLANEOUS_CHARGES_TYPE                       = "5ADA2A9A-F6A3-EB11-8B7F-000C29FD17F9";
-
-    // Inspection entity
     public static final String CATE_ID_INSPECTION_ENTITY_TYPE                           = "796E6112-36B1-EB11-8B7D-000C293F0C99";
-
-    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
-
     public static final String CATE_ID_LICENSEE_TYPE                                    = "1CC74A81-ACA4-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENSEE_SUB_TYPE                                = "AB50CD91-80D5-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_FREE_RENEW_HCI_CODES                             = "C8D460B4-A20F-EC11-8B7E-000C293F0C99";
+
+    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
 
     /**
      * @description: refresh the master codes into cache
