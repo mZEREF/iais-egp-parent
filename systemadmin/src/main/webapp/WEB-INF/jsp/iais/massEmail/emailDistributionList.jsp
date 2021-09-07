@@ -132,7 +132,7 @@
                                                     <p><c:out value="${item.createBy}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><a onclick="edit('<iais:mask name="editDistribution" value="${item.id}}"/>')">Edit</a></p>
+                                                    <p><a href="#" onclick="edit('<iais:mask name="editDistribution" value="${item.id}}"/>')">Edit</a></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
