@@ -17,14 +17,20 @@ $(function() {
     }else if(selectValueModeOfProcurement == "BMOP002"){
         $("[name='ModeOfProcurement_LocalTransfer']").hide();
         $("[name='ModeOfProcurement_Import']").show();
-    }else{
+    }else if(selectValueModeOfProcurement == ""){
         $("[name='ModeOfProcurement_LocalTransfer']").hide();
         $("[name='ModeOfProcurement_Import']").hide();
     }
-    var facilitySelected = $("#facilityName").find("option:checked").val();
-    $("#facilityId").val(facilitySelected);
-    $("#facilityName").change(function() {
-        $("#facilityId").val($(this).val());
+    $("#facilityName").val($("#facilityId").find("option:checked").text());
+    $("#facilityId").change(function() {
+        $("#facilityName").val($("#facilityId").find("option:checked").text());
+    })
+    $("#listOfAgentsOrToxins").change(function() {
+        console.log($(this).children);
+        var selectValue = $(this).val();
+        for(var i=0;i<selectValue.length ;i++){
+            console.log(selectValue[i]);
+        }
     })
     $("#natureOfTheSample").change(function() {
         var selectValue = $(this).val();
@@ -66,6 +72,8 @@ $(function() {
         $("#select5").show();
     }else if (selectValueSchedule == "SCHTYPE006") {
         $("#select6").show();
+    }else if (selectValueSchedule == ""){
+        $("#select0").show();
     }
 
     $("#schedule").change(function() {
@@ -94,6 +102,10 @@ $(function() {
             $("[name='selectHidden']").hide();
             $("#listOfAgentsOrToxins").val("");
             $("#select6").show();
+        }else if(schedule == ""){
+            $("[name='selectHidden']").hide();
+            $("#listOfAgentsOrToxins").val("");
+            $("#select0").show();
         }
     })
     $("#Next").click(function (){

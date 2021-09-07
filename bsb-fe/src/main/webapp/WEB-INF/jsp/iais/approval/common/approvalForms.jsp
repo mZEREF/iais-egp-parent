@@ -34,8 +34,8 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7">
-                                                                        <input type="hidden" id="facilityId" name="facilityId" value="${approvalApplicationDto.facility.id}">
-                                                                        <iais:select name="facilityName" id="facilityName" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facility.facilityName}"></iais:select>
+                                                                        <input type="hidden" id="facilityName" name="facilityName" value="${approvalApplicationDto.facility.facilityName}">
+                                                                        <iais:select name="facilityId" id="facilityId" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facility.id}"></iais:select>
                                                                         <span id="error_facility" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -68,12 +68,13 @@
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7 control-font-label">
                                                                         <input type="hidden" id="biologicalId" name="biologicalId" value="">
-                                                                        <div id="select1" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule1" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
-                                                                        <div id="select2" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule2" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
-                                                                        <div id="select3" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule3" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
-                                                                        <div id="select4" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule4" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
-                                                                        <div id="select5" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule5" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
-                                                                        <div id="select6" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule6" disabled="false" multiValues="${agentsOrToxinsList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select0" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select1" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule1" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select2" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule2" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select3" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule3" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select4" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule4" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select5" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule5" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
+                                                                        <div id="select6" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule6" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
                                                                         <span id="error_biologicalId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -90,7 +91,7 @@
                                                                             <span class="mandatory">*</span>
                                                                         </div>
                                                                         <div class="col-sm-4 col-md-7 control-font-label">
-                                                                            <iais:select name="natureOfTheSample" disabled="false" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE" multiValues="${natureList}" multiSelect="true"></iais:select>
+                                                                            <iais:select name="natureOfTheSample" disabled="false" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE" multiValues="${approvalApplicationDto.natureOfTheSampleList}" multiSelect="true"></iais:select>
                                                                             <span id="error_sampleNature" name="iaisErrorMsg" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
@@ -146,7 +147,7 @@
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="input-group">
                                                                                 <div class="ax_default text_area">
-                                                                                    <textarea name="methodOrSystemUsedForLargeScaleProduction" value="${approvalApplicationDto.lspMethod}" cols="64" rows="4" maxlength="250"></textarea>
+                                                                                    <textarea name="methodOrSystemUsedForLargeScaleProduction" cols="64" rows="4" maxlength="250"><c:out value="${approvalApplicationDto.lspMethod}"></c:out></textarea>
                                                                                     <span id="error_lspMethod" name="iaisErrorMsg" class="error-msg"></span>
                                                                                 </div>
                                                                             </div>
@@ -522,7 +523,7 @@
                                                                         <div class="col-sm-5 col-md-7">
                                                                             <div class="input-group">
                                                                                 <div class="ax_default text_area">
-                                                                                    <textarea name="intendedWorkActivity" value="${approvalApplicationDto.workActivityIntended}" cols="64" rows="4" maxlength="1000"></textarea>
+                                                                                    <textarea name="intendedWorkActivity" cols="64" rows="4" maxlength="1000"><c:out value="${approvalApplicationDto.workActivityIntended}"></c:out></textarea>
                                                                                     <span id="error_workActivityIntended" name="iaisErrorMsg" class="error-msg"></span>
                                                                                 </div>
                                                                             </div>
@@ -576,10 +577,8 @@
                                                                         <label class="control-label control-set-font control-font-label">Remarks</label>
                                                                     </div>
                                                                     <div class="col-sm-5 col-md-7">
-                                                                        <div class="input-group">
-                                                                            <div class="ax_default text_area">
-                                                                                <textarea name="remarks" value="${approvalApplicationDto.remarks}" cols="64" rows="4" maxlength="1000"></textarea>
-                                                                            </div>
+                                                                        <div class="">
+                                                                            <textarea name="remarks" cols="64" rows="4" maxlength="1000"><c:out value="${approvalApplicationDto.remarks}"></c:out></textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>

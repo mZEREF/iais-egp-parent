@@ -4,6 +4,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +24,9 @@ public interface ApprovalApplicationClient {
     @PostMapping(path = "/bsb-approval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApprovalApplicationDto> saveApproval(@RequestBody ApprovalApplicationDto approvalApplicationDto);
 
-    @PostMapping(path = "/bsb-approval/{approvalType}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/bsb-approval/{approvalType}")
     FeignResponseEntity<List<FacilityQueryDto>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
 
-    @PostMapping(path = "/bsb-approval/schedule/{schedule}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/bsb-approval/schedule/{schedule}")
     FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
 }

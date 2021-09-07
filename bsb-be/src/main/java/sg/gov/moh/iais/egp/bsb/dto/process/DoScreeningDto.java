@@ -48,4 +48,6 @@ public class DoScreeningDto {
     private String reason;
 
     private String finalRemarks;
+
+    private Date approvalDate;
 }

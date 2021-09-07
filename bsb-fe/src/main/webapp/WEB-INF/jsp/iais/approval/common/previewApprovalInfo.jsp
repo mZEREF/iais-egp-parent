@@ -26,14 +26,14 @@
                     <iais:row>
                         <iais:field value="List of Agents/Toxins" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${approvalApplicationDto.listOfAgentsOrToxins}" />
+<%--                            <c:out value="${approvalApplicationDto.listOfAgentsOrToxins}" />--%>
                         </iais:value>
                     </iais:row>
                     <c:if test="${taskList=='APPRTY001'}">
                         <iais:row>
                             <iais:field value="Nature of the Sample" width="5"/>
                             <iais:value width="7" display="true">
-                                <c:out value="${approvalApplicationDto.sampleNature}" />
+<%--                                <c:out value="${approvalApplicationDto.sampleNature}" />--%>
                             </iais:value>
                         </iais:row>
                         <c:if test="${approvalApplicationDto.sampleNatureOth != null}">

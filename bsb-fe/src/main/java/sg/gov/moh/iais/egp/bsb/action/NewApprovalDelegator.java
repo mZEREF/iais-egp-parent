@@ -19,12 +19,14 @@ import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -71,12 +73,12 @@ public class NewApprovalDelegator {
         List<SelectOption> biologicalSchedule4 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_4);
         List<SelectOption> biologicalSchedule5 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_5);
         List<SelectOption> biologicalSchedule6 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_6);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule1", (Serializable) biologicalSchedule1);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule2", (Serializable) biologicalSchedule2);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule3", (Serializable) biologicalSchedule3);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule4", (Serializable) biologicalSchedule4);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule5", (Serializable) biologicalSchedule5);
-        ParamUtil.setSessionAttr(request, "biologicalSchedule6", (Serializable) biologicalSchedule6);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_1, (Serializable) biologicalSchedule1);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_2, (Serializable) biologicalSchedule2);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_3, (Serializable) biologicalSchedule3);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_4, (Serializable) biologicalSchedule4);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_5, (Serializable) biologicalSchedule5);
+        ParamUtil.setSessionAttr(request, ApprovalApplicationConstants.BIOLOGICAL_SCHEDULE_6, (Serializable) biologicalSchedule6);
         ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("prepare(action):"+action));
     }
@@ -110,36 +112,56 @@ public class NewApprovalDelegator {
 
     public void preparePreview(BaseProcessClass bpc) {
     }
+    public void prepareJump(BaseProcessClass bpc) {
+    }
+    public void doDocuments(BaseProcessClass bpc) {
+    }
+    public void doPreview(BaseProcessClass bpc) {
+    }
 
     public void prepareForms(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         List<FacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
-        List<SelectOption> facilityNameList =  IaisCommonUtils.genNewArrayList();
+        List<SelectOption> facilityNameList =  new ArrayList<>();
         for (FacilityQueryDto dto : facilityByApprovalStatus) {
             facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
         }
-        ParamUtil.setRequestAttr(request, "facilityNameSelect", facilityNameList);
-    }
-
-    public void prepareJump(BaseProcessClass bpc) {
-    }
-
-    public void doDocuments(BaseProcessClass bpc) {
-    }
-
-    public void doPreview(BaseProcessClass bpc) {
-    }
-
-    private List<String> stringArrayToList(String[] strings){
-        List<String> list = null;
-        if (!StringUtil.isEmpty(strings)){
-            list = Arrays.asList(strings);
-        }
-        return list;
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
     }
 
     public void doForms(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
+        ApprovalApplicationDto approvalApplicationDto = getDtoByForm(bpc);
+        ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
+        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+    }
+
+    public void controlSwitch(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String crud_action_type_form_page = ParamUtil.getString(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
+        String crud_action_type = ParamUtil.getString(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crud_action_type_form_page);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crud_action_type);
+    }
+
+    public void doSaveDraft(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        String status = ApprovalApplicationConstants.APP_STATUS_11;
+        approvalApplicationDto.setStatus(status);
+        approvalApplicationClient.saveApproval(approvalApplicationDto);
+    }
+
+    public void doSubmit(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        String status = ApprovalApplicationConstants.APP_STATUS_1;
+        approvalApplicationDto.setStatus(status);
+        approvalApplicationClient.saveApproval(approvalApplicationDto);
+    }
+
+    private ApprovalApplicationDto getDtoByForm(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         String facilityId = ParamUtil.getString(request, ApprovalApplicationConstants.FACILITY_ID);
@@ -147,21 +169,9 @@ public class NewApprovalDelegator {
         String schedule = ParamUtil.getString(request, ApprovalApplicationConstants.SCHEDULE);
         String estimatedMaximumVolume = ParamUtil.getString(request, ApprovalApplicationConstants.ESTIMATED_MAXIMUM_VOLUME);
         String methodOrSystemUsedForLargeScaleProduction = ParamUtil.getString(request, ApprovalApplicationConstants.METHOD_OR_SYSTEM_USER_FOR_LARGE_SCALE_PRODUCTION);
-        String[] listOfAgentsOrToxinsArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.LIST_OF_AGENTS_OR_TOXINS);
-        List<String> biologicalIdList = stringArrayToList(listOfAgentsOrToxinsArray);
-        String[] natureArray = ParamUtil.getStrings(request, ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE);
-        List<String> natureList = null;
-        StringBuilder natureBuilder = new StringBuilder();
-        if (!StringUtil.isEmpty(natureArray)){
-            natureList = Arrays.asList(natureArray);
-            for (int i = 0; i < natureArray.length; i++) {
-                natureBuilder.append(natureArray[i]);
-                if (i != (natureArray.length-1)){
-                    natureBuilder.append(",");
-                }
-            }
-        }
-        String natureOfTheSample = natureBuilder.toString();
+        List<String> listOfAgentsOrToxinsList = stringArrayToList(ParamUtil.getStrings(request, ApprovalApplicationConstants.LIST_OF_AGENTS_OR_TOXINS));
+        List<String> natureOfTheSampleList = stringArrayToList(ParamUtil.getStrings(request, ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE));
+        String sampleNature = listToString(natureOfTheSampleList);
         String others = ParamUtil.getString(request, ApprovalApplicationConstants.OTHERS);
         String modeOfProcurement = ParamUtil.getString(request, ApprovalApplicationConstants.MODE_OF_PROCUREMENT);
         String transferFromFacilityName = ParamUtil.getString(request, ApprovalApplicationConstants.TRANSFER_FROM_FACILITY_NAME);
@@ -189,35 +199,42 @@ public class NewApprovalDelegator {
         String remarks = ParamUtil.getString(request, ApprovalApplicationConstants.REMARKS);
         String checkbox1 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_1);
         String checkbox2 = ParamUtil.getString(request,ApprovalApplicationConstants.CHECKBOX_2);
+        String appType = ApprovalApplicationConstants.APP_TYPE_1;
+        Date applicationDt = new Date();
+        String processType = "";
+        if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
+            processType = ApprovalApplicationConstants.PROCESS_TYPE_2;
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
+            processType = ApprovalApplicationConstants.PROCESS_TYPE_3;
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
+            processType = ApprovalApplicationConstants.PROCESS_TYPE_4;
+        }
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
         Facility facility = new Facility();
         facility.setId(facilityId);
         facility.setFacilityName(facilityName);
         approvalApplicationDto.setFacility(facility);
-        if(task.equals("APPRTY001")){
-            approvalApplicationDto.setSampleNature(natureOfTheSample);
-            approvalApplicationDto.setSampleNatureOth(others);
-        }else if(task.equals("APPRTY002")){
-            approvalApplicationDto.setProdMaxVolumeLitres(estimatedMaximumVolume);
-            approvalApplicationDto.setLspMethod(methodOrSystemUsedForLargeScaleProduction);
-        }else if(task.equals("APPRTY003")){
-            approvalApplicationDto.setPrjName(nameOfProject);
-            approvalApplicationDto.setPrincipalInvestigatorName(nameOfPrincipalInvestigator);
-            approvalApplicationDto.setWorkActivityIntended(intendedWorkActivity);
-            approvalApplicationDto.setStartDate(Formatter.parseDate(startDate));
-            approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
-        }
+        approvalApplicationDto.setNatureOfTheSampleList(natureOfTheSampleList);
+        approvalApplicationDto.setSampleNature(sampleNature);
+        approvalApplicationDto.setSampleNatureOth(others);
+        approvalApplicationDto.setProdMaxVolumeLitres(estimatedMaximumVolume);
+        approvalApplicationDto.setLspMethod(methodOrSystemUsedForLargeScaleProduction);
+        approvalApplicationDto.setPrjName(nameOfProject);
+        approvalApplicationDto.setPrincipalInvestigatorName(nameOfPrincipalInvestigator);
+        approvalApplicationDto.setWorkActivityIntended(intendedWorkActivity);
+        approvalApplicationDto.setStartDate(Formatter.parseDate(startDate));
+        approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
         approvalApplicationDto.setSchedule(schedule);
-        approvalApplicationDto.setBiologicalIdList(biologicalIdList);
+        approvalApplicationDto.setBiologicalIdList(listOfAgentsOrToxinsList);
         approvalApplicationDto.setProcurementMode(modeOfProcurement);
         if (modeOfProcurement != null){
-            if (modeOfProcurement.equals("BMOP001")){
+            if (modeOfProcurement.equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
                 approvalApplicationDto.setFacTransferForm(transferFromFacilityName);
                 approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfTransfer));
                 approvalApplicationDto.setImpCtcPersonName(contactPersonFromTransferringFacility);
                 approvalApplicationDto.setImpCtcPersonNo(contactNoOfContactPersonFromTransferringFacility);
                 approvalApplicationDto.setImpCtcPersonEmail(emailAddressOfContactPersonFromTransferringFacility);
-            }else if(modeOfProcurement.equals("BMOP002")){
+            }else if(modeOfProcurement.equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
                 approvalApplicationDto.setFacTransferForm(overseasFacilityName);
                 approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfImport));
                 approvalApplicationDto.setImpCtcPersonName(contactPersonFromSourceFacility);
@@ -235,89 +252,31 @@ public class NewApprovalDelegator {
         approvalApplicationDto.setRemarks(remarks);
         approvalApplicationDto.setCheckbox1(checkbox1);
         approvalApplicationDto.setCheckbox2(checkbox2);
-        ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
-        ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.NATURE_LIST_ATTR, (Serializable) natureList);
-//        String propertyName = "";
-//        if (modeOfProcurement == null) {
-//            propertyName = "nullMode";
-//        }else{
-//            if (task == "APPRTY001" && modeOfProcurement == "BMOP001" && others == null){
-//                propertyName = "possessLocal";
-//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP001" && others != null){
-//                propertyName = "possessLocalOthers";
-//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP002" && others == null){
-//                propertyName = "possessImport";
-//            }else if (task == "APPRTY001" && modeOfProcurement == "BMOP002" && others != null){
-//                propertyName = "possessImportOthers";
-//            }else if (task == "APPRTY002" && modeOfProcurement == "BMOP001"){
-//                propertyName = "largeLocal";
-//            }else if (task == "APPRTY002" && modeOfProcurement == "BMOP002"){
-//                propertyName = "largeImport";
-//            }else if (task == "APPRTY003"){
-//                propertyName = "special";
-//            }
-//        }
-//        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto, propertyName);
-//        if(vResult != null && vResult.isHasErrors()){
-//            Map<String,String> errorMap = vResult.retrieveAll();
-//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-//        }else {
-//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-//        }
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-    }
-
-    public void controlSwitch(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String crud_action_type_form_page = ParamUtil.getString(request,"crud_action_type_form_page");
-        String crud_action_type = ParamUtil.getString(request,"crud_action_type");
-        ParamUtil.setRequestAttr(request,"crud_action_type_form_page",crud_action_type_form_page);
-        ParamUtil.setRequestAttr(request,"crud_action_type",crud_action_type);
-    }
-
-    public void doSaveDraft(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        String processType = "";
-        if (task.equals("APPRTY001")){
-            processType = "PROTYPE002";
-        }else if (task.equals("APPRTY002")){
-            processType = "PROTYPE003";
-        }else if (task.equals("APPRTY003")){
-            processType = "PROTYPE004";
-        }
-        String appType = "BSBAPTY001";
-        String status = "BSBAPST011";
-        Date applicationDt = new Date();
-        approvalApplicationDto.setProcessType(processType);
         approvalApplicationDto.setAppType(appType);
-        approvalApplicationDto.setStatus(status);
+        approvalApplicationDto.setProcessType(processType);
         approvalApplicationDto.setApplicationDt(applicationDt);
-        approvalApplicationClient.saveApproval(approvalApplicationDto);
+        return approvalApplicationDto;
     }
 
-    public void doSubmit(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        String processType = "";
-        if (task.equals("APPRTY001")){
-            processType = "PROTYPE002";
-        }else if (task.equals("APPRTY002")){
-            processType = "PROTYPE003";
-        }else if (task.equals("APPRTY003")){
-            processType = "PROTYPE004";
+    private List<String> stringArrayToList(String[] strings){
+        List<String> list = null;
+        if (!StringUtil.isEmpty(strings)){
+            list = Arrays.asList(strings);
         }
-        String appType = "BSBAPTY001";
-        String status = "BSBAPST001";
-        Date applicationDt = new Date();
-        approvalApplicationDto.setProcessType(processType);
-        approvalApplicationDto.setAppType(appType);
-        approvalApplicationDto.setStatus(status);
-        approvalApplicationDto.setApplicationDt(applicationDt);
-        approvalApplicationClient.saveApproval(approvalApplicationDto);
+        return list;
+    }
+
+    private String listToString(List<String> list){
+        StringBuilder stringBuilder = new StringBuilder();
+        if (list != null && list.size() > 0){
+            for (int i = 0; i < list.size(); i++) {
+                stringBuilder.append(list.get(i));
+                if (i < list.size()-1){
+                    stringBuilder.append(",");
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 
     private List<SelectOption> getSelectOptionList(String schedule){
