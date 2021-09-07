@@ -247,6 +247,7 @@
     }
 
     var doEdite = function () {
+        var rfiObj = $('input[name="rfiObj"]').val();
         if ('1' == rfiObj){
             return;
         }
