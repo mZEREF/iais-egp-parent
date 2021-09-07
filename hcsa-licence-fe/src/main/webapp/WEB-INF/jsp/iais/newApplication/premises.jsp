@@ -203,7 +203,7 @@
         //Binding method
         $('#Back').click(function(){
             showWaiting();
-            submit('licensee', null,null);
+            submit('licensee', 'back',null);
         });
         $('#Next').click(function(){
             showWaiting();

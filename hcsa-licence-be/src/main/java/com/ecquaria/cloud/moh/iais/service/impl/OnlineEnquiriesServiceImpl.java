@@ -544,6 +544,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
+                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");

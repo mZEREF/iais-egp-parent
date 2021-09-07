@@ -32,11 +32,12 @@
                                 </th>
                             </c:otherwise>
                         </c:choose>
-                        <th scope="col" style="padding-bottom:16px">No.</th>
+                        <th scope="col" style="display: none"></th>
+                        <iais:sortableHeader needSort="false" field="" value="No."  />
                         <iais:sortableHeader needSort="true" field="USER_ID" value="User ID"/>
                         <iais:sortableHeader needSort="true" field="EMAIL_ADDR" value="Email address"/>
                         <iais:sortableHeader needSort="true" field="STATUS" value="Account Status"/>
-                        <th scope="col" style="padding-bottom:16px">Action</th>
+                        <iais:sortableHeader needSort="false" field="" value="Action"  />
                     </tr>
                     </thead>
                     <tbody>

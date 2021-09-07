@@ -83,7 +83,8 @@
             <td>
               <p class="visible-xs visible-sm table-row-title">Clinical Governance Officers</p>
               <c:set var="cgoSelKey" value="cgo${premisesIndexNo}${chkLst.chkLstConfId}"/>
-              <iais:select  cssClass="${premisesIndexNo}" name="${cgoSelName}" firstOption="Please Select"  options="CgoSelect"  value="${ReloadAllocationMap[cgoSelKey]}"></iais:select>
+              <iais:select cssClass="cgo ${premisesIndexNo}" name="${cgoSelName}" firstOption="Please Select"
+                            options="CgoSelect" value="${ReloadAllocationMap[cgoSelKey]}" />
               <div class="col-sm-10 padding-left" style="margin-top: 2%">
                 <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocation${row_count}"></span>
               </div>
@@ -91,7 +92,8 @@
             <td>
               <p class="visible-xs visible-sm table-row-title">Section Leader</p>
               <c:set var="slSelKey" value="sl${premisesIndexNo}${chkLst.chkLstConfId}"/>
-              <iais:select  cssClass="${premisesIndexNo}" name="${slSelName}" firstOption="Please Select"  options="slSelectOpts"  value="${ReloadAllocationMap[slSelKey]}"></iais:select>
+              <iais:select cssClass="sl ${premisesIndexNo}" name="${slSelName}" firstOption="Please Select"
+                            options="slSelectOpts" value="${ReloadAllocationMap[slSelKey]}" />
               <div class="col-sm-10 padding-left" style="margin-top: 2%">
                 <span  class="error-msg" name="iaisErrorMsg" id="error_disciplineAllocationSl${row_count}"></span>
                 <c:set var="row_count" value="${row_count+1}" />
