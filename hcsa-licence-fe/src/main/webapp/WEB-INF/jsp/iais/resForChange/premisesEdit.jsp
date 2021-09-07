@@ -68,14 +68,10 @@
           </div>
         </div>
       </div>
-    <input type="text" style="display: none" value="${rfcPendingApplication}" id="rfcPendingApplication" name="rfcPendingApplication">
-    <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel">
+    <input type="hidden" value="${rfcPendingApplication}" id="rfcPendingApplication" name="rfcPendingApplication">
+<%--    <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-<%--          <div class="modal-header">--%>
-<%--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
-<%--          </div>--%>
           <div class="modal-body" >
             <div class="row">
               <div class="col-md-12 " ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
@@ -87,7 +83,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div>--%>
+    <iais:confirm msg="The changes you have made affect licences with pending application" popupOrder="ackMessageConfim"
+                  callBack="exitAndSave();" yesBtnDesc="Exit and save as draft" needFungDuoJi="false"
+                  needCancel="true" cancelBtnDesc="Continue amending" cancelFunc="cancel()" />
     <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
    <%-- <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
       <div class="modal-dialog" role="document">
@@ -107,7 +106,8 @@
         </div>
       </div>
     </div>--%>
-    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
+    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
+                  needEscapHtml="false" />
     <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
     <%--Validation Field--%>

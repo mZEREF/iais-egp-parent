@@ -87,7 +87,7 @@
                               <div class="table-gp" id = "processRec">
                                 <table aria-describedby="" class="table">
                                   <thead>
-                                  <tr align="center">
+                                  <tr >
                                     <th scope="col" >Vehicle Number</th>
                                     <th scope="col" >NC Clause</th>
                                     <th scope="col" >Checklist Question</th>
@@ -133,7 +133,7 @@
                               <div class="table-gp" id = "processRecRfi">
                                 <table aria-describedby="" class="table">
                                   <thead>
-                                  <tr align="center">
+                                  <tr >
                                     <th scope="col" ><input type="checkbox" name="allNcItemCheck" id="allNcItemCheck" <c:if test="${'check' eq allNcItemCheck}">checked</c:if>
                                                onchange="javascript:doInspectorProRecCheckAll()" value="<c:out value="${allNcItemCheck}"/>"/></th>
                                     <th scope="col" >Vehicle Number</th>

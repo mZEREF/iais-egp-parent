@@ -33,7 +33,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="text-right text-center-mobile">
-                                <a class="btn btn-primary" id="saveDis" >Send</a>
+                                <a href="#" class="btn btn-primary" id="saveDis" >Send</a>
                             </div>
                         </div>
                     </div>

@@ -74,7 +74,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N" style="width:5%"/>
                                 <iais:sortableHeader needSort="true" field="ID_NO" value="ID No." style="width:12%"/>

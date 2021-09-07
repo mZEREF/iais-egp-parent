@@ -163,7 +163,7 @@
         //Binding method
         $('#Back').click(function () {
             showWaiting();
-            submit('premises', null, null);
+            submit('premises', 'back', null);
         });
         $('#SaveDraft').click(function () {
             showWaiting();

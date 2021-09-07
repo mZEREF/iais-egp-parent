@@ -1,5 +1,6 @@
 
 <div class="col-xs-12">
+    <div class="dashboard-page-title">
     <h1>Licence Renewal</h1>
     <c:if test="${hasDetail == 'Y'}">
         <c:if test="${isSingle == 'N'}">
@@ -14,4 +15,5 @@
             <p class="center">You are ${prefixTitle} the <strong>${firstSvcName} (Licence No. ${renew_licence_no})</strong>
         </c:if>
     </c:if>
+    </div>
 </div>

@@ -158,7 +158,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(giroAccountInfoDto.getLicenceId()).getEntity();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
             subMap.put("ApplicationType", licenceDto.getSvcName());
-            subMap.put("ApplicationNumber", licenceDto.getApplicationNo());
+            subMap.put("ApplicationNumber", licenceDto.getLicenceNo());
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,subMap);
             String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG,subMap);
@@ -171,7 +171,7 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
             templateContent.put("ApplicantName", applicantName);
             templateContent.put("ApplicationType",  licenceDto.getSvcName());
-            templateContent.put("ApplicationNumber", licenceDto.getApplicationNo());
+            templateContent.put("ApplicationNumber", licenceDto.getLicenceNo());
             templateContent.put("DDMMYYYY", Formatter.formatDateTime(new Date()));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
             String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";

@@ -329,7 +329,7 @@
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
+                            <a href= "#" onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>

@@ -47,6 +47,7 @@ public class PageDataCopyUtil {
             copy.setUnitNo(appGrpPremisesDto.getUnitNo());
             copy.setStreetName(appGrpPremisesDto.getStreetName());
             copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
             copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
             copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
             copy.setOnsiteStartHH(appGrpPremisesDto.getOnsiteStartHH());

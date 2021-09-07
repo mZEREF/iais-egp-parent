@@ -19,7 +19,7 @@
                     <span>${messageContent}</span>
                 </div>
 
-                <div align="left"><span><a  onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
+                <div align="left"><span><a href="#" onclick="$('#mainForm').submit();"><em class="fa fa-angle-left"> </em> Back</a></span></div>
             </div>
         </div>
     </form>

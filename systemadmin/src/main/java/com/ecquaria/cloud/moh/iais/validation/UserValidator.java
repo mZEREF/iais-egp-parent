@@ -34,8 +34,7 @@ public class UserValidator implements CustomizeValidator {
 
     @Autowired
     IntranetUserService intranetUserService;
-    @Autowired
-    IntranetUserService intranetUserServicee;
+
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {

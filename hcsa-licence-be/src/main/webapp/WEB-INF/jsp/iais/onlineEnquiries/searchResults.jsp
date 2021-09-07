@@ -18,7 +18,7 @@
                             <div class="table-gp">
                                 <table aria-describedby="" class="table">
                                     <thead>
-                                    <tr align="center">
+                                    <tr >
                                         <c:if test="${cease==1}">
                                             <th scope="col" class="form-check">
                                                 <c:if test="${!empty SearchResult.rows}">

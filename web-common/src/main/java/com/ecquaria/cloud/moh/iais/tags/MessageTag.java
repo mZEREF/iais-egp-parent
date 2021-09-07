@@ -69,7 +69,10 @@ public final class MessageTag extends DivTagSupport {
             } else {
                 message = MessageUtil.getMessageDesc(key);
             }
-
+            if(message != null ){
+                message= StringUtil.removeNonUtf8(message);
+                message= StringUtil.changeForLog(message);
+            }
             if (escape) {
                 pageContext.getOut().print(StringUtil.escapeJavascript(message));
             } else {
