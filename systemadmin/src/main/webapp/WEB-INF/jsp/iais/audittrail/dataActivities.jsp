@@ -203,7 +203,7 @@
                     </div></div></div>
         </div>
         <br>
-        <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
+        <a href="#" class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
 </div>
 
