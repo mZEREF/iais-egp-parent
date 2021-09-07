@@ -708,6 +708,8 @@
         changeRecommendation(recommendation);
         if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007"&& type != "APTY009") {
             changePeriod("Others");
+        } else {
+            $("#selfPeriod").hide();
         }
         if ($('#enforcement').is(':checked')) {
             $("#engageRemarks").show();
