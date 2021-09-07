@@ -569,6 +569,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
         try {
             eicSyncGiroAcctToFe(refNo, giroAccountInfoDtoList1);
         }catch (Exception e){
+            log.error(e.getMessage(),e);
             log.debug("no found fe org :{}",giroAccountInfoDtoList1.get(0).getOrganizationId());
         }
         try {
@@ -577,6 +578,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 giroAccountService.sendEmailForGiroAccountAndSMSAndMessage(giro,giroAccountInfoDtoList1.size());
             }
         }catch (Exception e){
+            log.error(e.getMessage(),e);
             log.debug("send Email failed");
         }
 
