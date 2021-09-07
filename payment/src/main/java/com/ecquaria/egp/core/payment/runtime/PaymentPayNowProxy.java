@@ -31,6 +31,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -59,6 +60,7 @@ import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
+@Component
 public class PaymentPayNowProxy extends PaymentProxy {
 	@Value("${paynow.qr.expiry.minutes}")
 	private int expiryMinutes;
