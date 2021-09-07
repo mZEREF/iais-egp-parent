@@ -14,7 +14,7 @@
 <div class="tab-nav-mobile visible-xs visible-sm">
     <div class="swiper-wrapper" role="tablist">
         <div class="swiper-slide"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General</a></div>
-        <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab"><c:out value="${serListDto.serviceTab}"/></a></div>
+        <div class="swiper-slide"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab" data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></div>
         <c:forEach var="service" items="${specialServiceForChecklistDecideDtos}" >
             <div class="swiper-slide"><a href="#ServiceInfo${service.identify}" aria-controls="ServiceInfo${service.identify}" role="tab" data-toggle="tab"><c:out value="${service.serviceTab}"/></a></div>
         </c:forEach>
