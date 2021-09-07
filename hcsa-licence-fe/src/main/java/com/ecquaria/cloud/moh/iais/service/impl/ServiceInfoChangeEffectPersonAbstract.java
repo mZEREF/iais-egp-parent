@@ -185,7 +185,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 if (oldKahList.stream().noneMatch(dto -> Objects.equals(dto.getIdNo(), kah.getIdNo())
                         && Objects.equals(dto.getIdType(), kah.getIdType())
                         && Objects.equals(dto.getName(), kah.getName())
-                        && Objects.equals(dto.getSalutation(), dto.getSalutation()))) {
+                        && Objects.equals(dto.getSalutation(), kah.getSalutation()))) {
                     ids.add(kah.getIdNo());
                 }
             });
