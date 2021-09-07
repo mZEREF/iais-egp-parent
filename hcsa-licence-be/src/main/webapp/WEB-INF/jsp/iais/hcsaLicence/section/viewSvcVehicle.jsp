@@ -31,14 +31,16 @@
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                                    <span class="newVal " attr="${appSvcVehicleDto.vehicleName}">
-                                        <c:out value="${appSvcVehicleDto.dummyVehNum ? '' : appSvcVehicleDto.vehicleName}"></c:out>
+                                    <c:set var="displayVehicleName" value="${appSvcVehicleDto.dummyVehNum ? '' : appSvcVehicleDto.vehicleName}" />
+                                    <span class="newVal " attr="${displayVehicleName}">
+                                        <c:out value="${displayVehicleName}"></c:out>
                                     </span>
                                 </div>
                                 <div class="col-xs-6">
-                                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}">
-                                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].dummyVehNum ?
-                                          '' : currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}"></c:out>
+                                    <c:set var="oldDisplayVehicleName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].dummyVehNum ?
+                                          '' : currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}" />
+                                    <span class="oldVal " style="display: none" attr="${oldDisplayVehicleName}">
+                                        <c:out value="${oldDisplayVehicleName}"></c:out>
                                     </span>
                                 </div>
                             </td>
