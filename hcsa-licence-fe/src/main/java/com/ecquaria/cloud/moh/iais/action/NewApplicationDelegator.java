@@ -184,6 +184,7 @@ public class NewApplicationDelegator {
 
     public static final String APP_SUBMISSIONS = "appSubmissionDtos";
     public static final String ACK_APP_SUBMISSIONS = "ackPageAppSubmissionDto";
+    public static final String RFC_APP_GRP_PREMISES_DTO_LIST = "applicationAppGrpPremisesDtoList";
 
     @Autowired
     private ServiceConfigService serviceConfigService;
@@ -530,6 +531,13 @@ public class NewApplicationDelegator {
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if (!StringUtil.isEmpty(licenseeId)) {
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
+            //70309
+            List<AppGrpPremisesDto> applicationAppGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request, RFC_APP_GRP_PREMISES_DTO_LIST);
+            if (IaisCommonUtils.isNotEmpty(applicationAppGrpPremisesDtoList)){
+                for (AppGrpPremisesDto appGrpPremisesDto : applicationAppGrpPremisesDtoList){
+                    licAppGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
+                }
+            }
             String appType = appSubmissionDto.getAppType();
             if (licAppGrpPremisesDtoMap != null) {
                 log.info(StringUtil.changeForLog("----------- licAppGrpPremisesDtoMap ----->"+ licAppGrpPremisesDtoMap.size()));
@@ -3994,7 +4002,7 @@ public class NewApplicationDelegator {
             if (appSubmissionDto != null) {
                 appSubmissionDto.setAmountStr("N/A");
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    rfiLoadingCheckImplForRenew.checkPremiseInfo(appSubmissionDto,appNo);
+                    rfiLoadingCheckImplForRenew.checkPremiseInfo(bpc.request,appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }else {
                   /*  rfiLoadingExc.checkPremiseInfo(appSubmissionDto,appNo);*/
