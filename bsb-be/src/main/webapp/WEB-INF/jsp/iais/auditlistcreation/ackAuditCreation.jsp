@@ -23,7 +23,7 @@
                         </div>
                         <div align="left">
                             <span>
-                                <a href="#" id="backToCreateAuditList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="#" id="backFromAckPage"><em class="fa fa-angle-left"></em> Back</a>
                             </span>
                         </div>
                     </div>

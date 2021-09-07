@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -24,7 +25,7 @@
                         <iais:row>
                             <iais:field value="Audit Date indicated previously" width="15" required="false"/>
                             <iais:value width="10">
-                                <p style="font-size: large">07/07/2021</p>
+                                <p><fmt:formatDate value='${sessionScope.facilityAudit.auditDt}' pattern='dd/MM/yyyy'/></p>
                             </iais:value>
                         </iais:row>
 
@@ -32,13 +33,15 @@
                             <iais:field value="Audit Date" width="15" required="true"/>
                             <iais:value width="10">
                                 <iais:datePicker id="auditDate" name="auditDate" dateVal=""></iais:datePicker>
+                                <span id="auditDateError" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Reasons for change" width="15" required="true"/>
                             <iais:value width="10">
-                                <input type="text" value="" name="reason" id="reason" maxlength="100">
+                                <input type="text" value="" name="reasonForChange" id="reasonForChange" maxlength="100">
+                                <span id="reasonError" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
 
@@ -55,7 +58,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="backToAuditCreation" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
                                 <button name="submitBtn3" id="submitChangeAuditDt" type="button" class="btn btn-primary">
@@ -70,9 +73,10 @@
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
-<script>
-    $("#submitChangeAuditDt").click(function (){
-        showWaiting();
-        $("#mainForm").submit();
-    });
-</script>
+<%--<script>--%>
+<%--    $("#submitChangeAuditDt").click(function (){--%>
+<%--        showWaiting();--%>
+<%--        $("[name='action_type']").val("doSubmit");--%>
+<%--        $("#mainForm").submit();--%>
+<%--    });--%>
+<%--</script>--%>

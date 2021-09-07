@@ -74,7 +74,7 @@
                                                                             <iais:field value="Request Audit Date"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>07/07/2021</p>
+                                                                                <p><fmt:formatDate value='${facilityAuditAPP.requestAuditDt}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -86,7 +86,7 @@
                                                                                     required="false"
                                                                                     width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p>Reason for Change Audit Date,Reason for Change Audit Date</p>
+                                                                                <p>${facilityAuditAPP.facilityAudit.changeReason}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -96,20 +96,19 @@
                                                                             <iais:field value="Facility Admin's Remark"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Facility Admin's Remark,Facility Admin's Remark</p>
+                                                                                <p>${facilityAuditAPP.facilityAudit.remarks}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
 
                                                                     <div>
                                                                         <iais:row>
-                                                                            <%--Required if decision is reject--%>
                                                                             <div><iais:field
                                                                                     value="DO Reason for rejection"
                                                                                     required="false"
                                                                                     width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p>DO Reason for rejection,DO Reason for rejection</p>
+                                                                                <p>${facilityAuditAPP.doReason}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -118,7 +117,7 @@
                                                                         <iais:row>
                                                                             <div><iais:field value="DO Remarks" required="false" width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p>DO Remarks,DO Remarks</p>
+                                                                                <p>${facilityAuditAPP.doRemarks}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -178,7 +177,7 @@
                                                                     </div>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   id="backToTask" href="#"><em
+                                                                   id="back" href="#"><em
                                                                         class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="submitBtn" id="submitButton"

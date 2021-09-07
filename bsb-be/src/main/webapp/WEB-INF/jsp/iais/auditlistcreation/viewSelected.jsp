@@ -91,7 +91,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="backToAuditCreation" href="#"><em class="fa fa-angle-left"></em>
+                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em>
                                     Back</a>
                             </div>
                             <div align="right">

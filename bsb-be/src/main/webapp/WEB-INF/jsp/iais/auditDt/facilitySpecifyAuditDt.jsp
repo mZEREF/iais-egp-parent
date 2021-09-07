@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -25,6 +26,7 @@
                             <iais:field value="Audit Date" width="15" required="true"/>
                             <iais:value width="10">
                                 <iais:datePicker id="auditDate" name="auditDate" dateVal=""></iais:datePicker>
+                                <span id="auditDateError" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
 
@@ -41,7 +43,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="backToAuditCreation" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
                                 <button name="submitBtn" id="submitSpecifyAuditDt" type="button" class="btn btn-primary">
@@ -56,9 +58,5 @@
     </form>
 </div>
 <script>
-    $("#submitSpecifyAuditDt").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doSubmit");
-        $("#mainForm").submit();
-    });
+
 </script>

@@ -32,7 +32,7 @@ public class INTRANET___AdminSpecifyAuditDt___1 extends BaseProcessClass {
 
 	public void submit_OnStepProcess_0() throws Exception {
 	// 		submit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "specifyDt", this);
+		EngineHelper.delegate(DELEGATOR, "specifyAndChangeDt", this);
 	}
 
 }

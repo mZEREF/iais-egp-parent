@@ -1,3 +1,26 @@
+//audit date
+function doSpecifyDt(id){
+    showWaiting();
+    $("#auditId").val(id);
+    $("[name='action_type']").val("specifyDt");
+    $("#mainForm").submit();
+}
+
+function dochangeDt(id){
+    showWaiting();
+    $("#auditId").val(id);
+    $("[name='action_type']").val("changeDt");
+    $("#mainForm").submit();
+}
+
+function submitReport(id){
+    showWaiting();
+    $("#auditId").val(id);
+    $("[name='action_type']").val("doSelfAudit");
+    $("#mainForm").submit();
+}
+
+//upload file
 function openUploadDoc(){
     $('#uploadDoc').dialog('open');
 };
@@ -92,6 +115,7 @@ function callAjaxUploadFile(){
 }
 
 $(function () {
+    //Manual Audit Creation List
     $("#createList").click(function (){
         $("[name='action_type']").val("createList");
         if ($("input:checkbox:checked").length > 0) {
@@ -127,13 +151,41 @@ $(function () {
         }
     });
 
-    $("#backToAuditCreation").click(function (){
+    //specify And Change Date
+    $("#submitChangeAuditDt").click(function (){
+        $("[name='action_type']").val("doSubmit");
+        var auditDate = $("#auditDate").val();
+        var reason = $("#reasonForChange").val();
+        if (auditDate==null || auditDate == ""){
+            $("#auditDateError").html("Please Select Date");
+        }else if (reason==null||reason==""){
+            $("#auditDateError").html("");
+            $("#reasonError").html("Please enter change reason");
+        }else{
+            showWaiting();
+            $("#mainForm").submit();
+        }
+    });
+
+    $("#submitSpecifyAuditDt").click(function (){
+        $("[name='action_type']").val("doSubmit");
+        var auditDate = $("#auditDate").val();
+        if (auditDate==null || auditDate == ""){
+            $("#auditDateError").html("Please Select Date");
+        }else{
+            showWaiting();
+            $("#mainForm").submit();
+        }
+    });
+
+    //back
+    $("#back").click(function (){
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
 
-    $("#backToCreateAuditList").click(function (){
+    $("#backFromAckPage").click(function (){
         showWaiting();
         $("#mainForm").submit();
     });

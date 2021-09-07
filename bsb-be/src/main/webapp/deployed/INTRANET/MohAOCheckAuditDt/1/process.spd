@@ -27,7 +27,7 @@
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="verified_OnStepProcess_0" name="verified_OnStepProcess_0" />
+    <JavaCode defClass="" executor="" methodName="approval_OnStepProcess_0" name="verified_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="reject" x="740" y="240">

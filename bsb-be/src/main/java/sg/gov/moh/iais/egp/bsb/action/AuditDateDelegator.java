@@ -20,9 +20,12 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityAuditApp;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
+import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +52,9 @@ public class AuditDateDelegator {
     private static final String FACILITY_LIST = "facilityList";
     private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
     private static final String FACILITY_AUDIT = "facilityAudit";
+    private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     private static final String AUDIT_ID = "auditId";
+    private static final String LAST_AUDIT_DATE = "lastAuditDt";
 
     @Autowired
     private AuditClient auditClient;
@@ -124,35 +129,85 @@ public class AuditDateDelegator {
      *
      * @param bpc
      */
-    public void prepareSpecifyDtData(BaseProcessClass bpc) {
+    public void prepareSpecifyDtData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, FACILITY_AUDIT, null);
         String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
+        String auditDt = ParamUtil.getString(request,LAST_AUDIT_DATE);
         FacilityAudit audit = new FacilityAudit();
         audit.setId(auditId);
+
+        Date auditDate = null;
+        if (StringUtil.isNotEmpty(auditDt)) {
+            auditDate = Formatter.parseDate(auditDt);
+            audit.setAuditDt(auditDate);
+        }
         ParamUtil.setSessionAttr(request, FACILITY_AUDIT, audit);
     }
 
     /**
      * AutoStep: submit
      * specifyDt
+     * changeDt
      *
      * @param bpc
      */
-    public void specifyDt(BaseProcessClass bpc) throws ParseException {
+    public void specifyAndChangeDt(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
+
         FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, FACILITY_AUDIT);
         String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
+        String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
         String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
+
         FacilityAudit audit = new FacilityAudit();
         audit.setId(facilityAudit.getId());
         audit.setRemarks(remarks);
+        audit.setChangeReason(reason);
         Date requestAuditDt = null;
         if (StringUtil.isNotEmpty(auditDate)) {
             requestAuditDt = Formatter.parseDate(auditDate);
             audit.setAuditDt(requestAuditDt);
         }
-        auditClient.specifyAuditDt(audit);
+        auditClient.specifyAndChangeAuditDt(audit);
+    }
+
+    /**
+     * AutoStep: prepareData
+     * MohDOCheckAuditDt
+     * MohAOCheckAuditDt
+     * @param bpc
+     */
+    public void prepareDOAndAOReviewData(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
+        String auditAppId = "50229C6F-A50F-EC11-BE6E-000C298D317C";
+        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
+
+        Facility facility = facilityAuditApp.getFacilityAudit().getFacility();
+        Application application = new Application();
+        application.setFacility(facility);
+        String facilityAddress = JoinAddress.joinAddress(application);
+        facilityAuditApp.getFacilityAudit().getFacility().setFacilityAddress(facilityAddress);
+
+        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
+    }
+
+    /**
+     * AutoStep: prepareData
+     * MohDOCheckAuditDt
+     * @param bpc
+     */
+    public void DOProcessAuditDate(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
+    }
+
+    /**
+     * AutoStep: prepareData
+     * MohAOCheckAuditDt
+     * @param bpc
+     */
+    public void AOProcessAuditDate(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
     }
 
     /**

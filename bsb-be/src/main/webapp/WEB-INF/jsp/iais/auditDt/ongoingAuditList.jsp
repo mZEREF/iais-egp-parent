@@ -107,12 +107,12 @@
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
+                                        <input type="text" value="<fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>" name="lastAuditDt" hidden>
                                         <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
                                         <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
-
                                         <c:choose>
                                             <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007'}">
                                                 <td>
@@ -138,25 +138,25 @@
         <input name="auditId" id="auditId" value="" hidden>
     </form>
 </div>
-<script>
-    function doSpecifyDt(id){
-        showWaiting();
-        $("#auditId").val(id);
-        $("[name='action_type']").val("specifyDt");
-        $("#mainForm").submit();
-    }
+<%--<script>--%>
+<%--    function doSpecifyDt(id){--%>
+<%--        showWaiting();--%>
+<%--        $("#auditId").val(id);--%>
+<%--        $("[name='action_type']").val("specifyDt");--%>
+<%--        $("#mainForm").submit();--%>
+<%--    }--%>
 
-    function dochangeDt(id){
-        showWaiting();
-        $("#auditId").val(id);
-        $("[name='action_type']").val("changeDt");
-        $("#mainForm").submit();
-    }
+<%--    function dochangeDt(id){--%>
+<%--        showWaiting();--%>
+<%--        $("#auditId").val(id);--%>
+<%--        $("[name='action_type']").val("changeDt");--%>
+<%--        $("#mainForm").submit();--%>
+<%--    }--%>
 
-    function submitReport(id){
-        showWaiting();
-        $("#auditId").val(id);
-        $("[name='action_type']").val("doSelfAudit");
-        $("#mainForm").submit();
-    }
-</script>
+<%--    function submitReport(id){--%>
+<%--        showWaiting();--%>
+<%--        $("#auditId").val(id);--%>
+<%--        $("[name='action_type']").val("doSelfAudit");--%>
+<%--        $("#mainForm").submit();--%>
+<%--    }--%>
+<%--</script>--%>

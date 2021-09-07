@@ -14,7 +14,7 @@ public class FacilityAuditApp extends BaseEntity {
 
 	private String id;
 
-	private String facilityAuditId;
+	private FacilityAudit facilityAudit;
 
 	private String appType;
 

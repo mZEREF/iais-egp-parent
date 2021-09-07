@@ -74,19 +74,16 @@
                                                                             <iais:field value="Request Audit Date"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>07/07/2021</p>
+                                                                                <p><fmt:formatDate value='${facilityAuditAPP.requestAuditDt}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <%--                                                                    </c:forEach>--%>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div id="ReasonFalse"><iais:field
-                                                                                    value="Reason for Change Audit Date"
-                                                                                    required="false"
-                                                                                    width="12"/></div>
+                                                                            <iais:field value="Reason for Change Audit Date" required="false" width="12"/>
                                                                             <iais:value width="10">
-                                                                                <p>Reason for Change Audit Date,Reason for Change Audit Date</p>
+                                                                                <p>${facilityAuditAPP.facilityAudit.changeReason}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -95,7 +92,7 @@
                                                                             <iais:field value="Facility Admin's Remark"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>Facility Admin's Remark,Facility Admin's Remark</p>
+                                                                                <p>${facilityAuditAPP.facilityAudit.remarks}</p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -109,8 +106,8 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="Reason"
-                                                                                                  name="AORemarks"
+                                                                                        <textarea id="DOReason"
+                                                                                                  name="DOReason"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="300"></textarea>
@@ -128,8 +125,8 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="Remarks"
-                                                                                                  name="AORemarks"
+                                                                                        <textarea id="DORemarks"
+                                                                                                  name="DORemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="300"></textarea>
@@ -155,7 +152,7 @@
                                                                     </div>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   id="backToTask" href="#"><em
+                                                                   id="back" href="#"><em
                                                                         class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="submitBtn" id="submitButton"

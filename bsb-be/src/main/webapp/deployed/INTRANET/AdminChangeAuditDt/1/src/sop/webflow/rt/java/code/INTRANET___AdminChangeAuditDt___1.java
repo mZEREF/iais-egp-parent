@@ -11,19 +11,24 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___AdminChangeAuditDt___1 extends BaseProcessClass {
+	private static final String DELEGATOR = "auditDateDelegator";
 
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
 	// 		submit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "specifyAndChangeDt", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSpecifyDtData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
