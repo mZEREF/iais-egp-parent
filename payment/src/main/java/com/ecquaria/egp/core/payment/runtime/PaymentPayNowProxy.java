@@ -27,16 +27,6 @@ import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import ecq.commons.helper.StringHelper;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -58,12 +48,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Slf4j
 @Component
 public class PaymentPayNowProxy extends PaymentProxy {
-	@Value("${paynow.qr.expiry.minutes}")
-	private int expiryMinutes;
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String IMPL_CONTINUE_TOKEN_PREFIX = "IMPL_CONTINUE_TOKEN_";
@@ -129,6 +125,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
 
 		//sample Dynamic QR
+		int expiryMinutes = ConfigHelper.getInt("paynow.qr.expiry.minutes");
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, expiryMinutes);
