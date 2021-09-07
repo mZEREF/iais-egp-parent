@@ -199,13 +199,6 @@ public class FePrintViewDelegator {
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
-            ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficers", (Serializable) principalOfficersDtos);
-            ParamUtil.setSessionAttr(bpc.request, "ReloadDeputyPrincipalOfficers",(Serializable) deputyPrincipalOfficersDtos);
-            ParamUtil.setSessionAttr(bpc.request, "AppSvcMedAlertPsn",(Serializable) medAlertPsnDtos);
-            ParamUtil.setSessionAttr(bpc.request, "AppSvcPersonnelDtoList", (Serializable)appSvcPersonnelDtos);
-            ParamUtil.setRequestAttr(bpc.request,"appTypeForPrintDec",appSubmissionDto.getAppType());
-            ParamUtil.setRequestAttr(bpc.request,"clinicalDirectorDtoList", appSvcClinicalDirectorDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");

@@ -290,7 +290,10 @@ public class ClinicalLaboratoryDelegator {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
 
+        ParamUtil.setRequestAttr(bpc.request, CURR_STEP_NAME, currentStepName);
         ParamUtil.setRequestAttr(bpc.request, "currentStep", currentStep);
+        AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request, "currSvcInfoDto", currSvcInfoDto);
         log.info(StringUtil.changeForLog("--- Prepare " + currentStepName + " End ---"));
     }
 
@@ -503,9 +506,6 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
-        //curr step name
-        String stepName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
-        ParamUtil.setRequestAttr(bpc.request,CURR_STEP_NAME,stepName);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
 
@@ -628,9 +628,7 @@ public class ClinicalLaboratoryDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
 
-        //curr step name
-        String stepName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
-        ParamUtil.setRequestAttr(bpc.request,CURR_STEP_NAME,stepName);
+        // step name
         String svcScopePageName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
         ParamUtil.setRequestAttr(bpc.request,"svcScopePageName",svcScopePageName);
         StringBuilder sb=new StringBuilder();
@@ -2102,7 +2100,6 @@ public class ClinicalLaboratoryDelegator {
 
         List<AppSvcVehicleDto> appSvcVehicleDtos = currSvcInfoDto.getAppSvcVehicleDtoList();
         ParamUtil.setRequestAttr(bpc.request,VEHICLEDTOLIST,appSvcVehicleDtos);
-
 
         log.debug(StringUtil.changeForLog("prePareVehicles end ..."));
     }
@@ -3985,17 +3982,6 @@ public class ClinicalLaboratoryDelegator {
         return appSvcDocDtoList;
     }
 
-    private void chose(HttpServletRequest request, String type) {
-        if ("goveOffice".equals(type)) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-            ParamUtil.setRequestAttr(request, "goveOffice", appSvcCgoList);
-        }
-        if ("checkBox".equals(type)) {
-            List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto");
-            ParamUtil.setRequestAttr(request, "hcsaSvcSubtypeOrSubsumedDtos", hcsaSvcSubtypeOrSubsumedDtos);
-        }
-    }
-
     private String getCurrentServiceId(BaseProcessClass bpc){
         return getCurrentServiceId(bpc.request);
     }
@@ -4025,6 +4011,11 @@ public class ClinicalLaboratoryDelegator {
     /*
      * get current svc dto
      * */
+    private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request) {
+        String currSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        return getAppSvcRelatedInfo(request, currSvcId);
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfo(HttpServletRequest request, String currentSvcId) {
         log.debug(StringUtil.changeForLog("getAppSvcRelatedInfo service id:" + currentSvcId));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
