@@ -82,7 +82,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>

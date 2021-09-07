@@ -45,7 +45,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <tr align="center">
+                                    <tr >
                                         <th scope="col" >S/N</th>
                                         <th scope="col" >Recipient</th>
                                         <th scope="col" >Header</th>
