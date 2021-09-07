@@ -79,7 +79,6 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SERVICE_STEP                = "E498C55D-9723-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SERVICE_PERSONNEL_PSN_TYPE  = "D44B5FF6-5028-EA11-BE78-000C29D29DB0";
     public static final String CATE_ID_PROCESS_FILE_TRACK_STATUS   = "38902DD7-1E29-EA11-BE7D-000C29F371DC";
-    public static final String CATE_ID_CONFIG_EFFECTIVE_DATE       = "A22973DF-2094-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_APPLICATION_DRAFT_VALIDITY  = "A89CA599-179F-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENCE_STATUS              = "CF69FBD0-B37A-4DD9-9BD6-0A153ED55BF8";
 
