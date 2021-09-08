@@ -17,26 +17,27 @@
 %>
 
 <style>
-  .col-md-10 {
-    width: 100%;
-  }
-  td {
-    word-wrap: break-word;
+  @media only screen and (max-width: 992px) {
+    div.action1 span {
+      display: block;
+    }
   }
 </style>
+
 <div class="main-content">
-  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="currentValidateId" value="">
-    <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
+  <div class="col-xs-12">
+    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+      <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+      <input type="hidden" name="currentValidateId" value="">
+      <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
 
       <div class="bg-title"><h2>Checklist Item Management</h2></div>
 
-    <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
-    <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
-    <span id="error_configItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+      <span id="error_deleteItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+      <span id="error_cloneItemMsg" name="iaisErrorMsg" class="error-msg"></span>
+      <span id="error_configItemMsg" name="iaisErrorMsg" class="error-msg"></span>
 
-    <br><br>
+      <br><br>
       <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="form-horizontal">
           <div class="form-group">
@@ -79,21 +80,15 @@
             </div>
           </div>
 
-          <div class="application-tab-fo  oter">
-            <div class="row">
-              <div class="col-xs-12 col-md-10">
-                <div class="text-right">
-                  <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
-                  <a class="btn btn-secondary" id="exportTemplateButtonId" href="/hcsa-licence-web/eservice/INTRANET/MohChecklistItem/exportItemToConfigTemplate">Export Checklist Configurations</a>
-                  <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
-                  <a class="btn btn-secondary" id="crud_clear_button" onclick="$('#status').val('')" href="#">Clear</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
+          <iais:action cssClass="col-xs-12 text-right action1 text-center-mobile">
+            <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem">Export Checklist Item</a>
+            <span>
+            <a class="btn btn-secondary" id="exportTemplateButtonId" href="/hcsa-licence-web/eservice/INTRANET/MohChecklistItem/exportItemToConfigTemplate">Export Checklist Configurations</a>
+            </span>
+            <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
+            <a class="btn btn-secondary" id="crud_clear_button" onclick="$('#status').val('')" href="#">Clear</a>
+          </iais:action>
         </div>
-
 
         <div class="tab-content">
           <div class="row">
@@ -145,9 +140,9 @@
                             <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
                             <td><iais:checkbox name="itemCheckbox" checkboxId="itemCheckbox" request="${pageContext.request}"  value="${item.itemId}" forName="checklist_item_CheckboxReDisplay"></iais:checkbox></td>
                             <%--<td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value=""/>--%>
-                            <td>${item.regulationClauseNo}</td>
-                            <td>${item.regulationClause}</td>
-                            <td>${item.checklistItem}</td>
+                            <td class="word-wrap">${item.regulationClauseNo}</td>
+                            <td class="word-wrap">${item.regulationClause}</td>
+                            <td class="word-wrap">${item.checklistItem}</td>
                             <td><iais:code code="${item.riskLevel}"></iais:code></td>
                             <td><iais:code code="${item.status}"></iais:code></td>
                             <c:if test="${empty currentValidateId}">
@@ -192,7 +187,7 @@
                     </tbody>
                   </table>
                   </div>
-                  <div class="table-footnote">
+                  <%--<div class="table-footnote">
                     <div class="row">
                       <div class="col-xs-6 col-md-4">
                       </div>
@@ -200,47 +195,36 @@
                         <div class="nav">
 
                           <br><br><br>
-                          <div class="text-right text-center-mobile">
-
-                            <c:choose>
-                              <c:when test="${!empty sessionScope.currentValidateId}">
-                                <a class="btn btn-secondary" href="javascript:void(0);"
-                                   onclick="javascript: cancelConfig();">Cancel</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: configToChecklist();">Add to Config</a>
-                              </c:when>
-                              <c:otherwise>
-                                <%--<a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: clearCheckBox();">Clear CheckBox</a>--%>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: prepareAddItem();">Add Checklist Item</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: prepareClone();">Clone Checklist Item</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doUploadFile('createData');">Upload Checklist Item</a>
-                                <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doUploadFile('updateData');">Update Checklist Item</a>
-
-
-                              </c:otherwise>
-                            </c:choose>
-
-
-                          </div>
-                        </div>
-
-
-                      </div>
-                    </div>
-
-
-                  </div>
+                          <div class="text-right text-center-mobile">--%>
+                  <iais:action cssClass="table-footnote text-right text-center-mobile">
+                    <c:choose>
+                      <c:when test="${!empty sessionScope.currentValidateId}">
+                        <a class="btn btn-secondary" href="javascript:void(0);"
+                           onclick="javascript: cancelConfig();">Cancel</a>
+                        <a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: configToChecklist();">Add to Config</a>
+                      </c:when>
+                      <c:otherwise>
+                        <%--<a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: clearCheckBox();">Clear CheckBox</a>--%>
+                        <a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: prepareAddItem();">Add Checklist Item</a>
+                        <a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: prepareClone();">Clone Checklist Item</a>
+                        <a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: doUploadFile('createData');">Upload Checklist Item</a>
+                        <a class="btn btn-primary next" href="javascript:void(0);"
+                           onclick="javascript: doUploadFile('updateData');">Update Checklist Item</a>
+                      </c:otherwise>
+                    </c:choose>
+                  </iais:action>
               </div>
             </div>
           </div>
         </div>
       </div>
-  </form>
+    </form>
+  </div>
 </div>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>

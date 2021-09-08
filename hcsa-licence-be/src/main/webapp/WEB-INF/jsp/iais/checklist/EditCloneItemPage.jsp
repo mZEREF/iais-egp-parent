@@ -37,7 +37,6 @@
     <input type="hidden" name="itemId"
     value="<iais:mask name="itemId" value="${itemRequestAttr.itemId}"/><%--don't remove--%>">
 
-
     <br><br>
 
     <div class="form-horizontal">
@@ -60,7 +59,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="form-group">
         <div class="col-xs-5 col-md-3">
