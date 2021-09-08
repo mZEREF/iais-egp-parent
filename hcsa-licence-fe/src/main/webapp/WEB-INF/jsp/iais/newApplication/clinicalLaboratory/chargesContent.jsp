@@ -48,9 +48,11 @@
                             <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext col-md-5 col-xs-5">
                                     <label  class="control-label control-set-font control-font-label">Type of Charge</label>
+                                    <span class="mandatory">*</span>
                                 </div>
                                 <div class="control-label formtext col-md-4 col-xs-4">
                                     <label  class="control-label control-set-font control-font-label">Amount</label>
+                                    <span class="mandatory">*</span>
                                 </div>
                                 <div class="control-label formtext col-md-2 col-xs-2">
                                     <label  class="control-label control-set-font control-font-label">Remarks</label>
@@ -184,14 +186,17 @@
                                         <div class="row">
                                             <div class="col-md-6 col-xs-6">
                                                 <label  class="control-label control-set-font control-font-label">Category</label>
+                                                <span class="mandatory">*</span>
                                             </div>
                                             <div class="col-md-6 col-xs-6">
                                                 <label  class="control-label control-set-font control-font-label">Type of Charge</label>
+                                                <span class="mandatory">*</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="control-label formtext col-md-4 col-xs-4">
                                         <label  class="control-label control-set-font control-font-label">Amount</label>
+                                        <span class="mandatory">*</span>
                                     </div>
                                     <div class="control-label formtext col-md-2 col-xs-2">
                                         <label  class="control-label control-set-font control-font-label">Remarks</label>
