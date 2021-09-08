@@ -23,6 +23,13 @@
                             </c:when>
                             <c:otherwise>
                                 <th scope="col" >
+                                    <style>
+                                        .table-gp .form-check {
+                                            margin-top: 0px;
+                                            margin-bottom: 14px;
+                                            display: revert;
+                                        }
+                                    </style>
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll"
                                                onchange="javascirpt:checkAll();"/>
