@@ -141,7 +141,7 @@ public class NetsSysToSysController {
         String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
-            String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
+            String url=  (String) ParamUtil.getSessionAttr(request,"payNowCallBackUrl");
             AuditTrailDto auditTrailDto = new AuditTrailDto();
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
             auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
