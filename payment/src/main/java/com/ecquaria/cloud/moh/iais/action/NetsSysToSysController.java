@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
@@ -51,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSignature;
 
@@ -135,7 +137,8 @@ public class NetsSysToSysController {
 
     @RequestMapping( value = "/payNowRefresh", method = RequestMethod.GET)
     public @ResponseBody
-    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Map<String, Object> payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
@@ -150,7 +153,9 @@ public class NetsSysToSysController {
             auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             RedirectUtil.redirect(url, request, response);
-
+            map.put("result", "Success");
+            map.put("CallBackUrl",url);
+            return map;
         }
 
 
@@ -196,13 +201,16 @@ public class NetsSysToSysController {
         String sgqrTypeFormattedPayLoad = qrCodeResponse.getSgqrPayload();
         String imageStreamInBase64Format = qrCodeResponse.getImageStream();
         ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
-        return imageStreamInBase64Format;
+        map.put("result", "Fail");
+        map.put("QrString", imageStreamInBase64Format);
+        return map;
     }
 
 
     @RequestMapping( value = "/payNowPoll", method = RequestMethod.GET)
     public @ResponseBody
-    String payNowPoll(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Map<String, Object> payNowPoll(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
         String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
@@ -216,17 +224,13 @@ public class NetsSysToSysController {
             auditTrailDto.setFunctionName("payNow Call Back");
             auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
-            RedirectUtil.redirect(url, request, response);
+            map.put("result", "Success");
+            map.put("CallBackUrl",url);
+            return map;
 
         }
+        map.put("result", "Fail");
+        return map;
 
-
-        String pay_status ;
-        if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
-            pay_status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-        }else {
-            pay_status=PaymentTransactionEntity.TRANS_STATUS_PENDING;
-        }
-        return pay_status;
     }
 }
