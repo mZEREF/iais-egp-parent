@@ -198,11 +198,11 @@
         chk.each(function () {
             dropIds.push($(this).val());
         });
-        var flog = false;
+        var flog = true;
         for (var i = 0; i < dropIds.length; i++) {
             var str = dropIds[i].split('|')[3];
-            if (str === 'Active') {
-                flog = true;
+            if (str !== 'Active') {
+                flog = false;
             }
         }
         if (flog) {
