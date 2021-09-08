@@ -45,7 +45,7 @@
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="420" y="240">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="420" y="240">
    <Description/>
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step2" value="&quot;back&quot;"/>
   </Switch>

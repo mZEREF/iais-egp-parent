@@ -83,6 +83,12 @@
       <artifactId>web-common</artifactId>
       <version>${revision}</version>
     </dependency>
+      <dependency>
+          <groupId>sg.gov.moh.iais-egp</groupId>
+          <artifactId>systemadmin</artifactId>
+          <version>0.1</version>
+          <scope>compile</scope>
+      </dependency>
   </dependencies>
 
   <build>

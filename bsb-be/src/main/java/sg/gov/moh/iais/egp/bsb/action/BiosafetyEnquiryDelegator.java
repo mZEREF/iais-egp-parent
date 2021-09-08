@@ -181,7 +181,7 @@ public class BiosafetyEnquiryDelegator {
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(application.getFacility().getFacilitySchedules(),processClient);
         application.setBiologicalList(biologicalList);
         ParamUtil.setRequestAttr(request,"applicationInfo",application);
-        ParamUtil.setRequestAttr(request,"count",count);
+        ParamUtil.setRequestAttr(request,PARAM_COUNT,count);
     }
 
 

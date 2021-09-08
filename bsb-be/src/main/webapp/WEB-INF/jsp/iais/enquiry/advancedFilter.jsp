@@ -160,7 +160,7 @@
                     <iais:row>
                         <iais:field value="Risk Level of the Biological Agent/Toxin"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="riskLevelOfTheBiologicalAgent" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${approvalSearchParam.biologicalAgent}"></iais:select>
+                            <iais:select name="riskLevelOfTheBiologicalAgent" codeCategory="CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT" firstOption="Please Select" value="${approvalSearchParam.riskLevelOfTheBiologicalAgent}"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>

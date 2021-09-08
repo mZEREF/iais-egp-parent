@@ -116,6 +116,7 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
         processType = "";
         facilityExpiryDateFrom = null;
         facilityExpiryDateTo = null;
+        facilityAdmin = "";
         gazettedArea = "";
         facilityOperator = "";
         authorisedPersonnelWorkingInFacility = "";
