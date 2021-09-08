@@ -47,10 +47,16 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowPoll",
             success: function (data) {
-                console.log(data);
+                var result = data.result;
+                console.log(result);
+                if('Success' == result){
+                    window.location.href=data.CallBackUrl;
+                }
             },
             error: function (msg) {
-                console.log(msg);
+                var result = msg.result;
+
+                console.log(result);
             }
         });
     }
@@ -63,8 +69,14 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
+                var result = data.result;
+                console.log(result);
+                if('Success' == result){
+                    window.location.href=data.CallBackUrl;
+                }else {
+                    $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
+                }
                 //console.log(data);
-                $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data + '" />');
                 //$("#payNowImg").attr("src",data);
             },
             error: function (msg) {
