@@ -241,11 +241,11 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
     private String addressAddEamil(String address,String email,String premType){
-        if(email!=null&&premType!=null){
-            if(premType.equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)||premType.equals(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
-                address+=" "+email;
-            }
-        }
+//        if(email!=null&&premType!=null){
+//            if(premType.equals(ApplicationConsts.PREMISES_TYPE_CONVEYANCE)||premType.equals(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
+//                address+=" "+email;
+//            }
+//        }
         return address;
     }
     private void setSearchResult(HttpServletRequest request,SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult,List<String> licenceIds,List<ReqForInfoSearchListDto> reqForInfoSearchListDtos){
