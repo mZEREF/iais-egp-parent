@@ -36,8 +36,8 @@
             <div class="form-group">
                 <iais:field value="Common" id="commonField"></iais:field>
                 <div class="col-md-3">
-                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false"
-                        value="${common}"> <label for="common">General Regulation</label>
+                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false" value="${common}">
+                    <label for="common" style="margin-left: 20px;">General Regulation</label>
                 </div>
             </div>
 

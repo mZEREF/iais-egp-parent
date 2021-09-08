@@ -78,11 +78,14 @@
     })
 
     $("#crud_clear_button").click(function () {
-        $(".form-horizontal input[type='checkbox']").removeAttr('checked');
-        $(".form-horizontal input[type='radio']").removeAttr('checked');
+        $(".form-horizontal input[type='checkbox']").prop('checked', false);
+        $(".form-horizontal input[type='radio']").prop('checked', false);
         $(".form-horizontal .current").text("Please Select")
         $(".form-horizontal input").val("");
-        $(".form-horizontal option:first").prop("selected", 'selected').val(null);
+        $(".form-horizontal select").each(function(index, ele) {
+            ele.selectedIndex = 0;
+            $(ele).niceSelect("update");
+        });
         $(".error-msg").text("");
     })
 

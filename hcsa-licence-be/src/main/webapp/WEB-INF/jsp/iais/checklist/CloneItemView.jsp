@@ -62,11 +62,11 @@
                       </tr>
                     </c:when>
                     <c:otherwise>
-                      <c:forEach var = "cloneItem" items = "${cloneItems}" varStatus="status">
+                      <c:forEach var="cloneItem" items="${cloneItems}" varStatus="status">
                         <tr>
-                          <td>${cloneItem.regulationClauseNo}</td>
-                          <td>${cloneItem.regulationClause}</td>
-                          <td>${cloneItem.checklistItem}</td>
+                          <td class="word-wrap">${cloneItem.regulationClauseNo}</td>
+                          <td class="word-wrap">${cloneItem.regulationClause}</td>
+                          <td class="word-wrap">${cloneItem.checklistItem}</td>
                           <td><iais:code code="${cloneItem.riskLevel}"></iais:code></td>
                           <td>
                             <iais:link icon="form_edit" title="Edit" onclick="javascript:prepareCloneItem('${cloneItem.itemId}');"/>
