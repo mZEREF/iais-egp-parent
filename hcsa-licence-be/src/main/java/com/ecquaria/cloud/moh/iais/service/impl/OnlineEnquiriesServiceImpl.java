@@ -83,6 +83,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -146,7 +147,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     AcraUenBeClient acraUenBeClient;
     @Autowired
     private CessationClient cessationClient;
-
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
     public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
@@ -804,6 +806,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
+        AppGrpPremisesDto appGrpPremisesDto =   inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        ParamUtil.setRequestAttr(request,"emilAddr",appGrpPremisesDto.getEasMtsPubEmail());
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return;

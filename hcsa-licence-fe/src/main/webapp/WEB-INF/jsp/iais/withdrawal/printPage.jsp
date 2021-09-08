@@ -87,8 +87,7 @@
                                           <div id="${withdrawPageShowFile.fileMapId}">
                                               <span name="fileName"
                                                     style="font-size: 14px;color: #2199E8;text-align: center">
-                                              <a title="Download"
-                                                 class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
+                                                      ${withdrawPageShowFile.fileName}</span>
                                           </div>
                                         </c:forEach>
                                         </span>

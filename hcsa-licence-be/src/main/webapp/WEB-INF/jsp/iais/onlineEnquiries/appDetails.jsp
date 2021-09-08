@@ -131,7 +131,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Email</td>
-                                                                    <td style="padding-left: 15px;">${licenseeDto.emilAddr}<c:if test="${empty licenseeDto.emilAddr}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${emilAddr}<c:if test="${empty emilAddr}">-</c:if></td>
                                                                 </tr>
                                                                 </tbody>
                                                             </table>

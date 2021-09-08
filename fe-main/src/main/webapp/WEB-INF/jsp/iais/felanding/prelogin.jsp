@@ -214,10 +214,8 @@
     var prd = "";
     var prdSing = "";
     <%}%>
-    var oldSys = "<%=ConfigHelper.getString("moh.halp.old.internet.web", "#")%>";
-    if (isEmpty(oldSys)) {
-        oldSys = '#';
-    }
+    var oldSysSingpass = "<%=ConfigHelper.getString("moh.elis.internet.singpass.web", "#")%>";
+    var oldSysCorpass = "<%=ConfigHelper.getString("moh.elis.internet.corpass.web", "#")%>";
 
     var serviceGroups = $('input[name="serviceGroup"]:checked');
     if (serviceGroups.length == 0) {
@@ -226,9 +224,9 @@
         $('#singpass').attr("href", "javascript:void(0);");
         $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
     } else if ($('#oldSystem').is(':checked')) {
-        $('#corppass').attr("href", oldSys);
+        $('#corppass').attr("href", oldSysCorpass);
         $('#corppass').removeAttr("onclick");
-        $('#singpass').attr("href", oldSys);
+        $('#singpass').attr("href", oldSysSingpass);
         $('#singpass').removeAttr("onclick");
     } else if (isEmpty(prd)) {
         $('#corppass').attr("href", "javascript:void(0);");
