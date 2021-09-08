@@ -115,7 +115,7 @@ public class NetsSysToSysController {
             eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
         }
         String appGrpNo= reqNo;
-        appGrpNo= reqNo.substring(0,'_');
+        appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
 
         ApplicationGroupDto applicationGroupDto= PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(applicationGroupDto!=null){

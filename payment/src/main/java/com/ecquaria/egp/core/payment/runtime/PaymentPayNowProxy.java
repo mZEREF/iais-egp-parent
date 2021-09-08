@@ -228,7 +228,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String appGrpNo=refNo;
 		try {
-			appGrpNo=refNo.substring(0,'_');
+			appGrpNo=refNo.substring(0,refNo.indexOf('_'));
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
 		}
