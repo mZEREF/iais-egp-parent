@@ -71,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
         try{
-            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
         }catch (Exception e){
             appGrpNo=paymentRequestDto.getReqRefNo();
         }
@@ -179,7 +179,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void retrievePayNowPayment(PaymentRequestDto paymentRequestDto)  {
         String appGrpNo;
         try{
-            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
         }catch (Exception e){
             appGrpNo=paymentRequestDto.getReqRefNo();
         }

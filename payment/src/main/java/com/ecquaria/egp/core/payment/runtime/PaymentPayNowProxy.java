@@ -220,7 +220,6 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
-		log.info(StringUtil.changeForLog("==========>getCHECKOUT_SESSION_ID:"+ParamUtil.getSessionAttr(bpc.request,"CHECKOUT_SESSION_ID")));
 
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
@@ -228,7 +227,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String appGrpNo=refNo;
 		try {
-			appGrpNo=refNo.substring(0,'_');
+			appGrpNo=refNo.substring(0,refNo.indexOf('_'));
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
 		}
