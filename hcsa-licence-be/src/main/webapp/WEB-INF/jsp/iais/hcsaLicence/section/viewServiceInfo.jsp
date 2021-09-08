@@ -67,7 +67,7 @@
                         <span class="newVal " attr="${checkList.chkName}${checkList.check}">
                           <c:if test="${checkList.check}">
                             <input style="cursor: default;" class="form-check-input" checked type="checkbox" disabled>
-                            <label class="form-check-label"><span class="check-square"></span>${checkList.chkName}</label>
+                            <label class="form-check-label" style="color: #212529;"><span class="check-square"></span>${checkList.chkName}</label>
                           </c:if>
                         </span>
                     </div>
@@ -76,7 +76,7 @@
                               attr="${oldAppSvcChckListDtoList[statuss.index].chkName}${oldAppSvcChckListDtoList[statuss.index].check}" style="display: none">
                               <c:if test="${oldAppSvcChckListDtoList[statuss.index].check}">
                                 <input style="cursor: default" class="form-check-input" checked type="checkbox" disabled>
-                                <label class="form-check-label">
+                                <label class="form-check-label" style="color: #212529;">
                                     <span class="check-square"></span>
                                       ${oldAppSvcChckListDtoList[statuss.index].chkName}
                                   </label>
