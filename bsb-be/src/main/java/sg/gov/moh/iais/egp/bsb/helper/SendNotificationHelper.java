@@ -33,8 +33,6 @@ public class SendNotificationHelper {
     @Autowired
     private MsgTemplateClient msgTemplateClient;
     @Autowired
-    private NotificationHelper notificationHelper;
-    @Autowired
     private EmailSmsClient emailSmsClient;
 
     @Value("${iais.email.sender}")
@@ -115,7 +113,7 @@ public class SendNotificationHelper {
     private String getEmailContent(String templateId, Map<String, Object> subMap){
         String mesContext = "-";
         if(!StringUtil.isEmpty(templateId)){
-            MsgTemplateDto emailTemplateDto =notificationHelper.getMsgTemplate(templateId);
+            MsgTemplateDto emailTemplateDto =msgTemplateClient.getMsgTemplate(templateId).getEntity();
             if(emailTemplateDto != null){
                 try {
                     if(!IaisCommonUtils.isEmpty(subMap)){
