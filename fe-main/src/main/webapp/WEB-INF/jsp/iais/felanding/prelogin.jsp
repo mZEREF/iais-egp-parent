@@ -214,8 +214,8 @@
     var prd = "";
     var prdSing = "";
     <%}%>
-    var oldSysSingpass = "<%=ConfigHelper.getString("moh.halp.old.internet.singpass.web", "#")%>";
-    var oldSysCorpass = "<%=ConfigHelper.getString("moh.halp.old.internet.corpass.web", "#")%>";
+    var oldSysSingpass = "<%=ConfigHelper.getString("moh.elis.internet.singpass.web", "#")%>";
+    var oldSysCorpass = "<%=ConfigHelper.getString("moh.elis.internet.corpass.web", "#")%>";
 
     var serviceGroups = $('input[name="serviceGroup"]:checked');
     if (serviceGroups.length == 0) {
