@@ -151,9 +151,6 @@ public class InterInboxDelegator {
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
-        if (!StringUtil.isEmpty(loginContext.getUenNo())) {
-            elisUrl = ConfigHelper.getString("moh.elis.corpass.url");
-        }
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
 //        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
