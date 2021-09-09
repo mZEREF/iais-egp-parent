@@ -158,6 +158,7 @@ public class NetsSysToSysController {
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             RedirectUtil.redirect(url, request, response);
             map.put("result", "Success");
+            url=RedirectUtil.appendCsrfGuardToken(url,request);
             map.put("CallBackUrl",url);
             return map;
         }
@@ -229,6 +230,7 @@ public class NetsSysToSysController {
             auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
             AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
             map.put("result", "Success");
+            url=RedirectUtil.appendCsrfGuardToken(url,request);
             map.put("CallBackUrl",url);
             return map;
 
