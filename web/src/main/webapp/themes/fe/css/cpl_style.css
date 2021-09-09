@@ -3524,6 +3524,19 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     background-color: white;
 }
 
+@media only screen and (min-width: 576px) {
+    .modal .modal-dialog {
+        max-width: 560px;
+        width: 560px;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .modal .modal-content {
+        display: block;
+    }
+}
+
 .modal .modal-content {
     padding: 15px 45px;
 }
