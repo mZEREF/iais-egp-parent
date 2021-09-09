@@ -43,27 +43,15 @@
 <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
+    <form id="payNowRedirectForm" style="display: none"
+          name="payNowRedirectForm" action='${payNowCallBackUrl}' method='POST'>
+    </form>
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
     setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
     <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
-    <%--function payNowMockServer(){--%>
-    <%--    $.ajax({--%>
-    <%--        type: "get",--%>
-    <%--        url:  "${GatewayPayNowConfig.mockserverUrl}",--%>
-    <%--        data : {--%>
-    <%--            responseUrl : "${GatewayPayNowConfig.mockserverCallbackUrl}",--%>
-    <%--            appGrpNum : "${appGrpNo}"--%>
-    <%--        },--%>
-    <%--        success: function (data) {--%>
 
-    <%--        },--%>
-    <%--        error: function (msg) {--%>
-
-    <%--        }--%>
-    <%--    });--%>
-    <%--}--%>
     function payNowMockServer(){
         $.ajax({
             type: "get",
@@ -87,14 +75,9 @@
             success: function (data) {
                 let result = data.result;
                 console.log(result);
-                if('Success' == result){
-                    window.location.replace(data.CallBackUrl);
+                if('Success' === result){
+                    $('#payNowRedirectForm').submit();
                 }
-            },
-            error: function (msg) {
-                let result = msg.result;
-
-                console.log(result);
             }
         });
     }
@@ -108,10 +91,7 @@
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
                 let result = data.result;
-                if('Success' == result){
-                    console.log(result);
-
-                }else {
+                if('Success' !== result){
                     $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
                 }
                 //console.log(data);
