@@ -82,28 +82,36 @@
                                             <tr>
 
                                                 <td>
-                                                    <c:out value="${pool.licenceNo}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Licence No.</p>
+                                                    <p><c:out value="${pool.licenceNo}"/></p>
                                                 </td>
                                                 <td >
-                                                    <c:out value="${pool.svcName}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Service Type</p>
+                                                    <p><c:out value="${pool.svcName}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.licenseeName}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Licensee</p>
+                                                    <p><c:out value="${pool.licenseeName}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.acctName}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Account Name</p>
+                                                    <p><c:out value="${pool.acctName}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.bankName}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Bank Name</p>
+                                                    <p><c:out value="${pool.bankName}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.bankCode}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Bank Code</p>
+                                                    <p><c:out value="${pool.bankCode}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.branchCode}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Branch Code</p>
+                                                    <p><c:out value="${pool.branchCode}"/></p>
                                                 </td>
                                                 <td>
-                                                    <c:out value="${pool.acctNo}"/>
+                                                    <p class="visible-xs visible-sm table-row-title">Bank Account No.</p>
+                                                    <p><c:out value="${pool.acctNo}"/></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
