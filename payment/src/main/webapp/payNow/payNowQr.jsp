@@ -88,7 +88,7 @@
                 var result = data.result;
                 console.log(result);
                 if('Success' == result){
-                    window.location.href=data.CallBackUrl;
+                    window.location.replace(data.CallBackUrl);
                 }
             },
             error: function (msg) {
