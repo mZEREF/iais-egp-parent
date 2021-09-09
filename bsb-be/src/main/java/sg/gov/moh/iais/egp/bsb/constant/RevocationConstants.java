@@ -48,10 +48,7 @@ public final class RevocationConstants {
     public static final String PARAM_STREET_NAME = "streetName";
 
     //application status
-    public static final String PARAM_APPLICATION_STATUS_APPROVE = "BSBAPST009";
-    public static final String PARAM_APPLICATION_STATUS_REJECT = "BSBAPST008";
-    public static final String PARAM_APPLICATION_STATUS_ROUTE_BACK = "BSBAPST001";
-    public static final String PARAM_APPLICATION_STATUS_ROUTE_TO_HM = "BSBAPST003";
+    public static final String PARAM_DECISION = "decision";
     public static final String PARAM_APPLICATION_STATUS_PENDING_AO = "BSBAPST002";
     //facility status and approval status
     public static final String PARAM_FACILITY_STATUS_REVOKED = "FACSTA007";

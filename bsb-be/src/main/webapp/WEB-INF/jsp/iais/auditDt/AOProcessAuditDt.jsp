@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -79,64 +80,77 @@
                                                                         </iais:row>
                                                                     </div>
                                                                     <%--                                                                    </c:forEach>--%>
+                                                                    <c:if test="${(facilityAuditAPP.facilityAudit.changeReason!=null && facilityAuditAPP.facilityAudit.changeReason!='')}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Reason for Change Audit Date"
+                                                                                            required="false"
+                                                                                            width="12"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${facilityAuditAPP.facilityAudit.changeReason}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
+                                                                    <c:if test="${(facilityAuditAPP.facilityAudit.remarks!=null && facilityAuditAPP.facilityAudit.remarks!='')}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="Facility Admin's Remark"
+                                                                                            required="false"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${facilityAuditAPP.facilityAudit.remarks}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
+                                                                    <c:if test="${(facilityAuditAPP.doReason!=null && facilityAuditAPP.doReason!='')}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="DO Reason for rejection"
+                                                                                            required="false"
+                                                                                            width="12"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${facilityAuditAPP.doReason}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
+                                                                    <c:if test="${(facilityAuditAPP.doRemarks!=null && facilityAuditAPP.doRemarks!='')}">
+                                                                        <div>
+                                                                            <iais:row>
+                                                                                <iais:field value="DO Remarks" required="false" width="12"/>
+                                                                                <iais:value width="10">
+                                                                                    <p>${facilityAuditAPP.doRemarks}</p>
+                                                                                </iais:value>
+                                                                            </iais:row>
+                                                                        </div>
+                                                                    </c:if>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div id="ReasonFalse"><iais:field
-                                                                                    value="Reason for Change Audit Date"
-                                                                                    required="false"
-                                                                                    width="12"/></div>
+                                                                            <iais:field value="DO Decision"
+                                                                                        required="false"
+                                                                                        width="12"/>
                                                                             <iais:value width="10">
-                                                                                <p>${facilityAuditAPP.facilityAudit.changeReason}</p>
+                                                                                <p><iais:code code="${facilityAuditAPP.doDecision}"></iais:code></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
 
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Facility Admin's Remark"
-                                                                                        required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p>${facilityAuditAPP.facilityAudit.remarks}</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <div><iais:field
-                                                                                    value="DO Reason for rejection"
-                                                                                    required="false"
-                                                                                    width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <p>${facilityAuditAPP.doReason}</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <div><iais:field value="DO Remarks" required="false" width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <p>${facilityAuditAPP.doRemarks}</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
+                                                                    <div id="rejectReason">
                                                                         <iais:row>
                                                                             <%--Required if decision is reject--%>
-                                                                            <div><iais:field
-                                                                                    value="AO Reason for rejection"
-                                                                                    required="true"
-                                                                                    width="12"/></div>
+                                                                            <iais:field value="AO Reason for rejection"
+                                                                                        required="true"
+                                                                                        width="12"/>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="AOReason"
-                                                                                                  name="AOReason"
+                                                                                        <textarea id="reason"
+                                                                                                  name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="300"></textarea>
-                                                                                        <span id="error_AOReason"
+                                                                                        <span id="error_reason"
                                                                                               name="iaisErrorMsg"
                                                                                               class="error-msg"></span>
                                                                                     </div>
@@ -146,12 +160,12 @@
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div><iais:field value="AO Remarks" required="false" width="12"/></div>
+                                                                            <iais:field value="AO Remarks" required="false" width="12"/>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="AORemarks"
-                                                                                                  name="AORemarks"
+                                                                                        <textarea id="remark"
+                                                                                                  name="remark"
                                                                                                   cols="70"
                                                                                                   rows="7"
                                                                                                   maxlength="300"></textarea>
@@ -203,10 +217,3 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script>
-    $("#submitButton").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doApprove");
-        $("#mainForm").submit();
-    })
-</script>

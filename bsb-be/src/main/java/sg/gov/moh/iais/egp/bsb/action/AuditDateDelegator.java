@@ -107,7 +107,7 @@ public class AuditDateDelegator {
      *
      * @param bpc
      */
-    public void doSearch(BaseProcessClass bpc) throws ParseException {
+    public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
         AuditQueryDto searchDto = getSearchDto(request);
@@ -178,8 +178,10 @@ public class AuditDateDelegator {
      * MohAOCheckAuditDt
      * @param bpc
      */
-    public void prepareDOAndAOReviewData(BaseProcessClass bpc) throws ParseException {
+    public void prepareDOAndAOReviewData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, null);
+
         String auditAppId = "50229C6F-A50F-EC11-BE6E-000C298D317C";
         FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
 
@@ -189,25 +191,74 @@ public class AuditDateDelegator {
         String facilityAddress = JoinAddress.joinAddress(application);
         facilityAuditApp.getFacilityAudit().getFacility().setFacilityAddress(facilityAddress);
 
-        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
+        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
     }
 
     /**
-     * AutoStep: prepareData
      * MohDOCheckAuditDt
      * @param bpc
      */
-    public void DOProcessAuditDate(BaseProcessClass bpc) throws ParseException {
+    public void DOVerifiedAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
+        //
+        facilityAuditApp.setDoRemarks(remark);
+        facilityAuditApp.setDoDecision(decision);
+        facilityAuditApp.setStatus("AUDITST005");
+        auditClient.updateAuditApp(facilityAuditApp);
     }
 
     /**
-     * AutoStep: prepareData
+     * MohDOCheckAuditDt
+     * @param bpc
+     */
+    public void DORejectAuditDate(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
+        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
+        //
+        facilityAuditApp.setDoRemarks(remark);
+        facilityAuditApp.setDoDecision(decision);
+        facilityAuditApp.setDoReason(reason);
+        facilityAuditApp.setStatus("AUDITST005");
+        auditClient.updateAuditApp(facilityAuditApp);
+    }
+
+    /**
      * MohAOCheckAuditDt
      * @param bpc
      */
-    public void AOProcessAuditDate(BaseProcessClass bpc) throws ParseException {
+    public void AOApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        //
+        facilityAuditApp.setAoRemarks(remark);
+        facilityAuditApp.setStatus("AUDITST003");
+        //
+        facilityAuditApp.getFacilityAudit().setStatus("AUDITST002");
+        facilityAuditApp.getFacilityAudit().setAuditDt(facilityAuditApp.getRequestAuditDt());
+        auditClient.updateAuditApp(facilityAuditApp);
+    }
+
+    /**
+     * MohAOCheckAuditDt
+     * @param bpc
+     */
+    public void AORejectAuditDate(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
+        //
+        facilityAuditApp.setAoRemarks(remark);
+        facilityAuditApp.setAoReason(reason);
+        facilityAuditApp.setStatus("AUDITST007");
+        auditClient.updateAuditApp(facilityAuditApp);
     }
 
     /**

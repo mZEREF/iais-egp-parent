@@ -15,6 +15,8 @@ public final class AuditConstants {
     public static final String PARAM_AUDIT_DATE = "auditDate";
 
     public static final String PARAM_REMARKS = "remark";
+    public static final String PARAM_REASON = "reason";
+    public static final String PARAM_DECISION = "decision";
     public static final String PARAM_REASON_FOR_CHANGE = "reasonForChange";
 
     public static final String PARAM_FACILITY_NAME = "facilityName";

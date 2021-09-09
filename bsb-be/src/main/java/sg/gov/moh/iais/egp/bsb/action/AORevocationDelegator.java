@@ -22,7 +22,6 @@ import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,10 +81,8 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
-            String facId="";
             for (Application application : applications) {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
-                facId=application.getFacility().getId();
                 List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
                 String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
                 application.setBiologicalName(bioNames);
@@ -134,21 +131,6 @@ public class AORevocationDelegator {
             applicationDate = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE));
             searchDto.setApplicationDate(applicationDate);
         }
-//        if (StringUtil.isNotEmpty(facilityAddress)) {
-//            String[] strArr = facilityAddress.split(" ");
-//            String blockNo = strArr[0];
-//            String streetName = strArr[1];
-//            String postalCode = strArr[3];
-//            searchDto.setBlockNo(blockNo);
-//            searchDto.setStreetName(streetName);
-//            searchDto.setPostalCode(postalCode);
-//
-//            String[] arr = strArr[2].split("-");
-//            String floorNo = arr[0];
-//            String unitNo = arr[1];
-//            searchDto.setFloorNo(floorNo);
-//            searchDto.setUnitNo(unitNo);
-//        }
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
 
@@ -226,10 +208,11 @@ public class AORevocationDelegator {
      */
     public void approve(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_APPROVE);
+        String decision = ParamUtil.getRequestString(bpc.request, RevocationConstants.PARAM_DECISION);
+        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),decision);
         revocationClient.updateFacilityStatusById(aoDecisionDto.getApplication().getFacility().getId(),RevocationConstants.PARAM_FACILITY_STATUS_REVOKED,RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED);
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVE);
+        aoDecisionDto.getHistory().setAppStatus(decision);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
     }
 
@@ -242,9 +225,10 @@ public class AORevocationDelegator {
      */
     public void reject(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_REJECT);
+        String decision = ParamUtil.getRequestString(bpc.request, RevocationConstants.PARAM_DECISION);
+        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),decision);
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_REJECT);
+        aoDecisionDto.getHistory().setAppStatus(decision);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
     }
 
@@ -257,9 +241,10 @@ public class AORevocationDelegator {
      */
     public void routebackToDO(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_ROUTE_BACK);
+        String decision = ParamUtil.getRequestString(bpc.request, RevocationConstants.PARAM_DECISION);
+        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),decision);
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_ROUTE_BACK);
+        aoDecisionDto.getHistory().setAppStatus(decision);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
     }
 
@@ -272,9 +257,10 @@ public class AORevocationDelegator {
      */
     public void routeToHM(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_ROUTE_TO_HM);
+        String decision = ParamUtil.getRequestString(bpc.request, RevocationConstants.PARAM_DECISION);
+        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),decision);
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_ROUTE_TO_HM);
+        aoDecisionDto.getHistory().setAppStatus(decision);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
     }
 

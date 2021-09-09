@@ -177,6 +177,41 @@ $(function () {
             $("#mainForm").submit();
         }
     });
+    //AO And DO Process Audit Date
+    $("#rejectReason").hide();
+    $("#decision").change(function (){
+        var optionValue1 = $("#decision option:selected").val();
+        if (optionValue1 == "AUDTAO002" || optionValue1 == "AUDTDO002") {
+            $("#rejectReason").show();
+        }else{
+            $("#rejectReason").hide();
+        }
+    })
+    $("#submitButton").click(function () {
+        var optionValue = $("#decision option:selected").val();
+        if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") {
+            $("#error_decision").html("");
+            showWaiting();
+            $("[name='action_type']").val("doApprove");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {
+            var reasonValue = $("#reason").val();
+            if (reasonValue == "" || reasonValue == null) {
+                $("#error_decision").html("");
+                $("#error_reason").html("Please enter the reason");
+            } else {
+                $("#error_decision").html("");
+                $("#error_reason").html("");
+                showWaiting();
+                $("[name='action_type']").val("doReject");
+                $("#mainForm").submit();
+            }
+        }
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_decision").html("Please select valid options");
+        }
+    })
 
     //back
     $("#back").click(function (){
