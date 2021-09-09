@@ -5908,5 +5908,16 @@ ul.v-numberlist li::before {
   }
 }*/
 
+@media only screen and (min-width: 640px) {
+    .modal .modal-dialog {
+        max-width: 600px;
+    }
+}
+
+@media only screen and (min-width: 576px) {
+    .modal .modal-dialog {
+        max-width: 540px;
+    }
+}
 
 
