@@ -12,6 +12,7 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
 import sg.gov.moh.iais.egp.bsb.entity.FacilitySchedule;
 
 import java.util.List;
@@ -40,4 +41,7 @@ public interface ApprovalApplicationClient {
 
     @GetMapping(path = "/bsb-approval/facilityBiologicalAgent/{facilityScheduleId}")
     FeignResponseEntity<List<FacilityBiologicalAgent>> getFacilityBiologicalAgentByFacilityScheduleId(@PathVariable("facilityScheduleId") String facilityScheduleId);
+
+    @GetMapping(path = "/bsb-approval/facilityDoc/{facilityId}")
+    FeignResponseEntity<List<FacilityDoc>> getFacilityDocByFacilityId(@PathVariable("facilityId") String facilityId);
 }

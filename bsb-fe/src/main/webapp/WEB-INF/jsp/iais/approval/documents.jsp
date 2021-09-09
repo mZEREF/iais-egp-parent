@@ -34,6 +34,7 @@
                                 </div>
                                 <div class="document-upload-gp">
                                     <h2>PRIMARY DOCUMENTS</h2>
+                                    <%@include file="common/docContent.jsp"%>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">

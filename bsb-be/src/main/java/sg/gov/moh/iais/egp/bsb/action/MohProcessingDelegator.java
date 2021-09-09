@@ -5,11 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
@@ -18,9 +20,11 @@ import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : LiRan
@@ -31,7 +35,6 @@ import java.util.List;
 public class MohProcessingDelegator {
     private final ProcessClient processClient;
 
-    @Autowired
     public MohProcessingDelegator(ProcessClient processClient) {
         this.processClient = processClient;
     }
@@ -45,7 +48,13 @@ public class MohProcessingDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
+        String crudActionType = ParamUtil.getString(request,ProcessContants.CRUD_ACTION_TYPE);
+        String appId = "";
+        if (crudActionType == null || crudActionType == ""){
+            appId = ParamUtil.getString(request,ProcessContants.PARAM_APP_ID);
+        }else if (crudActionType.equals(ProcessContants.ACTION_TYPE_1)){
+            appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
+        }
         Application application = processClient.getApplicationById(appId).getEntity();
         ApplicationMisc applicationMisc = new ApplicationMisc();
         if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
@@ -57,89 +66,142 @@ public class MohProcessingDelegator {
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
         application.setBiologicalList(biologicalList);
         List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(application.getApplicationNo()).getEntity();
+        ParamUtil.setRequestAttr(request, ProcessContants.PARAM_APP_ID,appId);
         ParamUtil.setRequestAttr(request, ProcessContants.APPLICATION_MISC,applicationMisc);
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
-        ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR, application);
+        ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_ATTR, application);
+    }
+
+    public void prepareSwitch(BaseProcessClass bpc) throws ParseException{
+        HttpServletRequest request = bpc.request;
+        DoScreeningDto dtoByForm = getDtoByForm(bpc);
+        String processingDecision = dtoByForm.getProcessDecision();
+        String crudActionType = "";
+        ValidationResult vResult = WebValidationHelper.validateProperty(dtoByForm,"A");
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
+            String s = WebValidationHelper.generateJsonStr(errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            crudActionType = "prepareData";
+        }else if (processingDecision.equals("DOSPD001")) {
+             crudActionType = "screenedByDO";
+        } else if (processingDecision.equals("DOSPD002") || processingDecision.equals("DOPPD003")) {
+             crudActionType = "requestForInformation";
+        } else if (processingDecision.equals("DOSPD003")) {
+             crudActionType = "doReject";
+        } else if (processingDecision.equals("DOPPD001")) {
+             crudActionType = "recommendApproval";
+        } else if (processingDecision.equals("DOPPD002")) {
+             crudActionType = "recommendRejection";
+        } else if (processingDecision.equals("AOSPD001")) {
+             crudActionType = "approvalForInspection";
+        } else if (processingDecision.equals("AOSPD002") || processingDecision.equals("AOPPD002")) {
+             crudActionType = "aoReject";
+        } else if (processingDecision.equals("AOSPD003") || processingDecision.equals("AOPPD003")) {
+             crudActionType = "routeBackToDO";
+        } else if (processingDecision.equals("AOSPD004") || processingDecision.equals("AOPPD004")) {
+             crudActionType = "routeToHM";
+        } else if (processingDecision.equals("AOPPD001")) {
+             crudActionType = "aoApproved";
+        } else if (processingDecision.equals("HMSPD001")) {
+             crudActionType = "hmApprove";
+        } else if (processingDecision.equals("HMSPD002")) {
+             crudActionType = "hmReject";
+        }
+        ParamUtil.setRequestAttr(request,"crud_action_type",crudActionType);
+
     }
 
     public void screenedByDO(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_2;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
         //TODO validate
     }
 
-    public void doReject(BaseProcessClass bpc) throws ParseException{
+    public void doReject(BaseProcessClass bpc) throws ParseException, IOException {
         String status = ProcessContants.APPLICATION_STATUS_8;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void requestForInformation(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_4;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void approvalForInspection(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_5;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void aoReject(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_8;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void routeBackToDO(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_1;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void routeToHM(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_3;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void hmReject(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_2;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void hmApprove(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_2;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void recommendApproval(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_2;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void recommendRejection(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_2;
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
     public void aoApproved(BaseProcessClass bpc) throws ParseException{
         String status = ProcessContants.APPLICATION_STATUS_9;
         Date approvalDate = new Date();
-        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc,status);
+        DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
+        doScreeningDtoByForm.setStatus(status);
         doScreeningDtoByForm.setApprovalDate(approvalDate);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
     }
 
-    private DoScreeningDto getDtoByForm(BaseProcessClass bpc,String status) throws ParseException {
+    private DoScreeningDto getDtoByForm(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_INFO_ATTR);
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
         //facility info
         String facilityId = application.getFacility().getId();
         String riskLevel = ParamUtil.getString(request, ProcessContants.RISK_LEVEL);
@@ -180,7 +242,6 @@ public class MohProcessingDelegator {
         doScreeningDto.setActionBy(loginContext.getUserName());
         doScreeningDto.setApplicationNo(applicationNo);
         doScreeningDto.setFinalRemarks(finalRemarks);
-        doScreeningDto.setStatus(status);
         doScreeningDto.setReason(appStatus);
         return doScreeningDto;
     }

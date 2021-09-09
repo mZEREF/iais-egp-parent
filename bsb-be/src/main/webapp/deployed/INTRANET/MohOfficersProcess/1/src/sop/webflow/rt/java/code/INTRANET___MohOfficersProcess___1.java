@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___MohDOScreening___1 extends BaseProcessClass {
+public class INTRANET___MohOfficersProcess___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="mohProcessingDelegator";
 	
@@ -32,8 +32,8 @@ public class INTRANET___MohDOScreening___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "screenedByDO", this);
 	}
 
-	public void reject_OnStepProcess_0() throws Exception {
-	// 		reject->OnStepProcess
+	public void doReject_OnStepProcess_0() throws Exception {
+	// 		doReject->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doReject", this);
 	}
 
@@ -50,6 +50,46 @@ public class INTRANET___MohDOScreening___1 extends BaseProcessClass {
 	public void recommendRejection_OnStepProcess_0() throws Exception {
 	// 		recommendRejection->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "recommendRejection", this);
+	}
+
+	public void approvalForInspection_OnStepProcess_0() throws Exception {
+	// 		approvalForInspection->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "approvalForInspection", this);
+	}
+
+	public void aoReject_OnStepProcess_0() throws Exception {
+	// 		aoReject->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "aoReject", this);
+	}
+
+	public void routeBackToDO_OnStepProcess_0() throws Exception {
+	// 		routeBackToDO->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "routeBackToDO", this);
+	}
+
+	public void routeToHM_OnStepProcess_0() throws Exception {
+	// 		routeToHM->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "routeToHM", this);
+	}
+
+	public void aoApproved_OnStepProcess_0() throws Exception {
+	// 		aoApproved->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "aoApproved", this);
+	}
+
+	public void hmApprove_OnStepProcess_0() throws Exception {
+	// 		hmApprove->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hmApprove", this);
+	}
+
+	public void hmReject_OnStepProcess_0() throws Exception {
+	// 		hmReject->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "hmReject", this);
+	}
+
+	public void prepareSwitch_OnStepProcess_0() throws Exception {
+	// 		prepareSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
 	}
 
 }

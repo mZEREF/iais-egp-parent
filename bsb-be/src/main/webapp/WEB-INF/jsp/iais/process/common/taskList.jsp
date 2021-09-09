@@ -21,6 +21,7 @@
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="action_additional" value="">
         <div class="col-xs-12">
             <div class="center-content">
@@ -58,7 +59,7 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <p><a onclick="doProcess('<iais:mask name="appId" value="${entity.id}"/>','${entity.appType}','${entity.status}')"><c:out value="${entity.applicationNo}"/></a></p>
+                                            <p><a onclick="doProcess('<iais:mask name="appId" value="${entity.id}"/>','${entity.status}')"><c:out value="${entity.applicationNo}"/></a></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
@@ -105,16 +106,10 @@
     </form>
 </div>
 <script>
-    function doProcess(id,appType,status){
+    function doProcess(id,status){
         $("#appId").val(id);
-        if(status == "BSBAPST001" && appType == "BSBAPTY001"){
-            $("[name='action_type']").val("doProcess");
-            $("#mainForm").submit();
-        }else if(status == "BSBAPST002" && appType == "BSBAPTY001"){
-            $("[name='action_type']").val("aoProcess");
-            $("#mainForm").submit();
-        }else if(status == "BSBAPST003" && appType == "BSBAPTY001"){
-            $("[name='action_type']").val("hmProcess");
+        if(status == "BSBAPST001" || status == "BSBAPST002" || status == "BSBAPST003"){
+            $("[name='crud_action_type']").val("mohOfficersProcess");
             $("#mainForm").submit();
         }
     }

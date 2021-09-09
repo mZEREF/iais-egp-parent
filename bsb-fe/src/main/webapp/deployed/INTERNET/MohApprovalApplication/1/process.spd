@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApprovalApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="10" y="290">
+  <StartStep defClass="" executor="" icon="" name="Start" x="80" y="40">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -91,6 +91,13 @@
    <probepoint type="none" />
    <OnStepProcess />
   </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCompanyInfo" x="40" y="120">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCompanyInfo_OnStepProcess_0" name="prepareCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Forms" stageIndicator="" x="500" y="340">
@@ -111,6 +118,12 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfoPage" stageIndicator="" x="50" y="190">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
  </Pages>
  <Forms />
  <Links>
@@ -123,10 +136,7 @@
   <SynchronousLink destinationName="/Pages/WebPage/Preview" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="oblique">
    <position>{(340,240)(530,230)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/Start" style="rectanular">
-   <position>{(30,310)(100,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Prepare" style="rectanular">
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Prepare" style="oblique">
    <position>{(100,310)(180,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
@@ -186,8 +196,17 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareForms" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
    <position>{(760,430)(363,434)(340,360)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="rectanular">
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="oblique">
    <position>{(330,490)(490,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompanyInfo" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(100,60)(60,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CompanyInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCompanyInfo" style="oblique">
+   <position>{(60,140)(70,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfoPage" style="oblique">
+   <position>{(70,210)(100,310)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

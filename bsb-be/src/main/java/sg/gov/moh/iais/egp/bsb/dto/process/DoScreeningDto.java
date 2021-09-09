@@ -1,6 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
+import net.sf.oval.constraint.NotBlank;
+import net.sf.oval.constraint.NotNull;
 
 import java.util.Date;
 
@@ -41,6 +43,8 @@ public class DoScreeningDto {
 
     private String remarks;
 
+    @NotNull(message = "This is mandatory.", profiles = {"A"})
+    @NotBlank(message = "This uen is mandatory.", profiles = {"A"})
     private String processDecision;
 
     private String actionBy;

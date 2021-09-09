@@ -7,35 +7,35 @@
                     <tbody>
                     <tr>
                         <td class="col-xs-6" align="right">Application No.</td>
-                        <td class="col-xs-6" style="padding-left : 20px">${applicationInfo.applicationNo}</td>
+                        <td class="col-xs-6" style="padding-left : 20px">${application.applicationNo}</td>
                     </tr>
                     <tr>
                         <td align="right">Application Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.appType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${application.appType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Process Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.processType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${application.processType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.facility.facilityType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${application.facility.facilityType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility Name/Address</td>
-                        <td style="padding-left : 20px">${applicationInfo.facility.facilityName} / Block ${applicationInfo.facility.blkNo} ${applicationInfo.facility.streetName} ${applicationInfo.facility.floorNo}-${applicationInfo.facility.unitNo} Singapore ${applicationInfo.facility.postalCode}</td>
+                        <td style="padding-left : 20px">${application.facility.facilityName} / Block ${application.facility.blkNo} ${application.facility.streetName} ${application.facility.floorNo}-${application.facility.unitNo} Singapore ${application.facility.postalCode}</td>
                     </tr>
                     <tr>
                         <td align="right">Submission Date</td>
-                        <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.applicationDt}' pattern='dd/MM/yyyy'/></td>
+                        <td style="padding-left : 20px"><fmt:formatDate value='${application.applicationDt}' pattern='dd/MM/yyyy'/></td>
                     </tr>
                     <tr>
                         <td align="right">Application Status</td>
-                        <td style="padding-left : 20px"><iais:code code="${applicationInfo.status}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${application.status}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility/Approval Expiry Date</td>
-                        <td style="padding-left : 20px"><fmt:formatDate value='${applicationInfo.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
+                        <td style="padding-left : 20px"><fmt:formatDate value='${application.facility.expiryDt}' pattern='dd/MM/yyyy'/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -99,7 +99,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="item" items="${applicationInfo.biologicalList}" varStatus="status">
+                    <c:forEach var="item" items="${application.biologicalList}" varStatus="status">
                         <tr>
                             <td align="center">
                                 <p><c:out value="${status.index + 1}"/></p>
