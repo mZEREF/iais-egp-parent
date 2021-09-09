@@ -375,6 +375,11 @@ public class FESingpassLandingDelegator {
                     liceInfo.setStreetName(myInfo.getStreetName());
                     liceInfo.setMobileNo(myInfo.getMobileNo());
                     liceInfo.setEmilAddr(myInfo.getEmail());
+                    liceInfo.setAddrType(myInfo.getAddrType());
+                    String addrType = ParamUtil.getString(request,"addrType");
+                    if(StringUtil.isNotEmpty(addrType)){
+                        liceInfo.setAddrType(addrType);
+                    }
                     ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
                     ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.YES);
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);

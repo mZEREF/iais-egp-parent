@@ -29,7 +29,11 @@
     }
 
     function callAuthoriseApi() {
+        var addrType = $("#addrType").val();
         var authoriseUrl = $("#callAuthoriseApiUri").val();
+        if(addrType != null && addrType != ""){
+            authoriseUrl += addrType;
+        }
         window.location = authoriseUrl;
     }
 </script>
