@@ -71,10 +71,10 @@
                                             </div>
                                             <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
                                                 <div class="row">
-                                                    <div class="col-md-7"  style="text-align: justify;width: 70%">
+                                                    <div class="form-check col-md-8 col-lg-9 col-xs-12">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
                                                     </div>
-                                                    <div class="col-md-5" style="width: 30%">
+                                                    <div class="col-md-4 col-lg-3 col-xs-12">
                                                         <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
                                                     </div>
                                                 </div>
