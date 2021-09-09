@@ -85,14 +85,14 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowPoll",
             success: function (data) {
-                var result = data.result;
+                let result = data.result;
                 console.log(result);
                 if('Success' == result){
                     window.location.href=data.CallBackUrl;
                 }
             },
             error: function (msg) {
-                var result = msg.result;
+                let result = msg.result;
 
                 console.log(result);
             }
@@ -107,7 +107,7 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
-                var result = data.result;
+                let result = data.result;
                 if('Success' == result){
                     console.log(result);
 
