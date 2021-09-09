@@ -3525,6 +3525,13 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     background-color: white;
 }
 
+@media only screen and (min-width: 576px) {
+    .modal .modal-dialog {
+        max-width: 560px;
+        _width: expression((document.documentElement.clientWidth || document.body.clientWidth > 560) ? "560px" : "auto");
+    }
+}
+
 .modal .modal-content {
     padding: 15px 25px;  /*padding: 15px 45px;*/
 }
@@ -5908,16 +5915,7 @@ ul.v-numberlist li::before {
   }
 }*/
 
-@media only screen and (min-width: 640px) {
-    .modal .modal-dialog {
-        max-width: 600px;
-    }
-}
 
-@media only screen and (min-width: 576px) {
-    .modal .modal-dialog {
-        max-width: 540px;
-    }
-}
+
 
 
