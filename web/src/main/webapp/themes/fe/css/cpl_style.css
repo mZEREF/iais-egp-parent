@@ -3534,7 +3534,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 
 @media only screen and (max-width: 575px) {
     .modal .modal-content {
-        flex-shrink: 0;
+        display: block;
     }
 }
 
