@@ -108,9 +108,9 @@
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
                 var result = data.result;
-                console.log(result);
                 if('Success' == result){
-                    window.location.href=data.CallBackUrl;
+                    console.log(result);
+
                 }else {
                     $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
                 }
