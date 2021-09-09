@@ -3528,7 +3528,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 @media only screen and (min-width: 576px) {
     .modal .modal-dialog {
         max-width: 560px;
-        _width: expression((document.documentElement.clientWidth || document.body.clientWidth > 560) ? "560px" : "auto");
+        width: 560px;
     }
 }
 
