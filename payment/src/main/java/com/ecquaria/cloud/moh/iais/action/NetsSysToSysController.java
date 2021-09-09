@@ -29,6 +29,9 @@ import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import sop.config.ConfigUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -230,6 +234,31 @@ public class NetsSysToSysController {
 
         }
         map.put("result", "Fail");
+        return map;
+
+    }
+
+    @RequestMapping( value = "/payNowMockServer", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> payNowMockServer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> params=IaisCommonUtils.genNewHashMap();
+        params.put("responseUrl",GatewayPayNowConfig.mockserverCallbackUrl);
+        params.put("appGrpNum", appGrpNo);
+
+        StringBuilder sb = new StringBuilder(GatewayPayNowConfig.mockserverUrl);
+        sb.append('?');
+        for (String key : params.keySet()) {
+            sb.append(key).append("={").append(key).append("}&");
+        }
+        HttpEntity entity = new HttpEntity(headers);
+        ResponseEntity<String> s =restTemplate.exchange(sb.substring(0, sb.length() - 1),  HttpMethod.GET, entity, String.class, params);
+        map.put("result", "Success");
         return map;
 
     }
