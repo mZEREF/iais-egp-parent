@@ -133,8 +133,9 @@ public class LicenseeCompanyDelegate {
     public void clearInfo(HttpServletRequest request){
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-        getLicDataUserIdForSolo(request,loginContext,licenseeDto);
         if(licenseeDto != null){
+            //sonar
+            getLicDataUserIdForSolo(request,loginContext,licenseeDto);
             licenseeDto.setMobileNo(null);
             licenseeDto.setAddrType(null);
             licenseeDto.setFloorNo(null);

@@ -158,7 +158,8 @@
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
         <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
-        <iais:confirm msg="The distribution list cannot be deleted as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="editSupport" ></iais:confirm>
+        <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="editSupport" ></iais:confirm>
+        <iais:confirm msg="The distribution list cannot be deleted as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="delSupport" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
@@ -187,10 +188,12 @@
     function cancel() {
         $('#support').modal('hide');
         $('#editSupport').modal('hide');
+        $('#delSupport').modal('hide');
     }
     function tagConfirmCallbacksupport() {
         $('#support').modal('hide');
         $('#editSupport').modal('hide');
+        $('#delSupport').modal('hide');
     }
     function deleteDis(){
         submit("delete");
@@ -213,7 +216,7 @@
             },
             success:function(data){
                 if(data.res == 'true'){
-                    $('#editSupport').modal('show');
+                    $('#delSupport').modal('show');
                 }else{
                     if ($("input:checkbox:checked").length > 0) {
                         $('#deleteSupport').modal('show');

@@ -4125,6 +4125,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 
 .application-tab-footer {
     margin-top: 15px;
+    margin-bottom: 10px;
     padding-top: 30px;
     border-top: 1px solid #BABABA;
     margin-left: -90px;

@@ -252,6 +252,7 @@ function confirmChangeMemoryPage(res) {
     } else if (res.checkAllRemove != null && res.checkAllRemove == '0') {
         checkAllObj.checked = true;
     }
+    $('div#'+ res.pageDivId +' select').niceSelect();
 }
 
 function checkAllMemoryheck(paginationDiv) {
@@ -409,6 +410,9 @@ function clearFields(targetSelector) {
     }
     var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
+        $selector.find("span[name='iaisErrorMsg']").each(function () {
+            $(this).html("");
+        });
         $selector = $(targetSelector).find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {

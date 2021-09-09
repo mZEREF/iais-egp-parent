@@ -39,6 +39,22 @@
         padding: 1rem 1rem;
         margin: 0rem 0rem 0rem auto;
     }
+    .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
+        color: #a2d9e7;
+    }
+    .modal-content {
+        width: 200%;
+        max-width: inherit;
+        height: inherit;
+        margin: 0 auto;
+        pointer-events: all;
+    }
+    .withdraw-info-gp .withdraw-info-row .withdraw-delete {
+        margin-left: 20px;
+        width: 50px;
+        display: inline-block;
+        text-align: right;
+    }
 </style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
@@ -104,7 +120,7 @@
                                             </div>
                                             <div id="withdrawPagDiv"></div>
                                             <table aria-describedby="" class="table">
-                                                <thead>
+                                                <thead style="display: none">
                                                 <tr>
                                                     <th scope="col" ></th>
                                                 </tr>

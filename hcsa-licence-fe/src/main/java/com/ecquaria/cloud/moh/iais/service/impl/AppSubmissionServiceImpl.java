@@ -3838,5 +3838,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
+        session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
+        session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
     }
 }

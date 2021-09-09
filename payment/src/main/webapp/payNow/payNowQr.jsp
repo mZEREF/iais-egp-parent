@@ -33,6 +33,12 @@
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href=${payNowCallBackUrl}>Cancel</a>
+            <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+                <span style="float:right">&nbsp;</span>
+                <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
+                   href="javascript:void(0)" >MockServer</a>
+            </c:if>
+
             <%--            <span style="float:right">&nbsp;</span>--%>
             <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
@@ -41,16 +47,54 @@
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
     setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
+    <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+    <%--function payNowMockServer(){--%>
+    <%--    $.ajax({--%>
+    <%--        type: "get",--%>
+    <%--        url:  "${GatewayPayNowConfig.mockserverUrl}",--%>
+    <%--        data : {--%>
+    <%--            responseUrl : "${GatewayPayNowConfig.mockserverCallbackUrl}",--%>
+    <%--            appGrpNum : "${appGrpNo}"--%>
+    <%--        },--%>
+    <%--        success: function (data) {--%>
+
+    <%--        },--%>
+    <%--        error: function (msg) {--%>
+
+    <%--        }--%>
+    <%--    });--%>
+    <%--}--%>
+    function payNowMockServer(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowMockServer",
+            success: function (data) {
+
+            },
+            error: function (msg) {
+
+            }
+        });
+    }
+    </c:if>
+
+
 
     function payNowPoll(){
         $.ajax({
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowPoll",
             success: function (data) {
-                console.log(data);
+                var result = data.result;
+                console.log(result);
+                if('Success' == result){
+                    window.location.href=data.CallBackUrl;
+                }
             },
             error: function (msg) {
-                console.log(msg);
+                var result = msg.result;
+
+                console.log(result);
             }
         });
     }
@@ -63,8 +107,14 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
+                var result = data.result;
+                if('Success' == result){
+                    console.log(result);
+
+                }else {
+                    $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
+                }
                 //console.log(data);
-                $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data + '" />');
                 //$("#payNowImg").attr("src",data);
             },
             error: function (msg) {

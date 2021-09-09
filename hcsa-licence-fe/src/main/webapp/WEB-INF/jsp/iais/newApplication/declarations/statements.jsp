@@ -31,8 +31,9 @@
       <br>
       <hr>
       <br>
-      <p class="form-check col-xs-9">Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.</p>
-      <div  class="col-xs-3">
+      <p class="form-check col-md-8 col-lg-9 col-xs-12">Please indicate the date which you would like the changes to be effective
+        (subject to approval). If not indicated, the effective date will be the approval date of the change.</p>
+      <div class="col-md-4 col-lg-3 col-xs-12">
         <input type="text" autocomplete="off" value="<fmt:formatDate value="${AppSubmissionDto.appDeclarationMessageDto.effectiveDt}" pattern="dd/MM/yyyy"/>"  class="date_picker form-control form_datetime" name="effectiveDt" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10">
         <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDt"></span>
       </div>
