@@ -3532,6 +3532,12 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     }
 }
 
+@media only screen and (max-width: 575px) {
+    .modal .modal-content {
+        flex-shrink: 0;
+    }
+}
+
 .modal .modal-content {
     padding: 15px 25px;  /*padding: 15px 45px;*/
 }
