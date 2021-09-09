@@ -2025,15 +2025,15 @@
                                                 <div class="row">
                                                     <iais:value cssClass="col-xs-12 col-md-5 ">
                                                         <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}easMtsFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opEasMtsFloorNo${premValue}${opStat.index}"></span>
                                                     </iais:value>
                                                     <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                                     <iais:value cssClass="col-xs-12 col-md-5 ">
                                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}easMtsUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opEasMtsUnitNo${premValue}${opStat.index}"></span>
                                                     </iais:value>
                                                 </div>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_EasMtsFloorUnit${premValue}${opStat.index}"></span>
                                             </iais:value>
                                             <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                                 <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
