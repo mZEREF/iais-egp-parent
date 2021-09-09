@@ -33,24 +33,51 @@
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href=${payNowCallBackUrl}>Cancel</a>
+            <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+                <span style="float:right">&nbsp;</span>
+                <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
+                   href="javascript:void(0)" >MockServer</a>
+            </c:if>
+
             <%--            <span style="float:right">&nbsp;</span>--%>
             <%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
+    <form id="payNowRedirectForm" style="display: none"
+          name="payNowRedirectForm" action='${payNowCallBackUrl}' method='POST'>
+    </form>
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
     setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
+    <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+
+    function payNowMockServer(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowMockServer",
+            success: function (data) {
+
+            },
+            error: function (msg) {
+
+            }
+        });
+    }
+    </c:if>
+
+
 
     function payNowPoll(){
         $.ajax({
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowPoll",
             success: function (data) {
-                console.log(data);
-            },
-            error: function (msg) {
-                console.log(msg);
+                let result = data.result;
+                console.log(result);
+                if('Success' === result){
+                    $('#payNowRedirectForm').submit();
+                }
             }
         });
     }
@@ -63,8 +90,11 @@
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
+                let result = data.result;
+                if('Success' !== result){
+                    $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
+                }
                 //console.log(data);
-                $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data + '" />');
                 //$("#payNowImg").attr("src",data);
             },
             error: function (msg) {

@@ -1040,8 +1040,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>
-                                            <c:if test="${appGrpPremDto.easMtsUseOnly=='UOT001'}">For Public Use</c:if>
-                                            <c:if test="${appGrpPremDto.easMtsUseOnly=='UOT002'}">For Public Use</c:if>
+                                            <c:if test="${appGrpPremDto.easMtsUseOnly=='UOT001'}"><iais:code code="UOT001"/></c:if>
+                                            <c:if test="${appGrpPremDto.easMtsUseOnly=='UOT002'}"><iais:code code="UOT002"/></c:if>
                                             </span></p>
                                 </div>
                             </div>

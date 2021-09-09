@@ -27,6 +27,14 @@ import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.ecquaria.egp.core.payment.api.config.GatewayPayNowConfig;
 import ecq.commons.helper.StringHelper;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.util.ResourceUtils;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -227,7 +235,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String appGrpNo=refNo;
 		try {
-			appGrpNo=refNo.substring(0,'_');
+			appGrpNo=refNo.substring(0,refNo.indexOf('_'));
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
 		}
@@ -236,6 +244,8 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
 		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+			paymentRequestDto.setStatus(status);
+		}else {
 			paymentRequestDto.setStatus(status);
 		}
 		String invoiceNo = "1234567";

@@ -1987,14 +1987,14 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Address Type" mandatory="true" width="4"/>
-                            <iais:value id="easMtsAddrType${premValue}" width="11" cssClass="col-md-5">
+                            <iais:value id="easMtsAddrType${premValue}" width="7" cssClass="col-md-5">
                                 <iais:select name="easMtsAddrType" cssClass="easMtsAddressType" id="easMtsAddressType" codeCategory="CATE_ID_ADDRESS_TYPE" needSort="false" firstOption="Please Select" value="${appGrpPremisesDto.easMtsAddressType}"></iais:select>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsAddressType${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Block / House No." width="4"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:value width="7" cssClass="col-md-5">
                                 <iais:input maxLength="10" cssClass="easMtsBlkNo" type="text" name="easMtsBlkNo" id="easMtsBlkNo" value="${appGrpPremisesDto.easMtsBlockNo}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBlockNo${status.index}"></span>
                             </iais:value>
@@ -2025,15 +2025,15 @@
                                                 <div class="row">
                                                     <iais:value cssClass="col-xs-12 col-md-5 ">
                                                         <iais:input cssClass="floorNo" maxLength="3" type="text" name="${premValue}easMtsFloorNo${opStat.index}" value="${operationDto.floorNo}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffFloorNo${premValue}${opStat.index}"></span>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opEasMtsFloorNo${premValue}${opStat.index}"></span>
                                                     </iais:value>
                                                     <div class="col-xs-12 col-md-2 text-center"><p>-</p></div>
                                                     <iais:value cssClass="col-xs-12 col-md-5 ">
                                                         <iais:input cssClass="unitNo" maxLength="5" type="text" name="${premValue}easMtsUnitNo${opStat.index}" value="${operationDto.unitNo}"></iais:input>
-                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opOffUnitNo${premValue}${opStat.index}"></span>
+                                                        <span class="error-msg" name="iaisErrorMsg" id="error_opEasMtsUnitNo${premValue}${opStat.index}"></span>
                                                     </iais:value>
                                                 </div>
-                                                <span class="error-msg" name="iaisErrorMsg" id="error_offFloorUnit${premValue}${opStat.index}"></span>
+                                                <span class="error-msg" name="iaisErrorMsg" id="error_EasMtsFloorUnit${premValue}${opStat.index}"></span>
                                             </iais:value>
                                             <div class=" col-xs-7 col-sm-4 col-md-2 ">
                                                 <p>(Additional)&nbsp;&nbsp;&nbsp;&nbsp;</p>
@@ -2055,7 +2055,7 @@
                         </div>
                         <iais:row>
                             <iais:field value="Street Name" mandatory="true" width="4"/>
-                            <iais:value width="5" cssClass="col-xs-7 col-sm-7 col-md-7 ">
+                            <iais:value width="5" cssClass="col-xs-7 col-sm-7 col-md-5 ">
                                 <iais:input maxLength="32" cssClass="easMtsStreetName" type="text" name="easMtsStreetName"  value="${appGrpPremisesDto.easMtsStreetName}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsStreetName${status.index}"></span>
                             </iais:value>
@@ -2086,14 +2086,14 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Public Email" mandatory="true" width="4"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:value width="7" cssClass="col-md-5">
                                 <iais:input maxLength="66" cssClass="easMtsPubEmail" type="text" name="easMtsPubEmail"  value="${appGrpPremisesDto.easMtsPubEmail}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubEmail${status.index}"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Public Hotline" mandatory="true" width="4"/>
-                            <iais:value width="11" cssClass="col-md-5">
+                            <iais:value width="7" cssClass="col-md-5">
                                 <iais:input maxLength="8" cssClass="easMtsPubHotline" type="text" name="easMtsPubHotline"  value="${appGrpPremisesDto.easMtsPubHotline}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPubHotline${status.index}"></span>
                             </iais:value>

@@ -152,7 +152,7 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("subLicenseeError is -->:"+subLicenseeError));
                     chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
                     ajaxResDto.setResultJson(chargeTypeSelHtml);
-                }else if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                }else if(licenceDto != null && licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                     error.put("uenError","RFC_ERR021");
                 }
             }
