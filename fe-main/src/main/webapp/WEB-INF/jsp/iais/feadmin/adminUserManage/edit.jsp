@@ -68,6 +68,10 @@
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
+                                                <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                                                <div class="col-md-3" style="padding-left: 0px;">
+                                                    <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_active"></span>
+                                                </div>
                                             </iais:row>
                                         </c:when>
                                     </c:choose>
@@ -76,7 +80,7 @@
                                             <div class="col-xs-2 col-md-2">
                                                 <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
                                             <div class="text-right col-xs-9 col-md-9">
-                                             <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
+                                                <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
                                                 <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                             </div>
                                         </div>
@@ -97,9 +101,9 @@
 <script type="text/javascript">
     $(document).ready(function() {
         <c:if test="${fromMyinfo == 'Y'}" >
-            $('#name').prop('readonly', true);
-            $('#mobileNo').prop('readonly', true);
-            $('#email').prop('readonly', true);
+        $('#name').prop('readonly', true);
+        $('#mobileNo').prop('readonly', true);
+        $('#email').prop('readonly', true);
         </c:if>
     });
 
@@ -116,9 +120,9 @@
 
     function reLoadMyInfoTodo() {
         if(verifyTaken()){
-        $("#action").val("getMyInfo");
-        var mainPoolForm = document.getElementById('mainForm');
-        mainPoolForm.submit();
+            $("#action").val("getMyInfo");
+            var mainPoolForm = document.getElementById('mainForm');
+            mainPoolForm.submit();
         }else {
             // To obtain authorization
             showWaiting();
