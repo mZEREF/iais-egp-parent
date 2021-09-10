@@ -46,7 +46,7 @@ public class LoginInfoFilter implements Filter {
             UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (userSession == null || !"Active".equals(userSession.getStatus())) {
-                log.info(StringUtil.changeForLog("<== User session invalid ==>"));
+                log.info(StringUtil.changeForLog("User session invalid ==>" + sessionId));
                 loginContext = null;
                 ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, null);
             }
