@@ -449,6 +449,13 @@ public class InboxServiceImpl implements InboxService {
             if(!entity){
                 errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
+            List<LicenceDto> licenceDtos = licenceInboxClient.getLicenceDtosByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+            for (LicenceDto licenceDto1 : licenceDtos){
+                if (ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto1.getStatus()) &&
+                        StringUtil.isNotEmpty(licenceDto.getSvcName()) && licenceDto.getSvcName().equals(licenceDto1.getSvcName())){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK025"));
+                }
+            }
         }else{
             errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK011"));
         }
