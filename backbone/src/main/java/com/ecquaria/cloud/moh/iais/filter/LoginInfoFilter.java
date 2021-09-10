@@ -18,7 +18,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import sop.webflow.process5.ProcessCacheHelper;
 
@@ -31,7 +30,6 @@ import sop.webflow.process5.ProcessCacheHelper;
 @Component
 @WebFilter(urlPatterns = {"/eservicecontinue/*", "/eservice/*"}, filterName = "loginInfoFilter")
 @Slf4j
-@Order(1)
 public class LoginInfoFilter implements Filter {
 
     @Override
@@ -41,7 +39,6 @@ public class LoginInfoFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("Start run LoginInfoFilter");
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String uri = request.getRequestURI();

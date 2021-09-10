@@ -2,23 +2,6 @@ package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import lombok.extern.slf4j.Slf4j;
+import org.owasp.validator.html.AntiSamy;
+import org.owasp.validator.html.CleanResults;
+import org.owasp.validator.html.Policy;
+import org.owasp.validator.html.PolicyException;
+import org.springframework.stereotype.Component;
 
 /**
  * AntiSamyFilter
@@ -39,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @WebFilter(urlPatterns = "/*", filterName = "antiSamyFilter")
 @Slf4j
-@Order(3)
 public class AntiSamyFilter implements Filter {
     /**
      * AntiSamy is unfortunately not immutable, but is threadsafe if we only call
@@ -73,7 +70,6 @@ public class AntiSamyFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        log.info("Start run AntiSamyFilter");
         if (request instanceof HttpServletRequest) {
             Map escParamMap = getEscParamMap();
             CleanServletRequest cleanRequest = new CleanServletRequest((HttpServletRequest) request, antiSamy);
