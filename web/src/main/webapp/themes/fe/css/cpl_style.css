@@ -5762,7 +5762,7 @@ ul.v-numberlist li::before {
     font-size: 11pt;
     text-align: center;
 }
-
+.table-info-display .nav { float: right; }
 /************** DSS Fixes 2 Feb/2021 *************/
 
 .profile-dropdown-mobile {
@@ -5835,7 +5835,7 @@ ul.v-numberlist li::before {
     -webkit-border-radius: 8px;
     }
 
-    .table-info-display .nav { float: right; }
+
 }
 
 
