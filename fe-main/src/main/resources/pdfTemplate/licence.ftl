@@ -3467,6 +3467,7 @@
       }
       .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 47%;
         padding: 0;
         border: 0;
@@ -3499,6 +3500,7 @@
       }
       .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 48%;
         padding: 0;
         border: 0;
