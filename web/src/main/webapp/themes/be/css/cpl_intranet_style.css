@@ -3617,6 +3617,7 @@ span.error-msg {
   }
   .table-gp table.table > tbody > tr > td {
     display: inline-grid;
+    display: -ms-inline-grid;
     width: 47%;
     padding: 0;
     border: 0;
@@ -3646,6 +3647,7 @@ span.error-msg {
   .hiddenRow table.table > tbody > tr > td {
     width: 100%;
     display: inline-grid;
+    display: -ms-inline-grid;
   }
 }
 @media only screen and (min-width : 768px) and (max-width : 992px) {
@@ -3655,6 +3657,7 @@ span.error-msg {
   }
   .table-gp table.table > tbody > tr > td {
     display: inline-grid;
+    display: -ms-inline-grid;
     width: 48%;
     padding: 0;
     border: 0;
