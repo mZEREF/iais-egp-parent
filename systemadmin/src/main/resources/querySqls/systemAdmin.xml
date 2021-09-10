@@ -5,7 +5,7 @@
         SELECT * FROM (
             SELECT master_code_id,
                    master_code_key,
-                   (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
+                   mc.code_category,
                    code_value,
                    code_description,
                    filter_value,
