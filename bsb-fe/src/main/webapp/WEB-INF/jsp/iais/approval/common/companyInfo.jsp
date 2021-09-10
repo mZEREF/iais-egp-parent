@@ -2,12 +2,13 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approvalapplication.js"></script>
 <div class="main-content">
   <div class="container">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -21,7 +22,7 @@
             <%@ include file="../common/dashboardDropDown.jsp" %>
               <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                  <h1>Application for New Facility Registration</h1>
+                  <h1>Application for Types of Approval</h1>
                 </div>
               </div>
       </div>
@@ -29,7 +30,7 @@
       <div class="instruction-content center-content">
 	    <h2>SERVICES SELECTED</h2>
 		<ul class="service-list">          
-            <li>Special Appoval to Handle</li>                    
+            <li><iais:code code="${taskList}"></iais:code></li>
         </ul>
         <h3>Company Info</h3>
         <ul class="service-list">
@@ -57,7 +58,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
               <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
-              <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="doNext()" data-toggle="modal" data-target= "#saveDraft" href="javascript:void(0);">START APPLICATION</a></div>
+              <div class="text-right text-center-mobile"><a class="btn btn-primary next" id="nextBtn" data-toggle="modal" data-target= "#saveDraft">START APPLICATION</a></div>
             </div>
           </div>
         </div>

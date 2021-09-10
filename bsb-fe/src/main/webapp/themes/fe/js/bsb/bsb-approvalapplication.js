@@ -108,6 +108,9 @@ $(function() {
             $("#select0").show();
         }
     })
+    $("#nextBtn").click(function (){
+        SOP.Crud.cfxSubmit("mainForm");
+    })
     $("#Next").click(function (){
         var pageValue = $("#page_id").val();
         if(pageValue == "form_page"){
