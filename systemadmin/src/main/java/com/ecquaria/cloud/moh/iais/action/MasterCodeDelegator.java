@@ -119,9 +119,9 @@ public class MasterCodeDelegator {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
-            String categoryDescription = masterCodeQueryDto.getCodeCategory();
-            String category = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            String category = masterCodeQueryDto.getCodeCategory();
             MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            masterCodeQueryDto.setCodeCategory(masterCodeCategoryDto.getCategoryDescription());
             Integer isCanEdit = masterCodeCategoryDto.getIsEditable();
             if (isCanEdit == 0){
                 masterCodeQueryDto.setIsCentrallyManage(isCanEdit);
@@ -269,7 +269,7 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        String codeCategory = masterCodeDto.getCodeCategory();
         masterCodeDto.setCodeCategory(codeCategory);
         MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
         //eic
@@ -543,7 +543,7 @@ public class MasterCodeDelegator {
                 }
                 Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
+                    String  codeCategory =  masterCodeToExcelDto.getCodeCategory();
                     if (StringUtil.isEmpty(codeCategory)){
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR001");
                         errItems.add(errMsg);
@@ -729,7 +729,7 @@ public class MasterCodeDelegator {
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
             if (masterCodeDto != null){
                 if (masterCodeDto.getEffectiveFrom().before(new Date())) {
-                    String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+                    String codeCategory = masterCodeDto.getCodeCategory();
                     masterCodeDto.setCodeCategory(codeCategory);
                     Calendar c = Calendar.getInstance();
                     c.setTime(new Date());
@@ -1017,7 +1017,7 @@ public class MasterCodeDelegator {
             //inactive all
             List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
             syncMasterCodeList.addAll(masterCodeDtos);
-            String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+            String codeCategory = masterCodeDto.getCodeCategory();
             masterCodeDto.setCodeCategory(codeCategory);
 
             masterCodeService.updateMasterCode(masterCodeDto);
@@ -1048,7 +1048,7 @@ public class MasterCodeDelegator {
                 List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
                 syncMasterCodeList.addAll(masterCodeDtos);
             }
-            String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
+            String codeCategory = oldMasterCodeDto.getCodeCategory();
             oldMasterCodeDto.setCodeCategory(codeCategory);
             oldMasterCodeDto =  masterCodeService.updateMasterCode(oldMasterCodeDto);
             syncMasterCodeList.add(oldMasterCodeDto);
@@ -1070,7 +1070,7 @@ public class MasterCodeDelegator {
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
                 masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }
-            String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+            String codeCategory2 = masterCodeDto.getCodeCategory();
             masterCodeDto.setCodeCategory(codeCategory2);
             masterCodeDto = masterCodeService.updateMasterCode(masterCodeDto);
             syncMasterCodeList.add(masterCodeDto);
