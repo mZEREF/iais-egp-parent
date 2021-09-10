@@ -37,29 +37,19 @@ public class HalpLoginFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         log.info("Start run HalpLoginFilter");
-        String setVal = UUID.randomUUID().toString();
-        String runningFlag = (String) ParamUtil.getSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag");
-        if (StringUtil.isEmpty(runningFlag)) {
-            ParamUtil.setSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag", setVal);
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage(),e);
-                Thread.currentThread().interrupt();
-            }
-            runningFlag = (String) ParamUtil.getSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag");
-            if (setVal.equals(runningFlag)) {
-                log.info("Running login");
-            }
-        }
-        BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
         boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
-
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
+            BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
+            String setVal = UUID.randomUUID().toString();
+
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
                     AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext == null) {
+                String runningFlag = (String) ParamUtil.getSessionAttr(request, "halpAdloginFlag");
+                if (StringUtil.isEmpty(runningFlag)) {
+                    ParamUtil.setSessionAttr(request, "halpAdloginFlag", setVal);
+                }
                 String userIdStr = request.getHeader("userid");
                 log.debug(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 if (!StringUtil.isEmpty(userIdStr)) {
@@ -72,8 +62,8 @@ public class HalpLoginFilter implements Filter {
                     }
                 }
             }
+            ParamUtil.setSessionAttr(request, "halpAdloginFlag", null);
         }
-        ParamUtil.setSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag", null);
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
