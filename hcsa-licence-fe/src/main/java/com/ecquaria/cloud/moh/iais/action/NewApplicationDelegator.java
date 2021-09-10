@@ -4097,6 +4097,11 @@ public class NewApplicationDelegator {
                             }
                         }
                     }
+                    for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
+                        if(!appGrpPremisesDtos.get(i).isRfiCanEdit()){
+                            appGrpPremisesDtos.remove(i);
+                        }
+                    }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }
                 ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
@@ -4134,51 +4139,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
         if (otherList != null && !otherList.isEmpty()) {
-            otherList.forEach(dto -> {
-                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
-                List<AppSvcPersonnelDto> otherAppSvcPersonnelDtoList = dto.getAppSvcSectionLeaderList();
-                if (appSvcPersonnelDtoList != null && otherAppSvcPersonnelDtoList != null) {
-                    for (AppSvcPersonnelDto otherAppSvcPersonnelDto : otherAppSvcPersonnelDtoList){
-                        if (!isContainAppSvcPersonnelDto(appSvcPersonnelDtoList, otherAppSvcPersonnelDto)){
-                            appSvcPersonnelDtoList.add(otherAppSvcPersonnelDto);
-                        }
-                    }
-                }
-
-                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
-                    appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
-                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-                }
-                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-                List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-                if (appSvcDisciplineAllocationDtoList != null && otherAppSvcDisciplineAllocationDtoList != null) {
-                    setAppSvcDisciplineAllocationDtoSlIndex(appSvcPersonnelDtoList, otherAppSvcDisciplineAllocationDtoList);
-                    appSvcDisciplineAllocationDtoList.addAll(otherAppSvcDisciplineAllocationDtoList);
-                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
-                }
-
-                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                List<AppSvcDocDto> otherAppSvcDocDtoLit = dto.getAppSvcDocDtoLit();
-                if (otherAppSvcDocDtoLit != null && appSvcDocDtoLit != null) {
-                    otherAppSvcDocDtoLit.forEach(doc -> {
-                        if (doc.getAppSvcPersonId() != null || doc.getAppGrpPersonId() != null) {
-                            doc.setPsnIndexNo(getNewPsnIndexNo(dto.getPersonnels(), appSvcRelatedInfoDto.getPersonnels(), doc.getPsnIndexNo()));
-                            appSvcDocDtoLit.add(doc);
-                        }
-                    });
-                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
-                }
-                // check personnels
-                List<PersonnelDto> personnels = appSvcRelatedInfoDto.getPersonnels();
-                if (personnels == null) {
-                    personnels = IaisCommonUtils.genNewArrayList();
-                }
-                if (dto.getPersonnels() != null) {
-                    personnels.addAll(dto.getPersonnels());
-                }
-                appSvcRelatedInfoDto.setPersonnels(personnels);
-            });
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtos.removeAll(otherList);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
