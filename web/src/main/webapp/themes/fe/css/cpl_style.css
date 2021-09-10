@@ -1283,7 +1283,6 @@ body.navigation-open {
     padding: 10px 25px;
     text-transform: uppercase;
     border-radius: 30px;
-    border: 1px solid grey;
 }
 .btn.btn-sm {
     font-size: .775rem;
@@ -1291,7 +1290,6 @@ body.navigation-open {
     padding: 5px 10px;
     text-transform: uppercase;
     border-radius: 30px;
-    border: 1px solid grey;
 }
 @media only screen and (max-width : 767px) {
     .btn.btn-secondary {
@@ -1306,6 +1304,7 @@ body.navigation-open {
     .btn.btn-primary, .btn.btn-secondary {
         padding-left: 25px;
         padding-right: 25px;
+        margin-bottom: 10px;
     }
 }
 
@@ -3294,7 +3293,7 @@ span.error-msg {
     .table-gp table.table > tbody > tr > td p.table-row-title {
         font-weight: 600;
         margin-bottom: 3px;
-        line-height: 9px;
+       /* line-height: 9px;*/
     }
     .table-gp table.table > tbody > tr:not(:last-child) {
         margin-bottom: 20px;
@@ -3538,7 +3537,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 }
 
 .modal .modal-content {
-    padding: 15px 45px;
+    padding: 15px 25px;  /*padding: 15px 45px;*/
 }
 .modal .modal-header {
     padding: 0;
@@ -4507,7 +4506,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     margin-bottom: 60px;
 }
 .prelogin .prelogin-content .login-IAIS {
-    width: calc((100% - 420px) * 0.9);
+    width: calc((100% - 340px) * 0.9);/*calc((100% - 420px) * 0.9)*/
     display: inline-block;
     margin-right: 30px;
     vertical-align: top;
@@ -4532,9 +4531,38 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     display: inline-block;
     vertical-align: top;
 }
-.prelogin .white-content-box h3 {
+/*.prelogin .white-content-box h3 {
+    margin-bottom: 20px;
+}*/
+.pre-login-selection {
+    border-top: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
+    padding-top: 20px;
+    padding-bottom: 20px;
     margin-bottom: 20px;
 }
+.halp-infobox {
+    height: 100px;
+    overflow-y: scroll;
+    padding: 10px;
+    background: #fff;
+    margin-bottom: 20px; 
+}
+.user-selection h3 {
+    font-size: 24px;
+    border: none;
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+}
+.user-selection p {
+    padding-bottom: 5px;
+}
+.user-selection-login {
+    background: #fff;
+    padding: 20px 35px;
+    border-radius: 15px;
+}
+
 @media only screen and (min-width : 768px) {
     .prelogin {
         min-height: calc(100vh - 176px);
@@ -5640,9 +5668,10 @@ section.logo img {
     background-size: 100% auto;
     background-position: center top;
     /*background-attachment: fixed;*/
-    height: 100%;
+    height: 1500px;/*100%*/
     padding: 30px 75px;
     width: 100%;
+    position: relative;
 }
 .lic-number {
     text-align: center;
@@ -5658,7 +5687,7 @@ section.logo img {
     border:none;
 }
 .lic-info {
-    margin-top: 35px;
+    margin-top: 15px;
 }
 .lic-info p {
     font-size: 14pt;
@@ -5678,7 +5707,7 @@ section.logo img {
 .lic-approved-info {
     background-color: rgba(130, 195, 240, 0.3);
     border-radius: 14px;
-    padding: 20px;
+    padding: 10px 15px;
     margin-bottom: 20px;
     margin-top: 20px;
 }
@@ -5700,29 +5729,37 @@ section.logo img {
     border:none;
 }
 .lic-signature-info {
-    margin-top: 110px;
+    margin-top: 25px;
 }
 .lic-signature-info p {
     font-size: 14pt;
     font-weight: 700;
-    text-transform:uppercase;
+    text-transform: uppercase;
+    margin-bottom: 0px;
 }
 .vehicle-number {
     display: inline-block;
     font-size: 16px;
     margin: 4px;
  }
-
+ul.v-numberlist li {
+    list-style: none outside none;
+}
+ul.v-numberlist li::before {
+    content: none;
+}
 .lic-footer {
-    margin-top: 12.5%;
-    margin-bottom: 50px;
+    /* margin-top: 12.5%; */
+    /* margin-bottom: 50px; */
     padding: 5px;
+    position: absolute;
+    bottom: 45px;
+    width: 87%;
 }
 .lic-footer p {
     font-size: 11pt;
     text-align: center;
 }
-.table-info-display .nav { float: right; }
 
 /************** DSS Fixes 2 Feb/2021 *************/
 
@@ -5746,7 +5783,16 @@ section.logo img {
     table.control-grid.columns1 > tbody > tr > td > .section.control {
         min-height: auto;
     }
-    .nav {background:#transparent;}
+    .nav {
+        background:#transparent; 
+        display: inherit !important;
+    }
+    .tab-gp .nav { 
+        display: flex !important;
+    }
+    .tab-gp .hidden-xs {
+        display: none !important;
+    }
     .navigation {
         position: fixed;
         top: 120px; /* top: 93px;*/
@@ -5787,7 +5833,7 @@ section.logo img {
     -webkit-border-radius: 8px;
     }
 
-   /* .table-info-display.nav { float: right; }*/
+    .table-info-display .nav { float: right; }
 }
 
 
@@ -5796,6 +5842,16 @@ section.logo img {
         padding-top: 12px;
         padding-bottom: 12px;
         background: #fff;
+    }
+      .nav {
+        background:#transparent; 
+        display: inherit !important;
+    }
+    .tab-gp .nav { 
+        display: flex !important;
+    }
+    .tab-gp .hidden-xs {
+        display: none !important;
     }
     .navigation.open {
         -webkit-transform: translateX(0vw);
