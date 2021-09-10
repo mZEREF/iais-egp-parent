@@ -1283,6 +1283,7 @@ body.navigation-open {
     padding: 10px 25px;
     text-transform: uppercase;
     border-radius: 30px;
+    border: 1px solid grey;
 }
 .btn.btn-sm {
     font-size: .775rem;
@@ -1290,6 +1291,7 @@ body.navigation-open {
     padding: 5px 10px;
     text-transform: uppercase;
     border-radius: 30px;
+    border: 1px solid grey;
 }
 @media only screen and (max-width : 767px) {
     .btn.btn-secondary {
@@ -1846,7 +1848,7 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 .form-check .form-check-label {
-    color: #333333;
+    color: #333333 !important;
     font-size: 1.6rem;
     font-weight: 400;
     position: relative;
@@ -5918,6 +5920,8 @@ ul.v-numberlist li::before {
     padding: 1px 0 5px;
   }
 }*/
+
+
 
 
 
