@@ -1454,13 +1454,14 @@ public class NewApplicationDelegator {
                     serviceConfigService.updatePaymentStatus(appGrp);
                 }
                 //send email
-                try {
-//                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
-                    //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
-                    LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("send email error ...."));
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    try {
+                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                                AppConsts.SESSION_ATTR_LOGIN_USER);
+                        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("send email error ...."));
+                    }
                 }
             } else {
                 appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
@@ -2971,9 +2972,9 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appGrp.setPayMethod(payMethod);
             serviceConfigService.updatePaymentStatus(appGrp);
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
             }
 
             StringBuilder url = new StringBuilder();
@@ -3018,8 +3019,11 @@ public class NewApplicationDelegator {
             //send email
             try {
                 //sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
-                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                            AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
                 if(ackPageAppSubmissionDto==null){
                     ackPageAppSubmissionDto=IaisCommonUtils.genNewArrayList();
                     ackPageAppSubmissionDto.add(appSubmissionDto);
