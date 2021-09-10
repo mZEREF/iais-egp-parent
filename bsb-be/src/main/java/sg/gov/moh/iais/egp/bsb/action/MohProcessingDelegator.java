@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -52,7 +51,7 @@ public class MohProcessingDelegator {
         String appId = "";
         if (crudActionType == null || crudActionType == ""){
             appId = ParamUtil.getString(request,ProcessContants.PARAM_APP_ID);
-        }else if (crudActionType.equals(ProcessContants.ACTION_TYPE_1)){
+        }else if (crudActionType.equals(ProcessContants.CRUD_ACTION_TYPE_1)){
             appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
         }
         Application application = processClient.getApplicationById(appId).getEntity();
@@ -74,42 +73,61 @@ public class MohProcessingDelegator {
 
     public void prepareSwitch(BaseProcessClass bpc) throws ParseException{
         HttpServletRequest request = bpc.request;
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
         DoScreeningDto dtoByForm = getDtoByForm(bpc);
         String processingDecision = dtoByForm.getProcessDecision();
         String crudActionType = "";
-        ValidationResult vResult = WebValidationHelper.validateProperty(dtoByForm,"A");
+        //validate by different application status and type
+        String validateStatus = "";
+        if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_1)){
+            if (application.getProcessType().equals(ProcessContants.APPLICATION_PROCESS_TYPE_1)){
+                validateStatus = ProcessContants.VALIDATE_STATUS_1;
+            }else{
+                validateStatus = ProcessContants.VALIDATE_STATUS_2;
+            }
+        }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
+            if (application.getProcessType().equals(ProcessContants.APPLICATION_PROCESS_TYPE_1)){
+                validateStatus = ProcessContants.VALIDATE_STATUS_3;
+            }else{
+                validateStatus = ProcessContants.VALIDATE_STATUS_4;
+            }
+        }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_3)){
+            validateStatus = ProcessContants.VALIDATE_STATUS_5;
+        }
+        ValidationResult vResult = WebValidationHelper.validateProperty(dtoByForm,validateStatus);
         if(vResult != null && vResult.isHasErrors()){
             Map<String,String> errorMap = vResult.retrieveAll();
-            String s = WebValidationHelper.generateJsonStr(errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            crudActionType = "prepareData";
-        }else if (processingDecision.equals("DOSPD001")) {
-             crudActionType = "screenedByDO";
-        } else if (processingDecision.equals("DOSPD002") || processingDecision.equals("DOPPD003")) {
-             crudActionType = "requestForInformation";
-        } else if (processingDecision.equals("DOSPD003")) {
-             crudActionType = "doReject";
-        } else if (processingDecision.equals("DOPPD001")) {
-             crudActionType = "recommendApproval";
-        } else if (processingDecision.equals("DOPPD002")) {
-             crudActionType = "recommendRejection";
-        } else if (processingDecision.equals("AOSPD001")) {
-             crudActionType = "approvalForInspection";
-        } else if (processingDecision.equals("AOSPD002") || processingDecision.equals("AOPPD002")) {
-             crudActionType = "aoReject";
-        } else if (processingDecision.equals("AOSPD003") || processingDecision.equals("AOPPD003")) {
-             crudActionType = "routeBackToDO";
-        } else if (processingDecision.equals("AOSPD004") || processingDecision.equals("AOPPD004")) {
-             crudActionType = "routeToHM";
-        } else if (processingDecision.equals("AOPPD001")) {
-             crudActionType = "aoApproved";
-        } else if (processingDecision.equals("HMSPD001")) {
-             crudActionType = "hmApprove";
-        } else if (processingDecision.equals("HMSPD002")) {
-             crudActionType = "hmReject";
+            String doProcess = "Y";
+            ParamUtil.setRequestAttr(request, ProcessContants.DO_PROCESS, doProcess);
+            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_2;
+        }else if (processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_1)) {
+             crudActionType = ProcessContants.CRUD_ACTION_TYPE_3;
+        } else if (processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_2) || processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_6)) {
+             crudActionType = ProcessContants.CRUD_ACTION_TYPE_4;
+        } else if (processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_3)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_5;
+        } else if (processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_4)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_6;
+        } else if (processingDecision.equals(ProcessContants.DO_PROCESS_DECISION_5)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_7;
+        } else if (processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_1)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_8;
+        } else if (processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_2) || processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_6)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_9;
+        } else if (processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_3) || processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_7)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_10;
+        } else if (processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_4) || processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_8)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_11;
+        } else if (processingDecision.equals(ProcessContants.AO_PROCESS_DECISION_5)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_12;
+        } else if (processingDecision.equals(ProcessContants.HM_PROCESS_DECISION_1)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_13;
+        } else if (processingDecision.equals(ProcessContants.HM_PROCESS_DECISION_2)) {
+            crudActionType = ProcessContants.CRUD_ACTION_TYPE_14;
         }
-        ParamUtil.setRequestAttr(request,"crud_action_type",crudActionType);
-
+        ParamUtil.setRequestAttr(request,ProcessContants.CRUD_ACTION_TYPE,crudActionType);
+        ParamUtil.setRequestAttr(request,ProcessContants.DO_SCREENING_DTO,dtoByForm);
     }
 
     public void screenedByDO(BaseProcessClass bpc) throws ParseException{
@@ -117,7 +135,6 @@ public class MohProcessingDelegator {
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
         doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
-        //TODO validate
     }
 
     public void doReject(BaseProcessClass bpc) throws ParseException, IOException {

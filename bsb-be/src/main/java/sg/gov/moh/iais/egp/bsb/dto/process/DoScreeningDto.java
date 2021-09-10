@@ -15,20 +15,32 @@ public class DoScreeningDto {
 
     private String facilityId;
 
+    @NotNull(message = "This is mandatory.", profiles = {"DOType1","DOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"DOType1","DOType2"})
     private String riskLevel;
 
     private String riskLevelComments;
 
+    @NotNull(message = "This is mandatory.", profiles = {"AOType1"})
+    @NotBlank(message = "This is mandatory.", profiles = {"AOType1"})
     private Date erpReportDt;
 
+    @NotNull(message = "This is mandatory.", profiles = {"AOType1"})
+    @NotBlank(message = "This is mandatory.", profiles = {"AOType1"})
     private Date redTeamingReportDt;
 
     private Date lentivirusReportDt;
 
+    @NotNull(message = "This is mandatory.", profiles = {"AOType1","DOType2","AOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"AOType1","DOType2","AOType2"})
     private Date internalInspectionReportDt;
 
+    @NotNull(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
     private Date validityStartDt;
 
+    @NotNull(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
     private Date validityEndDt;
 
     private String selectedAfc;
@@ -43,15 +55,18 @@ public class DoScreeningDto {
 
     private String remarks;
 
-    @NotNull(message = "This is mandatory.", profiles = {"A"})
-    @NotBlank(message = "This uen is mandatory.", profiles = {"A"})
+    @NotNull(message = "This is mandatory.", profiles = {"DOType1","AOType1","HMType","DOType2","AOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"DOType1","AOType1","HMType","DOType2","AOType2"})
     private String processDecision;
 
     private String actionBy;
 
     private String reason;
 
+    @NotNull(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
+    @NotBlank(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
     private String finalRemarks;
 
     private Date approvalDate;
+
 }
