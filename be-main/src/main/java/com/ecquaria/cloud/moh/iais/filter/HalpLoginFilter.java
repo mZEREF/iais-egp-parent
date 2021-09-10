@@ -42,7 +42,7 @@ public class HalpLoginFilter implements Filter {
         if (StringUtil.isEmpty(runningFlag)) {
             ParamUtil.setSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag", setVal);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 log.error(e.getMessage(),e);
                 Thread.currentThread().interrupt();
