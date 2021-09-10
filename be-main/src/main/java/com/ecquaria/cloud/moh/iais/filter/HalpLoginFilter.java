@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
 import ecq.commons.exception.BaseException;
 import java.io.IOException;
+import java.util.UUID;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,7 +20,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,15 +31,30 @@ import org.springframework.stereotype.Component;
 @Component
 @WebFilter(urlPatterns = "/*", filterName = "adLoginFilter")
 @Slf4j
-@Order(2)
 public class HalpLoginFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         log.info("Start run HalpLoginFilter");
+        String setVal = UUID.randomUUID().toString();
+        String runningFlag = (String) ParamUtil.getSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag");
+        if (StringUtil.isEmpty(runningFlag)) {
+            ParamUtil.setSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag", setVal);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(),e);
+                Thread.currentThread().interrupt();
+            }
+            runningFlag = (String) ParamUtil.getSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag");
+            if (setVal.equals(runningFlag)) {
+                log.info("Running login");
+            }
+        }
         BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
         boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
+
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
@@ -58,7 +73,6 @@ public class HalpLoginFilter implements Filter {
                 }
             }
         }
-        log.info("End run HalpLoginFilter");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
