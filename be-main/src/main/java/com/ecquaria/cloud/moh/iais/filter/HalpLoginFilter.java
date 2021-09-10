@@ -35,6 +35,7 @@ public class HalpLoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
+        log.info("Start run HalpLoginFilter");
         BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
         boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {

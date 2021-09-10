@@ -71,6 +71,7 @@ public class AntiSamyFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        log.info("Start run AntiSamyFilter");
         if (request instanceof HttpServletRequest) {
             Map escParamMap = getEscParamMap();
             CleanServletRequest cleanRequest = new CleanServletRequest((HttpServletRequest) request, antiSamy);
