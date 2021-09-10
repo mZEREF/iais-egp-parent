@@ -7,6 +7,7 @@ import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
 import org.owasp.validator.html.PolicyException;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.Filter;
@@ -38,6 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @WebFilter(urlPatterns = "/*", filterName = "antiSamyFilter")
 @Slf4j
+@Order(3)
 public class AntiSamyFilter implements Filter {
     /**
      * AntiSamy is unfortunately not immutable, but is threadsafe if we only call

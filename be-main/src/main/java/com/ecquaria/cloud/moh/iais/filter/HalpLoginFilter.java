@@ -19,6 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 @WebFilter(urlPatterns = "/*", filterName = "adLoginFilter")
 @Slf4j
+@Order(2)
 public class HalpLoginFilter implements Filter {
 
     @Override
@@ -56,6 +58,7 @@ public class HalpLoginFilter implements Filter {
                 }
             }
         }
+        log.info("End run HalpLoginFilter");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
