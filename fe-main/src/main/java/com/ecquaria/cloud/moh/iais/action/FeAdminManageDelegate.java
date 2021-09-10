@@ -23,11 +23,10 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -46,7 +45,7 @@ import java.util.Map;
 @Slf4j
 public class FeAdminManageDelegate {
     @Autowired
-    private OrgUserManageServiceImpl orgUserManageService;
+    private OrgUserManageService orgUserManageService;
     @Autowired
     private MyInfoAjax myInfoAjax;
     /**

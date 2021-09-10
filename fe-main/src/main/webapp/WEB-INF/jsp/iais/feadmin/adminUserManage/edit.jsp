@@ -68,6 +68,10 @@
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
+                                                <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                                                <div class="col-md-3" style="padding-left: 0px;">
+                                                    <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_active"></span>
+                                                </div>
                                             </iais:row>
                                         </c:when>
                                     </c:choose>

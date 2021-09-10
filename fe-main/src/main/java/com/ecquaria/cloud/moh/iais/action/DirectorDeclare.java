@@ -10,7 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -27,7 +27,7 @@ public class DirectorDeclare {
     public static final String ORG_USER_DTO_ATTR                   = "orgUserDto";
 
     @Autowired
-    private OrgUserManageServiceImpl orgUserManageService;
+    private OrgUserManageService orgUserManageService;
 
     FeAdminDto userDto = new FeAdminDto();
 
