@@ -59,7 +59,7 @@
                             <p><a class="back" id="Back" href="javascript:void(0);"><i class="fa fa-angle-left"></i> Back</a></p>
                         </div>
                         <div class="col-xs-12  col-md-6">
-                            <div class="text-right text-center-mobile"><a class="btn btn-primary next" href="javascript:void(0);">Next</a></div>
+                            <div class="text-right text-center-mobile"><a class="btn btn-primary next" id="Next" href="javascript:void(0);">Next</a></div>
                         </div>
                     </div>
                 </div>
