@@ -43,10 +43,10 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <c:choose>
                                     <c:when test="${empty MasterCodeDto.version}">
-                                       <p>-</p>
+                                        <p>-</p>
                                     </c:when>
                                     <c:otherwise>
-                                    <p>${ MasterCodeDto.version}</p>
+                                        <p>${ MasterCodeDto.version}</p>
                                     </c:otherwise>
                                 </c:choose>
                             </div>
@@ -69,7 +69,7 @@
                         <div class="form-group">
                             <iais:field value="Sequence" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="sequence" type="text" value="<fmt:formatNumber type="number" value="${empty MasterCodeDto.sequence? null : MasterCodeDto.sequence / 1000}" maxFractionDigits="2" pattern="0"/>" name="codeSequenceEd" maxlength="3">
+                                <input id="sequence" onkeypress="keyNumericPress()" type="text" value="<fmt:formatNumber type="number" value="${empty MasterCodeDto.sequence? null : MasterCodeDto.sequence / 1000}" maxFractionDigits="2" pattern="0"/>" name="codeSequenceEd" maxlength="3">
                                 <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                 </div>
             </div>
         </div>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+        <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
     </form>
 </div>
 
