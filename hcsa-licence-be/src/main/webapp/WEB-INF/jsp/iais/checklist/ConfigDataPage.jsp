@@ -36,7 +36,7 @@
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
 
-    <div class="">
+    <div class="center-content col-xs-12 col-md-12">
       <div class="form-horizontal">
         <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
         <br><br>
