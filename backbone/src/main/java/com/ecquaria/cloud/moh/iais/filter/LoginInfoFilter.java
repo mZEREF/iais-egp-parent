@@ -41,22 +41,25 @@ public class LoginInfoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
-            String uri = request.getRequestURI();
-            String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
-            UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (userSession == null || !"Active".equals(userSession.getStatus())) {
-                log.info(StringUtil.changeForLog("User session invalid ==>" + sessionId));
-                loginContext = null;
-                ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, null);
-            }
-            if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0
-                    && uri.indexOf("FE_Singpass_Landing") < 0 && uri.indexOf("halp-event-callback") < 0
-                    && uri.indexOf("IntraLogin") < 0 && uri.indexOf("health") < 0
-                    && uri.indexOf("/INTERNET/Payment") < 0  && uri.indexOf("/INTERNET/InfoDo") < 0 && uri.indexOf("/Moh_Myinfo_Transfer_Station/transmit") < 0) {
-                if (loginContext == null) {
-                    log.info(StringUtil.changeForLog("No Login Context ===> " + uri));
-                    IaisEGPHelper.redirectUrl((HttpServletResponse) response, "https://" + request.getServerName() + "/main-web");
+            String adLoginFlag = (String) ParamUtil.getSessionAttr(request, "halpAdloginFlag");
+            if (StringUtil.isEmpty(adLoginFlag)) {
+                String uri = request.getRequestURI();
+                String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
+                UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                if (userSession == null || !"Active".equals(userSession.getStatus())) {
+                    log.info(StringUtil.changeForLog("User session invalid ==>" + sessionId));
+                    loginContext = null;
+                    ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, null);
+                }
+                if (uri.indexOf("FE_Landing") < 0 && uri.indexOf("FE_Corppass_Landing") < 0
+                        && uri.indexOf("FE_Singpass_Landing") < 0 && uri.indexOf("halp-event-callback") < 0
+                        && uri.indexOf("IntraLogin") < 0 && uri.indexOf("health") < 0
+                        && uri.indexOf("/INTERNET/Payment") < 0  && uri.indexOf("/INTERNET/InfoDo") < 0 && uri.indexOf("/Moh_Myinfo_Transfer_Station/transmit") < 0) {
+                    if (loginContext == null) {
+                        log.info(StringUtil.changeForLog("No Login Context ===> " + uri));
+                        IaisEGPHelper.redirectUrl((HttpServletResponse) response, "https://" + request.getServerName() + "/main-web");
+                    }
                 }
             }
         }
