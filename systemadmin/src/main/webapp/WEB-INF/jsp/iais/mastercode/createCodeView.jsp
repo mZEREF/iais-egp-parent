@@ -67,7 +67,7 @@
                             <iais:field value="Sequence" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeCategorySequence" type="text" name="codeCategorySequence" maxlength="3" value="${param.codeCategorySequence}">
+                                    <input id="codeCategorySequence" onkeypress="keyNumericPress()" type="text" name="codeCategorySequence" maxlength="3" value="${param.codeCategorySequence}">
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

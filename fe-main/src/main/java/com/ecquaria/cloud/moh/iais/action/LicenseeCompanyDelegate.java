@@ -255,6 +255,11 @@ public class LicenseeCompanyDelegate {
         FeUserDto feUserDto = orgUserManageService.getUserAccount(loginContext.getUserId());
         licenseeDto.setMobileNo(feUserDto.getMobileNo());
         if(myInfoDto != null){
+            licenseeDto.setAddrType(myInfoDto.getAddrType());
+            String addrType = ParamUtil.getString(request,"addrType");
+            if(StringUtil.isNotEmpty(addrType)){
+                myInfoDto.setAddrType(addrType);
+            }
             licenseeDto.setName(myInfoDto.getUserName());
             licenseeDto.setFloorNo(myInfoDto.getFloor());
             licenseeDto.setPostalCode(myInfoDto.getPostalCode());

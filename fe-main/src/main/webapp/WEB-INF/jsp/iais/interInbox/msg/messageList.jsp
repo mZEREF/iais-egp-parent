@@ -14,6 +14,7 @@
                 <div class="col-md-8">
                     <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}" firstOption="All" cssClass="inboxType"/>
                 </div>
+                <br>
             </div>
             <div class="col-md-5">
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>

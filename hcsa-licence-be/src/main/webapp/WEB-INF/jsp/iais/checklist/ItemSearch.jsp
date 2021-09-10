@@ -22,10 +22,44 @@
       display: block;
     }
   }
+  @media only screen and (min-width: 993px) {
+    table.table > thead > tr > th:nth-of-type(1),
+    table.table > thead > tr > th:nth-of-type(1) {
+      width: 1%;
+    }
+    table.table > thead > tr > th:nth-of-type(2),
+    table.table > thead > tr > th:nth-of-type(2) {
+      width: 2%;
+    }
+    table.table > thead > tr > th:nth-of-type(3),
+    table.table > thead > tr > th:nth-of-type(3) {
+      width: 15%;
+    }
+    table.table > thead > tr > th:nth-of-type(4),
+    table.table > thead > tr > th:nth-of-type(4) {
+      width: 30%;
+    }
+    table.table > thead > tr > th:nth-of-type(5),
+    table.table > thead > tr > th:nth-of-type(5) {
+      width: 20%;
+    }
+    table.table > thead > tr > th:nth-of-type(6),
+    table.table > thead > tr > th:nth-of-type(6) {
+      width: 10%;
+    }
+    table.table > thead > tr > th:nth-of-type(7),
+    table.table > thead > tr > th:nth-of-type(7) {
+      width: 10%;
+    }
+    table.table > thead > tr > th:nth-of-type(8),
+    table.table > thead > tr > th:nth-of-type(8) {
+      width: 5%;
+    }
+  }
 </style>
 
 <div class="main-content">
-  <div class="col-xs-12">
+  <div class="center-content col-xs-12 col-md-12">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
       <input type="hidden" name="currentValidateId" value="">
@@ -100,16 +134,6 @@
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                 <div class="table-gp">
                 <table aria-describedby="" class="table">
-                    <colgroup>
-                      <col style="width: 1%;"/>
-                      <col style="width: 3%;"/>
-                      <col style="width: 15%;"/>
-                      <col style="width: 30%;"/>
-                      <col style="width: 20%;"/>
-                      <col style="width: 10%;"/>
-                      <col style="width: 10%;"/>
-                      <col style="width: 5%;"/>
-                    </colgroup>
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false" field=""  value="No."></iais:sortableHeader>

@@ -86,7 +86,7 @@
             </div>
         </div>
 </form>
-<iais:confirm msg="GENERAL_ERR0043"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
+<iais:confirm msg="RFC_ACK001"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 <script>
     $('#proceed').click(function () {
         showWaiting();

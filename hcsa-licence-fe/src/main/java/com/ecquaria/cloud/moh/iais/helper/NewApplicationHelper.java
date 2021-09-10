@@ -1952,7 +1952,7 @@ public class NewApplicationHelper {
     }
 
     public static void doSortSelOption(List<SelectOption> selectOptions){
-        Collections.sort(selectOptions,(s1,s2)->(s1.getText().compareTo(s2.getText())));
+        Collections.sort(selectOptions, Comparator.comparing(SelectOption::getText));
     }
 
     public static void setPremAddressSelect(HttpServletRequest request){
@@ -2198,11 +2198,11 @@ public class NewApplicationHelper {
             }
 
             if(!IaisCommonUtils.isEmpty(baseDtos)){
-                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                baseDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(baseDtos);
             }
             if(!IaisCommonUtils.isEmpty(specDtos)){
-                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                specDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(specDtos);
             }
             appSvcRelatedInfoDtos = newAppSvcDto;

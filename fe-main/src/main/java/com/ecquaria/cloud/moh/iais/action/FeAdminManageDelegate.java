@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ import java.util.Map;
 @Slf4j
 public class FeAdminManageDelegate {
     @Autowired
-    private OrgUserManageServiceImpl orgUserManageService;
+    private OrgUserManageService orgUserManageService;
     @Autowired
     private MyInfoAjax myInfoAjax;
     /**

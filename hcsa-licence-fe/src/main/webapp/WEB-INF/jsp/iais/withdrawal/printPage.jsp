@@ -21,7 +21,7 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p>${withdrawDtoView.applicationNo}</p>
+                                                    <p><a class="appNo">${withdrawDtoView.applicationNo}</a></p>
                                                 </div>
                                             </div>
                                         </div>
