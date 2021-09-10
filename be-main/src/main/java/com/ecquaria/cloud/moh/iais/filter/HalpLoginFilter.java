@@ -73,6 +73,7 @@ public class HalpLoginFilter implements Filter {
                 }
             }
         }
+        ParamUtil.setSessionAttr((HttpServletRequest) servletRequest, "halpAdloginFlag", null);
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
