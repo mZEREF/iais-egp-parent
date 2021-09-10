@@ -180,8 +180,8 @@ public class MyinfoUtil {
 				"&attributes=" + attributes +
 				"&sp_esvcId=" + spEsvcId +
 				"&purpose=" + purpose +
-				"&state=" + state +
-				"&redirect_uri=" + redirectUrl;
+				"&redirect_uri=" + redirectUrl+
+				"&state=" + state;
 		return authoriseUrl;
 	}
 

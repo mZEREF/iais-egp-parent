@@ -1454,13 +1454,14 @@ public class NewApplicationDelegator {
                     serviceConfigService.updatePaymentStatus(appGrp);
                 }
                 //send email
-                try {
-//                    sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto, pmtMethod, pmtRefNo);
-                    //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
-                    LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog("send email error ...."));
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    try {
+                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                                AppConsts.SESSION_ATTR_LOGIN_USER);
+                        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("send email error ...."));
+                    }
                 }
             } else {
                 appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
@@ -2971,9 +2972,9 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appGrp.setPayMethod(payMethod);
             serviceConfigService.updatePaymentStatus(appGrp);
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
+            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
             }
 
             StringBuilder url = new StringBuilder();
@@ -3018,8 +3019,11 @@ public class NewApplicationDelegator {
             //send email
             try {
                 //sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
-                LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto,loginContext.getUserName());
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                            AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
                 if(ackPageAppSubmissionDto==null){
                     ackPageAppSubmissionDto=IaisCommonUtils.genNewArrayList();
                     ackPageAppSubmissionDto.add(appSubmissionDto);
@@ -4097,6 +4101,11 @@ public class NewApplicationDelegator {
                             }
                         }
                     }
+                    for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
+                        if(!appGrpPremisesDtos.get(i).isRfiCanEdit()){
+                            appGrpPremisesDtos.remove(i);
+                        }
+                    }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }
                 ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
@@ -4134,51 +4143,6 @@ public class NewApplicationDelegator {
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
         if (otherList != null && !otherList.isEmpty()) {
-            otherList.forEach(dto -> {
-                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
-                List<AppSvcPersonnelDto> otherAppSvcPersonnelDtoList = dto.getAppSvcSectionLeaderList();
-                if (appSvcPersonnelDtoList != null && otherAppSvcPersonnelDtoList != null) {
-                    for (AppSvcPersonnelDto otherAppSvcPersonnelDto : otherAppSvcPersonnelDtoList){
-                        if (!isContainAppSvcPersonnelDto(appSvcPersonnelDtoList, otherAppSvcPersonnelDto)){
-                            appSvcPersonnelDtoList.add(otherAppSvcPersonnelDto);
-                        }
-                    }
-                }
-
-                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
-                    appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
-                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
-                }
-                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
-                List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-                if (appSvcDisciplineAllocationDtoList != null && otherAppSvcDisciplineAllocationDtoList != null) {
-                    setAppSvcDisciplineAllocationDtoSlIndex(appSvcPersonnelDtoList, otherAppSvcDisciplineAllocationDtoList);
-                    appSvcDisciplineAllocationDtoList.addAll(otherAppSvcDisciplineAllocationDtoList);
-                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
-                }
-
-                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
-                List<AppSvcDocDto> otherAppSvcDocDtoLit = dto.getAppSvcDocDtoLit();
-                if (otherAppSvcDocDtoLit != null && appSvcDocDtoLit != null) {
-                    otherAppSvcDocDtoLit.forEach(doc -> {
-                        if (doc.getAppSvcPersonId() != null || doc.getAppGrpPersonId() != null) {
-                            doc.setPsnIndexNo(getNewPsnIndexNo(dto.getPersonnels(), appSvcRelatedInfoDto.getPersonnels(), doc.getPsnIndexNo()));
-                            appSvcDocDtoLit.add(doc);
-                        }
-                    });
-                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
-                }
-                // check personnels
-                List<PersonnelDto> personnels = appSvcRelatedInfoDto.getPersonnels();
-                if (personnels == null) {
-                    personnels = IaisCommonUtils.genNewArrayList();
-                }
-                if (dto.getPersonnels() != null) {
-                    personnels.addAll(dto.getPersonnels());
-                }
-                appSvcRelatedInfoDto.setPersonnels(personnels);
-            });
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtos.removeAll(otherList);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);

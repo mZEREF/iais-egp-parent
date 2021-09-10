@@ -34,10 +34,13 @@
         <br><br>
         <div class="form-horizontal">
             <div class="form-group">
-                <iais:field value="Common" id="commonField"></iais:field>
-                <div class="col-md-3">
-                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false" value="${common}">
+                <iais:field value="Common" id="commonField"/>
+                <div class="col-md-5">
+                    <p>
+                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false" value="${common}"
+                           style="margin-top: 18px;">
                     <label for="common" style="margin-left: 20px;">General Regulation</label>
+                    </p>
                 </div>
             </div>
 
@@ -49,7 +52,6 @@
                                      value="${svcName}"></iais:select>
                     </div>
                 </div>
-
 
                 <div class="form-group">
                     <iais:field value="Service Sub-Type" id="subTypeField"></iais:field>
@@ -94,7 +96,6 @@
                 </div>
             </div>
 
-
             <div class="form-group">
                 <iais:field value="Effective Start Date" required="true"></iais:field>
                 <div class="col-md-3">
@@ -110,7 +111,6 @@
                     <span id="error_eftEndDate" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
-
 
         </div>
 
@@ -128,9 +128,7 @@
     </form>
 </div>
 
-
 <script type="text/javascript">
-
 
     $(document).ready(function(){
         checkInputStatus();
@@ -166,7 +164,6 @@
         $('#hciCode').attr('disabled', null);
         checkInputStatus()
     }
-
 
     common.onclick = function () {
         if (!hasClick){

@@ -82,7 +82,6 @@ public class MyInfoAjax {
 			log.info("-----------myinfo.true.open is No-------");
 			return null;
 		}
-		HttpServletResponse response =  bpc.response;
 		HttpServletRequest request = bpc.request;
 		String code = ParamUtil.getString(request,"code");
 		String state = ParamUtil.getString(request,"state");
@@ -108,6 +107,9 @@ public class MyInfoAjax {
 							+ " => Token value =>" + accessTokenDto.getAccess_token()));
 					setTakenSession(MyinfoUtil.getSessionForMyInfoTaken(nric, accessTokenDto.getToken_type(), accessTokenDto.getAccess_token()), request);
 					MyInfoDto myInfoDto = getMyInfoByTrue(nric, accessTokenDto.getToken_type(), accessTokenDto.getAccess_token());
+					if(state.contains(nric) && !state.equalsIgnoreCase(nric)){
+						myInfoDto.setAddrType(state.replace(nric,""));
+					}
 					return myInfoDto;
 				} else {
 					log.info("------------The myinfo fetch taken connection failed-----------");

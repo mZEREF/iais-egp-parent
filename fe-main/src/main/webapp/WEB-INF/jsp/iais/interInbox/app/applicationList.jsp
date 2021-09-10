@@ -201,9 +201,9 @@
                                             <c:if test="${app.status == 'APST007'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
-                                                     <c:if test="${app.autoApprove}">
-                                                    <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>
-                                                    </c:if>
+<%--                                                     <c:if test="${app.autoApprove}">--%>
+<%--                                                    <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>--%>
+<%--                                                    </c:if>--%>
                                             <c:if test="${empty app.autoApprove || !app.autoApprove}">
                                                 <c:if test="${app.canInspection}">
                                                     <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">

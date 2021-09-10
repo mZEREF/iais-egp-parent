@@ -15,14 +15,13 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <div class="tab-gp steps-tab">
-            <div class="tab-content">
-                <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="new-premise-form-conveyance">
-                                <div class="form-horizontal">
-                                    <div id = "print">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active">
+                                <div class="row form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
@@ -80,7 +79,6 @@
                                                       maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
                                         </iais:value>
                                     </iais:row>
-                                        </div>
                                 </div>
                             </div>
                         </div>
