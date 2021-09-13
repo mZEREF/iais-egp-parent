@@ -1413,7 +1413,7 @@ footer.footerlogin .footer-link ul li a {
     font-size: 12px;
     position: relative;
 }
-footer.footerlogin .footer-link ul li a:hover, footer.footerlogin .footer-link ul li a:focus, footer.footerlogin .footer-link ul li a:active {
+footer.footerlogin .footer-link ul li a:hover, footer.footerlogin .footer-link ul li a:focus, footer.footerlogin .footer-link ul li a:active, footer.footerlogin .footer-link ul li a:visited {
     color: #ff6600;;
 }
 footer.footerlogin .footer-link ul li:first-child {
