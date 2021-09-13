@@ -1135,11 +1135,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceCMC)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }
