@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.cloudfeign.FeignException;
 import ecq.commons.exception.BaseException;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -36,8 +38,11 @@ public class HalpLoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        log.info("Start run HalpLoginFilter");
         boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        for (String ip : ipAddrs) {
+            log.info("IP Address ==> " + ip);
+        }
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
