@@ -41,6 +41,10 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
+                if (isEmpty(data)) {
+                    console.log("The return data is null for PRS");
+                    return;
+                }
                 if(data.regno == null){
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);

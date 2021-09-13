@@ -438,7 +438,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     professionalResponseDto = professionalResponseDtos.get(0);
                 }
             } catch (Exception e) {
-                professionalResponseDto = new ProfessionalResponseDto();
                 log.info(StringUtil.changeForLog("retrieve prs info start ..."));
                 log.error(e.getMessage(), e);
             }
