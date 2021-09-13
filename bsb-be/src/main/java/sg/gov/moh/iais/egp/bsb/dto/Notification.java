@@ -10,14 +10,39 @@ import java.util.Map;
  **/
 @Data
 public class Notification {
+    //all
     private String applicationNo;
 
+    //Application
     private String applicationName;
 
     private String applicationType;
 
     private String status;
 
+    //Revocation
+
+    //AO
+    private String approvalNo;
+
+    private String facilityType;
+
+    private String approvalType;
+
+    private String facilityCertifier;
+
+    private String officer;
+
+    //USER
+    private String reason;
+
+    private String facilityName;
+
+    private String facilityAddress;
+
+    private String date;
+
+    //auto
     private Map<String,Object> contentParams;
 
     private Map<String,Object> subjectParams;

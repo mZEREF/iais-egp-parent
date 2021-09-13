@@ -91,25 +91,6 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, approvedFacilityCerResultDto.getPageInfo());
         }
         ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
-       Letter letter = new Letter();
-       SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
-        letter.setApplicant("applicant01");
-       letter.setLetterType("letter1");
-       letter.setAgent("agent01");
-       letter.setDesignation("new application");
-       letter.setAgent("bio01");
-       letter.setApplicationNo("APP0000001");
-       letter.setCompanyName("company01");
-       letter.setLaboratoryName("laboratory01");
-       letter.setSubmissionDate(sdf.format(new Date()));
-       letter.setNowDate(sdf.format(new Date()));
-       sendNotificationHelper.sendLetter(letter);
-//       Notification notification = new Notification();
-//       notification.setStatus("reject");
-//       notification.setApplicationName("name01");
-//       notification.setApplicationType("type01");
-//       notification.setApplicationNo("APP0000001");
-//       sendNotificationHelper.sendNotification(notification);
     }
 
 

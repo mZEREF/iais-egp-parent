@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.UserRoleConstants.USER_ROLE_DO;
+import static sg.gov.moh.iais.egp.bsb.constant.UserRoleConstants.*;
 
 /**
  * AUTHOR: YiMing
@@ -73,10 +73,17 @@ public class SendNotificationHelper {
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_APPROVAL               = "letter8";
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_REGISTERED_FACILITY    = "letter9";
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_CERTIFIED_FACILITY     = "letter10";
+//    private static final String MSG_NOTIFICATION_APP_APPROVAL_ID                                = "BISNEW003";
+//    private static final String MSG_NOTIFICATION_APP_REJECT_ID                                  = "BISNEW004";
+//    private static final String MSG_NOTIFICATION_BIO_REV_APPROVAL_ID                            = "BISEmail001";
+//    private static final String MSG_NOTIFICATION_BIO_REV_REJECT_ID                              = "BISEmail002";
 
-    private static final String STATUS_NEW_APPLICATION_SUCCESSFUL = "approval";
-    private static final String STATUS_NEW_APPLICATION_UNSUCCESSFUL = "reject";
+    private static final String STATUS_NEW_APPLICATION_SUCCESSFUL   = "app001";
+    private static final String STATUS_NEW_APPLICATION_UNSUCCESSFUL = "app002";
+    private static final String STATUS_REVOCATION_APPROVAL_AO       = "rej001";
+    private static final String STATUS_REVOCATION_APPROVAL_USER     = "rej002";
     private static final String RECEIPT_ROLE_DUTY_OFFICER           = "EM-DO";
+    private static final String RECEIPT_ROLE_APPROVAL_OFFICER           = "EM-AO";
     private static final String RECEIPT_ROLE_APPLICANT              = "APPLICANT";
 
    public void sendLetter(Letter letter){
@@ -108,14 +115,7 @@ public class SendNotificationHelper {
 
     public void sendNotification(Notification notification) {
         if(notification != null && StringUtil.isNotEmpty(notification.getApplicationNo()) && StringUtil.isNotEmpty(notification.getApplicationType()) && StringUtil.isNotEmpty(notification.getApplicationName())){
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("Applicant",notification.getApplicationName());
-            map.put("applicationNo",notification.getApplicationNo());
-            map.put("applicationType",notification.getApplicationType());
-            notification.setContentParams(map);
-            Map<String,Object> subMap = IaisCommonUtils.genNewHashMap();
-            subMap.put("applicationNo",notification.getApplicationNo());
-            notification.setSubjectParams(subMap);
+            getNotificationParams(notification);
             if(STATUS_NEW_APPLICATION_SUCCESSFUL.equals(notification.getStatus())){
                 sendEmail(MSG_TEMPLATE_NEW_APP_APPROVAL,notification);
             }else if(STATUS_NEW_APPLICATION_UNSUCCESSFUL.equals(notification.getStatus())){
@@ -154,7 +154,7 @@ public class SendNotificationHelper {
    public void generateLetter(String templateId, Letter letter){
        EmailDto emailDto = new EmailDto();
        MsgTemplateDto msgTemplateDto = getMsgTemplate(templateId);
-       getParams(letter);
+       getLetterParams(letter);
        getReceipt(emailDto,msgTemplateDto,letter.getApplicationNo());
        String emailContent = getEmailContent(msgTemplateDto,letter.getContentParams());
        emailDto.setContent(emailContent);
@@ -169,7 +169,7 @@ public class SendNotificationHelper {
        }
    }
 
-   public void getParams(Letter letter){
+   public void getLetterParams(Letter letter){
        if(letter != null && StringUtil.isNotEmpty(letter.getLetterType())){
            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
            map.put("Applicant",letter.getApplicant());
@@ -195,7 +195,7 @@ public class SendNotificationHelper {
                map.put("RegistrationNo",letter.getRegistrationNo());
            }
            if(!MSG_LETTER_TYPE_UNCERTIFIED_FACILITY.equals(letterType) && !MSG_LETTER_TYPE_CERTIFIED_FACILITY.equals(letterType)){
-               map.put("BiosafetySpecialist",letter.getSpecialist());
+               map.put("Specialist",letter.getSpecialist());
            }
            if(MSG_LETTER_TYPE_MOH_APPROVED_FACILITY_CERTIFIER.equals(letterType) || MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_CERTIFIED_FACILITY.equals(letterType)){
                map.put("ExpiryDate",letter.getExpiryDate());
@@ -204,6 +204,32 @@ public class SendNotificationHelper {
        }
    }
 
+   public void getNotificationParams(Notification notification){
+       Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+       Map<String,Object> subMap = IaisCommonUtils.genNewHashMap();
+       if(STATUS_NEW_APPLICATION_SUCCESSFUL.equals(notification.getStatus()) || STATUS_NEW_APPLICATION_UNSUCCESSFUL.equals(notification.getStatus())){
+           map.put("Applicant",notification.getApplicationName());
+           map.put("applicationNo",notification.getApplicationNo());
+           map.put("applicationType",notification.getApplicationType());
+           notification.setContentParams(map);
+           subMap.put("applicationNo",notification.getApplicationNo());
+           notification.setSubjectParams(subMap);
+       }else if(STATUS_REVOCATION_APPROVAL_AO.equals(notification.getStatus())){
+           map.put("applicationNo",notification.getApplicationNo());
+           map.put("ApprovalNo",notification.getApprovalNo());
+           map.put("FacilityType",notification.getFacilityType());
+           map.put("ApprovalType",notification.getApprovalType());
+           map.put("FacilityCertifier",notification.getFacilityCertifier());
+           map.put("officer",notification.getOfficer());
+           subMap.put("applicationNo",notification.getApplicationNo());
+       }else if(STATUS_REVOCATION_APPROVAL_USER.equals(notification.getStatus())){
+           map.put("Reason",notification.getReason());
+           map.put("Date",notification.getDate());
+           map.put("applicationNo",notification.getApplicationNo());
+           map.put("FacilityName",notification.getFacilityName());
+           map.put("FacilityAddress",notification.getFacilityAddress());
+       }
+   }
 
 
     private void getReceipt(EmailDto emailDto,MsgTemplateDto msgTemplateDto,String appNo){
@@ -220,6 +246,12 @@ public class SendNotificationHelper {
            if(msgTemplateDto.getBccrecipient() != null && !msgTemplateDto.getBccrecipient().isEmpty()) {
                log.info("enter getReceipt BC" + appNo);
                emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getBccrecipient(), appNo));
+           }else{
+               try {
+                   throw new CustomerException(MSG_ERROR_STATUS,"Object properties is null");
+               } catch (CustomerException e) {
+                   e.printStackTrace();
+               }
            }
        }
    }
@@ -246,6 +278,15 @@ public class SendNotificationHelper {
                //role is duty officer
              List<OrgUserDto> userDtoList  =  taskOrganizationClient.retrieveOrgUserAccountByRoleId(USER_ROLE_DO).getEntity();
              log.info("31231231"+userDtoList.get(0).getEmail());
+               for (OrgUserDto orgUserDto : userDtoList) {
+                   receiptEmail.add(orgUserDto.getEmail());
+               }
+           }else if(RECEIPT_ROLE_APPROVAL_OFFICER.equals(recipient)){
+               List<String> userRoles = IaisCommonUtils.genNewArrayList();
+               userRoles.add(USER_ROLE_AO1);
+               userRoles.add(USER_ROLE_AO2);
+               userRoles.add(USER_ROLE_AO3);
+               List<OrgUserDto>userDtoList = taskOrganizationClient.retrieveOrgUserByroleId(userRoles).getEntity();
                for (OrgUserDto orgUserDto : userDtoList) {
                    receiptEmail.add(orgUserDto.getEmail());
                }
