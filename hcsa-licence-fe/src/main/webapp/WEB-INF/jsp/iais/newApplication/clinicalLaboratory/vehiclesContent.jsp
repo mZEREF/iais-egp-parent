@@ -200,6 +200,15 @@
         $('.removeBtn').click(function () {
             showWaiting();
             var vehicleLength = $('.vehicleContent').length;
+            if (vehicleLength == 1){
+                $('.vehicleIndexNo').val(null);
+                $('.vehicleName').val(null);
+                $('.chassisNum').val(null);
+                $('.engineNum').val(null);
+                doEdite();
+                dismissWaiting();
+                return;
+            }
             if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
                 dismissWaiting();
                 return;
@@ -215,7 +224,9 @@
     function refreshVehicle() {
         var vehicleLength = $('.vehicleContent').length;
         $('input[name="vehiclesLength"]').val(vehicleLength);
-        if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
+        if (vehicleLength == 1){
+            $('.vehicleRemoveBtn').show();
+        } else if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
             $('.vehicleRemoveBtn').hide();
         } else {
             $('.vehicleRemoveBtn').show();
