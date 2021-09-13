@@ -7,7 +7,8 @@
 <webui:setLayout name="iais-internet"/>
 <%@ include file="common/dashboard.jsp" %>
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" id="page_id" name="page_id" value="document_page">
+    <input type="hidden" id="actionType" name="actionType" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -34,7 +35,7 @@
                                 </div>
                                 <div class="document-upload-gp">
                                     <h2>PRIMARY DOCUMENTS</h2>
-                                    <%@include file="common/docContent.jsp"%>
+<%--                                    <%@include file="common/docContent.jsp"%>--%>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">

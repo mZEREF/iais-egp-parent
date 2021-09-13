@@ -7,18 +7,19 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-<div style="height:700px">
-    <table style="width: 50%;margin:auto">
-        <tr>
-            <td>
-                <iais:select name="taskList" disabled="false" codeCategory="CATE_ID_BSB_APPROVAL_TYPE" firstOption="Please Select"></iais:select>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button type="submit">Submit</button>
-            </td>
-        </tr>
-    </table>
-</div>
+    <input type="hidden" name="crud_action_type" value="">
+    <div style="height:700px">
+        <table style="width: 50%;margin:auto">
+            <tr>
+                <td>
+                    <iais:select name="taskList" disabled="false" codeCategory="CATE_ID_BSB_APPROVAL_TYPE" firstOption="Please Select"></iais:select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="submit">Submit</button>
+                </td>
+            </tr>
+        </table>
+    </div>
 </form>

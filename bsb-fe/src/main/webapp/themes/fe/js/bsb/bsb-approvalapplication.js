@@ -109,40 +109,27 @@ $(function() {
         }
     })
     $("#nextBtn").click(function (){
-        SOP.Crud.cfxSubmit("mainForm");
+        $('#mainForm').submit();
     })
     $("#Next").click(function (){
-        var pageValue = $("#page_id").val();
-        if(pageValue == "form_page"){
-            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
-            SOP.Crud.cfxSubmit("mainForm","loading");
-        }else if(pageValue == "document_page"){
-            $("[name='crud_action_type_form_page']").val("PreparePreview");
-            SOP.Crud.cfxSubmit("mainForm","loading");
-        }
+        $("#actionType").val("next");
+        $('#mainForm').submit();
     })
     $("#Back").click(function (){
-        var pageValue = $("#page_id").val();
-        if(pageValue == "form_page"){
-            $("[name='crud_action_type_form_page']").val("PrepareJump");
-            SOP.Crud.cfxSubmit("mainForm","loading");
-        }else if(pageValue == "document_page"){
-            $("[name='crud_action_type_form_page']").val("PrepareForms");
-            SOP.Crud.cfxSubmit("mainForm","loading");
-        }else if(pageValue == "preview_page"){
-            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
-            SOP.Crud.cfxSubmit("mainForm","loading");
-        }
+        $("#actionType").val("back");
+        $('#mainForm').submit();
     })
     $("#SaveDraft").click(function (){
-        SOP.Crud.cfxSubmit("mainForm","doSaveDraft");
+        $("#actionType").val("saveDraft");
+        $('#mainForm').submit();
     })
     $("#Submit").click(function (){
-        SOP.Crud.cfxSubmit("mainForm","doSubmit");
+        $("#actionType").val("submit");
+        $('#mainForm').submit();
     })
     $("#subApprovalEdit").click(function (){
-        $("[name='crud_action_type_form_page']").val("PrepareForms");
-        SOP.Crud.cfxSubmit("mainForm","loading");
+        $("#actionType").val("next");
+        $('#mainForm').submit();
     })
     var controlLi = $('#controlLi').val();
     var $tarSel = $('#'+controlLi+'li');
@@ -155,20 +142,16 @@ $(function() {
     }
     $('#nav-tabs-ul a').click(function() {
         var currId = $(this).attr('id');
-        console.log(currId);
         if (controlLi == currId) {
             return;
         }else if(currId == "PrepareForms"){
-            $("[name='crud_action_type_form_page']").val("PrepareForms");
-            $("[name='crud_action_type']").val("loading");
+            $("#actionType").val("form");
             $('#mainForm').submit();
         }else if(currId == "PrepareDocuments"){
-            $("[name='crud_action_type_form_page']").val("PrepareDocuments");
-            $("[name='crud_action_type']").val("loading");
+            $("#actionType").val("document");
             $('#mainForm').submit();
         }else if(currId == "PreparePreview"){
-            $("[name='crud_action_type_form_page']").val("PreparePreview");
-            $("[name='crud_action_type']").val("loading");
+            $("#actionType").val("preview");
             $('#mainForm').submit();
         }
     });

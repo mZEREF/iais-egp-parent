@@ -62,6 +62,8 @@ public class ApprovalApplicationConstants {
     public static final String CRUD_ACTION_TYPE = "crud_action_type";
     public static final String CRUD_ACTION_TYPE_FROM_PAGE = "crud_action_type_form_page";
 
+    public static final String ERRORMSG = "errorMsg";
+
     public static final String APP_TYPE_1 = "BSBAPTY001";
     public static final String APP_STATUS_1 = "BSBAPST001";
     public static final String APP_STATUS_11 = "BSBAPST011";
@@ -73,4 +75,15 @@ public class ApprovalApplicationConstants {
     public static final String PROCESS_TYPE_4 = "PROTYPE004";
     public static final String MODE_OF_PROCUREMENT_1 = "BMOP001";
     public static final String MODE_OF_PROCUREMENT_2 = "BMOP002";
+
+    public static final String VALIDATE_STATUS_1 = "possessLocal";
+    public static final String VALIDATE_STATUS_2 = "possessImport";
+    public static final String VALIDATE_STATUS_3 = "possessOthersLocal";
+    public static final String VALIDATE_STATUS_4 = "possessOthersImport";
+    public static final String VALIDATE_STATUS_5 = "largeLocal";
+    public static final String VALIDATE_STATUS_6 = "largeImport";
+    public static final String VALIDATE_STATUS_7 = "special";
+    public static final String VALIDATE_STATUS_8 = "possessNull";
+    public static final String VALIDATE_STATUS_9 = "possessOthersNull";
+    public static final String VALIDATE_STATUS_10 = "largeNull";
 }

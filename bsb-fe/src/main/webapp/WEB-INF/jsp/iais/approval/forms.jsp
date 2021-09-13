@@ -10,6 +10,7 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-approvalapplication.css" rel="stylesheet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" id="page_id" name="page_id" value="form_page">
+    <input type="hidden" id="actionType" name="actionType" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">

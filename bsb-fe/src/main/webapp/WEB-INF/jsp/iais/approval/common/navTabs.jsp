@@ -11,7 +11,6 @@
     String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
-<%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approvalapplication.js"></script>
 <input type="hidden" name="crud_action_type_form_page" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">

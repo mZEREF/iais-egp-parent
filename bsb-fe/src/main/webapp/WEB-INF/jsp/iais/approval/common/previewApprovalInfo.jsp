@@ -14,7 +14,7 @@
                     <iais:row>
                         <iais:field value="Facility Name" width="5"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${approvalApplicationDto.facility.facilityName}"/>
+                            <c:out value="${approvalApplicationDto.facilityName}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>

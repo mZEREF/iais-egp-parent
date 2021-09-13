@@ -10,6 +10,7 @@
 <%@ include file="common/dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" id="page_id" name="page_id" value="preview_page">
+    <input type="hidden" id="actionType" name="actionType" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -54,5 +55,4 @@
             </div>
         </div>
     </div>
-    <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>

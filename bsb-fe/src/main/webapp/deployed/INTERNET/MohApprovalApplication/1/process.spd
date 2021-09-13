@@ -187,15 +187,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(1060,600)(106,594)(100,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doForms" style="oblique">
-   <position>{(640,360)(760,430)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(760,430)(840,360)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareForms" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(760,430)(363,434)(340,360)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/doJump" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareJump" style="oblique">
    <position>{(330,490)(490,500)}</position>
   </SynchronousLink>
@@ -208,12 +199,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfoPage" style="oblique">
    <position>{(70,210)(100,310)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doForms" style="rectanular">
+   <position>{(640,360)(840,360)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/PrepareForms" componentIfTrue="/Steps/AutomaticStep/ControlSwitch" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="740" y="410">
-   <Description />
-  </Condition>
- </Conditions>
+ <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch1" x="160" y="290">
    <Description />

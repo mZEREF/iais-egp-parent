@@ -34,9 +34,9 @@
                                                                         <span class="mandatory">*</span>
                                                                     </div>
                                                                     <div class="col-sm-4 col-md-7">
-                                                                        <input type="hidden" id="facilityName" name="facilityName" value="${approvalApplicationDto.facility.facilityName}">
-                                                                        <iais:select name="facilityId" id="facilityId" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facility.id}"></iais:select>
-                                                                        <span id="error_facility" name="iaisErrorMsg" class="error-msg"></span>
+                                                                        <input type="hidden" id="facilityName" name="facilityName" value="${approvalApplicationDto.facilityName}">
+                                                                        <iais:select name="facilityId" id="facilityId" disabled="false" options="facilityNameSelect" firstOption="Please Select" value="${approvalApplicationDto.facilityId}"></iais:select>
+                                                                        <span id="error_facilityId" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -74,7 +74,7 @@
                                                                         <div id="select4" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule4" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
                                                                         <div id="select5" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule5" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
                                                                         <div id="select6" name="selectHidden" hidden><iais:select id="listOfAgentsOrToxins" name="listOfAgentsOrToxins" options="biologicalSchedule6" disabled="false" multiValues="${approvalApplicationDto.biologicalIdList}" multiSelect="true"></iais:select></div>
-                                                                        <span id="error_biologicalId" name="iaisErrorMsg" class="error-msg"></span>
+                                                                        <span id="error_biologicalIdList" name="iaisErrorMsg" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -91,7 +91,7 @@
                                                                         </div>
                                                                         <div class="col-sm-4 col-md-7 control-font-label">
                                                                             <iais:select name="natureOfTheSample" disabled="false" codeCategory="CATE_ID_BSB_NATURE_OF_TTE_SAMPLE" multiValues="${approvalApplicationDto.natureOfTheSampleList}" multiSelect="true"></iais:select>
-                                                                            <span id="error_sampleNature" name="iaisErrorMsg" class="error-msg"></span>
+                                                                            <span id="error_natureOfTheSampleList" name="iaisErrorMsg" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -127,7 +127,7 @@
                                                                         </div>
                                                                         <div class="col-sm-5 col-md-7" >
                                                                             <div class="">
-                                                                                <iais:input maxLength="10" type="text" name="estimatedMaximumVolume" value="${approvalApplicationDto.prodMaxVolumeLitres}"></iais:input>
+                                                                                <iais:input maxLength="10" type="number" name="estimatedMaximumVolume" value="${approvalApplicationDto.prodMaxVolumeLitres}"></iais:input>
                                                                                 <span id="error_prodMaxVolumeLitres" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>

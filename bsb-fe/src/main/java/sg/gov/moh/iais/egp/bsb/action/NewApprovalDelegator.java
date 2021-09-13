@@ -16,7 +16,6 @@ import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +56,8 @@ public class NewApprovalDelegator {
     public void prepare(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String action = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_PAGE);
+        String errorMap = ParamUtil.getString(request,ApprovalApplicationConstants.ERRORMSG);
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
         if (StringUtil.isEmpty(action)) {
             action = "PrepareForms";
         }
@@ -114,6 +115,8 @@ public class NewApprovalDelegator {
 
     public void prepareForms(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        String errorMap = ParamUtil.getString(request,ApprovalApplicationConstants.ERRORMSG);
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         List<FacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
         List<SelectOption> facilityNameList =  new ArrayList<>();
@@ -126,25 +129,130 @@ public class NewApprovalDelegator {
     public void doForms(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = getDtoByForm(bpc);
-        //validate by different application status and type
-        String validateStatus = "";
-
-        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto,validateStatus);
-        if(vResult != null && vResult.isHasErrors()){
-            Map<String,String> errorMap = vResult.retrieveAll();
-//            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-//            crudActionType = ProcessContants.CRUD_ACTION_TYPE_2;
-        }
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
-        ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
     }
 
-    public void controlSwitch(BaseProcessClass bpc) {
+    public void controlSwitch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        String crud_action_type_form_page = ParamUtil.getString(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
-        String crud_action_type = ParamUtil.getString(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crud_action_type_form_page);
-        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crud_action_type);
+        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto) ParamUtil.getSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        //validate condition by different application status and type
+        String validateStatus = "";
+        Boolean flag = true;
+        if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
+            List<String> natureOfTheSampleList = approvalApplicationDto.getNatureOfTheSampleList();
+            if (natureOfTheSampleList != null){
+                for (int i = 0; i < natureOfTheSampleList.size(); i++) {
+                    if(natureOfTheSampleList.get(i).equals("BNOTS006")) {
+                        flag = false;
+                    }
+                }
+            }
+            if (flag){
+                if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_8;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_1;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_2;
+                }
+            }else{
+                if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_9;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_3;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_4;
+                }
+            }
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
+            if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_10;
+            }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_5;
+            }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_6;
+            }
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
+            validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_7;
+        }
+        //validate
+        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto,validateStatus);
+        String crudActionType = "";
+        String crudActionTypeFormPage = "";
+        String pageId = ParamUtil.getString(request,"page_id");
+        String actionType = ParamUtil.getString(request,"actionType");
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            crudActionType = "loading";
+            crudActionTypeFormPage = "PrepareForms";
+        }else if (pageId.equals("form_page")){
+            if (actionType.equals("back")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareJump";
+            }else if (actionType.equals("next")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }else if (actionType.equals("form")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareForms";
+            }else if (actionType.equals("document")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }else if (actionType.equals("preview")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PreparePreview";
+            }else if (actionType.equals("saveDraft")){
+                crudActionType = "doSaveDraft";
+                crudActionTypeFormPage = "PrepareForms";
+            }
+        }else if (pageId.equals("document_page")){
+            if (actionType.equals("back")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareForms";
+            }else if (actionType.equals("next")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PreparePreview";
+            }else if (actionType.equals("form")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareForms";
+            }else if (actionType.equals("document")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }else if (actionType.equals("preview")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PreparePreview";
+            }else if (actionType.equals("saveDraft")){
+                crudActionType = "doSaveDraft";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }
+        }else if (pageId.equals("preview_page")){
+            if (actionType.equals("back")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }else if (actionType.equals("next")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareForms";
+            }else if (actionType.equals("form")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareForms";
+            }else if (actionType.equals("document")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PrepareDocuments";
+            }else if (actionType.equals("preview")){
+                crudActionType = "loading";
+                crudActionTypeFormPage = "PreparePreview";
+            }else if (actionType.equals("saveDraft")){
+                crudActionType = "doSaveDraft";
+                crudActionTypeFormPage = "PreparePreview";
+            }else if (actionType.equals("submit")){
+                crudActionType = "doSubmit";
+                crudActionTypeFormPage = "PrepareJump";
+            }
+        }
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
     public void doSaveDraft(BaseProcessClass bpc) {
@@ -220,10 +328,8 @@ public class NewApprovalDelegator {
             processType = ApprovalApplicationConstants.PROCESS_TYPE_4;
         }
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
-        Facility facility = new Facility();
-        facility.setId(facilityId);
-        facility.setFacilityName(facilityName);
-        approvalApplicationDto.setFacility(facility);
+        approvalApplicationDto.setFacilityId(facilityId);
+        approvalApplicationDto.setFacilityName(facilityName);
         approvalApplicationDto.setNatureOfTheSampleList(natureOfTheSampleList);
         approvalApplicationDto.setSampleNature(sampleNature);
         approvalApplicationDto.setSampleNatureOth(others);
