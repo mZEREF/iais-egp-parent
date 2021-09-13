@@ -199,26 +199,29 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST007'}">
-                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
-                                                    <option value="" selected>Select</option>
-<%--                                                     <c:if test="${app.autoApprove}">--%>
-<%--                                                    <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>--%>
-<%--                                                    </c:if>--%>
-                                            <c:if test="${empty app.autoApprove || !app.autoApprove}">
-                                                <c:if test="${app.canInspection}">
-                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
-                                                        <option value="Assessment">Assessment</option>
+                                                <select id="appDoSelectActive" <c:if test="${app.autoApprove}">disabled</c:if> class="appDoSelectActive" name="appDoSelectActive">
+                                                    <c:if test="${app.autoApprove}">
+                                                        <option>N/A</option>
                                                     </c:if>
-                                                    <option value="Inspection">Indicate Preferred Inspection Date</option>
-                                                </c:if>
-                                                <c:if test="${app.pmtStatus == 'PMT06'}">
-                                                    <option value="Make Payment">Make Payment</option>
-                                                </c:if>
-                                                <%--<c:if test="${app.canRecall}">--%>
-                                                <%--<option value="Recall">Recall</option>--%>
-                                                <%--</c:if>--%>
-                                                <option value="Withdraw">Withdraw</option>
-                                            </c:if>
+                                                        <%--                                                     <c:if test="${app.autoApprove}">--%>
+                                                        <%--                                                    <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>--%>
+                                                        <%--                                                    </c:if>--%>
+                                                    <c:if test="${empty app.autoApprove || !app.autoApprove}">
+                                                        <option value="" selected>Select</option>
+                                                        <c:if test="${app.canInspection}">
+                                                            <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
+                                                                <option value="Assessment">Assessment</option>
+                                                            </c:if>
+                                                            <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                        </c:if>
+                                                        <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                            <option value="Make Payment">Make Payment</option>
+                                                        </c:if>
+                                                        <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--<option value="Recall">Recall</option>--%>
+                                                        <%--</c:if>--%>
+                                                        <option value="Withdraw">Withdraw</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST028' || app.status == 'APST003' || app.status == 'APST001'
