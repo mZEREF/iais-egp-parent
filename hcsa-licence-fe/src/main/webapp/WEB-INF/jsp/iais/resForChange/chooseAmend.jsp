@@ -56,7 +56,7 @@
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12  col-md-6">
-                            <p><a class="back" id="Back" href="javascript:void(0);"><i class="fa fa-angle-left"></i> Back</a></p>
+                            <p><a style="text-decoration:none;" class="back" id="Back" href="javascript:void(0);"><i class="fa fa-angle-left"></i> Back</a></p>
                         </div>
                         <div class="col-xs-12  col-md-6">
                             <div class="text-right text-center-mobile"><a class="btn btn-primary next" id="Next" href="javascript:void(0);">Next</a></div>
