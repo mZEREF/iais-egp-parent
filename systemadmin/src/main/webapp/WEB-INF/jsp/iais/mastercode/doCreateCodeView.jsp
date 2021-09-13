@@ -53,7 +53,7 @@
                             <iais:field value="Sequence" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeSequenceCMC" onkeypress="keyNumericPress()" type="text" name="codeSequenceCMC"
+                                    <input id="codeSequenceCMC"  type="text" name="codeSequenceCMC"
                                            value="${param.codeSequenceCMC}" maxlength="3"/>
                                     <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
@@ -132,12 +132,5 @@
         $("[name='crud_action_type']").val(action);
         $("#MasterCodeCreateForm").submit();
     }
-    function keyNumericPress() {
-        var keyCode = event.keyCode;
-        if (keyCode >= 48 && keyCode <= 57 ) {
-            event.returnValue = true;
-        }else {
-            event.returnValue = false;
-        }
-    }
+
 </script>
