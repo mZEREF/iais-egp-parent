@@ -29,18 +29,16 @@
         justify-content: center;
         align-items:flex-end;">
             <a class="btn btn-primary" align="center"
-               href="${payNowCallBackUrl}">Submit</a>
+               href="javascript:void(0)" onclick="submit()">Submit</a>
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
-               href=${payNowCallBackUrl}>Cancel</a>
+               href="javascript:void(0)" onclick="submit()">Cancel</a>
             <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
                 <span style="float:right">&nbsp;</span>
                 <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
                     href="javascript:void(0)" >MockServer</a>
             </c:if>
 
-<%--            <span style="float:right">&nbsp;</span>--%>
-<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
     <form id="payNowRedirectForm" style="display: none"
@@ -76,10 +74,15 @@
                 let result = data.result;
                 console.log(result);
                 if('Success' === result){
-                    $('#payNowRedirectForm').submit();
+                    submit();
                 }
             }
         });
+    }
+    function submit(){
+        //showWaiting();
+        $('#payNowRedirectForm').submit();
+        //dismissWaiting();
     }
 
     function payNowImgStringRefresh(){
