@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -25,4 +26,10 @@ public class FacilityDoc extends BaseEntity {
     private Date submitAt;
 
     private String submitBy;
+
+    private String submitByName;
+
+    private AuditTrailDto auditTrailDto;
+
+    private Integer fileSn;
 }

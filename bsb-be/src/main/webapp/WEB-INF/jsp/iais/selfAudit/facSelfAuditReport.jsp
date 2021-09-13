@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -77,13 +78,12 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <input name="applicationId" id="applicationId"
-                                                                           value="" hidden>
+                                                                    <input name="auditId" id="auditId" value="<iais:mask name="auditId" value="${facilityAudit.id}"></iais:mask>" hidden>
                                                                     <div>
                                                                         <iais:row>
                                                                             <div><iais:field value="Audit type" required="false" width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p>Audit type1</p>
+                                                                                <p><iais:code code="${facilityAudit.auditType}"></iais:code></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -91,7 +91,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Audit Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>07/07/2021</p>
+                                                                                <p><fmt:formatDate value='${facilityAudit.auditDt}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -138,10 +138,16 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="uploadFile.jsp" %>
 <script>
     $("#submitButton").click(function (){
-        showWaiting();
         $("[name='action_type']").val("doSubmit");
-        $("#mainForm").submit();
+        var optionValue = $("#scenarioCategory option:selected").val();
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_scenarioCategory").html("Please select valid options!");
+        }else {
+            showWaiting();
+            $("#mainForm").submit();
+        }
     })
 </script>

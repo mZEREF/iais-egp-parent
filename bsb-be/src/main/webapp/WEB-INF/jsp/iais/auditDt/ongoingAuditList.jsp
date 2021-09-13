@@ -138,25 +138,3 @@
         <input name="auditId" id="auditId" value="" hidden>
     </form>
 </div>
-<%--<script>--%>
-<%--    function doSpecifyDt(id){--%>
-<%--        showWaiting();--%>
-<%--        $("#auditId").val(id);--%>
-<%--        $("[name='action_type']").val("specifyDt");--%>
-<%--        $("#mainForm").submit();--%>
-<%--    }--%>
-
-<%--    function dochangeDt(id){--%>
-<%--        showWaiting();--%>
-<%--        $("#auditId").val(id);--%>
-<%--        $("[name='action_type']").val("changeDt");--%>
-<%--        $("#mainForm").submit();--%>
-<%--    }--%>
-
-<%--    function submitReport(id){--%>
-<%--        showWaiting();--%>
-<%--        $("#auditId").val(id);--%>
-<%--        $("[name='action_type']").val("doSelfAudit");--%>
-<%--        $("#mainForm").submit();--%>
-<%--    }--%>
-<%--</script>--%>

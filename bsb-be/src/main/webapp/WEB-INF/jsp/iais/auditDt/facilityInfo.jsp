@@ -7,27 +7,27 @@
                     <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>
-                            <td style="padding-left : 20px"><c:out value="${facilityAuditAPP.facilityAudit.facility.facilityName}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${facility.facilityName}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Address</td>
-                            <td style="padding-left : 20px"><c:out value="${facilityAuditAPP.facilityAudit.facility.facilityAddress}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${facility.facilityAddress}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px"><iais:code code="${facilityAuditAPP.facilityAudit.facility.facilityClassification}"></iais:code></td>
+                            <td style="padding-left : 20px"><iais:code code="${facility.facilityClassification}"></iais:code></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Type</td>
-                            <td style="padding-left : 20px"><iais:code code="${facilityAuditAPP.facilityAudit.facility.facilityType}"></iais:code></td>
+                            <td style="padding-left : 20px"><iais:code code="${facility.facilityType}"></iais:code></td>
                         </tr>
                         <tr>
                             <td align="right">Approval</td>
-                            <td style="padding-left : 20px"><c:out value="${facilityAuditAPP.facilityAudit.facility.approval}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${facility.approval}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Approval Status</td>
-                            <td style="padding-left : 20px"><iais:code code="${facilityAuditAPP.facilityAudit.facility.approvalStatus}"></iais:code></td>
+                            <td style="padding-left : 20px"><iais:code code="${facility.approvalStatus}"></iais:code></td>
                         </tr>
                     </tbody>
                 </table>

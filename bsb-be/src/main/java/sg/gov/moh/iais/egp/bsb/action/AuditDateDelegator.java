@@ -49,7 +49,7 @@ public class AuditDateDelegator {
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
-    private static final String FACILITY_LIST = "facilityList";
+    private static final String FACILITY = "facility";
     private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
     private static final String FACILITY_AUDIT = "facilityAudit";
     private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
@@ -189,7 +189,8 @@ public class AuditDateDelegator {
         Application application = new Application();
         application.setFacility(facility);
         String facilityAddress = JoinAddress.joinAddress(application);
-        facilityAuditApp.getFacilityAudit().getFacility().setFacilityAddress(facilityAddress);
+        facility.setFacilityAddress(facilityAddress);
+        ParamUtil.setRequestAttr(request,FACILITY,facility);
 
         ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
     }
