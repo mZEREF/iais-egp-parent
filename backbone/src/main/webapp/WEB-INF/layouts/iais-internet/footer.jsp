@@ -23,8 +23,8 @@
                     <ul class="list-inline">
                         <li><a href="javascript:void(0);" onclick="footPopup(this, '<iais:code code="MRUS019"/>')">HALP</a></li>
                         <li><a href="javascript:void(0);" onclick="footPopup( this, '<iais:code code="MRUS008"/>')">Who we are</a></li>
-                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
-                        <li><a href="javascript:void(0);" onclick="openWins('<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins(this, '<iais:code code="MRUS009"/>')">Privacy Statement</a></li>
+                        <li><a href="javascript:void(0);" onclick="openWins(this, '<iais:code code="MRUS010"/>')">Terms Of Use</a></li>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS011"/>')">Rate This E-Service</a></li>--%>
 <%--                        <li><a href="javascript:void(0);" onclick="popup('<iais:code code="MRUS012"/>')">Sitemap</a></li>--%>
                         <li><a href="javascript:void(0);" onclick="footPopup(this, '<iais:code code="RELURL001"/>')">About HCSA</a></li>
@@ -44,9 +44,10 @@
 </footer>
 
 <script type="text/javascript">
-    function openWins(section){
+    function openWins(obj, section){
         var url ='${pageContext.request.contextPath}/eservice/INTERNET/'+section;
         window.open(url,'_blank');
+        obj.style.color = '#ff6600';
     }
 
     function linkWins(section) {
