@@ -42,16 +42,10 @@
     .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
         color: #a2d9e7;
     }
-    .modal-content {
-        width: 200%;
-        max-width: inherit;
-        height: inherit;
-        margin: 0 auto;
-        pointer-events: all;
-    }
+
     .withdraw-info-gp .withdraw-info-row .withdraw-delete {
         margin-left: 20px;
-        width: 50px;
+        width: 70px;
         display: inline-block;
         text-align: right;
     }
