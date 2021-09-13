@@ -729,7 +729,7 @@ public class MasterCodeDelegator {
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
             if (masterCodeDto != null){
                 if (masterCodeDto.getEffectiveFrom().before(new Date())) {
-                    String codeCategory = masterCodeDto.getCodeCategory();
+                    String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
                     masterCodeDto.setCodeCategory(codeCategory);
                     Calendar c = Calendar.getInstance();
                     c.setTime(new Date());
@@ -1017,7 +1017,7 @@ public class MasterCodeDelegator {
             //inactive all
             List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
             syncMasterCodeList.addAll(masterCodeDtos);
-            String codeCategory = masterCodeDto.getCodeCategory();
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory);
 
             masterCodeService.updateMasterCode(masterCodeDto);
@@ -1048,7 +1048,7 @@ public class MasterCodeDelegator {
                 List<MasterCodeDto> masterCodeDtos = masterCodeService.inactiveMsterCode(masterCodeDto.getMasterCodeKey());
                 syncMasterCodeList.addAll(masterCodeDtos);
             }
-            String codeCategory = oldMasterCodeDto.getCodeCategory();
+            String codeCategory = masterCodeService.findCodeCategoryByDescription(oldMasterCodeDto.getCodeCategory());
             oldMasterCodeDto.setCodeCategory(codeCategory);
             oldMasterCodeDto =  masterCodeService.updateMasterCode(oldMasterCodeDto);
             syncMasterCodeList.add(oldMasterCodeDto);
@@ -1070,7 +1070,7 @@ public class MasterCodeDelegator {
             if(nowDate.isBefore(newFromDate) || nowDate.isAfter(newToDate)){
                 masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             }
-            String codeCategory2 = masterCodeDto.getCodeCategory();
+            String codeCategory2 = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
             masterCodeDto.setCodeCategory(codeCategory2);
             masterCodeDto = masterCodeService.updateMasterCode(masterCodeDto);
             syncMasterCodeList.add(masterCodeDto);
@@ -1135,11 +1135,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceCMC)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }

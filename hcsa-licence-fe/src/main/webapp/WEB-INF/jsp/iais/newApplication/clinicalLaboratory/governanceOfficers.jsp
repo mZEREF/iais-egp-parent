@@ -716,7 +716,7 @@
             $('.edit').trigger('click');
         }
 
-        $('input[name="professionRegoNo"]').trigger('blur');
+        //$('input[name="professionRegoNo"]').trigger('blur');
         init = 1;
     });
 

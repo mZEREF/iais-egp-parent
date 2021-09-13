@@ -692,6 +692,8 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
+        boolean needDec = true;
+
         AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto(oldAppSubmissionDto, appSubmissionDtos.get(0));
 
         NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0),appEditSelectDto);
@@ -754,6 +756,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
         }else if(appSubmissionDtos.size() > 1){
+            needDec = false;
             moreAppSubmissionDtoAction(appSubmissionDtos);
         }
         boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
@@ -785,7 +788,7 @@ public class WithOutRenewalDelegator {
         appSubmissionDtos1.addAll(appSubmissionDtos);
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
-            setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,null);
+            setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,null,needDec);
         }
         int i=0;
         for( AppFeeDetailsDto detailsDto : appFeeDetailsDto){
@@ -812,7 +815,7 @@ public class WithOutRenewalDelegator {
             Long auto = System.currentTimeMillis();
             autoAppSubmissionDtos.get(0).setAuditTrailDto(currentAuditTrailDto);
             for(AppSubmissionDto appSubmissionDto : autoAppSubmissionDtos){
-                setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,autoGrpNo);
+                setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,autoGrpNo,needDec);
             }
             List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
             AuditTrailDto at = AuditTrailHelper.getCurrentAuditTrailDto();
@@ -871,7 +874,7 @@ public class WithOutRenewalDelegator {
         setGiroAcc(renewAppSubmissionDtos,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
     }
-    private void setRfcSubInfo(AppSubmissionDto appSubmissionDtoNew,AppSubmissionDto dto,String autoGrpNo){
+    private void setRfcSubInfo(AppSubmissionDto appSubmissionDtoNew,AppSubmissionDto dto,String autoGrpNo,boolean needDec){
         if(StringUtil.isNotEmpty(autoGrpNo)){
             dto.setAppGrpNo(autoGrpNo);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDtoNew.getAppGrpPremisesDtoList();
@@ -881,14 +884,16 @@ public class WithOutRenewalDelegator {
                 }
             }
         }
-        dto.setEffectiveDateStr(appSubmissionDtoNew.getEffectiveDateStr());
-        dto.setEffectiveDate(appSubmissionDtoNew.getEffectiveDate());
-        if (appSubmissionDtoNew.getAppDeclarationMessageDto() != null) {
-            dto.setAppDeclarationMessageDto(appSubmissionDtoNew.getAppDeclarationMessageDto());
-            dto.setAppDeclarationDocDtos(appSubmissionDtoNew.getAppDeclarationDocDtos());
-            if (appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt() != null) {
-                dto.setEffectiveDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt());
-                dto.setEffectiveDateStr(Formatter.formatDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt()));
+        if(needDec){
+            dto.setEffectiveDateStr(appSubmissionDtoNew.getEffectiveDateStr());
+            dto.setEffectiveDate(appSubmissionDtoNew.getEffectiveDate());
+            if (appSubmissionDtoNew.getAppDeclarationMessageDto() != null) {
+                dto.setAppDeclarationMessageDto(appSubmissionDtoNew.getAppDeclarationMessageDto());
+                dto.setAppDeclarationDocDtos(appSubmissionDtoNew.getAppDeclarationDocDtos());
+                if (appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt() != null) {
+                    dto.setEffectiveDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt());
+                    dto.setEffectiveDateStr(Formatter.formatDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt()));
+                }
             }
         }
     }
@@ -1032,7 +1037,7 @@ public class WithOutRenewalDelegator {
             flag=false;
         }
 
-        setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),flag,rfcAppEditSelectDto.isPremisesEdit(),rfcAppEditSelectDto.isLicenseeEdit());
+        setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),flag,rfcAppEditSelectDto.isPremisesEdit());
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
         appSubmissionDtoByLicenceId.setIsNeedNewLicNo( !flag ? AppConsts.YES : AppConsts.NO );
@@ -1045,10 +1050,6 @@ public class WithOutRenewalDelegator {
         requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
     }
 
-    public void setRfcSubmissionDtoLicEdit(AppSubmissionDto appSubmissionDtoByLicenceId,String licenseeId,AppEditSelectDto rfcAppEditSelectDto,AppSubmissionDto appSubmissionDto) throws Exception {
-        initRfcSubmissionDto(appSubmissionDtoByLicenceId,licenseeId);
-        setNewSubLic(rfcAppEditSelectDto, appSubmissionDtoByLicenceId,appSubmissionDto);
-    }
 
     private void initRfcSubmissionDto(AppSubmissionDto appSubmissionDtoByLicenceId,String licenseeId) throws Exception {
         requestForChangeService.setRelatedInfoBaseServiceId(appSubmissionDtoByLicenceId);
@@ -1081,7 +1082,7 @@ public class WithOutRenewalDelegator {
             }
         }
     }
-    private void setPremisesEditAndReSetAppGrpPremisesDto(AppSubmissionDto appSubmissionDtoByLicenceId,AppGrpPremisesDto appGrpPremisesDto,boolean flag,boolean premisesEdit,boolean licEdit) throws CloneNotSupportedException {
+    private void setPremisesEditAndReSetAppGrpPremisesDto(AppSubmissionDto appSubmissionDtoByLicenceId,AppGrpPremisesDto appGrpPremisesDto,boolean flag,boolean premisesEdit) throws CloneNotSupportedException {
         if(premisesEdit){
             List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
             AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
