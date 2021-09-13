@@ -268,18 +268,20 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY009'}">
+                                            <c:if test="${app.status != 'APST005' && app.status != 'APST006' && app.status != 'APST050' && app.canInspection}">
                                             <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                 <option value="" selected>Select</option>
-                                                <c:if test="${app.canInspection}">
                                                 <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                     <option value="Assessment">Assessment</option>
                                                 </c:if>
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
-                                                </c:if>
-                                                <c:if test="${app.pmtStatus == 'PMT06'}">
-                                                    <option value="Make Payment">Make Payment</option>
-                                                </c:if>
                                             </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST050' || !app.canInspection }">
+                                            <select disabled>
+                                                <option>N/A</option>
+                                            </select>
+                                            </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY001'}">
                                             <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
