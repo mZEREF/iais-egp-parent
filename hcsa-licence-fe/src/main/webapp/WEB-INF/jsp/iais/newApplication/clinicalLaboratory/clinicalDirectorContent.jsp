@@ -151,9 +151,13 @@
                 }
             }
             //trigger prs
+            /*
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
+            */
+            var needControlName = $(this).find('input.licPerson').val() != "1";
+            prsCallBackFuns.setEdit($(this).closest('div.clinicalDirectorContent'), 'disabled', false, needControlName);
             $(this).find('.designation').triggerHandler('change');
             checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
             // update select tag
@@ -388,7 +392,6 @@
             clearFields($content);
             return;
         }
-        console.info("11111111111111");
         console.log(data);
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
