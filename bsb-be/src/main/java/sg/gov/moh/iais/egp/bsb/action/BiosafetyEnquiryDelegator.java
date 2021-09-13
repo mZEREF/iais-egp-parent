@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
+import sg.gov.moh.iais.egp.bsb.dto.Letter;
+import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -50,6 +53,8 @@ public class BiosafetyEnquiryDelegator {
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
     @Autowired
     private ProcessClient processClient;
+    @Autowired
+    private SendNotificationHelper sendNotificationHelper;
 
     /**
      * AutoStep: prepareBasicSearch
@@ -86,7 +91,25 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, approvedFacilityCerResultDto.getPageInfo());
         }
         ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
-
+       Letter letter = new Letter();
+       SimpleDateFormat sdf = new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
+        letter.setApplicant("applicant01");
+       letter.setLetterType("letter1");
+       letter.setAgent("agent01");
+       letter.setDesignation("new application");
+       letter.setAgent("bio01");
+       letter.setApplicationNo("APP0000001");
+       letter.setCompanyName("company01");
+       letter.setLaboratoryName("laboratory01");
+       letter.setSubmissionDate(sdf.format(new Date()));
+       letter.setNowDate(sdf.format(new Date()));
+       sendNotificationHelper.sendLetter(letter);
+//       Notification notification = new Notification();
+//       notification.setStatus("reject");
+//       notification.setApplicationName("name01");
+//       notification.setApplicationType("type01");
+//       notification.setApplicationNo("APP0000001");
+//       sendNotificationHelper.sendNotification(notification);
     }
 
 
