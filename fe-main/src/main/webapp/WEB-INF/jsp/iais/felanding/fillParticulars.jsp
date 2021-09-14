@@ -37,42 +37,40 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
             <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
         <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
-                <div class="tab-gp steps-tab">
-                    <div class="tab-content">
-                        <div class="tab-pane active form-padding" id="premisesTab" role="tabpanel">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <h2>Authorised Person Particulars Form</h2>
-                                        <div class="form-horizontal">
-                                            <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
-                                                <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
-                                                <c:set var="licensee" value="${myinfo_solo_dto_seesion}"/>
-                                                <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
-                                            </c:if>
-                                            <c:if test="${empty myinfo_sinpass_login_evaluate}">
-                                                <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
-                                            </c:if>
+            <div class="tab-gp steps-tab">
+                <div class="tab-content">
+                    <div class="tab-pane active form-padding" id="premisesTab" role="tabpanel">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>Authorised Person Particulars Form</h2>
+                                <div class="form-horizontal">
+                                    <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+                                        <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                        <c:set var="licensee" value="${myinfo_solo_dto_seesion}"/>
+                                        <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
+                                    </c:if>
+                                    <c:if test="${empty myinfo_sinpass_login_evaluate}">
+                                        <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
+                                    </c:if>
+                                    <iais:row>
+                                        <div class="col-xs-12 col-md-4 control-label"></div>
+                                        <div align="right" class="col-sm-7 col-md-6 col-xs-10">
+                                            <%-- <a class="btn btn-primary next" href="javascript:void(0);"
+                                                onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
+                                          <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+                                            <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
+                                          </c:if>
+                                          <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
+                                          <a class="btn btn-primary next" href="javascript:void(0);"
+                                             onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-right text-center-mobile">
-                                   <%-- <a class="btn btn-primary next" href="javascript:void(0);"
-                                       onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
-                                      <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
-                                       <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
-                                      </c:if>
-                                    <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
-                                    <a class="btn btn-primary next" href="javascript:void(0);"
-                                       onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
+                                    </iais:row>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-        </div>
-
-
+            </div>
         </div>
     </form>
 </div>
