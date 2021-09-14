@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +37,8 @@ public class UserValidator implements CustomizeValidator {
     @Autowired
     IntranetUserService intranetUserService;
 
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -94,10 +98,15 @@ public class UserValidator implements CustomizeValidator {
                     List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(dto.getIdentityNo(), idType);
                     String identityNoErr=MessageUtil.getMessageDesc("USER_ERR015");
                     if (dto.getId() == null) { // create
-                        Optional<FeUserDto> user = userList.stream()
-                                .filter(feUserDto -> !AppConsts.COMMON_STATUS_DELETED.equals(feUserDto.getStatus()))
-                                .findAny();
-                        if (user.isPresent()) {
+                        FeUserDto feUserDto;
+                        if(StringUtil.isEmpty(dto.getUenNo())) {
+                            //sing pass
+                            feUserDto = findSingPassAccount(userList);
+                        } else {
+                            //crop pass
+                            feUserDto = findCropPassAccount(userList, dto.getUenNo());
+                        }
+                        if (feUserDto != null) {
                             map.put("identityNo", identityNoErr);
                         }
                     } else { // edit
@@ -114,6 +123,42 @@ public class UserValidator implements CustomizeValidator {
             }
         }
         return map;
+    }
+
+    private FeUserDto findCropPassAccount(List<FeUserDto> userAccounts, String uen) {
+        FeUserDto feUserDto = null;
+        for(FeUserDto userDto : userAccounts) {
+            if(userDto != null) {
+                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())) {
+                    String orgId = userDto.getOrgId();
+                    OrganizationDto organizationDto = organizationClient.getOrganizationById(orgId).getEntity();
+                    if(organizationDto != null) {
+                        if(uen.equals(organizationDto.getUenNo())) {
+                            feUserDto = userDto;
+                        }
+                    }
+                }
+            }
+        }
+        return feUserDto;
+    }
+
+    private FeUserDto findSingPassAccount(List<FeUserDto> userAccounts) {
+        FeUserDto feUserDto = null;
+        for(FeUserDto userDto : userAccounts) {
+            if(userDto != null) {
+                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())) {
+                    String orgId = userDto.getOrgId();
+                    OrganizationDto organizationDto = organizationClient.getOrganizationById(orgId).getEntity();
+                    if(organizationDto != null) {
+                        if(StringUtil.isEmpty(organizationDto.getUenNo())) {
+                            feUserDto = userDto;
+                        }
+                    }
+                }
+            }
+        }
+        return feUserDto;
     }
 
 }
