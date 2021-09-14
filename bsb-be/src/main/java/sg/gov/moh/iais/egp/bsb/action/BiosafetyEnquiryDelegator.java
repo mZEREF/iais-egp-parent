@@ -91,6 +91,15 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, approvedFacilityCerResultDto.getPageInfo());
         }
         ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
+        Notification notification = new Notification();
+        notification.setApplicationNo("APP0000001");
+        notification.setStatus("rej001");
+        notification.setApprovalNo("approval001");
+        notification.setFacilityType("type01");
+        notification.setApprovalType("approvalType01");
+        notification.setFacilityCertifier("certifier01");
+        notification.setOfficer("Moh officer01");
+        sendNotificationHelper.sendNotification(notification);
     }
 
 

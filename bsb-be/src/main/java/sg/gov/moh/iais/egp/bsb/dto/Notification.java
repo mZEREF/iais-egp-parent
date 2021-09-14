@@ -22,7 +22,7 @@ public class Notification {
 
     //Revocation
 
-    //AO
+    //AO - rej001
     private String approvalNo;
 
     private String facilityType;
@@ -33,7 +33,7 @@ public class Notification {
 
     private String officer;
 
-    //USER
+    //USER - rej002
     private String reason;
 
     private String facilityName;

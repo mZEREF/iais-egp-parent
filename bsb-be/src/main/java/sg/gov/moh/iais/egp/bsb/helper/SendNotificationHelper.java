@@ -22,7 +22,6 @@ import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +62,8 @@ public class SendNotificationHelper {
     private static final String MSG_TEMPLATE_NOTICE_OF_REVOCATION_FOR_APPROVAL = "7965B021-E60E-4E1B-B478-9F28361CA958";
     private static final String MSG_TEMPLATE_NOTICE_OF_REVOCATION_FOR_REGISTERED_FACILITY = "9EA3812F-DB00-4D5D-8C77-17B0C6F1DA82";
     private static final String MSG_TEMPLATE_NOTICE_OF_REVOCATION_FOR_CERTIFIED_FACILITY = "CA386361-8A26-4850-B522-7967204D4FC7";
+    private static final String MSG_TEMPLATE_REVOCATION_AO_APPROVED = "219D5DED-48B7-4ED5-9D87-AB6D59A67B1F";
+    private static final String MSG_TEMPLATE_REVOCATION_USER_APPROVED = "BF5A1991-69E9-49CC-AE8A-AC7E9DAECF75";
     private static final String MSG_LETTER_TYPE_UNCERTIFIED_FACILITY                            = "letter1";
     private static final String MSG_LETTER_TYPE_CERTIFIED_FACILITY                              = "letter2";
     private static final String MSG_LETTER_TYPE_LARGE_SCALE_PRODUCTION                          = "letter3";
@@ -73,10 +74,7 @@ public class SendNotificationHelper {
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_APPROVAL               = "letter8";
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_REGISTERED_FACILITY    = "letter9";
     private static final String MSG_LETTER_TYPE_NOTICE_OF_REVOCATION_FOR_CERTIFIED_FACILITY     = "letter10";
-//    private static final String MSG_NOTIFICATION_APP_APPROVAL_ID                                = "BISNEW003";
-//    private static final String MSG_NOTIFICATION_APP_REJECT_ID                                  = "BISNEW004";
-//    private static final String MSG_NOTIFICATION_BIO_REV_APPROVAL_ID                            = "BISEmail001";
-//    private static final String MSG_NOTIFICATION_BIO_REV_REJECT_ID                              = "BISEmail002";
+
 
     private static final String STATUS_NEW_APPLICATION_SUCCESSFUL   = "app001";
     private static final String STATUS_NEW_APPLICATION_UNSUCCESSFUL = "app002";
@@ -114,12 +112,16 @@ public class SendNotificationHelper {
    }
 
     public void sendNotification(Notification notification) {
-        if(notification != null && StringUtil.isNotEmpty(notification.getApplicationNo()) && StringUtil.isNotEmpty(notification.getApplicationType()) && StringUtil.isNotEmpty(notification.getApplicationName())){
+        if(notification != null && StringUtil.isNotEmpty(notification.getApplicationNo()) && StringUtil.isNotEmpty(notification.getStatus())){
             getNotificationParams(notification);
             if(STATUS_NEW_APPLICATION_SUCCESSFUL.equals(notification.getStatus())){
                 sendEmail(MSG_TEMPLATE_NEW_APP_APPROVAL,notification);
             }else if(STATUS_NEW_APPLICATION_UNSUCCESSFUL.equals(notification.getStatus())){
                 sendEmail(MSG_TEMPLATE_NEW_APP_REJECT,notification);
+            }else if(STATUS_REVOCATION_APPROVAL_AO.equals(notification.getStatus())){
+                sendEmail(MSG_TEMPLATE_REVOCATION_AO_APPROVED,notification);
+            }else if(STATUS_REVOCATION_APPROVAL_USER.equals(notification.getStatus())){
+                sendEmail(MSG_TEMPLATE_REVOCATION_USER_APPROVED,notification);
             }
         }else{
             try {
@@ -211,9 +213,7 @@ public class SendNotificationHelper {
            map.put("Applicant",notification.getApplicationName());
            map.put("applicationNo",notification.getApplicationNo());
            map.put("applicationType",notification.getApplicationType());
-           notification.setContentParams(map);
            subMap.put("applicationNo",notification.getApplicationNo());
-           notification.setSubjectParams(subMap);
        }else if(STATUS_REVOCATION_APPROVAL_AO.equals(notification.getStatus())){
            map.put("applicationNo",notification.getApplicationNo());
            map.put("ApprovalNo",notification.getApprovalNo());
@@ -229,6 +229,8 @@ public class SendNotificationHelper {
            map.put("FacilityName",notification.getFacilityName());
            map.put("FacilityAddress",notification.getFacilityAddress());
        }
+       notification.setContentParams(map);
+       notification.setSubjectParams(subMap);
    }
 
 
