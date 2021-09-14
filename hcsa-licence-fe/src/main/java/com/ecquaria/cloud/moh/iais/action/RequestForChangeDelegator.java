@@ -1156,7 +1156,7 @@ public class RequestForChangeDelegator {
                         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtoList = requestForChangeService.getLicenseeKeyApptPersonDtoListByUen(uen);
                         boolean canTransfer = canTransfer(oldLicenseeKeyApptPersonDtos,licenseeKeyApptPersonDtoList);
                         if(!canTransfer){
-                            //error.put("uenError","RFC_ERR007");
+                            error.put("uenError","RFC_ERR007");
                         }
                     }else{
                         log.info(StringUtil.changeForLog("The same uen -->:"+uen));
