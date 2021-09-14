@@ -55,13 +55,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.Base64;
-import org.springframework.util.ResourceUtils;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 @Slf4j
 public class PaymentPayNowProxy extends PaymentProxy {
@@ -271,9 +264,13 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;
-
-
-			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
+			Boolean payNowSucc= (Boolean) ParamUtil.getSessionAttr(request,appGrpNo+"payNowResult");
+			if(status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+				ParamUtil.setSessionAttr(request,appGrpNo+"payNowResult",Boolean.TRUE);
+			}
+			if(payNowSucc==null|| !payNowSucc.equals(Boolean.TRUE)){
+				RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
+			}
 		} catch (UnsupportedEncodingException e) {
 			log.info(e.getMessage(),e);
 			log.debug(e.getMessage());
