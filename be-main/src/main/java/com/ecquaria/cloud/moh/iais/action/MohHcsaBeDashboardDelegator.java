@@ -1215,6 +1215,10 @@ public class MohHcsaBeDashboardDelegator {
                     }
                     applicationMainClient.updateCessationApplications(specApplicationDtos);
                 }
+            } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+                if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                }
             }
         }
         //set appSvcVehicleDto
