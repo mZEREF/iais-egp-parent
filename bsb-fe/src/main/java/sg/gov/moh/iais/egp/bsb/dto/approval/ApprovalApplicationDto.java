@@ -1,8 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.dto.approval;
 
 import lombok.Data;
+import net.sf.oval.constraint.Email;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.ValidateWithMethod;
+import sg.gov.moh.iais.egp.bsb.common.constraints.MobileNo;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +54,7 @@ public class ApprovalApplicationDto implements Serializable {
 
     @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
     @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
+    @ValidateWithMethod(message = "Date is not expect date.", methodName = "checkToExpecteddate", parameterType = Date.class, profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
     private Date transferExpectedDate;
 
     @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
@@ -59,14 +63,16 @@ public class ApprovalApplicationDto implements Serializable {
 
     @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
     @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
+    @Email(message = "The email is incorrect", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
     private String impCtcPersonEmail;
 
     @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
     @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @MobileNo(message = "Contact No is not a valid mobile number", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
     private String impCtcPersonNo;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport","possessNull","possessOthersNull","largeNull"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport","possessNull","possessOthersNull","largeNull"})
     private String transferFacAddr1;
 
     private String transferFacAddr2;
@@ -121,6 +127,7 @@ public class ApprovalApplicationDto implements Serializable {
 
     @NotNull(message = "This is mandatory.", profiles = {"special"})
     @NotBlank(message = "This is mandatory.", profiles = {"special"})
+    @ValidateWithMethod(message = "EndDate can not be earlier than startDate.", methodName = "checkToAfterFrom", parameterType = Date.class, profiles = {"special"})
     private Date endDate;
 
     private String appType;
@@ -131,11 +138,26 @@ public class ApprovalApplicationDto implements Serializable {
 
     private Date applicationDt;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport"})
+    @NotNull(message = "Please Check \"Declaration on the accuracy of submission\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull"})
+    @NotBlank(message = "Please Check \"Declaration on the accuracy of submission\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull"})
     private String checkbox1;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","special"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","special"})
+    @NotNull(message = "Please Check \"Declaration of Compliance with BATA Transport Regulations\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull","special"})
+    @NotBlank(message = "Please Check \"Declaration of Compliance with BATA Transport Regulations\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull","special"})
     private String checkbox2;
+
+    private boolean checkToAfterFrom(Date endDate) {
+        if (endDate == null || startDate == null){
+            return true;
+        }
+        return endDate.after(startDate);
+    }
+
+    private boolean checkToExpecteddate(Date transferExpectedDate) {
+        if (transferExpectedDate == null){
+            return true;
+        }
+        return transferExpectedDate.after(new Date());
+    }
+
 }

@@ -75,7 +75,6 @@ $(function() {
     }else if (selectValueSchedule == ""){
         $("#select0").show();
     }
-
     $("#schedule").change(function() {
         var schedule = $(this).val();
         if (schedule == "SCHTYPE001"){
@@ -108,26 +107,53 @@ $(function() {
             $("#select0").show();
         }
     })
+    $("#Clear").click(function (){
+        $("div,textarea").val("");
+        $(".date_picker").val("");
+        $("input[type='text']").val("");
+        $("input[type='number']").val("");
+        $("#facilityId option:first").prop("selected",'selected');
+        $("#schedule option:first").prop("selected",'selected');
+        $("#modeOfProcurement option:first").prop("selected",'selected');
+        $("#country option:first").prop("selected",'selected');
+        $("input[type='checkbox']").prop('checked', false);
+        $(".multi-select-button").html("-- Select --");
+        $("#natureOfTheSample option").prop('selected',false);
+        $("#select0 option").prop('selected',false);
+        $("#select1 option").prop('selected',false);
+        $("#select2 option").prop('selected',false);
+        $("#select3 option").prop('selected',false);
+        $("#select4 option").prop('selected',false);
+        $("#select5 option").prop('selected',false);
+        $("#select6 option").prop('selected',false);
+        $("#beInboxFilter .current").text("Please Select");
+    })
     $("#nextBtn").click(function (){
+        showWaiting();
         $('#mainForm').submit();
     })
     $("#Next").click(function (){
+        showWaiting();
         $("#actionType").val("next");
         $('#mainForm').submit();
     })
     $("#Back").click(function (){
+        showWaiting();
         $("#actionType").val("back");
         $('#mainForm').submit();
     })
     $("#SaveDraft").click(function (){
+        showWaiting();
         $("#actionType").val("saveDraft");
         $('#mainForm').submit();
     })
     $("#Submit").click(function (){
+        showWaiting();
         $("#actionType").val("submit");
         $('#mainForm').submit();
     })
     $("#subApprovalEdit").click(function (){
+        showWaiting();
         $("#actionType").val("next");
         $('#mainForm').submit();
     })
@@ -145,12 +171,15 @@ $(function() {
         if (controlLi == currId) {
             return;
         }else if(currId == "PrepareForms"){
+            showWaiting();
             $("#actionType").val("form");
             $('#mainForm').submit();
         }else if(currId == "PrepareDocuments"){
+            showWaiting();
             $("#actionType").val("document");
             $('#mainForm').submit();
         }else if(currId == "PreparePreview"){
+            showWaiting();
             $("#actionType").val("preview");
             $('#mainForm').submit();
         }

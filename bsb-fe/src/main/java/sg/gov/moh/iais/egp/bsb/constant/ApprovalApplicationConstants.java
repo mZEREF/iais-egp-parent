@@ -61,6 +61,16 @@ public class ApprovalApplicationConstants {
 
     public static final String CRUD_ACTION_TYPE = "crud_action_type";
     public static final String CRUD_ACTION_TYPE_FROM_PAGE = "crud_action_type_form_page";
+    public static final String CRUD_ACTION_TYPE_VALUE = "crud_action_type_value";
+
+    public static final String CRUD_ACTION_TYPE_1 = "loading";
+    public static final String CRUD_ACTION_TYPE_2 = "doSaveDraft";
+    public static final String CRUD_ACTION_TYPE_3 = "doSubmit";
+
+    public static final String CRUD_ACTION_TYPE_FROM_PAGE_1 = "PrepareForms";
+    public static final String CRUD_ACTION_TYPE_FROM_PAGE_2 = "PrepareDocuments";
+    public static final String CRUD_ACTION_TYPE_FROM_PAGE_3 = "PreparePreview";
+    public static final String CRUD_ACTION_TYPE_FROM_PAGE_4 = "doJump";
 
     public static final String ERRORMSG = "errorMsg";
 
@@ -86,4 +96,21 @@ public class ApprovalApplicationConstants {
     public static final String VALIDATE_STATUS_8 = "possessNull";
     public static final String VALIDATE_STATUS_9 = "possessOthersNull";
     public static final String VALIDATE_STATUS_10 = "largeNull";
+
+    public static final String NATURE_OF_THE_SAMPLE_6 = "BNOTS006";
+
+    public static final String ACTIONTYPE = "actionType";
+    public static final String ACTIONTYPE_1 = "back";
+    public static final String ACTIONTYPE_2 = "next";
+    public static final String ACTIONTYPE_3 = "form";
+    public static final String ACTIONTYPE_4 = "document";
+    public static final String ACTIONTYPE_5 = "preview";
+    public static final String ACTIONTYPE_6 = "saveDraft";
+    public static final String ACTIONTYPE_7 = "submit";
+
+    public static final String PAGE_ID = "page_id";
+    public static final String PAGE_ID_1 = "form_page";
+    public static final String PAGE_ID_2 = "document_page";
+    public static final String PAGE_ID_3 = "preview_page";
+
 }

@@ -40,11 +40,6 @@ public class INTERNET___MohApprovalApplication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareForms", this);
 	}
 
-	public void prepareJump_OnStepProcess_0() throws Exception {
-	// 		PrepareJump->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
-	}
-
 	public void doDocuments_OnStepProcess_0() throws Exception {
 	// 		doDocuments->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doDocuments", this);
