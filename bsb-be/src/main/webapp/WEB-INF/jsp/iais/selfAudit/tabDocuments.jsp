@@ -14,9 +14,9 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="25%">Document</th>
-                    <th width="25%">File</th>
-                    <th width="10%">Size</th>
+                    <th width="20%">Document</th>
+                    <th width="20%">File</th>
+                    <th width="20%">Size</th>
 <%--                    <th width="20%">Version</th>--%>
                     <th width="20%">Submitted By</th>
                     <th width="20%">Date Submitted</th>

@@ -32,14 +32,17 @@ public class INTRANET___DOProcessSelfAudit___1 extends BaseProcessClass {
 
 	public void verified_OnStepProcess_0() throws Exception {
 	// 		verified->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "DOVerified", this);
 	}
 
 	public void reject_OnStepProcess_0() throws Exception {
 	// 		reject->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "DOReject", this);
 	}
 
 	public void requestInformation_OnStepProcess_0() throws Exception {
 	// 		requestInformation->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "DORequestForInformation", this);
 	}
 
 }

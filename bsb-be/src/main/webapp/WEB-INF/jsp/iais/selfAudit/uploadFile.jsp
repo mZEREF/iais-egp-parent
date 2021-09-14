@@ -1,7 +1,7 @@
 
 
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="">
+    <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${auditDocDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${auditDocDto.systemFileType}">
     <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
     <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">

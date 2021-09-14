@@ -12,17 +12,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -49,6 +52,9 @@ public class AORevocationDelegator {
 
     @Autowired
     private ProcessClient processClient;
+
+    @Autowired
+    private SendNotificationHelper sendNotificationHelper;
 
     /**
      * StartStep: startStep
@@ -183,8 +189,7 @@ public class AORevocationDelegator {
         List<Application> list = new LinkedList<>();
         HttpServletRequest request = bpc.request;
 
-        String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
-        Application application = revocationClient.getApplicationById(appId).getEntity();
+        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
         List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
 
         String address = JoinAddress.joinAddress(application);
@@ -214,6 +219,20 @@ public class AORevocationDelegator {
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
         aoDecisionDto.getHistory().setAppStatus(decision);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
+
+        //send notification
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String date=dateFormat.format(new Date());
+        String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
+
+        Notification notification = new Notification();
+        notification.setStatus("rej002");
+        notification.setApplicationNo(aoDecisionDto.getApplication().getApplicationNo());
+        notification.setDate(date);
+        notification.setReason(aoDecisionDto.getMisc().getReasonContent());
+        notification.setFacilityName(aoDecisionDto.getApplication().getFacility().getFacilityName());
+        notification.setFacilityAddress(address);
+        sendNotificationHelper.sendNotification(notification);
     }
 
     /**

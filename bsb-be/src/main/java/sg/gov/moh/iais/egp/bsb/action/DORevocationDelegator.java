@@ -12,15 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +39,9 @@ public class DORevocationDelegator {
 
     @Autowired
     private RevocationClient revocationClient;
+
+    @Autowired
+    private SendNotificationHelper sendNotificationHelper;
 
     /**
      * StartStep: startStep
@@ -59,12 +65,13 @@ public class DORevocationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         List<Application> list=new LinkedList<>();
         HttpServletRequest request = bpc.request;
-        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
+        String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
+        Application application = revocationClient.getApplicationById(appId).getEntity();
         //Do address processing
         String address = JoinAddress.joinAddress(application);
         application.getFacility().setFacilityAddress(address);
         list.add(application);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
     }
 
     /**
@@ -113,6 +120,19 @@ public class DORevocationDelegator {
         historyDto.setInternalRemarks(miscDto.getRemarks());
         historyDto.setApplicationNo(result.getEntity().getApplicationNo());
         revocationClient.saveHistory(historyDto);
+
+        List<Application> list = (List<Application>) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL);
+        Notification notification = new Notification();
+        for (Application application : list) {
+            notification.setApplicationNo(application.getApplicationNo());
+            notification.setStatus("rej001");
+            notification.setApprovalNo("Approval001");
+            notification.setFacilityType(application.getFacility().getFacilityType());
+            notification.setApprovalType(application.getFacility().getApprovalType());
+            notification.setFacilityCertifier(application.getFacility().getApproval());//APPROVAL
+            notification.setOfficer(loginContext.getUserName());
+        }
+        sendNotificationHelper.sendNotification(notification);
     }
 
     /**

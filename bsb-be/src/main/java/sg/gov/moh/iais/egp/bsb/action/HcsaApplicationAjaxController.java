@@ -45,16 +45,12 @@ public class HcsaApplicationAjaxController {
 
     private static final String FACILITY = "facility";
 
-//    @Autowired
-//    private FillUpCheckListGetAppClient uploadFileClient;
-
     @Autowired
     private FileRepoClient fileRepoClient;
 
     @Autowired
     private DocClient docClient;
-//    @Autowired
-//    InsepctionNcCheckListService insepctionNcCheckListService;
+
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
@@ -70,8 +66,9 @@ public class HcsaApplicationAjaxController {
 //            appIntranetDocDto.setNoFilesMessage(errorMap.get("selectedFile"));
 //            return  JsonUtil.parseToJson(appIntranetDocDto);
 //        }else{
-//        AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
+        //As a method parameter
         FacilityDoc facilityDoc = new FacilityDoc();
+        //Only used for page display
         FacilityDoc doc = new FacilityDoc();
         if (selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
             //size
@@ -81,19 +78,11 @@ public class HcsaApplicationAjaxController {
             log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
             //type
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-//                String fileType = fileSplit[fileSplit.length - 1];
-//                facilityDoc.setDocType(fileType);
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
             facilityDoc.setName(fileName);
             doc.setName(fileName);
 
-            //status
-//                appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            //APP_PREM_CORRE_ID
-//                TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
-//                appIntranetDocDto.setAppPremCorrId(taskDto.getRefNo());
-            //set audit
             doc.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             Facility facility=new Facility();
             Facility facility1 = (Facility) ParamUtil.getSessionAttr(request, FACILITY);
@@ -105,13 +94,8 @@ public class HcsaApplicationAjaxController {
             doc.setSubmitAt(new Date());
             facilityDoc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             doc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-//                appIntranetDocDto.setSubmitDtString(Formatter.formatDateTime(appIntranetDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));
             doc.setSubmitByName(doc.getAuditTrailDto().getMohUserId());
-//                if(StringUtil.isEmpty(remark)){
-//                    appIntranetDocDto.setDocDesc(fileName);
-//                }else {
-//                    appIntranetDocDto.setDocDesc(remark);
-//                }
+
             FileRepoDto fileRepoDto = new FileRepoDto();
             fileRepoDto.setFileName(fileName);
             fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -122,19 +106,16 @@ public class HcsaApplicationAjaxController {
             facilityDoc.setFileRepoId(repo_id);
             doc.setFileRepoId(repo_id);
             //            appIntranetDocDto.set
-//                appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_COM);
             String id = docClient.saveFacilityDoc(facilityDoc).getEntity();
             facilityDoc.setId(id);
             doc.setId(id);
 
 
             // set appIntranetDocDto to seesion
-//            ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
             AuditDocDto auditDocDto = (AuditDocDto)ParamUtil.getSessionAttr(request,"auditDocDto");
             if (auditDocDto==null){
                 auditDocDto = new AuditDocDto();
             }
-//            List<AppIntranetDocDto> appIntranetDocDtos;
             List<FacilityDoc> facilityDocs;
             if(auditDocDto != null && auditDocDto.getFacilityDocs() != null){
                 facilityDocs = auditDocDto.getFacilityDocs();
@@ -158,16 +139,13 @@ public class HcsaApplicationAjaxController {
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-//            facilityDoc.setUrl(url);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             facilityDoc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
-//            facilityDoc.setIsUpload(Boolean.TRUE);
             facilityDocs.add(doc);
             if (auditDocDto != null){
                 auditDocDto.setFacilityDocs(facilityDocs);
                 auditDocDto.setIsUpload(Boolean.TRUE);
             }
-            ParamUtil.setSessionAttr(request,"docDto", facilityDoc);
             ParamUtil.setSessionAttr(request,"auditDocDto", auditDocDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( facilityDoc.getId())){

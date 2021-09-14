@@ -81,31 +81,6 @@
                                                                            value="" hidden>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div><iais:field value="Audit type" required="false" width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <p>Audit type1</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Audit Date" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p>07/07/2021</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Scenario Category"
-                                                                                        required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p><iais:code code="Category A"></iais:code></p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
                                                                             <iais:field value="Current Status"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
@@ -119,6 +94,18 @@
                                                                             <iais:field value="DO remarks" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <p>DO remarks,DO remarks</p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Audit Outcome" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="auditOutcome"
+                                                                                          name="auditOutcome"
+                                                                                          cols="70"
+                                                                                          rows="5"
+                                                                                          maxlength="300"></textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

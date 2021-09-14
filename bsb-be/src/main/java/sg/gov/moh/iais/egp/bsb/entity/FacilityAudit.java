@@ -29,4 +29,6 @@ public class FacilityAudit extends BaseEntity {
     private String scenarioCategory;
 
     private String auditOutcome;
+
+    private String finalRemarks;
 }

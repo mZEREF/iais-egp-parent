@@ -188,6 +188,6 @@ $(function () {
 
     $("#backToSubmit1").click(function (){
         showWaiting();
-        $("#mainForm").submit();
+        SOP.Crud.cfxSubmit("mainForm");
     });
 });

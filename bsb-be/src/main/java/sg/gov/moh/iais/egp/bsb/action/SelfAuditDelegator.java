@@ -22,6 +22,9 @@ import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.AODecisionDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.servlet.webflow.HttpHandler;
@@ -29,7 +32,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,6 +58,9 @@ public class SelfAuditDelegator {
     private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     private static final String AUDIT_ID = "auditId";
     private static final String LAST_AUDIT_DATE = "lastAuditDt";
+    private static final String AUDIT_DOC_DTO = "auditDocDto";
+    private static final String AUDIT_OUTCOME = "auditOutcome";
+    private static final String FINAL_REMARK = "finalRemark";
 
     @Autowired
     private AuditClient auditClient;
@@ -84,8 +92,7 @@ public class SelfAuditDelegator {
     public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,FACILITY,null);
-        ParamUtil.setSessionAttr(request,"docDto", null);
-        ParamUtil.setSessionAttr(request,"auditDocDto", null);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
 
         String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
@@ -196,10 +203,9 @@ public class SelfAuditDelegator {
     public void prepareDOProcessSelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,FACILITY,null);
-        ParamUtil.setSessionAttr(request,"docDto", null);
-        ParamUtil.setSessionAttr(request,"auditDocDto", null);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
 
-        String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
+        String auditId = "AE21FDD6-810C-EC11-BE6E-000C298D317C";
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
 
         Facility facility = facilityAudit.getFacility();
@@ -208,7 +214,75 @@ public class SelfAuditDelegator {
         String facilityAddress = JoinAddress.joinAddress(application);
         facility.setFacilityAddress(facilityAddress);
 
+        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
+        List<FacilityDoc> docList = new ArrayList<>();
+        for (FacilityDoc facilityDoc : facilityDocList) {
+            //这里拿不到，只能拿到当前用户名
+            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+            facilityDoc.setSubmitByName(submitByName);
+            docList.add(facilityDoc);
+        }
+        AuditDocDto auditDocDto = new AuditDocDto();
+        auditDocDto.setFacilityDocs(docList);
+
         ParamUtil.setSessionAttr(request,FACILITY,facility);
         ParamUtil.setRequestAttr(request, FACILITY_AUDIT, facilityAudit);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
+    }
+
+    /**
+     * audit status change to AUDITST006
+     * audit app status change to AUDITST005
+     * @param bpc
+     */
+    public void DOVerified(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        String auditId = ParamUtil.getMaskedString(request,AUDIT_ID);
+        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
+        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
+
+        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
+        if (StringUtil.isNotEmpty(auditOutCome)){
+            facilityAudit.setAuditOutcome(auditOutCome);
+        }
+        if (finalRemark.equals("on")){
+            facilityAudit.setFinalRemarks("Yes");
+        }else{
+            facilityAudit.setFinalRemarks("No");
+        }
+        facilityAudit.setStatus("AUDITST006");
+        auditClient.updateAudit(facilityAudit);
+
+        FacilityAudit audit = new FacilityAudit();
+        audit.setId(facilityAudit.getId());
+
+        FacilityAuditApp auditApp = new FacilityAuditApp();
+        auditApp.setAuditType(facilityAudit.getAuditType());
+        auditApp.setFacilityAudit(audit);
+        auditApp.setDoRemarks(remark);
+        auditApp.setDoDecision(decision);
+        auditApp.setStatus("AUDITST005");
+
+
+    }
+
+    /**
+     * audit status change to AUDITST006
+     * audit app status change to AUDITST005
+     * @param bpc
+     */
+    public void DORequestForInformation(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
+    /**
+     * audit status change to AUDITST006
+     * audit app status change to AUDITST005
+     * @param bpc
+     */
+    public void DOReject(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
     }
 }

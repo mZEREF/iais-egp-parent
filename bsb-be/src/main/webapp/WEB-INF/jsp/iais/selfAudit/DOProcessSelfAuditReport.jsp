@@ -77,39 +77,26 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <input name="applicationId" id="applicationId"
-                                                                           value="" hidden>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <div><iais:field value="Audit type" required="false" width="12"/></div>
-                                                                            <iais:value width="10">
-                                                                                <p>Audit type1</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Audit Date" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p>07/07/2021</p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Scenario Category"
-                                                                                        required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <p><iais:code code="Category A"></iais:code></p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
+                                                                    <input name="auditId" id="auditId"
+                                                                           value="<iais:mask name="auditId" value="${facilityAudit.id}"></iais:mask> " hidden>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status"
-                                                                                        required="true"/>
+                                                                                        required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="Active"></iais:code></p>
+                                                                                <p><iais:code code="${facilityAudit.status}"></iais:code></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Audit Outcome" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="auditOutcome"
+                                                                                          name="auditOutcome"
+                                                                                          cols="70"
+                                                                                          rows="5"
+                                                                                          maxlength="300"></textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -122,6 +109,14 @@
                                                                                           cols="70"
                                                                                           rows="5"
                                                                                           maxlength="300"></textarea>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Final Remarks" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <input name="finalRemark" id="finalRemark" type="checkbox">
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
