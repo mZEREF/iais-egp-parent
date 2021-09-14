@@ -1465,8 +1465,6 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
             }
-
-            ParamUtil.setSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto", (Serializable) appSvcPrincipalOfficersDtoList);
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
             String deputyPoFlag = ParamUtil.getString(bpc.request, "deputyPrincipalOfficer");
@@ -1480,8 +1478,7 @@ public class ClinicalLaboratoryDelegator {
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
             if ("next".equals(crud_action_additional)) {
-                List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
-                map = NewApplicationHelper.doValidatePo(poDto, licPersonMap, svcCode, appSubmissionDto.getSubLicenseeDto());
+                map = NewApplicationHelper.doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap, svcCode, appSubmissionDto.getSubLicenseeDto());
                 //validate mandatory count
                 int poLength = 0;
                 int dpoLength = 0;

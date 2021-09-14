@@ -3248,32 +3248,6 @@ public class NewApplicationDelegator {
     }
 
     /**
-     * @param request
-     * @return
-     * @description: for the page validate call.
-     */
-    private ApplicationValidateDto getValueFromPage(HttpServletRequest request) {
-        ApplicationValidateDto dto = new ApplicationValidateDto();
-        String pageCon = request.getParameter("pageCon");
-        chose(request, pageCon);
-
-        return dto;
-    }
-
-    private void chose(HttpServletRequest request, String type) {
-        if ("valPremiseList".equals(type)) {
-            List<AppGrpPremisesDto> list = genAppGrpPremisesDtoList(request);
-            ParamUtil.setRequestAttr(request, "valPremiseList", list);
-        }
-        if ("prinOffice".equals(type)) {
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDto =
-                    (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, "AppSvcPrincipalOfficersDto");
-            ParamUtil.setRequestAttr(request, "prinOffice", appSvcPrincipalOfficersDto);
-        }
-
-    }
-
-    /**
      * @description: get data from page
      * @author: zixian
      * @date: 11/6/2019 5:05 PM
