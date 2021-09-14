@@ -23,12 +23,10 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -172,7 +170,7 @@ public class FeAdminManageDelegate {
             }
 
         }else if("clearInfo".equalsIgnoreCase(action)) {
-          clearInfo(bpc.request);
+            clearInfo(bpc.request);
         }
         else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
@@ -253,7 +251,7 @@ public class FeAdminManageDelegate {
                 successMap.put("save","suceess");
                 orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,false);
                 if(licenseeHave){
-                    ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType()));
+                    ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
                 }
                 if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
