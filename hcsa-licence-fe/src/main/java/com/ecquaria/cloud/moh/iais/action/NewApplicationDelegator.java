@@ -4075,11 +4075,6 @@ public class NewApplicationDelegator {
                             }
                         }
                     }
-                    for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
-                        if(!appGrpPremisesDtos.get(i).isRfiCanEdit()){
-                            appGrpPremisesDtos.remove(i);
-                        }
-                    }
                     appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 }
                 ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);

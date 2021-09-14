@@ -24,8 +24,9 @@
                 <p><div class="text-right app-font-size-16"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
-                       varStatus="status">
-                <div class="panel-main-content amend-preview-info">
+                       varStatus="status" >
+                <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+                <div class="panel-main-content amend-preview-info" <c:if test="${isRfi && !appGrpPremDto.rfiCanEdit}">hidden</c:if>>
                     <div class="row">
                         <p><strong>Mode of Service Delivery ${status.index+1}</strong></p>
                     </div>
