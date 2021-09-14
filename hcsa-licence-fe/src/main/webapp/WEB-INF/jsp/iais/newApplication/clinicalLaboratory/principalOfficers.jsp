@@ -400,9 +400,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-5 col-md-4 text-right" >
-
+                                                        <c:if test="${ReloadDeputyPrincipalOfficers.size() > 1}">
                                                         <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeDpoBtn cursorPointer"></em></h4>
-
+                                                        </c:if>
                                                     </div>
                                                     <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
                                                         <div class="col-sm-10">
@@ -889,13 +889,15 @@
     $('.deputySelect').change(function () {
         var deputyFlag = $(this).val();
         var $poContentEle = $(this).closest('div.panel-group');
-        if("1" == deputyFlag){
+        if ("1" == deputyFlag) {
             $poContentEle.find('div.deputy-content ').removeClass('hidden');
 
             var $dpoContent = $poContentEle.find('div.deputy-content .panel-main-content');
             var dpoLength = $dpoContent.find('div.dpo-content').length;
-            if(dpoLength > 1){
+            if (dpoLength > 1) {
+                $dpoContent.find('.edit-content').removeClass('hidden');
                 //remove hidden
+                /*
                 var $contentEle = $('.dpo-content:eq(1)');
                 // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
                 $contentEle.find('.edit-content').removeClass('hidden');
@@ -903,7 +905,8 @@
                 $contentEle.find('div.nice-select').removeClass('disabled');
                 $contentEle.find('input[type="text"]').css('border-color','');
                 $contentEle.find('input[type="text"]').css('color','');
-            }else{
+                */
+            } else {
                 //add one
                 $('#addDpoBtn').trigger('click');
                 //close dropdown
