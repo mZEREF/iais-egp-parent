@@ -32,7 +32,8 @@
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
     <c:set var="canEdit" value="true"/>
-    <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
+    <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+    <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem" <c:if test="${isRfi && !appGrpPremisesDto.rfiCanEdit}">hidden</c:if>>
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
         <c:set var="offSite" value="OFFSITE" ></c:set>
