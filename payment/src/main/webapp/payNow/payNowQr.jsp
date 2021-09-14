@@ -29,41 +29,27 @@
         justify-content: center;
         align-items:flex-end;">
             <a class="btn btn-primary" align="center"
-               href="${payNowCallBackUrl}">Submit</a>
+               href="javascript:void(0)" onclick="submit()">Submit</a>
             <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
-               href=${payNowCallBackUrl}>Cancel</a>
+               href="javascript:void(0)" onclick="submit()">Cancel</a>
             <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
                 <span style="float:right">&nbsp;</span>
                 <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
                     href="javascript:void(0)" >MockServer</a>
             </c:if>
 
-<%--            <span style="float:right">&nbsp;</span>--%>
-<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
         </div>
     </div>
+    <form id="payNowRedirectForm" style="display: none"
+          name="payNowRedirectForm" action='${payNowCallBackUrl}' method='POST'>
+    </form>
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
     setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
     <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
-    <%--function payNowMockServer(){--%>
-    <%--    $.ajax({--%>
-    <%--        type: "get",--%>
-    <%--        url:  "${GatewayPayNowConfig.mockserverUrl}",--%>
-    <%--        data : {--%>
-    <%--            responseUrl : "${GatewayPayNowConfig.mockserverCallbackUrl}",--%>
-    <%--            appGrpNum : "${appGrpNo}"--%>
-    <%--        },--%>
-    <%--        success: function (data) {--%>
 
-    <%--        },--%>
-    <%--        error: function (msg) {--%>
-
-    <%--        }--%>
-    <%--    });--%>
-    <%--}--%>
     function payNowMockServer(){
         $.ajax({
             type: "get",
@@ -87,16 +73,16 @@
             success: function (data) {
                 let result = data.result;
                 console.log(result);
-                if('Success' == result){
-                    window.location.href=data.CallBackUrl;
+                if('Success' === result){
+                    submit();
                 }
-            },
-            error: function (msg) {
-                let result = msg.result;
-
-                console.log(result);
             }
         });
+    }
+    function submit(){
+        //showWaiting();
+        $('#payNowRedirectForm').submit();
+        //dismissWaiting();
     }
 
     function payNowImgStringRefresh(){
@@ -108,10 +94,7 @@
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
                 let result = data.result;
-                if('Success' == result){
-                    console.log(result);
-
-                }else {
+                if('Success' !== result){
                     $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
                 }
                 //console.log(data);

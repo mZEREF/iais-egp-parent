@@ -149,7 +149,7 @@
     </c:if>
 
 </div>
-
+<iais:confirm msg="NEW_ACK031"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
 <script>
     $(document).ready(function () {
         addVehicle();
@@ -199,6 +199,11 @@
         $('.removeBtn').click(function () {
             showWaiting();
             var vehicleLength = $('.vehicleContent').length;
+            if (vehicleLength == 1){
+                dismissWaiting();
+                $('#support').modal('show');
+                return;
+            }
             if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
                 dismissWaiting();
                 return;
@@ -214,7 +219,9 @@
     function refreshVehicle() {
         var vehicleLength = $('.vehicleContent').length;
         $('input[name="vehiclesLength"]').val(vehicleLength);
-        if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
+        if (vehicleLength == 1){
+            $('.vehicleRemoveBtn').show();
+        } else if (vehicleLength <= '${vehicleConfigDto.mandatoryCount}') {
             $('.vehicleRemoveBtn').hide();
         } else {
             $('.vehicleRemoveBtn').show();
@@ -269,6 +276,10 @@
                 }
             });
         });
+    }
+
+    function tagConfirmCallbacksupport(){
+        $('#support').modal('hide');
     }
 
 </script>

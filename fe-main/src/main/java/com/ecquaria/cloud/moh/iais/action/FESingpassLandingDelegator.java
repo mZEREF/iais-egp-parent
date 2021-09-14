@@ -168,17 +168,17 @@ public class FESingpassLandingDelegator {
         //get active flag and active role flag
         String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
         if(AppConsts.FALSE.equals(userAndRoleFlag)) {
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
             ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
             return;
         }
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
                 return;
             }
         }
@@ -197,7 +197,8 @@ public class FESingpassLandingDelegator {
         userSession.setScp(scp);
         userSession.setIdentityNo(identityNo);
         userSession.setIdType(idType);
-        if (orgUserManageService.validateSingpassAccount(identityNo, idType)){
+        boolean loginFlag = orgUserManageService.validateSingpassAccount(identityNo, idType);
+        if (loginFlag){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.YES);
             AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);
@@ -375,6 +376,11 @@ public class FESingpassLandingDelegator {
                     liceInfo.setStreetName(myInfo.getStreetName());
                     liceInfo.setMobileNo(myInfo.getMobileNo());
                     liceInfo.setEmilAddr(myInfo.getEmail());
+                    liceInfo.setAddrType(myInfo.getAddrType());
+                    String addrType = ParamUtil.getString(request,"addrType");
+                    if(StringUtil.isNotEmpty(addrType)){
+                        liceInfo.setAddrType(addrType);
+                    }
                     ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
                     ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.YES);
                     ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);

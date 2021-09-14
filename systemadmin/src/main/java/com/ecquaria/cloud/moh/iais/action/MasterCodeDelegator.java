@@ -119,9 +119,9 @@ public class MasterCodeDelegator {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
-            String categoryDescription = masterCodeQueryDto.getCodeCategory();
-            String category = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            String category = masterCodeQueryDto.getCodeCategory();
             MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            masterCodeQueryDto.setCodeCategory(masterCodeCategoryDto.getCategoryDescription());
             Integer isCanEdit = masterCodeCategoryDto.getIsEditable();
             if (isCanEdit == 0){
                 masterCodeQueryDto.setIsCentrallyManage(isCanEdit);
@@ -269,7 +269,7 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        String codeCategory = masterCodeDto.getCodeCategory();
         masterCodeDto.setCodeCategory(codeCategory);
         MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
         //eic
@@ -543,7 +543,7 @@ public class MasterCodeDelegator {
                 }
                 Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
+                    String  codeCategory =  masterCodeToExcelDto.getCodeCategory();
                     if (StringUtil.isEmpty(codeCategory)){
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR001");
                         errItems.add(errMsg);
@@ -1135,11 +1135,12 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceCMC)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }

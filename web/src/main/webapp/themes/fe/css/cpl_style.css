@@ -1848,7 +1848,7 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 .form-check .form-check-label {
-    color: #333333;
+    color: #333333 !important;
     font-size: 1.6rem;
     font-weight: 400;
     position: relative;
@@ -3283,6 +3283,7 @@ span.error-msg {
     }
     .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 47%;
         padding: 0;
         border: 0;
@@ -3315,6 +3316,7 @@ span.error-msg {
     }
     .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 48%;
         padding: 0;
         border: 0;
@@ -3529,6 +3531,12 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     .modal .modal-dialog {
         max-width: 560px;
         width: 560px;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .modal .modal-content {
+        display: block;
     }
 }
 
@@ -5756,7 +5764,7 @@ ul.v-numberlist li::before {
     font-size: 11pt;
     text-align: center;
 }
-
+.table-info-display .nav { float: right; }
 /************** DSS Fixes 2 Feb/2021 *************/
 
 .profile-dropdown-mobile {
@@ -5829,7 +5837,7 @@ ul.v-numberlist li::before {
     -webkit-border-radius: 8px;
     }
 
-    .table-info-display .nav { float: right; }
+
 }
 
 

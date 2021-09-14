@@ -289,7 +289,7 @@ public class PublicHolidayDelegate {
                     List<String> duplicateDateStrList = publicHolidayService.getDuplicateDateStr(duplicateDate);
                     if(!IaisCommonUtils.isEmpty(duplicateDateStrList)){
                         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-                        errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR012"));
+                        errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR016"));
                         ParamUtil.setRequestAttr(bpc.request,"duplicateDateStrList", duplicateDateStrList);
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
                     }

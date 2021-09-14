@@ -61,10 +61,11 @@
         vertical-align: top;
     }
 </style>
-<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input hidden="hidden" id="regulationId" name="regulationId" value="">
-    <div class="main-content">
+<div class="main-content">
+    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input hidden="hidden" id="regulationId" name="regulationId" value="">
+
         <div class="center-content col-xs-12 col-md-12">
         <div class="bg-title"><h2>Regulation Management</h2></div>
         <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
@@ -170,8 +171,8 @@
         </div>
 
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

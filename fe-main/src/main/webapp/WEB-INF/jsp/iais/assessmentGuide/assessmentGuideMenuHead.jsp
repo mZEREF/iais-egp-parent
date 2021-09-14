@@ -42,6 +42,7 @@
     @media only screen and (max-width: 767px){
         .table-gp table.table > tbody > tr > td {
             display: inline-grid;
+            display: -ms-inline-grid;
             width: 35%;
             padding: 0;
             border: 0;

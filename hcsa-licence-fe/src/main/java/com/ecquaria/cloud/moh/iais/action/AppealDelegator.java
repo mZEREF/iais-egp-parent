@@ -178,7 +178,13 @@ public class AppealDelegator {
         //wenkang
         String substring = MessageUtil.replaceMessage("APPEAL_ACK001",s, "Application No");
         log.info(StringUtil.changeForLog("substring : " + substring));
-        substring = substring.substring(0,substring.lastIndexOf(s));
+        try {
+            if(substring.contains(s)){
+                substring = substring.substring(0,substring.lastIndexOf(s));
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         log.info(StringUtil.changeForLog("substring substring : " + substring));
         bpc.request.setAttribute("substring",substring);
         bpc.request.setAttribute("newApplicationNo",s);
