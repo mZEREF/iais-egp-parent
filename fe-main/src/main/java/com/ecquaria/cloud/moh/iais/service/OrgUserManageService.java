@@ -37,7 +37,7 @@ public interface OrgUserManageService {
 
     FeUserDto getUserByNricAndUen(String uen, String nric);
 
-    FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
+    FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen);
 
     void createClientUser(FeUserDto userDto);
 
