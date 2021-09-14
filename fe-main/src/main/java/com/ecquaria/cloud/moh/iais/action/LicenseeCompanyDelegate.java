@@ -207,7 +207,8 @@ public class LicenseeCompanyDelegate {
 
      private String getLicDataUserIdForSolo(HttpServletRequest request,LoginContext loginContext, LicenseeDto licenseeDto){
          if(licenseeDto.getLicenseeIndividualDto() != null){
-             FeUserDto feUserDto =   orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType());
+             //function change with wangyu
+             FeUserDto feUserDto =   orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), null);
              licenseeDto.setMobileNo(feUserDto.getMobileNo());
              if( loginContext.getNricNum().equalsIgnoreCase(licenseeDto.getLicenseeIndividualDto().getIdNo())){
                  //no need SOLO_lOGIN_NAME,can get login user get

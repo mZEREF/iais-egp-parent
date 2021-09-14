@@ -106,7 +106,7 @@ public class FeMainEmailHelper {
                                 templateMap.put("UEN_No", uenNo);
 
                                 String idType = IaisEGPHelper.checkIdentityNoType(nricNumber);
-                                FeUserDto user = userManageService.getFeUserAccountByNricAndType(nricNumber, idType);
+                                FeUserDto user = userManageService.getFeUserAccountByNricAndType(nricNumber, idType, uenNo);
                                 if (Optional.ofNullable(user).isPresent()){
                                     templateMap.put("Applicant", user.getDisplayName());
                                 }else {
