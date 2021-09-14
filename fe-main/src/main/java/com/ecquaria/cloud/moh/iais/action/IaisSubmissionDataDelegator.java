@@ -60,6 +60,7 @@ public class IaisSubmissionDataDelegator {
     public void startLDT(BaseProcessClass bpc){
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         ParamUtil.setSessionAttr(bpc.request, LABORATORY_DEVELOP_TEST_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,"noContainCLB",null);
         if (loginContext != null){
             String licenseeId = loginContext.getLicenseeId();
             List<LicenceDto> licenceDtos = inboxClient.getLicenceDtosByLicenseeId(licenseeId).getEntity();
@@ -89,6 +90,7 @@ public class IaisSubmissionDataDelegator {
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"canSubmit","N");
                 ParamUtil.setRequestAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
+                ParamUtil.setSessionAttr(bpc.request,"noContainCLB",MessageUtil.getMessageDesc("CANNOT_SUBMIT"));
             }
         }
 
