@@ -439,6 +439,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeDto.setOrganizationId(organizationDto.getId());
             licenseeDto.setName(feUserDto.getDisplayName());
             licenseeDto.setEmilAddr(feUserDto.getEmail());
+            licenseeDto.setUenNo(organizationDto.getUenNo());
             licenseeEntityDto.setOfficeTelNo(StringUtil.isNotEmpty(feUserDto.getOfficeTelNo()) ? feUserDto.getOfficeTelNo() : feUserDto.getMobileNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
             if (Objects.nonNull(licenseeIndividualDto)) {
