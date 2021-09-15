@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -146,6 +147,8 @@ public class LicenceViewServiceDelegator {
     private String secSecretKey;
     @Value("${moh.halp.prs.enable}")
     private String prsFlag;
+    @Value("${moh.halp.herims.enable:N}")
+    private String herimsFlag;
     /**
      * StartStep: doStart
      *
@@ -255,7 +258,7 @@ public class LicenceViewServiceDelegator {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
             stepNameMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
         }
-        bpc.request.getSession().setAttribute("stepNameMap",(Serializable)stepNameMap);
+        bpc.request.getSession().setAttribute("stepNameMap", stepNameMap);
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
 
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
@@ -380,8 +383,11 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-        if("Y".equals(prsFlag)){
-            disciplinaryRecord(appSubmissionDto,bpc.request);
+        if ("Y".equals(prsFlag)) {
+            disciplinaryRecord(appSubmissionDto, bpc.request);
+        }
+        if ("Y".equals(herimsFlag)) {
+            herimsRecod(appSubmissionDto, bpc.request);
         }
     }
 
@@ -475,8 +481,123 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void disciplinaryRecord(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
-        if(appSubmissionDto==null){
+    private void disciplinaryRecord(AppSubmissionDto appSubmissionDto,HttpServletRequest request) {
+        if (appSubmissionDto == null) {
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+        Set<String> redNo = new HashSet<>();
+        List<String> list = new ArrayList<>();
+        if (appSvcCgoDtoList != null) {
+            for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                String profRegNo = appSvcCgoDto.getProfRegNo();
+                redNo.add(profRegNo);
+            }
+        }
+        if (appSvcPersonnelDtoList != null) {
+            for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
+                if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
+                    redNo.add(appSvcPersonnelDto.getProfRegNo());
+                }
+            }
+        }
+        if (appSvcClinicalDirectorDtoList != null) {
+            for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
+                if (!StringUtil.isEmpty(v.getProfRegNo())) {
+                    String regNo = v.getProfRegNo();
+                    redNo.add(regNo);
+                }
+            }
+        }
+        if (oldAppSubmissionDto != null) {
+            AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+            List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if (oldAppSvcCgoDtoList != null) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
+                    redNo.add(appSvcCgoDto.getProfRegNo());
+                }
+            }
+            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+            if (oldAppSvcPersonnelDtoList != null) {
+                for (AppSvcPersonnelDto appSvcPersonnelDto : oldAppSvcPersonnelDtoList) {
+                    if (!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())) {
+                        redNo.add(appSvcPersonnelDto.getProfRegNo());
+                    }
+                }
+            }
+            List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
+            if (oldAppSvcClinicalDirectorDtoList != null) {
+                for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
+                    if (!StringUtil.isEmpty(v.getProfRegNo())) {
+                        redNo.add(v.getProfRegNo());
+                    }
+                }
+            }
+        }
+        list.addAll(redNo);
+        ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+        professionalParameterDto.setRegNo(list);
+        professionalParameterDto.setClientId("22222");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String format = simpleDateFormat.format(new Date());
+        professionalParameterDto.setTimestamp(format);
+        professionalParameterDto.setSignature("2222");
+        List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos = new ArrayList<>();
+        String msg = MessageUtil.getMessageDesc("GENERAL_ERR0048");
+        if (!list.isEmpty()) {
+            try {
+                disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
+                request.setAttribute("beEicGatewayClient", msg);
+            }
+        }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<ProfessionalResponseDto> professionalResponseDtos = null;
+        HashMap<String, ProfessionalResponseDto> proHashMap = IaisCommonUtils.genNewHashMap();
+        if (!list.isEmpty()) {
+            try {
+                professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(),
+                        signature.authorization(), signature2.date(), signature2.authorization()).getEntity();
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
+                request.setAttribute("beEicGatewayClient", msg);
+                log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
+            }
+        }
+        if (professionalResponseDtos != null) {
+            for (ProfessionalResponseDto v : professionalResponseDtos) {
+                proHashMap.put(v.getRegno(), v);
+            }
+        }
+        HashMap<String, List<ComplaintDto>> listHashMap = IaisCommonUtils.genNewHashMap();
+        if (disciplinaryRecordResponseDtos != null) {
+            for (DisciplinaryRecordResponseDto disciplinaryRecordResponseDto : disciplinaryRecordResponseDtos) {
+                if (disciplinaryRecordResponseDto.getComplaints() != null) {
+                    List<ComplaintDto> complaintDtos = listHashMap.get(disciplinaryRecordResponseDto.getRegno());
+                    if (complaintDtos == null) {
+                        complaintDtos = new ArrayList<>();
+                        List<ComplaintDto> complaintDtoList = addMoneySymbol(disciplinaryRecordResponseDto.getComplaints());
+                        complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
+                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(), complaintDtos);
+                    } else {
+                        complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
+                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(), complaintDtos);
+                    }
+                }
+            }
+        }
+        request.getSession().setAttribute("proHashMap", proHashMap);
+        request.getSession().setAttribute("listHashMap", listHashMap);
+    }
+
+    private void herimsRecod(AppSubmissionDto appSubmissionDto,HttpServletRequest request) {
+        if (appSubmissionDto == null) {
             return;
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -484,20 +605,17 @@ public class LicenceViewServiceDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-        Set<String> redNo=new HashSet<>();
-        Set<String> idNoSet=new HashSet<>();
-        List<String> list = new ArrayList<>();
-        List<String> idList=new ArrayList<>();
-        Object newLicenceDto = request.getAttribute("newLicenceDto") ;
-        if(newLicenceDto!=null){
-            LicenseeDto newLic=(LicenseeDto)newLicenceDto;
+        Set<String> idNoSet = new HashSet<>();
+        List<String> idList = new ArrayList<>();
+        Object newLicenceDto = request.getAttribute("newLicenceDto");
+        if (newLicenceDto != null) {
+            LicenseeDto newLic = (LicenseeDto) newLicenceDto;
             idNoSet.add(newLic.getUenNo());
         }
         Object oldLicenceDto = request.getAttribute("oldLicenceDto");
-        if(oldLicenceDto!=null){
-            LicenseeDto oldL=(LicenseeDto)oldLicenceDto;
+        if (oldLicenceDto != null) {
+            LicenseeDto oldL = (LicenseeDto) oldLicenceDto;
             idNoSet.add(oldL.getUenNo());
         }
         // licensee
@@ -510,39 +628,26 @@ public class LicenceViewServiceDelegator {
                 idNoSet.add(subLicenseeDto.getIdNumber());
             }
         }
-        if(appSvcCgoDtoList!=null){
-            for(AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList){
+        if (appSvcCgoDtoList != null) {
+            for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
                 String idNo = appSvcCgoDto.getIdNo();
-                String profRegNo = appSvcCgoDto.getProfRegNo();
                 idNoSet.add(idNo);
-                redNo.add(profRegNo);
             }
         }
-        if(appSvcPersonnelDtoList!=null){
-            for(AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList){
-                if(!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())){
-                    redNo.add(appSvcPersonnelDto.getProfRegNo());
-                }
-            }
-        }
-        if(appSvcPrincipalOfficersDtoList!=null){
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+        if (appSvcPrincipalOfficersDtoList != null) {
+            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList) {
                 String idNo = appSvcPrincipalOfficersDto.getIdNo();
                 idNoSet.add(idNo);
             }
         }
-        if(appSvcMedAlertPersonList!=null){
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+        if (appSvcMedAlertPersonList != null) {
+            for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
                 String idNo = appSvcPrincipalOfficersDto.getIdNo();
                 idNoSet.add(idNo);
             }
         }
-        if(appSvcClinicalDirectorDtoList!=null){
+        if (appSvcClinicalDirectorDtoList != null) {
             for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtoList) {
-                if(!StringUtil.isEmpty(v.getProfRegNo())){
-                    String regNo = v.getProfRegNo();
-                    redNo.add(regNo);
-                }
                 idNoSet.add(v.getIdNo());
             }
         }
@@ -568,124 +673,55 @@ public class LicenceViewServiceDelegator {
             }
             AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
             List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-            if(oldAppSvcCgoDtoList!=null){
-                for(AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList){
+            if (oldAppSvcCgoDtoList != null) {
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : oldAppSvcCgoDtoList) {
                     idNoSet.add(appSvcCgoDto.getIdNo());
-                    redNo.add(appSvcCgoDto.getProfRegNo());
                 }
             }
             List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-            if(oldAppSvcPrincipalOfficersDtoList!=null){
-                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcPrincipalOfficersDtoList){
+            if (oldAppSvcPrincipalOfficersDtoList != null) {
+                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcPrincipalOfficersDtoList) {
                     idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
                 }
             }
             List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-            if(oldAppSvcMedAlertPersonList!=null){
-                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcMedAlertPersonList){
+            if (oldAppSvcMedAlertPersonList != null) {
+                for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : oldAppSvcMedAlertPersonList) {
                     idNoSet.add(appSvcPrincipalOfficersDto.getIdNo());
                 }
             }
-            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = oldAppSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-            if(oldAppSvcPersonnelDtoList!=null){
-                for(AppSvcPersonnelDto appSvcPersonnelDto : oldAppSvcPersonnelDtoList){
-                    if(!StringUtil.isEmpty(appSvcPersonnelDto.getProfRegNo())){
-                        redNo.add(appSvcPersonnelDto.getProfRegNo());
-                    }
-                }
-            }
             List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
-            if(oldAppSvcClinicalDirectorDtoList!=null){
+            if (oldAppSvcClinicalDirectorDtoList != null) {
                 for (AppSvcPrincipalOfficersDto v : oldAppSvcClinicalDirectorDtoList) {
-                    if(!StringUtil.isEmpty(v.getProfRegNo())){
-                        redNo.add(v.getProfRegNo());
-                    }
                     idNoSet.add(v.getIdNo());
                 }
             }
         }
-        list.addAll(redNo);
-        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-        professionalParameterDto.setRegNo(list);
         idList.addAll(idNoSet);
-        professionalParameterDto.setClientId("22222");
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-        String format = simpleDateFormat.format(new Date());
-        professionalParameterDto.setTimestamp(format);
-        professionalParameterDto.setSignature("2222");
-        List<DisciplinaryRecordResponseDto> disciplinaryRecordResponseDtos=new ArrayList<>();
-        String msg=MessageUtil.getMessageDesc("GENERAL_ERR0048");
-        if(!list.isEmpty()){
-            try {
-                disciplinaryRecordResponseDtos = applicationClient.getDisciplinaryRecord(professionalParameterDto).getEntity();
-            }catch (Throwable e){
-                log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient",msg);
-            }
-        }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<ProfessionalResponseDto> professionalResponseDtos = null;
-        HashMap<String,ProfessionalResponseDto> proHashMap=IaisCommonUtils.genNewHashMap();
-        if(!list.isEmpty()){
-            try {
-                professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-            }catch (Throwable e){
-                log.error(e.getMessage(),e);
-                request.setAttribute("beEicGatewayClient",msg);
-                log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
-            }
-        }
-        if(professionalResponseDtos!=null){
-            for (ProfessionalResponseDto v : professionalResponseDtos) {
-                proHashMap.put(v.getRegno(),v);
-            }
-        }
         List<HfsmsDto> hfsmsDtos = IaisCommonUtils.genNewArrayList();
         try {
             hfsmsDtos = applicationClient.getHfsmsDtoByIdNo(idList).getEntity();
-        }catch (Throwable e){
-            log.error(e.getMessage(),e);
-            request.setAttribute("beEicGatewayClient","Not able to connect to HERIMS at this moment!");
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            request.setAttribute("beEicGatewayClient", "Not able to connect to HERIMS at this moment!");
             log.error("------>this have error<----- Not able to connect to HERIMS at this moment!");
         }
-        HashMap<String,List<HfsmsDto>> hashMap=IaisCommonUtils.genNewHashMap();
+        HashMap<String, List<HfsmsDto>> hashMap = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(hfsmsDtos)) {
-            for(HfsmsDto hfsmsDto : hfsmsDtos){
+            for (HfsmsDto hfsmsDto : hfsmsDtos) {
                 String identificationNo = hfsmsDto.getIdentificationNo();
                 List<HfsmsDto> hfsmsDtoList = hashMap.get(identificationNo);
-                if(hfsmsDtoList==null){
-                    hfsmsDtoList=new ArrayList<>();
+                if (hfsmsDtoList == null) {
+                    hfsmsDtoList = new ArrayList<>();
                     hfsmsDtoList.add(hfsmsDto);
-                    hashMap.put(identificationNo,hfsmsDtoList);
-                }else {
+                    hashMap.put(identificationNo, hfsmsDtoList);
+                } else {
                     hfsmsDtoList.add(hfsmsDto);
-                    hashMap.put(identificationNo,hfsmsDtoList);
+                    hashMap.put(identificationNo, hfsmsDtoList);
                 }
             }
         }
-        HashMap<String,List<ComplaintDto>> listHashMap=IaisCommonUtils.genNewHashMap();
-        if(disciplinaryRecordResponseDtos!=null){
-            for(DisciplinaryRecordResponseDto disciplinaryRecordResponseDto : disciplinaryRecordResponseDtos){
-                if(disciplinaryRecordResponseDto.getComplaints()!=null){
-                    List<ComplaintDto> complaintDtos = listHashMap.get(disciplinaryRecordResponseDto.getRegno());
-                    if(complaintDtos==null){
-                        complaintDtos=new ArrayList<>();
-                        List<ComplaintDto> complaintDtoList = addMoneySymbol(disciplinaryRecordResponseDto.getComplaints());
-                        complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
-                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(),complaintDtos);
-                    }else {
-                        complaintDtos.addAll(disciplinaryRecordResponseDto.getComplaints());
-                        listHashMap.put(disciplinaryRecordResponseDto.getRegno(),complaintDtos);
-                    }
-                }
-            }
-        }
-        request.getSession().setAttribute("proHashMap",proHashMap);
-        request.getSession().setAttribute("listHashMap",(Serializable)listHashMap);
-        request.getSession().setAttribute("hashMap",(Serializable)hashMap);
-
+        request.getSession().setAttribute("hashMap", hashMap);
     }
 
     private List<ComplaintDto> addMoneySymbol(List<ComplaintDto> complaints) {
@@ -1710,33 +1746,37 @@ public class LicenceViewServiceDelegator {
             result = appSvcDocDto.getUpFileName();
         } else if (dupForPerson != null && "0".equals(dupForPrem)) {
             if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = "Clinical Governance Officer " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = "Principal Officer(s) " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.PRINCIPAL_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = "Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.NOMINEE + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = "MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.MEDALERT_PERSON + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = "Service Personnel " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.SERVICE_PERSONNEL + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = "Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.CLINICAL_DIRECTOR_BE + " " + num + ": " + appSvcDocDto.getUpFileName();
             }
         } else if (dupForPerson != null && "1".equals(dupForPrem)) {
             if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officers " + num + ": "
-                        + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.PRINCIPAL_OFFICER + " "
+                        + num + ":" + " " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.NOMINEE + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.MEDALERT_PERSON + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Service Personnel " + num
-                        + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.SERVICE_PERSONNEL + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_DIRECTOR_BE + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             }
 
         } else if (dupForPerson == null && "1".equals(dupForPrem)) {

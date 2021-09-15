@@ -1356,6 +1356,7 @@ public class NewApplicationAjaxController {
         paramMap.put("aclsOrBcls",aclsOrBcls);
         paramMap.put("specialitySel",easMtsSpecialtySelStr);
         paramMap.put("personalSelect",personalSelect);
+        paramMap.put("singleName", HcsaConsts.CLINICAL_DIRECTOR);
 
         String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml",paramMap);
         ajaxResDto.setResultJson(clinicalDirectorHtml);

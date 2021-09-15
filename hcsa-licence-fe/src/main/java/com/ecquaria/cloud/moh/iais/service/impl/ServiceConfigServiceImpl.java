@@ -234,7 +234,13 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId) {
-        return appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        List<HcsaServiceStepSchemeDto> stepDtos = appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        if (stepDtos != null && !stepDtos.isEmpty()) {
+            stepDtos.stream()
+                    .filter(dto -> HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(dto.getStepCode()))
+                    .forEach(dto -> dto.setStepName(HcsaConsts.CLINICAL_DIRECTORS));
+        }
+        return stepDtos;
     }
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){

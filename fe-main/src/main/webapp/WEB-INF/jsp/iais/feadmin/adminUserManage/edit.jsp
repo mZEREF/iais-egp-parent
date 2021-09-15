@@ -75,16 +75,14 @@
                                             </iais:row>
                                         </c:when>
                                     </c:choose>
-                                    <div class="application-tab-footer">
-                                        <div class="row">
-                                            <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
-                                            <div class="text-right col-xs-9 col-md-9">
-                                                <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
-                                            </div>
+                                    <iais:row>
+                                        <div class="col-xs-12 col-md-4 control-label">
+                                            <a align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
+                                        <div align="right" class="col-sm-7 col-md-6 col-xs-10">
+                                            <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
+                                            <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                         </div>
-                                    </div>
+                                    </iais:row>
                                 </div>
                             </div>
                         </div>
@@ -108,11 +106,13 @@
     });
 
     function save() {
+        showWaiting();
         $("#action").val("save");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
     }
     function cancel() {
+        showWaiting();
         $("#action").val("cancel");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();

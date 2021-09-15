@@ -219,8 +219,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
-        return feUserClient.getInternetUserByNricAndIdType(nric, idType).getEntity();
+    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen) {
+        if(StringUtil.isEmpty(uen)) {
+            uen = "null";
+        }
+        return feUserClient.getInternetUserByNricAndIdType(nric, idType, uen).getEntity();
     }
 
 
@@ -439,6 +442,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             licenseeDto.setOrganizationId(organizationDto.getId());
             licenseeDto.setName(feUserDto.getDisplayName());
             licenseeDto.setEmilAddr(feUserDto.getEmail());
+            licenseeDto.setUenNo(organizationDto.getUenNo());
             licenseeEntityDto.setOfficeTelNo(StringUtil.isNotEmpty(feUserDto.getOfficeTelNo()) ? feUserDto.getOfficeTelNo() : feUserDto.getMobileNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
             if (Objects.nonNull(licenseeIndividualDto)) {
@@ -615,28 +619,40 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public String getActiveUserAndRoleFlag(FeUserDto userSession) {
+        //if userSession == null, crop pass first login
         if(userSession != null) {
+            //if id == null, sing pass login
+            String id = userSession.getId();
             String identityNo = userSession.getIdentityNo();
             String idType = userSession.getIdType();
             if(!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(idType)) {
                 List<OrgUserDto> orgUserDtoList = feUserClient.getUserListByNricAndIdType(identityNo, idType).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtoList)) {
-                    OrgUserDto orgUserDto = orgUserDtoList.get(0);
-                    if(orgUserDto != null) {
-                        String userStatus = orgUserDto.getStatus();
-                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(userStatus)) {
-                            List<OrgUserRoleDto> orgUserRoleDtos = feUserClient.retrieveRolesByUserAccId(orgUserDto.getId()).getEntity();
-                            if(!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
-                                for(OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
-                                    if(orgUserRoleDto != null) {
-                                        if(AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
-                                            return AppConsts.TRUE;
+                    for(OrgUserDto orgUserDto : orgUserDtoList) {
+                        //find sing pass account or crop pass account
+                        if ((StringUtil.isEmpty(id) && orgUserDto.getUserId().equals(identityNo))
+                                || (!StringUtil.isEmpty(id) && id.equals(orgUserDto.getId()))) {
+                            String userStatus = orgUserDto.getStatus();
+                            //if find, check status
+                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(userStatus)) {
+                                List<OrgUserRoleDto> orgUserRoleDtos = feUserClient.retrieveRolesByUserAccId(orgUserDto.getId()).getEntity();
+                                if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                                        if (orgUserRoleDto != null) {
+                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
+                                                //account active
+                                                return AppConsts.TRUE;
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                return AppConsts.FALSE;
                             }
                         }
                     }
+                    //first login
+                    return AppConsts.EMPTY_STR_NA;
                 } else {
                     return AppConsts.EMPTY_STR_NA;
                 }
