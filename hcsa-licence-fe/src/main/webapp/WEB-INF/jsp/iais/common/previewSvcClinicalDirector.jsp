@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="amended-service-info-gp">
     <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
@@ -6,7 +7,7 @@
                 <div class="col-xs-12">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" var="cdDto" varStatus="status">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Clinical Director<c:if test="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
+                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong><%=HcsaConsts.CLINICAL_DIRECTOR%><c:if test="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
                         </div>
                         <table aria-describedby="" class="col-xs-12">
                             <thead style="display: none">
@@ -157,7 +158,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Clinical Director (CD) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
