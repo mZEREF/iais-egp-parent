@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -257,7 +258,7 @@ public class LicenceViewServiceDelegator {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
             stepNameMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
         }
-        bpc.request.getSession().setAttribute("stepNameMap",(Serializable)stepNameMap);
+        bpc.request.getSession().setAttribute("stepNameMap", stepNameMap);
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
 
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
@@ -1745,33 +1746,37 @@ public class LicenceViewServiceDelegator {
             result = appSvcDocDto.getUpFileName();
         } else if (dupForPerson != null && "0".equals(dupForPrem)) {
             if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = "Clinical Governance Officer " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = "Principal Officer(s) " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.PRINCIPAL_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = "Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.NOMINEE + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = "MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.MEDALERT_PERSON + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = "Service Personnel " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.SERVICE_PERSONNEL + " " + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = "Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
+                result = HcsaConsts.CLINICAL_DIRECTOR_BE + " " + num + ": " + appSvcDocDto.getUpFileName();
             }
         } else if (dupForPerson != null && "1".equals(dupForPrem)) {
             if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Governance Officers " + num + ": "
-                        + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Principal Officers " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.PRINCIPAL_OFFICER + " "
+                        + num + ":" + " " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Nominee " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.NOMINEE + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: MedAlert Person " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.MEDALERT_PERSON + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Service Personnel " + num
-                        + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.SERVICE_PERSONNEL + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: Clinical Director " + num + ": " + appSvcDocDto.getUpFileName();
+                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_DIRECTOR_BE + " "
+                        + num + ": " + appSvcDocDto.getUpFileName();
             }
 
         } else if (dupForPerson == null && "1".equals(dupForPrem)) {

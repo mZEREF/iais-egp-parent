@@ -9,8 +9,6 @@
     }
 </style>
 
-<c:set var="stepName" value="${serviceStepDto.currentStep.stepName}" scope="request"/>
-
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <input type="hidden" name="prsFlag" value="${prsFlag}"/>
@@ -49,7 +47,7 @@
                                             <div class="form-group form-horizontal formgap">
                                                 <div class="col-sm-4">
                                                     <strong style="font-size: 20px;">
-                                                        <c:out value="${stepName}"/>
+                                                        <c:out value="${currStepName}"/>
                                                     </strong>
                                                 </div>
                                                 <div class="col-sm-8 text-right">
@@ -616,8 +614,9 @@
                     <tr id="addPsnDiv" class="<c:if test="${!needAddPsn}">hidden</c:if>">
                         <td>
                             <div class="col-sm-5 col-md-5">
-                                <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"><span
-                                        style="margin-left: -14px">+ Add Another Clinical Governance Officer</span></span>
+                                <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">
+                                    <span style="margin-left: -14px">+ Add Another ${singleName}</span>
+                                </span>
                             </div>
                             <div class="col-sm-5 col-md-5"><span class="errorMsg" style="color: red;"></span></div>
                         </td>

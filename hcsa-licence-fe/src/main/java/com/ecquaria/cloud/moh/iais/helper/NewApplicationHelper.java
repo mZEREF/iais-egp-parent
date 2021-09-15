@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -1282,7 +1283,6 @@ public class NewApplicationHelper {
         }
         for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtos){
             AppSvcPrincipalOfficersDto psnDto = MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
-            psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             psnDtos.add(psnDto);
         }
         return psnDtos;
@@ -4058,22 +4058,22 @@ public class NewApplicationHelper {
         String psnName = "";
         switch(dupForPerson){
             case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                psnName = "Clinical Governance Officer";
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_PO:
-                psnName = "Principal Officer";
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                psnName = "Nominee";
+                psnName = HcsaConsts.NOMINEE;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                psnName = "MedAlert Person";
+                psnName = HcsaConsts.MEDALERT_PERSON;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                psnName = "Service Personnel";
+                psnName = HcsaConsts.SERVICE_PERSONNEL;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_CD:
-                psnName = "Clinical Director";
+                psnName = HcsaConsts.CLINICAL_DIRECTOR;
                 break;
             default:
                 break;

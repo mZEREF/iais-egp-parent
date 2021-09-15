@@ -187,8 +187,6 @@ public class ClinicalLaboratoryDelegator {
      */
     public void prepareJumpPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareJumpPage start ...."));
-        String actionForm = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
-        actionForm = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_TAB);
         String action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if (StringUtil.isEmpty(action)) {
             action = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM);
@@ -213,7 +211,7 @@ public class ClinicalLaboratoryDelegator {
         if (HcsaLicenceFeConstant.DISCIPLINEALLOCATION.equals(action)) {
             action = serviceStepDto.getCurrentStep().getStepCode();
         }
-        ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, (Serializable) serviceStepDto);
+        ParamUtil.setSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO, serviceStepDto);
 
         if (StringUtil.isEmpty(action) || IaisEGPConstant.YES.equals(formTab)) {
             if (serviceStepDto.getCurrentStep() != null) {
@@ -258,30 +256,43 @@ public class ClinicalLaboratoryDelegator {
         String currentStep = Optional.ofNullable(step)
                 .map(HcsaServiceStepSchemeDto::getStepCode)
                 .orElse(HcsaConsts.STEP_BUSINESS_NAME);
+        String singleName = "";
         if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
+            singleName = HcsaConsts.BUSINESS_NAME;
             prepareBusiness(bpc);
         } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
+            singleName = HcsaConsts.VEHICLE;
             prePareVehicles(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+            singleName = HcsaConsts.CLINICAL_DIRECTOR;
             prePareClinicalDirector(bpc);
         } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+            singleName = HcsaConsts.BUSINESS_NAME;
             prepareLaboratoryDisciplines(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
+            singleName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
             prepareGovernanceOfficers(bpc);
         } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
             // Section Leader
+            singleName = HcsaConsts.SECTION_LEADER;
             prepareSectionLeader(bpc);
         } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+            singleName = HcsaConsts.BUSINESS_NAME;
             prepareDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+            singleName = "General Conveyance Charges";
             prePareCharges(bpc);
         } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+            singleName = HcsaConsts.SERVICE_PERSONNEL;
             prepareServicePersonnel(bpc);
         } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
+            singleName = HcsaConsts.PRINCIPAL_OFFICER;
             preparePrincipalOfficers(bpc);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+            singleName = HcsaConsts.KEY_APPOINTMENT_HOLDER;
             prepareKeyAppointmentHolder(bpc);
         } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+            singleName = HcsaConsts.MEDALERT_PERSON;
             prePareMedAlertPerson(bpc);
         } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
             prepareDocuments(bpc);
@@ -289,6 +300,7 @@ public class ClinicalLaboratoryDelegator {
             log.warn(StringUtil.changeForLog("Wrong Step!!!"));
         }
 
+        ParamUtil.setRequestAttr(bpc.request, "singleName", singleName);
         ParamUtil.setRequestAttr(bpc.request, CURR_STEP_NAME, currentStepName);
         ParamUtil.setRequestAttr(bpc.request, "currentStep", currentStep);
         AppSvcRelatedInfoDto currSvcInfoDto = getAppSvcRelatedInfo(bpc.request);
@@ -2784,10 +2796,7 @@ public class ClinicalLaboratoryDelegator {
                 errorMap.put("psnMandatory",MessageUtil.getMessageDesc("NEW_ERR0030"));
             }
         }*/
-
-
     }
-
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("genAppSvcCgoDto start ...."));
@@ -2960,7 +2969,7 @@ public class ClinicalLaboratoryDelegator {
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, spcOpts, null, appSvcCgoDto.getSpeciality());
                     appSvcCgoDto.setSpecialityHtml(specialtySelectStr);
                 }
-
+                appSvcCgoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                 appSvcCgoDtoList.add(appSvcCgoDto);
                 //change arr index
                 indexNos = removeArrIndex(indexNos, i);
@@ -3009,6 +3018,7 @@ public class ClinicalLaboratoryDelegator {
                         appSvcCgoDto.setCurPersonelId(appSvcPrincipalOfficersDto.getCurPersonelId());
                     }
                 }
+                appSvcCgoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                 appSvcCgoDtoList.add(appSvcCgoDto);
             }
         }
@@ -3194,7 +3204,7 @@ public class ClinicalLaboratoryDelegator {
                 String assignSel = ParamUtil.getString(request,"assignSel"+i);
                 AppSvcPrincipalOfficersDto appSvcClinicalDirectorDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSel);
                 appSvcClinicalDirectorDto.setPsnType(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);
-                log.info(StringUtil.changeForLog("Clinical Director assgined select: " + assignSel));
+                log.info(StringUtil.changeForLog("Clinical Governance Officer assgined select: " + assignSel));
                 if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) || !NewApplicationHelper.isEmpty(assignSel)) {
                     appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 } else {
