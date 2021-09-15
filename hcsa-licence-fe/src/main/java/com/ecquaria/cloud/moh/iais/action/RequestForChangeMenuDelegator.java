@@ -1127,16 +1127,10 @@ public class RequestForChangeMenuDelegator {
 
     private List<SelectOption> getPsnType() {
         List<SelectOption> personelRoles = IaisCommonUtils.genNewArrayList();
-        SelectOption sp1 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "Clinical Governance Officer");
-        SelectOption sp2 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "Principal Officer");
-        SelectOption sp3 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "Nominee");
-        SelectOption sp4 = new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedAlert");
-        SelectOption sp5 = new SelectOption(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "Clinical Director");
-        personelRoles.add(sp1);
-        personelRoles.add(sp2);
-        personelRoles.add(sp3);
-        personelRoles.add(sp4);
-        personelRoles.add(sp5);
+        personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER));
+        personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, HcsaConsts.PRINCIPAL_OFFICER));
+        personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, HcsaConsts.NOMINEE));
+        personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, HcsaConsts.MEDALERT_PERSON));
         personelRoles.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.KEY_APPOINTMENT_HOLDER));
         Collections.sort(personelRoles);
         return personelRoles;

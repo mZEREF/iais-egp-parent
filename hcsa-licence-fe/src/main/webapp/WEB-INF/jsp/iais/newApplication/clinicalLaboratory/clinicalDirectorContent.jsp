@@ -49,7 +49,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <p style="font-weight: 600;font-size: 2.2rem">Clinical Director</p>
+                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>
@@ -105,7 +105,7 @@
         </c:choose>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Clinical Director</span>
+                <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
         </div>
     </c:if>
@@ -135,31 +135,35 @@
         }
         // init
         $('div.clinicalDirectorContent').each(function () {
-            var assignSelVal = $(this).find('.assignSel:input').val();
+            var $currContent = $(this);
+            var assignSelVal = $currContent.find('.assignSel:input').val();
             console.info("init ---- " + assignSelVal);
             if (isEmpty(assignSelVal)) {
-                $(this).find('select.assignSel option').eq(0).prop("selected", true);
+                $currContent.find('select.assignSel option').eq(0).prop("selected", true);
             } else if ("-1" != assignSelVal && 'newOfficer' != assignSelVal) {
                 var data;
                 try{
-                    data = $.parseJSON($(this).find('.psnEditField:input').val());
+                    data = $.parseJSON($currContent.find('.psnEditField:input').val());
                 } catch (e) {
                     data = {};
                 };
                 if ('1' == $(this).find('.licPerson:input').val()) {
-                    disableCdContent($(this).find('div.person-detail'), data);
+                    disableCdContent($currContent.find('div.person-detail'), data);
                 }
             }
-            //trigger prs
+            // prs
             /*
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
             */
-            var needControlName = $(this).find('input.licPerson').val() != "1";
-            prsCallBackFuns.setEdit($(this).closest('div.clinicalDirectorContent'), 'disabled', false, needControlName);
+            var assignSelectVal = $currContent.find('select.assignSel').val();
+            var licPerson = $currContent.find('input.licPerson').val();
+            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+            prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            // designation
             $(this).find('.designation').triggerHandler('change');
-            checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
+            checkNoRegWithProfBoard($currContent.find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
         });

@@ -223,11 +223,17 @@ public class FESingpassLandingDelegator {
         String identityNo = userSession.getIdentityNo();
         String idType = userSession.getIdType();
         String scp = userSession.getScp();
-        Optional<FeUserDto> optional = Optional.ofNullable(orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType));
-        if (optional.isPresent()){
-            userSession = optional.get();
-            userSession.setScp(scp);
-            ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
+        FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType, null);
+        //Unavailable accounts have been filtered
+        if (feUserDto != null){
+            if(AppConsts.COMMON_STATUS_ACTIVE.equals(feUserDto.getStatus())) {
+                userSession = feUserDto;
+                userSession.setScp(scp);
+                ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
+            } else {
+                ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.YES);
+            }
         }else {
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.YES);
@@ -298,7 +304,6 @@ public class FESingpassLandingDelegator {
             licenseeDto.setBlkNo(null);
             licenseeDto.setFloorNo(null);
             licenseeDto.setUnitNo(null);
-            licenseeDto.setStreetName(null);
             licenseeDto.setBuildingName(null);
             licenseeDto.setStreetName(null);
             licenseeDto.setMobileNo(null);
@@ -343,7 +348,6 @@ public class FESingpassLandingDelegator {
         licenseeDto.setBlkNo(ParamUtil.getString(request,"blkNo"));
         licenseeDto.setFloorNo(ParamUtil.getString(request,"floorNo"));
         licenseeDto.setUnitNo(ParamUtil.getString(request,"unitNo"));
-        licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setBuildingName(ParamUtil.getString(request,"buildingName"));
         licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
         licenseeDto.setName(userSession.getDisplayName());

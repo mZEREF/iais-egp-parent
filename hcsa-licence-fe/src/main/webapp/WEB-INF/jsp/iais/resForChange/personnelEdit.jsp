@@ -102,7 +102,7 @@
                                                         <p>MedAlert</p>
                                                     </c:when>
                                                     <c:when test="${'CD'==psnType}">
-                                                        <p>Clinical Director</p>
+                                                        <p>Clinical Governance Officer</p>
                                                     </c:when>
                                                     <c:when test="${'KAH'==psnType}">
                                                         <p>Key Appointment Holder</p>

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.api.services.GatewayPayNowAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayStripeAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -1282,7 +1283,6 @@ public class NewApplicationHelper {
         }
         for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtos){
             AppSvcPrincipalOfficersDto psnDto = MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
-            psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             psnDtos.add(psnDto);
         }
         return psnDtos;
@@ -3535,128 +3535,132 @@ public class NewApplicationHelper {
             return;
         }
         for (AppSvcPrincipalOfficersDto person : appSvcCgoDtos) {
-            boolean isLicPsn = person.isLicPerson();
             String personKey = getPersonKey(person.getIdType(), person.getIdNo());
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
             AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
-            if(selPerson != null){
-                person.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
-                person.setSalutation(selPerson.getSalutation());
-                person.setName(selPerson.getName());
-                person.setIdType(selPerson.getIdType());
-                person.setIdNo(selPerson.getIdNo());
-                String mobileNo = selPerson.getMobileNo();
-                if(!StringUtil.isEmpty(mobileNo)){
-                    person.setMobileNo(mobileNo);
-                }
-                String emailAddr = selPerson.getEmailAddr();
-                if(!StringUtil.isEmpty(mobileNo)){
-                    person.setEmailAddr(emailAddr);
-                }
-                String designation = selPerson.getDesignation();
-                if(!StringUtil.isEmpty(designation)){
-                    person.setDesignation(designation);
-                }
-                String otherDesignation = selPerson.getOtherDesignation();
-                if(!StringUtil.isEmpty(otherDesignation)){
-                    person.setOtherDesignation(otherDesignation);
-                }
-                String professionType = selPerson.getProfessionType();
-                if(!StringUtil.isEmpty(professionType)){
-                    person.setProfessionType(professionType);
-                }
-                String profRegNo = selPerson.getProfRegNo();
-                if(!StringUtil.isEmpty(profRegNo)){
-                    person.setProfRegNo(profRegNo);
-                }
-                String speciality = selPerson.getSpeciality();
-                if(!StringUtil.isEmpty(speciality)){
-                    person.setSpeciality(speciality);
-                }
-                String specialityOther = selPerson.getSpecialityOther();
-                if(!StringUtil.isEmpty(specialityOther)){
-                    person.setSpecialityOther(specialityOther);
-                }
-                String subSpeciality = selPerson.getSubSpeciality();
-                if(!StringUtil.isEmpty(subSpeciality)){
-                    person.setSubSpeciality(subSpeciality);
-                }
-                String qualification = selPerson.getQualification();
-                if(!StringUtil.isEmpty(qualification)){
-                    person.setQualification(qualification);
-                }
-                String otherQualification = selPerson.getOtherQualification();
-                if(!StringUtil.isEmpty(otherQualification)){
-                    person.setOtherQualification(otherQualification);
-                }
-                String officeTelNo = selPerson.getOfficeTelNo();
-                if (!StringUtil.isEmpty(officeTelNo)) {
-                    person.setOfficeTelNo(officeTelNo);
-                }
-                person.setNeedSpcOptList(selPerson.isNeedSpcOptList());
-                List<SelectOption> spcOptList = selPerson.getSpcOptList();
-                if(!IaisCommonUtils.isEmpty(spcOptList)){
-                    person.setSpcOptList(selPerson.getSpcOptList());
-                }
-                String specHtml = selPerson.getSpecialityHtml();
-                if(!StringUtil.isEmpty(specHtml)){
-                    person.setSpecialityHtml(specHtml);
-                }
-                String professionBoard = selPerson.getProfessionBoard();
-                if (!StringUtil.isEmpty(professionBoard)) {
-                    person.setProfessionBoard(professionBoard);
-                }
-                Date specialtyGetDate = selPerson.getSpecialtyGetDate();
-                if (specialtyGetDate != null) {
-                    person.setSpecialtyGetDate(specialtyGetDate);
-                }
-                String specialtyGetDateStr = selPerson.getSpecialtyGetDateStr();
-                if (!StringUtil.isEmpty(specialtyGetDateStr)) {
-                    person.setSpecialtyGetDateStr(specialtyGetDateStr);
-                }
-                String typeOfCurrRegi = selPerson.getTypeOfCurrRegi();
-                if (!StringUtil.isEmpty(typeOfCurrRegi)) {
-                    person.setTypeOfCurrRegi(typeOfCurrRegi);
-                }
-                Date currRegiDate = selPerson.getCurrRegiDate();
-                if (currRegiDate != null) {
-                    person.setCurrRegiDate(currRegiDate);
-                }
-                String currRegiDateStr = selPerson.getCurrRegiDateStr();
-                if (!StringUtil.isEmpty(currRegiDateStr)) {
-                    person.setCurrRegiDateStr(currRegiDateStr);
-                }
-                Date praCerEndDate = selPerson.getPraCerEndDate();
-                if (praCerEndDate != null) {
-                    person.setPraCerEndDate(praCerEndDate);
-                }
-                String praCerEndDateStr = selPerson.getPraCerEndDateStr();
-                if (!StringUtil.isEmpty(praCerEndDateStr)) {
-                    person.setPraCerEndDateStr(praCerEndDateStr);
-                }
-                String typeOfRegister = selPerson.getTypeOfRegister();
-                if (!StringUtil.isEmpty(typeOfRegister)) {
-                    person.setTypeOfRegister(typeOfRegister);
-                }
-                String relevantExperience = selPerson.getRelevantExperience();
-                if (!StringUtil.isEmpty(relevantExperience)) {
-                    person.setRelevantExperience(relevantExperience);
-                }
-                String holdCerByEMS = selPerson.getHoldCerByEMS();
-                if (!StringUtil.isEmpty(holdCerByEMS)) {
-                    person.setHoldCerByEMS(holdCerByEMS);
-                }
-                Date aclsExpiryDate = selPerson.getAclsExpiryDate();
-                if (aclsExpiryDate != null) {
-                    person.setAclsExpiryDate(aclsExpiryDate);
-                }
-                String aclsExpiryDateStr = selPerson.getAclsExpiryDateStr();
-                if (!StringUtil.isEmpty(aclsExpiryDateStr)) {
-                    person.setAclsExpiryDateStr(aclsExpiryDateStr);
-                }
-                //set lic person info
-                person.setLicPerson(isLicPsn);
+            if (selPerson != null) {
+                syncPsnDto(selPerson, person);
             }
+        }
+    }
+
+    public static void syncPsnDto(AppSvcPrincipalOfficersDto source, AppSvcPrincipalOfficersDto person) {
+        if (source == null || person == null) {
+            return;
+        }
+        person.setAssignSelect(getPersonKey(source.getIdType(), source.getIdNo()));
+        person.setSalutation(source.getSalutation());
+        person.setName(source.getName());
+        person.setIdType(source.getIdType());
+        person.setIdNo(source.getIdNo());
+        String mobileNo = source.getMobileNo();
+        if (!StringUtil.isEmpty(mobileNo)) {
+            person.setMobileNo(mobileNo);
+        }
+        String emailAddr = source.getEmailAddr();
+        if (!StringUtil.isEmpty(mobileNo)) {
+            person.setEmailAddr(emailAddr);
+        }
+        String designation = source.getDesignation();
+        if (!StringUtil.isEmpty(designation)) {
+            person.setDesignation(designation);
+        }
+        String otherDesignation = source.getOtherDesignation();
+        if (!StringUtil.isEmpty(otherDesignation)) {
+            person.setOtherDesignation(otherDesignation);
+        }
+        String professionType = source.getProfessionType();
+        if (!StringUtil.isEmpty(professionType)) {
+            person.setProfessionType(professionType);
+        }
+        String profRegNo = source.getProfRegNo();
+        if (!StringUtil.isEmpty(profRegNo)) {
+            person.setProfRegNo(profRegNo);
+        }
+        String speciality = source.getSpeciality();
+        if (!StringUtil.isEmpty(speciality)) {
+            person.setSpeciality(speciality);
+        }
+        String specialityOther = source.getSpecialityOther();
+        if (!StringUtil.isEmpty(specialityOther)) {
+            person.setSpecialityOther(specialityOther);
+        }
+        String subSpeciality = source.getSubSpeciality();
+        if (!StringUtil.isEmpty(subSpeciality)) {
+            person.setSubSpeciality(subSpeciality);
+        }
+        String qualification = source.getQualification();
+        if (!StringUtil.isEmpty(qualification)) {
+            person.setQualification(qualification);
+        }
+        String otherQualification = source.getOtherQualification();
+        if (!StringUtil.isEmpty(otherQualification)) {
+            person.setOtherQualification(otherQualification);
+        }
+        String officeTelNo = source.getOfficeTelNo();
+        if (!StringUtil.isEmpty(officeTelNo)) {
+            person.setOfficeTelNo(officeTelNo);
+        }
+        person.setNeedSpcOptList(source.isNeedSpcOptList());
+        List<SelectOption> spcOptList = source.getSpcOptList();
+        if (!IaisCommonUtils.isEmpty(spcOptList)) {
+            person.setSpcOptList(source.getSpcOptList());
+        }
+        String specHtml = source.getSpecialityHtml();
+        if (!StringUtil.isEmpty(specHtml)) {
+            person.setSpecialityHtml(specHtml);
+        }
+        String professionBoard = source.getProfessionBoard();
+        if (!StringUtil.isEmpty(professionBoard)) {
+            person.setProfessionBoard(professionBoard);
+        }
+        Date specialtyGetDate = source.getSpecialtyGetDate();
+        if (specialtyGetDate != null) {
+            person.setSpecialtyGetDate(specialtyGetDate);
+        }
+        String specialtyGetDateStr = source.getSpecialtyGetDateStr();
+        if (!StringUtil.isEmpty(specialtyGetDateStr)) {
+            person.setSpecialtyGetDateStr(specialtyGetDateStr);
+        }
+        String typeOfCurrRegi = source.getTypeOfCurrRegi();
+        if (!StringUtil.isEmpty(typeOfCurrRegi)) {
+            person.setTypeOfCurrRegi(typeOfCurrRegi);
+        }
+        Date currRegiDate = source.getCurrRegiDate();
+        if (currRegiDate != null) {
+            person.setCurrRegiDate(currRegiDate);
+        }
+        String currRegiDateStr = source.getCurrRegiDateStr();
+        if (!StringUtil.isEmpty(currRegiDateStr)) {
+            person.setCurrRegiDateStr(currRegiDateStr);
+        }
+        Date praCerEndDate = source.getPraCerEndDate();
+        if (praCerEndDate != null) {
+            person.setPraCerEndDate(praCerEndDate);
+        }
+        String praCerEndDateStr = source.getPraCerEndDateStr();
+        if (!StringUtil.isEmpty(praCerEndDateStr)) {
+            person.setPraCerEndDateStr(praCerEndDateStr);
+        }
+        String typeOfRegister = source.getTypeOfRegister();
+        if (!StringUtil.isEmpty(typeOfRegister)) {
+            person.setTypeOfRegister(typeOfRegister);
+        }
+        String relevantExperience = source.getRelevantExperience();
+        if (!StringUtil.isEmpty(relevantExperience)) {
+            person.setRelevantExperience(relevantExperience);
+        }
+        String holdCerByEMS = source.getHoldCerByEMS();
+        if (!StringUtil.isEmpty(holdCerByEMS)) {
+            person.setHoldCerByEMS(holdCerByEMS);
+        }
+        Date aclsExpiryDate = source.getAclsExpiryDate();
+        if (aclsExpiryDate != null) {
+            person.setAclsExpiryDate(aclsExpiryDate);
+        }
+        String aclsExpiryDateStr = source.getAclsExpiryDateStr();
+        if (!StringUtil.isEmpty(aclsExpiryDateStr)) {
+            person.setAclsExpiryDateStr(aclsExpiryDateStr);
         }
     }
 
@@ -4058,22 +4062,22 @@ public class NewApplicationHelper {
         String psnName = "";
         switch(dupForPerson){
             case ApplicationConsts.DUP_FOR_PERSON_CGO:
-                psnName = "Clinical Governance Officer";
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_PO:
-                psnName = "Principal Officer";
+                psnName = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_DPO:
-                psnName = "Nominee";
+                psnName = HcsaConsts.NOMINEE;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_MAP:
-                psnName = "MedAlert Person";
+                psnName = HcsaConsts.MEDALERT_PERSON;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_SVCPSN:
-                psnName = "Service Personnel";
+                psnName = HcsaConsts.SERVICE_PERSONNEL;
                 break;
             case ApplicationConsts.DUP_FOR_PERSON_CD:
-                psnName = "Clinical Director";
+                psnName = HcsaConsts.CLINICAL_DIRECTOR;
                 break;
             default:
                 break;

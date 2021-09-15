@@ -86,6 +86,7 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.DateUtil;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -149,6 +150,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     private CessationClient cessationClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+    private static final Set<String> appReportStatuses = ImmutableSet.of(
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED
+    );
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
     public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
@@ -362,7 +367,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
                     }
                     AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                    if(appPreRecommentdationDtoRep!=null&&appPreRecommentdationDtoDate!=null){
+                    if((appPreRecommentdationDtoRep!=null||appReportStatuses.contains(applicationDto.getStatus()))&&appPreRecommentdationDtoDate!=null){
                         complianceHistoryDtos.add(complianceHistoryDto);
                     }
                 }catch (Exception e){

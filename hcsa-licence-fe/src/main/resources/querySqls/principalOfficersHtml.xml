@@ -293,7 +293,7 @@
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-4">
-                                    <label class="control-label maxlength="320" control-set-font control-font-label">Email Address</label>
+                                    <label class="control-label control-set-font control-font-label">Email Address</label>
                                     <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-4 col-md-8">

@@ -1,6 +1,5 @@
 
 <c:set var="isRfi" value="${requestInformationConfig != null}"/>
-<c:set var="stepName" value="${serviceStepDto.currentStep.stepName}" scope="request"/>
 
 <input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
 <input type="hidden" name="rfiObj" value="${isRFi ? '1' : '0'}"/>
@@ -15,7 +14,7 @@
             <div class="control-label col-md-5 col-xs-5">
                 <label  class="control-label control-set-font control-font-label">
                     <div style="font-weight: 600;font-size: 2.2rem">
-                        <c:out value="${stepName}"/>
+                        <c:out value="${currStepName}"/>
                     </div>
                 </label>
             </div>
@@ -61,7 +60,7 @@
 
     <div class="col-md-12 col-xs-12 addSectionLeaderDiv" style="${!needAddPsn ? 'display:none;' : ''}">
         <span class="addSectionLeaderBtn" style="color:deepskyblue;cursor:pointer;">
-            <span style="">+ Add Another ${stepName}</span>
+            <span style="">+ Add Another ${singleName}</span>
         </span>
     </div>
     <script type="text/javascript">

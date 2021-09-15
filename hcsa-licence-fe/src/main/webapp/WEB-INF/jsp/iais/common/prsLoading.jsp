@@ -21,7 +21,7 @@
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
         var licPerson = $loadingContent.find('input.licPerson').val();
-        var needControlName = licPerson != "1";
+        var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
         console.log("isNeedControlName: " + needControlName + " assignSelectVal:" + assignSelectVal + " licPerson:" + licPerson + " appType:" + appType);
         var emptyData = {};
         if(prgNo == "" || prgNo == null || prgNo == undefined){
@@ -132,7 +132,7 @@
         $content.css('color', '');
     }
     function isNeedControlName(assignSelectVal, licPerson, appType) {
-        return true;//('newOfficer' == assignSelectVal && '1' != licPerson) || ('APTY005' == appType || 'APTY004' == appType);
+        return 'newOfficer' == assignSelectVal && '1' != licPerson && 'APTY002' == appType;
     }
 
     function clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action) {
