@@ -18,8 +18,8 @@ import java.util.List;
 @Data
 public class ApprovalApplicationDto implements Serializable {
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessNull","possessOthersNull","largeNull","largeLocal","largeImport","special"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessNull","possessOthersNull","largeNull","largeLocal","possessOthersNull","largeImport","special"})
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessNull","possessOthersNull","largeNull","largeLocal","largeImport","special","draft"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessNull","possessOthersNull","largeNull","largeLocal","possessOthersNull","largeImport","special","draft"})
     private String facilityId;
 
     private String facilityName;

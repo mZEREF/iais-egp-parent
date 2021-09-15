@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
@@ -35,7 +34,7 @@ public class NewApprovalDelegator {
     public static final String TASK_LIST = "taskList";
 
     @Autowired
-    private  ApprovalApplicationClient approvalApplicationClient;
+    private ApprovalApplicationClient approvalApplicationClient;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -44,9 +43,7 @@ public class NewApprovalDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
                 AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
-        String task = ParamUtil.getString(request,TASK_LIST);
-        ParamUtil.setSessionAttr(request, TASK_LIST, task);
-        log.info("task is {}", task);
+        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_1);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
     }
 
@@ -137,50 +134,54 @@ public class NewApprovalDelegator {
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto) ParamUtil.getSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
         //validate condition by different application status and type
         String validateStatus = "";
-        Boolean flag = true;
-        if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
-            List<String> natureOfTheSampleList = approvalApplicationDto.getNatureOfTheSampleList();
-            if (natureOfTheSampleList != null){
-                for (int i = 0; i < natureOfTheSampleList.size(); i++) {
-                    if(natureOfTheSampleList.get(i).equals(ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE_6)) {
-                        flag = false;
-                    }
-                }
-            }
-            if (flag){
-                if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_8;
-                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_1;
-                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_2;
-                }
-            }else{
-                if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_9;
-                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_3;
-                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
-                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_4;
-                }
-            }
-        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
-            if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
-                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_10;
-            }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
-                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_5;
-            }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
-                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_6;
-            }
-        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
-            validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_7;
-        }
-        //validate
-        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto,validateStatus);
         String crudActionType = "";
         String crudActionTypeFormPage = "";
         String pageId = ParamUtil.getString(request, ApprovalApplicationConstants.PAGE_ID);
         String actionType = ParamUtil.getString(request,ApprovalApplicationConstants.ACTIONTYPE);
+        Boolean flag = true;
+        if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
+            validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_11;
+        }else{
+            if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
+                List<String> natureOfTheSampleList = approvalApplicationDto.getNatureOfTheSampleList();
+                if (natureOfTheSampleList != null){
+                    for (int i = 0; i < natureOfTheSampleList.size(); i++) {
+                        if(natureOfTheSampleList.get(i).equals(ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE_6)) {
+                            flag = false;
+                        }
+                    }
+                }
+                if (flag){
+                    if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_8;
+                    }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_1;
+                    }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_2;
+                    }
+                }else{
+                    if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_9;
+                    }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_3;
+                    }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                        validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_4;
+                    }
+                }
+            }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
+                if (approvalApplicationDto.getProcurementMode() == null || approvalApplicationDto.getProcurementMode() == ""){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_10;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_5;
+                }else if (approvalApplicationDto.getProcurementMode().equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
+                    validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_6;
+                }
+            }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
+                validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_7;
+            }
+        }
+        //validate
+        ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto,validateStatus);
         if (pageId.equals(ApprovalApplicationConstants.PAGE_ID_1) && actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)) {
             crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
             crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_4;

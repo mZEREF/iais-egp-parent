@@ -53,10 +53,10 @@
         <div class="application-tab-footer">
           <div class="row">
             <div class="col-xs-12 col-sm-6">
-              <a class="back" href="#" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
+              <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
+              <%--<input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">--%>
               <div class="text-right text-center-mobile"><a class="btn btn-primary next" id="nextBtn" data-toggle="modal" data-target= "#saveDraft">START APPLICATION</a></div>
             </div>
           </div>
