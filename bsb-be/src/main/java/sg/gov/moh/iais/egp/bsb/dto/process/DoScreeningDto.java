@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.process;
 import lombok.Data;
 import net.sf.oval.constraint.NotBlank;
 import net.sf.oval.constraint.NotNull;
+import net.sf.oval.constraint.ValidateWithMethod;
 
 import java.util.Date;
 
@@ -41,6 +42,7 @@ public class DoScreeningDto {
 
     @NotNull(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
     @NotBlank(message = "This is mandatory.", profiles = {"DOType1","AOType1","DOType2","AOType2"})
+    @ValidateWithMethod(message = "EndDate can not be earlier than startDate.", methodName = "checkToAfterFrom", parameterType = Date.class, profiles = {"DOType1","AOType1","DOType2","AOType2"})
     private Date validityEndDt;
 
     private String selectedAfc;
@@ -69,4 +71,10 @@ public class DoScreeningDto {
 
     private Date approvalDate;
 
+    private boolean checkToAfterFrom(Date validityEndDt) {
+        if (validityStartDt == null || validityEndDt == null){
+            return true;
+        }
+        return validityEndDt.after(validityStartDt);
+    }
 }

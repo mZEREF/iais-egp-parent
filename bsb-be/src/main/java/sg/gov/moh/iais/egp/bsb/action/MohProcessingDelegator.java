@@ -55,6 +55,8 @@ public class MohProcessingDelegator {
             appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
         }
         Application application = processClient.getApplicationById(appId).getEntity();
+        Facility facility = application.getFacility();
+        ParamUtil.setSessionAttr(request,"facility",facility);
         ApplicationMisc applicationMisc = new ApplicationMisc();
         if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
             applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_1).getEntity();
