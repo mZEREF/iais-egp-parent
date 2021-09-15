@@ -100,6 +100,12 @@
                                                     <span id="error_charityHci"  class="error-msg"></span>
                                                 </div>
                                             </c:if>
+                                            <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+                                            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
+                                                <div class="col-xs-12 text-right">
+                                                    <a href="#" class="rfcBack">Click here to amend other sections</a>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
@@ -233,6 +239,11 @@
             showWaiting();
             var svcCode = $(this).next().val();
             submitForms('preview',null,null,svcCode);
+        });
+
+        $('.rfcBack').click(function () {
+            showWaiting();
+            submit('jump','back',null);
         });
 
         <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
