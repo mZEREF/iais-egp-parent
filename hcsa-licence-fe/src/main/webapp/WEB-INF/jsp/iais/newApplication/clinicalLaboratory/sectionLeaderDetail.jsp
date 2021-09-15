@@ -3,7 +3,7 @@
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <strong>
-                <c:out value="${stepName}"/>
+                <c:out value="${singleName}"/>
                 <label class="assign-psn-item"><c:if test="${pageLength > 1}">${index+1}</c:if></label>
             </strong>
         </iais:value>

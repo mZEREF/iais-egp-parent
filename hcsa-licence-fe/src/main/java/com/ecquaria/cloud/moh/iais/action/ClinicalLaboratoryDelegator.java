@@ -265,6 +265,7 @@ public class ClinicalLaboratoryDelegator {
             singleName = HcsaConsts.VEHICLE;
             prePareVehicles(bpc);
         } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+            singleName = HcsaConsts.CLINICAL_DIRECTOR;
             prePareClinicalDirector(bpc);
         } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
             singleName = HcsaConsts.BUSINESS_NAME;
@@ -280,6 +281,7 @@ public class ClinicalLaboratoryDelegator {
             singleName = HcsaConsts.BUSINESS_NAME;
             prepareDisciplineAllocation(bpc);
         } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+            singleName = "General Conveyance Charges";
             prePareCharges(bpc);
         } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
             singleName = HcsaConsts.SERVICE_PERSONNEL;

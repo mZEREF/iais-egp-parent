@@ -49,7 +49,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${stepName}"/></p>
+                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>
