@@ -93,7 +93,6 @@
                 <div class="col-xs-12 col-lg-8  user-selection-login white-content-box" style="margin-right: 30px;">
                   <p> <strong>Step 1:</strong> Healthcare Services Act (HCSA) licences will be managed under the new IT system, Healthcare Applications and Licensing Portal (HALP). All other Private Hospitals and Medical Clinics Act (PHMCA) licences and other services will be managed under the existing eLis. Please select accordingly based on the licences/services you wish to manage. Should you wish to manage both HCSA and PHMCA licences/services, please select both options.
                   </p>
-                  <h2></h2>
                   <div class="pre-login-selection">
                     <div class="row">
                       <div class="col-xs-12 col-lg-8">
@@ -105,7 +104,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right">
-                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="halp-info" class="collapse halp-infobox" style="height: 100px">
@@ -128,7 +127,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
-                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="elis-info" class="collapse halp-infobox"  style="height: 100px">
@@ -143,7 +142,6 @@
                       <!---------------------->
                     </div>
                   </div>
-                  <h2></h2>
                   <div class="col-xs-12" style="margin-bottom: 20px;">
                     <p> <strong>Step 2:</strong> Please click on "Login with Singpass" for your respective entity type to proceed. </p>
                   </div>
@@ -163,7 +161,7 @@
                   <h3>Healthcare Services Act (HCSA)</h3>
                   <ul>
                     <li>
-                      <p><a href="<iais:code code="RELURL001"></iais:code>">About HSCA</a></p>
+                      <p><a href="<iais:code code="RELURL001"></iais:code>">About HCSA</a></p>
                     </li>
                     <li>
                       <p><a href="<iais:code code="RELURL003"></iais:code>">FAQ</a></p>
