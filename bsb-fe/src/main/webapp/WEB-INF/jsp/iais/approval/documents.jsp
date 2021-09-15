@@ -152,9 +152,8 @@
         $('.file-upload').click(function () {
             var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
             $('input[name="uploadKey"]').val(index);
-            clearFlagValueFEFile();
-            //68932
-            $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+            /*clearFlagValueFEFile();*/
+            /*$('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');*/
             $('input[type="file"]').click();
         });
     });

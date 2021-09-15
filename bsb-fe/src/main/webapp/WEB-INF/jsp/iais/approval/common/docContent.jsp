@@ -1,7 +1,8 @@
 <c:if test="${taskList=='APPRTY001'}">
     <div class="document-upload-list">
-        <h3>Biosafety Committee Approval<span class="mandatory">*</span></h3>
+        <h3>Biosafety Committee Approval<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
             <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
             <br/>
         </div>
@@ -9,71 +10,80 @@
 </c:if>
 <c:if test="${taskList=='APPRTY002'}">
     <div class="document-upload-list">
-        <h3>Biosafety Committee Approval<span class="mandatory">*</span></h3>
+        <h3>Biosafety Committee Approval<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
             <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
             <br/>
         </div>
     </div>
     <div class="document-upload-list">
-        <h3>Risk Assessment<span class="mandatory">*</span></h3>
+        <h3>Risk Assessment<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
             <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
             <br/>
         </div>
     </div>
     <div class="document-upload-list">
-        <h3>Standard Operating Procedure (SOP)<span class="mandatory">*</span></h3>
+        <h3>Standard Operating Procedure (SOP)<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
             <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
             <br/>
         </div>
     </div>
     <div class="document-upload-list">
-        <h3>Emergency Response Plan<span class="mandatory">*</span></h3>
+        <h3>Emergency Response Plan<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
             <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
             <br/>
         </div>
     </div>
 </c:if>
 <c:if test="${taskList=='APPRTY003'}">
+    <div class="document-upload-list">
+        <h3>Biosafety Committee Approval<span class="mandatory"> *</span></h3>
+        <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
+            <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+            <br/>
+        </div>
+    </div>
+    <div class="document-upload-list">
+        <h3>Risk Assessment and Risk Management<span class="mandatory"> *</span></h3>
+        <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
+            <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+            <br/>
+        </div>
+    </div>
+    <div class="document-upload-list">
+        <h3>In-Principal Approval from MOH<span class="mandatory"> *</span></h3>
+        <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
+            <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+            <br/>
+        </div>
+    </div>
+    <div class="document-upload-list">
+        <h3>Emergency Response Plan<span class="mandatory"> *</span></h3>
+        <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
+            <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+            <br/>
+        </div>
+    </div>
+    <div class="document-upload-list">
+        <h3>Letter of declaration<span class="mandatory"> *</span></h3>
+        <div class="file-upload-gp">
+            <input type="hidden" name="configIndex" value="${configIndex}"/>
+            <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+            <br/>
+        </div>
+    </div>
 </c:if>
-<div class="document-upload-list">
-    <h3>Biosafety Committee Approval<span class="mandatory">*</span></h3>
-    <div class="file-upload-gp">
-        <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-        <br/>
-    </div>
-</div>
-<div class="document-upload-list">
-    <h3>Risk Assessment and Risk Management<span class="mandatory">*</span></h3>
-    <div class="file-upload-gp">
-        <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-        <br/>
-    </div>
-</div>
-<div class="document-upload-list">
-    <h3>In-Principal Approval from MOH<span class="mandatory">*</span></h3>
-    <div class="file-upload-gp">
-        <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-        <br/>
-    </div>
-</div>
-<div class="document-upload-list">
-    <h3>Emergency Response Plan<span class="mandatory">*</span></h3>
-    <div class="file-upload-gp">
-        <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-        <br/>
-    </div>
-</div>
-<div class="document-upload-list">
-    <h3>Letter of declaration<span class="mandatory">*</span></h3>
-    <div class="file-upload-gp">
-        <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-        <br/>
-    </div>
-</div>
 <%--<div class="document-upload-list">--%>
 <%--    <h3>--%>
 <%--        <c:if test="${'1' == config.dupForPrem}">Mode of Service Delivery&nbsp;${premStat.index+1}:&nbsp;</c:if>--%>
@@ -99,7 +109,7 @@
 <%--                </c:when>--%>
 <%--            </c:choose>--%>
 <%--        </c:if>--%>
-<%--        ${config.docTitle}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if>--%>
+<%--        ${config.docTitle}<c:if test="${config.isMandatory}"><span class="mandatory">  *</span></c:if>--%>
 <%--    </h3>--%>
 <%--    <div class="file-upload-gp">--%>
 <%--        <input type="hidden" name="configIndex" value="${configIndex}"/>--%>
