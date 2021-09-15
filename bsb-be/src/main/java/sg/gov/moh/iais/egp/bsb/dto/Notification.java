@@ -14,32 +14,55 @@ public class Notification {
     private String applicationNo;
 
     //Application
-    private String applicationName;
+    private String applicant;
 
+    //value(Main Admin/Alternate Admin)
+    private String admin;
+
+    //BISNEW001
+    private String facilityClassification;
+
+    //BISNEW002  value(Pre-Inspection/Pre-Certification)
+    private String preAction;
+
+    //BISNEW003,BISNEW004
     private String applicationType;
 
     private String status;
 
+    //BISNEW005
+    private String title;
+
+    //+BISNEW006
+    private Map<String,byte[]> attachments;
+
+    private String additionalInfo;
+
     //Revocation
 
-    //AO - rej001
+    //AO - BISEmail001
     private String approvalNo;
 
+    //+BISNEW001,BISNEW008(tie with facilityClassification)
     private String facilityType;
 
+    //+BISNEW001
     private String approvalType;
 
+    //+BISNEW001
     private String facilityCertifier;
 
     private String officer;
 
-    //USER - rej002
+    //USER - BISEmail002
     private String reason;
 
+    //+BISNEW008
     private String facilityName;
 
     private String facilityAddress;
 
+    //+BISNEW002\5\6
     private String date;
 
     //auto

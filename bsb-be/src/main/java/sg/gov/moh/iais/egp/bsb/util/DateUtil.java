@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * AUTHOR: YiMing
@@ -91,5 +92,23 @@ public class DateUtil {
             }
         }
         return isDateRight;
+    }
+
+    public static String generateRandomNum(){
+        Random random = new Random();
+        StringBuilder s = new StringBuilder();
+        int ends = random.nextInt(99);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        return s.append(sdf).append("HALP").append(String.format("%02d",ends)).toString();
+    }
+
+    public static String generateRandomByDate(){
+        StringBuilder stringBuilder = new StringBuilder();
+        Date currentTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateString = formatter.format(currentTime);
+
+        int num = (int) (Math.random() * (10000 - 1000) + 1000);
+        return stringBuilder.append(dateString).append(num).toString();
     }
 }

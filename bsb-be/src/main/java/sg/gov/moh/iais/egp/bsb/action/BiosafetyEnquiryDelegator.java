@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
+import sg.gov.moh.iais.egp.bsb.constant.EmailConstants;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
@@ -92,12 +93,11 @@ public class BiosafetyEnquiryDelegator {
         ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
         Notification notification = new Notification();
         notification.setApplicationNo("APP0000001");
-        notification.setStatus("rej001");
-        notification.setApprovalNo("approval001");
-        notification.setFacilityType("type01");
-        notification.setApprovalType("approvalType01");
-        notification.setFacilityCertifier("certifier01");
-        notification.setOfficer("Moh officer01");
+        notification.setReason("too much error");
+        notification.setFacilityName("facName001");
+        notification.setFacilityAddress("ZhuTang Road");
+        notification.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        notification.setStatus(EmailConstants.STATUS_REVOCATION_APPROVAL_USER);
         sendNotificationHelper.sendNotification(notification);
     }
 
