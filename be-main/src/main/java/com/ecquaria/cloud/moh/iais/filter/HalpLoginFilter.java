@@ -43,7 +43,7 @@ public class HalpLoginFilter implements Filter {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
                     AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext == null) {
-                String userIdStr = request.getParameter("userid");
+                String userIdStr = request.getHeader("userid");
                 log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 if (!StringUtil.isEmpty(userIdStr)) {
                     String userId = userIdStr.substring(userIdStr.lastIndexOf('\\') + 1);
