@@ -220,6 +220,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen) {
+        if(StringUtil.isEmpty(uen)) {
+            uen = "null";
+        }
         return feUserClient.getInternetUserByNricAndIdType(nric, idType, uen).getEntity();
     }
 
