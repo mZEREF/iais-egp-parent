@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.filter;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -9,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.usersession.UserSession;
 import com.ecquaria.cloud.usersession.UserSessionUtil;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -42,10 +45,28 @@ public class LoginInfoFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
+            String currentApp = ConfigHelper.getString("spring.application.name");
+            String currentDomain = ConfigHelper.getString("iais.current.domain");
+            boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext == null && AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)
+                    && "main-web".equalsIgnoreCase(currentApp) && !fakeLogin) {
+                log.info("Come to AD login ===>");
+                Class cls = MiscUtil.getClassFromName("com.ecquaria.cloud.moh.iais.filter.HalpLoginFilter");
+                String userIdStr = request.getHeader("userid");
+                log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
+                try {
+                    Object obj = cls.newInstance();
+                    Method med = cls.getMethod("doAdlogin", HttpServletRequest.class);
+                    med.invoke(obj, request);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+            }
             String uri = request.getRequestURI();
             String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
             UserSession userSession = ProcessCacheHelper.getUserSessionFromCache(sessionId);
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (userSession == null || !"Active".equals(userSession.getStatus())) {
                 log.info(StringUtil.changeForLog("User session invalid ==>" + sessionId));
                 loginContext = null;
