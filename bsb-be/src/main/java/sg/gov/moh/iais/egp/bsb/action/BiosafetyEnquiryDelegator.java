@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
-import sg.gov.moh.iais.egp.bsb.dto.Letter;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
