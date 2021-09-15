@@ -16,22 +16,22 @@
                 </tr>
                 </thead>
                 <tbody>
-<%--                <c:forEach items="${processingHistory}" var="history">--%>
+                <c:forEach items="${history}" var="history">
                     <tr>
                         <td>
-<%--                            <p><iais:code code="${history.actionBy}"></iais:code></p>--%>
+                            <p><iais:code code="${history.actionBy}"></iais:code></p>
                         </td>
                         <td>
-<%--                            <p><iais:code code="${history.appStatus}"></iais:code></p>--%>
+                            <p><iais:code code="${history.appStatus}"></iais:code></p>
                         </td>
                         <td>
-<%--                            <p><c:out value="${history.internalRemarks}"></c:out></p>--%>
+                            <p><c:out value="${history.internalRemarks}"></c:out></p>
                         </td>
                         <td>
-<%--                            <p><fmt:formatDate value='${history.modifiedAt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>--%>
+                            <p><fmt:formatDate value='${history.modifiedAt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
                         </td>
                     </tr>
-<%--                </c:forEach>--%>
+                </c:forEach>
                 </tbody>
             </table>
         </div>

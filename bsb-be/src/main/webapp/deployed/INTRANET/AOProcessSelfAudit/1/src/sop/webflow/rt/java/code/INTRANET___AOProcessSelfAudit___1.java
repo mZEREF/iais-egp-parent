@@ -11,15 +11,19 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___AOProcessSelfAudit___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="selfAuditDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareAOProcessSelfAuditData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
@@ -28,10 +32,12 @@ public class INTRANET___AOProcessSelfAudit___1 extends BaseProcessClass {
 
 	public void approved_OnStepProcess_0() throws Exception {
 	// 		approved->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "AOApproved", this);
 	}
 
 	public void routeBack_OnStepProcess_0() throws Exception {
 	// 		routeBack->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "AOInternalClarifications", this);
 	}
 
 }

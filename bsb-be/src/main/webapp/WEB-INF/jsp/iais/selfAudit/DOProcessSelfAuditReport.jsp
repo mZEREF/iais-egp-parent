@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -77,14 +78,14 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <input name="auditId" id="auditId"
-                                                                           value="<iais:mask name="auditId" value="${facilityAudit.id}"></iais:mask> " hidden>
+                                                                    <input name="auditAppId" id="auditAppId"
+                                                                           value="<iais:mask name="auditAppId" value="${facilityAuditAPP.id}"></iais:mask> " hidden>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="${facilityAudit.status}"></iais:code></p>
+                                                                                <p><iais:code code="${facilityAuditAPP.facilityAudit.status}"></iais:code></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -129,7 +130,7 @@
                                                                                              id="decision"
                                                                                              codeCategory="CATE_ID_BSB_DO_AUDIT_DO"
                                                                                              firstOption="Please Select"/>
-                                                                                <span id="error_scenarioCategory"
+                                                                                <span id="error_decision"
                                                                                       name="iaisErrorMsg"
                                                                                       class="error-msg"></span>
                                                                             </iais:value>
@@ -140,7 +141,7 @@
                                                                    id="backToTask" href="#"><em
                                                                         class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="submitBtn" id="submitButton"
+                                                                    <button name="submitBtn" id="doProcessButton"
                                                                             type="button" class="btn btn-primary">
                                                                         Submit
                                                                     </button>
@@ -164,10 +165,3 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script>
-    $("#submitButton").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doVerified");
-        $("#mainForm").submit();
-    })
-</script>

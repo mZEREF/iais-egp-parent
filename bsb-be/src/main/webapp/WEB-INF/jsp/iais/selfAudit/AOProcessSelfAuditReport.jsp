@@ -8,6 +8,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -77,14 +78,14 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <input name="applicationId" id="applicationId"
-                                                                           value="" hidden>
+                                                                    <input name="auditAppId" id="auditAppId"
+                                                                           value="<iais:mask name="auditAppId" value="${facilityAuditAPP.id}"></iais:mask> " hidden>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status"
                                                                                         required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="Active"></iais:code></p>
+                                                                                <p><iais:code code="${facilityAuditAPP.facilityAudit.facility.facilityStatus}"></iais:code></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -93,7 +94,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO remarks" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>DO remarks,DO remarks</p>
+                                                                                <p><c:out value="${facilityAuditAPP.doRemarks}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -114,7 +115,7 @@
                                                                             <iais:field value="AO Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <textarea id="remark"
-                                                                                name="remark"
+                                                                                name="aoRemark"
                                                                                 cols="70"
                                                                                 rows="5"
                                                                                 maxlength="300"></textarea>
@@ -148,10 +149,10 @@
                                                                     </div>
                                                                 </iais:section>
                                                                 <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   id="backToTask" href="#"><em
+                                                                   id="back" href="#"><em
                                                                         class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="submitBtn" id="submitButton"
+                                                                    <button name="submitBtn" id="aoProcessButton"
                                                                             type="button" class="btn btn-primary">
                                                                         Submit
                                                                     </button>
@@ -175,10 +176,3 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script>
-    $("#submitButton").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doApproved");
-        $("#mainForm").submit();
-    })
-</script>

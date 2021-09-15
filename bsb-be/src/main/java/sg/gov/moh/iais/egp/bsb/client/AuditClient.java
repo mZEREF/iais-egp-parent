@@ -13,6 +13,9 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAuditApp;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityAuditAppHistory;
+
+import java.util.List;
 
 /**
  * @author Zhu Tangtang
@@ -43,8 +46,20 @@ public interface AuditClient {
     FeignResponseEntity<FacilityAuditApp> getFacilityAuditAppById(@RequestParam("id") String id);
 
     @PostMapping(value = "/bsb-audit/updateAuditApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateAuditApp(@RequestBody FacilityAuditApp auditApp);
+    FeignResponseEntity<Void> processAuditDate(@RequestBody FacilityAuditApp auditApp);
 
-    @PostMapping(value = "/bsb-audit/updateAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateAudit(@RequestBody FacilityAudit facilityAudit);
+//    @PostMapping(value = "/bsb-audit/updateAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<Void> updateAudit(@RequestBody FacilityAudit facilityAudit);
+
+    @PostMapping(value = "/bsb-audit/saveSelfAuditReport", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FacilityAuditApp> saveSelfAuditReport(@RequestBody FacilityAudit facilityAudit);
+
+    @PostMapping(value = "/bsb-auditHistory/saveHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FacilityAuditAppHistory> saveHistory(@RequestBody FacilityAuditAppHistory history);
+
+    @GetMapping(value = "/bsb-auditHistory/getAllHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FacilityAuditAppHistory>> getAllHistory();
+
+    @GetMapping(value = "/bsb-auditHistory/getAllHistoryByAuditAppId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FacilityAuditAppHistory>> getAllHistoryByAuditAppId(@RequestParam("auditAppId") String auditAppId);
 }

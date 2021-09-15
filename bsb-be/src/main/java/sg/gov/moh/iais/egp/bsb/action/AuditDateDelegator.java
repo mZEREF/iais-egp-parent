@@ -208,7 +208,7 @@ public class AuditDateDelegator {
         facilityAuditApp.setDoRemarks(remark);
         facilityAuditApp.setDoDecision(decision);
         facilityAuditApp.setStatus("AUDITST005");
-        auditClient.updateAuditApp(facilityAuditApp);
+        auditClient.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -226,7 +226,7 @@ public class AuditDateDelegator {
         facilityAuditApp.setDoDecision(decision);
         facilityAuditApp.setDoReason(reason);
         facilityAuditApp.setStatus("AUDITST005");
-        auditClient.updateAuditApp(facilityAuditApp);
+        auditClient.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -243,7 +243,7 @@ public class AuditDateDelegator {
         //
         facilityAuditApp.getFacilityAudit().setStatus("AUDITST002");
         facilityAuditApp.getFacilityAudit().setAuditDt(facilityAuditApp.getRequestAuditDt());
-        auditClient.updateAuditApp(facilityAuditApp);
+        auditClient.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -259,7 +259,7 @@ public class AuditDateDelegator {
         facilityAuditApp.setAoRemarks(remark);
         facilityAuditApp.setAoReason(reason);
         facilityAuditApp.setStatus("AUDITST007");
-        auditClient.updateAuditApp(facilityAuditApp);
+        auditClient.processAuditDate(facilityAuditApp);
     }
 
     /**

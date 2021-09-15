@@ -224,6 +224,59 @@ $(function () {
         }
     })
 
+    //self-audit
+    $("#submitReportButton").click(function (){
+        $("[name='action_type']").val("doSubmit");
+        var optionValue = $("#scenarioCategory option:selected").val();
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_scenarioCategory").html("Please select valid options!");
+        }else {
+            showWaiting();
+            $("#mainForm").submit();
+        }
+    })
+
+    //DO decision self-audit
+    $("#doProcessButton").click(function (){
+        var optionValue = $("#decision option:selected").val();
+        if (optionValue == "DOAUDO001") {
+            showWaiting();
+            $("[name='action_type']").val("doVerified");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "DOAUDO002") {
+            showWaiting();
+            $("[name='action_type']").val("doRequestInfo");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "DOAUDO003") {
+            showWaiting();
+            $("[name='action_type']").val("doReject");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_decision").html("Please select valid options!");
+        }
+    })
+
+    //AO decision self-audit
+    $("#aoProcessButton").click(function (){
+        var optionValue = $("#decision option:selected").val();
+        if (optionValue == "DOAUAO001") {
+            showWaiting();
+            $("[name='action_type']").val("doApproved");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "DOAUAO002") {
+            showWaiting();
+            $("[name='action_type']").val("doRouteBack");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_decision").html("Please select valid options!");
+        }
+    })
+
     //back
     $("#back").click(function (){
         showWaiting();

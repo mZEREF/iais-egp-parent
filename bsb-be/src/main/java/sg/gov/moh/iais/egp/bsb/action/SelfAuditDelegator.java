@@ -11,9 +11,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -57,10 +59,13 @@ public class SelfAuditDelegator {
     private static final String FACILITY_AUDIT = "facilityAudit";
     private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     private static final String AUDIT_ID = "auditId";
+    private static final String AUDIT_APP_ID = "auditAppId";
     private static final String LAST_AUDIT_DATE = "lastAuditDt";
     private static final String AUDIT_DOC_DTO = "auditDocDto";
     private static final String AUDIT_OUTCOME = "auditOutcome";
     private static final String FINAL_REMARK = "finalRemark";
+    private static final String AO_REMARKS = "aoRemark";
+    private static final String PARAM_HISTORY = "history";
 
     @Autowired
     private AuditClient auditClient;
@@ -192,7 +197,7 @@ public class SelfAuditDelegator {
         audit.setScenarioCategory(scenarioCategory);
         audit.setId(auditId);
         audit.setStatus("AUDITST004");
-        auditClient.updateAudit(audit);
+        FacilityAuditApp facilityAuditApp = auditClient.saveSelfAuditReport(audit).getEntity();
     }
 
     /**
@@ -205,8 +210,10 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request,FACILITY,null);
         ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
 
-        String auditId = "AE21FDD6-810C-EC11-BE6E-000C298D317C";
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
+        String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
+        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
+        facilityAuditApp.setFacilityAudit(facilityAudit);
 
         Facility facility = facilityAudit.getFacility();
         Application application = new Application();
@@ -225,64 +232,166 @@ public class SelfAuditDelegator {
         AuditDocDto auditDocDto = new AuditDocDto();
         auditDocDto.setFacilityDocs(docList);
 
+        List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
+
         ParamUtil.setSessionAttr(request,FACILITY,facility);
-        ParamUtil.setRequestAttr(request, FACILITY_AUDIT, facilityAudit);
+        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
         ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setRequestAttr(request,PARAM_HISTORY,histories);
     }
 
     /**
-     * audit status change to AUDITST006
      * audit app status change to AUDITST005
      * @param bpc
      */
     public void DOVerified(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String auditId = ParamUtil.getMaskedString(request,AUDIT_ID);
-        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
-        if (StringUtil.isNotEmpty(auditOutCome)){
-            facilityAudit.setAuditOutcome(auditOutCome);
-        }
-        if (finalRemark.equals("on")){
-            facilityAudit.setFinalRemarks("Yes");
-        }else{
-            facilityAudit.setFinalRemarks("No");
-        }
-        facilityAudit.setStatus("AUDITST006");
-        auditClient.updateAudit(facilityAudit);
-
-        FacilityAudit audit = new FacilityAudit();
-        audit.setId(facilityAudit.getId());
-
-        FacilityAuditApp auditApp = new FacilityAuditApp();
-        auditApp.setAuditType(facilityAudit.getAuditType());
-        auditApp.setFacilityAudit(audit);
-        auditApp.setDoRemarks(remark);
-        auditApp.setDoDecision(decision);
+        FacilityAuditApp auditApp = before(request);
         auditApp.setStatus("AUDITST005");
-
-
+        auditClient.processAuditDate(auditApp).getEntity();
+        FacilityAuditAppHistory auditAppHistory = abHistory(request);
+        auditAppHistory.setAppStatus(auditApp.getStatus());
+        auditClient.saveHistory(auditAppHistory);
     }
 
     /**
-     * audit status change to AUDITST006
-     * audit app status change to AUDITST005
+     * audit app status change to AUDITST002
      * @param bpc
      */
     public void DORequestForInformation(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        FacilityAuditApp auditApp = before(request);
+        auditApp.setStatus("AUDITST002");
+        auditClient.processAuditDate(auditApp);
+        FacilityAuditAppHistory auditAppHistory = abHistory(request);
+        auditAppHistory.setAppStatus(auditApp.getStatus());
+        auditClient.saveHistory(auditAppHistory);
     }
 
     /**
-     * audit status change to AUDITST006
      * audit app status change to AUDITST005
      * @param bpc
      */
     public void DOReject(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        FacilityAuditApp auditApp = before(request);
+        auditApp.setStatus("AUDITST005");
+        auditClient.processAuditDate(auditApp);
+        FacilityAuditAppHistory auditAppHistory = abHistory(request);
+        auditAppHistory.setAppStatus(auditApp.getStatus());
+        auditClient.saveHistory(auditAppHistory);
+    }
+
+    /**
+     * AutoStep: prepareData
+     *
+     * @param bpc
+     */
+    public void prepareAOProcessSelfAuditData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,FACILITY,null);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+
+        String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
+        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
+        facilityAuditApp.setFacilityAudit(facilityAudit);
+
+        Facility facility = facilityAudit.getFacility();
+        Application application = new Application();
+        application.setFacility(facility);
+        String facilityAddress = JoinAddress.joinAddress(application);
+        facility.setFacilityAddress(facilityAddress);
+
+        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
+        List<FacilityDoc> docList = new ArrayList<>();
+        for (FacilityDoc facilityDoc : facilityDocList) {
+            //这里拿不到，只能拿到当前用户名
+            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+            facilityDoc.setSubmitByName(submitByName);
+            docList.add(facilityDoc);
+        }
+        AuditDocDto auditDocDto = new AuditDocDto();
+        auditDocDto.setFacilityDocs(docList);
+
+        List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
+
+        ParamUtil.setSessionAttr(request,FACILITY,facility);
+        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setRequestAttr(request,PARAM_HISTORY,histories);
+    }
+
+    /**
+     * audit app status change to AUDITST004
+     * @param bpc
+     */
+    public void AOInternalClarifications(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        FacilityAuditApp auditApp = before(request);
+        auditApp.setStatus("AUDITST004");
+        auditApp.getFacilityAudit().setStatus("AUDITST004");
+        auditClient.processAuditDate(auditApp);
+        FacilityAuditAppHistory auditAppHistory = abHistory(request);
+        auditAppHistory.setAppStatus(auditApp.getStatus());
+        auditClient.saveHistory(auditAppHistory);
+    }
+
+    /**
+     * audit app status change to AUDITST003
+     * @param bpc
+     */
+    public void AOApproved(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        FacilityAuditApp auditApp = before(request);
+        auditApp.setStatus("AUDITST003");
+        auditApp.getFacilityAudit().setStatus("AUDITST003");
+        auditClient.processAuditDate(auditApp);
+        FacilityAuditAppHistory auditAppHistory = abHistory(request);
+        auditAppHistory.setAppStatus(auditApp.getStatus());
+        auditClient.saveHistory(auditAppHistory);
+    }
+
+
+    private FacilityAuditApp before(HttpServletRequest request){
+        String auditAppId = ParamUtil.getMaskedString(request,AUDIT_APP_ID);
+        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
+        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
+        String aoRemark = ParamUtil.getRequestString(request,AO_REMARKS);
+        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
+        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
+
+        FacilityAudit audit = new FacilityAudit();
+        FacilityAuditApp auditApp = new FacilityAuditApp();
+        auditApp.setId(auditAppId);
+        auditApp.setDoRemarks(remark);
+        auditApp.setAoRemarks(aoRemark);
+        auditApp.setDoDecision(decision);
+        audit.setAuditOutcome(auditOutCome);
+        audit.setRemarks(aoRemark);
+        if (finalRemark==null) {
+            audit.setFinalRemarks("No");
+        }else {
+            audit.setFinalRemarks("Yes");
+        }
+        auditApp.setFacilityAudit(audit);
+        return auditApp;
+    }
+
+    private FacilityAuditAppHistory abHistory(HttpServletRequest request){
+        FacilityAuditApp auditApp = before(request);
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        FacilityAuditAppHistory auditAppHistory = new FacilityAuditAppHistory();
+        auditAppHistory.setActionBy(loginContext.getUserName());
+        auditAppHistory.setProcessDecision(auditApp.getDoDecision());
+        auditAppHistory.setAuditAppId(auditApp.getId());
+        if (StringUtil.isNotEmpty(auditApp.getDoRemarks())) {
+            auditAppHistory.setInternalRemarks(auditApp.getDoRemarks());
+        }
+        if (StringUtil.isNotEmpty(auditApp.getAoRemarks())) {
+            auditAppHistory.setInternalRemarks(auditApp.getAoRemarks());
+        }
+
+        return auditAppHistory;
     }
 }
