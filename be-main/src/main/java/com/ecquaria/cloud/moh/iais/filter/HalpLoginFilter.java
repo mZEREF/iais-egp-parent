@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloudfeign.FeignException;
 import ecq.commons.exception.BaseException;
 import java.io.IOException;
-import java.util.UUID;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -41,17 +40,12 @@ public class HalpLoginFilter implements Filter {
         if ((servletRequest instanceof HttpServletRequest) && !fakeLogin) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             BackendLoginDelegator blDelegate = SpringContextHelper.getContext().getBean(BackendLoginDelegator.class);
-            String setVal = UUID.randomUUID().toString();
 
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
                     AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext == null) {
-                String runningFlag = (String) ParamUtil.getSessionAttr(request, "halpAdloginFlag");
-                if (StringUtil.isEmpty(runningFlag)) {
-                    ParamUtil.setSessionAttr(request, "halpAdloginFlag", setVal);
-                }
                 String userIdStr = request.getHeader("userid");
-                log.debug(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
+                log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 if (!StringUtil.isEmpty(userIdStr)) {
                     String userId = userIdStr.substring(userIdStr.lastIndexOf('\\') + 1);
                     try {
@@ -62,7 +56,6 @@ public class HalpLoginFilter implements Filter {
                     }
                 }
             }
-            ParamUtil.setSessionAttr(request, "halpAdloginFlag", null);
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
