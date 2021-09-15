@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
@@ -160,9 +161,10 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             for (AppSvcPrincipalOfficersDto target : targetList) {
                 for (AppSvcPrincipalOfficersDto source : sourceList) {
                     if (Objects.equals(target.getIdNo(), source.getIdNo())) {
-                        source.setIndexNo(target.getIndexNo());
-                        source.setCurPersonelId(target.getCurPersonelId());
-                        targetList.set(targetList.indexOf(target), source);
+                        AppSvcPrincipalOfficersDto newDto = (AppSvcPrincipalOfficersDto) CopyUtil.copyMutableObject(source);
+                        newDto.setIndexNo(target.getIndexNo());
+                        newDto.setCurPersonelId(target.getCurPersonelId());
+                        targetList.set(targetList.indexOf(target), newDto);
                         isPersonnelEdit = true;
                         break;
                     }
