@@ -5,15 +5,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.BeDashboardConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllActionAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAllGrpAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashAssignMeQueryDto;
@@ -1316,5 +1322,51 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             }
         }
         return appStatusOption;
+    }
+
+    @Override
+    public void createReportResult(TaskDto taskDto, ApplicationViewDto applicationViewDto, String userId) {
+        String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
+        //Date time
+        Date inspectionDate = null;
+        AppPremisesRecommendationDto appPreRecommentdationDtoDate = applicationMainClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        //add listReportNcRectifiedDto and add ncItemId
+        AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationMainClient.getAppNcByAppCorrId(appPremisesCorrelationId).getEntity();
+        if (appPreRecommentdationDtoDate != null) {
+            inspectionDate = appPreRecommentdationDtoDate.getRecomInDate();
+        }
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        String applicationDtoId = applicationDto.getId();
+        String riskLevel = null;
+
+        if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            hcsaRiskScoreDto.setLicId(applicationDto.getOriginLicenceId());
+            List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+            applicationDtos.add(applicationDto);
+            hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+            hcsaRiskScoreDto.setBeExistAppId(applicationDtoId);
+            HcsaRiskScoreDto entity = hcsaConfigMainClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            riskLevel = entity.getRiskLevel();
+        }
+
+        ReportResultDto reportResultDto = new ReportResultDto();
+        reportResultDto.setInspDate(inspectionDate);
+        reportResultDto.setInspEnddate(new Date());
+        reportResultDto.setAppPremId(appPremisesCorrelationId);
+        reportResultDto.setRiskLevel(riskLevel);
+        if (appPremPreInspectionNcDto != null) {
+            reportResultDto.setNc(true);
+        }else {
+            reportResultDto.setNc(false);
+        }
+        saveReportResult(reportResultDto);
+    }
+
+    private void saveReportResult(ReportResultDto reportResultDto) {
+        applicationMainClient.saveReportResult(reportResultDto).getEntity();
     }
 }
