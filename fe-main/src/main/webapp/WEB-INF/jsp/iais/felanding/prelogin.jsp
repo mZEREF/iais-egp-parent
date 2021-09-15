@@ -60,23 +60,23 @@
   }
 </style>
 <div class="main-content">
-<c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
-  <div class="col-md-12" style="margin-top:10px;">
-  <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertMaintainace">
-      <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
-                            <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
-  </c:if>
-  <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
-    <div class="dashalert alert-info dash-announce alertBanner">
-      <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
-      <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+  <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
+    <div class="col-md-12" style="margin-top:10px;">
+      <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertMaintainace">
+          <button aria-label="Close" data-dismiss="dashalert" class="close" type="button" onclick="javascript:$('.alertMaintainace').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+          <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
+      </c:if>
+      <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
+        <div class="dashalert alert-info dash-announce alertBanner">
+          <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:$('.alertBanner').hide();"><span aria-hidden="true">x</span></button>
+          <h3 style="margin-top:0;"><i class="fa fa-bell"></i> Announcement</h3><%--NOSONAR--%>
+          <c:out value="${bAnner_AlERt_Msg__atTR}" escapeXml="false"/>
+        </div>
+      </c:if>
     </div>
   </c:if>
-  </div>
-</c:if>
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
@@ -93,7 +93,6 @@
                 <div class="col-xs-12 col-lg-8  user-selection-login white-content-box" style="margin-right: 30px;">
                   <p> <strong>Step 1:</strong> Healthcare Services Act (HCSA) licences will be managed under the new IT system, Healthcare Applications and Licensing Portal (HALP). All other Private Hospitals and Medical Clinics Act (PHMCA) licences and other services will be managed under the existing eLis. Please select accordingly based on the licences/services you wish to manage. Should you wish to manage both HCSA and PHMCA licences/services, please select both options.
                   </p>
-                  <h2></h2>
                   <div class="pre-login-selection">
                     <div class="row">
                       <div class="col-xs-12 col-lg-8">
@@ -105,7 +104,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right">
-                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="halp-info" class="collapse halp-infobox" style="height: 100px">
@@ -128,7 +127,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
-                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="elis-info" class="collapse halp-infobox"  style="height: 100px">
@@ -143,7 +142,6 @@
                       <!---------------------->
                     </div>
                   </div>
-                  <h2></h2>
                   <div class="col-xs-12" style="margin-bottom: 20px;">
                     <p> <strong>Step 2:</strong> Please click on "Login with Singpass" for your respective entity type to proceed. </p>
                   </div>
@@ -219,25 +217,25 @@
 
     var serviceGroups = $('input[name="serviceGroup"]:checked');
     if (serviceGroups.length == 0) {
-        $('#corppass').attr("href", "javascript:void(0);");
-        $('#corppass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
-        $('#singpass').attr("href", "javascript:void(0);");
-        $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
+      $('#corppass').attr("href", "javascript:void(0);");
+      $('#corppass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
+      $('#singpass').attr("href", "javascript:void(0);");
+      $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
     } else if ($('#oldSystem').is(':checked')) {
-        $('#corppass').attr("href", oldSysCorpass);
-        $('#corppass').removeAttr("onclick");
-        $('#singpass').attr("href", oldSysSingpass);
-        $('#singpass').removeAttr("onclick");
+      $('#corppass').attr("href", oldSysCorpass);
+      $('#corppass').removeAttr("onclick");
+      $('#singpass').attr("href", oldSysSingpass);
+      $('#singpass').removeAttr("onclick");
     } else if (isEmpty(prd)) {
-        $('#corppass').attr("href", "javascript:void(0);");
-        $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
-        $('#singpass').attr("href", "javascript:void(0);");
-        $('#singpass').attr("onclick", "Utils.submit('mainForm','singpassLogin');");
+      $('#corppass').attr("href", "javascript:void(0);");
+      $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
+      $('#singpass').attr("href", "javascript:void(0);");
+      $('#singpass').attr("onclick", "Utils.submit('mainForm','singpassLogin');");
     } else {
-        $('#corppass').attr("href", prd);
-        $('#corppass').removeAttr("onclick");
-        $('#singpass').attr("href", prdSing);
-        $('#singpass').removeAttr("onclick");
+      $('#corppass').attr("href", prd);
+      $('#corppass').removeAttr("onclick");
+      $('#singpass').attr("href", prdSing);
+      $('#singpass').removeAttr("onclick");
     }
   }
 </script>
