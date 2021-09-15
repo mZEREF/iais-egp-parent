@@ -49,7 +49,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <p style="font-weight: 600;font-size: 2.2rem">Clinical Director</p>
+                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>
@@ -105,7 +105,7 @@
         </c:choose>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Clinical Director</span>
+                <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
         </div>
     </c:if>

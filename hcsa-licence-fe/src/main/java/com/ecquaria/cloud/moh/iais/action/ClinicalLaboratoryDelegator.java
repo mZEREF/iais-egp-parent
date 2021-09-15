@@ -1174,8 +1174,10 @@ public class ClinicalLaboratoryDelegator {
                             appSvcCgoDto.setQualification(qualificationStr);
                             continue;
                         }
+                        boolean needLoadName =
+                                !appSvcCgoDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         String name = professionalResponseDto.getName();
-                        if(StringUtil.isEmpty(name)){
+                        if(needLoadName && StringUtil.isEmpty(name)){
                             log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
                             errList.put("professionRegoNo"+i,"GENERAL_ERR0042");
                             appSvcCgoDto.setSpeciality(specialtyStr);
@@ -1183,8 +1185,7 @@ public class ClinicalLaboratoryDelegator {
                             appSvcCgoDto.setQualification(qualificationStr);
                             continue;
                         }
-                        boolean isLicPsn = appSvcCgoDto.isLicPerson();
-                        if((!isLicPsn && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) || (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))){
+                        if(needLoadName){
                             appSvcCgoDto.setName(name);
                         }
                         //retrieve data from prs server
@@ -1256,7 +1257,7 @@ public class ClinicalLaboratoryDelegator {
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
                 if (errList.isEmpty()) {
                     //sync person dropdown and submisson dto
-                    personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
+                    syncDropDownAndPsn(appSubmissionDto, appSvcCgoDtos, svcCode, bpc.request);
                 } else {
                     //set audit
                     bpc.request.setAttribute("errormapIs", "error");
@@ -1267,18 +1268,7 @@ public class ClinicalLaboratoryDelegator {
                     ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
                     return;
                 }
-            }else{
-                //sync person dropdown and submisson dto
-                List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-                personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
             }
-            //remove dirty psn dropdown info
-            Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
-            //remove dirty psn doc info
-            List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-            currentSvcRelatedDto = removeDirtyPsnDoc(currentSvcRelatedDto,svcDocConfigDtos,appSvcCgoDtos,ApplicationConsts.DUP_FOR_PERSON_CGO);
             // re-set allocation
             List<AppSvcDisciplineAllocationDto> allocationList = currentSvcRelatedDto.getAppSvcDisciplineAllocationDtoList();
             if (allocationList != null && !allocationList.isEmpty()) {
@@ -2237,24 +2227,16 @@ public class ClinicalLaboratoryDelegator {
                             setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
                             continue;
                         }
+                        boolean needLoadName =
+                                !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         String name = professionalResponseDto.getName();
-                        if(StringUtil.isEmpty(name)){
+                        if (needLoadName && StringUtil.isEmpty(name)) {
                             log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
                             map.put("profRegNo"+i,"GENERAL_ERR0042");
                             setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
                             continue;
                         }
-                        /*
-                        boolean isLicPsn = appSvcPsnDto.isLicPerson();
-                        String assignSel = ParamUtil.getString(bpc.request,"assignSel"+i);
-                        if ((IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel)
-                                && !isLicPsn && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType))
-                                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
-                                || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-                            appSvcPsnDto.setName(name);
-                        }
-                        */
-                        if (!appSvcPsnDto.isLicPerson()){
+                        if (needLoadName){
                             appSvcPsnDto.setName(name);
                         }
                         //retrieve data from prs server
@@ -4583,10 +4565,29 @@ public class ClinicalLaboratoryDelegator {
             svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         }
         Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP);
+        if (personList == null || personList.isEmpty()) {
+            return personMap;
+        }
         Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICPERSONSELECTMAP);
         personMap = syncDropDownAndPsn(personMap,appSubmissionDto,personList,svcCode);
         Map<String,AppSvcPersonAndExtDto> newPersonMap = removeDirtyDataFromPsnDropDown(appSubmissionDto,licPersonMap,personMap);
         ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) newPersonMap);
+        //remove dirty psn doc info
+        String dupForPerson = null;
+        String personType = personList.get(0).getPsnType();
+        if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(personType)) {
+            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CGO;
+        } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(personType)) {
+            dupForPerson = ApplicationConsts.DUP_FOR_PERSON_CD;
+        }
+        if (!StringUtil.isEmpty(dupForPerson)) {
+            String currentSvcId = getCurrentServiceId(request);
+            AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(appSubmissionDto, currentSvcId, null);
+            List<HcsaSvcDocConfigDto> svcDocConfigDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
+            List<AppSvcPrincipalOfficersDto> newList = NewApplicationHelper.transferCgoToPsnDtoList(personList);
+            currentSvcRelatedDto = removeDirtyPsnDoc(currentSvcRelatedDto, svcDocConfigDtos, newList, dupForPerson);
+            setAppSvcRelatedInfoMap(request, currentSvcId, currentSvcRelatedDto, appSubmissionDto);
+        }
 
         return newPersonMap;
     }
