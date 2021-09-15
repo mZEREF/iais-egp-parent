@@ -57,8 +57,8 @@ public class LoginInfoFilter implements Filter {
                 log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 try {
                     Object obj = cls.newInstance();
-                    Method med = cls.getMethod("doAdlogin", HttpServletRequest.class);
-                    med.invoke(obj, request);
+                    Method med = cls.getMethod("doAdlogin", new Class[]{HttpServletRequest.class, String.class});
+                    med.invoke(obj, new Object[]{request, userIdStr});
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw new IaisRuntimeException(e);
