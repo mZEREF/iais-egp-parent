@@ -101,11 +101,7 @@ public class HcsaFileAjaxController {
              return "";
          }
          // Save File to other nodes
-        try {
-            saveFileToOtherNodes(selectedFile, map.get(fileAppendId + reloadIndex));
-        } catch (Exception e) {
-            log.error("Error when save file to other Nodes", e);
-        }
+        saveFileToOtherNodes(selectedFile, map.get(fileAppendId + reloadIndex));
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
@@ -238,7 +234,7 @@ public class HcsaFileAjaxController {
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
     }
 
-    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile) throws IOException {
+    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile) {
         List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
         if (ipAddrs != null && ipAddrs.size() > 1) {
             String localIp = MiscUtil.getLocalHostExactAddress();
@@ -246,28 +242,32 @@ public class HcsaFileAjaxController {
                 if (localIp.equals(ip)) {
                     continue;
                 }
-                String port = ConfigHelper.getString("server.port", "8080");
-                StringBuilder apiUrl = new StringBuilder("http://");
-                apiUrl.append(ip).append(':').append(port).append("/tempFile-handler");
-                log.info("Request URL ==> " + apiUrl.toString());
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+                try {
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/tempFile-handler");
+                    log.info("Request URL ==> " + apiUrl.toString());
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-                MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-                HttpHeaders fileHeader = new HttpHeaders();
-                byte[] content =  selectedFile.getBytes();
-                ByteArrayResource fileContentAsResource = new ByteArrayResource(content){
-                    @Override
-                    public String getFilename() {
-                        return toFile.getName();
-                    }
-                };
-                HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
-                multipartRequest.add("selectedFiles", fileEnt);
-                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
-                headers.add("fileName", toFile.getName());
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                    HttpHeaders fileHeader = new HttpHeaders();
+                    byte[] content = selectedFile.getBytes();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                        @Override
+                        public String getFilename() {
+                            return toFile.getName();
+                        }
+                    };
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    multipartRequest.add("selectedFiles", fileEnt);
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                    headers.add("fileName", toFile.getName());
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
 
