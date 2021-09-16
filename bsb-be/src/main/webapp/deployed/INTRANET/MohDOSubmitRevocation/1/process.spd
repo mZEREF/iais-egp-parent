@@ -61,8 +61,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(790,120)(850,220)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/updateNum" linkstyle="Direct" name="" sourceName="/Pages/WebPage/updateInventory" style="oblique">
-   <position>{(390,260)(620,260)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/updateInventory" style="oblique">
+   <position>{(390,260)(520,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/revocationDetail" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/updateNum" style="rectanular">
    <position>{(620,260)(600,120)}</position>
@@ -91,6 +91,12 @@
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewAck" style="oblique">
    <position>{(850,320)(740,220)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(520,260)(739,410)(740,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/updateNum" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(520,260)(620,260)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/revocationDetail" componentIfTrue="/Pages/WebPage/updateInventory" defClass="" executor="" icon="" leftOperand="1" name="Cond1" operator="=" rightOperand="1" x="400" y="100">
@@ -101,6 +107,11 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="770" y="100">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSubmit&quot;" />
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="500" y="240">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/updateNum" value="&quot;doUpdate&quot;" />
    <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>

@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="routeBack_OnStepProcess_0" name="routeBack_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Step1" x="510" y="240">
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="back" x="510" y="240">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />
@@ -83,10 +83,10 @@
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/approved" style="rectanular">
    <position>{(630,260)(640,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(640,120)(530,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Step1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ackPage" style="oblique">
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ackPage" style="oblique">
    <position>{(640,380)(530,260)}</position>
   </SynchronousLink>
  </Links>
@@ -96,7 +96,7 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/approved" value="&quot;doApproved&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/routeBack" value="&quot;doRouteBack&quot;" />
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Step1" value="" />
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
  <Branches />

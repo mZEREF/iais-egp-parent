@@ -44,7 +44,7 @@
     </div>
 </div>
 <div align="left">
-    <a class="back" href="#"><em class="fa fa-angle-left"></em>Back</a>
+<%--    <a class="back" href="#"><em class="fa fa-angle-left"></em>Back</a>--%>
 </div>
 
 

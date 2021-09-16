@@ -126,7 +126,8 @@ $(function () {
         $('#facilityAddress').val("");
         $('#applicationNo').val("");
         $('#applicationStatus').val("");
-        $("#applicationDate").val("");
+        $("#searchAppDateFrom").val("");
+        $("#searchAppDateTo").val("");
         $("#facilityClassification option:first").prop("selected",'selected');
         $("#facilityType option:first").prop("selected",'selected');
         $("#processType option:first").prop("selected",'selected');
@@ -143,7 +144,8 @@ $(function () {
 
     $("#submitButton3").click(function () {
         showWaiting();
-        document.getElementById("mainForm").submit();
+        $("[name='action_type']").val("doUpdate");
+        $("#mainForm").submit();
     });
 
     $("#submitButton").click(function () {
@@ -190,4 +192,22 @@ $(function () {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm");
     });
+
+    $("#back").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doBack");
+        $("#mainForm").submit();
+    })
+
+    $("#backFromDoc").click(function (){
+        $('#documenta').removeClass("active");
+        $('#infoa').click();
+        $('#infoa').addClass("active");
+    })
+
+    $("#backFromProcess").click(function (){
+        $('#processa').removeClass("active");
+        $('#documenta').click();
+        $('#documenta').addClass("active");
+    })
 });

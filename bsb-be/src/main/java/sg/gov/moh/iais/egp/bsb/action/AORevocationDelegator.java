@@ -117,12 +117,11 @@ public class AORevocationDelegator {
         String facilityClassification = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_CLASSIFICATION);
         String facilityType = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_TYPE);
         String processType = ParamUtil.getString(request, RevocationConstants.PARAM_PROCESS_TYPE);
-        String applicationDt=ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE);
         String applicationNo = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_NO);
         String applicationType = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_TYPE);
         String applicationStatus = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_STATUS);
-
-        Date applicationDate=null;
+        String searchAppDateFrom = ParamUtil.getString(request, "searchAppDateFrom");
+        String searchAppDateTo = ParamUtil.getString(request, "searchAppDateTo");
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
@@ -133,10 +132,9 @@ public class AORevocationDelegator {
         searchDto.setApplicationStatus(applicationStatus);
         searchDto.setFacilityAddress(facilityAddress);
         searchDto.setPage(0);
-        if (StringUtil.isNotEmpty(applicationDt)) {
-            applicationDate = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_DATE));
-            searchDto.setApplicationDate(applicationDate);
-        }
+        searchDto.setSearchAppDateFrom(searchAppDateFrom);
+        searchDto.setSearchAppDateTo(searchAppDateTo);
+
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
 

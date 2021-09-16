@@ -48,7 +48,7 @@
             </table>
             <%--upload file--%>
             <iais:action>
-                <a style="float:left;padding-top: 1.1%;" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a style="float:left;padding-top: 1.1%;" class="back" id="backFromDoc" href="#"><em class="fa fa-angle-left"></em> Back</a>
                 <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
                     Upload Document
                 </button>

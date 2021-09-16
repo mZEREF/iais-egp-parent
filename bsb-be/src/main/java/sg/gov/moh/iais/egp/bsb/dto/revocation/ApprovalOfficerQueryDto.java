@@ -7,7 +7,6 @@ import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author Zhu Tangtang
@@ -22,15 +21,11 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
     private String id;
     private String facilityName;
     private String facilityAddress;
-//    private String blockNo;
-//    private String postalCode;
-//    private String floorNo;
-//    private String unitNo;
-//    private String streetName;
     private String facilityClassification;
     private String facilityType;
     private String processType;
-    private Date applicationDate;
+    private String searchAppDateFrom;
+    private String searchAppDateTo;
     private String applicationNo;
     private String applicationType;
     private String applicationStatus;
@@ -42,15 +37,11 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
         id = "";
         facilityName = "";
         facilityAddress = "";
-//        blockNo = "";
-//        postalCode = "";
-//        floorNo = "";
-//        unitNo = "";
-//        streetName = "";
         facilityClassification = "";
         facilityType = "";
         processType = "";
-        applicationDate = null;
+        searchAppDateFrom = "";
+        searchAppDateTo = "";
         applicationNo = "";
         applicationType = "";
         applicationStatus = "";

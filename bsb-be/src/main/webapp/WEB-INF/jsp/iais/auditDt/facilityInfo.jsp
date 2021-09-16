@@ -35,6 +35,6 @@
         </div>
     </div>
 </div>
-<%--<div align="left">--%>
-<%--    <a class="back" id="back" name="back" href="#"><em class="fa fa-angle-left"></em>Back</a>--%>
-<%--</div>--%>
+<div align="left">
+    <a class="back" id="back" name="back" href="#"><em class="fa fa-angle-left"></em>Back</a>
+</div>

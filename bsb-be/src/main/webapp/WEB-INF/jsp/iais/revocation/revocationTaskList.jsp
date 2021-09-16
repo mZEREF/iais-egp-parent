@@ -87,13 +87,7 @@
                                                      codeCategory="CATE_ID_BSB_PRO_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
-                                <iais:row>
-                                    <iais:field value="Application Date"/>
-                                    <iais:value width="18">
-                                        <iais:datePicker id="applicationDate" name="applicationDate"
-                                                         dateVal="${applicationSearch.applicationDate}"></iais:datePicker>
-                                    </iais:value>
-                                </iais:row>
+
                                 <iais:row>
                                     <iais:field value="Application No."/>
                                     <iais:value width="18">
@@ -115,6 +109,16 @@
                                         <iais:select name="applicationStatus" id="applicationStatus"
                                                      value="${applicationSearch.applicationStatus}"
                                                      codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"/>
+                                    </iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Application Date"/>
+                                    <iais:value width="18">
+                                        <span data-err-ind="searchAppDateFrom" class="error-msg"></span>
+                                        <iais:datePicker id="searchAppDateFrom" name="searchAppDateFrom" value="${applicationSearch.searchAppDateFrom}"/>
+                                        To
+                                        <span data-err-ind="searchAppDateTo" class="error-msg"></span>
+                                        <iais:datePicker id="searchAppDateTo" name="searchAppDateTo" value="${applicationSearch.searchAppDateTo}"/>
                                     </iais:value>
                                 </iais:row>
 

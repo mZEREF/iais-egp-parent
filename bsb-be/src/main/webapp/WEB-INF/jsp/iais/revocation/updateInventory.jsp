@@ -11,7 +11,11 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+<%--        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>--%>
+        <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+        <input type="hidden" name="action_type" value="">
+        <input type="hidden" name="action_value" value="">
+        <input type="hidden" name="action_additional" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -68,7 +72,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="back" href="/system-admin-web/eservice/INTRANET/MohOfficerSubmitRevocation"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
                                 <button name="clearBtn3" id="clearButton3" type="button" class="btn btn-secondary">
@@ -84,6 +88,6 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-    <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
+<%--    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>--%>
+<%--    <%@include file="/WEB-INF/jsp/include/utils.jsp" %>--%>
 </div>

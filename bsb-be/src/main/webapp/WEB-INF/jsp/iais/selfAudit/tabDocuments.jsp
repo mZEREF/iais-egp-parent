@@ -75,24 +75,24 @@
 
             </table>
 
-<%--            <div class="alert alert-info" role="alert"><strong>--%>
-<%--                <h4>Internal Document</h4>--%>
-<%--            </strong></div>--%>
-<%--            <div class="text ">--%>
-<%--                <p><span>These are documents uploaded by an agency officer to support back office processing.</span>--%>
-<%--                </p>--%>
-<%--            </div>--%>
-<%--            <table aria-describedby="" class="table">--%>
-<%--                <thead>--%>
-<%--                <tr>--%>
-<%--                    <th width="30%">Document</th>--%>
-<%--                    <th width="20%">File</th>--%>
-<%--                    <th width="10%">Size</th>--%>
-<%--                    <th width="20%">Submitted By</th>--%>
-<%--                    <th width="10%">Date Submitted</th>--%>
-<%--                    <th width="10%">Action</th>--%>
-<%--                </tr>--%>
-<%--                </thead>--%>
+            <div class="alert alert-info" role="alert"><strong>
+                <h4>Internal Document</h4>
+            </strong></div>
+            <div class="text ">
+                <p><span>These are documents uploaded by an agency officer to support back office processing.</span>
+                </p>
+            </div>
+            <table aria-describedby="" class="table">
+                <thead>
+                <tr>
+                    <th width="30%">Document</th>
+                    <th width="20%">File</th>
+                    <th width="10%">Size</th>
+                    <th width="20%">Submitted By</th>
+                    <th width="10%">Date Submitted</th>
+                    <th width="10%">Action</th>
+                </tr>
+                </thead>
 <%--                <tbody id="tbodyFileListId">--%>
 <%--                    <c:choose>--%>
 <%--                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">--%>
@@ -151,10 +151,10 @@
 <%--                    </c:choose>--%>
 
 <%--                </tbody>--%>
-<%--            </table>--%>
+            </table>
             <%--upload file--%>
             <iais:action>
-                <a style="float:left;padding-top: 1.1%;" class="back" href="/main-web/eservice/INTRANET/MohHcsaBeDashboard?dashProcessBack=1"><em class="fa fa-angle-left"></em> Back</a>
+                <a style="float:left;padding-top: 1.1%;" class="back" id="backFromDoc" href="#"><em class="fa fa-angle-left"></em> Back</a>
                 <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
                     Upload Document
                 </button>

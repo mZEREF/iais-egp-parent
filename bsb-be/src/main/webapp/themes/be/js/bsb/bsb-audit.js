@@ -288,4 +288,22 @@ $(function () {
         showWaiting();
         $("#mainForm").submit();
     });
+
+    $("#backFromDoc").click(function (){
+        $('#documenta').removeClass("active");
+        $('#infoa').click();
+        $('#infoa').addClass("active");
+    })
+
+    $("#backFromProcess").click(function (){
+        $('#processa').removeClass("active");
+        $('#documenta').click();
+        $('#documenta').addClass("active");
+    })
+
+    $("#backFromProcessAuditDt").click(function (){
+        $('#processa').removeClass("active");
+        $('#infoa').click();
+        $('#infoa').addClass("active");
+    })
 });

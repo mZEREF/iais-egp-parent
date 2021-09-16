@@ -29,15 +29,18 @@
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation"><a
                                                     href="#tabInfo"
+                                                    id="infoa"
                                                     aria-controls="tabInfo"
                                                     role="tab"
                                                     data-toggle="tab">Info</a></li>
                                             <li class="complete" id="document" role="presentation"><a
                                                     href="#tabDocuments"
+                                                    id="documenta"
                                                     aria-controls="tabDocuments" role="tab"
                                                     data-toggle="tab">Documents</a></li>
                                             <li class="incomplete" id="process" role="presentation"><a
                                                     href="#tabProcessing"
+                                                    id="processa"
                                                     aria-controls="tabProcessing" role="tab"
                                                     data-toggle="tab">Processing</a></li>
                                         </ul>
@@ -122,7 +125,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backToSubmit2" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backFromProcess" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
                                                                     <button name="clearBtn1" id="clearButton1"
                                                                             type="button" class="btn btn-secondary">
