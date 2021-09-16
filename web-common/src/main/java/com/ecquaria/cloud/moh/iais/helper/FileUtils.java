@@ -66,7 +66,7 @@ public final class FileUtils {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = MiscUtil.generateFile(FilenameUtils.getName(file.getOriginalFilename()));
+            File toFile = MiscUtil.generateFileInTempFolder(FilenameUtils.getName(file.getOriginalFilename()));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
