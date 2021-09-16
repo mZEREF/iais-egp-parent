@@ -66,11 +66,11 @@ public class HcsaFileAjaxController {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
-        String errerMesssage = getErrorMessage(selectedFile);
+        String errorMessage = getErrorMessage(selectedFile);
         MessageDto messageCode = new MessageDto();
-         if(!StringUtil.isEmpty(errerMesssage)){
+         if(!StringUtil.isEmpty(errorMessage)){
              messageCode.setMsgType("N");
-             messageCode.setDescription(errerMesssage);
+             messageCode.setDescription(errorMessage);
              return JsonUtil.toJson(messageCode);
          }else {
              messageCode.setMsgType("Y");
