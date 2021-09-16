@@ -104,7 +104,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right">
-                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
+                        <a data-toggle="collapse" data-target="#halp-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="halp-info" class="collapse halp-infobox" style="height: 100px">
@@ -126,7 +126,7 @@
                         </div>
                       </div>
                       <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
-                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" > More Info</a>
+                        <a data-toggle="collapse" data-target="#elis-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
                       </div>
                       <div class="col-xs-12 col-lg-12" >
                         <div id="elis-info" class="collapse halp-infobox"  style="height: 100px">
