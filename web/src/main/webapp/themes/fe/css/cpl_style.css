@@ -4550,7 +4550,8 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
     overflow-y: scroll;
     padding: 10px;
     background: #fff;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
+    transition: height 2s;
 }
 .user-selection h3 {
     font-size: 24px;
