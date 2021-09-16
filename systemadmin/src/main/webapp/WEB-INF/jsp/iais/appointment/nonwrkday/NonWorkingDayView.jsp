@@ -82,10 +82,12 @@
                             <td>
                               <c:if test="${nonwkrDay.nonWkrDay == false}">
                                 <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                &nbsp;&nbsp;
                                 <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
                               </c:if>
                               <c:if test="${nonwkrDay.nonWkrDay == true}">
                                 <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                &nbsp;&nbsp;
                                 <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
                               </c:if>
                             </td>
