@@ -1,29 +1,19 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +22,24 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author wangyu
@@ -92,6 +100,13 @@ public class HcsaFileAjaxController {
              log.info("----------change MultipartFile to file  falie-----------------");
              return "";
          }
+         // Save File to other nodes
+        try {
+            saveFileToOtherNodes(selectedFile, map.get(fileAppendId + reloadIndex));
+        } catch (Exception e) {
+            log.error("Error when save file to other Nodes", e);
+        }
+
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -221,5 +236,40 @@ public class HcsaFileAjaxController {
             }
         }
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
+    }
+
+    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile) throws IOException {
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                String port = ConfigHelper.getString("server.port", "8080");
+                StringBuilder apiUrl = new StringBuilder("http://");
+                apiUrl.append(ip).append(':').append(port).append("/tempFile-handler");
+                log.info("Request URL ==> " + apiUrl.toString());
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                HttpHeaders fileHeader = new HttpHeaders();
+                byte[] content =  selectedFile.getBytes();
+                ByteArrayResource fileContentAsResource = new ByteArrayResource(content){
+                    @Override
+                    public String getFilename() {
+                        return toFile.getName();
+                    }
+                };
+                HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                multipartRequest.add("selectedFiles", fileEnt);
+                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                headers.add("fileName", toFile.getName());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+            }
+        }
+
     }
 }
