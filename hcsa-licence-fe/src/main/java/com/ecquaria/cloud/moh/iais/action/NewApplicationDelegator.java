@@ -2067,6 +2067,17 @@ public class NewApplicationDelegator {
                     break;
             }
         }
+        //add group other premise
+        List<AppGrpPremisesDto> appGrpPremisesDtos =  appSubmissionService.getAppSubmissionDto(appNo).getAppGrpPremisesDtoList();
+        for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
+            if (appSubmissionDto.getAppGrpPremisesDtoList().get(0).getId().equals(appGrpPremisesDtos.get(i).getId())){
+                appGrpPremisesDtos.set(i, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            }else {
+                NewApplicationHelper.setWrkTime(appGrpPremisesDtos.get(i));
+            }
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        resetRelatedInfoRFI(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), appNo, appSubmissionDto.getAppGrpPremisesDtoList());
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if(maxFileIndex == null){
             maxFileIndex = 0;
@@ -2166,6 +2177,77 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
         ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "The request for information save success");
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
+    }
+
+    private void resetRelatedInfoRFI(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String appNo, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+        AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+            return;
+        }
+        if (appSvcRelatedInfoDto == null) {
+            return;
+        }
+        String serviceId = appSvcRelatedInfoDto.getServiceId();
+        List<AppSvcRelatedInfoDto> otherList = getOtherAppSvcRelatedInfoDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
+                serviceId, appNo);
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
+        appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+        if (otherList != null && !otherList.isEmpty()) {
+            otherList.forEach(dto -> {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+                List<AppSvcPersonnelDto> otherAppSvcPersonnelDtoList = dto.getAppSvcSectionLeaderList();
+                if (appSvcPersonnelDtoList != null && otherAppSvcPersonnelDtoList != null) {
+                    for (AppSvcPersonnelDto otherAppSvcPersonnelDto : otherAppSvcPersonnelDtoList){
+                        if (!isContainAppSvcPersonnelDto(appSvcPersonnelDtoList, otherAppSvcPersonnelDto)){
+                            appSvcPersonnelDtoList.add(otherAppSvcPersonnelDto);
+                        }
+                    }
+                }
+
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                if (appSvcLaboratoryDisciplinesDtoList != null && dto.getAppSvcLaboratoryDisciplinesDtoList() != null) {
+                    appSvcLaboratoryDisciplinesDtoList.addAll(dto.getAppSvcLaboratoryDisciplinesDtoList());
+                    appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtoList);
+                }
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+                List<AppSvcDisciplineAllocationDto> otherAppSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                if (appSvcDisciplineAllocationDtoList != null && otherAppSvcDisciplineAllocationDtoList != null) {
+                    setAppSvcDisciplineAllocationDtoSlIndex(appSvcPersonnelDtoList, otherAppSvcDisciplineAllocationDtoList);
+                    appSvcDisciplineAllocationDtoList.addAll(otherAppSvcDisciplineAllocationDtoList);
+                    appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(appSvcDisciplineAllocationDtoList);
+                }
+
+                List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> otherAppSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+                if (otherAppSvcDocDtoLit != null && appSvcDocDtoLit != null) {
+                    otherAppSvcDocDtoLit.forEach(doc -> {
+                        if (doc.getAppSvcPersonId() != null || doc.getAppGrpPersonId() != null) {
+                            doc.setPsnIndexNo(getNewPsnIndexNo(dto.getPersonnels(), appSvcRelatedInfoDto.getPersonnels(), doc.getPsnIndexNo()));
+                            appSvcDocDtoLit.add(doc);
+                        }
+                    });
+                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
+                }
+                // check personnels
+                List<PersonnelDto> personnels = appSvcRelatedInfoDto.getPersonnels();
+                if (personnels == null) {
+                    personnels = IaisCommonUtils.genNewArrayList();
+                }
+                if (dto.getPersonnels() != null) {
+                    personnels.addAll(dto.getPersonnels());
+                }
+                appSvcRelatedInfoDto.setPersonnels(personnels);
+                //set Laboratory Disciplines Info
+                String currentSvcId = dto.getServiceId();
+                List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = null;
+                if (!StringUtil.isEmpty(currentSvcId)) {
+                    hcsaSvcSubtypeOrSubsumedDtos = serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
+                }
+                if (!IaisCommonUtils.isEmpty(hcsaSvcSubtypeOrSubsumedDtos)) {
+                    NewApplicationHelper.setLaboratoryDisciplinesInfo(appGrpPremisesDtoList, appSvcRelatedInfoDto, hcsaSvcSubtypeOrSubsumedDtos);
+                }
+            });
+        }
     }
 
     public void doRenewSubmit(BaseProcessClass bpc) {
