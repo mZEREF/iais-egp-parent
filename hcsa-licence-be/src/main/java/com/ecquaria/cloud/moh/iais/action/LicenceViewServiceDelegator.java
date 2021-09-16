@@ -2409,8 +2409,8 @@ public class LicenceViewServiceDelegator {
                 }
             }else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
-                if(appDeclarationMessageDto==null){
-                    request.setAttribute("isSingle","Y");
+                if (appDeclarationMessageDto != null) {
+                    request.setAttribute("isSingle", "Y");
                 }
             }
         }
