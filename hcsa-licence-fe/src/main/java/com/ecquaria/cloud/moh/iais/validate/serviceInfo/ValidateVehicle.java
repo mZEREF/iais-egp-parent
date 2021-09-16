@@ -117,7 +117,7 @@ public class ValidateVehicle implements ValidateFlow {
             List<AppSvcVehicleDto> appSvcVehicleDtoAlls) {
         String value = getValue(currentDto, name);
         long count = appSvcVehicleDtoAlls.stream().filter(asv -> value.equalsIgnoreCase(getValue(asv, name))).count();
-        if (count >= 2) {
+        if (count >= 1) {
             map.put(name + index, MessageUtil.getMessageDesc("NEW_ERR0012"));
         }
     }
