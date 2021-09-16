@@ -714,18 +714,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)){
-                int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
-                String chronoUnit=MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getChronoUnit());
-                if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
-                    if(recomInNumber/12 ==1 || recomInNumber/12 >1){
-                        recomInNumber=recomInNumber/12;
-                        chronoUnit=MasterCodeUtil.getCodeDesc(AppointmentConstants.RECURRENCE_YEAR);
+            if(appPremisesRecommendationDto!=null){
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)){
+                    int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
+                    String chronoUnit=MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getChronoUnit());
+                    if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
+                        if(recomInNumber/12 ==1 || recomInNumber/12 >1){
+                            recomInNumber=recomInNumber/12;
+                            chronoUnit=MasterCodeUtil.getCodeDesc(AppointmentConstants.RECURRENCE_YEAR);
+                        }
                     }
+                    insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
                 }
-                insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
-            }else {
-                insRepDto.setRecommendation(MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getRecomDecision()));
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)) {
+                    insRepDto.setRecommendation("Approve");
+                }
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.REJECTED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_REJECTED)) {
+                    insRepDto.setRecommendation("Rejected");
+                }
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
