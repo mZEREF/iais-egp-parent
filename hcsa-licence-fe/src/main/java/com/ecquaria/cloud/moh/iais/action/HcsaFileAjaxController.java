@@ -83,15 +83,18 @@ public class HcsaFileAjaxController {
          }else {
              messageCode.setMsgType("Y");
          }
+         File toFile = null;
          try{
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
-                 map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
+                 toFile = FileUtils.multipartFileToFile(selectedFile);
+                 map.put(fileAppendId+size, toFile);
              }else {
-                 map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
+                 toFile = FileUtils.multipartFileToFile(selectedFile);
+                 map.put(fileAppendId+reloadIndex, toFile);
                  size = reloadIndex;
              }
 
@@ -101,7 +104,7 @@ public class HcsaFileAjaxController {
              return "";
          }
          // Save File to other nodes
-        saveFileToOtherNodes(selectedFile, map.get(fileAppendId + reloadIndex));
+        saveFileToOtherNodes(selectedFile, toFile);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
