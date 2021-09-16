@@ -212,7 +212,7 @@
           </iais:row>
           <div class="form-check">
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
-            <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
+            <label class="form-check-label" for="confirm"><span class="check-square"></span><iais:message key="ACK_DEC001" escape="false" /></label>
             <p><span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span></p>
           </div>
         </iais:section>

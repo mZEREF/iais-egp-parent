@@ -1,6 +1,7 @@
 <c:choose>
   <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}"></c:when>
   <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}">
+    <%--
     <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
     <c:set var="sec" value="RENEW" scope="request"/>
     <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
@@ -14,6 +15,7 @@
     <%@include file="../newApplication/declarations/competencies.jsp"%>
     <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
     <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
+    --%>
   </c:when>
   <c:when test=">${licenceView=='licenceView'}"></c:when>
   <c:otherwise>

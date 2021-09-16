@@ -371,10 +371,7 @@
                                                                         <p>Marked for Audit</p>
                                                                     </td>
                                                                     <td class="col-md-4">
-                                                                        <p><c:out
-                                                                                value="${insRepDto.markedForAudit}"/><fmt:formatDate
-                                                                                value="${insRepDto.tcuDate}"
-                                                                                pattern="dd/MM/yyyy"/></p>
+                                                                        <p><c:out value="${insRepDto.markedForAudit}"/>&nbsp;<fmt:formatDate value="${insRepDto.tcuDate}" pattern="dd/MM/yyyy"/></p>
                                                                     </td>
                                                                     <td class="col-md-4"></td>
                                                                 </tr>

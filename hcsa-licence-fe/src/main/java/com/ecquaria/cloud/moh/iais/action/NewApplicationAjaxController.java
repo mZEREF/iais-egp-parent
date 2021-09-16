@@ -603,7 +603,7 @@ public class NewApplicationAjaxController {
         String errMsg = "You are allowed to add up till only " + dpoMmaximumCount + " DPO";
         if (dpoMmaximumCount - hasNumber > 0) {
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, true);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String, String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
             assignPrincipalOfficerAttr.put("name", "deputyPoSelect");
             assignPrincipalOfficerAttr.put("class", "deputyPoSelect");
