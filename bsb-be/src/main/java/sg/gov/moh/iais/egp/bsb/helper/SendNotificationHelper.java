@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import sg.gov.moh.iais.egp.bsb.client.BsbEmailClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityClient;
 import sg.gov.moh.iais.egp.bsb.client.MsgTemplateClient;
 import sg.gov.moh.iais.egp.bsb.client.OrganizationClient;
@@ -20,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.common.CustomerException;
 import sg.gov.moh.iais.egp.bsb.dto.Letter;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityAdmin;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 
 import java.io.IOException;
@@ -48,6 +50,8 @@ public class SendNotificationHelper {
     private FacilityClient facilityClient;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private BsbEmailClient bsbEmailClient;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -58,7 +62,7 @@ public class SendNotificationHelper {
     private static final String RECEIPT_ROLE_APPLICANT = "APPLICANT";
 
     public void sendLetter(Letter letter) {
-        if (letter != null && letter.getApplicationNo() != null && letter.getLetterType() != null) {
+        if (letter != null && letter.getLetterType() != null) {
             String letterType = letter.getLetterType();
             if (MSG_LETTER_TYPE_UNCERTIFIED_FACILITY.equals(letterType)) {
                 generateLetter(MSG_TEMPLATE_APPROVAL_FOR_UNCERTIFIED_FACILITY, letter);
@@ -85,7 +89,7 @@ public class SendNotificationHelper {
     }
 
     public void sendNotification(Notification notification) {
-        if (notification != null && StringUtil.isNotEmpty(notification.getApplicationNo()) && StringUtil.isNotEmpty(notification.getStatus())) {
+        if (notification != null &&  StringUtil.isNotEmpty(notification.getStatus())) {
             if (IaisCommonUtils.isEmpty(notification.getContentParams())) {
                 getNotificationParams(notification);
             }
@@ -126,10 +130,10 @@ public class SendNotificationHelper {
     }
 
 
-    private void sendEmail(String templateId, Notification notification) {
+    public void sendEmail(String templateId, Notification notification) {
         EmailDto emailDto = new EmailDto();
         MsgTemplateDto msgTemplateDto = getMsgTemplate(templateId);
-        getReceipt(emailDto, msgTemplateDto, notification.getApplicationNo());
+        getReceipt(emailDto, msgTemplateDto, notification.getApplicationNo(),notification.getFacId(),notification.getReqType());
         String emailContent = getEmailContent(msgTemplateDto, notification.getContentParams());
         String emailSubject = getEmailSubject(msgTemplateDto, notification.getSubjectParams());
         emailDto.setContent(emailContent);
@@ -159,11 +163,11 @@ public class SendNotificationHelper {
         if (IaisCommonUtils.isEmpty(letter.getContentParams())) {
             getLetterParams(letter);
         }
-        getReceipt(emailDto, msgTemplateDto, letter.getApplicationNo());
+        getReceipt(emailDto, msgTemplateDto, letter.getApplicationNo(),letter.getFacId(),letter.getReqType());
         String emailContent = getEmailContent(msgTemplateDto, letter.getContentParams());
         emailDto.setContent(emailContent);
         emailDto.setSender(this.mailSender);
-        emailDto.setSubject("Sms");
+        emailDto.setSubject("SMS");
         emailDto.setClientQueryCode(letter.getApplicationNo());
         emailDto.setReqRefNum(letter.getApplicationNo());
         try {
@@ -173,7 +177,7 @@ public class SendNotificationHelper {
         }
     }
 
-    public void getLetterParams(Letter letter) {
+    private void getLetterParams(Letter letter) {
         if (letter != null && StringUtil.isNotEmpty(letter.getLetterType())) {
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("Applicant", letter.getApplicant());
@@ -208,7 +212,7 @@ public class SendNotificationHelper {
         }
     }
 
-    public void getNotificationParams(Notification notification) {
+    private void getNotificationParams(Notification notification) {
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
         String status = notification.getStatus();
@@ -262,9 +266,13 @@ public class SendNotificationHelper {
         }else if(STATUS_REVOCATION_APPROVAL_AO.equals(status)) {
             map.put("applicationNo", notification.getApplicationNo());
             map.put("ApprovalNo", notification.getApprovalNo());
-            map.put("FacilityType", notification.getFacilityType());
-            map.put("ApprovalType", notification.getApprovalType());
-            map.put("FacilityCertifier", notification.getFacilityCertifier());
+            if(StringUtil.isNotEmpty(notification.getFacilityType())){
+                map.put("Type",notification.getFacilityType());
+            }else if(StringUtil.isNotEmpty(notification.getApprovalType())){
+                map.put("Type",notification.getApprovalType());
+            }else if(StringUtil.isNotEmpty(notification.getFacilityCertifier())){
+                map.put("Type",notification.getFacilityCertifier());
+            }
             map.put("officer", notification.getOfficer());
             subMap.put("applicationNo", notification.getApplicationNo());
         }else if(STATUS_REVOCATION_APPROVAL_USER.equals(status)) {
@@ -288,20 +296,20 @@ public class SendNotificationHelper {
     }
 
 
-    private void getReceipt(EmailDto emailDto, MsgTemplateDto msgTemplateDto, String appNo) {
+    private void getReceipt(EmailDto emailDto, MsgTemplateDto msgTemplateDto, String appNo,String facId,String reqType) {
         if (msgTemplateDto != null) {
             if (msgTemplateDto.getRecipient() != null && !msgTemplateDto.getRecipient().isEmpty()) {
                 log.info("enter getReceipt TO" + appNo);
-                List<String> emailAddress = getEmailAddressByRole(msgTemplateDto.getRecipient(), appNo);
+                List<String> emailAddress = getEmailAddressByRole(msgTemplateDto.getRecipient(), appNo,facId,reqType);
                 emailDto.setReceipts(emailAddress);
             }
             if (msgTemplateDto.getCcrecipient() != null && !msgTemplateDto.getCcrecipient().isEmpty()) {
                 log.info("enter getReceipt CC" + appNo);
-                emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getCcrecipient(), appNo));
+                emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getCcrecipient(), appNo,facId,reqType));
             }
             if (msgTemplateDto.getBccrecipient() != null && !msgTemplateDto.getBccrecipient().isEmpty()) {
                 log.info("enter getReceipt BC" + appNo);
-                emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getBccrecipient(), appNo));
+                emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getBccrecipient(), appNo,facId,reqType));
             }
         } else {
             try {
@@ -327,7 +335,7 @@ public class SendNotificationHelper {
      * @param appNo
      * @return
      */
-    private List<String> getEmailAddressByRole(List<String> recipients, String appNo) {
+    private List<String> getEmailAddressByRole(List<String> recipients, String appNo,String facId,String reqType) {
         List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
         for (String recipient : recipients) {
             if (RECEIPT_ROLE_APPLICANT.equals(recipient)) {
@@ -336,6 +344,11 @@ public class SendNotificationHelper {
                     //get applicant's email
                     if (facility != null) {
                         receiptEmail.add(facility.getEmailAddr());
+                    }
+                }else if(StringUtil.isNotEmpty(facId)){
+                    List<FacilityAdmin> facilityAdmins = bsbEmailClient.queryEmailByFacId(facId).getEntity();
+                    for (FacilityAdmin facilityAdmin : facilityAdmins) {
+                        receiptEmail.add(facilityAdmin.getEmail());
                     }
                 }
             } else if (RECEIPT_ROLE_DUTY_OFFICER.equals(recipient)) {

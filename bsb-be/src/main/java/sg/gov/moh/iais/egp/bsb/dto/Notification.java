@@ -13,6 +13,10 @@ public class Notification {
     //all
     private String applicationNo;
 
+    private String facId;
+
+    private String reqType;
+
     //Application
     private String applicant;
 

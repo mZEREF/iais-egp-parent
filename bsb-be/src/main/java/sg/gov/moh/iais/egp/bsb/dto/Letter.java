@@ -16,6 +16,10 @@ public class Letter {
     //all
     private  String applicant;
 
+    private String facId;
+
+    private String reqType;
+
     //1 ,6,8,9
     private  String designation;
 
