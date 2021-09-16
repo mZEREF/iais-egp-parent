@@ -145,10 +145,10 @@
                                                 <p><c:out value="${item.mode}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.schedule}"/></p>
+                                                <p style="word-break: normal"><c:out value="${item.schedule}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.actual}"/></p>
+                                                <p style="word-break: normal"><c:out value="${item.actual}"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.docName}"/></p>
