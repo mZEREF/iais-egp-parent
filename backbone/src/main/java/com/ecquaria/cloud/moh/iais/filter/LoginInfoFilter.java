@@ -47,7 +47,7 @@ public class LoginInfoFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             String currentApp = ConfigHelper.getString("spring.application.name");
             String currentDomain = ConfigHelper.getString("iais.current.domain");
-            boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag");
+            boolean fakeLogin = ConfigHelper.getBoolean("halp.fakelogin.flag", false);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext == null && AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)
                     && "main-web".equalsIgnoreCase(currentApp) && !fakeLogin) {
@@ -57,8 +57,8 @@ public class LoginInfoFilter implements Filter {
                 log.info(StringUtil.changeForLog("AD user id passed in ====> " + userIdStr));
                 try {
                     Object obj = cls.newInstance();
-                    Method med = cls.getMethod("doAdlogin", HttpServletRequest.class);
-                    med.invoke(obj, request);
+                    Method med = cls.getMethod("doAdlogin", new Class[]{HttpServletRequest.class, String.class});
+                    med.invoke(obj, new Object[]{request, userIdStr});
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                     throw new IaisRuntimeException(e);
