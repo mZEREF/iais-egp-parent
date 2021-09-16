@@ -14,7 +14,8 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-        font-family: FontAwesome, sans-serif;        position: absolute;
+        font-family: FontAwesome, sans-serif;
+        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;
@@ -78,11 +79,37 @@
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
                                                         <%@include file="../common/declarations.jsp"%>
                                                     </c:if>
+                                                    <c:if test="${AppSubmissionDto.appType == 'APTY005'}">
+                                                        <c:set var="rfc_from_renew" value="${(not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
+                                                        <c:set var="showDeclartion" value="${not empty RFC_eqHciNameChange && RFC_eqHciNameChange != 'RFC_eqHciNameChange'}"/>
+                                                        <c:if test="${showDeclartion && rfc_from_renew != 'Y'}">
+                                                            <div class="row">
+                                                                <div class="form-check col-md-8 col-lg-9 col-xs-12">
+                                                                    Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
+                                                                </div>
+                                                                <div class="col-md-4 col-lg-3 col-xs-12">
+                                                                    <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
+                                                                <label class="form-check-label" for="verifyInfoCheckbox">
+                                                                    <span class="check-square"></span>
+                                                                    <iais:message key="ACK_DEC001" escape="false" />
+                                                                </label>
+                                                            </div>
+                                                            <div>
+                                                                <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                            </div>
+
+                                                            <div>
+                                                                <span id="error_charityHci"  class="error-msg"></span>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
