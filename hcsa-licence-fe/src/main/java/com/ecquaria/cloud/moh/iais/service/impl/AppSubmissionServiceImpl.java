@@ -2426,7 +2426,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         for (HcsaServiceStepSchemeDto step : hcsaServiceStepSchemeDtos) {
             String currentStep = Optional.ofNullable(step)
                     .map(HcsaServiceStepSchemeDto::getStepCode)
-                    .orElseGet(() -> HcsaConsts.STEP_BUSINESS_NAME);
+                    .orElse(HcsaConsts.STEP_BUSINESS_NAME);
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
                 // business name
                 List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();

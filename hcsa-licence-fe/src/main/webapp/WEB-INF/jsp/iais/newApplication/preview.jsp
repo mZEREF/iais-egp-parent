@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
@@ -7,6 +8,10 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+<c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
+
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
@@ -60,8 +65,8 @@
                                                     </div>
                                                 </c:forEach>
                                                 <c:choose>
-                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
-
+                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && !isHciNameChange && renew_rfc_show != 'Y'}">
+                                                        <%-- RFC hci Name change --%>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <%@include file="../common/declarations.jsp"%>
@@ -69,7 +74,7 @@
                                                 </c:choose>
 
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && !isRfi && !isHciNameChange && renew_rfc_show!='Y'}">
                                                 <div class="row">
                                                     <div class="form-check col-md-8 col-lg-9 col-xs-12">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -87,10 +92,13 @@
                                                 </div>
                                                 <br/>
                                             </c:if>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && !isHciNameChange && renew_rfc_show!='Y'}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
-                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
+                                                    <label class="form-check-label" for="verifyInfoCheckbox">
+                                                        <span class="check-square"></span>
+                                                        <iais:message key="ACK_DEC001" escape="false" />
+                                                    </label>
                                                 </div>
                                                 <div>
                                                     <span id="error_fieldMandatory"  class="error-msg"></span>
@@ -100,7 +108,6 @@
                                                     <span id="error_charityHci"  class="error-msg"></span>
                                                 </div>
                                             </c:if>
-                                            <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
                                             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
                                                 <div class="col-xs-12 text-right">
                                                     <a href="#" class="rfcBack">Click here to amend other sections</a>
@@ -281,17 +288,23 @@
 
     function preview() {
         // window.print();
+        clearErrorMsg();
         var txt = '';
         <c:if test="${empty viewPrint}">
-        $(':checked, textarea','#declarations').each(function(){
+        $(':checked, textarea').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
-        $("input[name='effectiveDt']").each(function (){
+        $("input[name='effectiveDt'], input[name='rfcEffectiveDate']").each(function (){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
         </c:if>
         var url = '${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
         var rfc = "RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        var isHciNameChange = $('#RFC_eqHciNameChange').val();
+        if (isEmpty(isHciNameChange)) {
+            isHciNameChange = '-1';
+        }
+        var rfc = "RFC_eqHciNameChange=" + isHciNameChange;
         if (url.indexOf('?') < 0) {
             url += '?' + rfc;
         } else {
@@ -303,7 +316,7 @@
             $.ajax({
                 'url':'${pageContext.request.contextPath}/init-print',
                 'dataType': 'json',
-                'data': txt,
+                'data': rfc + txt,
                 'type': 'POST',
                 'success': function (data) {
                     window.open(url,'_blank');

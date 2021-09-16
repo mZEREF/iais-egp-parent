@@ -8,9 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,9 +70,11 @@ public class FePrintViewDelegator {
                 AppSubmissionDto newAppSubmissionDto = null;
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                     String rfc_eqHciNameChange = request.getParameter(RFC_EQHCINAMECHANGE);
-                    if(RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)){
-                        request.setAttribute(RFC_EQHCINAMECHANGE,RFC_EQHCINAMECHANGE);
-                        ParamUtil.setRequestAttr(request,GROUP_RENEW_APP_RFC, ParamUtil.getRequestString(request,GROUP_RENEW_APP_RFC));
+                    log.info(StringUtil.changeForLog("hciNameChange: " + rfc_eqHciNameChange));
+                    request.setAttribute(RFC_EQHCINAMECHANGE, rfc_eqHciNameChange);
+                    if (RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)) {
+                        ParamUtil.setRequestAttr(request, GROUP_RENEW_APP_RFC,
+                                ParamUtil.getRequestString(request, GROUP_RENEW_APP_RFC));
                     }
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
                     RenewDto renewDto=new RenewDto();
@@ -216,6 +221,15 @@ public class FePrintViewDelegator {
             appSubmissionDto.setAppDeclarationDocDtos(
                     appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
             ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+            String verifyInfoCheckbox = ParamUtil.getString(request, "verifyInfoCheckbox");
+            appSubmissionDto.setUserAgreement(AppConsts.YES.equals(verifyInfoCheckbox));
+            String effectiveDateStr = ParamUtil.getString(request, "rfcEffectiveDate");
+            appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
+            if (!StringUtil.isEmpty(effectiveDateStr) && CommonValidator.isDate(effectiveDateStr)) {
+                appSubmissionDto.setEffectiveDate(DateUtil.parseDate(effectiveDateStr, Formatter.DATE));
+            } else {
+                appSubmissionDto.setEffectiveDate(null);
+            }
         }
         return AppConsts.YES;
     }

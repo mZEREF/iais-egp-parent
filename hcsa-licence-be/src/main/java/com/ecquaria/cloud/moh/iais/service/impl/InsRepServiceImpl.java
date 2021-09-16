@@ -153,6 +153,7 @@ public class InsRepServiceImpl implements InsRepService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    //getInsRepDto and  when app status APST019 save ReportResultDto
     @Override
     public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
@@ -162,8 +163,7 @@ public class InsRepServiceImpl implements InsRepService {
         if(StringUtil.isEmpty(observation)) {
             observationSb.append('-');
         }else {
-            String[] observations=new String[]{};
-            observations=observation.split("\n");
+            String[] observations = observation.split("\n");
             if(!StringUtil.isEmpty(observation)){
                 observationSb =new StringBuilder();
                 for (String rk:observations
