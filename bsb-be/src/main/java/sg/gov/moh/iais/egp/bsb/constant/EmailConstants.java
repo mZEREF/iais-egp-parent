@@ -20,8 +20,8 @@ public class EmailConstants {
     //Notification Msg ID
     public static final String STATUS_NEW_APP_SUBMITTED = "BISNEW001";
     public static final String STATUS_NEW_APP_NON_SELF_ASSESSMENT = "BISNEW002";
-    public static final String STATUS_NEW_APP_REJECT   = "BISNEW003";
-    public static final String STATUS_NEW_APP_APPROVED = "BISNEW004";
+    public static final String STATUS_NEW_APP_REJECT   = "BISNEW004";
+    public static final String STATUS_NEW_APP_APPROVED = "BISNEW003";
     public static final String STATUS_NEW_APP_REQUEST_FOR_INFO = "BISNEW005";
     public static final String STATUS_NEW_APP_REMIND_PNEF_INVENTORY = "BISNEW006";
     public static final String STATUS_NEW_APP_REGISTERED_FACILITY_SUCCESSFUL = "BISNEW008";

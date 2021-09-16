@@ -89,7 +89,7 @@ public class SendNotificationHelper {
     }
 
     public void sendNotification(Notification notification) {
-        if (notification != null &&  StringUtil.isNotEmpty(notification.getStatus())) {
+        if (notification != null &&    StringUtil.isNotEmpty(notification.getStatus())) {
             if (IaisCommonUtils.isEmpty(notification.getContentParams())) {
                 getNotificationParams(notification);
             }
@@ -234,13 +234,13 @@ public class SendNotificationHelper {
             map.put("PreAction", notification.getPreAction());
             map.put("Date", notification.getDate());
             subMap.put("PreAction", notification.getPreAction());
-        }else if(STATUS_NEW_APP_REJECT.equals(status)) {
+        }else if(STATUS_NEW_APP_APPROVED.equals(status)) {
             map.put("Applicant", notification.getApplicant());
             map.put("applicationNo", notification.getApplicationNo());
             map.put("applicationType", notification.getApplicationType());
             map.put("Admin", notification.getAdmin());
             subMap.put("applicationNo", notification.getApplicationNo());
-        }else if(STATUS_NEW_APP_APPROVED.equals(status)) {
+        }else if(STATUS_NEW_APP_REJECT.equals(status)) {
             map.put("Applicant", notification.getApplicant());
             map.put("applicationNo", notification.getApplicationNo());
             map.put("Admin", notification.getAdmin());
