@@ -98,7 +98,7 @@ public class ApprovalApplicationConstants {
     public static final String VALIDATE_STATUS_10 = "largeNull";
     public static final String VALIDATE_STATUS_11 = "draft";
 
-    public static final String NATURE_OF_THE_SAMPLE_6 = "BNOTS006";
+    public static final String NATURE_OF_THE_SAMPLE_7 = "BNOTS007";
 
     public static final String ACTIONTYPE = "actionType";
     public static final String ACTIONTYPE_1 = "back";

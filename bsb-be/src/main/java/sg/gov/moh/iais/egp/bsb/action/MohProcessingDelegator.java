@@ -9,18 +9,24 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.constant.EmailConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
+import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +38,11 @@ import java.util.Map;
 @Delegator
 @Slf4j
 public class MohProcessingDelegator {
-    private final ProcessClient processClient;
+    @Autowired
+    private ProcessClient processClient;
 
-    public MohProcessingDelegator(ProcessClient processClient) {
-        this.processClient = processClient;
-    }
+    @Autowired
+    private SendNotificationHelper sendNotificationHelper;
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
@@ -140,17 +146,43 @@ public class MohProcessingDelegator {
     }
 
     public void doReject(BaseProcessClass bpc) throws ParseException, IOException {
+        HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_8;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
         doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
+        //send email notification to Applicant
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
+        Notification notification = new Notification();
+        notification.setApplicationNo(application.getApplicationNo());
+        notification.setFacId(application.getFacility().getId());
+        notification.setStatus(EmailConstants.STATUS_NEW_APP_REJECT);
+        notification.setAdmin("admin01");
+        notification.setApplicant("applicant01");
+        sendNotificationHelper.sendNotification(notification);
     }
 
     public void requestForInformation(BaseProcessClass bpc) throws ParseException{
+        HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_4;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
         doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
+        //send email notification to Applicant
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
+        Notification notification = new Notification();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateString = formatter.format(doScreeningDtoByForm.getValidityEndDt());
+        notification.setApplicationNo(application.getApplicationNo());
+        notification.setTitle("");
+        notification.setFacId(application.getFacility().getId());
+        notification.setDate(dateString);
+        notification.setAttachments(null);
+        notification.setAdditionalInfo("");
+        notification.setStatus(EmailConstants.STATUS_NEW_APP_REQUEST_FOR_INFO);
+        notification.setAdmin("admin01");
+        notification.setApplicant("applicant01");
+        sendNotificationHelper.sendNotification(notification);
     }
 
     public void approvalForInspection(BaseProcessClass bpc) throws ParseException{
@@ -161,10 +193,20 @@ public class MohProcessingDelegator {
     }
 
     public void aoReject(BaseProcessClass bpc) throws ParseException{
+        HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_8;
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
         doScreeningDtoByForm.setStatus(status);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
+        //send email notification to Applicant
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
+        Notification notification = new Notification();
+        notification.setApplicationNo(application.getApplicationNo());
+        notification.setFacId(application.getFacility().getId());
+        notification.setStatus(EmailConstants.STATUS_NEW_APP_REJECT);
+        notification.setAdmin("admin01");
+        notification.setApplicant("applicant01");
+        sendNotificationHelper.sendNotification(notification);
     }
 
     public void routeBackToDO(BaseProcessClass bpc) throws ParseException{
@@ -210,12 +252,23 @@ public class MohProcessingDelegator {
     }
 
     public void aoApproved(BaseProcessClass bpc) throws ParseException{
+        HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_9;
         Date approvalDate = new Date();
         DoScreeningDto doScreeningDtoByForm = getDtoByForm(bpc);
         doScreeningDtoByForm.setStatus(status);
         doScreeningDtoByForm.setApprovalDate(approvalDate);
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
+        //send email notification to Applicant
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
+        Notification notification = new Notification();
+        notification.setApplicationNo(application.getApplicationNo());
+        notification.setFacId(application.getFacility().getId());
+        notification.setApplicationType(MasterCodeUtil.getCodeDesc(application.getAppType()));
+        notification.setStatus(EmailConstants.STATUS_NEW_APP_APPROVED);
+        notification.setAdmin("admin01");
+        notification.setApplicant("applicant01");
+        sendNotificationHelper.sendNotification(notification);
     }
 
     private DoScreeningDto getDtoByForm(BaseProcessClass bpc) throws ParseException {

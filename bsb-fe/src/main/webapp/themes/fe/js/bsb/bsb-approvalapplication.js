@@ -5,7 +5,7 @@ $(function() {
     var selectValueNatureOfTheSample = $("#natureOfTheSample").val();
     if(selectValueNatureOfTheSample != null){
         for(var i=0;i<selectValueNatureOfTheSample.length ;i++){
-            if(selectValueNatureOfTheSample[i] == "BNOTS006" ) {
+            if(selectValueNatureOfTheSample[i] == "BNOTS007" ) {
                 $("#others").show();
             }
         }
@@ -36,7 +36,7 @@ $(function() {
         var selectValue = $(this).val();
         var flag = false;
         for(var i=0;i<selectValue.length ;i++){
-            if(selectValue[i] == "BNOTS006" ) {
+            if(selectValue[i] == "BNOTS007" ) {
                 flag = true;
             }
         }

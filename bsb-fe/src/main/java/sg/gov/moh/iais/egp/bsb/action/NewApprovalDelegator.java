@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
+import sg.gov.moh.iais.egp.bsb.client.ComFileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
@@ -19,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
@@ -38,6 +41,9 @@ public class NewApprovalDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
 
     public void doStart(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
@@ -146,7 +152,7 @@ public class NewApprovalDelegator {
                 List<String> natureOfTheSampleList = approvalApplicationDto.getNatureOfTheSampleList();
                 if (natureOfTheSampleList != null){
                     for (int i = 0; i < natureOfTheSampleList.size(); i++) {
-                        if(natureOfTheSampleList.get(i).equals(ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE_6)) {
+                        if(natureOfTheSampleList.get(i).equals(ApprovalApplicationConstants.NATURE_OF_THE_SAMPLE_7)) {
                             flag = false;
                         }
                     }
@@ -407,6 +413,42 @@ public class NewApprovalDelegator {
             }
         }
         return biologicalSchedule;
+    }
+
+    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList, Map<String, File> saveFileMap){
+        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
+        //根据AppGrpPrimaryDocDto PremisessName+SvcComDocId+SeqNum 判断 saveFileMap中是否存在
+        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
+            if(primaryDocDto.isPassValidate()){
+                String premIndex = "";
+                if(!StringUtil.isEmpty(primaryDocDto.getPremisessName())){
+                    premIndex = primaryDocDto.getPremisessName();
+                }
+                String fileMapKey = premIndex + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
+                File file = saveFileMap.get(fileMapKey);
+                if(file != null){
+                    passValidateFileMap.put(fileMapKey,file);
+                }
+            }
+        }
+        if(passValidateFileMap.size() > 0){
+            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
+            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
+            int i = 0;
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
+                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
+                if(StringUtil.isEmpty(premIndexNo)){
+                    premIndexNo = "";
+                }
+                String saveFileMapKey = premIndexNo+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getSeqNum();
+                File file = saveFileMap.get(saveFileMapKey);
+                if(file != null){
+                    appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
+                    i++;
+                }
+            }
+        }
+
     }
 }
 

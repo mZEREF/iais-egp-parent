@@ -23,13 +23,13 @@
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="active" id="info" role="presentation">
-                                                <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
+                                                <a href="#tabInfo" id="doInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                             </li>
                                             <li id="documents" role="presentation">
-                                                <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
+                                                <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
                                             <li id="dynamicContent" role="presentation">
-                                                <a href="#tabDynamicContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
+                                                <a href="#tabDynamicContent" id="doContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
                                             </li>
                                             <li id="process" role="presentation">
                                                 <a href="#tabProcessing" id="doProcess" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -41,10 +41,10 @@
                                                     <a href="#tabInfo" aria-controls="tabInfo" role="tab" data-toggle="tab">Info</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
+                                                    <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <a href="#tabDynamicContent" id="doDynamicContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
+                                                    <a href="#tabDynamicContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <a href="#tabProcessing" aria-controls="tabProcessing" role="tab" data-toggle="tab">Processing</a>
@@ -574,6 +574,7 @@
                                                                     </c:if>
                                                                 </iais:section>
                                                                 <div align="right">
+                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="#" id="processBack"><em class="fa fa-angle-left"></em> Back</a>
                                                                     <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <c:if test="${(application.processType=='PROTYPE002' || application.processType=='PROTYPE003' || application.processType=='PROTYPE004' || application.processType=='PROTYPE005') && application.status=='BSBAPST003'}">
                                                                         <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
