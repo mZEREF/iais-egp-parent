@@ -895,6 +895,9 @@ public class WithOutRenewalDelegator {
                     dto.setEffectiveDateStr(Formatter.formatDate(appSubmissionDtoNew.getAppDeclarationMessageDto().getEffectiveDt()));
                 }
             }
+        }else {
+            dto.setAppDeclarationMessageDto(null);
+            dto.setAppDeclarationDocDtos(null);
         }
     }
 
