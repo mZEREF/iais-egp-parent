@@ -2605,18 +2605,20 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
-        // add the current dto to the group
-        if (isAutoRfc) {
-            autoSaveAppsubmission.add(appSubmissionDto);
-        } else {
-            notAutoSaveAppsubmission.add(appSubmissionDto);
-        }
-        // add the premises affected list to the group
-        if (!appSubmissionDtos.isEmpty()) {
-            if (appSubmissionDtos.get(0).isAutoRfc()) {
-                autoSaveAppsubmission.addAll(appSubmissionDtos);
+        if (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isPremisesEdit() || appEditSelectDto.isDocEdit() || appEditSelectDto.isServiceEdit()){
+            // add the current dto to the group
+            if (isAutoRfc) {
+                autoSaveAppsubmission.add(appSubmissionDto);
             } else {
-                notAutoSaveAppsubmission.addAll(appSubmissionDtos);
+                notAutoSaveAppsubmission.add(appSubmissionDto);
+            }
+            // add the premises affected list to the group
+            if (!appSubmissionDtos.isEmpty()) {
+                if (appSubmissionDtos.get(0).isAutoRfc()) {
+                    autoSaveAppsubmission.addAll(appSubmissionDtos);
+                } else {
+                    notAutoSaveAppsubmission.addAll(appSubmissionDtos);
+                }
             }
         }
         // check app submissions affected by sub licensee
