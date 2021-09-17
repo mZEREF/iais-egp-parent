@@ -34,4 +34,5 @@ public class EmailParam {
     private HashMap<String, String> subjectParams;
     // recipient email addresses Only for history No find
     private String recipientEmail;
+    private String recipientName;
 }

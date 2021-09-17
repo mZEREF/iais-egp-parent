@@ -353,6 +353,11 @@ public class NotificationHelper {
 						receiptEmail = IaisCommonUtils.genNewArrayList();
 						receiptEmail.add(emailParam.getRecipientEmail());
 						emailDto.setReceipts(receiptEmail);
+						templateContent.put("officer_name",StringUtil.getNonNull(emailParam.getRecipientName()));
+						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+						//replace num
+						mesContext = MessageTemplateUtil.replaceNum(mesContext);
+						emailDto.setContent(mesContext);
 					}
 					if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
 						inspectionEmailTemplateDto = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto,recipientUserId);
