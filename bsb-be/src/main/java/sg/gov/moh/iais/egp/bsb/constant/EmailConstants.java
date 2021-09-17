@@ -6,6 +6,12 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * DESCRIPTION: TODO
  **/
 public class EmailConstants {
+    //delivery mode
+    public static final String TEMPLETE_DELIVERY_MODE_EMAIL = "DEMD001";
+    public static final String TEMPLETE_DELIVERY_MODE_SMS = "DEMD002";
+    public static final String TEMPLETE_DELIVERY_MODE_MSG = "DEMD003";
+    public static final String TEMPLETE_DELIVERY_MODE_NA = "DEMD004";
+
     //Notification Template ID
     public static final String MSG_TEMPLATE_NEW_APP_REJECT = "0E4B4155-942F-434B-A111-FC6C8843A36A";
     public static final String MSG_TEMPLATE_NEW_APP_APPROVAL = "85665530-65AB-4610-AB97-C6F15F841685";

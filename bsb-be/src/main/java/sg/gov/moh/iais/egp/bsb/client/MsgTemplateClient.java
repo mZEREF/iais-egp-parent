@@ -32,5 +32,9 @@ public interface MsgTemplateClient {
     @GetMapping(path = "/iais-messageTemplate/suggestTemplateCodeDescription/{code}")
     FeignResponseEntity<List<String>> suggestTemplateCodeDescription(@PathVariable("code") String code);
 
+    @GetMapping(path = "/iais-messageTemplate/template/{msgId}/{recipient}")
+    FeignResponseEntity<MsgTemplateDto> getMsgTemplate(@PathVariable("msgId") String id ,@PathVariable("recipient") String recipient);
+
+
 
 }

@@ -16,11 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
-import sg.gov.moh.iais.egp.bsb.constant.EmailConstants;
-import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -53,8 +50,6 @@ public class BiosafetyEnquiryDelegator {
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
     @Autowired
     private ProcessClient processClient;
-    @Autowired
-    private SendNotificationHelper sendNotificationHelper;
 
     /**
      * AutoStep: prepareBasicSearch
@@ -91,14 +86,6 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(bpc.request, KEY_PAGE_INFO, approvedFacilityCerResultDto.getPageInfo());
         }
         ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
-        Notification notification = new Notification();
-        notification.setApplicationNo("APP0000001");
-        notification.setReason("too much error");
-        notification.setFacilityName("facName001");
-        notification.setFacilityAddress("ZhuTang Road");
-        notification.setDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        notification.setStatus(EmailConstants.STATUS_REVOCATION_APPROVAL_USER);
-        sendNotificationHelper.sendNotification(notification);
     }
 
 
