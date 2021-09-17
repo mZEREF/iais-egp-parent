@@ -60,13 +60,14 @@ public final class FileUtils {
         ops.flush();
     }
 
-    public static File multipartFileToFile(final MultipartFile file) throws Exception {
+    public static File multipartFileToFile(final MultipartFile file, String sessionId) throws Exception {
 
         if (file == null || file.isEmpty()) {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
-            File toFile = MiscUtil.generateFileInTempFolder(FilenameUtils.getName(file.getOriginalFilename()));
+            File sessFolder = MiscUtil.generateFolderInTempFolder("tempUpload" + sessionId);
+            File toFile = MiscUtil.generateFile(sessFolder, FilenameUtils.getName(file.getOriginalFilename()));
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }
