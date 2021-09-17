@@ -47,7 +47,7 @@
                     </c:if>--%>
                     <td>
                         <c:choose>
-                            <c:when test="${empty txnRefNo}">
+                            <c:when test="${empty txnRefNo || empty AppSubmissionDto.paymentMethod}">
                                 N/A
                             </c:when>
                             <c:otherwise>

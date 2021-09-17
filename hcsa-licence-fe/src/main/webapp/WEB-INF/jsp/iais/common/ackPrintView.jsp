@@ -101,7 +101,7 @@
                                         </c:if>--%>
                                     <td>
                                         <c:choose>
-                                            <c:when test="${empty txnRefNo}">
+                                            <c:when test="${empty txnRefNo || empty AppSubmissionDto.paymentMethod}">
                                                 N/A
                                             </c:when>
                                             <c:otherwise>
@@ -164,7 +164,7 @@
                                         </c:if>--%>
                                     <td>
                                         <c:choose>
-                                            <c:when test="${empty txnRefNo}">
+                                            <c:when test="${empty txnRefNo || empty payMethod}">
                                                 N/A
                                             </c:when>
                                             <c:otherwise>
@@ -226,7 +226,7 @@
                                                             <c:when test="${ackPageAppSubmission.amount == null || ackPageAppSubmission.amount == 0}">
                                                                 N/A
                                                             </c:when>
-                                                            <c:when test="${empty txnRefNo}">
+                                                            <c:when test="${empty txnRefNo || ackPageAppSubmission.paymentMethod==null}">
                                                                 N/A
                                                             </c:when>
                                                             <c:otherwise>
@@ -265,7 +265,7 @@
                                             <c:if test="${requestInformationConfig == null}">
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${empty txnRefNo}">
+                                                        <c:when test="${empty txnRefNo || AppSubmissionDto.paymentMethod==null}">
                                                             N/A
                                                         </c:when>
                                                         <c:otherwise>
