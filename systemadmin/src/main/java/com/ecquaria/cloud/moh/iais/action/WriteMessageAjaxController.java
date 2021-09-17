@@ -40,7 +40,7 @@ public class WriteMessageAjaxController {
             if(fileName != null && fileName.indexOf('\\') > 0){
                 fileName = fileName.substring(fileName.lastIndexOf('\\') + 1);
             }
-            File toFile = FileUtils.multipartFileToFile(selectedFile);
+            File toFile = FileUtils.multipartFileToFile(selectedFile, request.getSession().getId());
             byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
             AttachmentDto attachmentDto = new AttachmentDto();
             attachmentDto.setData(fileToByteArray);

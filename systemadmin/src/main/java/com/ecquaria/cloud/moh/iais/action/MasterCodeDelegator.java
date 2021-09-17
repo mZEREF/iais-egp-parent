@@ -451,7 +451,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
-        File toFile = FileUtils.multipartFileToFile(file);
+        File toFile = FileUtils.multipartFileToFile(file, request.getSession().getId());
         try{
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
             boolean result = false;
