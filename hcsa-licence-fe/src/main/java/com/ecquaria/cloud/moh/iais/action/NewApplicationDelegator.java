@@ -1443,7 +1443,7 @@ public class NewApplicationDelegator {
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
         log.info(StringUtil.changeForLog("Payment result: " + result + "; reqRefNo: " + pmtRefNo
-                + "; Draft No.: " + appSubmissionDto.getDraftNo()));
+                + "; Draft No.: " + appSubmissionDto.getDraftNo()) + "; App Group No: " + appSubmissionDto.getAppGrpNo());
         if (!StringUtil.isEmpty(result)) {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
