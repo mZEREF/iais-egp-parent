@@ -275,7 +275,7 @@ public class HcsaFileAjaxController {
                     multipartRequest.add("fileName", jsonPart);
                     jsonHeader = new HttpHeaders();
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
-                    jsonPart = new HttpEntity<>(tempFolder, jsonHeader);
+                    jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
                     multipartRequest.add("folderName", jsonPart);
                     RestTemplate restTemplate = new RestTemplate();
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);

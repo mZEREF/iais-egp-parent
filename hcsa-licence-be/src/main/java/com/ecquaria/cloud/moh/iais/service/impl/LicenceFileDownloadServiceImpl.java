@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -105,6 +106,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -1099,10 +1101,30 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void  moveFile(File file){
+    private void moveFile(File file) {
         if (!file.exists()) {
             List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
-
+            log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
+            if (ipAddrs != null && ipAddrs.size() > 1) {
+                String localIp = MiscUtil.getLocalHostExactAddress();
+                log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+                for (String ip : ipAddrs) {
+                    if (localIp.equals(ip)) {
+                        continue;
+                    }
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
+                    log.info("Request URL ==> " + apiUrl.toString());
+                    RestTemplate restTemplate = new RestTemplate();
+                    try {
+                        restTemplate.delete(apiUrl.toString(), file.getCanonicalPath());
+                    } catch (Throwable e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
+            return;
         }
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
@@ -1116,7 +1138,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 fileOutputStream.write(size,0,count);
                 count= fileInputStream.read(size);
             }
-
         }catch (Exception e){
 
             log.error(e.getMessage(),e);
