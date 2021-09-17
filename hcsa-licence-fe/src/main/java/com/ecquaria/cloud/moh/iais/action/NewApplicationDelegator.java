@@ -3098,6 +3098,12 @@ public class NewApplicationDelegator {
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
+                }else {
+                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                    appGrp.setId(appSubmissionDto1.getAppGrpId());
+                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                    appGrp.setPayMethod(payMethod);
+                    serviceConfigService.updatePaymentStatus(appGrp);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request,ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
