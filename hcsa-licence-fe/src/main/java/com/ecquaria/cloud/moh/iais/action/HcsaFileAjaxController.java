@@ -249,7 +249,7 @@ public class HcsaFileAjaxController {
                 try {
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
-                    apiUrl.append(ip).append(':').append(port).append("/tempFile-handler");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
                     log.info("Request URL ==> " + apiUrl.toString());
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
