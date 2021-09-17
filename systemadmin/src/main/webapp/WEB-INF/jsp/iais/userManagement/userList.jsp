@@ -33,7 +33,7 @@
                     <div class="bg-title">
                         <h2>Licensee User Management</h2>
                     </div>
-                    <div class="row">
+                    <div class="row search-pannel">
                         <div class="form-horizontal" id="searchCondition">
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">ID No.</label>
@@ -212,11 +212,7 @@
     }
     
     function clearSearch() {
-        $('input[name="idNo"]').val("");
-        $('input[name="designation"]').val("");
-        $('input[name="licenseeName"]').val("");
-        $("#designation option:first").prop("selected", 'selected');
-        $("#searchCondition .current").text("Please Select");
+        clearFields('.search-pannel');
     }
 
     function jumpToPagechangePage() {
