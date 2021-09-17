@@ -790,8 +790,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return false;
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-
-        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        String propertyName = "save";
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())){
+            propertyName = "soloSave";
+        }
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, propertyName);
         if (result != null) {
             map = result.retrieveAll();
         }
