@@ -157,10 +157,13 @@
                 $(this).find('.profRegNo').trigger('blur');
             }
             */
-            var assignSelectVal = $currContent.find('select.assignSel').val();
-            var licPerson = $currContent.find('input.licPerson').val();
-            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-            prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            var prgNo = $currContent.find('input.profRegNo').val();
+            if (!isEmpty(prgNo)) {
+                var assignSelectVal = $currContent.find('select.assignSel').val();
+                var licPerson = $currContent.find('input.licPerson').val();
+                var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+                prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            }
             // designation
             $(this).find('.designation').triggerHandler('change');
             checkNoRegWithProfBoard($currContent.find('.noRegWithProfBoard'));
@@ -343,13 +346,17 @@
             var appType = $('input[name="applicationType"]').val();
             var assignSelectVal = $currContent.find('select.assignSel').val();
             var licPerson = $currContent.find('input.licPerson').val();
-            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-            if(needControlName){
+            var prgNo = $currContent.find('input.profRegNo').val();
+            if(!isEmpty(prgNo)){
+                var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+                prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            }
+            /*if(needControlName){
                 var prgNo = $currContent.find('input.profRegNo').val();
                 if(!isEmpty(prgNo)){
                     controlEdit($currContent.find('input.field-name'), 'disabled', false);
                 }
-            }
+            }*/
         });
     }
 
