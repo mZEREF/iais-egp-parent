@@ -2292,8 +2292,12 @@ public class HcsaApplicationDelegator {
                         //set app group status
                         boolean appStatusIsAllRejected = checkAllStatus(saveApplicationDtoList, ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         if (appStatusIsAllRejected) {
+                            //reject other app grp and set update app_group_misc inactive
+                            broadcastApplicationDto = applicationService.setRejectOtherAppGrps(applicationGroupDto, broadcastApplicationDto);
                             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
                         } else {
+                            //set update app_group_misc when group approve
+                            broadcastApplicationDto = applicationService.setAppGrpMiscInactive(applicationGroupDto, broadcastApplicationDto);
                             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                         }
                         applicationGroupDto.setAo3ApprovedDt(new Date());

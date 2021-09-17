@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApproveGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -47,10 +48,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * ApplicationClientFallback
@@ -1026,6 +1028,14 @@ public class ApplicationClientFallback implements ApplicationClient{
 
     @Override
     public FeignResponseEntity<List<ApplicationDto>> getApplicationDto(ApplicationDto application) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<AppGroupMiscDto> getAppGrpMiscByAppGrpIdTypeStatus(String appGrpId, String miscType, String status) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
