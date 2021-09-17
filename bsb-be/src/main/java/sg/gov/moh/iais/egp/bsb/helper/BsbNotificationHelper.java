@@ -1,10 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -238,23 +236,22 @@ public class BsbNotificationHelper {
 
     private EmailTemplateDto getRecript(List<String> roles, String refIdType, String refId, EmailTemplateDto emailTemplateDto) {
         if(REF_ID_TYPE_APP_NO.equals(refIdType)){
-            emailTemplateDto = getRecriptAppNo(roles,refId,emailTemplateDto);
+             getRecriptAppNo(roles,refId,emailTemplateDto);
         }else if(REF_ID_TYPE_FAC_ID.equals(refIdType)){
-            emailTemplateDto = getRecriptFacId(roles,refId,emailTemplateDto);
+             getRecriptFacId(roles,refId,emailTemplateDto);
         }else{
-
+            getOfficer(roles,emailTemplateDto);
         }
         return emailTemplateDto;
     }
 
-    private EmailTemplateDto getRecriptFacId(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
-        emailTemplateDto = getApplicant(roles,facId,emailTemplateDto);
-        emailTemplateDto = getAssignedOfficer(roles,facId,emailTemplateDto);
-        emailTemplateDto = getOfficer(roles,emailTemplateDto);
-        return  emailTemplateDto;
+    private void getRecriptFacId(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
+     getFacApplicant(roles,facId,emailTemplateDto);
+     getAssignedOfficer(roles,facId,emailTemplateDto);
+     getOfficer(roles,emailTemplateDto);
     }
 
-    private EmailTemplateDto getOfficer(List<String> roles, EmailTemplateDto emailTemplateDto) {
+    private void getOfficer(List<String> roles, EmailTemplateDto emailTemplateDto) {
         List<String> adminRoles = IaisCommonUtils.genNewArrayList();
         List<String> passRoles = IaisCommonUtils.genNewArrayList();
         List<String> emails = IaisCommonUtils.genNewArrayList();
@@ -276,7 +273,7 @@ public class BsbNotificationHelper {
                 }
             });
         }
-        if(passRoles != null && !passRoles.isEmpty()){
+        if(!passRoles.isEmpty()){
             List<OrgUserDto> orgUserDtoList =  organizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
             for (OrgUserDto orgUserDto : orgUserDtoList) {
                 emails.add(orgUserDto.getEmail());
@@ -284,15 +281,13 @@ public class BsbNotificationHelper {
             listDeduplicate(emails);
             emailTemplateDto.setReceiptEmail(emails);
         }
-        return emailTemplateDto;
     }
 
-    private EmailTemplateDto getAssignedOfficer(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
+    private void getAssignedOfficer(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
         log.info("get assign officer...");
-        return emailTemplateDto;
     }
 
-    private EmailTemplateDto getApplicant(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
+    private void getFacApplicant(List<String> roles, String facId, EmailTemplateDto emailTemplateDto) {
         for (String role : roles) {
             if(RECEIPT_ROLE_APPLICANT.equals(role)){
               List<FacilityAdmin> admins = bsbEmailClient.queryEmailByFacId(facId).getEntity();
@@ -319,12 +314,41 @@ public class BsbNotificationHelper {
                 emailTemplateDto.setEmailAddress(emailAddressMap);
             }
         }
-        return emailTemplateDto;
     }
 
-    private EmailTemplateDto getRecriptAppNo(List<String> roles, String appNo, EmailTemplateDto emailTemplateDto) {
+    private void getApplicant(List<String> roles, String appNo, EmailTemplateDto emailTemplateDto) {
+        for (String role : roles) {
+            if(RECEIPT_ROLE_APPLICANT.equals(role)){
+                List<FacilityAdmin> admins = bsbEmailClient.queryFacilityAdminByAppNo(appNo).getEntity();
+                Map<String, String> adminTypesMap = emailTemplateDto.getAdminTypes();
+                Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
 
-        return  emailTemplateDto;
+                if (adminTypesMap == null) {
+                    adminTypesMap = IaisCommonUtils.genNewHashMap();
+                }
+
+                if (emailAddressMap == null) {
+                    emailAddressMap = IaisCommonUtils.genNewHashMap();
+                }
+
+                int index = admins.size();
+                for (FacilityAdmin u : admins) {
+                    if (!StringUtils.isEmpty(u.getEmail())) {
+                        adminTypesMap.put(String.valueOf(index), u.getType());
+                        emailAddressMap.put(String.valueOf(index), u.getEmail());
+                        index++;
+                    }
+                }
+                emailTemplateDto.setAdminTypes(adminTypesMap);
+                emailTemplateDto.setEmailAddress(emailAddressMap);
+            }
+        }
+    }
+
+    private void getRecriptAppNo(List<String> roles, String appNo, EmailTemplateDto emailTemplateDto) {
+        getApplicant(roles,appNo,emailTemplateDto);
+        getAssignedOfficer(roles,appNo,emailTemplateDto);
+        getOfficer(roles,emailTemplateDto);
     }
 
     private void listDeduplicate(List<String> list) {

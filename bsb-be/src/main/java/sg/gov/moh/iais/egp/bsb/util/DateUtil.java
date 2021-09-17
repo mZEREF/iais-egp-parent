@@ -99,7 +99,7 @@ public class DateUtil {
         StringBuilder s = new StringBuilder();
         int ends = random.nextInt(99);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-        return s.append(sdf).append("HALP").append(String.format("%02d",ends)).toString();
+        return s.append(sdf.format(new Date())).append("HALP").append(String.format("%02d",ends)).toString();
     }
 
     public static String generateRandomByDate(){
