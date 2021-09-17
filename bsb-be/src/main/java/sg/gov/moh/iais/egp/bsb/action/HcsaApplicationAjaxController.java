@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +56,7 @@ public class HcsaApplicationAjaxController {
     //upload file
     @RequestMapping(value = "/uploadInternalFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
-    public String uploadInternalFile(BaseProcessClass bpc,HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile, @RequestParam("fileRemark")String remark) {
+    public String uploadInternalFile(HttpServletRequest request, @RequestParam("selectedFile") MultipartFile selectedFile, @RequestParam("fileRemark")String remark) {
         String data = "";
         request.setAttribute("selectedFile", selectedFile);
         String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
@@ -90,8 +92,11 @@ public class HcsaApplicationAjaxController {
             facilityDoc.setFacility(facility);
             doc.setFacility(facility);
 
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
             facilityDoc.setSubmitAt(new Date());
             doc.setSubmitAt(new Date());
+            doc.setSubmitAtStr(formatter.format(doc.getSubmitAt()));
             facilityDoc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             doc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             doc.setSubmitByName(doc.getAuditTrailDto().getMohUserId());
@@ -141,6 +146,8 @@ public class HcsaApplicationAjaxController {
             }
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
             facilityDoc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+            doc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+            doc.setIsUpload(Boolean.TRUE);
             facilityDocs.add(doc);
             if (auditDocDto != null){
                 auditDocDto.setFacilityDocs(facilityDocs);
@@ -151,7 +158,7 @@ public class HcsaApplicationAjaxController {
             if( !StringUtil.isEmpty( facilityDoc.getId())){
 //                facilityDoc.setMaskId(MaskUtil.maskValue("interalFileId", facilityDoc.getId()));
             }
-            String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(facilityDoc);
+            String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(doc);
             data = appIntranetDocDtoJsonStr;
             ParamUtil.setRequestAttr(request, "doDocument", "Y");
         }
@@ -159,41 +166,44 @@ public class HcsaApplicationAjaxController {
         return data;
     }
 
-//    @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
-//    @ResponseBody
-//    public Map<String, Object> deleteInternalFile(HttpServletRequest request){
-//        String guid = MaskUtil.unMaskValue("interalFileId", request.getParameter("appDocId"));
-//        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-//        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-//        if(applicationViewDto != null && applicationViewDto.getAppIntranetDocDtoList() != null){
-//            List<AppIntranetDocDto> appIntranetDocDtos = applicationViewDto.getAppIntranetDocDtoList();
-//            AppIntranetDocDto appIntranetDocDe  = null;
-//            for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
-//                if(appIntranetDocDto.getId().equalsIgnoreCase(guid)){
-//                    uploadFileClient.deleteAppIntranetDocsById( appIntranetDocDto.getId());
-//                    insepctionNcCheckListService.removeFiles(appIntranetDocDto.getId());
-//                    appIntranetDocDe = appIntranetDocDto;
-//                }
-//            }
-//            if(appIntranetDocDe!= null)
-//            appIntranetDocDtos.remove( appIntranetDocDe);
-//            boolean isUpload = false;
-//            for(AppIntranetDocDto appIntranetDocDto : appIntranetDocDtos){
-//                if(appIntranetDocDto.getIsUpload() != null && appIntranetDocDto.getIsUpload()){
-//                    isUpload = true;
-//                    break;
-//                }
-//            }
-//            applicationViewDto.setIsUpload(isUpload);
-//            ParamUtil.setSessionAttr(request,"applicationViewDto",(Serializable) applicationViewDto);
-//            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-//            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : appIntranetDocDtos.size());
-//            if(appIntranetDocDtos.size() == 0){
-//                map.put("noFilesMessage", MessageUtil.getMessageDesc("GENERAL_ACK018"));
-//            }
-//        }
-//        return map;
-//    }
+    @RequestMapping(value = "/deleteInternalFile", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> deleteInternalFile(HttpServletRequest request){
+        String guid = request.getParameter("appDocId");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        AuditDocDto auditDocDto = (AuditDocDto)ParamUtil.getSessionAttr(request,"auditDocDto");
+        if(auditDocDto != null && auditDocDto.getFacilityDocs() != null){
+            List<FacilityDoc> facilityDocs = auditDocDto.getFacilityDocs();
+            FacilityDoc facilityDoc  = null;
+            for(FacilityDoc doc : facilityDocs){
+                if(doc.getFileRepoId().equalsIgnoreCase(guid)){
+                    docClient.deleteByFileRepoId( doc.getFileRepoId());
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setId(doc.getFileRepoId());
+                    fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                    fileRepoClient.removeFileById(fileRepoDto);
+                    facilityDoc = doc;
+                }
+            }
+            if(facilityDoc!= null)
+                facilityDocs.remove( facilityDoc);
+            boolean isUpload = false;
+            for(FacilityDoc facilityDoc1 : facilityDocs){
+                if(facilityDoc1.getIsUpload() != null && facilityDoc1.getIsUpload()){
+                    isUpload = true;
+                    break;
+                }
+            }
+            auditDocDto.setIsUpload(isUpload);
+            ParamUtil.setSessionAttr(request,"auditDocDto", auditDocDto);
+            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : facilityDocs.size());
+            if(facilityDocs.size() == 0){
+                map.put("noFilesMessage", MessageUtil.getMessageDesc("GENERAL_ACK018"));
+            }
+        }
+        return map;
+    }
 
 
     @RequestMapping(value = "/verifyFileExist", method = RequestMethod.POST)

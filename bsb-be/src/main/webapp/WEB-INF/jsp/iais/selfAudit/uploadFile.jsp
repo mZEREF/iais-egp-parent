@@ -1,5 +1,3 @@
-
-
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${auditDocDto.systemMaxFileSize}">
     <input type="hidden" id="fileUploadType" name="fileUploadType" value="${auditDocDto.systemFileType}">
@@ -48,11 +46,6 @@
     </div>
 </div>
 
-
-
-
-
-
 <script type="text/javascript">
 
     function openUploadDoc(){
@@ -74,6 +67,7 @@
             if(validateUploadInternal())
                 callAjaxUploadFile();
             dismissWaiting();
+            closeUploadDoc();
     }
 
     function deleteFile(row,repoId) {

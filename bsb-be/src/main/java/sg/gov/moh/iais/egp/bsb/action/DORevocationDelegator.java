@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.STATUS_REVOCATION_APPROVAL_AO;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 
 /**
@@ -36,7 +38,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERRO
 @Delegator(value = "DORevocationDelegator")
 @Slf4j
 public class DORevocationDelegator {
-
+    private static final String FACILITY = "facility";
     @Autowired
     private RevocationClient revocationClient;
 
@@ -63,8 +65,11 @@ public class DORevocationDelegator {
      * @param bpc
      */
     public void prepareData(BaseProcessClass bpc) {
-        List<Application> list=new LinkedList<>();
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,FACILITY,null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
+
+        List<Application> list=new LinkedList<>();
         String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
         Application application = revocationClient.getApplicationById(appId).getEntity();
         //Do address processing
@@ -72,6 +77,7 @@ public class DORevocationDelegator {
         application.getFacility().setFacilityAddress(address);
         list.add(application);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
+        ParamUtil.setSessionAttr(request,FACILITY,application.getFacility());
     }
 
     /**
@@ -89,7 +95,9 @@ public class DORevocationDelegator {
         facility.setId(facilityId);
         resultDto.setFacility(facility);
         resultDto.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
-        resultDto.setProcessType("PROTYPE001");
+        //
+        resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION);
+        //
         resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
         resultDto.setApplicationDt(new Date());
 
@@ -125,11 +133,19 @@ public class DORevocationDelegator {
         Notification notification = new Notification();
         for (Application application : list) {
             notification.setApplicationNo(application.getApplicationNo());
-            notification.setStatus("rej001");
+            notification.setStatus(STATUS_REVOCATION_APPROVAL_AO);
             notification.setApprovalNo("Approval001");
-            notification.setFacilityType(application.getFacility().getFacilityType());
-            notification.setApprovalType(application.getFacility().getApprovalType());
-            notification.setFacilityCertifier(application.getFacility().getApproval());//APPROVAL
+            if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS)
+                    ||application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP)
+                    ||application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE)){
+                notification.setApprovalType(application.getFacility().getApprovalType());
+            }
+            if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+                notification.setFacilityType(application.getFacility().getFacilityType());
+            }
+            if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+                notification.setFacilityCertifier(MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
+            }
             notification.setOfficer(loginContext.getUserName());
         }
         sendNotificationHelper.sendNotification(notification);

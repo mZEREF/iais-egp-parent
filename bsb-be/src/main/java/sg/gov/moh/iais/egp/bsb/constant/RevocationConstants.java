@@ -55,4 +55,10 @@ public final class RevocationConstants {
     public static final String PARAM_APPROVAL_STATUS_REVOKED = "APPRSTA003";
 
     public static final String PARAM_APPLICATION_TYPE_REVOCATION = "BSBAPTY006";
+
+    public static final String PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS = "PROTYPE002";
+    public static final String PARAM_PROCESS_TYPE_APPROVAL_TO_LSP = "PROTYPE003";
+    public static final String PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE = "PROTYPE004";
+    public static final String PARAM_PROCESS_TYPE_FACILITY_REGISTRATION = "PROTYPE001";
+    public static final String PARAM_PROCESS_TYPE_AFC_REGISTRATION = "PROTYPE005";
 }

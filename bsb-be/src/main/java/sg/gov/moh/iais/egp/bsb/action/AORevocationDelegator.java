@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.STATUS_REVOCATION_APPROVAL_USER;
+
 /**
  * @author Zhu Tangtang
  */
@@ -224,7 +226,7 @@ public class AORevocationDelegator {
         String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
 
         Notification notification = new Notification();
-        notification.setStatus("rej002");
+        notification.setStatus(STATUS_REVOCATION_APPROVAL_USER);
         notification.setApplicationNo(aoDecisionDto.getApplication().getApplicationNo());
         notification.setDate(date);
         notification.setReason(aoDecisionDto.getMisc().getReasonContent());
