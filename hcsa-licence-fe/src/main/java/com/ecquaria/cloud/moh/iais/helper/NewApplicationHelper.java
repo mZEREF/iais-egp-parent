@@ -41,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesOperationalUnitDto;
@@ -64,14 +63,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.DateUtil;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -90,6 +82,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.util.DateUtil;
 
 /**
  * NewApplicationHelper
@@ -4136,14 +4133,15 @@ public class NewApplicationHelper {
     }
 
     public static List<SelectOption> getReasonOption() {
-        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
-        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Retiring");
-        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
-        riskLevelResult.add(so1);
-        riskLevelResult.add(so2);
-        riskLevelResult.add(so3);
-        return riskLevelResult;
+//        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+//        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
+//        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Retiring");
+//        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
+//        riskLevelResult.add(so1);
+//        riskLevelResult.add(so2);
+//        riskLevelResult.add(so3);
+//        return riskLevelResult;
+        return  MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_CESSION_REASION);
     }
     public static List<SelectOption> getPatientsOption() {
         List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();

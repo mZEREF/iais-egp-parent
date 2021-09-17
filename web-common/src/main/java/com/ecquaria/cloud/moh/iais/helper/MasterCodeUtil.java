@@ -100,7 +100,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_PROFESSION_BOARD                 = "ED29FF07-7FA1-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_EAS_MTS_SPECIALTY                = "6DC1ED79-08A4-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_BANK_NAME                        = "137A214B-8611-EA11-BE78-874C29D29DB0";
-
+    public static final String CATE_ID_CESSION_REASION                  = "20941117-A009-4E45-AD2F-22F233EAA28D";
 
     //charges
     public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
