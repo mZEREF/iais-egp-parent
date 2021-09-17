@@ -179,7 +179,7 @@ public class HcsaChklItemDelegator {
             return;
         }
 
-        File file = FileUtils.multipartFileToFile(mulReqFile);
+        File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
         try {
             List<ChecklistItemExcel> itemTemplateList = FileUtils.transformToJavaBean(file, ChecklistItemExcel.class);
             String uploadMode = (String) ParamUtil.getSessionAttr(request, ChecklistConstant.ITEM_UPLOAD_MODE);

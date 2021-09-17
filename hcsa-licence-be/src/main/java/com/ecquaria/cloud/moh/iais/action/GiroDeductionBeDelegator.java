@@ -294,7 +294,7 @@ public class GiroDeductionBeDelegator {
             bpc.request.setAttribute("message",MessageUtil.getMessageDesc("GENERAL_ACK022"));
             return;
         }
-        Reader reader=new FileReader(FileUtils.multipartFileToFile(file));
+        Reader reader=new FileReader(FileUtils.multipartFileToFile(file, request.getSession().getId()));
         Iterable<CSVRecord> parse = CSVFormat.DEFAULT.withHeader("S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount").parse(reader);
         Map<String,String> map=new HashMap<>();
         List<String> list=new ArrayList<>(HEADERS.length);
