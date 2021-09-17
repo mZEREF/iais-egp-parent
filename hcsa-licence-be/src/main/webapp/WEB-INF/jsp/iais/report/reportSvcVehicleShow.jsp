@@ -29,7 +29,7 @@
         <c:if test="${'RETYPE007_edit' eq appVehicleFlag}">
         <tr>
           <td><c:out value="${status.count}"></c:out></td>
-          <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+          <td><c:out value="${appVehicleNo.displayName}"/></td>
           <td>
             <input class="form-check-input vehicle-approve" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
             <label class="form-check-label"><span class="check-circle"></span>Approve</label>
@@ -47,7 +47,7 @@
         <c:if test="${'RETYPE007_view' eq appVehicleFlag}">
         <tr>
           <td><c:out value="${status.count}"></c:out></td>
-          <td><c:out value="${appVehicleNo.vehicleName}"/></td>
+          <td><c:out value="${appVehicleNo.displayName}"/></td>
           <td>
             <c:choose>
               <c:when test="${'VEST002' eq appVehicleNo.status}">
