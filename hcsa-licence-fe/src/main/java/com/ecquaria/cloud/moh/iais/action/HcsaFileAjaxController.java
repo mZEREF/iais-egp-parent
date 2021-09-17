@@ -84,17 +84,20 @@ public class HcsaFileAjaxController {
              messageCode.setMsgType("Y");
          }
          File toFile = null;
+         String tempFolder = null;
          try{
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
-                 toFile = FileUtils.multipartFileToFile(selectedFile);
-                 map.put(fileAppendId+size, toFile);
+                 tempFolder = request.getSession().getId() + fileAppendId + size;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + size, toFile);
              }else {
-                 toFile = FileUtils.multipartFileToFile(selectedFile);
-                 map.put(fileAppendId+reloadIndex, toFile);
+                 tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + reloadIndex, toFile);
                  size = reloadIndex;
              }
 
@@ -104,7 +107,7 @@ public class HcsaFileAjaxController {
              return "";
          }
          // Save File to other nodes
-        saveFileToOtherNodes(selectedFile, toFile);
+        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
@@ -237,7 +240,7 @@ public class HcsaFileAjaxController {
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
     }
 
-    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile) {
+    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
         List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
         log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
         if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
@@ -270,6 +273,10 @@ public class HcsaFileAjaxController {
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
                     HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
                     multipartRequest.add("fileName", jsonPart);
+                    jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    jsonPart = new HttpEntity<>(tempFolder, jsonHeader);
+                    multipartRequest.add("folderName", jsonPart);
                     RestTemplate restTemplate = new RestTemplate();
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
