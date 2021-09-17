@@ -120,7 +120,7 @@ public class SendGrioFailEmailForAsoJobHandler extends IJobHandler {
             emailParam.setSubject(emailSubject);
             //send email
             log.info(StringUtil.changeForLog("sendGrioFailEmailForAso"));
-            emailParam.setRecipientEmail(getAsoEmail(appNo));
+            setAsoEmailAndName(appNo,emailParam);
             notificationHelper.sendNotification(emailParam);
             //send sms
             EmailParam  emailParamSms = new EmailParam();
@@ -139,7 +139,7 @@ public class SendGrioFailEmailForAsoJobHandler extends IJobHandler {
           return true;
     }
 
-    private String getAsoEmail(String appNo){
+    private void setAsoEmailAndName(String appNo, EmailParam emailParam){
         List<TaskDto> taskDtos = taskService.getTaskbyApplicationNo(appNo);
         if(IaisCommonUtils.isNotEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
@@ -147,13 +147,15 @@ public class SendGrioFailEmailForAsoJobHandler extends IJobHandler {
                     if(StringUtil.isNotEmpty(taskDto.getUserId())){
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(taskDto.getUserId()).getEntity();
                         if(orgUserDto != null && StringUtil.isNotEmpty(orgUserDto.getEmail())){
-                            return orgUserDto.getEmail();
+                            emailParam.setRecipientEmail(orgUserDto.getEmail());
+                            emailParam.setRecipientName(orgUserDto.getDisplayName());
+                            return;
                         }
                     }
                 }
             }
         }
-        return null;
+
     }
 
     private String getEmailSubject(String templateId, Map<String, Object> subMap) {
