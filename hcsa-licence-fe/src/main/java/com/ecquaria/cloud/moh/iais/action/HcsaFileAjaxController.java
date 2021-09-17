@@ -265,7 +265,7 @@ public class HcsaFileAjaxController {
                         }
                     };
                     HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
-                    multipartRequest.add("selectedFiles", fileEnt);
+                    multipartRequest.add("selectedFile", fileEnt);
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     headers.add("fileName", toFile.getName());
                     RestTemplate restTemplate = new RestTemplate();
