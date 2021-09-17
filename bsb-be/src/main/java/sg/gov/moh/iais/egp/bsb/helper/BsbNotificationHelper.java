@@ -197,34 +197,29 @@ public class BsbNotificationHelper {
                } catch (IOException e) {
                    e.printStackTrace();
                }
-           }else{
-               try {
-                   emailSmsClient.sendEmail(emailDto,null);
-               } catch (IOException e) {
-                   e.printStackTrace();
-               }
-           }
+           }else {
 
-           //send other address
-           if (!IaisCommonUtils.isEmpty(emailDto.getReceipts()) ||
-                   !IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
-                   !IaisCommonUtils.isEmpty(emailDto.getBccList())) {
-               if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
-                   String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-                   HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                   HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                   IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
-                           MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                           signature2.date(), signature2.authorization(), String.class);
-               } else {
-                   try {
-                       emailSmsClient.sendEmail(emailDto, null);
-                   } catch (IOException e) {
-                       e.printStackTrace();
+               //send other address
+               if (!IaisCommonUtils.isEmpty(emailDto.getReceipts()) ||
+                       !IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
+                       !IaisCommonUtils.isEmpty(emailDto.getBccList())) {
+                   if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
+                       String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+                       HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                       HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                       IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                               MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                               signature2.date(), signature2.authorization(), String.class);
+                   } else {
+                       try {
+                           emailSmsClient.sendEmail(emailDto, null);
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
                    }
+               } else {
+                   log.info("No receipts. Won't send email.");
                }
-           } else {
-               log.info("No receipts. Won't send email.");
            }
 
        }else if(EmailConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)){
