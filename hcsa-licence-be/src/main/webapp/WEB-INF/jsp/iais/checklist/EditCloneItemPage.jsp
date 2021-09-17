@@ -40,48 +40,41 @@
     <br><br>
 
     <div class="form-horizontal">
-      <div class="form-group">
+      <iais:row>
+        <iais:field value="Checklist Item" required="true"></iais:field>
         <div class="col-xs-5 col-md-3">
-          <iais:field value="Checklist Item" required="true"></iais:field>
-          <div class="col-xs-5 col-md-3">
-            <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
-            <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
-          </div>
+          <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
+          <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
         </div>
-      </div>
+      </iais:row>
 
-      <div class="form-group">
+      <iais:row>
+        <iais:field value="Risk Level" required="true"></iais:field>
         <div class="col-xs-5 col-md-3">
-          <iais:field value="Risk Level" required="true"></iais:field>
-          <div class="col-xs-5 col-md-3">
-            <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
-                         firstOption="Please Select" value="${itemRequestAttr.riskLevel}"></iais:select>
-          </div>
+          <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL"
+                       firstOption="Please Select" value="${itemRequestAttr.riskLevel}"></iais:select>
         </div>
-      </div>
+      </iais:row>
 
-      <div class="form-group">
-        <div class="col-xs-5 col-md-3">
-          <iais:field value="Answer Type" required="true"></iais:field>
+      <iais:row>
+        <iais:field value="Answer Type" required="true"></iais:field>
           <div class="col-xs-5 col-md-3">
             <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE"
                          firstOption="Please Select" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
           </div>
+      </iais:row>
+
+      <iais:action>
+        <div class="col-xs-12 col-sm-6">
+          <a href="#" class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a>
         </div>
-      </div>
+        <div class="text-right text-center-mobile">
+          <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus('form-horizontal');">Clear</a>
+          <a class="btn btn-primary next" onclick="javascript:editCloneItem();">Save</a>
+        </div>
+      </iais:action>
     </div>
-
-    <div class="col-xs-12 col-sm-6">
-      <a href="#" class="back" onclick="doCancel();"><em class="fa fa-angle-left"></em> Back</a>
-    </div>
-    <div class="text-right text-center-mobile">
-      <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.clearClickStatus('form-horizontal');">Clear</a>
-      <a class="btn btn-primary next" onclick="javascript:editCloneItem();">Save</a>
-    </div>
-</div>
-
-</div>
-
+  </div>
 </div>
 
 
