@@ -239,8 +239,10 @@ public class HcsaFileAjaxController {
 
     private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile) {
         List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
         if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
             String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
             for (String ip : ipAddrs) {
                 if (localIp.equals(ip)) {
                     continue;
