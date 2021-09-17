@@ -446,7 +446,7 @@ public class MassEmailDelegator {
     private List<String> getAllData(MultipartFile mulfile,String mode) throws IOException {
         List<String> list = IaisCommonUtils.genNewArrayList();
         try{
-            File file = FileUtils.multipartFileToFile(mulfile);
+            File file = FileUtils.multipartFileToFile(mulfile, "mass");
             Sheet sheet= parseFile(file,0);
             int firstrow=    sheet.getFirstRowNum() + 1;
             int lastrow=    sheet.getLastRowNum();
