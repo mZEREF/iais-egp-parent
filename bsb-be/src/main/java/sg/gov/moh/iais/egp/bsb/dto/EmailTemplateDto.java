@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : YiMing
@@ -10,9 +11,9 @@ import java.util.List;
  **/
 @Data
 public class EmailTemplateDto {
-    private List<String> receipts;
+    private List<String> receiptEmail;
 
-    private List<String> ccList;
+    private Map<String,String> adminTypes;
 
-    private List<String> bccList;
+    private Map<String,String> emailAddress;
 }
