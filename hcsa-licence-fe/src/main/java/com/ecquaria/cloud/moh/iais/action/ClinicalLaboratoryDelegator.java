@@ -2230,15 +2230,18 @@ public class ClinicalLaboratoryDelegator {
                         boolean needLoadName =
                                 !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         String name = professionalResponseDto.getName();
-                        if (needLoadName && StringUtil.isEmpty(name)) {
-                            log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
-                            map.put("profRegNo"+i,"GENERAL_ERR0042");
-                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
+                        log.info(StringUtil.changeForLog("Need Load Name: " + needLoadName + "; PRS Name: " + name));
+                        if (StringUtil.isEmpty(name)) {
+                            if (needLoadName) {
+                                log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
+                                map.put("profRegNo"+i,"GENERAL_ERR0042");
+                                setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
+                            }
                             continue;
-                        }
-                        if (needLoadName){
+                        } else if (needLoadName) {
                             appSvcPsnDto.setName(name);
                         }
+
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
                         if(!IaisCommonUtils.isEmpty(specialtyList)){
