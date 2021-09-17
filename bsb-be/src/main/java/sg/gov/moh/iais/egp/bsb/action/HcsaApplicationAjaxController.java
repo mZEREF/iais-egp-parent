@@ -14,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
@@ -28,6 +25,10 @@ import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -80,6 +81,8 @@ public class HcsaApplicationAjaxController {
             log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
             //type
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+            String fileType = fileSplit[fileSplit.length - 1];
+            doc.setDocType(fileType);
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
             facilityDoc.setName(fileName);
@@ -116,7 +119,7 @@ public class HcsaApplicationAjaxController {
             doc.setId(id);
 
 
-            // set appIntranetDocDto to seesion
+            // set auditDocDto to seesion
             AuditDocDto auditDocDto = (AuditDocDto)ParamUtil.getSessionAttr(request,"auditDocDto");
             if (auditDocDto==null){
                 auditDocDto = new AuditDocDto();
@@ -139,14 +142,15 @@ public class HcsaApplicationAjaxController {
             String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
             try{
                 String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
-                url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
+                url= url.replaceAll("pageContext.request.contextPath","/bsb-be").replaceAll("status.index",String.valueOf(index)).
                         replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-            facilityDoc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
-            doc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+            doc.setUrl(url);
+//            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
+//            doc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
+            doc.setFileSn(fileSizes==0 ? 999:fileSizes);
             doc.setIsUpload(Boolean.TRUE);
             facilityDocs.add(doc);
             if (auditDocDto != null){
@@ -222,5 +226,28 @@ public class HcsaApplicationAjaxController {
         }
         map.put("verify","Y");
         return map;
+    }
+
+    @GetMapping(value = "/file-repo")
+    public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.debug(StringUtil.changeForLog("file-repo start ...."));
+        String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
+//        String fileRepoName = "NewTextdocument";
+        String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
+        String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
+//        String fileRepoId = "687F55D0-5B17-EC11-BE6E-000C298D317C";
+        if(StringUtil.isEmpty(fileRepoId)){
+            log.debug(StringUtil.changeForLog("file-repo id is empty"));
+            return;
+        }
+        byte[] fileData =fileRepoClient.getFileFormDataBase(fileRepoId).getEntity();
+        response.addHeader("Content-Disposition", "attachment;filename=\"" + fileRepoName+"\"");
+        response.addHeader("Content-Length", "" + fileData.length);
+        response.setContentType("application/x-octet-stream");
+        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+        ops.write(fileData);
+        ops.close();
+        ops.flush();
+        log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 }

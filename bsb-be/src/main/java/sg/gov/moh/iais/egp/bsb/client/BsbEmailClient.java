@@ -24,6 +24,6 @@ public interface BsbEmailClient {
     @GetMapping(path = "/fac_admin/{facId}")
     ResponseDto<List<FacilityAdmin>> queryEmailByFacId(@PathVariable("facId") String facId);
 
-    @GetMapping(path = "/fac_admin/{appNo}")
+    @GetMapping(path = "/fac_admin/app/{appNo}")
     ResponseDto<List<FacilityAdmin>> queryFacilityAdminByAppNo(@PathVariable("appNo") String appNo );
 }

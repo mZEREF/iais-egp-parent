@@ -12,12 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
+import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
@@ -26,12 +28,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.STATUS_REVOCATION_APPROVAL_USER;
+import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.*;
 
 /**
  * @author Zhu Tangtang
@@ -55,8 +54,11 @@ public class AORevocationDelegator {
     @Autowired
     private ProcessClient processClient;
 
+//    @Autowired
+//    private SendNotificationHelper sendNotificationHelper;
+
     @Autowired
-    private SendNotificationHelper sendNotificationHelper;
+    private BsbNotificationHelper bsbNotificationHelper;
 
     /**
      * StartStep: startStep
@@ -225,14 +227,23 @@ public class AORevocationDelegator {
         String date=dateFormat.format(new Date());
         String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
 
-        Notification notification = new Notification();
-        notification.setStatus(STATUS_REVOCATION_APPROVAL_USER);
-        notification.setApplicationNo(aoDecisionDto.getApplication().getApplicationNo());
-        notification.setDate(date);
-        notification.setReason(aoDecisionDto.getMisc().getReasonContent());
-        notification.setFacilityName(aoDecisionDto.getApplication().getFacility().getFacilityName());
-        notification.setFacilityAddress(address);
-        sendNotificationHelper.sendNotification(notification);
+        BsbEmailParam bsbEmailParam = new BsbEmailParam();
+        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
+        bsbEmailParam.setRefId(aoDecisionDto.getApplication().getApplicationNo());
+        bsbEmailParam.setRefIdType("appNo");
+        bsbEmailParam.setQueryCode("1");
+        bsbEmailParam.setReqRefNum("1");
+        Map map = new HashMap();
+        map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
+        map.put("FacilityAddress",address);
+        map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
+        map.put("Date",date);
+        map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
+        Map subMap = new HashMap();
+        subMap.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
+        bsbEmailParam.setMsgSubject(subMap);
+        bsbEmailParam.setMsgContent(map);
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**

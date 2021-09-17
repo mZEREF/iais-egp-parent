@@ -32,5 +32,6 @@ public class FacilityDoc extends BaseEntity {
     private Integer fileSn;
     private String submitAtStr;
     private Boolean isUpload;
-    private String appDocType;
+    private String docType;
+    private String url;
 }

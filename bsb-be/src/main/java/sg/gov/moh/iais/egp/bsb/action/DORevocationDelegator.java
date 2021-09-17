@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -13,22 +14,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.MSG_TEMPLATE_REVOCATION_AO_APPROVED;
 import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.STATUS_REVOCATION_APPROVAL_AO;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 
@@ -42,8 +44,11 @@ public class DORevocationDelegator {
     @Autowired
     private RevocationClient revocationClient;
 
+//    @Autowired
+//    private SendNotificationHelper sendNotificationHelper;
+
     @Autowired
-    private SendNotificationHelper sendNotificationHelper;
+    private BsbNotificationHelper bsbNotificationHelper;
 
     /**
      * StartStep: startStep
@@ -130,25 +135,34 @@ public class DORevocationDelegator {
         revocationClient.saveHistory(historyDto);
 
         List<Application> list = (List<Application>) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL);
-        Notification notification = new Notification();
+        BsbEmailParam bsbEmailParam = new BsbEmailParam();
         for (Application application : list) {
-            notification.setApplicationNo(application.getApplicationNo());
-            notification.setStatus(STATUS_REVOCATION_APPROVAL_AO);
-            notification.setApprovalNo("Approval001");
+            bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
+            bsbEmailParam.setRefId(application.getFacility().getId());
+            bsbEmailParam.setRefIdType("facId");
+            bsbEmailParam.setQueryCode("1");
+            bsbEmailParam.setReqRefNum("1");
+            Map map = new HashMap();
+            map.put("applicationNo", application.getApplicationNo());
+            map.put("ApprovalNo", "Approval001");
             if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS)
                     ||application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP)
                     ||application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE)){
-                notification.setApprovalType(application.getFacility().getApprovalType());
+                map.put("Type", application.getFacility().getApprovalType());
             }
             if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-                notification.setFacilityType(application.getFacility().getFacilityType());
+                map.put("Type", application.getFacility().getFacilityType());
             }
             if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-                notification.setFacilityCertifier(MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
+                map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
             }
-            notification.setOfficer(loginContext.getUserName());
+            map.put("officer", loginContext.getUserName());
+            Map subMap = new HashMap();
+            subMap.put("applicationNo", application.getApplicationNo());
+            bsbEmailParam.setMsgSubject(subMap);
+            bsbEmailParam.setMsgContent(map);
         }
-        sendNotificationHelper.sendNotification(notification);
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**
