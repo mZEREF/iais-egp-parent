@@ -266,15 +266,17 @@ public class HcsaFileAjaxController {
                     };
                     HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
                     multipartRequest.add("selectedFile", fileEnt);
-                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
-                    headers.add("fileName", toFile.getName());
+                    HttpHeaders jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
+                    multipartRequest.add("fileName", jsonPart);
                     RestTemplate restTemplate = new RestTemplate();
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
                 } catch (Throwable e) {
                     log.error(e.getMessage(), e);
                 }
             }
         }
-
     }
 }
