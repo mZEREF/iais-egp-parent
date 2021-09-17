@@ -853,7 +853,7 @@ public class HcsaChklConfigDelegator {
         }
 
         try {
-            File file = FileUtils.multipartFileToFile(mulReqFile);
+            File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
             List<String> ids = FileUtils.transformToList(file, 1, excelHiddenValueIndex);
             String prevId = ids.get(0);
             String nextId = ids.get(1);
@@ -991,7 +991,7 @@ public class HcsaChklConfigDelegator {
         }
 
         try {
-            File file = FileUtils.multipartFileToFile(mulReqFile);
+            File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
             List<ChecklistConfigExcel> confItemExcelTpl = FileUtils.transformToJavaBean(file, ChecklistConfigExcel.class);
             List<String> configInfo = FileUtils.transformToList(file, 1, excelConfigValueIndex);
             FileUtils.deleteTempFile(file);
