@@ -75,6 +75,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -1099,6 +1100,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
     private void  moveFile(File file){
+        if (!file.exists()) {
+            List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+
+        }
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
         File outFile = MiscUtil.generateFile(sharedPath+File.separator+"move", name);

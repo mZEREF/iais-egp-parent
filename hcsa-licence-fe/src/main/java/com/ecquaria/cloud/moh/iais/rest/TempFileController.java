@@ -35,8 +35,11 @@ public class TempFileController {
     public ResponseEntity<String> saveFileToFolder(
             @RequestPart("selectedFile") MultipartFile selectedFile,
             @ApiParam(name = "fileName", required = true)
-            @RequestParam("fileName") String fileName) {
-        File file = MiscUtil.generateFileInTempFolder(fileName);
+            @RequestParam("fileName") String fileName,
+            @ApiParam(name = "folderName", required = true)
+            @RequestParam("folderName") String folderName) {
+        File folder = MiscUtil.generateFolderInTempFolder(folderName);
+        File file = MiscUtil.generateFile(folder, fileName);
         try (OutputStream fos = Files.newOutputStream(file.toPath())) {
             log.info(StringUtil.changeForLog("The file pathName ==> " + file.getCanonicalPath()));
             fos.write(selectedFile.getBytes());
