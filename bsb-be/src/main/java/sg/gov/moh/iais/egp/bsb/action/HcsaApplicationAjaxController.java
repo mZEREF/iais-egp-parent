@@ -82,6 +82,7 @@ public class HcsaApplicationAjaxController {
             //type
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
             String fileType = fileSplit[fileSplit.length - 1];
+            facilityDoc.setDocType(fileType);
             doc.setDocType(fileType);
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
@@ -160,7 +161,7 @@ public class HcsaApplicationAjaxController {
             ParamUtil.setSessionAttr(request,"auditDocDto", auditDocDto);
             //call back upload file succeeded
             if( !StringUtil.isEmpty( facilityDoc.getId())){
-//                facilityDoc.setMaskId(MaskUtil.maskValue("interalFileId", facilityDoc.getId()));
+                doc.setMaskId(MaskUtil.maskValue("fileRepoId", doc.getFileRepoId()));
             }
             String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(doc);
             data = appIntranetDocDtoJsonStr;
@@ -174,13 +175,14 @@ public class HcsaApplicationAjaxController {
     @ResponseBody
     public Map<String, Object> deleteInternalFile(HttpServletRequest request){
         String guid = request.getParameter("appDocId");
+        String fileId = MaskUtil.unMaskValue("fileRepoId", guid);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         AuditDocDto auditDocDto = (AuditDocDto)ParamUtil.getSessionAttr(request,"auditDocDto");
         if(auditDocDto != null && auditDocDto.getFacilityDocs() != null){
             List<FacilityDoc> facilityDocs = auditDocDto.getFacilityDocs();
             FacilityDoc facilityDoc  = null;
             for(FacilityDoc doc : facilityDocs){
-                if(doc.getFileRepoId().equalsIgnoreCase(guid)){
+                if(doc.getFileRepoId().equalsIgnoreCase(fileId)){
                     docClient.deleteByFileRepoId( doc.getFileRepoId());
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(doc.getFileRepoId());
@@ -232,10 +234,8 @@ public class HcsaApplicationAjaxController {
     public @ResponseBody void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.debug(StringUtil.changeForLog("file-repo start ...."));
         String fileRepoName = ParamUtil.getRequestString(request, "fileRepoName");
-//        String fileRepoName = "NewTextdocument";
         String maskFileRepoIdName = ParamUtil.getRequestString(request, "filerepo");
         String fileRepoId = ParamUtil.getMaskedString(request, maskFileRepoIdName);
-//        String fileRepoId = "687F55D0-5B17-EC11-BE6E-000C298D317C";
         if(StringUtil.isEmpty(fileRepoId)){
             log.debug(StringUtil.changeForLog("file-repo id is empty"));
             return;

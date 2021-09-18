@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/revocation/verifyDetails.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/revocation/aoProcessRevocation.jsp"%>

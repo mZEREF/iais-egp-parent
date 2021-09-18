@@ -27,11 +27,13 @@ public class FacilityDoc extends BaseEntity {
 
     private String submitBy;
 
+    private String docType;
+
     private String submitByName;
     private AuditTrailDto auditTrailDto;
     private Integer fileSn;
     private String submitAtStr;
     private Boolean isUpload;
-    private String docType;
     private String url;
+    private String maskId;
 }

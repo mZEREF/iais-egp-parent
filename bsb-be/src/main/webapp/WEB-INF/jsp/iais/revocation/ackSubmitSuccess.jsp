@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div align="left">
-                            <span><a href="#" id="backToSubmit1"><em class="fa fa-angle-left"></em> Back To Submit</a></span>
+                            <span><a href="#" id="backFromAckPage"><em class="fa fa-angle-left"></em> Back To Submit</a></span>
                         </div>
                     </div>
                 </div>

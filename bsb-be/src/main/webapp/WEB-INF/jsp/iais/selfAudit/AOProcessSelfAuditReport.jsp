@@ -64,7 +64,7 @@
                                                 <%@include file="../auditDt/facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="../doDocument/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
@@ -179,3 +179,4 @@
     </form>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="../doDocument/uploadFile.jsp" %>

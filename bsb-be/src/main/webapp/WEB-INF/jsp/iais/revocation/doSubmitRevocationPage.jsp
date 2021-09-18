@@ -66,7 +66,7 @@
                                                 <%@include file="revocationDetailInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="../doDocument/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
@@ -91,7 +91,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="ReasonId"
+                                                                                        <textarea id="reason"
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
@@ -113,7 +113,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea id="remarksId"
+                                                                                        <textarea id="remark"
                                                                                                   name="DORemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
@@ -151,4 +151,4 @@
         </div>
     </form>
 </div>
-<%@include file="uploadFile.jsp" %>
+<%@include file="../doDocument/uploadFile.jsp" %>

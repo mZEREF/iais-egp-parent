@@ -61,4 +61,7 @@ public final class RevocationConstants {
     public static final String PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE = "PROTYPE004";
     public static final String PARAM_PROCESS_TYPE_FACILITY_REGISTRATION = "PROTYPE001";
     public static final String PARAM_PROCESS_TYPE_AFC_REGISTRATION = "PROTYPE005";
+
+    public static final String MODULE_REVOCATION = "Revocation";
+    public static final String FUNCTION_REVOCATION = "Revocation";
 }

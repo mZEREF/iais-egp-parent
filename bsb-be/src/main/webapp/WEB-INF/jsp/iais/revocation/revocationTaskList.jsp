@@ -24,19 +24,6 @@
                 <div class="intranet-content" id="clearSelect">
                     <iais:body>
                         <iais:section title="" id="demoList">
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label">Role</label>
-                                    <div class="col-xs-10 col-sm-7 col-md-6">
-                                            <%--<iais:select name="beDashRoleId" onchange="chooseCurRole()" options="beDashRoleIds"
-                                                         cssClass="roleIds" value="${dashRoleCheckDto.checkCurRole}" needSort="true"></iais:select>--%>
-                                        <select id="roleSelect">
-                                            <option>Please Select</option>
-                                            <option>Revocation</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <br>
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
@@ -159,7 +146,16 @@
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <tr style="display: table-row;">
                                         <td><c:out value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"/></td>
-                                        <td><a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a></td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${item.appType eq 'BSBAPTY006'}">
+                                                    <c:out value="${item.applicationNo}"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>
                                         <td><c:out value="${item.facility.facilityName}/${item.facility.facilityAddress}"/></td>
                                         <td><iais:code code="${item.facility.facilityType}"></iais:code></td>

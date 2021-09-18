@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/revocation/applicationViewPage.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/revocation/doSubmitRevocationPage.jsp"%>

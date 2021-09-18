@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div align="left">
-                            <span><a id="backToProcess" href="#"><em class="fa fa-angle-left"></em> Back To Process</a></span>
+                            <span><a id="backFromAckPage" href="#"><em class="fa fa-angle-left"></em> Back To Process</a></span>
                         </div>
                     </div>
                 </div>

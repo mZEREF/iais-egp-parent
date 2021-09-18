@@ -58,7 +58,7 @@
                                                 <%@include file="revocationDetailInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="tabDocuments.jsp" %>
+                                                <%@include file="../doDocument/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
@@ -199,4 +199,4 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-<%@include file="uploadFile.jsp" %>
+<%@include file="../doDocument/uploadFile.jsp" %>

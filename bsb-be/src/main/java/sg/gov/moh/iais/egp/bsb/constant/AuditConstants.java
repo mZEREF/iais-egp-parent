@@ -22,4 +22,7 @@ public final class AuditConstants {
     public static final String PARAM_FACILITY_NAME = "facilityName";
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
     public static final String PARAM_FACILITY_TYPE = "facilityType";
+
+    public static final String MODULE_AUDIT = "Audit";
+    public static final String FUNCTION_AUDIT = "Audit";
 }

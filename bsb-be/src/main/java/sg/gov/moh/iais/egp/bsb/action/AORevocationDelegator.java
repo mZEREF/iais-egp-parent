@@ -2,20 +2,19 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
-import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
@@ -47,6 +46,7 @@ public class AORevocationDelegator {
 
     private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+    private static final String AUDIT_DOC_DTO = "auditDocDto";
 
     @Autowired
     private RevocationClient revocationClient;
@@ -59,6 +59,8 @@ public class AORevocationDelegator {
 
     @Autowired
     private BsbNotificationHelper bsbNotificationHelper;
+    @Autowired
+    private DocClient docClient;
 
     /**
      * StartStep: startStep
@@ -67,7 +69,7 @@ public class AORevocationDelegator {
      * @throws IllegalAccessException
      */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG, AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
+        AuditTrailHelper.auditFunction(RevocationConstants.MODULE_REVOCATION, RevocationConstants.FUNCTION_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, null);
@@ -190,6 +192,7 @@ public class AORevocationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         List<Application> list = new LinkedList<>();
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
 
         Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
         List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
@@ -204,6 +207,19 @@ public class AORevocationDelegator {
         //get history list
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
         ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
+
+        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
+        List<FacilityDoc> docList = new ArrayList<>();
+        for (FacilityDoc facilityDoc : facilityDocList) {
+            //这里拿不到，只能拿到当前用户名
+//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+//            facilityDoc.setSubmitByName(submitByName);
+            docList.add(facilityDoc);
+        }
+        AuditDocDto auditDocDto = new AuditDocDto();
+        auditDocDto.setFacilityDocs(docList);
+
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
     }
 
     /**

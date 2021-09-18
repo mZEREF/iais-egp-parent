@@ -109,9 +109,9 @@
                     if(data.fileSn == 0){
                         removeNoData();
                     }
-                    var tr = "<tr>"+"<input type='hidden' name='filerepo' value='data.fileRepoId'>"+"<td width=\"20%\"><p>" +data.name+"</p></td>" +"<td  width=\"20%\"><p>"+  data.url +data.name+"."+data.docType+"</p></td>"+
+                    var tr = "<tr>"+"<td width=\"20%\"><p>" +data.name+"</p></td>" +"<td  width=\"20%\"><p>"+  data.url +data.name+"."+data.docType+"</p></td>"+
                         "<td width=\"15%\"><p>" +data.size+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"25%\"><p>" +data.submitAtStr+"</p></td>"
-                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.fileRepoId+"');\">Delete</button>" +"</td>"+"</tr>";
+                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
                     doAddTr(tr);
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){

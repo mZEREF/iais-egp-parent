@@ -41,6 +41,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERRO
 @Slf4j
 public class DORevocationDelegator {
     private static final String FACILITY = "facility";
+    private static final String AUDIT_DOC_DTO = "auditDocDto";
     @Autowired
     private RevocationClient revocationClient;
 
@@ -73,6 +74,7 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,FACILITY,null);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
+        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
 
         List<Application> list=new LinkedList<>();
         String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
