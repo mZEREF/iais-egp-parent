@@ -32,8 +32,9 @@
           <td><c:out value="${appVehicleNo.displayName}"/></td>
           <td>
             <input class="form-check-input vehicle-approve" type="radio" name="vehicleNoRadio${status.index}" value = "approve" aria-invalid="false" <c:if test="${'VEST002' eq appVehicleNo.status}">checked="checked"</c:if>/>
+            &nbsp;&nbsp;&nbsp;
             <label class="form-check-label"><span class="check-circle"></span>Approve</label>
-            &nbsp;
+            &nbsp;&nbsp;&nbsp;
             <input class="form-check-input vehicle-reject" type="radio" name="vehicleNoRadio${status.index}" value = "reject" aria-invalid="false" <c:if test="${'VEST003' eq appVehicleNo.status}">checked="checked"</c:if>/>
             <label class="form-check-label"><span class="check-circle"></span>Reject</label>
             <br><span class="error-msg" name="iaisErrorMsg" id="error_vehicleNoRadioError${status.index}"></span>

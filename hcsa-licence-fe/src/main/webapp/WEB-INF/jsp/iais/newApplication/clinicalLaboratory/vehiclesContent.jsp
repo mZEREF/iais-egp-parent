@@ -74,7 +74,7 @@
                             <label  class="control-label control-set-font control-font-label">Vehicle Number</label>
                         </div>
                         <div class="col-md-7 col-xs-12">
-                            <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}" value="${vehicleDto.dummyVehNum ? '' : vehicleDto.vehicleName}"></iais:input>
+                            <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}" value="${vehicleDto.displayName}"></iais:input>
                         </div>
                     </div>
                 </div>

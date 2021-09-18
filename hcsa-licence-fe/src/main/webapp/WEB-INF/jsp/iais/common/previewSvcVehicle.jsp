@@ -17,7 +17,7 @@
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Vehicle Number</p>
                                 </td>
                                 <td>
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${vehicleDto.dummyVehNum ? '' : vehicleDto.vehicleName}"/></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><iais:code code="${vehicleDto.displayName}"/></p>
                                 </td>
                             </tr>
                             <tr>

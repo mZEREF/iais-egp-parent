@@ -31,7 +31,7 @@
                             </td>
                             <td >
                                 <div class="col-xs-6">
-                                    <c:set var="displayVehicleName" value="${appSvcVehicleDto.dummyVehNum ? '' : appSvcVehicleDto.vehicleName}" />
+                                    <c:set var="displayVehicleName" value="${appSvcVehicleDto.displayName}" />
                                     <span class="newVal " attr="${displayVehicleName}">
                                         <c:out value="${displayVehicleName}"></c:out>
                                     </span>
