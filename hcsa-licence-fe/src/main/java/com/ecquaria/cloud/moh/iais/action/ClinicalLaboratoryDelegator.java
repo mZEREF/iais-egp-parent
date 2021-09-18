@@ -2230,15 +2230,18 @@ public class ClinicalLaboratoryDelegator {
                         boolean needLoadName =
                                 !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         String name = professionalResponseDto.getName();
-                        if (needLoadName && StringUtil.isEmpty(name)) {
-                            log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
-                            map.put("profRegNo"+i,"GENERAL_ERR0042");
-                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
+                        log.info(StringUtil.changeForLog("Need Load Name: " + needLoadName + "; PRS Name: " + name));
+                        if (StringUtil.isEmpty(name)) {
+                            if (needLoadName) {
+                                log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
+                                map.put("profRegNo"+i,"GENERAL_ERR0042");
+                                setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
+                            }
                             continue;
-                        }
-                        if (needLoadName){
+                        } else if (needLoadName) {
                             appSvcPsnDto.setName(name);
                         }
+
                         //retrieve data from prs server
                         List<String> specialtyList = professionalResponseDto.getSpecialty();
                         if(!IaisCommonUtils.isEmpty(specialtyList)){
@@ -2401,24 +2404,25 @@ public class ClinicalLaboratoryDelegator {
         if (requestInformationConfig != null) {
             isRfi = true;
         }
+        List<AppSvcBusinessDto> appSvcBusinessDtos = currSvcInfoDto.getAppSvcBusinessDtoList();
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             //get data from page
-            List<AppSvcBusinessDto> appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-            if("next".equals(crud_action_type)){
-                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, errorMap);
-            }
-            if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
-            }
+            appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         }
-
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if("next".equals(crud_action_type)){
+            NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
+                    appSubmissionDto.getLicenceId(), errorMap);
+        }
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
+        }
         log.debug(StringUtil.changeForLog("do Business end ..."));
     }
 

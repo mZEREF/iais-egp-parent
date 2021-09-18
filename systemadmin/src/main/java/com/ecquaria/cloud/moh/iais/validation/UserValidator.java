@@ -90,52 +90,66 @@ public class UserValidator implements CustomizeValidator {
                 map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
-        String isNeedValidateField = (String) ParamUtil.getRequestAttr(request, "isNeedValidateField");
-        if (IaisEGPConstant.YES.equals(isNeedValidateField)) {
-            if (dto.getIdentityNo() != null) {
-                String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
-                if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
-                    List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(dto.getIdentityNo(), idType);
-                    String identityNoErr=MessageUtil.getMessageDesc("USER_ERR015");
-                    if (dto.getId() == null) { // create
-                        FeUserDto feUserDto;
-                        if(StringUtil.isEmpty(dto.getUenNo())) {
-                            //sing pass
-                            feUserDto = findSingPassAccount(userList);
-                        } else {
-                            //crop pass
-                            feUserDto = findCropPassAccount(userList, dto.getUenNo());
-                        }
-                        if (feUserDto != null) {
-                            map.put("identityNo", identityNoErr);
-                        }
-                    } else { // edit
-                        Optional<FeUserDto> user = userList.stream()
-                                .filter(feUserDto -> !AppConsts.COMMON_STATUS_DELETED.equals(feUserDto.getStatus())
-                                        && !dto.getId().equals(feUserDto.getId()))
-                                .findAny();
-                        if (user.isPresent()) {
-                            map.put("identityNo", identityNoErr);
-                        }
+        String idNo = dto.getIdentityNo();
+        String idType = dto.getIdType();
+        if (!StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(idType)) {
+            String profile = (String) ParamUtil.getRequestAttr(request, "UserValidator_profile");
+            List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(idNo, idType);
+            String identityNoErr = MessageUtil.getMessageDesc("USER_ERR015");
+            if ("edit".equals(profile)) {
+                if (dto.getId() == null) {
+                    map.put("identityNo", MessageUtil.getMessageDesc("GENERAL_ERR0049"));
+                } else {
+                    FeUserDto feUserDto = findAccount(userList, dto.getUenNo(), dto.getId());
+                    if (feUserDto != null) {
+                        map.put("identityNo", identityNoErr);
                     }
                 }
-
+            } else if ("create".equals(profile)) {
+                FeUserDto feUserDto;
+                if(StringUtil.isEmpty(dto.getUenNo())) {
+                    //sing pass
+                    feUserDto = findSingPassAccount(userList);
+                } else {
+                    //crop pass
+                    feUserDto = findCropPassAccount(userList, dto.getUenNo());
+                }
+                if (feUserDto != null) {
+                    map.put("identityNo", identityNoErr);
+                }
             }
         }
         return map;
     }
 
+    private FeUserDto findAccount(List<FeUserDto> userAccounts, String uen, String id) {
+        FeUserDto feUserDto = null;
+        if (userAccounts == null || StringUtil.isEmpty(id)) {
+            return feUserDto;
+        }
+        for (FeUserDto userDto : userAccounts) {
+            if (!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())
+                    && (StringUtil.isEmpty(uen) && StringUtil.isEmpty(userDto.getUenNo())
+                        || !StringUtil.isEmpty(uen) && uen.equals(userDto.getUenNo()))
+                    && !id.equals(userDto.getId())) {
+                feUserDto = userDto;
+                break;
+            }
+        }
+        return feUserDto;
+    }
+
     private FeUserDto findCropPassAccount(List<FeUserDto> userAccounts, String uen) {
         FeUserDto feUserDto = null;
+        if (userAccounts == null) {
+            return feUserDto;
+        }
         for(FeUserDto userDto : userAccounts) {
             if(userDto != null) {
                 if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())) {
-                    String orgId = userDto.getOrgId();
-                    OrganizationDto organizationDto = organizationClient.getOrganizationById(orgId).getEntity();
-                    if(organizationDto != null) {
-                        if(uen.equals(organizationDto.getUenNo())) {
-                            feUserDto = userDto;
-                        }
+                    if(uen.equals(userDto.getUenNo())) {
+                        feUserDto = userDto;
+                        break;
                     }
                 }
             }
@@ -145,16 +159,14 @@ public class UserValidator implements CustomizeValidator {
 
     private FeUserDto findSingPassAccount(List<FeUserDto> userAccounts) {
         FeUserDto feUserDto = null;
+        if (userAccounts == null) {
+            return feUserDto;
+        }
         for(FeUserDto userDto : userAccounts) {
             if(userDto != null) {
-                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())) {
-                    String orgId = userDto.getOrgId();
-                    OrganizationDto organizationDto = organizationClient.getOrganizationById(orgId).getEntity();
-                    if(organizationDto != null) {
-                        if(StringUtil.isEmpty(organizationDto.getUenNo())) {
-                            feUserDto = userDto;
-                        }
-                    }
+                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus()) && StringUtil.isEmpty(userDto.getUenNo())) {
+                    feUserDto = userDto;
+                    break;
                 }
             }
         }

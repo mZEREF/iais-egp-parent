@@ -484,4 +484,12 @@ public class LicenceInFallback implements LicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

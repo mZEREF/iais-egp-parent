@@ -790,8 +790,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return false;
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-
-        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        String propertyName = "save";
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())){
+            propertyName = "soloSave";
+        }
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, propertyName);
         if (result != null) {
             map = result.retrieveAll();
         }
@@ -2431,7 +2434,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 // business name
                 List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
                 Map<String,String> businessNameErrorMap = IaisCommonUtils.genNewHashMap();
-                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, businessNameErrorMap);
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(),
+                        businessNameErrorMap);
                 if (!businessNameErrorMap.isEmpty()) {
                     errorMap.putAll(businessNameErrorMap);
                     errorMap.put("Business Name", "error");

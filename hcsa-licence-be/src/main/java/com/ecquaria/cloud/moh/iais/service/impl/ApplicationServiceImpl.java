@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
@@ -65,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -122,6 +124,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private TaskOrganizationClient taskOrganizationClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
@@ -1204,6 +1209,49 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         return applicationViewDto;
     }
+
+    @Override
+    public BroadcastApplicationDto setRejectOtherAppGrps(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(applicationGroupDto != null) {
+            String appGrpId = applicationGroupDto.getId();
+            AppGroupMiscDto appGroupMiscDto = applicationClient.getAppGrpMiscByAppGrpIdTypeStatus(appGrpId, ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            if(appGroupMiscDto != null) {
+                //set misc status
+                appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                List<AppGroupMiscDto> appGroupMiscDtos = IaisCommonUtils.genNewArrayList();
+                appGroupMiscDtos.add(appGroupMiscDto);
+                broadcastApplicationDto.setAppGroupMiscDtos(appGroupMiscDtos);
+                //set other group reject
+                String appGroupId = appGroupMiscDto.getMiscValue();
+                ApplicationGroupDto appGrpDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
+                if(appGrpDto != null) {
+                    appGrpDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
+                    List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                    applicationGroupDtos.add(appGrpDto);
+                    broadcastApplicationDto.setAppMiscGroupDtos(applicationGroupDtos);
+                }
+            }
+        }
+        return broadcastApplicationDto;
+    }
+
+    @Override
+    public BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(applicationGroupDto != null) {
+            String appGrpId = applicationGroupDto.getId();
+            AppGroupMiscDto appGroupMiscDto = applicationClient.getAppGrpMiscByAppGrpIdTypeStatus(appGrpId, ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            if(appGroupMiscDto != null) {
+                appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                //set
+                List<AppGroupMiscDto> appGroupMiscDtos = IaisCommonUtils.genNewArrayList();
+                appGroupMiscDtos.add(appGroupMiscDto);
+
+                broadcastApplicationDto.setAppGroupMiscDtos(appGroupMiscDtos);
+            }
+        }
+        return broadcastApplicationDto;
+    }
+
 
     private TaskDto completedTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);

@@ -272,7 +272,19 @@ public class NewApplicationDelegator {
             dealSessionUtil.initSession(bpc);
         }
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
-        /*    initOldSession(bpc);*/
+        // app type and licence id
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (appSubmissionDto != null && appSubmissionDto.getAppSvcRelatedInfoDtoList() != null) {
+            for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+                if (StringUtil.isEmpty(dto.getApplicationType())) {
+                    dto.setApplicationType(appSubmissionDto.getAppType());
+                }
+                if (StringUtil.isEmpty(dto.getLicenceId())) {
+                    dto.setLicenceId(appSubmissionDto.getLicenceId());
+                }
+            }
+        }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -1443,7 +1455,7 @@ public class NewApplicationDelegator {
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
         log.info(StringUtil.changeForLog("Payment result: " + result + "; reqRefNo: " + pmtRefNo
-                + "; Draft No.: " + appSubmissionDto.getDraftNo()));
+                + "; Draft No.: " + appSubmissionDto.getDraftNo()) + "; App Group No: " + appSubmissionDto.getAppGrpNo());
         if (!StringUtil.isEmpty(result)) {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
@@ -2605,18 +2617,20 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
-        // add the current dto to the group
-        if (isAutoRfc) {
-            autoSaveAppsubmission.add(appSubmissionDto);
-        } else {
-            notAutoSaveAppsubmission.add(appSubmissionDto);
-        }
-        // add the premises affected list to the group
-        if (!appSubmissionDtos.isEmpty()) {
-            if (appSubmissionDtos.get(0).isAutoRfc()) {
-                autoSaveAppsubmission.addAll(appSubmissionDtos);
+        if (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isPremisesEdit() || appEditSelectDto.isDocEdit() || appEditSelectDto.isServiceEdit()){
+            // add the current dto to the group
+            if (isAutoRfc) {
+                autoSaveAppsubmission.add(appSubmissionDto);
             } else {
-                notAutoSaveAppsubmission.addAll(appSubmissionDtos);
+                notAutoSaveAppsubmission.add(appSubmissionDto);
+            }
+            // add the premises affected list to the group
+            if (!appSubmissionDtos.isEmpty()) {
+                if (appSubmissionDtos.get(0).isAutoRfc()) {
+                    autoSaveAppsubmission.addAll(appSubmissionDtos);
+                } else {
+                    notAutoSaveAppsubmission.addAll(appSubmissionDtos);
+                }
             }
         }
         // check app submissions affected by sub licensee
@@ -2660,7 +2674,7 @@ public class NewApplicationDelegator {
         }
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
-            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR014"));
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR009"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
@@ -3096,6 +3110,12 @@ public class NewApplicationDelegator {
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
+                }else {
+                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                    appGrp.setId(appSubmissionDto1.getAppGrpId());
+                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                    appGrp.setPayMethod(payMethod);
+                    serviceConfigService.updatePaymentStatus(appGrp);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request,ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);

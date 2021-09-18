@@ -30,15 +30,23 @@
                         </div>
 
                         <iais:row>
-                            <iais:field value="UEN" width="12" required="true"/>
                             <c:choose>
                                 <c:when test="${'Create'.equals(feusertitle)}">
+                                    <iais:field value="UEN" width="12" required="true"/>
                                     <iais:value width="12">
                                         <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" />
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
+                                <c:when test="${empty inter_user_attr.uenNo}">
+                                    <iais:field value="UEN" width="12"/>
+                                    <iais:value width="12">
+                                        <p>-</p>
+                                        <input name="organizationId" id="organizationId" type="hidden" value="<iais:mask name="organizationId" value="${organizationId}"/>"/>
+                                    </iais:value>
+                                </c:when>
                                 <c:otherwise>
+                                    <iais:field value="UEN" width="12" required="true"/>
                                     <iais:value width="12">
                                         <p><c:out value="${inter_user_attr.uenNo}"></c:out></p>
                                         <input name="organizationId" id="organizationId" type="hidden" value="<iais:mask name="organizationId" value="${organizationId}"/>"/>
@@ -63,7 +71,7 @@
                                 <span class="error-msg" name="errorMsg" id="error_salutation"></span>
                             </iais:value>
                         </iais:row>
-                        <iais:row>
+                        <iais:row cssClass="solo">
                             <iais:field value="ID Type" width="12" required="true"/>
                             <iais:value width="12">
                                 <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
@@ -71,7 +79,7 @@
                                 <span class="error-msg" name="errorMsg" id="error_idType"></span>
                             </iais:value>
                         </iais:row>
-                        <iais:row>
+                        <iais:row cssClass="solo">
                             <iais:field value="ID No" width="12" required="true"/>
                             <iais:value width="12">
                                     <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
@@ -157,6 +165,12 @@
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>
 <script type="text/javascript">
+    $(document).ready(function(){
+        <c:if test="${'Create' != feusertitle && empty inter_user_attr.uenNo}">
+        disableContent('.solo');
+        </c:if>
+    });
+
     function save() {
         $("#action").val("save");
         var mainPoolForm = document.getElementById('mainForm');

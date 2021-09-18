@@ -165,19 +165,18 @@ public class FeUserManagement {
         CrudHelper.doPaging(searchParamGroup,bpc.request);
     }
 
-    public void edit(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr_is_corppass",null);
-        String userId = ParamUtil.getMaskedString(bpc.request,"userId");
+    public void edit(BaseProcessClass bpc) {
+        ParamUtil.setSessionAttr(bpc.request, "inter_user_attr_is_corppass", null);
+        String userId = ParamUtil.getMaskedString(bpc.request, "userId");
         FeUserDto feUserDto;
-
-        if(!StringUtil.isEmpty(userId)){
+        if (!StringUtil.isEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
-            ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
-        }else{
-            feUserDto = (FeUserDto)ParamUtil.getSessionAttr(bpc.request,"inter_user_attr");
+            ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
+        } else {
+            feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
         }
-        ParamUtil.setSessionAttr(bpc.request,"feusertitle", "Edit");
-        organizationSelection(bpc,feUserDto.getOrgId());
+        ParamUtil.setSessionAttr(bpc.request, "feusertitle", "Edit");
+        organizationSelection(bpc, feUserDto.getOrgId());
     }
 
     public void create(BaseProcessClass bpc){
@@ -208,9 +207,11 @@ public class FeUserManagement {
             active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String prevIdNumber = userAttr.getIdentityNo();
-            userAttr.setIdType(idType);
-            userAttr.setIdentityNo(idNo);
-            userAttr.setIdNumber(idNo);
+            if (!StringUtil.isEmpty(userAttr.getUenNo()) || "Create".equals(title)) {
+                userAttr.setIdType(idType);
+                userAttr.setIdentityNo(idNo);
+                userAttr.setIdNumber(idNo);
+            }
             userAttr.setDisplayName(name);
             userAttr.setSalutation(salutation);
             userAttr.setDesignation(designation);
@@ -229,7 +230,6 @@ public class FeUserManagement {
             orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             if("admin".equals(role)){
-                //TODO i don't know why this need two role
                 orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
                 orgUserRoleDtoList.add(orgUserRoleDtoAdmin);
@@ -244,7 +244,6 @@ public class FeUserManagement {
             OrgUserDto userDto = MiscUtil.transferEntityDto(userAttr, OrgUserDto.class);
             ValidationResult validationResult;
             ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",userAttr);
-            ParamUtil.setRequestAttr(bpc.request, "isNeedValidateField", IaisEGPConstant.YES);
             if ("Edit".equals(title)) {
                 validationResult = WebValidationHelper.validateProperty(userAttr, "edit");
                 if (StringUtil.isEmpty(userAttr.getId())) {
@@ -256,7 +255,6 @@ public class FeUserManagement {
                     }
                 }
             } else {
-                ParamUtil.setRequestAttr(bpc.request, "isNeedValidateField", IaisEGPConstant.YES);
                 String uenNo = ParamUtil.getString(bpc.request,"uenNo");
                 userAttr.setUenNo(uenNo);
                 validationResult = WebValidationHelper.validateProperty(userAttr, "create");

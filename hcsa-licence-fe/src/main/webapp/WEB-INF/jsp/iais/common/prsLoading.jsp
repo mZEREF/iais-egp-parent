@@ -57,6 +57,9 @@
                     if(needControlName){
                         inputReadonly($loadingContent.find('.field-name'));
                     }
+                    if(typeof callBackFuns.setEdit == 'function'){
+                        callBackFuns.setEdit($loadingContent, 'disabled', false, needControlName);
+                    }
                     return;
                 }
                 if(!isEmpty(callBackFuns)){

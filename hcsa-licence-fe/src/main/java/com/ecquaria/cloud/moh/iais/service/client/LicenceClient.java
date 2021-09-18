@@ -200,12 +200,13 @@ public interface LicenceClient {
     @GetMapping(value = "/lic-common/get-sub-licensees-by-id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SubLicenseeDto> getSubLicenseesById(@PathVariable("id") String id);
 
-    @GetMapping(value = "/hcsa-licence-rfc/sub-licensee/licence-submission", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/hcsa-licence-rfc/sub-licensee/licence-submission", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSubmissionDto>> getAppSubmissionDtosBySubLicensee(@RequestBody SubLicenseeDto sublicenseeDto);
 
     @PostMapping(value = "/hcsa-licence/lic-giro-acct-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<GiroAccountInfoQueryDto>> searchGiroInfoByParam(@RequestBody SearchParam searchParam);
 
-
+    @GetMapping(value = "/hcsa-licence-rfc/premises-for-business-name", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(@RequestParam("licenceId") String licenceId);
 }

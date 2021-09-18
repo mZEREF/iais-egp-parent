@@ -324,7 +324,7 @@ public class WebValidationHelper {
             CustomizeValidator cv = (CustomizeValidator) obj;
             HttpServletRequest request = MiscUtil.getCurrentRequest();
             if (request != null) {
-                request.setAttribute("profile", property);
+                request.setAttribute(valCls.getSimpleName() + "_profile", property);
                 Map<String, String> map = cv.validate(request);
                 if(map != null && !map.isEmpty()) {
                     errorMap.putAll(map);
