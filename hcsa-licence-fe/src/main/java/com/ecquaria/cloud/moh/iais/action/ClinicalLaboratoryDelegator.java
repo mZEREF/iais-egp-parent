@@ -2771,17 +2771,6 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
-        /*if(personnelTypeSel.size() > 0){
-            log.debug("current service code is {},personnel type size is {}", svcCode, personnelTypeSel.size());
-            boolean eachTypeHadOne = true;
-            if(personCountMap.size() != personnelTypeSel.size()){
-                eachTypeHadOne = false;
-            }
-
-            if(!eachTypeHadOne){
-                errorMap.put("psnMandatory",MessageUtil.getMessageDesc("NEW_ERR0030"));
-            }
-        }*/
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
