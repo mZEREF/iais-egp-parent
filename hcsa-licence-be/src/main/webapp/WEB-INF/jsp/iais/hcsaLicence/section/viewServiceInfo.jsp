@@ -639,7 +639,7 @@
             <c:set value="1" var="dpoIndex"></c:set>
             <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
               <c:if test="${po.psnType =='PO'}">
-                <p><strong class="col-xs-6">Principal Officer<c:if test="${PO_SIZE>1}">${poIndex}</c:if>:</strong>
+                <p><strong class="col-xs-6">Principal Officer <c:if test="${PO_SIZE>1}">${poIndex}</c:if>:</strong>
                 </p>
                 <c:set var="poIndex" value="${poIndex+1}"></c:set>
               </c:if>
