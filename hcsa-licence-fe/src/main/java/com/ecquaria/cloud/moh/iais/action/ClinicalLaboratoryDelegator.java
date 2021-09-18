@@ -2404,24 +2404,25 @@ public class ClinicalLaboratoryDelegator {
         if (requestInformationConfig != null) {
             isRfi = true;
         }
+        List<AppSvcBusinessDto> appSvcBusinessDtos = currSvcInfoDto.getAppSvcBusinessDtoList();
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         if (isGetDataFromPage) {
             //get data from page
-            List<AppSvcBusinessDto> appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
-            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-            String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
-            if("next".equals(crud_action_type)){
-                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, errorMap);
-            }
-            if(!errorMap.isEmpty()){
-                ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
-            }
+            appSvcBusinessDtos = genAppSvcBusinessDtoList(bpc.request, appSubmissionDto.getAppGrpPremisesDtoList(), appSubmissionDto.getAppType());
             currSvcInfoDto.setAppSvcBusinessDtoList(appSvcBusinessDtos);
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto);
         }
-
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
+        if("next".equals(crud_action_type)){
+            NewApplicationHelper.doValidateBusiness(appSvcBusinessDtos, appSubmissionDto.getAppType(),
+                    appSubmissionDto.getLicenceId(), errorMap);
+        }
+        if(!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_BUSINESS_NAME);
+        }
         log.debug(StringUtil.changeForLog("do Business end ..."));
     }
 

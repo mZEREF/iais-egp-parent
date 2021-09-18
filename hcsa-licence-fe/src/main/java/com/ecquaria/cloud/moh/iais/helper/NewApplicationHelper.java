@@ -77,6 +77,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -3900,18 +3901,31 @@ public class NewApplicationHelper {
         }
     }
 
-    public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, Map<String, String> errorMap) {
+    public static void doValidateBusiness(List<AppSvcBusinessDto> appSvcBusinessDtos, String appType,
+            String licenceId, Map<String, String> errorMap) {
         if (appSvcBusinessDtos == null || appSvcBusinessDtos.isEmpty()) {
             return;
         }
-        for(int i = 0; i< appSvcBusinessDtos.size(); i++){
+        for (int i = 0; i < appSvcBusinessDtos.size(); i++) {
             String businessName = appSvcBusinessDtos.get(i).getBusinessName();
-            if(StringUtil.isEmpty(businessName)){
-                errorMap.put("businessName"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
-            }else {
-                if(businessName.length()>100){
-                    String general_err0041=NewApplicationHelper.repLength("businessName","100");
-                    errorMap.put("businessName"+i, general_err0041);
+            if (StringUtil.isEmpty(businessName)) {
+                errorMap.put("businessName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "businessName", "field"));
+            } else {
+                if (businessName.length() > 100) {
+                    String general_err0041 = NewApplicationHelper.repLength("businessName", "100");
+                    errorMap.put("businessName" + i, general_err0041);
+                }
+                int hciNameChanged = 0;
+                if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                    hciNameChanged = checkNameChanged(null, businessName, licenceId);
+                }
+                if (3 == hciNameChanged || 4 == hciNameChanged) {
+                    //no need validate hci name have keyword (is migrated and hci name never changed)
+                } else {
+                    Map<Integer, String> map = checkBlacklist(businessName);
+                    if (!map.isEmpty()) {
+                        errorMap.put("businessName" + i, MessageUtil.getMessageDesc("GENERAL_ERR0016"));
+                    }
                 }
             }
         }
@@ -4270,4 +4284,65 @@ public class NewApplicationHelper {
         });
         autoSaveList.addAll(notInAuto);
     }
+
+    public static Map<Integer, String> checkBlacklist(String name) {
+        return checkBlacklist(name, null);
+    }
+
+    public static Map<Integer, String> checkBlacklist(String name, String blacklist) {
+        if (StringUtil.isEmpty(blacklist)) {
+            blacklist = MasterCodeUtil.getCodeDesc("MS001");
+        }
+        Map<Integer, String> map = new LinkedHashMap<>();
+        if (StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
+            return map;
+        }
+        String[] s = blacklist.split(" ");
+        for (int index = 0; index < s.length; index++) {
+            if (name.toUpperCase().contains(s[index].toUpperCase())) {
+                map.put(name.toUpperCase().indexOf(s[index].toUpperCase()), s[index]);
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 0: all changed with org licence
+     * <br>
+     * 2: only hci name <b>not</b> changes with org licence
+     * <br>
+     * 3: only business name <b>not</b> changes with org licence
+     * <br>
+     * 4: all <b>not</b> changes with org licence
+     * <br>
+     *
+     * @param hciName
+     * @param businessName
+     * @param licenceId
+     * @return
+     */
+    public static int checkNameChanged(String hciName, String businessName, String licenceId) {
+        if (licenceId == null) {
+            return 0;
+        }
+        LicenceClient licenceClient = SpringContextHelper.getContext().getBean(LicenceClient.class);
+        PremisesDto premisesDto = licenceClient.getPremisesDtoForBusinessName(licenceId).getEntity();
+        if (premisesDto == null) {
+            return 0;
+        }
+        boolean sameHciName = Objects.equals(premisesDto.getHciName(), hciName);
+        boolean sameBusinessName = Objects.equals(premisesDto.getBusinessName(), businessName);
+
+        int checked = 0;
+        if (sameHciName && sameBusinessName) {
+            checked = 4;
+        } else if (sameHciName) {
+            checked = 2;
+        } else if (sameBusinessName) {
+            checked = 3;
+        }
+        log.info(StringUtil.changeForLog("Check Name Changed: " + checked));
+        return checked;
+    }
+
 }

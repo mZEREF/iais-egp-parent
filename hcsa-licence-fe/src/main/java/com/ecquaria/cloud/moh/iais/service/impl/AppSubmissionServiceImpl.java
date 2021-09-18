@@ -2434,7 +2434,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 // business name
                 List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
                 Map<String,String> businessNameErrorMap = IaisCommonUtils.genNewHashMap();
-                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, businessNameErrorMap);
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(),
+                        businessNameErrorMap);
                 if (!businessNameErrorMap.isEmpty()) {
                     errorMap.putAll(businessNameErrorMap);
                     errorMap.put("Business Name", "error");
