@@ -204,20 +204,8 @@ public class BsbNotificationHelper {
                    if (!IaisCommonUtils.isEmpty(msgContent)) {
                        boolean officerFlag = msgContent.containsKey("Admin");
                        if (officerFlag) {
-                           if("type1".equals(adminValue)){
-                               msgContent.put("Admin","Main Admin");
-                           }else{
-                               msgContent.put("Admin","Alternate Admin");
-                           }
-                           try {
-                               content = MsgUtil.getTemplateMessageByContent(content, msgContent);
-                           } catch (IOException e) {
-                               e.printStackTrace();
-                           } catch (TemplateException e) {
-                               e.printStackTrace();
-                           }
-                           //replace num
-                           content = MessageTemplateUtil.replaceNum(content);
+                           msgContent.put("Admin", adminValue);
+                           content = getEmailContent(msgTemplateDto,msgContent);
                            emailDto.setContent(content);
                        }
                    }
