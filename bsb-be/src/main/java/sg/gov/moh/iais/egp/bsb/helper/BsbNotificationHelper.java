@@ -204,7 +204,11 @@ public class BsbNotificationHelper {
                    if (!IaisCommonUtils.isEmpty(msgContent)) {
                        boolean officerFlag = msgContent.containsKey("Admin");
                        if (officerFlag) {
-                           msgContent.put("Admin", adminValue);
+                           if("type1".equals(adminValue)){
+                               msgContent.put("Admin","Main Admin");
+                           }else{
+                               msgContent.put("Admin","Alternate Admin");
+                           }
                            try {
                                content = MsgUtil.getTemplateMessageByContent(content, msgContent);
                            } catch (IOException e) {
