@@ -202,12 +202,9 @@ public class BsbNotificationHelper {
                    String officerEmail = emailAddressMap.get(key);
                    officerEmails.add(officerEmail);
                    if (!IaisCommonUtils.isEmpty(msgContent)) {
-                       boolean officerFlag = msgContent.containsKey("Admin");
-                       if (officerFlag) {
                            msgContent.put("Admin", adminValue);
                            content = getEmailContent(msgTemplateDto,msgContent);
                            emailDto.setContent(content);
-                       }
                    }
                    emailDto.setReceipts(officerEmails);
                    //send email
