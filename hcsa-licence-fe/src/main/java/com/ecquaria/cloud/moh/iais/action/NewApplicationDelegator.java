@@ -2662,7 +2662,7 @@ public class NewApplicationDelegator {
         }
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
-            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR014"));
+            bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR009"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
