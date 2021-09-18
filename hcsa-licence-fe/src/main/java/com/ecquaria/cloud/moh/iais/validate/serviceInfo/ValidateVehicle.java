@@ -39,24 +39,24 @@ public class ValidateVehicle implements ValidateFlow {
             return;
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        List<String> vehicleNameList = new ArrayList<>(appSvcVehicleDtos.size());
+        List<String> vehicleNumList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> chassisNumList = new ArrayList<>(appSvcVehicleDtos.size());
         List<String> engineNumNumList = new ArrayList<>(appSvcVehicleDtos.size());
         for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
             AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
-            String vehicleName = currentDto.getVehicleName();
-            if (StringUtil.isEmpty(vehicleName)) {
-                map.put(VEHICLE_NAME + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Address Type", "field"));
-            } else if (vehicleName.length() > 10) {
-                map.put(VEHICLE_NAME + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
-            } else if (!currentDto.isDummyVehNum() && !VehNoValidator.validateNumber(vehicleName)) {
-                map.put(VEHICLE_NAME + i, "GENERAL_ERR0017");
-            } else {
-                vehicleName = vehicleName.toLowerCase(AppConsts.DFT_LOCALE);
-                if (vehicleNameList.contains(vehicleName)) {
-                    map.put(VEHICLE_NAME + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+            String vehicleNum = currentDto.getVehicleNum();
+            if (!currentDto.isDummyVehNum()){
+                if (vehicleNum.length() > 10) {
+                    map.put(VEHICLE_NAME + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
+                } else if (!VehNoValidator.validateNumber(vehicleNum)) {
+                    map.put(VEHICLE_NAME + i, "GENERAL_ERR0017");
                 } else {
-                    vehicleNameList.add(vehicleName);
+                    vehicleNum = vehicleNum.toLowerCase(AppConsts.DFT_LOCALE);
+                    if (vehicleNumList.contains(vehicleNum)) {
+                        map.put(VEHICLE_NAME + i, MessageUtil.getMessageDesc("NEW_ERR0012"));
+                    } else {
+                        vehicleNumList.add(vehicleNum);
+                    }
                 }
             }
 
@@ -125,7 +125,7 @@ public class ValidateVehicle implements ValidateFlow {
     private String getValue(AppSvcVehicleDto asv, String name) {
         String val = null;
         if (VEHICLE_NAME.equals(name)) {
-            val = asv.getVehicleName();
+            val = asv.getVehicleNum();
         } else if (CHASSIS_NAME.equals(name)) {
             val = asv.getChassisNum();
         } else if (ENGINE_NAME.equals(name)) {

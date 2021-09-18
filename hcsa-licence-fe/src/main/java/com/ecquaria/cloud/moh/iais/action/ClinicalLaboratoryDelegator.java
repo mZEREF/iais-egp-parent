@@ -3033,20 +3033,21 @@ public class ClinicalLaboratoryDelegator {
                 String chassisNum = ParamUtil.getString(request,"chassisNum"+i);
                 String engineNum = ParamUtil.getString(request,"engineNum"+i);
                 AppSvcVehicleDto appSvcVehicleDto = new AppSvcVehicleDto();
-                appSvcVehicleDto.setVehicleName(vehicleName);
+                appSvcVehicleDto.setVehicleNum(vehicleName);
                 appSvcVehicleDto.setChassisNum(chassisNum);
                 appSvcVehicleDto.setEngineNum(engineNum);
                 appSvcVehicleDto.setDummyVehNum(StringUtil.isEmpty(vehicleName));
+                String dummyVehNum = "";
+                AppSvcVehicleDto oldAppSvcVehicleDto = getAppSvcVehicleDtoByIndexNo(appSvcRelatedInfoDto, vehicleIndexNo);
+                if(oldAppSvcVehicleDto != null){
+                    dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
+                }
+                if (StringUtil.isEmpty(dummyVehNum)){
+                    dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);
+                }
+                appSvcVehicleDto.setVehicleName(dummyVehNum);
                 if (appSvcVehicleDto.isDummyVehNum()){
-                    String dummyVehNum = "";
-                    AppSvcVehicleDto oldAppSvcVehicleDto = getAppSvcVehicleDtoByIndexNo(appSvcRelatedInfoDto, vehicleIndexNo);
-                    if(oldAppSvcVehicleDto != null){
-                        dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
-                    }
-                    if (StringUtil.isEmpty(dummyVehNum)){
-                        dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);
-                    }
-                    appSvcVehicleDto.setVehicleName(dummyVehNum);
+                    appSvcVehicleDto.setVehicleNum("Vehicle_No_" + (i + 1));
                 }
                 if(StringUtil.isEmpty(vehicleIndexNo)){
                     appSvcVehicleDto.setVehicleIndexNo(UUID.randomUUID().toString());

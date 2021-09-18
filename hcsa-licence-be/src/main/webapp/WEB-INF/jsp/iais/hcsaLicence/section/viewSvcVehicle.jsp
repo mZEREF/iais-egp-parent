@@ -37,8 +37,7 @@
                                     </span>
                                 </div>
                                 <div class="col-xs-6">
-                                    <c:set var="oldDisplayVehicleName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].dummyVehNum ?
-                                          '' : currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].vehicleName}" />
+                                    <c:set var="oldDisplayVehicleName" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcVehicleDtoList[status.index].displayName}" />
                                     <span class="oldVal " style="display: none" attr="${oldDisplayVehicleName}">
                                         <c:out value="${oldDisplayVehicleName}"></c:out>
                                     </span>
