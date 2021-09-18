@@ -6,6 +6,17 @@ function doProcess(id){
     $("#mainForm").submit();
 }
 
+function checkEndTime(startTime,endTime){
+
+    // var start=new Date(startTime.replace("-", "/").replace("-", "/"));
+
+    // var end=new Date(endTime.replace("-", "/").replace("-", "/"));
+    if(endTime<startTime){
+        return false;
+    }
+    return true;
+}
+
 $(function () {
     // DO submit revocation
     $("#clearButton1").click(function () {
@@ -26,9 +37,17 @@ $(function () {
 
     // revocationList
     $("#searchBtn2").click(function () {
-        showWaiting();
-        $("[name='action_type']").val("doSearch");
-        $("#mainForm").submit();
+        var fromDt = $("#searchAppDateFrom").val();
+        var endDt = $("#searchAppDateTo").val();
+        var flag = checkEndTime(fromDt, endDt);
+        if (flag) {
+            showWaiting();
+            $("#error_searchAppDateTo").html("");
+            $("[name='action_type']").val("doSearch");
+            $("#mainForm").submit();
+        }else{
+            $("#error_searchAppDateTo").html("EndDate can not be earlier than startDate.");
+        }
     });
 
     $("#clearBtn2").click(function () {

@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import net.sf.oval.constraint.ValidateWithMethod;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Zhu Tangtang
@@ -17,6 +19,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Serializable {
+    private static final String MESSAGE_END_DATE_EARLIER_THAN_START_DATE = "EndDate can not be earlier than startDate.";
+
     private static final long serialVersionUID = 1L;
     private String id;
     private String facilityName;
@@ -24,8 +28,11 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
     private String facilityClassification;
     private String facilityType;
     private String processType;
-    private String searchAppDateFrom;
-    private String searchAppDateTo;
+    private Date searchAppDateFrom;
+
+    @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkApprovedDtToAfterFrom", parameterType = Date.class, profiles = {"appDate"})
+    private Date searchAppDateTo;
+
     private String applicationNo;
     private String applicationType;
     private String applicationStatus;
@@ -40,10 +47,17 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
         facilityClassification = "";
         facilityType = "";
         processType = "";
-        searchAppDateFrom = "";
-        searchAppDateTo = "";
+        searchAppDateFrom = null;
+        searchAppDateTo = null;
         applicationNo = "";
         applicationType = "";
         applicationStatus = "";
+    }
+
+    private boolean checkApprovedDtToAfterFrom(Date searchAppDateTo) {
+        if (searchAppDateTo == null || searchAppDateFrom == null){
+            return true;
+        }
+        return searchAppDateTo.after(searchAppDateFrom);
     }
 }

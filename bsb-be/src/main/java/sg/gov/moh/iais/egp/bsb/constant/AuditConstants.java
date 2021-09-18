@@ -25,4 +25,28 @@ public final class AuditConstants {
 
     public static final String MODULE_AUDIT = "Audit";
     public static final String FUNCTION_AUDIT = "Audit";
+
+    public static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
+    public static final String KEY_AUDIT_DATA_LIST = "dataList";
+    public static final String KEY_ACTION_VALUE = "action_value";
+    public static final String KEY_ACTION_ADDT = "action_additional";
+
+    public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
+    public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+
+    public static final String FACILITY_ID = "facId";
+    public static final String FACILITY_LIST = "facilityList";
+
+    public static final String FACILITY = "facility";
+    public static final String FACILITY_AUDIT = "facilityAudit";
+    public static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
+    public static final String AUDIT_ID = "auditId";
+    public static final String LAST_AUDIT_DATE = "lastAuditDt";
+
+    public static final String AUDIT_APP_ID = "auditAppId";
+    public static final String AUDIT_DOC_DTO = "auditDocDto";
+    public static final String AUDIT_OUTCOME = "auditOutcome";
+    public static final String FINAL_REMARK = "finalRemark";
+    public static final String AO_REMARKS = "aoRemark";
+    public static final String PARAM_HISTORY = "history";
 }

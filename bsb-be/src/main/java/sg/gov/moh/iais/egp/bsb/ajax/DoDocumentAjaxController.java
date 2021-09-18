@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.action;
+package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -44,7 +44,7 @@ import java.util.Map;
  */
 @Controller
 @Slf4j
-public class HcsaApplicationAjaxController {
+public class DoDocumentAjaxController {
 
     private static final String FACILITY = "facility";
 
@@ -81,13 +81,13 @@ public class HcsaApplicationAjaxController {
             log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
             //type
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-            String fileType = fileSplit[fileSplit.length - 1];
-            facilityDoc.setDocType(fileType);
-            doc.setDocType(fileType);
+//            String fileType = fileSplit[fileSplit.length - 1];
+//            facilityDoc.setDocType(fileType);
+//            doc.setDocType(fileType);
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
-            facilityDoc.setName(fileName);
-            doc.setName(fileName);
+            facilityDoc.setName(selectedFile.getOriginalFilename());
+            doc.setName(selectedFile.getOriginalFilename());
 
             doc.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             Facility facility=new Facility();

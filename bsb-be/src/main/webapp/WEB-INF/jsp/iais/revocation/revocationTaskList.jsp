@@ -101,10 +101,9 @@
                                 <iais:row>
                                     <iais:field value="Application Date"/>
                                     <iais:value width="18">
-                                        <span data-err-ind="searchAppDateFrom" class="error-msg"></span>
                                         <iais:datePicker id="searchAppDateFrom" name="searchAppDateFrom" value="${applicationSearch.searchAppDateFrom}"/>
                                         To
-                                        <span data-err-ind="searchAppDateTo" class="error-msg"></span>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_searchAppDateTo"></span>
                                         <iais:datePicker id="searchAppDateTo" name="searchAppDateTo" value="${applicationSearch.searchAppDateTo}"/>
                                     </iais:value>
                                 </iais:row>
@@ -177,3 +176,4 @@
         <iais:confirm msg="" needCancel="false" callBack="aocancel()" popupOrder="approveAo"></iais:confirm>
     </form>
 </div>
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>

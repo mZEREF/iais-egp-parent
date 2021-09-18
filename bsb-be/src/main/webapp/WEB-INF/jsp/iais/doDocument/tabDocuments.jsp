@@ -112,7 +112,7 @@
                         <td width="20%">
                             <p>
                                 <a hidden
-                                   href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.name, StandardCharsets.UTF_8.toString())}.${URLEncoder.encode(appSupDocDto.docType, StandardCharsets.UTF_8.toString())}"
+                                   href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.name, StandardCharsets.UTF_8.toString())}"
                                    title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span>
                                 </a>
                                 <a onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')">

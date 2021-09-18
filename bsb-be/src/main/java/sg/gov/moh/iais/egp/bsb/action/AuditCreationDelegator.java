@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -35,17 +33,6 @@ import java.util.List;
 @Slf4j
 @Delegator(value = "auditCreationDelegator")
 public class AuditCreationDelegator {
-
-    private static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
-    private static final String KEY_AUDIT_DATA_LIST = "dataList";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
-    private static final String FACILITY_ID = "facId";
-    private static final String FACILITY_LIST = "facilityList";
 
     @Autowired
     private AuditClient auditClient;
@@ -82,13 +69,13 @@ public class AuditCreationDelegator {
         ResponseDto<AuditQueryResultDto> searchResult = auditClient.doQuery(searchDto);
 
         if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_DATA_LIST, audits);
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
 
     }
@@ -123,8 +110,8 @@ public class AuditCreationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
-        String[] facIds =  ParamUtil.getMaskedStrings(request, FACILITY_ID);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, null);
+        String[] facIds =  ParamUtil.getMaskedStrings(request, AuditConstants.FACILITY_ID);
         List<String> facList=new ArrayList<>();
         for (String facId : facIds) {
             if (StringUtil.isNotEmpty(facId)){
@@ -137,7 +124,7 @@ public class AuditCreationDelegator {
             Facility facility = auditClient.getFacilityById(fId).getEntity();
             facilityList.add(facility);
         }
-        ParamUtil.setSessionAttr(request, FACILITY_LIST, (Serializable) facilityList);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, (Serializable) facilityList);
     }
 
     /**
@@ -149,7 +136,7 @@ public class AuditCreationDelegator {
     public void doCreate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAudit facilityAudit = new FacilityAudit();
-        List<Facility> facilityList = (List<Facility>)ParamUtil.getSessionAttr(request, FACILITY_LIST);
+        List<Facility> facilityList = (List<Facility>)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_LIST);
         String auditType = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_TYPE);
         String remarks = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
         facilityAudit.setAuditType(auditType);
@@ -173,15 +160,15 @@ public class AuditCreationDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String actionValue = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
         switch (actionValue) {
             case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
+                int pageSize = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_SIZE);
                 searchDto.setPage(0);
                 searchDto.setSize(pageSize);
                 break;
             case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
+                int pageNo = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_NO);
                 searchDto.setPage(pageNo - 1);
                 break;
             default:
@@ -199,8 +186,8 @@ public class AuditCreationDelegator {
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String field = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request, AuditConstants.KEY_ACTION_ADDT);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
     }

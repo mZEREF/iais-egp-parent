@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -10,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
@@ -24,14 +22,11 @@ import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAuditApp;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -40,21 +35,6 @@ import java.util.*;
 @Slf4j
 @Delegator(value = "auditDateDelegator")
 public class AuditDateDelegator {
-
-    private static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
-    private static final String KEY_AUDIT_DATA_LIST = "dataList";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
-    private static final String FACILITY = "facility";
-    private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
-    private static final String FACILITY_AUDIT = "facilityAudit";
-    private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
-    private static final String AUDIT_ID = "auditId";
-    private static final String LAST_AUDIT_DATE = "lastAuditDt";
 
     @Autowired
     private AuditClient auditClient;
@@ -91,13 +71,13 @@ public class AuditDateDelegator {
         ResponseDto<AuditQueryResultDto> searchResult = auditClient.getAllAudit(searchDto);
 
         if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_DATA_LIST, audits);
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_AUDIT_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
 
     }
@@ -131,9 +111,9 @@ public class AuditDateDelegator {
      */
     public void prepareSpecifyDtData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT, null);
-        String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
-        String auditDt = ParamUtil.getString(request,LAST_AUDIT_DATE);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, null);
+        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
+        String auditDt = ParamUtil.getString(request,AuditConstants.LAST_AUDIT_DATE);
         FacilityAudit audit = new FacilityAudit();
         audit.setId(auditId);
 
@@ -142,7 +122,7 @@ public class AuditDateDelegator {
             auditDate = Formatter.parseDate(auditDt);
             audit.setAuditDt(auditDate);
         }
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT, audit);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, audit);
     }
 
     /**
@@ -155,7 +135,7 @@ public class AuditDateDelegator {
     public void specifyAndChangeDt(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
 
-        FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, FACILITY_AUDIT);
+        FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT);
         String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
         String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
         String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
@@ -180,7 +160,7 @@ public class AuditDateDelegator {
      */
     public void prepareDOAndAOReviewData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, null);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
 
         String auditAppId = "50229C6F-A50F-EC11-BE6E-000C298D317C";
         FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
@@ -190,9 +170,9 @@ public class AuditDateDelegator {
         application.setFacility(facility);
         String facilityAddress = JoinAddress.joinAddress(application);
         facility.setFacilityAddress(facilityAddress);
-        ParamUtil.setRequestAttr(request,FACILITY,facility);
+        ParamUtil.setRequestAttr(request,AuditConstants.FACILITY,facility);
 
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
     }
 
     /**
@@ -201,7 +181,7 @@ public class AuditDateDelegator {
      */
     public void DOVerifiedAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
         String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
         //
@@ -217,7 +197,7 @@ public class AuditDateDelegator {
      */
     public void DORejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
         String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
         String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
@@ -235,7 +215,7 @@ public class AuditDateDelegator {
      */
     public void AOApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
         //
         facilityAuditApp.setAoRemarks(remark);
@@ -252,7 +232,7 @@ public class AuditDateDelegator {
      */
     public void AORejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,FACILITY_AUDIT_APP);
+        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
         String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
         //
@@ -270,15 +250,15 @@ public class AuditDateDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String actionValue = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
         switch (actionValue) {
             case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
+                int pageSize = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_SIZE);
                 searchDto.setPage(0);
                 searchDto.setSize(pageSize);
                 break;
             case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
+                int pageNo = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_NO);
                 searchDto.setPage(pageNo - 1);
                 break;
             default:
@@ -296,8 +276,8 @@ public class AuditDateDelegator {
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String field = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request, AuditConstants.KEY_ACTION_ADDT);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
     }

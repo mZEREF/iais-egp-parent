@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -15,14 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
-import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.entity.Application;
 import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
-import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -31,7 +28,6 @@ import java.io.Serializable;
 import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.MSG_TEMPLATE_REVOCATION_AO_APPROVED;
-import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.STATUS_REVOCATION_APPROVAL_AO;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 
 /**
@@ -40,13 +36,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERRO
 @Delegator(value = "DORevocationDelegator")
 @Slf4j
 public class DORevocationDelegator {
-    private static final String FACILITY = "facility";
-    private static final String AUDIT_DOC_DTO = "auditDocDto";
     @Autowired
     private RevocationClient revocationClient;
-
-//    @Autowired
-//    private SendNotificationHelper sendNotificationHelper;
 
     @Autowired
     private BsbNotificationHelper bsbNotificationHelper;
@@ -72,9 +63,9 @@ public class DORevocationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,FACILITY,null);
+        ParamUtil.setSessionAttr(request,RevocationConstants.FACILITY,null);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
 
         List<Application> list=new LinkedList<>();
         String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
@@ -84,7 +75,7 @@ public class DORevocationDelegator {
         application.getFacility().setFacilityAddress(address);
         list.add(application);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
-        ParamUtil.setSessionAttr(request,FACILITY,application.getFacility());
+        ParamUtil.setSessionAttr(request,RevocationConstants.FACILITY,application.getFacility());
     }
 
     /**

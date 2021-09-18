@@ -35,6 +35,8 @@ public final class RevocationConstants {
     public static final String PARAM_REASON_TYPE_AO = "REASON01";
     public static final String PARAM_REASON_TYPE_DO = "REASON02";
     public static final String PARAM_APP_ID = "appId";
+    public static final String PARAM_SEARCH_APP_DATE_FROM = "searchAppDateFrom";
+    public static final String PARAM_SEARCH_APP_DATE_TO = "searchAppDateTo";
 
     public static final String PARAM_PROCESS_TYPE = "processType";
     public static final String PARAM_APPLICATION_DATE = "applicationDate";
@@ -64,4 +66,15 @@ public final class RevocationConstants {
 
     public static final String MODULE_REVOCATION = "Revocation";
     public static final String FUNCTION_REVOCATION = "Revocation";
+
+    public static final String KEY_APPLICATION_PAGE_INFO = "pageInfo";
+    public static final String KEY_APPLICATION_DATA_LIST = "dataList";
+    public static final String KEY_ACTION_VALUE = "action_value";
+    public static final String KEY_ACTION_ADDT = "action_additional";
+
+    public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
+    public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
+    public static final String AUDIT_DOC_DTO = "auditDocDto";
+
+    public static final String FACILITY = "facility";
 }

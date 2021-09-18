@@ -2,14 +2,16 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
+import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -37,17 +39,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.*;
 @Slf4j
 @Delegator(value = "AORevocationDelegator")
 public class AORevocationDelegator {
-
-    private static final String KEY_APPLICATION_PAGE_INFO = "pageInfo";
-    private static final String KEY_APPLICATION_DATA_LIST = "dataList";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
-    private static final String KEY_ACTION_TYPE = "crud_action_type";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-    private static final String AUDIT_DOC_DTO = "auditDocDto";
-
     @Autowired
     private RevocationClient revocationClient;
 
@@ -90,7 +81,7 @@ public class AORevocationDelegator {
         ResponseDto<AOQueryResultDto> searchResult = revocationClient.doQuery(searchDto);
 
         if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
+            ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
             for (Application application : applications) {
@@ -99,11 +90,11 @@ public class AORevocationDelegator {
                 String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
                 application.setBiologicalName(bioNames);
             }
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, applications);
+            ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, applications);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, KEY_APPLICATION_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, new ArrayList<>());
         }
 
     }
@@ -126,8 +117,8 @@ public class AORevocationDelegator {
         String applicationNo = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_NO);
         String applicationType = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_TYPE);
         String applicationStatus = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_STATUS);
-        String searchAppDateFrom = ParamUtil.getString(request, "searchAppDateFrom");
-        String searchAppDateTo = ParamUtil.getString(request, "searchAppDateTo");
+        Date searchAppDateFrom = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_FROM));
+        Date searchAppDateTo = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_TO));
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
@@ -141,6 +132,12 @@ public class AORevocationDelegator {
         searchDto.setSearchAppDateFrom(searchAppDateFrom);
         searchDto.setSearchAppDateTo(searchAppDateTo);
 
+//        String validateStatus = "appDate";
+//        ValidationResult vResult = WebValidationHelper.validateProperty(searchDto,validateStatus);
+//        if(vResult != null && vResult.isHasErrors()){
+//            Map<String,String> errorMap = vResult.retrieveAll();
+//            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+//        }
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
 
@@ -152,15 +149,15 @@ public class AORevocationDelegator {
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalOfficerQueryDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String actionValue = ParamUtil.getString(request, RevocationConstants.KEY_ACTION_VALUE);
         switch (actionValue) {
             case "changeSize":
-                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
+                int pageSize = ParamUtil.getInt(request, RevocationConstants.KEY_PAGE_SIZE);
                 searchDto.setPage(0);
                 searchDto.setSize(pageSize);
                 break;
             case "changePage":
-                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
+                int pageNo = ParamUtil.getInt(request, RevocationConstants.KEY_PAGE_NO);
                 searchDto.setPage(pageNo - 1);
                 break;
             default:
@@ -178,8 +175,8 @@ public class AORevocationDelegator {
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalOfficerQueryDto searchDto = getSearchDto(request);
-        String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
+        String field = ParamUtil.getString(request, RevocationConstants.KEY_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request, RevocationConstants.KEY_ACTION_ADDT);
         searchDto.changeSort(field, sortType);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
@@ -192,7 +189,7 @@ public class AORevocationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         List<Application> list = new LinkedList<>();
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
 
         Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
         List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
@@ -219,7 +216,7 @@ public class AORevocationDelegator {
         AuditDocDto auditDocDto = new AuditDocDto();
         auditDocDto.setFacilityDocs(docList);
 
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
     }
 
     /**

@@ -2,20 +2,14 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -24,20 +18,16 @@ import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.revocation.AODecisionDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Zhu Tangtang
@@ -45,27 +35,6 @@ import java.util.Map;
 @Slf4j
 @Delegator(value = "selfAuditDelegator")
 public class SelfAuditDelegator {
-
-    private static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
-    private static final String KEY_AUDIT_DATA_LIST = "dataList";
-    private static final String KEY_ACTION_VALUE = "action_value";
-    private static final String KEY_ACTION_ADDT = "action_additional";
-
-    private static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
-    private static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
-
-    private static final String FACILITY = "facility";
-    private static final String FACILITY_AUDIT_LIST = "facilityAuditList";
-    private static final String FACILITY_AUDIT = "facilityAudit";
-    private static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
-    private static final String AUDIT_ID = "auditId";
-    private static final String AUDIT_APP_ID = "auditAppId";
-    private static final String LAST_AUDIT_DATE = "lastAuditDt";
-    private static final String AUDIT_DOC_DTO = "auditDocDto";
-    private static final String AUDIT_OUTCOME = "auditOutcome";
-    private static final String FINAL_REMARK = "finalRemark";
-    private static final String AO_REMARKS = "aoRemark";
-    private static final String PARAM_HISTORY = "history";
 
     @Autowired
     private AuditClient auditClient;
@@ -96,10 +65,10 @@ public class SelfAuditDelegator {
      */
     public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,FACILITY,null);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
-        String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
+        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
 
         Facility facility = facilityAudit.getFacility();
@@ -108,8 +77,8 @@ public class SelfAuditDelegator {
         String facilityAddress = JoinAddress.joinAddress(application);
         facility.setFacilityAddress(facilityAddress);
 
-        ParamUtil.setSessionAttr(request,FACILITY,facility);
-        ParamUtil.setRequestAttr(request, FACILITY_AUDIT, facilityAudit);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
+        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT, facilityAudit);
     }
 
     /**
@@ -191,7 +160,7 @@ public class SelfAuditDelegator {
      */
     public void submitSelfAuditReport(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String auditId = ParamUtil.getMaskedString(request, AUDIT_ID);
+        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         String scenarioCategory = ParamUtil.getRequestString(request,"scenarioCategory");
         FacilityAudit audit = new FacilityAudit();
         audit.setScenarioCategory(scenarioCategory);
@@ -207,8 +176,8 @@ public class SelfAuditDelegator {
      */
     public void prepareDOProcessSelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,FACILITY,null);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
         String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
         FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
@@ -234,10 +203,10 @@ public class SelfAuditDelegator {
 
         List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
 
-        ParamUtil.setSessionAttr(request,FACILITY,facility);
-        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setRequestAttr(request,PARAM_HISTORY,histories);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
+        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setRequestAttr(request,AuditConstants.PARAM_HISTORY,histories);
     }
 
     /**
@@ -289,8 +258,8 @@ public class SelfAuditDelegator {
      */
     public void prepareAOProcessSelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,FACILITY,null);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
         String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
         FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
@@ -316,10 +285,10 @@ public class SelfAuditDelegator {
 
         List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
 
-        ParamUtil.setSessionAttr(request,FACILITY,facility);
-        ParamUtil.setRequestAttr(request, FACILITY_AUDIT_APP, facilityAuditApp);
-        ParamUtil.setSessionAttr(request,AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setRequestAttr(request,PARAM_HISTORY,histories);
+        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
+        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setRequestAttr(request,AuditConstants.PARAM_HISTORY,histories);
     }
 
     /**
@@ -354,11 +323,11 @@ public class SelfAuditDelegator {
 
 
     private FacilityAuditApp before(HttpServletRequest request){
-        String auditAppId = ParamUtil.getMaskedString(request,AUDIT_APP_ID);
-        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
+        String auditAppId = ParamUtil.getMaskedString(request,AuditConstants.AUDIT_APP_ID);
+        String auditOutCome = ParamUtil.getRequestString(request,AuditConstants.AUDIT_OUTCOME);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String aoRemark = ParamUtil.getRequestString(request,AO_REMARKS);
-        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
+        String aoRemark = ParamUtil.getRequestString(request,AuditConstants.AO_REMARKS);
+        String finalRemark = ParamUtil.getRequestString(request,AuditConstants.FINAL_REMARK);//on or null
         String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
 
         FacilityAudit audit = new FacilityAudit();
