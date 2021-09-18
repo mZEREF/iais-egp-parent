@@ -272,7 +272,19 @@ public class NewApplicationDelegator {
             dealSessionUtil.initSession(bpc);
         }
         bpc.request.getSession().setAttribute("RFC_ERR004",MessageUtil.getMessageDesc("RFC_ERR004"));
-        /*    initOldSession(bpc);*/
+        // app type and licence id
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (appSubmissionDto != null && appSubmissionDto.getAppSvcRelatedInfoDtoList() != null) {
+            for (AppSvcRelatedInfoDto dto : appSubmissionDto.getAppSvcRelatedInfoDtoList()) {
+                if (StringUtil.isEmpty(dto.getApplicationType())) {
+                    dto.setApplicationType(appSubmissionDto.getAppType());
+                }
+                if (StringUtil.isEmpty(dto.getLicenceId())) {
+                    dto.setLicenceId(appSubmissionDto.getLicenceId());
+                }
+            }
+        }
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
