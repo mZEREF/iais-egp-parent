@@ -58,6 +58,7 @@
                         <iais:field value="Facility Expiry Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <iais:datePicker name="facilityExpiryDateTo" dateVal="${facInfoSearchParam.facilityExpiryDateTo}"></iais:datePicker>
+                            <span id="error_facilityExpiryDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -179,6 +180,7 @@
                         <iais:field value="Approval Submission Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <iais:datePicker name="approvalSubmissionDateTo" dateVal="${approvalSearchParam.approvalSubmissionDateTo}"></iais:datePicker>
+                            <span id="error_approvalSubmissionDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -197,6 +199,7 @@
                         <iais:field value="Approved Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <iais:datePicker name="approvedDateTo" dateVal="${approvalSearchParam.approvedDateTo}"></iais:datePicker>
+                            <span id="error_approvedDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
                 </iais:section>
@@ -245,6 +248,7 @@
                         <iais:field value="Application Submission Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <iais:datePicker id = "applicationSubmissionDateTo" name = "applicationSubmissionDateTo" dateVal="${appInfoSearchParam.applicationSubmissionDateTo}"></iais:datePicker>
+                            <span id="error_applicationSubmissionDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -257,6 +261,8 @@
                         <iais:field value="Approval Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <iais:datePicker id = "approvalDateTo" name = "approvalDateTo" dateVal="${appInfoSearchParam.approvalDateTo}"></iais:datePicker>
+                            <span id="error_approvalDateTo" name="iaisErrorMsg" class="error-msg"></span>
+
                         </div >
                     </iais:row>
                     <iais:row>
@@ -367,3 +373,4 @@
         </div>
     </div>
 </c:if>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

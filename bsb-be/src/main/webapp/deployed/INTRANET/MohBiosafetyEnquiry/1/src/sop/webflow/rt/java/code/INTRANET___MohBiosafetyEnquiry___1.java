@@ -17,6 +17,7 @@ public class INTRANET___MohBiosafetyEnquiry___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="biosafetyEnquiryDelegator";
 
 	public void prepareBasicSearch_OnStepProcess_0() throws Exception {
+
 	// 		PrepareBasicSearch->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareBasicSearch", this);
 	}
@@ -29,6 +30,11 @@ public class INTRANET___MohBiosafetyEnquiry___1 extends BaseProcessClass {
 	public void doSort_OnStepProcess_0() throws Exception {
 		// 		doSort->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "sort", this);
+	}
+
+	public void step1_OnStepProcess_0() throws Exception {
+		// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 }

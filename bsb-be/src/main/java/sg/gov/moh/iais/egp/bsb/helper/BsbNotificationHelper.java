@@ -159,37 +159,6 @@ public class BsbNotificationHelper {
            }else{
                emailDto.setClientQueryCode("no clientQueryCode");
            }
-
-           //send changeable information
-           Map<String, String> adminTypes = emailTemplateDto.getAdminTypes();
-           Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
-           if (!IaisCommonUtils.isEmpty(adminTypes)  && !IaisCommonUtils.isEmpty(emailAddressMap)) {
-               for (Map.Entry<String, String> adminEntry : adminTypes.entrySet()) {
-                   String key = adminEntry.getKey();
-                   String adminValue = adminEntry.getValue();
-                   List<String> officerEmails = IaisCommonUtils.genNewArrayList();
-                   String officerEmail = emailAddressMap.get(key);
-                   officerEmails.add(officerEmail);
-                   if (!IaisCommonUtils.isEmpty(msgContent)) {
-                       boolean officerFlag = msgContent.containsKey("Admin");
-                       if (officerFlag) {
-                           msgContent.put("Admin", adminValue);
-                           try {
-                               content = MsgUtil.getTemplateMessageByContent(content, msgContent);
-                           } catch (IOException e) {
-                               e.printStackTrace();
-                           } catch (TemplateException e) {
-                               e.printStackTrace();
-                           }
-                           //replace num
-                           content = MessageTemplateUtil.replaceNum(content);
-                           emailDto.setContent(content);
-                       }
-                   }
-                   emailDto.setReceipts(officerEmails);
-               }
-           }
-
            //send email
            if(attachments != null && !attachments.isEmpty()){
                try {
@@ -221,6 +190,61 @@ public class BsbNotificationHelper {
                    log.info("No receipts. Won't send email.");
                }
            }
+
+           //send changeable information
+           Map<String, String> adminTypes = emailTemplateDto.getAdminTypes();
+           Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
+           if (!IaisCommonUtils.isEmpty(adminTypes)  && !IaisCommonUtils.isEmpty(emailAddressMap)) {
+               for (Map.Entry<String, String> adminEntry : adminTypes.entrySet()) {
+                   String key = adminEntry.getKey();
+                   String adminValue = adminEntry.getValue();
+                   List<String> officerEmails = IaisCommonUtils.genNewArrayList();
+                   String officerEmail = emailAddressMap.get(key);
+                   officerEmails.add(officerEmail);
+                   if (!IaisCommonUtils.isEmpty(msgContent)) {
+                       boolean officerFlag = msgContent.containsKey("Admin");
+                       if (officerFlag) {
+                           msgContent.put("Admin", adminValue);
+                           try {
+                               content = MsgUtil.getTemplateMessageByContent(content, msgContent);
+                           } catch (IOException e) {
+                               e.printStackTrace();
+                           } catch (TemplateException e) {
+                               e.printStackTrace();
+                           }
+                           //replace num
+                           content = MessageTemplateUtil.replaceNum(content);
+                           emailDto.setContent(content);
+                       }
+                   }
+                   emailDto.setReceipts(officerEmails);
+                   //send email
+                   if(attachments != null && !attachments.isEmpty()){
+                       try {
+                           emailSmsClient.sendEmail(emailDto,attachments);
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                   }else {
+                       if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
+                           String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+                           HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                           HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                           IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+                                   MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                                   signature2.date(), signature2.authorization(), String.class);
+                       } else {
+                           try {
+                               emailSmsClient.sendEmail(emailDto, null);
+                           } catch (IOException e) {
+                               e.printStackTrace();
+                           }
+                       }
+                   }
+
+               }
+           }
+
 
        }else if(EmailConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(deliveryMode)){
            log.info("start send SMS ......");

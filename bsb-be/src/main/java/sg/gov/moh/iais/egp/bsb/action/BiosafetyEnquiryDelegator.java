@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.DateUtil;
@@ -45,11 +48,19 @@ import static sg.gov.moh.iais.egp.bsb.constant.CommonConstants.*;
 public class BiosafetyEnquiryDelegator {
     private static final String PARAM_SEARCH_CHK = "searchChk";
     private static final String PARAM_COUNT = "count";
+    private static final String FUNCTION_BIOSATETY_ENQUIRY = "Biosafety Enquiry";
 
     @Autowired
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
     @Autowired
     private ProcessClient processClient;
+
+
+    public void start(BaseProcessClass bpc) throws IllegalAccessException {
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, FUNCTION_BIOSATETY_ENQUIRY);
+        HttpServletRequest request = bpc.request;
+        IaisEGPHelper.clearSessionAttr(request, ProcessContants.class);
+    }
 
     /**
      * AutoStep: prepareBasicSearch
@@ -408,28 +419,28 @@ public class BiosafetyEnquiryDelegator {
 
     private void getResultAndAddFilter(HttpServletRequest request, EnquiryDto enquiryDto, String count) throws ParseException {
         addFilter(request, enquiryDto, count);
-        if ("app".equals(count)) {
-            ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
-            for (Application application : applicationResultDto.getBsbApp()) {
-                application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(), processClient));
-                application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(), processClient));
-            }
-            ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
-            ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
-            log.info(StringUtil.changeForLog(applicationResultDto.getBsbApp().toString() + "===================application"));
+        if ("app".equals(count) && Boolean.TRUE.equals(ValidationParam(request,"app",enquiryDto))) {
+                ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
+                for (Application application : applicationResultDto.getBsbApp()) {
+                    application.setBioName(JoinBiologicalName.joinBiologicalName(application.getFacility().getFacilitySchedules(), processClient));
+                    application.setRiskLevel(JoinBiologicalName.joinRiskLevel(application.getFacility().getFacilitySchedules(), processClient));
+                }
+                ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
+                ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
+                ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
+                log.info(StringUtil.changeForLog(applicationResultDto.getBsbApp().toString() + "===================application"));
         }
-        if ("fn".equals(count)) {
-            FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
-            for (FacilityBiologicalAgent agent : facilityResultDto.getBsbFac()) {
-                agent.setBioName(biosafetyEnquiryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
-            }
-            ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT, facilityResultDto.getBsbFac());
-            ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH, enquiryDto);
-            ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, facilityResultDto.getPageInfo());
-            log.info(StringUtil.changeForLog(facilityResultDto.getBsbFac().toString() + "==========facility"));
+        if ("fn".equals(count) && Boolean.TRUE.equals(ValidationParam(request,"fac",enquiryDto))) {
+                FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
+                for (FacilityBiologicalAgent agent : facilityResultDto.getBsbFac()) {
+                    agent.setBioName(biosafetyEnquiryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
+                }
+                ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_RESULT, facilityResultDto.getBsbFac());
+                ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_FACILITY_INFO_SEARCH, enquiryDto);
+                ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, facilityResultDto.getPageInfo());
+                log.info(StringUtil.changeForLog(facilityResultDto.getBsbFac().toString() + "==========facility"));
         }
-        if ("an".equals(count)) {
+        if ("an".equals(count) && Boolean.TRUE.equals(ValidationParam(request,"approval",enquiryDto))) {
             ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
             List<FacilityAgentSample> list = approvalResultDto.getBsbApproval();
             for (FacilityAgentSample agentSample : list) {
@@ -441,7 +452,7 @@ public class BiosafetyEnquiryDelegator {
             log.info(StringUtil.changeForLog(approvalResultDto.getBsbApproval().toString() + "==========facility"));
         }
 
-        if ("on".equals(count)) {
+        if ("on".equals(count) && Boolean.TRUE.equals(ValidationParam(request,"org",enquiryDto))) {
             ApprovedFacilityCerResultDto facilityCerResultDto = biosafetyEnquiryClient.getAFC(enquiryDto).getEntity();
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_RESULT, facilityCerResultDto.getBsbAFC());
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_SEARCH, enquiryDto);
@@ -449,6 +460,17 @@ public class BiosafetyEnquiryDelegator {
             log.info(StringUtil.changeForLog(facilityCerResultDto.getBsbAFC().toString() + "==========facility"));
         }
 
+    }
+
+    private Boolean ValidationParam(HttpServletRequest request,String type,EnquiryDto object){
+        ValidationResult vResult = WebValidationHelper.validateProperty(object,type);
+        if(vResult != null && vResult.isHasErrors()){
+            Map<String,String> errorMap = vResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            return false;
+        }else {
+            return true;
+        }
     }
 
     @GetMapping(value = "/Application-information-file")
