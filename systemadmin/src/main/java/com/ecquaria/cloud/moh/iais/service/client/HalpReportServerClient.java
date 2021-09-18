@@ -13,4 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface HalpReportServerClient {
     @PostMapping(value = "/halp-sftp-elis/view-data/")
     FeignResponseEntity<Void> createElisData();
+
+    @PostMapping(value = "/halp-sftp-HealthHub/view-data/")
+    FeignResponseEntity<String> receive();
 }
