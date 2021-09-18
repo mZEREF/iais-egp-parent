@@ -146,6 +146,8 @@ public class ApprovalApplicationDto implements Serializable {
     @NotBlank(message = "Please Check \"Declaration of Compliance with BATA Transport Regulations\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull","special"})
     private String checkbox2;
 
+    private List<FacilityDocDto> facilityDocDtoList;
+
     private boolean checkToAfterFrom(Date endDate) {
         if (endDate == null || startDate == null){
             return true;

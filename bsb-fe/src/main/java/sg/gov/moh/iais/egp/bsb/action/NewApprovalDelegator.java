@@ -4,16 +4,16 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
-import sg.gov.moh.iais.egp.bsb.client.ComFileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
@@ -21,7 +21,6 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
@@ -42,12 +41,9 @@ public class NewApprovalDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    @Autowired
-    private ComFileRepoClient comFileRepoClient;
-
     public void doStart(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
-                AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
+        AuditTrailHelper.auditFunction(ApprovalApplicationConstants.MODULE_SYSTEM_CONFIG,
+                ApprovalApplicationConstants.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_1);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
@@ -82,8 +78,17 @@ public class NewApprovalDelegator {
     }
 
     public void prepareDocuments(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
+        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
+        // judge
+//      hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
+//        hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
+//        ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG, (Serializable) hcsaSvcDocDtos);
+
+        //set sysFileSize and sysFileType
         int sysFileSize = systemParamConfig.getUploadFileLimit();
-        ParamUtil.setRequestAttr(bpc.request, "sysFileSize", sysFileSize);
+        ParamUtil.setRequestAttr(request, "sysFileSize", sysFileSize);
         String sysFileType = systemParamConfig.getUploadFileType();
         String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
         StringBuilder fileTypeStr = new StringBuilder();
@@ -104,14 +109,18 @@ public class NewApprovalDelegator {
                 i++;
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "sysFileType", fileTypeStr.toString());
+        ParamUtil.setRequestAttr(request, "sysFileType", fileTypeStr.toString());
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
     public void preparePreview(BaseProcessClass bpc) {
     }
+
     public void doDocuments(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("the do doDocument start ...."));
+        HttpServletRequest request = bpc.request;
     }
+
     public void doPreview(BaseProcessClass bpc) {
     }
 
@@ -415,40 +424,6 @@ public class NewApprovalDelegator {
         return biologicalSchedule;
     }
 
-    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList, Map<String, File> saveFileMap){
-        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
-        //根据AppGrpPrimaryDocDto PremisessName+SvcComDocId+SeqNum 判断 saveFileMap中是否存在
-        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
-            if(primaryDocDto.isPassValidate()){
-                String premIndex = "";
-                if(!StringUtil.isEmpty(primaryDocDto.getPremisessName())){
-                    premIndex = primaryDocDto.getPremisessName();
-                }
-                String fileMapKey = premIndex + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
-                File file = saveFileMap.get(fileMapKey);
-                if(file != null){
-                    passValidateFileMap.put(fileMapKey,file);
-                }
-            }
-        }
-        if(passValidateFileMap.size() > 0){
-            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
-            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
-            int i = 0;
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
-                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
-                if(StringUtil.isEmpty(premIndexNo)){
-                    premIndexNo = "";
-                }
-                String saveFileMapKey = premIndexNo+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getSeqNum();
-                File file = saveFileMap.get(saveFileMapKey);
-                if(file != null){
-                    appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
-                    i++;
-                }
-            }
-        }
 
-    }
 }
 

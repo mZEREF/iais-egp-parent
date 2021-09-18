@@ -1,4 +1,4 @@
-<c:if test="${taskList=='APPRTY001'}">
+<c:if test="${taskList=='APPRTY002'}">
     <div class="document-upload-list">
         <h3>Biosafety Committee Approval<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">
@@ -8,7 +8,7 @@
         </div>
     </div>
 </c:if>
-<c:if test="${taskList=='APPRTY002'}">
+<c:if test="${taskList=='APPRTY001'}">
     <div class="document-upload-list">
         <h3>Biosafety Committee Approval<span class="mandatory"> *</span></h3>
         <div class="file-upload-gp">

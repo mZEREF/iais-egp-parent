@@ -6,6 +6,9 @@ package sg.gov.moh.iais.egp.bsb.constant;
  */
 public class ApprovalApplicationConstants {
 
+    public static final String MODULE_SYSTEM_CONFIG = "System Configuration";
+    public static final String FUNCTION_ERROR_MESSAGES_MANAGEMENT = "Approval Application";
+
     public static final String FACILITY_ID = "facilityId";
     public static final String FACILITY_NAME = "facilityName";
     public static final String SCHEDULE = "schedule";

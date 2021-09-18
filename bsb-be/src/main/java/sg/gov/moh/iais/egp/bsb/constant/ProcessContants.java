@@ -7,6 +7,9 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class ProcessContants {
     private ProcessContants() {}
 
+    public static final String MODULE_SYSTEM_CONFIG = "System Configuration";
+    public static final String FUNCTION_ERROR_MESSAGES_MANAGEMENT = "MOH Process New Application";
+
     public static final String APPLICATION_ATTR = "application";
     public static final String APPLICATION_MISC = "applicationMisc";
 

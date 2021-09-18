@@ -231,7 +231,7 @@
                                                                         </div>
                                                                         <div class="col-sm-4 col-md-7 control-font-label">
                                                                             <div>
-                                                                                <iais:input maxLength="20" type="text" name="contactNoOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.impCtcPersonNo}"></iais:input>
+                                                                                <iais:input maxLength="20" type="number" name="contactNoOfContactPersonFromTransferringFacility" value="${approvalApplicationDto.impCtcPersonNo}"></iais:input>
                                                                                 <span id="error_impCtcPersonNo" name="iaisErrorMsg" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -551,6 +551,9 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><div>&nbsp</div></td>
                                                     </tr>
                                                     <c:if test="${(taskList=='APPRTY001' || taskList=='APPRTY002')}">
                                                         <tr height="1">
