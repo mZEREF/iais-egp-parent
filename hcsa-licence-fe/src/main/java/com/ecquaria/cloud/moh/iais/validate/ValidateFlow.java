@@ -14,7 +14,8 @@ import java.util.Map;
  * @date 2021/4/23 13:10
  */
 public interface ValidateFlow {
-   default void doValidatePremises(Map<String,String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo,String licenseeId){};
+   default void doValidatePremises(Map<String,String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,
+           List<String> floorUnitList, List<String> floorUnitNo,String licenseeId, String appType, String licenceId){};
 
    default void doValidateAdressType(String floorNo,String blkNo,String unitNo,Integer index,Map<String ,String> map,List<String> errorName){};
 

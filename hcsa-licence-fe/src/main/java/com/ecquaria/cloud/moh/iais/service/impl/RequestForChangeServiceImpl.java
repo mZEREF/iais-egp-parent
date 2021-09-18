@@ -18,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPerio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -86,12 +85,9 @@ import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -512,6 +508,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         boolean needAppendMsg = false;
         String licenseeId = appSubmissionDto.getLicenseeId();
+        String licenceId = appSubmissionDto.getLicenceId();
         String premiseTypeError="";
         String selectPremises="";
         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
@@ -635,45 +632,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if (StringUtil.isEmpty(hciName)) {
                             errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
                         } else {
-                            if(hciName.length()>100){
+                            if (hciName.length() > 100) {
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("hciName" + i, general_err0041);
                             }
-                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
-                            if(2==hciNameChanged){
-                                //no need validate hci name have keyword (is migrated and hci name never changed)
-                            }else {
-                                if (masterCodeDto != null) {
-                                    String[] s = masterCodeDto.split(" ");
-                                    StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new LinkedHashMap<>();
-                                    for (int index = 0; index < s.length; index++) {
-                                        if (hciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(hciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
-                                        }
-                                    }
-                                  if(!map.isEmpty()){
-                                      AtomicInteger length= new AtomicInteger();
-                                      map.forEach((k,v)->{
-                                          length.getAndIncrement();
-                                          sb.append(v);
-                                          if(map.size()!= length.get()){
-                                              sb.append(',').append(' ');
-                                          }
-                                      });
-                                      errorMap.put("hciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
-                                  }
-                                }
-                            }
+                            checkHciName("hciName" + i, hciName, appType, licenceId, errorMap);
 
                             if (StringUtil.isEmpty(licenseeId)) {
                                 //licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                                 log.debug(StringUtil.changeForLog("can not found licenseeId"));
                             }
-                            /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(hciName, licenseeId,ApplicationConsts.PREMISES_TYPE_ON_SITE).getEntity();
-                            if (!entity.isEmpty()) {
-                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                            }*/
                             List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(hciName,ApplicationConsts.PREMISES_TYPE_ON_SITE,licenseeId).getEntity();
                             if(!IaisCommonUtils.isEmpty(premisesDtos)){
                                 errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
@@ -806,12 +774,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         list.addAll(sbList);
                                     }
 
-                                 /*   if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("postalCode" + i, "NEW_ACK010");
-
-                                    } else {
-                                        list.add(stringBuilder.toString());
-                                    }*/
                                 }
                             }
                         } else {
@@ -929,40 +891,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("conveyanceHciName" + i, general_err0041);
                             }
-                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
-                            if(2==hciNameChanged){
-                                //no need validate hci name have keyword (is migrated and hci name never changed)
-                            }else {
-                                if (masterCodeDto != null) {
-                                    String[] s = masterCodeDto.split(" ");
-                                    StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new LinkedHashMap<>();
-                                    for (int index = 0; index < s.length; index++) {
-                                        if (convHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(convHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
-                                        }
-                                    }
-                                    if(!map.isEmpty()){
-                                        AtomicInteger length=new AtomicInteger();
-                                        map.forEach((k,v)->{
-                                            length.getAndIncrement();
-                                            sb.append(v);
-                                            if(length.get()!=map.size()){
-                                                sb.append(',').append(' ');
-                                            }
-                                        });
-                                        errorMap.put("conveyanceHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
-                                    }
-                                }
+                            checkHciName("conveyanceHciName" + i, convHciName, appType, licenceId, errorMap);
 
-                                /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(convHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
-                                if (!entity.isEmpty()) {
-                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                                }*/
-                                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(convHciName,ApplicationConsts.PREMISES_TYPE_CONVEYANCE,licenseeId).getEntity();
-                                if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                                }
+                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(convHciName,
+                                    ApplicationConsts.PREMISES_TYPE_CONVEYANCE, licenseeId).getEntity();
+                            if (!IaisCommonUtils.isEmpty(premisesDtos)) {
+                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                             }
 
                         }
@@ -1205,49 +1139,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String offSiteHciName = appGrpPremisesDtoList.get(i).getOffSiteHciName();
                         if (StringUtil.isEmpty(offSiteHciName)) {
                             errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "HCI Name", "field"));
-                        }else{
+                        } else {
                             if(offSiteHciName.length()>100){
                                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                                 errorMap.put("offSiteHciName" + i, general_err0041);
                             }
-                            int hciNameChanged = appGrpPremisesDtoList.get(i).getHciNameChanged();
-                            if(2==hciNameChanged){
-                                //no need validate hci name have keyword (is migrated and hci name never changed)
-                            }else {
-                                if (masterCodeDto != null) {
-                                    String[] s = masterCodeDto.split(" ");
-                                    StringBuilder sb=new StringBuilder();
-                                    Map<Integer,String> map=new LinkedHashMap<>();
-                                    for (int index = 0; index < s.length; index++) {
-                                        if (offSiteHciName.toUpperCase().contains(s[index].toUpperCase())) {
-                                            map.put(offSiteHciName.toUpperCase().indexOf(s[index].toUpperCase()),s[index]);
-
-                                        }
-                                    }
-                                    if(!map.isEmpty()){
-                                        AtomicInteger length=new AtomicInteger();
-                                        map.forEach((k,v)->{
-                                            length.getAndIncrement();
-                                            sb.append(v);
-                                            if(length.get()!=map.size()){
-                                                sb.append(',').append(' ');
-                                            }
-                                        });
-                                        errorMap.put("offSiteHciName" + i, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
-
-                                    }
-                                }
-                                /*List<AppGrpPremisesDto> entity = applicationFeClient.getAppGrpPremisesDtoByHciName(offSiteHciName, licenseeId,ApplicationConsts.PREMISES_TYPE_OFF_SITE).getEntity();
-                                if (!entity.isEmpty()) {
-                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                                }*/
-                                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(offSiteHciName,ApplicationConsts.PREMISES_TYPE_OFF_SITE,licenseeId).getEntity();
-                                if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                                }
+                            checkHciName("offSiteHciName" + i, offSiteHciName, appType, licenceId, errorMap);
+                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(offSiteHciName,ApplicationConsts.PREMISES_TYPE_OFF_SITE,licenseeId).getEntity();
+                            if(!IaisCommonUtils.isEmpty(premisesDtos)){
+                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                             }
-
-
                         }
                         String buildingName = appGrpPremisesDtoList.get(i).getOffSiteBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
@@ -1409,7 +1310,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
-                        validateEasmts.doValidatePremises(errorMap,appGrpPremisesDto,i,masterCodeDto, floorUnitList,  floorUnitNo,licenseeId);
+                        validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, masterCodeDto, floorUnitList, floorUnitNo,
+                                licenseeId, appType, licenceId);
                         validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
                                 i,licenseeId,appGrpPremisesDto,needAppendMsg,rfi,premisesHciList,oldPremiseHciList);
                     }
@@ -1439,6 +1341,30 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         NewApplicationHelper.validatePH(errorMap,appSubmissionDto);
         WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
         return errorMap;
+    }
+
+    private void checkHciName(String key, String hciName, String appType, String licenceId, Map<String, String> errorMap) {
+        int hciNameChanged = 0;
+        if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+            hciNameChanged = NewApplicationHelper.checkNameChanged(hciName, null, licenceId);
+        }
+        if (2 == hciNameChanged || 4 == hciNameChanged) {
+            //no need validate hci name have keyword (is migrated and hci name never changed)
+        } else {
+            Map<Integer, String> map = NewApplicationHelper.checkBlacklist(hciName);
+            if (!map.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                AtomicInteger length = new AtomicInteger();
+                map.forEach((k, v) -> {
+                    length.getAndIncrement();
+                    sb.append(v);
+                    if (map.size() != length.get()) {
+                        sb.append(',').append(' ');
+                    }
+                });
+                errorMap.put(key, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
+            }
+        }
     }
 
     /*

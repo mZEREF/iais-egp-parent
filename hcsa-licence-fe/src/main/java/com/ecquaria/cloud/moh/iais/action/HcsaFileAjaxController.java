@@ -1,29 +1,19 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +22,24 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author wangyu
@@ -75,15 +83,21 @@ public class HcsaFileAjaxController {
          }else {
              messageCode.setMsgType("Y");
          }
+         File toFile = null;
+         String tempFolder = null;
          try{
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
-                 map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
+                 tempFolder = request.getSession().getId() + fileAppendId + size;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + size, toFile);
              }else {
-                 map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
+                 tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + reloadIndex, toFile);
                  size = reloadIndex;
              }
 
@@ -92,6 +106,9 @@ public class HcsaFileAjaxController {
              log.info("----------change MultipartFile to file  falie-----------------");
              return "";
          }
+         // Save File to other nodes
+        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -221,5 +238,52 @@ public class HcsaFileAjaxController {
             }
         }
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
+    }
+
+    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
+        if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                try {
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                    log.info("Request URL ==> " + apiUrl.toString());
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                    HttpHeaders fileHeader = new HttpHeaders();
+                    byte[] content = selectedFile.getBytes();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                        @Override
+                        public String getFilename() {
+                            return toFile.getName();
+                        }
+                    };
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    multipartRequest.add("selectedFile", fileEnt);
+                    HttpHeaders jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
+                    multipartRequest.add("fileName", jsonPart);
+                    jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
+                    multipartRequest.add("folderName", jsonPart);
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                    restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
     }
 }

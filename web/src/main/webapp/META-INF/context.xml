@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context privileged="false" crossContext="false">
+    <Valve className="org.apache.catalina.valves.AccessLogValve" directory="$CATALINA_HOME/logs/" prefix="access_log" fileDateFormat="yyyy- MM-dd.HH" suffix=".log" pattern="%h %t %H cookie:%{SESSIONID}c request:%{SESSIONID}r %m %U %s %q %r" />
+    <Resources allowLinking="false" />
+</Context>
