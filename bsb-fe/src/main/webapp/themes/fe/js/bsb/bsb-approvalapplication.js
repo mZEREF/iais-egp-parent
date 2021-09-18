@@ -25,13 +25,6 @@ $(function() {
     $("#facilityId").change(function() {
         $("#facilityName").val($("#facilityId").find("option:checked").text());
     })
-    $("#listOfAgentsOrToxins").change(function() {
-        console.log($(this).children);
-        var selectValue = $(this).val();
-        for(var i=0;i<selectValue.length ;i++){
-            console.log(selectValue[i]);
-        }
-    })
     $("#natureOfTheSample").change(function() {
         var selectValue = $(this).val();
         var flag = false;
@@ -79,31 +72,31 @@ $(function() {
         var schedule = $(this).val();
         if (schedule == "SCHTYPE001"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select1").show();
         }else if (schedule == "SCHTYPE002"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select2").show();
         }else if (schedule == "SCHTYPE003"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select3").show();
         }else if (schedule == "SCHTYPE004"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select4").show();
         }else if (schedule == "SCHTYPE005"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select5").show();
         }else if (schedule == "SCHTYPE006"){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select6").show();
         }else if(schedule == ""){
             $("[name='selectHidden']").hide();
-            $("#listOfAgentsOrToxins").val("");
+            clearBiologicalList();
             $("#select0").show();
         }
     })
@@ -119,13 +112,7 @@ $(function() {
         $("input[type='checkbox']").prop('checked', false);
         $(".multi-select-button").html("-- Select --");
         $("#natureOfTheSample option").prop('selected',false);
-        $("#select0 option").prop('selected',false);
-        $("#select1 option").prop('selected',false);
-        $("#select2 option").prop('selected',false);
-        $("#select3 option").prop('selected',false);
-        $("#select4 option").prop('selected',false);
-        $("#select5 option").prop('selected',false);
-        $("#select6 option").prop('selected',false);
+        clearBiologicalList();
         $("#beInboxFilter .current").text("Please Select");
     })
     $("#nextBtn").click(function (){
@@ -184,5 +171,13 @@ $(function() {
             $('#mainForm').submit();
         }
     });
-
 })
+function clearBiologicalList(){
+    $("#select0 option").prop('selected',false);
+    $("#select1 option").prop('selected',false);
+    $("#select2 option").prop('selected',false);
+    $("#select3 option").prop('selected',false);
+    $("#select4 option").prop('selected',false);
+    $("#select5 option").prop('selected',false);
+    $("#select6 option").prop('selected',false);
+}

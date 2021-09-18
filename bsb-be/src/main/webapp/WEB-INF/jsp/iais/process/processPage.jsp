@@ -53,13 +53,13 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/applicationInfo.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/process/applicationInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabDynamicContent" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/dynamicContent.jsp" %>
+                                                <%@include file="/WEB-INF/jsp/iais/process/dynamicContent.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <br/><br/>
@@ -585,7 +585,7 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="/WEB-INF/jsp/iais/process/common/processingHistory.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/process/processingHistory.jsp"%>
                                             </div>
                                         </div>
                                     </div>
@@ -598,5 +598,5 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/iais/process/common/uploadFile.jsp" %>
+<%@include file="/WEB-INF/jsp/iais/doDocument/uploadFile.jsp" %>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>

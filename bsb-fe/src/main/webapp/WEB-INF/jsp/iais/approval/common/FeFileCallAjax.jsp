@@ -48,6 +48,7 @@
         fileAppendId =  $("#fileAppendId").val();
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
+        console.log("form");
         var maxFileSize = $("#fileMaxSize").val();
         var rslt = validateFileSizeMaxOrEmpty(maxFileSize,'selectedFile');
         //alert('rslt:'+rslt);

@@ -117,4 +117,6 @@ public class ApprovalApplicationConstants {
     public static final String PAGE_ID_2 = "document_page";
     public static final String PAGE_ID_3 = "preview_page";
 
+    public static final String DOC_CONFIG_ATTR = "docConfigDtoList";
+
 }

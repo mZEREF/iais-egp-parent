@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
@@ -10,14 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.DocConfigDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +33,14 @@ import java.util.*;
 public class NewApprovalDelegator {
 
     public static final String TASK_LIST = "taskList";
+
+    private static final String DOC_TYPE_1 = "Biosafety Committee Approval";
+    private static final String DOC_TYPE_2 = "Risk Assessment";
+    private static final String DOC_TYPE_3 = "Standard Operating Procedure (SOP)";
+    private static final String DOC_TYPE_4 = "Emergency Response Plan";
+    private static final String DOC_TYPE_5 = "Risk Assessment and Risk Management";
+    private static final String DOC_TYPE_6 = "In-Principal Approval from MOH";
+    private static final String DOC_TYPE_7 = "Letter of declaration";
 
     @Autowired
     private ApprovalApplicationClient approvalApplicationClient;
@@ -80,11 +87,29 @@ public class NewApprovalDelegator {
     public void prepareDocuments(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos;
-        // judge
-//      hcsaSvcDocDtos = serviceConfigService.getPrimaryDocConfigById(appGrpPrimaryDocDtos.get(0).getSvcComDocId());
-//        hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(null);
-//        ParamUtil.setSessionAttr(bpc.request,PRIMARY_DOC_CONFIG, (Serializable) hcsaSvcDocDtos);
+        //set docConfig on different processType,The data here is simulated
+        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
+        List<DocConfigDto> docConfigDtoList = new ArrayList<>();
+        if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true));
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true));
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
+            DocConfigDto docConfigDto1 = new DocConfigDto(DOC_TYPE_1,true);
+            DocConfigDto docConfigDto2 = new DocConfigDto(DOC_TYPE_5,true);
+            DocConfigDto docConfigDto3 = new DocConfigDto(DOC_TYPE_6,true);
+            DocConfigDto docConfigDto4 = new DocConfigDto(DOC_TYPE_4,true);
+            DocConfigDto docConfigDto5 = new DocConfigDto(DOC_TYPE_7,true);
+            docConfigDtoList.add(docConfigDto1);
+            docConfigDtoList.add(docConfigDto2);
+            docConfigDtoList.add(docConfigDto3);
+            docConfigDtoList.add(docConfigDto4);
+            docConfigDtoList.add(docConfigDto5);
+        }
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.DOC_CONFIG_ATTR, docConfigDtoList);
 
         //set sysFileSize and sysFileType
         int sysFileSize = systemParamConfig.getUploadFileLimit();
@@ -129,9 +154,9 @@ public class NewApprovalDelegator {
         Object errorMap = ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.ERRORMSG);
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        List<FacilityQueryDto> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
+        List<Facility> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
         List<SelectOption> facilityNameList =  new ArrayList<>();
-        for (FacilityQueryDto dto : facilityByApprovalStatus) {
+        for (Facility dto : facilityByApprovalStatus) {
             facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
         }
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
@@ -414,10 +439,10 @@ public class NewApprovalDelegator {
     }
 
     private List<SelectOption> getSelectOptionList(String schedule){
-        List<BiologicalQueryDto> biological = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
+        List<Biological> biological = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
         List<SelectOption> biologicalSchedule =  IaisCommonUtils.genNewArrayList();
         if (biological != null && biological.size() > 0){
-            for (BiologicalQueryDto dto : biological) {
+            for (Biological dto : biological) {
                 biologicalSchedule.add(new SelectOption(dto.getId(),dto.getName()));
             }
         }

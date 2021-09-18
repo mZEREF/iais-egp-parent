@@ -9,11 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.approval.FacilityQueryDto;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
-import sg.gov.moh.iais.egp.bsb.entity.FacilitySchedule;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
 
@@ -28,20 +24,17 @@ public interface ApprovalApplicationClient {
     FeignResponseEntity<ApprovalApplicationDto> saveApproval(@RequestBody ApprovalApplicationDto approvalApplicationDto);
 
     @GetMapping(path = "/bsb-approval/{approvalType}")
-    FeignResponseEntity<List<FacilityQueryDto>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
+    FeignResponseEntity<List<Facility>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
 
     @GetMapping(path = "/bsb-approval/schedule/{schedule}")
-    FeignResponseEntity<List<BiologicalQueryDto>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
+    FeignResponseEntity<List<Biological>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);
 
     @GetMapping(path = "/bsb-approval/biologicalName/{id}")
-    FeignResponseEntity<BiologicalQueryDto> getBiologicalById(@PathVariable("id") String id);
+    FeignResponseEntity<Biological> getBiologicalById(@PathVariable("id") String id);
 
     @GetMapping(path = "/bsb-approval/facilitySchedule/{facilityId}")
     FeignResponseEntity<List<FacilitySchedule>> getFacilityScheduleByFacilityId(@PathVariable("facilityId") String facilityId);
 
     @GetMapping(path = "/bsb-approval/facilityBiologicalAgent/{facilityScheduleId}")
     FeignResponseEntity<List<FacilityBiologicalAgent>> getFacilityBiologicalAgentByFacilityScheduleId(@PathVariable("facilityScheduleId") String facilityScheduleId);
-
-    @GetMapping(path = "/bsb-approval/facilityDoc/{facilityId}")
-    FeignResponseEntity<List<FacilityDoc>> getFacilityDocByFacilityId(@PathVariable("facilityId") String facilityId);
 }

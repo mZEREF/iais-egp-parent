@@ -246,7 +246,7 @@ public class SendNotificationHelper {
             map.put("Admin", notification.getAdmin());
             subMap.put("applicationNo", notification.getApplicationNo());
         }else if(STATUS_NEW_APP_REQUEST_FOR_INFO.equals(status)) {
-            subMap.put("Title", notification.getTitle());
+            subMap.put("RFITitle", notification.getTitle());
             map.put("Date", notification.getDate());
             map.put("Applicant", notification.getApplicant());
             map.put("Admin", notification.getAdmin());

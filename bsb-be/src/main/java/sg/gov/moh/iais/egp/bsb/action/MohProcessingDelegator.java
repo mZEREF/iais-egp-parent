@@ -20,7 +20,6 @@ import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
-import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -179,30 +178,25 @@ public class MohProcessingDelegator {
         //send email notification to Applicant
         Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
         BsbEmailParam bsbEmailParam = new BsbEmailParam();
-        bsbEmailParam.setMsgTemplateId(EmailConstants.MSG_TEMPLATE_NEW_APP_REJECT);
+        bsbEmailParam.setMsgTemplateId(EmailConstants.MSG_TEMPLATE_NEW_APP_REQUEST_FOR_INFO);
         bsbEmailParam.setRefId(application.getApplicationNo());
         bsbEmailParam.setRefIdType("appNo");
         bsbEmailParam.setQueryCode("1");
         bsbEmailParam.setReqRefNum("1");
-        Map map = new HashMap();
-        map.put("applicationNo", application.getApplicationNo());
-        Map subjectMap = new HashMap();
-        subjectMap.put("applicationNo", application.getApplicationNo());
-        bsbEmailParam.setMsgSubject(subjectMap);
-        bsbEmailParam.setMsgContent(map);
-        bsbNotificationHelper.sendNotification(bsbEmailParam);
-        //send email notification to Applicant
+        Map contentMap = new HashMap();
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dateString = formatter.format(doScreeningDtoByForm.getValidityEndDt());
-        /*notification.setApplicationNo(application.getApplicationNo());
-        notification.setTitle("");
-        notification.setFacId(application.getFacility().getId());
-        notification.setDate(dateString);
-        notification.setAttachments(null);
-        notification.setAdditionalInfo("");
-        notification.setStatus(EmailConstants.STATUS_NEW_APP_REQUEST_FOR_INFO);
-        notification.setAdmin("admin01");
-        notification.setApplicant("applicant01");*/
+        contentMap.put("applicationNo", application.getApplicationNo());
+        contentMap.put("Date",dateString);
+        contentMap.put("AdditionalInfo", "additionalInfo");
+        Map subjectMap = new HashMap();
+        subjectMap.put("RFITitle", "title");
+        /*Map attachmentMap = new HashMap();
+        attachmentMap.put(null);*/
+        bsbEmailParam.setMsgSubject(subjectMap);
+        bsbEmailParam.setMsgContent(contentMap);
+        /*bsbEmailParam.setAttachments(attachmentMap);*/
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     public void approvalForInspection(BaseProcessClass bpc) throws ParseException{
@@ -226,12 +220,12 @@ public class MohProcessingDelegator {
         bsbEmailParam.setRefIdType("appNo");
         bsbEmailParam.setQueryCode("1");
         bsbEmailParam.setReqRefNum("1");
-        Map map = new HashMap();
-        map.put("applicationNo", application.getApplicationNo());
-        Map subMap = new HashMap();
-        subMap.put("applicationNo", application.getApplicationNo());
-        bsbEmailParam.setMsgSubject(subMap);
-        bsbEmailParam.setMsgContent(map);
+        Map contentMap = new HashMap();
+        contentMap.put("applicationNo", application.getApplicationNo());
+        Map subjectMap = new HashMap();
+        subjectMap.put("applicationNo", application.getApplicationNo());
+        bsbEmailParam.setMsgSubject(subjectMap);
+        bsbEmailParam.setMsgContent(contentMap);
         bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
@@ -287,13 +281,20 @@ public class MohProcessingDelegator {
         processClient.updateFacilityByMohProcess(doScreeningDtoByForm);
         //send email notification to Applicant
         Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
-        Notification notification = new Notification();
-        notification.setApplicationNo(application.getApplicationNo());
-        notification.setFacId(application.getFacility().getId());
-        notification.setApplicationType(MasterCodeUtil.getCodeDesc(application.getAppType()));
-        notification.setStatus(EmailConstants.STATUS_NEW_APP_APPROVED);
-        notification.setAdmin("admin01");
-        notification.setApplicant("applicant01");
+        BsbEmailParam bsbEmailParam = new BsbEmailParam();
+        bsbEmailParam.setMsgTemplateId(EmailConstants.MSG_TEMPLATE_NEW_APP_APPROVAL);
+        bsbEmailParam.setRefId(application.getApplicationNo());
+        bsbEmailParam.setRefIdType("appNo");
+        bsbEmailParam.setQueryCode("1");
+        bsbEmailParam.setReqRefNum("1");
+        Map contentMap = new HashMap();
+        contentMap.put("applicationType",MasterCodeUtil.getCodeDesc(application.getAppType()));
+        contentMap.put("applicationNo", application.getApplicationNo());
+        Map subjectMap = new HashMap();
+        subjectMap.put("applicationNo", application.getApplicationNo());
+        bsbEmailParam.setMsgSubject(subjectMap);
+        bsbEmailParam.setMsgContent(contentMap);
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     private DoScreeningDto getDtoByForm(BaseProcessClass bpc) throws ParseException {

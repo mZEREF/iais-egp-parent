@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
-import sg.gov.moh.iais.egp.bsb.dto.approval.BiologicalQueryDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -31,10 +31,10 @@ public class BiologicalAjaxController {
     Map<String, Object> queryBiologicalBySchedule(HttpServletRequest request) {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
         String schedule = ParamUtil.getString(request,"schedule");
-        List<BiologicalQueryDto> biologicalQueryDtoList = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
+        List<Biological> biologicalQueryDtoList = approvalApplicationClient.getBiologicalBySchedule(schedule).getEntity();
         if(biologicalQueryDtoList != null && biologicalQueryDtoList.size()>0) {
-            List<BiologicalQueryDto> biologicalQueryDto = IaisCommonUtils.genNewArrayList();
-            for (BiologicalQueryDto biological : biologicalQueryDtoList) {
+            List<Biological> biologicalQueryDto = IaisCommonUtils.genNewArrayList();
+            for (Biological biological : biologicalQueryDtoList) {
                 biologicalQueryDto.add(biological);
             }
             jsonMap.put("result", "success");

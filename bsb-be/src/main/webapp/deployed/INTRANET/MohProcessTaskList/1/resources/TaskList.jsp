@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/process/common/taskList.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/process/taskList.jsp"%>
