@@ -201,10 +201,12 @@ public class BsbNotificationHelper {
                    List<String> officerEmails = IaisCommonUtils.genNewArrayList();
                    String officerEmail = emailAddressMap.get(key);
                    officerEmails.add(officerEmail);
-                   if (!IaisCommonUtils.isEmpty(msgContent)) {
-                           msgContent.put("Admin", adminValue);
-                           content = getEmailContent(msgTemplateDto,msgContent);
-                           emailDto.setContent(content);
+                   if (!IaisCommonUtils.isEmpty(msgContent) && StringUtils.isNotEmpty(adminValue)) {
+                       String [] admin = adminValue.split(":");
+                       msgContent.put("Applicant",admin[0]);
+                       msgContent.put("Admin", admin[1]);
+                       content = getEmailContent(msgTemplateDto,msgContent);
+                       emailDto.setContent(content);
                    }
                    emailDto.setReceipts(officerEmails);
                    //send email
@@ -342,7 +344,7 @@ public class BsbNotificationHelper {
                 int index = admins.size();
                 for (FacilityAdmin u : admins) {
                     if (!StringUtils.isEmpty(u.getEmail())) {
-                        adminTypesMap.put(String.valueOf(index), u.getType());
+                        adminTypesMap.put(String.valueOf(index), u.getName()+":"+u.getType());
                         emailAddressMap.put(String.valueOf(index), u.getEmail());
                         index++;
                     }
