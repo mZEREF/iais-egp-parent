@@ -28,9 +28,6 @@
         display: flex;
         justify-content: center;
         align-items:flex-end;">
-            <a class="btn btn-primary" align="center"
-               href="javascript:void(0)" onclick="submit()">Submit</a>
-            <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
                href="javascript:void(0)" onclick="submit()">Cancel</a>
             <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
