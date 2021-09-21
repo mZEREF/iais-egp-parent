@@ -1215,7 +1215,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         if(applicationGroupDto != null) {
             String appGrpId = applicationGroupDto.getId();
             AppGroupMiscDto appGroupMiscDto = applicationClient.getAppGrpMiscByAppGrpIdTypeStatus(appGrpId, ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            if(appGroupMiscDto != null) {
+            if(appGroupMiscDto != null && !StringUtil.isEmpty(appGroupMiscDto.getId())) {
                 //set misc status
                 appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 List<AppGroupMiscDto> appGroupMiscDtos = IaisCommonUtils.genNewArrayList();
