@@ -651,9 +651,9 @@
                                             </c:if>
 
                                             <c:if test="${appType=='APTY007'|| appType=='APTY009'}">
-                                            <div class="alert alert-info" role="alert">
+                                            <div class="panel-heading" role="alert">
                                                 <strong>
-                                                    <h4>Section E (After Action)</h4>
+                                                    Section E (After Action)
                                                 </strong>
                                             </div>
                                             <div class="row">
