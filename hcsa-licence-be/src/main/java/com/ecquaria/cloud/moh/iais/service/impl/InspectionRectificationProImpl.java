@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -603,6 +604,20 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             return sortInspEmailFieldDtos;
         }
         return inspEmailFieldDtos;
+    }
+
+    @Override
+    public String getVehicleShowName(String vehicleName, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+        if(!StringUtil.isEmpty(vehicleName) && !IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                if(appSvcVehicleDto != null) {
+                    if(appSvcVehicleDto.getVehicleName().equals(vehicleName)) {
+                        return appSvcVehicleDto.getDisplayName();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private List<ChecklistItemDto> getCheckDtosByItemIds(List<String> itemIds) {

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
@@ -170,4 +171,13 @@ public interface InspectionRectificationProService {
       * @Descripation: sortInspEmailFieldDtoByCategory
       */
     List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/9/22
+      * @Param: appSvcVehicleDtos, vehicleName
+      * @return: String
+      * @Descripation: getVehicleShowName
+      */
+    String getVehicleShowName(String vehicleName, List<AppSvcVehicleDto> appSvcVehicleDtos);
 }
