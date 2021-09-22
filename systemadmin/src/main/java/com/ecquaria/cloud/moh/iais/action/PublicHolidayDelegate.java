@@ -313,7 +313,7 @@ public class PublicHolidayDelegate {
     private String getPublicCode(String text,List<PublicHolidayDto> publicHolidayDtos){
         if("Chinese New Year".equals(text)){
             for (PublicHolidayDto item:publicHolidayDtos
-            ) {
+                 ) {
                 if("PUHD012".equals(item.getPhCode())){
                     return "PUHD002";
                 }
@@ -355,7 +355,7 @@ public class PublicHolidayDelegate {
         String[] id = ParamUtil.getMaskedStrings(bpc.request,"deleteId");
         List<String> holidayIds = IaisCommonUtils.genNewArrayList();
         for (String item:id
-        ) {
+             ) {
             holidayIds.add(item);
         }
         publicHolidayService.deleteHoliday(holidayIds);

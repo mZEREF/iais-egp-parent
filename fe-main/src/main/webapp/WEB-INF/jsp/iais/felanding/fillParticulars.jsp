@@ -16,20 +16,20 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
-  sop.webflow.rt.api.BaseProcessClass process =
-          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%
-  String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
+    String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
 
 <style>
-  @media only screen and (max-width : 1200px){
-    .form-padding {
-      padding: 35px 5%;
+    @media only screen and (max-width : 1200px){
+        .form-padding {
+            padding: 35px 5%;
+        }
     }
-  }
 </style>
 <div class="main-content">
     <div class="navigation-gp"></div>
@@ -69,7 +69,6 @@
                             </div>
                         </div>
                     </div>
-                  </iais:row>
                 </div>
             </div>
         </div>

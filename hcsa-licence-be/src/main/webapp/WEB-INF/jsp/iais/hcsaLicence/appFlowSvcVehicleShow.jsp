@@ -95,16 +95,16 @@
   </c:if>
 </c:if>
 <script type="text/javascript">
-    function appFlowVehicleShowRadio(recommendation) {
-        if('other' == recommendation){
-            $('.vehicle-approve').removeAttr("disabled","disabled");
-            $('.vehicle-reject').removeAttr("disabled","disabled");
-        } else if('reject' == recommendation || 'decisionReject' == recommendation) {
-            $('.vehicle-approve').attr("disabled","disabled");
-            $('.vehicle-reject').attr("disabled","disabled");
-        }else{
-            $('.vehicle-approve').removeAttr("disabled","disabled");
-            $('.vehicle-reject').removeAttr("disabled","disabled");
-        }
-    }
+  function appFlowVehicleShowRadio(recommendation) {
+      if('other' == recommendation){
+          $('.vehicle-approve').removeAttr("disabled","disabled");
+          $('.vehicle-reject').removeAttr("disabled","disabled");
+      } else if('reject' == recommendation || 'decisionReject' == recommendation) {
+          $('.vehicle-approve').attr("disabled","disabled");
+          $('.vehicle-reject').attr("disabled","disabled");
+      }else{
+          $('.vehicle-approve').removeAttr("disabled","disabled");
+          $('.vehicle-reject').removeAttr("disabled","disabled");
+      }
+  }
 </script>

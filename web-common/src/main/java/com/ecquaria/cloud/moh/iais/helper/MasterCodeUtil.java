@@ -159,7 +159,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveCateSource(cateId);
         List<MasterCodeView> mcList = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
-                mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
         );
 
         return mcList;
@@ -176,7 +176,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveCateSource(cateId);
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
-                opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
         );
 
         return opts;
@@ -192,7 +192,7 @@ public final class MasterCodeUtil {
         if (sr.getRowCount() > 0) {
             List<MasterCodeView> masterCodeViewList = sr.getRows();
             for (MasterCodeView masterCodeView:masterCodeViewList
-            ) {
+                 ) {
                 codeKey.add(masterCodeView.getCode());
             }
         }
@@ -262,7 +262,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveFilterSource(filter);
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
-                opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
+            opts.add(new SelectOption(m.getCode(), m.getCodeValue()))
         );
 
         return opts;
@@ -279,7 +279,7 @@ public final class MasterCodeUtil {
         List<MasterCodeView> list = retrieveFilterSource(filter);
         List<MasterCodeView> mcList = IaisCommonUtils.genNewArrayList();
         list.forEach(m ->
-                mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
+            mcList.add(MiscUtil.transferEntityDto(m, MasterCodeView.class))
         );
 
         return mcList;
@@ -305,7 +305,7 @@ public final class MasterCodeUtil {
     }
 
     /******************************************************************************************************************
-     Private methods
+         Private methods
      ******************************************************************************************************************/
     private static List<MasterCodeView> retrieveCateSource(String cateId) {
         List<MasterCodeView> list = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
@@ -322,11 +322,11 @@ public final class MasterCodeUtil {
                 list.forEach(m ->
                         SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                                 .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                                        RedisCacheHelper.NOT_EXPIRE)
+                                RedisCacheHelper.NOT_EXPIRE)
                 );
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cateId, list,
-                                RedisCacheHelper.NOT_EXPIRE);
+                        RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return IaisCommonUtils.genNewArrayList();
             }
@@ -350,8 +350,8 @@ public final class MasterCodeUtil {
                 list.forEach(m ->
                         SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                                 .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
-                                        m.getCode(), m.getCodeValue(),
-                                        RedisCacheHelper.NOT_EXPIRE)
+                                m.getCode(), m.getCodeValue(),
+                                RedisCacheHelper.NOT_EXPIRE)
                 );
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
                         filter, list, RedisCacheHelper.NOT_EXPIRE);
@@ -367,7 +367,7 @@ public final class MasterCodeUtil {
         RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.clear(cacheName);
         conMap.entrySet().forEach(ent ->
-                rch.set(cacheName, ent.getKey(), ent.getValue())
+            rch.set(cacheName, ent.getKey(), ent.getValue())
         );
     }
 

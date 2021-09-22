@@ -63,7 +63,6 @@
             </div>
         </div>
     </div>
-    </div>
     <input hidden value="${backtype}" id="backtype">
     <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

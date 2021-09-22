@@ -230,7 +230,7 @@ public class StripeServiceImpl implements StripeService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ApiResource.RequestMethod method=ApiResource.RequestMethod.POST;
         RequestOptions options=RequestOptions.getDefault();
-        // Accept
+    // Accept
         headers.set("Accept", "application/json");
         // Accept-Charset
         headers.set("Accept-Charset", ApiResource.CHARSET.name());

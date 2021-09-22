@@ -300,7 +300,7 @@ public class LicenseeCompanyDelegate {
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
         if(feUserDtos!= null && feUserDtos.size() > 0){
             for (FeUserDto item:feUserDtos
-            ) {
+                 ) {
                 if(item.getId().equals(id)){
                     String nric =  ((FeUserDto) item).getIdentityNo() + " (NRIC)";
                     item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));

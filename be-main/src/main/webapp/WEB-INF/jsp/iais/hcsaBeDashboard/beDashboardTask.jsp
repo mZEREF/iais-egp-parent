@@ -189,9 +189,9 @@
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                         <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right"
-                                                                                           data-toggle="collapse" aria-expanded="false"
-                                                                                           data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
-                                                                                           onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
+                                                                                                   data-toggle="collapse" aria-expanded="false"
+                                                                                                   data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                                   onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
                         <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>

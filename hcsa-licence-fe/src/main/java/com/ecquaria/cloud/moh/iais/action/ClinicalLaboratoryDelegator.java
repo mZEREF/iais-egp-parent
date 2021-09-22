@@ -3839,7 +3839,6 @@ public class ClinicalLaboratoryDelegator {
             String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
-            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             if (appSvcCgoList != null) {
                 if (daList.size() < appSvcCgoList.size()) {
                     return;

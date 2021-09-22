@@ -62,58 +62,58 @@
                             </c:choose>
                             </thead>
                             <tbody>
-                            <c:choose>
-                                <c:when test="${empty searchResult.rows}">
-                                    <tr>
-                                        <td colspan="9">
-                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                                            <!--No Record!!-->
-                                        </td>
-                                    </tr>
-                                    <input hidden id="rows" value="0">
-                                </c:when>
-                                <c:otherwise>
-                                    <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
-                                        <c:set var="massIndex" value="${(status.index + 1) + (auditSearchParam.pageNo - 1) * auditSearchParam.pageSize}"></c:set>
-                                        <tr style="display: table-row;">
-                                            <td>
-                                                <p><c:out
-                                                        value="${massIndex}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.recipient}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.subject}"/></p>
-                                            </td>
-                                            <td>
-                                                <div><c:out value="${item.content}"/></div>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.numberAttempts}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.logMsg}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><fmt:formatDate value="${item.sentTime}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${createby}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${createDt}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${modifiedBy}"/></p>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${modifiedDt}"/></p>
+                                <c:choose>
+                                    <c:when test="${empty searchResult.rows}">
+                                        <tr>
+                                            <td colspan="9">
+                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                <!--No Record!!-->
                                             </td>
                                         </tr>
-                                    </c:forEach>
-                                </c:otherwise>
-                            </c:choose>
+                                        <input hidden id="rows" value="0">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
+                                            <c:set var="massIndex" value="${(status.index + 1) + (auditSearchParam.pageNo - 1) * auditSearchParam.pageSize}"></c:set>
+                                            <tr style="display: table-row;">
+                                                <td>
+                                                    <p><c:out
+                                                            value="${massIndex}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.recipient}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.subject}"/></p>
+                                                </td>
+                                                <td>
+                                                    <div><c:out value="${item.content}"/></div>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.numberAttempts}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${item.logMsg}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><fmt:formatDate value="${item.sentTime}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${createby}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${createDt}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${modifiedBy}"/></p>
+                                                </td>
+                                                <td>
+                                                    <p><c:out value="${modifiedDt}"/></p>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
                             </tbody>
                         </table>
                     </div>
@@ -128,9 +128,9 @@
                 </div>
             </div>
         </div>
-        <input hidden id="editBlast" name="editBlast" value="${editBlast}">
-        <input hidden id="mode" name="mode" value="${mode}">
-        <input hidden id="msgId" name="msgId" value="${msgId}">
+      <input hidden id="editBlast" name="editBlast" value="${editBlast}">
+      <input hidden id="mode" name="mode" value="${mode}">
+      <input hidden id="msgId" name="msgId" value="${msgId}">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

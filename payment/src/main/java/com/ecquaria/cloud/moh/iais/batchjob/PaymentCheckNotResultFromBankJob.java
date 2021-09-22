@@ -40,7 +40,7 @@ public class PaymentCheckNotResultFromBankJob {
         log.debug(StringUtil.changeForLog("the do action start ...."));
         List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
         for (PaymentRequestDto payReq:paymentRequestDtos
-        ) {
+             ) {
             try {
                 if(("stripe".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payReq.getPayMethod()))&&payReq.getQueryCode()!=null&&payReq.getQueryCode().contains("cs_")){
                     stripeService.retrievePayment(payReq);
