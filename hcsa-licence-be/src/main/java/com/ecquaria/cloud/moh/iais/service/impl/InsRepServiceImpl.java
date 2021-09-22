@@ -83,10 +83,7 @@ import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author weilu
@@ -277,6 +274,12 @@ public class InsRepServiceImpl implements InsRepService {
         if (IaisCommonUtils.isEmpty(serviceSubTypeName)) {
             serviceSubTypeName.add("-");
         }
+
+        Map<String,String> vehMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos())){
+            applicationViewDto.getAppSvcVehicleDtos().forEach(veh -> vehMap.put(veh.getVehicleName(),veh.getDisplayName()));
+        }
+
         inspectionReportDto.setSubsumedServices(serviceSubTypeName);
         //Nc
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
@@ -288,7 +291,7 @@ public class InsRepServiceImpl implements InsRepService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
-                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
+                reportNcRegulationDto.setVehicleName(vehMap.get(ncAnswerDto.getVehicleName()));
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");
@@ -316,7 +319,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     reportNcRectifiedDto.setNcs(preInspNc.getNcs());
-                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
+                    reportNcRectifiedDto.setVehicleName(vehMap.get(preInspNc.getVehicleName()));
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);

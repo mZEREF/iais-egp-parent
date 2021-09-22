@@ -61,68 +61,54 @@
                           <iais:sortableHeader needSort="false"   field="amTime" value="AM Non-availability"></iais:sortableHeader>
                           <iais:sortableHeader needSort="false"   field="pmTime" value="PM Non-availability"></iais:sortableHeader>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <c:choose>
-                          <c:when test="${empty nonWkrinDayListAttr}">
-                            <tr>
-                              <td colspan="6">
-                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                              </td>
-                            </tr>
-                          </c:when>
-                          <c:otherwise>
-                            <c:forEach var="nonwkrDay" items="${nonWkrinDayListAttr}" varStatus="status">
-                              <tr>
-                                <td>${status.index + 1}</td>
-                                  <%--<td>+
-                                     2020&lt;%&ndash;<fmt:formatDate value="${nonwkrDay.startDate}" pattern="yyyy"></fmt:formatDate>&ndash;%&gt;
-                                  </td>--%>
-                                <td>${nonwkrDay.recursivceDate}</td>
-                                <td>
-                                  <c:if test="${nonwkrDay.nonWkrDay == false}">
-                                    <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
-                                    &nbsp;&nbsp;
-                                    <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
-                                  </c:if>
-                                  <c:if test="${nonwkrDay.nonWkrDay == true}">
-                                    <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
-                                    &nbsp;&nbsp;
-                                    <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
-                                  </c:if>
-                                </td>
-                                <td>
-                                  <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
-                                  <c:if test="${nonwkrDay.am == true}">
-                                         checked="checked"
-                                  </c:if>
-                                         id="am${status.index + 1}"
-                                         value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
-                                </td>
-                                <td>
-                                  <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
-                                          <c:if test="${nonwkrDay.pm == true}">
-                                            checked="checked"
-                                          </c:if>
-                                         id="pm${status.index + 1}" />
-                                </td>
-                              </tr>
-                            </c:forEach>
+                      </c:when>
+                      <c:otherwise>
+                        <c:forEach var="nonwkrDay" items="${nonWkrinDayListAttr}" varStatus="status">
+                          <tr>
+                            <td>${status.index + 1}</td>
+                            <%--<td>+
+                               2020&lt;%&ndash;<fmt:formatDate value="${nonwkrDay.startDate}" pattern="yyyy"></fmt:formatDate>&ndash;%&gt;
+                            </td>--%>
+                            <td>${nonwkrDay.recursivceDate}</td>
+                            <td>
+                              <c:if test="${nonwkrDay.nonWkrDay == false}">
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                &nbsp;&nbsp;
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
+                              </c:if>
+                              <c:if test="${nonwkrDay.nonWkrDay == true}">
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                &nbsp;&nbsp;
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
+                              </c:if>
+                            </td>
+                            <td>
+                              <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
+                              <c:if test="${nonwkrDay.am == true}">
+                              checked="checked"
+                              </c:if>
+                                     id="am${status.index + 1}"
+                                      value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
+                            </td>
+                            <td>
+                              <input class="form-check-input" type="checkbox" name="inspWpTeamAmPmCheck" aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
+                                      <c:if test="${nonwkrDay.pm == true}">
+                                      checked="checked"
+                              </c:if>
+                                      id="pm${status.index + 1}" />
+                            </td>
+                          </tr>
+                        </c:forEach>
 
 
-                          </c:otherwise>
-                        </c:choose>
-                        </tbody>
-                      </table>
-                      <div class="table-footnote">
-                        <div class="row">
-                          <div class="col-xs-6 col-md-8 text-right">
-                            <br><br>
-
-
-                          </div>
-                        </div>
-                      </div>
+                      </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                  </table>
+                  <div class="table-footnote">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-8 text-right">
+                        <br><br>
 
 
                     </div>

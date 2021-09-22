@@ -104,26 +104,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="newappModal" class="modal fade" role="dialog" style="top:10px">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <!-- Modal content-->
-                                        <div class="modal-content" style="top:30px">
-                                            <div class="modal-header">
-                                                <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Select application for withdrawal</div>
-                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
-                                            </div>
-                                            <div id="withdrawPagDiv"></div>
-                                            <table aria-describedby="" class="table">
-                                                <thead style="display: none">
-                                                <tr>
-                                                    <th scope="col" ></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody id="withdrawBodyDiv"></tbody>
-                                            </table>
-                                            <div class="modal-footer">
-                                                <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
-                                            </div>
+                            </div>
+                            <div id="newappModal" class="modal fade" role="dialog" style="top:10px">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <!-- Modal content-->
+                                    <div class="modal-content" style="top:30px">
+                                        <div class="modal-header">
+                                            <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Select application for withdrawal</div>
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                                        </div>
+                                        <div id="withdrawPagDiv"></div>
+                                        <table aria-describedby="" class="table">
+                                            <thead style="display: none">
+                                            <tr>
+                                                <th scope="col" ></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="withdrawBodyDiv"></tbody>
+                                        </table>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
                                         </div>
                                     </div>
                                 </div>

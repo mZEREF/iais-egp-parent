@@ -93,9 +93,40 @@
                                                                         <td style="padding-left: 15px;">${applicationViewDto.currentStatus}<c:if test="${empty applicationViewDto.currentStatus}">-</c:if></td>
                                                                     </tr>
 
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading"><strong>Applicant Details</strong></div>
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div class="table-gp">
+                                                            <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td class="col-xs-6" align="right">HCI Code</td>
+                                                                    <td class="col-xs-6" style="padding-left: 15px;">${applicationViewDto.hciCode}<c:if test="${empty applicationViewDto.hciCode}">-</c:if></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">HCI Name</td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.hciName}<c:if test="${empty applicationViewDto.hciName}">-</c:if></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">HCI Address</td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.hciAddress}<c:if test="${empty applicationViewDto.hciAddress}">-</c:if></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">Telephone</td>
+                                                                    <td style="padding-left: 15px;">${applicationViewDto.telephone}<c:if test="${empty applicationViewDto.telephone}">-</c:if></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">Email</td>
+                                                                    <td style="padding-left: 15px;">${emilAddr}<c:if test="${empty emilAddr}">-</c:if></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -334,10 +365,48 @@
 
                                                     </c:if>
                                                 </div>
+                                                <c:if test="${not empty appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}">
+                                                    <c:forEach items="${appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}" var="personnel">
+                                                        <div class="panel-heading"><strong>Key Appointment Holder </strong></div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-gp">
+                                                                    <table aria-describedby="" class="table table-bordered">
+                                                                        <thead style="display: none">
+                                                                        <tr>
+                                                                            <th scope="col"></th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td align="right">Salutation</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.salutation}"/><c:if test="${empty personnel.salutation}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Name</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.name}<c:if test="${empty personnel.name}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID Type</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.idType}"/><c:if test="${empty personnel.idType}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID No</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.idNo}<c:if test="${empty personnel.idNo}">-</c:if></td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </c:forEach>
+
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
-                                    <a href="#" onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                </div>
+                                <a href="#" onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </div>
                             </iais:body>
                         </div>

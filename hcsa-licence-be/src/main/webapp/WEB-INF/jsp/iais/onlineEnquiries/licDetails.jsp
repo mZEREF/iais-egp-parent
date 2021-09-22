@@ -31,7 +31,7 @@
                                             <li class="complete" role="presentation"><a href="#tabPersonnelDetails" aria-controls="tabPersonnelDetails" role="tab"
                                                                                         data-toggle="tab">Personnel Details</a></li>
                                             <li class="<c:if test="${preInspReport == '1'}">active</c:if><c:if test="${empty preInspReport }">complete</c:if>" role="presentation"><a href="#tabComplianceHistory" aria-controls="tabComplianceHistory" role="tab"
-                                                                                                                                                                                      data-toggle="tab">Compliance History</a></li>
+                                                                                        data-toggle="tab">Compliance History</a></li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">

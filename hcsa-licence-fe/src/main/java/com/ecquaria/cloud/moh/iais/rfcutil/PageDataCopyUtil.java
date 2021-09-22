@@ -322,6 +322,9 @@ public class PageDataCopyUtil {
             o.setEngineNum(Optional.ofNullable(v.getEngineNum())
                     .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
                     .orElseGet(() -> ""));
+            o.setVehicleNum(Optional.ofNullable(v.getVehicleNum())
+                    .map(f -> toLower ? f.toLowerCase(AppConsts.DFT_LOCALE) : f)
+                    .orElseGet(() -> ""));
             list.add(o);
         });
         list.sort(Comparator.comparing(AppSvcVehicleDto::getVehicleName));

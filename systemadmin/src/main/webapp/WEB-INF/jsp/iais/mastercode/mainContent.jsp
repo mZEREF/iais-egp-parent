@@ -17,26 +17,34 @@
                         </h3>
                         <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
                         <div class="table-gp">
-                            <table aria-describedby="" class="table">
-                                <thead>
-                                <tr>
-                                    <th scope="col" style="display: none"></th>
-                                    <iais:sortableHeader needSort="false" field="SN" value="SN" style="width:1%" />
-                                    <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
-                                    <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
-                                    <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
-                                    <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
-                                    <iais:sortableHeader needSort="true" field="sequence" value="Sequence" style="width:7%" />
-                                    <iais:sortableHeader needSort="true" field="Version" value="Version" style="width:7%"/>
-                                    <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
-                                    <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
-                                    <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
-                                    <iais:sortableHeader needSort="false" field="Action" value="Action" />
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:choose>
-                                    <c:when test="${empty MasterCodeSearchResult.rows}">
+                        <table aria-describedby="" class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="SN" value="SN" style="width:1%" />
+                                <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
+                                <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="sequence" value="Sequence" style="width:7%" />
+                                <iais:sortableHeader needSort="true" field="Version" value="Version" style="width:7%"/>
+                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
+                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
+                                <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
+                                <iais:sortableHeader needSort="false" field="Action" value="Action" />
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:choose>
+                                <c:when test="${empty MasterCodeSearchResult.rows}">
+                                    <tr>
+                                        <td colspan="12">
+                                            <iais:message key="GENERAL_ACK018" escape="true"/>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="masterCodeResult" items="${MasterCodeSearchResult.rows}" varStatus="status">
                                         <tr>
                                             <td colspan="12">
                                                 <iais:message key="GENERAL_ACK018" escape="true"/>

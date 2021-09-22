@@ -6760,7 +6760,7 @@ header .container {
 
 .nav {
   display: -ms-flexbox;
-  display: ;flex
+  display: flex;
   -ms-flex-wrap: inherit;
   flex-wrap: inherit !important;
   padding-left: 0;
@@ -6838,5 +6838,6 @@ header .container {
      margin-bottom: 0px;
      display: table-cell;
 }
+
 
  

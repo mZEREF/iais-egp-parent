@@ -221,20 +221,20 @@
       $('#singpass').attr("href", "javascript:void(0);");
       $('#singpass').attr("onclick", "javascripts:$('#loginModal').modal('show');");
     } else if ($('#oldSystem').is(':checked')) {
-      $('#corppass').attr("href", oldSysCorpass);
-      $('#corppass').removeAttr("onclick");
-      $('#singpass').attr("href", oldSysSingpass);
-      $('#singpass').removeAttr("onclick");
+        $('#corppass').attr("href", oldSysCorpass);
+        $('#corppass').removeAttr("onclick");
+        $('#singpass').attr("href", oldSysSingpass);
+        $('#singpass').removeAttr("onclick");
     } else if (isEmpty(prd)) {
       $('#corppass').attr("href", "javascript:void(0);");
       $('#corppass').attr("onclick", "Utils.submit('mainForm','corppassLogin');");
       $('#singpass').attr("href", "javascript:void(0);");
       $('#singpass').attr("onclick", "Utils.submit('mainForm','singpassLogin');");
     } else {
-      $('#corppass').attr("href", prd);
-      $('#corppass').removeAttr("onclick");
-      $('#singpass').attr("href", prdSing);
-      $('#singpass').removeAttr("onclick");
+        $('#corppass').attr("href", prd);
+        $('#corppass').removeAttr("onclick");
+        $('#singpass').attr("href", prdSing);
+        $('#singpass').removeAttr("onclick");
     }
   }
 </script>

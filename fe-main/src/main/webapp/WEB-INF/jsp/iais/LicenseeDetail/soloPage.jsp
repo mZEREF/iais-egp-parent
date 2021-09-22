@@ -36,8 +36,8 @@
                             <div class="new-premise-form-conveyance">
                                 <div class="form-horizontal">
                                     <c:if test="${empty solo_login_name}">
-                                        <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
-                                        <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
+                                    <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                    <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
                                     </c:if>
                                     <c:if test="${not empty solo_login_name}">
                                         <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContentSoloView.jsp"%>
@@ -49,11 +49,12 @@
                                         <c:if test="${empty solo_login_name}">
                                             <div align="right" class="col-sm-7 col-md-6 col-xs-10">
                                                 <button type="button" class="btn btn-secondary" onclick="javascript:doClearlicInfo()">Clear</button>
-                                                <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
+                                                    <a class="btn btn-primary save" id="reLoadMyInfoSave">Save</a>
                                                 <input type="hidden" id="saveDataSolo" name="saveDataSolo" >
                                             </div>
                                         </c:if>
                                     </iais:row>
+                                    </div>
                                 </div>
                             </div>
                         </div>

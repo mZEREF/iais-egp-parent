@@ -56,23 +56,23 @@ public class SubLicenseeValidator implements CustomizeValidator {
                 errorMap.put("idType", MANDATORY_MSG);
             }
         }
-
+        String telephoneNoErr=MessageUtil.getMessageDesc("GENERAL_ERR0015");
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
             String telephoneNo = subLicenseeDto.getTelephoneNo();
             if (telephoneNo != null && !CommonValidator.isTelephoneNo(telephoneNo)) {
-                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                errorMap.put("telephoneNo", telephoneNoErr);
             }
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
             String mobileNo = subLicenseeDto.getTelephoneNo();
             if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
-                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                errorMap.put("telephoneNo", telephoneNoErr);
             }
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
             String telephoneNo = subLicenseeDto.getTelephoneNo();
             if (telephoneNo != null && !CommonValidator.isMobile(telephoneNo)) {
-                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                errorMap.put("telephoneNo", telephoneNoErr);
             }
         }
 

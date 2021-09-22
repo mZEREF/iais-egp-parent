@@ -2125,11 +2125,14 @@ public class NewApplicationDelegator {
                     break;
             }
         }
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         //add group other premise
-        List<AppGrpPremisesDto> appGrpPremisesDtos =  appSubmissionService.getAppSubmissionDto(appNo).getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtos =  oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        AppGrpPremisesDto currentAppGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
         for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
-            if (appSubmissionDto.getAppGrpPremisesDtoList().get(0).getId().equals(appGrpPremisesDtos.get(i).getId())){
-                appGrpPremisesDtos.set(i, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+            if (StringUtil.isNotEmpty(currentAppGrpPremisesDto.getPremisesIndexNo()) &&
+                    currentAppGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDtos.get(i).getPremisesIndexNo())){
+                appGrpPremisesDtos.set(i, currentAppGrpPremisesDto);
             }else {
                 NewApplicationHelper.setWrkTime(appGrpPremisesDtos.get(i));
             }
@@ -2164,7 +2167,6 @@ public class NewApplicationDelegator {
                 }
             }
         }
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         //oldAppSubmissionDtos
 //        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
         StringBuilder stringBuilder = new StringBuilder(10);

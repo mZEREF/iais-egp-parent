@@ -111,20 +111,20 @@ public interface ApplicationService {
     ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/9/17
-     * @Param: applicationGroupDto, broadcastApplicationDto
-     * @return: broadcastApplicationDto
-     * @Descripation: setRejectOtherAppGrps
-     */
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setRejectOtherAppGrps
+      */
     BroadcastApplicationDto setRejectOtherAppGrps(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/9/17
-     * @Param: applicationGroupDto, broadcastApplicationDto
-     * @return: broadcastApplicationDto
-     * @Descripation: setAppGrpMiscInactive
-     */
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setAppGrpMiscInactive
+      */
     BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
 }
