@@ -208,6 +208,10 @@ public class HalpAssessmentGuideDelegator {
 
     }
 
+    public void perDate(BaseProcessClass bpc) {
+
+    }
+
     public void newApp1(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("prepareData start ..."));
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
