@@ -18,13 +18,42 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremEventPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.PersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -64,18 +93,15 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.rfcutil.PageDataCopyUtil;
-import com.ecquaria.cloud.moh.iais.rfi.exc.RfiLoadingExc;
 import com.ecquaria.cloud.moh.iais.rfi.impl.RfiLoadingCheckImplForRenew;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
-import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.StepColorService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.AppGrpPaymentClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigFeClient;
@@ -192,8 +218,7 @@ public class NewApplicationDelegator {
     private AppSubmissionService appSubmissionService;
     @Autowired
     private RequestForChangeService requestForChangeService;
-    @Autowired
-    private CessationFeService cessationFeService;
+
     @Autowired
     private RfiLoadingCheckImplForRenew rfiLoadingCheckImplForRenew;
     @Autowired
@@ -204,20 +229,17 @@ public class NewApplicationDelegator {
     private CessationClient cessationClient;
     @Autowired
     private WithOutRenewalService withOutRenewalService;
-    @Autowired
-    private RfiLoadingExc  rfiLoadingExc;
+
     @Autowired
     private ApplicationFeClient applicationFeClient;
     @Autowired
     private EventBusHelper eventBusHelper;
     @Autowired
     private StepColorService stepColorService;
-    @Autowired
-    private FeMessageClient feMessageClient;
+
     @Autowired
     private ServiceInfoChangeEffectPersonForRFC serviceInfoChangeEffectPersonForRFC;
-    @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
+
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
@@ -231,15 +253,14 @@ public class NewApplicationDelegator {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    @Value("${iais.email.sender}")
-    private String mailSender;
     @Autowired
     private HcsaAppClient hcsaAppClient;
     @Value("${iais.current.domain}")
     private String currentDomain;
     @Autowired
     private Environment env;
-
+    @Autowired
+    AppGrpPaymentClient appGrpPaymentClient;
     /**
      * StartStep: Start
      *
@@ -1534,11 +1555,99 @@ public class NewApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
             }
         } else {
-            appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
-            log.debug(StringUtil.changeForLog("result is empty"));
-            //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
-            switch2 = "loading";
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
+            PaymentRequestDto paymentRequestDtoSuss=null;
+            List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appSubmissionDto.getAppGrpNo()).getEntity();
+            if(paymentRequestDtos!=null){
+                for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
+                ) {
+                    if("success".equals(paymentRequestDto.getStatus())){
+                        paymentRequestDtoSuss=paymentRequestDto;
+                        break;
+                    }
+                }
+            }
+
+            PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appSubmissionDto.getAppGrpNo()).getEntity();
+            if(paymentRequestDtoSuss!=null){
+                PaymentDto paymentDtoSuss= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDtoSuss.getReqRefNo()).getEntity();
+                if(paymentDtoSuss!=null){
+                    paymentDto=paymentDtoSuss;
+                }
+            }
+            if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
+
+                pmtRefNo=paymentDto.getReqRefNo();
+
+                log.debug(StringUtil.changeForLog("online payment success ..."));
+                try {
+                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+                        List<AppSubmissionDto> appSubmissionDtos1 = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request,
+                                APP_SUBMISSIONS);
+                        if (appSubmissionDtos1 == null || appSubmissionDtos1.size() == 0) {
+                            appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
+                            appSubmissionDtos1.add(appSubmissionDto);
+                        }
+                        requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos1, appSubmissionDto.getPaymentMethod());
+                    }
+                } catch (Exception e) {
+                    log.info(StringUtil.changeForLog(e.getMessage()), e);
+                }
+
+                List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+                if (ackSubmissionDtos != null) {
+                    for (AppSubmissionDto appSubmissionDto1 : ackSubmissionDtos) {
+                        ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                        appGrp.setId(appSubmissionDto1.getAppGrpId());
+                        appGrp.setPmtRefNo(pmtRefNo);
+                        appGrp.setGroupNo(appSubmissionDto1.getAppGrpNo());
+                        appGrp.setAutoRfc(appSubmissionDto1.isAutoRfc());
+                        Double amount = appSubmissionDto1.getAmount();
+                        if (amount != null && !MiscUtil.doubleEquals(0.0, amount)) {
+                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                        } else {
+                            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                            appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                        }
+                        log.info(StringUtil.changeForLog("Payment response data is " + JsonUtil.parseToJson(appGrp)));
+                        applicationFeClient.updatePaymentByAppGrp(appGrp);
+                        appGrpIds.add(appSubmissionDto1.getAppGrpId());
+                    }
+                }
+                String txnDt = ParamUtil.getMaskedString(bpc.request, "txnDt");
+                String txnRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
+                ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
+                ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
+                switch2 = "ack";
+
+                //update status for transfor payment
+                String appGrpId = appSubmissionDto.getAppGrpId();
+                if (!appGrpIds.contains(appGrpId)) {
+                    ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                    appGrp.setId(appGrpId);
+                    appGrp.setPmtRefNo(pmtRefNo);
+                    appGrp.setPaymentDt(new Date());
+                    appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+                    appGrp.setPayMethod(appSubmissionDto.getPaymentMethod());
+                    serviceConfigService.updatePaymentStatus(appGrp);
+                }
+                //send email
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    try {
+                        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,
+                                AppConsts.SESSION_ATTR_LOGIN_USER);
+                        appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog("send email error ...."));
+                    }
+                }
+            }else {
+                appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+                log.debug(StringUtil.changeForLog("result is empty"));
+                //appSubmissionService.updateDraftStatus(appSubmissionDto.getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
+                switch2 = "loading";
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE,"payment");
+            }
         }
 
         if ("ack".equals(switch2)) {
