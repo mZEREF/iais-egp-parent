@@ -3038,7 +3038,7 @@ span.error-msg {
         margin-bottom: 30px;
     }
     .progress-tracker li {
-        font-size: 0;
+        font-size: 14px;
     }
 }
 
@@ -5838,7 +5838,7 @@ ul.v-numberlist li::before {
     -webkit-border-radius: 8px;
     }
 
-
+    .table-info-display .nav { float: right; }
 }
 
 
