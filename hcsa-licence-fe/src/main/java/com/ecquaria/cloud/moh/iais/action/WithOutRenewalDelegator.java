@@ -1141,6 +1141,7 @@ public class WithOutRenewalDelegator {
         int index = 0;
         int mix_g = 0;
         int mix_n = 0;
+        boolean isBundledFee=false;
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
             AppFeeDetailsDto appFeeDetailsDto1=new AppFeeDetailsDto();
             FeeExtDto feeExtDto = detailFeeDtoList.get(index);
@@ -1153,6 +1154,10 @@ public class WithOutRenewalDelegator {
             }
             if(mix_g > 0 && mix_n >0){
                 ParamUtil.setRequestAttr(bpc.request,"mix","mix");
+            }
+            if(feeExtDto.getAmount()==0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
+                appSubmissionDto.setIsBundledFee(1);
+                isBundledFee=true;
             }
             appSubmissionDto.setRenewalFeeType(lateFeeType);
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
@@ -1171,6 +1176,17 @@ public class WithOutRenewalDelegator {
             appFeeDetailsDto1.setAdmentFee(total);
             index ++;
         }
+        if(isBundledFee){
+            index = 0;
+            for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+                FeeExtDto feeExtDto = detailFeeDtoList.get(index);
+                if(feeExtDto.getAmount()!=0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
+                    appSubmissionDto.setIsBundledFee(1);
+                }
+                index ++;
+            }
+        }
+
     }
 
     public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails,List<FeeExtDto> gradualFeeList,List<FeeExtDto> normalFeeList){
