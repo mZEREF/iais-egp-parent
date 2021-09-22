@@ -10,9 +10,13 @@ import lombok.Data;
 public class DocConfigDto {
     private String docType;
     private Boolean isMandatory;
+    private String approvalType;
+    private String index;
 
-    public DocConfigDto(String docType, Boolean isMandatory) {
+    public DocConfigDto(String docType, Boolean isMandatory, String approvalType, String index) {
         this.docType = docType;
         this.isMandatory = isMandatory;
+        this.approvalType = approvalType;
+        this.index = index;
     }
 }

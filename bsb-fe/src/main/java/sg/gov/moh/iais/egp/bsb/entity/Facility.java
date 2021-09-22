@@ -24,8 +24,6 @@ public class Facility extends BaseEntity {
 
     private String facilityClassification;
 
-    private String facilityType;
-
     private String postalCode;
 
     private String blkNo;
@@ -38,25 +36,7 @@ public class Facility extends BaseEntity {
 
     private String isProtected;
 
-    private String operatorType;
-
-    private String operatorName;
-
-    private String idType;
-
-    private String idNumber;
-
-    private String designation;
-
-    private String contactNo;
-
-    private String emailAddr;
-
-    private Date employmentStartDt;
-
     private String scheduleType;
-
-    private String uenNo;
 
     private String approval;
 

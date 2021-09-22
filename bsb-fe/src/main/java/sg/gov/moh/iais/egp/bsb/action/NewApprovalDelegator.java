@@ -3,12 +3,12 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
@@ -20,6 +20,7 @@ import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
@@ -48,16 +49,20 @@ public class NewApprovalDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
+
     public void doStart(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(ApprovalApplicationConstants.MODULE_SYSTEM_CONFIG,
                 ApprovalApplicationConstants.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_1);
+//        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_2);
+//        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_3);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
     }
 
     public void prepareCompanyInfo(BaseProcessClass bpc) {
-
     }
 
     public void prepare(BaseProcessClass bpc) {
@@ -91,23 +96,18 @@ public class NewApprovalDelegator {
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         List<DocConfigDto> docConfigDtoList = new ArrayList<>();
         if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
         }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true,task,"2"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4"));
         }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
-            DocConfigDto docConfigDto1 = new DocConfigDto(DOC_TYPE_1,true);
-            DocConfigDto docConfigDto2 = new DocConfigDto(DOC_TYPE_5,true);
-            DocConfigDto docConfigDto3 = new DocConfigDto(DOC_TYPE_6,true);
-            DocConfigDto docConfigDto4 = new DocConfigDto(DOC_TYPE_4,true);
-            DocConfigDto docConfigDto5 = new DocConfigDto(DOC_TYPE_7,true);
-            docConfigDtoList.add(docConfigDto1);
-            docConfigDtoList.add(docConfigDto2);
-            docConfigDtoList.add(docConfigDto3);
-            docConfigDtoList.add(docConfigDto4);
-            docConfigDtoList.add(docConfigDto5);
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"2"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_6,true,task,"3"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"5"));
         }
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.DOC_CONFIG_ATTR, docConfigDtoList);
 
@@ -142,11 +142,64 @@ public class NewApprovalDelegator {
     }
 
     public void doDocuments(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do doDocument start ...."));
         HttpServletRequest request = bpc.request;
+        //set crudActionType and crudActionTypeFormPage on different actionType
+        String crudActionType = "";
+        String crudActionTypeFormPage = "";
+        String actionType = ParamUtil.getString(request,ApprovalApplicationConstants.ACTIONTYPE);
+        if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+        }
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
     public void doPreview(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        //set crudActionType and crudActionTypeFormPage on different actionType
+        String crudActionType = "";
+        String crudActionTypeFormPage = "";
+        String actionType = ParamUtil.getString(request,ApprovalApplicationConstants.ACTIONTYPE);
+        if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
+        }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_7)){
+            crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_3;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_4;
+        }
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
     public void prepareForms(BaseProcessClass bpc) {
@@ -166,19 +219,14 @@ public class NewApprovalDelegator {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = getDtoByForm(bpc);
         ParamUtil.setSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR, approvalApplicationDto);
-    }
-
-    public void controlSwitch(BaseProcessClass bpc) throws ParseException {
-        HttpServletRequest request = bpc.request;
+        //set validateStatus on different conditions
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto) ParamUtil.getSessionAttr(request,ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        //validate condition by different application status and type
         String validateStatus = "";
         String crudActionType = "";
         String crudActionTypeFormPage = "";
-        String pageId = ParamUtil.getString(request, ApprovalApplicationConstants.PAGE_ID);
-        String actionType = ParamUtil.getString(request,ApprovalApplicationConstants.ACTIONTYPE);
+        //judge natureOfTheSampleList if has "others"
         Boolean flag = true;
+        String actionType = ParamUtil.getString(request,ApprovalApplicationConstants.ACTIONTYPE);
         if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
             validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_11;
         }else{
@@ -220,79 +268,44 @@ public class NewApprovalDelegator {
                 validateStatus = ApprovalApplicationConstants.VALIDATE_STATUS_7;
             }
         }
-        //validate
         ValidationResult vResult = WebValidationHelper.validateProperty(approvalApplicationDto,validateStatus);
-        if (pageId.equals(ApprovalApplicationConstants.PAGE_ID_1) && actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)) {
+        //back
+        if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)) {
             crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
             crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_4;
         }else{
+            //validate
             if(vResult != null && vResult.isHasErrors()){
                 Map<String,String> errorMap = vResult.retrieveAll();
                 ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
                 crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-            }else if (pageId.equals(ApprovalApplicationConstants.PAGE_ID_1)){
-                if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }
-            }else if (pageId.equals(ApprovalApplicationConstants.PAGE_ID_2)){
-                if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }
-            }else if (pageId.equals(ApprovalApplicationConstants.PAGE_ID_3)){
-                if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
-                }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_7)){
-                    crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_3;
-                    crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_4;
-                }
+            }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_2)){
+                crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+                crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+            }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_3)){
+                crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+                crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+            }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_4)){
+                crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+                crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_2;
+            }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_5)){
+                crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+                crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_3;
+            }else if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_6)){
+                crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_2;
+                crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
             }
         }
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
+
+    }
+
+    public void controlSwitch(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
+        String crudActionTypeFormPage = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
+        String crudActionType = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
