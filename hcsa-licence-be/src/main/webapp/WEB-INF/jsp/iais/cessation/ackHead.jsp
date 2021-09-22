@@ -5,7 +5,7 @@
 %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
-    <div style="margin-left: 210px">
+    <div style="margin-left: 60px">
         <div class="navigation-gp">
             <div class="row">
                 <webui:setLayout name="iais-intranet"/>
