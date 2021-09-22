@@ -62,7 +62,7 @@
       <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
         <div class="dashalert alert-info dash-announce alertMaintainace">
           <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:closeMaintainace();"><span aria-hidden="true">x</span></button>
-          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintenance</h3> <%--NOSONAR--%>
           <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
       </c:if>
       <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
