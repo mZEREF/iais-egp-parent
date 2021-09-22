@@ -1179,10 +1179,17 @@ public class WithOutRenewalDelegator {
             if(mix_g > 0 && mix_n >0){
                 ParamUtil.setRequestAttr(bpc.request,"mix","mix");
             }
-            if(feeExtDto.getAmount()==0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
-                appSubmissionDto.setIsBundledFee(1);
-                isBundledFee=true;
+            try {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(feeExtDto.getSvcNames().get(0));
+                feeExtDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                if(feeExtDto.getAmount()==0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
+                    appSubmissionDto.setIsBundledFee(1);
+                    isBundledFee=true;
+                }
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
+
             appSubmissionDto.setRenewalFeeType(lateFeeType);
             Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
             Double amount = feeExtDto.getAmount();
