@@ -45,7 +45,7 @@ public class ValidateVehicle implements ValidateFlow {
         for (int i = 0; i < appSvcVehicleDtos.size(); i++) {
             AppSvcVehicleDto currentDto = appSvcVehicleDtos.get(i);
             String vehicleNum = currentDto.getVehicleNum();
-            if (!currentDto.isDummyVehNum()){
+            if (!currentDto.isDummyVehNum() && StringUtil.isNotEmpty(vehicleNum)){
                 if (vehicleNum.length() > 10) {
                     map.put(VEHICLE_NAME + i, NewApplicationHelper.repLength("Vehicle Number", "10"));
                 } else if (!VehNoValidator.validateNumber(vehicleNum)) {
@@ -125,7 +125,7 @@ public class ValidateVehicle implements ValidateFlow {
     private String getValue(AppSvcVehicleDto asv, String name) {
         String val = null;
         if (VEHICLE_NAME.equals(name)) {
-            val = asv.getVehicleNum();
+            val = asv.getVehicleName();
         } else if (CHASSIS_NAME.equals(name)) {
             val = asv.getChassisNum();
         } else if (ENGINE_NAME.equals(name)) {
