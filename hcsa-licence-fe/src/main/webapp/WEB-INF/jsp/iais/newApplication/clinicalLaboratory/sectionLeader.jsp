@@ -63,127 +63,127 @@
             <span style="">+ Add Another ${singleName}</span>
         </span>
     </div>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            initSectionLeader();
-            <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
-            disableContent('div.sectionLaderContent');
-            <c:if test="${!canEdit}">
-            $('.removeBtn').closest('div').remove();
-            </c:if>
-            </c:if>
-        });
-
-        function initSectionLeader() {
-            addSectionLeaderBtn();
-            removeSectionLeader();
-            doEdite();
-            refreshBtn();
-        }
-
-        function refreshSectionLeaderIndex() {
-            var slLength = $('.sectionLaderContent').length;
-            $('input[name="slLength"]').val(slLength);
-            console.info("length: " + slLength)
-            var $content = $('div.sectionLaderContent');
-            refreshIndex($content);
-            $content.each(function (k,v) {
-                if (slLength <= 1 && k == 0) {
-                    $(this).find('.assign-psn-item').html('');
-                } else {
-                    $(this).find('.assign-psn-item').html(k + 1);
-                }
-            });
-        }
-
-        function refreshBtn() {
-            var $content = $('div.sectionLaderContent');
-            var slLength = $content.length;
-            $('input[name="slLength"]').val(slLength);
-            var isEdit =  $('#isEditHiddenVal').val();
-            $content.each(function (index,v) {
-                if (index < '${sectionLeaderConfig.mandatoryCount}') {
-                    $(v).find('.removeSectionLeaderDiv').remove();
-                } else if ('1' == isEdit) {
-                    $(v).find('.removeSectionLeaderDiv').show();
-                } else {
-                    $(v).find('.removeSectionLeaderDiv').hide();
-                }
-            });
-            <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">
-            // display add more
-            if (slLength < '${sectionLeaderConfig.maximumCount}') {
-                $('.addSectionLeaderDiv').show();
-            } else {//hidden add more
-                $('.addSectionLeaderDiv').hide();
-            }
-            </c:if>
-            <c:if test="${!canShowAddBtn}">
-            $('.addSectionLeaderDiv').remove();
-            </c:if>
-        }
-
-        function addSectionLeaderBtn () {
-            $('.addSectionLeaderBtn').unbind('click');
-            $('.addSectionLeaderBtn').click(function () {
-                showWaiting();
-                var slLength = $('.sectionLaderContent').length;
-
-                $.ajax({
-                    url: '${pageContext.request.contextPath}/section-leader-html',
-                    dataType: 'json',
-                    data: {
-                        "slLength": slLength
-                    },
-                    type: 'POST',
-                    success: function (data) {
-                        if ('200' == data.resCode) {
-                            $('.addSectionLeaderDiv').before(data.resultJson+'');
-                            // init
-                            $('div.sectionLaderContent select').niceSelect();
-                            refreshSectionLeaderIndex();
-                            initSectionLeader();
-                            $('#isEditHiddenVal').val('1');
-                        }
-                        dismissWaiting();
-                    },
-                    error: function (data) {
-                        console.log("err");
-                        dismissWaiting();
-                    }
-                });
-            });
-        };
-
-        function removeSectionLeader () {
-            $('.removeBtn').unbind('click');
-            $('.removeBtn').click(function () {
-                showWaiting();
-                var slLength = $('.sectionLaderContent').length;
-                if (slLength <= '${sectionLeaderConfig.mandatoryCount}') {
-                    dismissWaiting();
-                    return;
-                }
-                var $currContent = $(this).closest('div.sectionLaderContent');
-                $currContent.remove();
-                $('#isEditHiddenVal').val('1');
-                refreshSectionLeaderIndex();
-                initSectionLeader();
-                dismissWaiting();
-            });
-        }
-
-        var doEdite = function () {
-            $('.edit-content a').unbind('click');
-            $('.edit-content a').click(function () {
-                var $currContent = $(this).closest('div.sectionLaderContent');
-                unDisableContent($currContent);
-                $('#isEditHiddenVal').val('1');
-                $currContent.find('.isPartEdit').val('1');
-                refreshBtn();
-                $(this).hide();
-            });
-        }
-    </script>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        initSectionLeader();
+        <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}" var="isSpecial">
+        disableContent('div.sectionLaderContent');
+        <c:if test="${!canEdit}">
+        $('.removeBtn').closest('div').remove();
+        </c:if>
+        </c:if>
+    });
+
+    function initSectionLeader() {
+        addSectionLeaderBtn();
+        removeSectionLeader();
+        doEdite();
+        refreshBtn();
+    }
+
+    function refreshSectionLeaderIndex() {
+        var slLength = $('.sectionLaderContent').length;
+        $('input[name="slLength"]').val(slLength);
+        console.info("length: " + slLength)
+        var $content = $('div.sectionLaderContent');
+        refreshIndex($content);
+        $content.each(function (k,v) {
+            if (slLength <= 1 && k == 0) {
+                $(this).find('.assign-psn-item').html('');
+            } else {
+                $(this).find('.assign-psn-item').html(k + 1);
+            }
+        });
+    }
+
+    function refreshBtn() {
+        var $content = $('div.sectionLaderContent');
+        var slLength = $content.length;
+        $('input[name="slLength"]').val(slLength);
+        var isEdit =  $('#isEditHiddenVal').val();
+        $content.each(function (index,v) {
+            if (index < '${sectionLeaderConfig.mandatoryCount}') {
+                $(v).find('.removeSectionLeaderDiv').remove();
+            } else if ('1' == isEdit) {
+                $(v).find('.removeSectionLeaderDiv').show();
+            } else {
+                $(v).find('.removeSectionLeaderDiv').hide();
+            }
+        });
+        <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">
+        // display add more
+        if (slLength < '${sectionLeaderConfig.maximumCount}') {
+            $('.addSectionLeaderDiv').show();
+        } else {//hidden add more
+            $('.addSectionLeaderDiv').hide();
+        }
+        </c:if>
+        <c:if test="${!canShowAddBtn}">
+        $('.addSectionLeaderDiv').remove();
+        </c:if>
+    }
+
+    function addSectionLeaderBtn () {
+        $('.addSectionLeaderBtn').unbind('click');
+        $('.addSectionLeaderBtn').click(function () {
+            showWaiting();
+            var slLength = $('.sectionLaderContent').length;
+
+            $.ajax({
+                url: '${pageContext.request.contextPath}/section-leader-html',
+                dataType: 'json',
+                data: {
+                    "slLength": slLength
+                },
+                type: 'POST',
+                success: function (data) {
+                    if ('200' == data.resCode) {
+                        $('.addSectionLeaderDiv').before(data.resultJson+'');
+                        // init
+                        $('div.sectionLaderContent select').niceSelect();
+                        refreshSectionLeaderIndex();
+                        initSectionLeader();
+                        $('#isEditHiddenVal').val('1');
+                    }
+                    dismissWaiting();
+                },
+                error: function (data) {
+                    console.log("err");
+                    dismissWaiting();
+                }
+            });
+        });
+    };
+
+    function removeSectionLeader () {
+        $('.removeBtn').unbind('click');
+        $('.removeBtn').click(function () {
+            showWaiting();
+            var slLength = $('.sectionLaderContent').length;
+            if (slLength <= '${sectionLeaderConfig.mandatoryCount}') {
+                dismissWaiting();
+                return;
+            }
+            var $currContent = $(this).closest('div.sectionLaderContent');
+            $currContent.remove();
+            $('#isEditHiddenVal').val('1');
+            refreshSectionLeaderIndex();
+            initSectionLeader();
+            dismissWaiting();
+        });
+    }
+
+    var doEdite = function () {
+        $('.edit-content a').unbind('click');
+        $('.edit-content a').click(function () {
+            var $currContent = $(this).closest('div.sectionLaderContent');
+            unDisableContent($currContent);
+            $('#isEditHiddenVal').val('1');
+            $currContent.find('.isPartEdit').val('1');
+            refreshBtn();
+            $(this).hide();
+        });
+    }
+</script>
 
