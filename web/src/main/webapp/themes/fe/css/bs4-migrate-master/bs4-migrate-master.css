@@ -6769,9 +6769,9 @@ header .container {
 }
 
  .row {
-  display: -ms-flexbox;
+  /*display: -ms-flexbox;
   display: inherit !important;
-  -ms-flex-wrap: inherit;
+  -ms-flex-wrap: inherit;*/
  /* flex-wrap: inherit !important;*/
   margin-right: -15px;
   margin-left: -15px;
