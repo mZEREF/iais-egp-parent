@@ -264,7 +264,6 @@ public class LicenceServiceImpl implements LicenceService {
         if(eventBusLicenceGroupDtos!=null){
             Date now = new Date();
             EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-
             trackDto.setProcessNum(trackDto.getProcessNum() + 1);
             trackDto.setFirstActionAt(now);
             trackDto.setLastActionAt(now);
