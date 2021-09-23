@@ -175,6 +175,7 @@ public class NewApplicationHelper {
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList(), deList);
             targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(deList);
         }
+        targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
     public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {
