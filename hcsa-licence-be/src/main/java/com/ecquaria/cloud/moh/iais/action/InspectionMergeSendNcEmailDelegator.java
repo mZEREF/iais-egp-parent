@@ -307,7 +307,7 @@ public class InspectionMergeSendNcEmailDelegator {
                                     }
                                 }
                                 if(!isDisplayName){
-                                    stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                                    stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
                                 }
                             }else {
                                 stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));

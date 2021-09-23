@@ -549,7 +549,7 @@ public class InspectReviseNcEmailDelegator extends InspectionCheckListCommonMeth
                             }
                         }
                         if(!isDisplayName){
-                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
                         }
                     }else {
                         stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
