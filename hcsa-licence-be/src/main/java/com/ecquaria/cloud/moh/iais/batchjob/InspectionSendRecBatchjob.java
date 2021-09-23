@@ -287,7 +287,8 @@ public class InspectionSendRecBatchjob {
         return checklistConfigDtos;
     }
 
-    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto,
+                                                List<AppSvcVehicleDto> appSvcVehicleDtos) {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();

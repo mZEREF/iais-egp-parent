@@ -435,6 +435,60 @@ function clearFields(targetSelector) {
     });
 }
 
+function fillValue(targetSelector, data){
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if ($selector.length <= 0) {
+        return;
+    }
+    console.info("data - " + data);
+    if (isEmpty(data)) {
+        clearFields($selector);
+        return;
+    }
+    if ($selector.is(":input")) {
+        var type = $selector[0].type, tag = $selector[0].tagName.toLowerCase();
+        console.info("Tag - " + tag + " : " + type);
+        if (type == 'radio') {
+            $selector.filter('[value="' + data + '"]').prop('checked', true);
+            $selector.filter(':not([value="' + data + '"])').prop('checked', false);
+        } else if (type == 'checkbox') {
+            if ($.isArray(data)) {
+                $selector.prop('checked', false);
+                for (var v in data) {
+                    if (curVal == v) {
+                        $(this).prop('checked', true);
+                    }
+                }
+            } else {
+                $selector.filter('[value="' + data + '"]').prop('checked', true);
+                $selector.filter(':not([value="' + data + '"])').prop('checked', false);
+            }
+        } else if (tag == 'select') {
+            var oldVal = $selector.val();
+            $selector.val(data);
+            if (isEmpty($selector.val())) {
+                $selector[0].selectedIndex = 0;
+            }
+            if ($selector.val() != oldVal) {
+                $selector.niceSelect("update");
+            }
+        } else {
+            $selector.val(data);
+        }
+    } else {
+        $.each(data, function(i, val) {
+            var $input = $selector.find('[name="'+ i +'"]:input');
+            if ($input.length == 0) {
+                $input = $selector.find('.' + i + ':input');
+            }
+            fillValue($input, val);
+        });
+    }
+}
+
 function disableContent(targetSelector) {
     if (isEmpty(targetSelector)) {
         return;

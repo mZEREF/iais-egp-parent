@@ -3005,7 +3005,7 @@ span.error-msg {
         margin-bottom: 30px;
     }
     .progress-tracker li {
-        font-size: 0;
+        font-size: 12px;
     }
     .progress-tracker li:before {
         left: 50%;

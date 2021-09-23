@@ -173,11 +173,11 @@ public interface InspectionRectificationProService {
     List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos);
 
     /**
-     * @author: shicheng
-     * @Date 2021/9/22
-     * @Param: appSvcVehicleDtos, vehicleName
-     * @return: String
-     * @Descripation: getVehicleShowName
-     */
+      * @author: shicheng
+      * @Date 2021/9/22
+      * @Param: appSvcVehicleDtos, vehicleName
+      * @return: String
+      * @Descripation: getVehicleShowName
+      */
     String getVehicleShowName(String vehicleName, List<AppSvcVehicleDto> appSvcVehicleDtos);
 }

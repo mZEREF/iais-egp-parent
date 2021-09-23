@@ -14,16 +14,6 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -40,6 +30,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangyu
@@ -119,24 +120,27 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        if(selectedFile != null && selectedFile.getOriginalFilename() != null) {
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-            //name
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-            fileName = url + fileName + "</a>";
-            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
-                            .replace("replaceFileAppendIdDown", fileAppendId)
-                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", CSRF))
-                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
-                    replace("indexReplace", String.valueOf(size)))
-                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
-                            replace("replaceForUpload", fileAppendId).
-                            replace("indexReplace", String.valueOf(size))
-                    ).append("</Div>")
-            ;
+        if(selectedFile != null) {
+            String originalFileName = selectedFile.getOriginalFilename();
+            if(originalFileName != null) {
+                String[] fileSplit = originalFileName.split("\\.");
+                //name
+                String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+                String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+                String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+                fileName = url + fileName + "</a>";
+                stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                        append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                                .replace("replaceFileAppendIdDown", fileAppendId)
+                                .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", CSRF))
+                        .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
+                        replace("indexReplace", String.valueOf(size)))
+                        .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
+                                replace("replaceForUpload", fileAppendId).
+                                replace("indexReplace", String.valueOf(size))
+                        ).append("</Div>")
+                ;
+            }
         }
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
@@ -242,10 +246,10 @@ public class HcsaFileAjaxController {
 
     private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
         List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
-        log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
         if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
             String localIp = MiscUtil.getLocalHostExactAddress();
             log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            RestTemplate restTemplate = new RestTemplate();
             for (String ip : ipAddrs) {
                 if (localIp.equals(ip)) {
                     continue;
@@ -254,7 +258,11 @@ public class HcsaFileAjaxController {
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
                     apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
-                    log.info("Request URL ==> " + apiUrl.toString());
+
+                    StringBuilder logStringBuilder = new StringBuilder("Request URL ==> ");
+                    logStringBuilder.append(apiUrl.toString());
+                    log.info(StringUtil.changeForLog(logStringBuilder.toString()));
+
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -277,7 +285,6 @@ public class HcsaFileAjaxController {
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
                     jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
                     multipartRequest.add("folderName", jsonPart);
-                    RestTemplate restTemplate = new RestTemplate();
                     HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
                     restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
                 } catch (Throwable e) {

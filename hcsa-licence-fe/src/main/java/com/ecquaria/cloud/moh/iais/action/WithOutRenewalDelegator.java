@@ -1182,7 +1182,7 @@ public class WithOutRenewalDelegator {
             try {
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(feeExtDto.getSvcNames().get(0));
                 feeExtDto.setSvcCode(hcsaServiceDto.getSvcCode());
-                if(feeExtDto.getAmount()==0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
+                if(MiscUtil.doubleEquals(feeExtDto.getAmount(), 0.0)&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
                     appSubmissionDto.setIsBundledFee(1);
                     isBundledFee=true;
                 }
@@ -1211,7 +1211,7 @@ public class WithOutRenewalDelegator {
             index = 0;
             for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
                 FeeExtDto feeExtDto = detailFeeDtoList.get(index);
-                if(feeExtDto.getAmount()!=0.0&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
+                if(!MiscUtil.doubleEquals(feeExtDto.getAmount(), 0.0)&&(feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)||feeExtDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE))){
                     appSubmissionDto.setIsBundledFee(1);
                 }
                 index ++;
