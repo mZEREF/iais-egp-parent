@@ -102,7 +102,7 @@ public class HcsaFileAjaxController {
             String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
             fileName = url + fileName + "</a>";
             stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                    append(fileName.replace("pageContext.request.contextPath", "/bsb-fe")
                             .replace("replaceFileAppendIdDown", fileAppendId)
                             .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", CSRF))
                     .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).

@@ -2,7 +2,13 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -11,12 +17,15 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.DocConfigDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,13 +44,16 @@ public class NewApprovalDelegator {
 
     public static final String TASK_LIST = "taskList";
 
-    private static final String DOC_TYPE_1 = "Biosafety Committee Approval";
+    private static final String DOC_TYPE_1 = "Approval/Endorsement: Biosafety Committee";
     private static final String DOC_TYPE_2 = "Risk Assessment";
     private static final String DOC_TYPE_3 = "Standard Operating Procedure (SOP)";
-    private static final String DOC_TYPE_4 = "Emergency Response Plan";
-    private static final String DOC_TYPE_5 = "Risk Assessment and Risk Management";
-    private static final String DOC_TYPE_6 = "In-Principal Approval from MOH";
-    private static final String DOC_TYPE_7 = "Letter of declaration";
+    private static final String DOC_TYPE_4 = "GMAC Endorsement";
+    private static final String DOC_TYPE_5 = "Emergency Response Plan";
+    private static final String DOC_TYPE_6 = "Approval Document from MOH";
+    private static final String DOC_TYPE_7 = "Special Approval to Handle";
+    private static final String DOC_TYPE_8 = "Others";
+
+    public static final String PRIMARY_DOC_CONFIG = "primaryDocConfig";
 
     @Autowired
     private ApprovalApplicationClient approvalApplicationClient;
@@ -95,20 +107,20 @@ public class NewApprovalDelegator {
         //set docConfig on different processType,The data here is simulated
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         List<DocConfigDto> docConfigDtoList = new ArrayList<>();
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true,task,"2"));
         if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
-        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true,task,"2"));
             docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3"));
             docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4"));
+        }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5"));
         }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"2"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_6,true,task,"3"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"5"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_6,true,task,"6"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"7"));
         }
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,true,task,"8"));
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.DOC_CONFIG_ATTR, docConfigDtoList);
 
         //set sysFileSize and sysFileType
@@ -168,7 +180,24 @@ public class NewApprovalDelegator {
         }
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
+
+
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        Map<String, File> fileMap0 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+0+"primaryDoc");
+        Map<String, File> fileMap1 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+1+"primaryDoc");
+        Map<String, File> fileMap2 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+2+"primaryDoc");
+        Map<String, File> fileMap3 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+3+"primaryDoc");
+        Map<String, File> fileMap4 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+4+"primaryDoc");
+        Map<String, File> fileMap5 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+5+"primaryDoc");
+        Object sessionAttr = ParamUtil.getSessionAttr(bpc.request, PRIMARY_DOC_CONFIG);
     }
+
+    /*private void saveFileAndSetFileId(Map<String,File> saveFileMap){
+        File file = saveFileMap.get("10");
+        List<File> fileList = new ArrayList<>();
+        fileList.add(file);
+        List<String> list = comFileRepoClient.saveFileRepo(fileList);
+    }*/
 
     public void doPreview(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;

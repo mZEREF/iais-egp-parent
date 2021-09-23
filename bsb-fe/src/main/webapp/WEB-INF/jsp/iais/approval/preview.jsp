@@ -24,9 +24,6 @@
                                         <div class="col-xs-12 col-md-10">
                                             <p></p>
                                         </div>
-                                        <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><div style="font-size: 16px;"><a onclick="preview()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a></div></p>
-                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">

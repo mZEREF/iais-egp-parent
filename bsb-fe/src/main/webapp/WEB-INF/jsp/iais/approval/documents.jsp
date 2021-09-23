@@ -35,7 +35,50 @@
                                 </div>
                                 <div class="document-upload-gp">
                                     <h2>PRIMARY DOCUMENTS</h2>
-                                    <%@include file="common/docContent.jsp"%>
+                                    <c:forEach var="config" items="${docConfigDtoList}" varStatus="configStat">
+                                        <c:choose>
+                                            <c:when test="${'1' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'2' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'3' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'4' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'5' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'6' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'7' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                            <c:when test="${'8' == config.index}">
+                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
+                                                <%@include file="common/docContent.jsp"%>
+                                            </c:when>
+                                        </c:choose>
+                                    </c:forEach>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
@@ -169,244 +212,6 @@
 
     function jumpPage() {
         submit('premises', 'saveDraft', 'jumpPage');
-    }
-
-
-
-
-
-
-    /*tangtangde*/
-    function openUploadDoc(){
-        $('#uploadDoc').dialog('open');
-    };
-
-    function closeUploadDoc(){
-        $('#selectedFileShow').html('')
-        $('#fileRemarkShow').html('')
-        $('#fileRemark').val('');
-        $('#uploadDoc').dialog().dialog('close');
-        $('#uploadDoc').dialog('open');
-        doDeleteShowFileName();
-    };
-
-    function uploadInternalDoc(){
-        $('#uploadFileButton').attr("disabled",true);
-        showWaiting();
-        if(validateUploadInternal())
-            callAjaxUploadFile();
-        dismissWaiting();
-        // closeUploadDoc();
-
-    }
-
-    function deleteFile(row,repoId) {
-        showWaiting();
-        $(row).parent('td').parent('tr').remove();
-        callAjaxDeleteFile(repoId);
-        dismissWaiting();
-    }
-    function callAjaxDeleteFile(repoId){
-        var data = {"appDocId":repoId};
-        $.post(
-            "${pageContext.request.contextPath}/deleteInternalFile",
-            data,
-            function (data) {
-                if(data != null && data.fileSn != -1){
-                    if(data.fileSn == 0){
-                        var tr ="<tr><td colspan='6'  align=\"left\" > " +data.noFilesMessage +"</td></tr> " ;
-                        doAddTr(tr);
-                    }
-                }
-            }
-        )
-    }
-
-    function callAjaxUploadFile(){
-        var form = new FormData($("#fileUploadForm")[0]);
-        $.ajax({
-            type: "post",
-            url:  "${pageContext.request.contextPath}/uploadInternalFile",
-            data: form,
-            async:true,
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            success: function (data) {
-
-                if(data != null && data.fileSn != null && data.fileSn != -1){
-                    if(data.fileSn == 0){
-                        removeNoData();
-                    }
-                    var tr = "<tr>"+"<td width=\"20%\"><p>" +data.name+"</p></td>" +"<td  width=\"20%\"><p>"+ data.url +data.name +"</p></td>"+
-                        "<td width=\"15%\"><p>" +data.size+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"25%\"><p>" +data.submitAtStr+"</p></td>"
-                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
-                    doAddTr(tr);
-                    $("#cancelDoc").click();
-                }else if(data != null && data.fileSn ==-1){
-                    $('#selectedFileShow').html(data.noFilesMessage);
-                }else if(data != null && data.fileSn == null){
-                    $('#selectedFileShow').html('The file size must less than 4M.');
-                }
-                $('#uploadFileButton').attr("disabled", false);
-            },
-            error: function (msg) {
-                alert("error");
-            }
-        });
-    }
-
-    function doDeleteShowFileName() {
-        var file = $("#selectedFile");
-        var fileClone = file.clone();
-        fileClone.change(function (){
-            var file = $(this).val();
-            if(file != null && file !=""){
-                $('#selectedFileShowTextName').val(getFileName(file));
-            }
-        });
-        file.after(fileClone.val(""));
-        file.remove();
-        $('#selectedFileShowTextName').val("");
-    }
-
-    function doAddTr(tr) {
-        $("#tbodyFileListId").append(tr);
-    }
-    function removeNoData() {
-        if(isIE()||isIE11()){
-            $("#tbodyFileListId").find("tr")[0].removeNode(true);
-        }else{
-            $("#tbodyFileListId").find("tr")[0].remove();
-        }
-    }
-    function isIE(){
-        if(!!window.ActiveXObject||"ActiveXObject" in window){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    function isIE11(){
-        if((/Trident\/7\./).test(navigator.userAgent)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    function validateUploadInternal(){
-        var maxSize = $("#fileMaxSize").val();
-        var fileType = $("#fileUploadType").val();
-        var flag = true;
-        $('#selectedFileShow').html('')
-        $('#fileRemarkShow').html('')
-        var selectedFile = $('#uploadDoc').find('[name="selectedFile"]').val();
-
-        var file = $('#selectedFile').get(0).files[0];
-        if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
-            $('#selectedFileShow').html('This is mandatory.');
-            $('#uploadFileButton').attr("disabled", false);
-            return false;
-        }else {
-            if(maxSize == null ||  maxSize == ""){
-                maxSize = 4;
-            } else{
-                maxSize =  parseInt(maxSize);
-            }
-            var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-            fileSize = parseInt(fileSize);
-            if(fileSize>= maxSize){
-                $('#selectedFileShow').html($("#fileMaxMBMessage").val());
-                if(fileSize >= 100){
-                    doDeleteShowFileName();
-                }
-                $('#uploadFileButton').attr("disabled", false);
-                return false;
-            }
-            if(fileType == null || fileType == ""){
-                fileType = "PDF,JPG,PNG,DOCX,DOC";
-            }
-
-            try {
-                var fileName =  getFileName($("#selectedFile").val());
-                if(fileName.length > 100){
-                    $('#selectedFileShow').html($("#fileMaxLengthMessage").val());
-                    $('#uploadFileButton').attr("disabled", false);
-                    return false;
-                }
-                var list = fileName.split(".");
-                fileName = list[list.length-1];
-                if(fileType.indexOf(fileName.toUpperCase()) == -1){
-                    var fileTypelist = fileType.split(",");
-                    if(fileTypelist.length >5) {
-                        var stringBiff = "";
-                        for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
-                            if(indexlist== 0){
-                                stringBiff += fileTypelist[indexlist];
-                            }else if(indexlist== fileTypelist.length-1){
-                                stringBiff += fileTypelist[indexlist]+"<br/>";
-                            }  else if(indexlist %5 == 0) {
-                                stringBiff += fileTypelist[indexlist] +"," +"<br/>";
-
-                            }else {
-                                stringBiff += fileTypelist[indexlist] +",";
-                            }
-                        }
-                        fileType = stringBiff;
-                    }
-                    $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
-                }
-            }catch (e){
-            }
-        }
-        var fileRemarkMaxLength = 50;
-        var fileRemarkLength = $('#fileRemark').val().length;
-        if(fileRemarkLength > fileRemarkMaxLength){
-            $('#fileRemarkShow').html('Exceeding the maximum length by ' + fileRemarkMaxLength );
-            $('#uploadFileButton').attr("disabled", false);
-            flag = flag && false;
-        }
-        return flag;
-    }
-
-    $('#selectedFileShowText').click(function (){
-        $('#selectedFile').click();
-    });
-    $('#selectedFileShowTextName').click(function (){
-        $('#selectedFile').click();
-    });
-
-
-    $('#selectedFile').change(
-        fileChange()
-    );
-    function fileChange(){
-        var file = $("#selectedFile").val();
-        if(file != null && file !=""){
-            $('#selectedFileShowTextName').val(getFileName(file));
-        }else {
-            $('#selectedFileShowTextName').val("");
-        }
-    }
-    function getFileName(o) {
-        var pos = o.lastIndexOf("\\");
-        return o.substring(pos + 1);
-    }
-
-    // FileChanged()
-    function fileChanged(event) {
-        var fileElement = event.target;
-        if (fileElement.value == "") {
-            clone[fileElement.id].insertBefore(fileElement); //'Restoring Clone'
-            $(fileElement).remove(); //'Removing Original'
-            if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
-        }else {
-            $('#selectedFile').change(
-                fileChange()
-            );
-        }
-        //What ever else you want to do when File Chooser Changed
     }
 </script>
 
