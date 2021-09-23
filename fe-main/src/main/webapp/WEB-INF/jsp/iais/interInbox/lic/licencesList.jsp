@@ -143,7 +143,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px">${licenceQuery.licenceNo}</a>
                                         <input type="hidden" name="licenId${status.index}"
                                                value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
