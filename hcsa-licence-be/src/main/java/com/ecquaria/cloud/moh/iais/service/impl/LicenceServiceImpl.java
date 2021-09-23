@@ -262,8 +262,12 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
+            Date now = new Date();
             EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
             eicCallFeSuperLic(eventBusLicenceGroupDtos);
+            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+            trackDto.setFirstActionAt(now);
+            trackDto.setLastActionAt(now);
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             //send approve notification
             try{
