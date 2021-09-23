@@ -94,6 +94,7 @@
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="appParam" result="appResult"/>
     </form>
 </div>

@@ -96,6 +96,7 @@
                 </div>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="licParam" result="licResult"/>
     </div>
     <div class="row">
