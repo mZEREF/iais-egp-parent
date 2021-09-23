@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -235,6 +236,9 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
     @Override
     public List<InspecUserRecUploadDto> getNcItemData(int version, String appPremCorrId, List<ChecklistItemDto> checklistItemDtos) {
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
+        //get vehicle list
+        List<AppSvcVehicleDto> appSvcVehicleDtos = inspectionFeClient.getAppSvcVehicleDtoListByCorrId(appPremCorrId).getEntity();
+        //get old data
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = applicationFeClient.getAppPremPreInsNcDtoByAppCorrId(appPremCorrId).getEntity();
         String oldNcId = appPremPreInspectionNcDto.getId();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = inspectionFeClient.getNcItemDtoListByAppPremNcId(oldNcId).getEntity();
@@ -276,6 +280,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
                         inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
+                        //set Vehicle No. To Show
+                        inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
                         inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
@@ -305,7 +311,8 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
                         InspecUserRecUploadDto inspecUserRecUploadDto = new InspecUserRecUploadDto();
                         inspecUserRecUploadDto.setId(appPremisesPreInspectionNcItemDto.getId());
                         inspecUserRecUploadDto.setItemId(appPremisesPreInspectionNcItemDto.getItemId());
-                        inspecUserRecUploadDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
+                        //set Vehicle No. To Show
+                        inspecUserRecUploadDto = setVehicleNoToShow(inspecUserRecUploadDto, appSvcVehicleDtos, appPremisesPreInspectionNcItemDto.getVehicleName());
                         int feRec = appPremisesPreInspectionNcItemDto.getFeRectifiedFlag();
                         if (1 == feRec) {
                             inspecUserRecUploadDto.setButtonFlag(AppConsts.SUCCESS);
@@ -342,6 +349,20 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             }
         }
         return inspecUserRecUploadDtos;
+    }
+
+    private InspecUserRecUploadDto setVehicleNoToShow(InspecUserRecUploadDto inspecUserRecUploadDto, List<AppSvcVehicleDto> appSvcVehicleDtos, String vehicleName) {
+        if(inspecUserRecUploadDto != null && !IaisCommonUtils.isEmpty(appSvcVehicleDtos) && !StringUtil.isEmpty(vehicleName)) {
+            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                if(appSvcVehicleDto != null) {
+                    String veName = appSvcVehicleDto.getVehicleName();
+                    if(vehicleName.equals(veName)) {
+                        inspecUserRecUploadDto.setVehicleNo(appSvcVehicleDto.getDisplayName());
+                    }
+                }
+            }
+        }
+        return inspecUserRecUploadDto;
     }
 
     private InspecUserRecUploadDto setRealFileName(InspecUserRecUploadDto inspecUserRecUploadDto, List<AppPremPreInspectionNcDocDto> appPremPreInspectionNcDocDtos) {
