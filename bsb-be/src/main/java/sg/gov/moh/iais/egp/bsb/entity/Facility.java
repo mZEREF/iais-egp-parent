@@ -28,13 +28,15 @@ public class Facility implements Serializable {
 
     private List<FacilityAudit> audits;
 
+    private List<FacilityActivity> facilityActivities;
+
     private String facilityName;
+
+    private String facilityType;
 
     private String facilityClassification;
 
     private String facilityStatus;
-
-    private String facilityType;
 
     private String facilityAddress;
 
@@ -69,8 +71,6 @@ public class Facility implements Serializable {
     private Organization organization;
 
     private String scheduleType;
-
-    private String uenNo;
 
     private String approval;
 
@@ -109,4 +109,6 @@ public class Facility implements Serializable {
     private Date validityStartDt;
 
     private Date validityEndDt;
+
+    private String activeType;
 }

@@ -126,6 +126,7 @@ public final class MasterCodeUtil {
     //ApplicationInfo
     public static final String CATE_ID_BSB_APP_TYPE = "FF506BE0-75EF-EB11-8B7D-000C293F0C99";
     public static final String CATE_ID_BSB_FAC_TYPE = "5013CFE0-9A2B-4D28-ADFC-313383A3FDA8";
+    public static final String CATE_ID_BSB_ACTIVE_TYPE = "5013CFE0-9A2B-4D28-ADFC-313383A3FDA9";
     public static final String CATE_ID_BSB_PRO_TYPE = "B538B60A-DFD1-4D1B-A668-8E9E4D61EC2A";
     public static final String CATE_ID_BSB_FAC_CLASSIFICATION = "856CC1D9-0272-41AA-AE64-C1C9815FA63E";
     public static final String CATE_ID_BSB_SCH_TYPE = "D0B94AC3-1FA4-4087-AFCC-C82622A77B80";
