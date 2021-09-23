@@ -15,10 +15,7 @@ import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
-import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
-import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -49,8 +46,7 @@ public class DORevocationDelegator {
      * @throws IllegalAccessException
      */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_SYSTEM_CONFIG,
-                AuditTrailConsts.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
+        AuditTrailHelper.auditFunction(RevocationConstants.MODULE_REVOCATION, RevocationConstants.FUNCTION_REVOCATION);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, RevocationConstants.class);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
@@ -73,6 +69,10 @@ public class DORevocationDelegator {
         //Do address processing
         String address = JoinAddress.joinAddress(application);
         application.getFacility().setFacilityAddress(address);
+
+        FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
+        application.getFacility().setActiveType(activity.getActivityType());
+
         list.add(application);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
         ParamUtil.setSessionAttr(request,RevocationConstants.FACILITY,application.getFacility());
@@ -165,13 +165,13 @@ public class DORevocationDelegator {
      */
     public void updateNum(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        List<Application> list=new LinkedList<>();
-        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
+//        List<Application> list=new LinkedList<>();
+//        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
         //Do address processing
-        String address = JoinAddress.joinAddress(application);
-        application.getFacility().setFacilityAddress(address);
-        list.add(application);
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
+//        String address = JoinAddress.joinAddress(application);
+//        application.getFacility().setFacilityAddress(address);
+//        list.add(application);
+//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
         //TODO update inventory method
     }
 

@@ -181,7 +181,7 @@
             return false;
         }else {
             if(maxSize == null ||  maxSize == ""){
-                maxSize = 4;
+                maxSize = 5;
             } else{
                 maxSize =  parseInt(maxSize);
             }
@@ -278,5 +278,14 @@
             );
         }
         //What ever else you want to do when File Chooser Changed
+    }
+
+    function fileClicked(event) {
+        var fileElement = event.target;
+        if (fileElement.value != "") {
+            console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop())
+            clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+        }
+        //What ever else you want to do when File Chooser Clicked
     }
 </script>

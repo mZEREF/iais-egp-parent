@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,6 +62,7 @@ public class AuditCreationDelegator {
      */
     public void prepareAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"year",null);
         selectOption(request);
         // get search DTO
         AuditQueryDto searchDto=getSearchDto(request);
@@ -77,6 +79,10 @@ public class AuditCreationDelegator {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
+
+        Calendar cd = Calendar.getInstance();
+        int year = cd.get(Calendar.YEAR);
+        ParamUtil.setSessionAttr(request,"year",year);
 
     }
 

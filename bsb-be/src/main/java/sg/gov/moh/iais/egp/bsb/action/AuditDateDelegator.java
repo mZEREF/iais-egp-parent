@@ -63,6 +63,7 @@ public class AuditDateDelegator {
      */
     public void prepareAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"year",null);
         selectOption(request);
         // get search DTO
         AuditQueryDto searchDto = getSearchDto(request);
@@ -80,6 +81,9 @@ public class AuditDateDelegator {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
 
+        Calendar cd = Calendar.getInstance();
+        int year = cd.get(Calendar.YEAR);
+        ParamUtil.setSessionAttr(request,"year",year);
     }
 
     /**

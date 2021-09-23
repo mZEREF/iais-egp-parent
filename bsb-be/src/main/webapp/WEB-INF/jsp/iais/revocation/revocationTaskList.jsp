@@ -59,11 +59,11 @@
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
-                                    <iais:field value="Facility Type"/>
+                                    <iais:field value="Active Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${applicationSearch.facilityType}"
-                                                     codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select"/>
+                                                     value="${applicationSearch.activityType}"
+                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -133,7 +133,7 @@
                                     <iais:sortableHeader needSort="true" field="applicationNo" value="Application No." isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name/Address" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityActivities.activityType" value="Active type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Biological Agents/Toxins" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="applicationDt" value="Application Date (dd/mm/yyyy)" isFE="false"/>
@@ -157,7 +157,7 @@
                                         </td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>
                                         <td><c:out value="${item.facility.facilityName}/${item.facility.facilityAddress}"/></td>
-                                        <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
+                                        <td><iais:code code="${item.facility.activeType}"></iais:code></td>
                                         <td><iais:code code="${item.processType}"></iais:code></td>
                                         <td><c:out value="${item.biologicalName}"/></td>
                                         <td><fmt:formatDate value='${item.applicationDt}' pattern='dd/MM/yyyy'/></td>

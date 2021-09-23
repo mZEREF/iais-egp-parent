@@ -84,9 +84,12 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
+            FacilityActivity activity = new FacilityActivity();
             for (Application application : applications) {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
-                List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
+                activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
+                application.getFacility().setActiveType(activity.getActivityType());
+                List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
                 String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
                 application.setBiologicalName(bioNames);
             }
@@ -122,7 +125,7 @@ public class AORevocationDelegator {
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
-        searchDto.setFacilityType(facilityType);
+        searchDto.setActivityType(facilityType);
         searchDto.setProcessType(processType);
         searchDto.setApplicationNo(applicationNo);
         searchDto.setApplicationType(applicationType);

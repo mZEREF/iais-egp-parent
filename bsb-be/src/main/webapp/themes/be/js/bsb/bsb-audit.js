@@ -33,9 +33,15 @@ $(function () {
     });
 
     $("#searchBtn").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doSearch");
-        $("#mainForm").submit();
+        var optionValue = $("#auditType option:selected").val();
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_auditType").html("Please select valid options!");
+        }else {
+            showWaiting();
+            $("#error_auditType").html("");
+            $("[name='action_type']").val("doSearch");
+            $("#mainForm").submit();
+        }
     });
 
     $("#clearBtn").click(function () {
@@ -47,12 +53,13 @@ $(function () {
     });
 
     $("#submitAudit").click(function () {
-        $("[name='action_type']").val("doSubmit");
         var optionValue = $("#auditType option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#auditTypeError").html("Please select valid options!");
+            $("#error_auditType").html("Please select valid options!");
         }else {
             showWaiting();
+            $("#error_auditType").html("");
+            $("[name='action_type']").val("doSubmit");
             $("#mainForm").submit();
         }
     });

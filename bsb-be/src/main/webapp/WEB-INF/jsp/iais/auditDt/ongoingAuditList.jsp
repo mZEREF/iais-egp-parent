@@ -54,11 +54,11 @@
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field value="Facility Type"/>
+                                    <iais:field value="Active Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${auditSearch.facilityType}"
-                                                     codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select"/>
+                                                     value="${auditSearch.activeType}"
+                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -71,6 +71,13 @@
                                         <span id="error_auditType"
                                               name="iaisErrorMsg"
                                               class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
+
+                                <iais:row>
+                                    <iais:field value="Audit Window Period" required="false"/>
+                                    <iais:value width="18">
+                                        <p><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
                                     </iais:value>
                                 </iais:row>
 

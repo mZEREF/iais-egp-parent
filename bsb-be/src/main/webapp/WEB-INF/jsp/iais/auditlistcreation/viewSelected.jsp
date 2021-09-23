@@ -75,7 +75,13 @@
                                 <iais:select name="auditType" id="auditType"
                                              value="${auditType}"
                                              codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
-                                <span id="auditTypeError" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_auditType" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Audit Window Period" required="false"/>
+                            <iais:value width="18">
+                                <p><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -95,7 +101,7 @@
                                     Back</a>
                             </div>
                             <div align="right">
-                                <button name="submitBtn3" id="submitAudit" type="button" class="btn btn-primary">
+                                <button name="submitBtn" id="submitAudit" type="button" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>

@@ -25,8 +25,8 @@
                             <td style="padding-left : 20px"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
                         </tr>
                         <tr>
-                            <td align="right">Facility Type</td>
-                            <td style="padding-left : 20px"><iais:code code="${item.facility.facilityType}"></iais:code></td>
+                            <td align="right">Active Type</td>
+                            <td style="padding-left : 20px"><iais:code code="${item.facility.activeType}"></iais:code></td>
                         </tr>
                         <tr>
                             <td align="right">Approval</td>

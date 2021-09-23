@@ -26,7 +26,7 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
     private String facilityName;
     private String facilityAddress;
     private String facilityClassification;
-    private String facilityType;
+    private String activityType;
     private String processType;
     private Date searchAppDateFrom;
 
@@ -45,7 +45,7 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
         facilityName = "";
         facilityAddress = "";
         facilityClassification = "";
-        facilityType = "";
+        activityType = "";
         processType = "";
         searchAppDateFrom = null;
         searchAppDateTo = null;
