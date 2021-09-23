@@ -603,10 +603,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public FeUserDto syncFeUserFromBe(FeUserDto feUserDto) {
         log.info("Synchronize FE user from BE");
+        log.info(StringUtil.changeForLog("Data: " + JsonUtil.parseToJson(feUserDto)));
         if (!isValid(feUserDto)) {
             return feUserDto;
         }
-        log.info(StringUtil.changeForLog("User Id: " + feUserDto.getUserId()));
         // syncronize halp user
         log.info("Synchronize iais user");
         FeUserDto feUserDtoRes = editUserAccount(feUserDto);
@@ -631,7 +631,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                     for(OrgUserDto orgUserDto : orgUserDtoList) {
                         //find sing pass account or crop pass account
                         if ((StringUtil.isEmpty(id) && orgUserDto.getUserId().equals(identityNo))
-                                || (!StringUtil.isEmpty(id) && id.equals(orgUserDto.getId()))) {
+                            || (!StringUtil.isEmpty(id) && id.equals(orgUserDto.getId()))) {
                             String userStatus = orgUserDto.getStatus();
                             //if find, check status
                             if (AppConsts.COMMON_STATUS_ACTIVE.equals(userStatus)) {

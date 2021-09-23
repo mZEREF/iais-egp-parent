@@ -418,7 +418,7 @@ public class HcsaApplicationDelegator {
                     appPremisesRecommendationDto.setRecomInNumber(0);
                     appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                     if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-                        //                    appPremisesRecommendationDto.setRecomDecision("reject");
+    //                    appPremisesRecommendationDto.setRecomDecision("reject");
                         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
                     }
                     appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -437,7 +437,7 @@ public class HcsaApplicationDelegator {
                     appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
                     if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-                        //                    appPremisesRecommendationDto.setRecomDecision("approve");
+    //                    appPremisesRecommendationDto.setRecomDecision("approve");
                         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                     }
                     if ("other".equals(recommendationStr)) {
@@ -456,7 +456,7 @@ public class HcsaApplicationDelegator {
                             saveRecommenFlag = false;
                         }
                         if (isAppealType) {
-                            //                        appPremisesRecommendationDto.setRecomDecision("approve");
+    //                        appPremisesRecommendationDto.setRecomDecision("approve");
                             appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                             if (isLateFeeAppealType) {
                                 String returnFee = ParamUtil.getString(bpc.request, "returnFee");

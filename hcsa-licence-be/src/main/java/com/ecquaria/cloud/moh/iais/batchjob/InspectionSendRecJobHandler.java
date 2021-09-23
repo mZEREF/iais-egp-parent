@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -42,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -113,6 +115,9 @@ public class InspectionSendRecJobHandler extends IJobHandler {
 
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
+
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -244,6 +249,8 @@ public class InspectionSendRecJobHandler extends IJobHandler {
         List<InspEmailFieldDto> inspEmailFieldDtos = IaisCommonUtils.genNewArrayList();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         String appPremCorrId = appPremisesCorrelationDto.getId();
+        //get vehicle no
+        List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appPremCorrId).getEntity();
         List<ChecklistConfigDto> checklistConfigDtos = getAllCheckListByAppPremCorrId(appPremCorrId);
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
@@ -251,7 +258,7 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
                 int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
                 if(0 == recFlag){
-                    InspEmailFieldDto inspEmailFieldDto = setNcDataByItemId(checklistConfigDtos, appPremisesPreInspectionNcItemDto);
+                    InspEmailFieldDto inspEmailFieldDto = setNcDataByItemId(checklistConfigDtos, appPremisesPreInspectionNcItemDto, appSvcVehicleDtos);
                     if(inspEmailFieldDto != null) {
                         inspEmailFieldDtos.add(inspEmailFieldDto);
                     }
@@ -278,12 +285,12 @@ public class InspectionSendRecJobHandler extends IJobHandler {
         return checklistConfigDtos;
     }
 
-    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto) {
+    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto, List<AppSvcVehicleDto> appSvcVehicleDtos) {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
         String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
-        String vehicleNo = appPremisesPreInspectionNcItemDto.getVehicleName();
+        String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
         }

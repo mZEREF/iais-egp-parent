@@ -127,7 +127,7 @@ public class PaymentServiceImpl implements PaymentService {
      */
     @Override
     public SoapiS2SResponse sendTxnQueryReqToGW( String secretKey,
-                                                 String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
+                                    String keyId, SoapiS2S soapiTxnQueryReq) throws Exception {
         String strGWPostURL= gateWayUrl+"/v1/enets/GW2/TxnQuery";
         ObjectMapper mapper = new ObjectMapper();
         String soapiToGW = mapper.writeValueAsString(soapiTxnQueryReq);

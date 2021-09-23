@@ -34,7 +34,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <div class="row">
-                                                <div class="col-xs-12 col-sm-6 ">
+                                                <div class="col-xs-12 col-md-4">
                                                     <c:choose>
                                                         <c:when test="${DraftConfig != null || requestInformationConfig != null}">
                                                             <a class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
@@ -47,7 +47,7 @@
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </div>
-                                                <div class="col-xs-12 col-sm-6">
+                                                <div class="col-xs-12 col-sm-8">
                                                     <div class="button-group">
                                                         <c:if test="${requestInformationConfig==null}">
                                                             <input type="hidden" id="selectDraftNo" value="${selectDraftNo}">

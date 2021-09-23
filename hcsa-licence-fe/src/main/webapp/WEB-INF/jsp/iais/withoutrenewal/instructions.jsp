@@ -31,7 +31,7 @@
                                 <c:if test="${isSingle == 'N'}">
                                     <p>Your licences to renew are listed below:</p>
                                 </c:if>
-                                <div class="table-responsive">
+                                <div class="table-gp">
                                     <table aria-describedby="" class="table">
                                         <thead>
                                         <tr>
@@ -49,7 +49,7 @@
                                         <c:forEach items="${renewDto.appSubmissionDtos}"
                                                    var="appSubmissionDtos">
                                             <tr>
-                                                <td>${appSubmissionDtos.licenceNo}</td>
+                                                <td class="word-wrap">${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
                                                 <c:if test="${isSingle == 'Y'}">
                                                     <td>${licenseeName}</td>

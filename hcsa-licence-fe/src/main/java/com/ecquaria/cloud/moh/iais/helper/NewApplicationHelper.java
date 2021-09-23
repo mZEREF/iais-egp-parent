@@ -49,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -152,26 +151,31 @@ public class NewApplicationHelper {
         AppSvcRelatedInfoDto sourceSvcInfo = sourceSvcInfoList.get(0);
         AppSvcRelatedInfoDto targetSvcInfo = targetSvcInfoList.get(0);
         if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
-            targetSvcInfo.setAppSvcCgoDtoList(
-                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcCgoDtoList()));
+            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcCgoDtoList().size());
+            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcCgoDtoList(), deList);
+            targetSvcInfo.setAppSvcCgoDtoList(deList);
         }
         if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
-            targetSvcInfo.setAppSvcMedAlertPersonList(
-                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcMedAlertPersonList()));
+            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcMedAlertPersonList().size());
+            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcMedAlertPersonList(), deList);
+            targetSvcInfo.setAppSvcMedAlertPersonList(deList);
         }
         if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
-            targetSvcInfo.setAppSvcPrincipalOfficersDtoList(
-                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList()));
+            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList().size());
+            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList(), deList);
+            targetSvcInfo.setAppSvcPrincipalOfficersDtoList(deList);
         }
         if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) {
-            targetSvcInfo.setAppSvcClinicalDirectorDtoList(
-                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(sourceSvcInfo.getAppSvcClinicalDirectorDtoList()));
+            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcClinicalDirectorDtoList().size());
+            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcClinicalDirectorDtoList(), deList);
+            targetSvcInfo.setAppSvcClinicalDirectorDtoList(deList);
         }
         if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
-            targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(
-                    (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(
-                            sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList()));
+            List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList().size());
+            CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList(), deList);
+            targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(deList);
         }
+        targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
     public static int getMaxFileIndex(int maxSeqNum, boolean checkGlobal, HttpServletRequest request) {

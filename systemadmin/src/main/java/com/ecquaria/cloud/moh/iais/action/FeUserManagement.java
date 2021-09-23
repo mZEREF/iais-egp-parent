@@ -211,6 +211,8 @@ public class FeUserManagement {
                 userAttr.setIdType(idType);
                 userAttr.setIdentityNo(idNo);
                 userAttr.setIdNumber(idNo);
+            } else {
+                idNo = userAttr.getIdentityNo();
             }
             userAttr.setDisplayName(name);
             userAttr.setSalutation(salutation);

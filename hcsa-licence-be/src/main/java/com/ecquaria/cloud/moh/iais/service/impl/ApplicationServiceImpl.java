@@ -1174,10 +1174,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
             if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
-                vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+                vehicleNoList.add(appSvcVehicleDto.getDisplayName());
             }
         } else {
-            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+            vehicleNoList.add(appSvcVehicleDto.getDisplayName());
         }
         return vehicleNoList;
     }
@@ -1191,7 +1191,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 for (String appSvcVehicle : vehicleNoList) {
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(!StringUtil.isEmpty(appSvcVehicle) && appSvcVehicleDto != null) {
-                            if(appSvcVehicle.equals(appSvcVehicleDto.getVehicleName())) {
+                            if(appSvcVehicle.equals(appSvcVehicleDto.getDisplayName())) {
                                 appSvcVehicleDtoList.add(appSvcVehicleDto);
                             }
                         }
@@ -1251,7 +1251,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         return broadcastApplicationDto;
     }
-
 
     private TaskDto completedTask(TaskDto taskDto) {
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);

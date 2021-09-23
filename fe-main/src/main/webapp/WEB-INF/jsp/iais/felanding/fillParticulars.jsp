@@ -16,63 +16,63 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
 <%
-  sop.webflow.rt.api.BaseProcessClass process =
-          (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%
-  String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
+    String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
 
 <style>
-  @media only screen and (max-width : 1200px){
-    .form-padding {
-      padding: 35px 5%;
+    @media only screen and (max-width : 1200px){
+        .form-padding {
+            padding: 35px 5%;
+        }
     }
-  }
 </style>
 <div class="main-content">
-  <div class="navigation-gp"></div>
-  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
-    <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
-      <div class="tab-gp steps-tab">
-        <div class="tab-content">
-          <div class="tab-pane active form-padding" id="premisesTab" role="tabpanel">
-            <div class="row">
-              <div class="col-xs-12">
-                <h2>Authorised Person Particulars Form</h2>
-                <div class="form-horizontal">
-                  <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
-                    <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
-                    <c:set var="licensee" value="${myinfo_solo_dto_seesion}"/>
-                    <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
-                  </c:if>
-                  <c:if test="${empty myinfo_sinpass_login_evaluate}">
-                    <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
-                  </c:if>
-                  <iais:row>
-                    <div class="col-xs-12 col-md-4 control-label"></div>
-                    <div align="right" class="col-sm-7 col-md-6 col-xs-10">
-                        <%-- <a class="btn btn-primary next" href="javascript:void(0);"
-                            onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
-                      <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
-                        <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
-                      </c:if>
-                      <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
-                      <a class="btn btn-primary next" href="javascript:void(0);"
-                         onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
+    <div class="navigation-gp"></div>
+    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+            <%@ include file="/WEB-INF/jsp/iais/common/myinfoDownRemind.jsp" %>
+        <div class="prelogin" style="background-image: url('/web/themes/fe/img/prelogin-masthead-banner.jpg');">
+            <div class="tab-gp steps-tab">
+                <div class="tab-content">
+                    <div class="tab-pane active form-padding" id="premisesTab" role="tabpanel">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h2>Authorised Person Particulars Form</h2>
+                                <div class="form-horizontal">
+                                    <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+                                        <%@include file="/WEB-INF/jsp/iais/common/myinfoInstructionsLinks.jsp"%>
+                                        <c:set var="licensee" value="${myinfo_solo_dto_seesion}"/>
+                                        <%@include file="/WEB-INF/jsp/iais/LicenseeDetail/licenseeDetailContent.jsp"%>
+                                    </c:if>
+                                    <c:if test="${empty myinfo_sinpass_login_evaluate}">
+                                        <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
+                                    </c:if>
+                                    <iais:row>
+                                        <div class="col-xs-12 col-md-4 control-label"></div>
+                                        <div align="right" class="col-sm-7 col-md-6 col-xs-10">
+                                            <%-- <a class="btn btn-primary next" href="javascript:void(0);"
+                                                onclick="Utils.submit('mainForm', 'doBack')">Back</a>--%>
+                                          <c:if test="${myinfo_sinpass_login_evaluate == 'Y'}">
+                                            <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
+                                          </c:if>
+                                          <input type="hidden" name="refreshMyInfoData" id="refreshMyInfoData"/>
+                                          <a class="btn btn-primary next" href="javascript:void(0);"
+                                             onclick="Utils.submit('mainForm', 'doSubmit')">Submit</a>
+                                        </div>
+                                    </iais:row>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </iais:row>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </form>
+    </form>
 </div>
 
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

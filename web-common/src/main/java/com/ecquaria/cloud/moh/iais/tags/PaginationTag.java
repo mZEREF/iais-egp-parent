@@ -26,7 +26,7 @@ public class PaginationTag extends DivTagSupport {
     private String result;
     private String jsFunc;
     private boolean needRowNum;
-    
+
     public PaginationTag() {
         super();
         clearFields();
@@ -67,9 +67,9 @@ public class PaginationTag extends DivTagSupport {
         Object obj = ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(), param);
 
         if (obj instanceof SearchParam) {
-                SearchParam sp = (SearchParam) obj;
-                pageNo = sp.getPageNo();
-                pageSize = sp.getPageSize();
+            SearchParam sp = (SearchParam) obj;
+            pageNo = sp.getPageNo();
+            pageSize = sp.getPageSize();
         }
 
         SearchResult<?> sr = (SearchResult<?>) ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(),
@@ -205,5 +205,5 @@ public class PaginationTag extends DivTagSupport {
     public void setNeedRowNum(boolean needRowNum) {
         this.needRowNum = needRowNum;
     }
-    
+
 }

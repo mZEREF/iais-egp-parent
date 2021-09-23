@@ -12,11 +12,12 @@
 <form id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <%@ include file="../cessation/ackHead.jsp" %>
     <div class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-xs-12 cesform-box">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+                <div class="intranet-content">
                     <p><iais:message key="CESS_ACK001"/></p>
-                    <table aria-describedby="" class="table">
+                    <table aria-describedby="" class="table" style="width: 90%">
                         <thead>
                         <tr>
                             <th scope="col" style="text-align:center">Application No.</th>
@@ -55,11 +56,12 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                        <a onclick="back('back')"><em class="fa fa-angle-left"></em> Back</a>
+                        <a onclick="back('back')" href="#"><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                     <br/>
                 </div>
                 <br/>
+            </div>
             </div>
         </div>
     </div>

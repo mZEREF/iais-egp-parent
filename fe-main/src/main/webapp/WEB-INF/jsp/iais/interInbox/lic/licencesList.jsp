@@ -42,15 +42,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
+                        <label class="col-xs-3 col-md-3 col-lg-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
                             Date:</label>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="fStartDate" name="fStartDate" value="${param.fStartDate}"/>
                         </div>
-                        <div class="col-md-1" style="margin-top: 1.5%">
+                        <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
                             <label>To</label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="eStartDate" name="eStartDate" value="${param.eStartDate}"/>
                         </div>
                     </iais:value>
@@ -67,15 +67,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
+                        <label class="col-xs-3 col-md-3 col-lg-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
                             Date:</label>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="fExpiryDate" name="fExpiryDate" value="${param.fExpiryDate}"/>
                         </div>
-                        <div class="col-md-1" style="margin-top: 1.5%">
+                        <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
                         <label>To</label>
                     </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="eExpiryDate" name="eExpiryDate" value="${param.eExpiryDate}"/>
                         </div>
                     </iais:value>
@@ -89,21 +89,14 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <span class="col-xs-3 col-md-3"></span>
-                    <div class="col-md-5">
-                        <%--<span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>--%>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="text-right">
-                            <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
-                            <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
-                        </div>
-                    </div >
+            <div class="col-md-12">
+                <div class="text-right">
+                    <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
+                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="licParam" result="licResult"/>
     </div>
     <div class="row">
@@ -151,7 +144,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px">${licenceQuery.licenceNo}</a>
                                         <input type="hidden" name="licenId${status.index}"
                                                value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>

@@ -118,24 +118,25 @@
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
-                                        <div class="col-xs-12 col-sm-6">
+                                        <div class="col-xs-12 col-md-4">
+                                            <a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8">
                                             <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">
                                                     <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                                                     <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-
-                                                        <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
-
+                                                    <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
                                                 </c:if>
                                                 <c:choose>
                                                     <c:when test="${requestInformationConfig != null}">
-                                                        <a class="next btn btn-primary" id = "Next">Submit </a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Submit </a>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <a class="next btn btn-primary" id = "Next">Submit</a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Submit</a>
                                                     </c:otherwise>
                                                 </c:choose>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

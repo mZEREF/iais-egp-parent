@@ -275,7 +275,7 @@
 </c:if>
 <div class="col-xs-12 col-md-12">
     <iais:action style="text-align:right;">
-        <a href="#" style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
+        <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
     </iais:action>

@@ -220,7 +220,6 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
-		log.info(StringUtil.changeForLog("==========>getCHECKOUT_SESSION_ID:"+ParamUtil.getSessionAttr(bpc.request,"CHECKOUT_SESSION_ID")));
 
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);

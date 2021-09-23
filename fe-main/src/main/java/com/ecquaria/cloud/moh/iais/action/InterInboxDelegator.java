@@ -106,7 +106,7 @@ public class InterInboxDelegator {
     @Autowired
     AssessmentGuideService assessmentGuideService;
     private static final  String LIC_PRINT_FLAG = "InterInboxDelegator_lic_print_flag";
-    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
+    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well: ";
 
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,

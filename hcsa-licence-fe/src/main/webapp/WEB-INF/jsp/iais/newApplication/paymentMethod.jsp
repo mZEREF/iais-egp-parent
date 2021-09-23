@@ -64,12 +64,12 @@
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-xs-12 col-md-4">
         <c:if test="${('APTY002' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType || 'APTY004' == AppSubmissionDto.appType ) && requestInformationConfig == null}">
             <a id="BACK" href="#" class="back"><em class="fa fa-angle-left"></em> Back</a>
         </c:if>
     </div>
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-xs-12 col-md-8">
         <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Pay"></iais:input></p>
     </div>
 </div>

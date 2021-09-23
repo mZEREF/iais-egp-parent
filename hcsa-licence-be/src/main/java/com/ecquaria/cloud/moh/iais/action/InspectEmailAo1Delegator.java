@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -445,7 +446,18 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                             stringBuilder.append("<tr><td>").append(++i);
 //EAS or MTS
                             if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
-                                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                                boolean isDisplayName=false;
+                                for (AppSvcVehicleDto asvd:applicationViewDto.getAppSvcVehicleDtos()
+                                     ) {
+                                    if(asvd.getVehicleName().equals(ncAnswerDto.getVehicleName())){
+                                        stringBuilder.append(TD).append(StringUtil.viewHtml(asvd.getDisplayName()));
+                                        isDisplayName=true;
+                                        break;
+                                    }
+                                }
+                                if(!isDisplayName){
+                                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                                }
                             }else {
                                 stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
                             }

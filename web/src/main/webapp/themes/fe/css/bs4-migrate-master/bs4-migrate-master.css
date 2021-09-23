@@ -6768,14 +6768,14 @@ header .container {
   list-style: none;
 }
 
- .row {
+/* .row {
   display: -ms-flexbox;
   display: inherit !important;
   -ms-flex-wrap: inherit;
- /* flex-wrap: inherit !important;*/
+ !* flex-wrap: inherit !important;*!
   margin-right: -15px;
   margin-left: -15px;
-}
+}*/
  
 .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle::after { 
   border: none;
@@ -6797,5 +6797,5 @@ header .container {
   z-index: 1040;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7)  !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
 }
