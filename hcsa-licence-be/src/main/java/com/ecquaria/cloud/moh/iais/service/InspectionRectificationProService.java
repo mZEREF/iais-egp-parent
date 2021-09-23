@@ -164,12 +164,12 @@ public interface InspectionRectificationProService {
     List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo);
 
     /**
-     * @author: shicheng
-     * @Date 2021/8/25
-     * @Param: inspEmailFieldDtos
-     * @return: List<InspEmailFieldDto>
-     * @Descripation: sortInspEmailFieldDtoByCategory
-     */
+      * @author: shicheng
+      * @Date 2021/8/25
+      * @Param: inspEmailFieldDtos
+      * @return: List<InspEmailFieldDto>
+      * @Descripation: sortInspEmailFieldDtoByCategory
+      */
     List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos);
 
     /**

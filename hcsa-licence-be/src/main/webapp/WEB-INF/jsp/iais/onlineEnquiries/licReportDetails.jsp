@@ -72,7 +72,6 @@
                                             <%@include file="reportViewDetails.jsp"%>
                                         </div>
                                     </div>
-                                    <a href="#" onclick="javascript:SOP.Crud.cfxSubmit('mainForm');"><em class="fa fa-angle-left"> </em> Back</a>
                                 </div>
                                 <a href="#" onclick="javascript:SOP.Crud.cfxSubmit('mainForm');"><em class="fa fa-angle-left"> </em> Back</a>
                             </div>
