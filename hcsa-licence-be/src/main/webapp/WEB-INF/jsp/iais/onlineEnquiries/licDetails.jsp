@@ -14,9 +14,6 @@
 <div class="dashboard" >
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -31,7 +28,7 @@
                                             <li class="complete" role="presentation"><a href="#tabPersonnelDetails" aria-controls="tabPersonnelDetails" role="tab"
                                                                                         data-toggle="tab">Personnel Details</a></li>
                                             <li class="<c:if test="${preInspReport == '1'}">active</c:if><c:if test="${empty preInspReport }">complete</c:if>" role="presentation"><a href="#tabComplianceHistory" aria-controls="tabComplianceHistory" role="tab"
-                                                                                        data-toggle="tab">Compliance History</a></li>
+                                                                                                                                                                                      data-toggle="tab">Compliance History</a></li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
