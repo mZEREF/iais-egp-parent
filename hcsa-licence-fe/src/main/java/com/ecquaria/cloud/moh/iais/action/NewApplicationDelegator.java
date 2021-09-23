@@ -2241,6 +2241,7 @@ public class NewApplicationDelegator {
         for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
             if (StringUtil.isNotEmpty(currentAppGrpPremisesDto.getPremisesIndexNo()) &&
                     currentAppGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDtos.get(i).getPremisesIndexNo())){
+                currentAppGrpPremisesDto.setId(currentAppGrpPremisesDto.getPremisesIndexNo());
                 appGrpPremisesDtos.set(i, currentAppGrpPremisesDto);
             }else {
                 NewApplicationHelper.setWrkTime(appGrpPremisesDtos.get(i));

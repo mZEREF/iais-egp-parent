@@ -651,7 +651,7 @@ public class ClinicalLaboratoryDelegator {
         String rfiPremiseId = "nice-select";
         for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
             if (appGrpPremisesDto.isRfiCanEdit()){
-                rfiPremiseId = appGrpPremisesDto.getId();
+                rfiPremiseId = appGrpPremisesDto.getPremisesIndexNo();
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "RfiPremiseId", rfiPremiseId);
@@ -1035,7 +1035,7 @@ public class ClinicalLaboratoryDelegator {
                 String rfiPremiseId = "";
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                     if (appGrpPremisesDto.isRfiCanEdit()){
-                        rfiPremiseId = appGrpPremisesDto.getId();
+                        rfiPremiseId = appGrpPremisesDto.getPremisesIndexNo();
                         break;
                     }
                 }
