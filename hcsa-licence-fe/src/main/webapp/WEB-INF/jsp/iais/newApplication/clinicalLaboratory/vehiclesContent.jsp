@@ -19,7 +19,7 @@
 <input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${isRfi}">1</c:if>"/>
 
 <c:set var="vehicleDtoList" value="${vehicleDtoList}"/>
-<div class="row vehiclesForm">
+<div class="vehiclesForm">
     <c:choose>
         <c:when test="${empty vehicleDtoList}">
             <c:set var="pageLength" value="1"/>
@@ -34,7 +34,7 @@
     <input type="hidden" name="vehiclesLength" value="${pageLength}" />
     <c:forEach begin="0" end="${pageLength-1}" step="1" varStatus="vehicleStat">
         <c:set var="vehicleDto" value="${vehicleDtoList[vehicleStat.index]}"/>
-        <div class="vehicleContent">
+        <div class="form-horizontal vehicleContent">
             <input type="hidden" class ="isPartEdit" name="isPartEdit${vehicleStat.index}" value="0"/>
             <input type="hidden" class="vehicleIndexNo" name="vehicleIndexNo${vehicleStat.index}" value="${vehicleDto.vehicleIndexNo}"/>
 
@@ -42,76 +42,51 @@
                 <p style="font-weight: 600;font-size: 2.2rem"></p>
             </div>
             <br/>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">
-                                <div class="cgo-header">
-                                    <strong>Vehicle <label class="assign-psn-item"><c:if test="${vehicleDtoList.size() > 1}">${vehicleStat.index+1}</c:if></label></strong>
-                                </div>
-                            </label>
-                        </div>
+            <iais:row>
+                <iais:value width="6" cssClass="col-md-6">
+                    <strong>
+                        <c:out value="${singleName}"/>
+                        <label class="assign-psn-item"><c:if test="${vehicleDtoList.size() > 1}">${vehicleStat.index+1}</c:if></label></label>
+                    </strong>
+                </iais:value>
+                <iais:value width="6" cssClass="col-md-6 text-right vehicleRemoveBtn">
+                    <c:if test="${!isRfi}"><%-- && (vehicleStat.index - vehicleConfigDto.mandatoryCount >= 0)--%>
+                        <h4 class="text-danger">
+                            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                        </h4>
+                    </c:if>
+                </iais:value>
+            </iais:row>
 
-                        <div class="col-md-7 col-xs-7 text-right ">
-                            <c:if test="${!isRfi}"><%-- && (vehicleStat.index - vehicleConfigDto.mandatoryCount >= 0)--%>
-                                <div class="vehicleRemoveBtn">
-                                    <h4 class="text-danger">
-                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                    </h4>
-                                </div>
-                            </c:if>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Vehicle Number</label>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}" value="${vehicleDto.dummyVehNum? '' : vehicleDto.displayName}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Chassis Number</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input cssClass="chassisNum" maxLength="25" type="text" name="chassisNum${vehicleStat.index}" value="${vehicleDto.chassisNum}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <div class="row control control-caption-horizontal">
-                    <div class=" form-group form-horizontal formgap">
-                        <div class="control-label formtext col-md-5 col-xs-5">
-                            <label  class="control-label control-set-font control-font-label">Engine Number</label>
-                            <span class="mandatory">*</span>
-                        </div>
-                        <div class="col-md-7 col-xs-12">
-                            <iais:input cssClass="engineNum" maxLength="25" type="text" name="engineNum${vehicleStat.index}" value="${vehicleDto.engineNum}"></iais:input>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <iais:row>
+                <iais:field width="5" value="Vehicle Number" cssClass="col-md-5 control-font-label"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input cssClass="vehicleName" maxLength="10" type="text" name="vehicleName${vehicleStat.index}"
+                                value="${vehicleDto.dummyVehNum? '' : vehicleDto.displayName}"/>
+                </iais:value>
+            </iais:row>
+
+            <iais:row>
+                <iais:field width="5" mandatory="true" value="Chassis Number" cssClass="col-md-5 control-font-label"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input cssClass="chassisNum" maxLength="25" type="text" name="chassisNum${vehicleStat.index}"
+                                value="${vehicleDto.chassisNum}" />
+                </iais:value>
+            </iais:row>
+
+            <iais:row>
+                <iais:field width="5" mandatory="true" value="Engine Number" cssClass="col-md-5 control-font-label"/>
+                <iais:value width="7" cssClass="col-md-7">
+                    <iais:input cssClass="engineNum" maxLength="25" type="text" name="engineNum${vehicleStat.index}"
+                                value="${vehicleDto.engineNum}" />
+                </iais:value>
+            </iais:row>
+
             <div class="col-md-12 col-xs-12">
                 <hr>
             </div>
         </div>
     </c:forEach>
-
-
 
     <c:if test="${!isRfi}">
         <c:choose>
