@@ -1354,50 +1354,43 @@ public class NewApplicationDelegator {
         String isGroupLic = ParamUtil.getString(bpc.request, "isGroupLic");
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        boolean needNewDeclaration = false;
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             if (!StringUtil.isEmpty(isGroupLic) && AppConsts.YES.equals(isGroupLic)) {
                 appSubmissionDto.setGroupLic(true);
             } else {
                 appSubmissionDto.setGroupLic(false);
             }
-            if (!isRfi) {
-                // declaration
-                appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
-                DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
-                        appSubmissionDto.getAppType());
-                // uploaded files
-                appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-                String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
-                // validation
-                appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
-                        preQuesKindly == null ? false : "0".equals(preQuesKindly), bpc.request);
-            }
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-            if (!isRfi) {
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
-                        NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-                List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                if (oldAppGrpPremisesDtoList != null && appGrpPremisesDtoList != null) {
-                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i),
-                                oldAppGrpPremisesDtoList.get(i));
-                        if (eqHciNameChange) {
-                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(
-                                    bpc.request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                            appSubmissionDto.setAppDeclarationDocDtos(
-                                    appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
-                            // validation
-                            String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
-                            appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
-                                    preQuesKindly == null ? false : "0".equals(preQuesKindly), bpc.request);
-                        }
+            needNewDeclaration = !isRfi;
+        } else if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
+                    NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+            if (oldAppGrpPremisesDtoList != null && appGrpPremisesDtoList != null) {
+                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                    boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i),
+                            oldAppGrpPremisesDtoList.get(i));
+                    if (eqHciNameChange) {
+                        needNewDeclaration = true;
+                        break;
                     }
                 }
-                String verifyInfoCheckbox = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
-                appSubmissionDto.setUserAgreement(AppConsts.YES.equals(verifyInfoCheckbox));
             }
+            String verifyInfoCheckbox = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
+            appSubmissionDto.setUserAgreement(AppConsts.YES.equals(verifyInfoCheckbox));
+        }
+        if (needNewDeclaration) {
+            // declaration
+            appSubmissionDto.setAppDeclarationMessageDto(appSubmissionService.getAppDeclarationMessageDto(bpc.request, appSubmissionDto.getAppType()));
+            DeclarationsUtil.declarationsValidate(errorMap, appSubmissionDto.getAppDeclarationMessageDto(),
+                    appSubmissionDto.getAppType());
+            // uploaded files
+            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), bpc.request));
+            String preQuesKindly = appSubmissionDto.getAppDeclarationMessageDto().getPreliminaryQuestionKindly();
+            // validation
+            appSubmissionService.validateDeclarationDoc(errorMap, appSubmissionService.getFileAppendId(appSubmissionDto.getAppType()),
+                    preQuesKindly == null ? false : "0".equals(preQuesKindly), bpc.request);
         }
 
         if (!isRfi && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
@@ -1476,7 +1469,7 @@ public class NewApplicationDelegator {
         String result = ParamUtil.getMaskedString(bpc.request, "result");
         String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
         log.info(StringUtil.changeForLog("Payment result: " + result + "; reqRefNo: " + pmtRefNo
-                + "; Draft No.: " + appSubmissionDto.getDraftNo()) + "; App Group No: " + appSubmissionDto.getAppGrpNo());
+                + "; Draft No.: " + appSubmissionDto.getDraftNo() + "; App Group No: " + appSubmissionDto.getAppGrpNo()));
         if (!StringUtil.isEmpty(result)) {
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.debug(StringUtil.changeForLog("online payment success ..."));
@@ -2546,12 +2539,10 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if (map.isEmpty() && !isRfi) {
             boolean changeHciName = false;
-            if (oldAppGrpPremisesDtoList != null && appGrpPremisesDtoList != null) {
-                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                    changeHciName = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(i),
-                            oldAppGrpPremisesDtoList.get(i));
-                    break;
-                }
+            if (oldAppGrpPremisesDtoList != null && appGrpPremisesDtoList != null
+                    && !appGrpPremisesDtoList.isEmpty() && !oldAppGrpPremisesDtoList.isEmpty()) {
+                changeHciName = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDtoList.get(0),
+                        oldAppGrpPremisesDtoList.get(0));
             }
             if (changeHciName) {
                 AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionDto.getAppDeclarationMessageDto();
