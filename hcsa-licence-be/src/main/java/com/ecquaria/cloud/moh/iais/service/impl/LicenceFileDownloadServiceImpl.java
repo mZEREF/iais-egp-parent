@@ -81,6 +81,12 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,11 +108,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -1104,7 +1105,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void moveFile(File file) {
         if (!file.exists()) {
             List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
-            log.info(StringUtil.changeForLog("The ip Address list size ==> " + ipAddrs.size()));
             if (ipAddrs != null && ipAddrs.size() > 1) {
                 String localIp = MiscUtil.getLocalHostExactAddress();
                 log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
@@ -1115,7 +1115,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
                     apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
-                    log.info("Request URL ==> " + apiUrl.toString());
+
+                    StringBuilder logStringBuilder = new StringBuilder("Request URL ==> ");
+                    logStringBuilder.append(apiUrl.toString());
+                    log.info(StringUtil.changeForLog(logStringBuilder.toString()));
+
                     RestTemplate restTemplate = new RestTemplate();
                     try {
                         restTemplate.delete(apiUrl.toString(), file.getCanonicalPath());
