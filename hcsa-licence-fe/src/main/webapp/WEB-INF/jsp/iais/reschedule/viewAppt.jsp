@@ -33,7 +33,6 @@
                             <thead>
                             <tr>
                                 <th scope="col" class="form-check" >
-
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" ></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="T3.BLK_NO" value="Mode of Service Delivery"  isFE="true"></iais:sortableHeader>

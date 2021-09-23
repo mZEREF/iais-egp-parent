@@ -421,6 +421,6 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-group-misc/app-group-misc/{appGrpId}/{miscType}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGroupMiscDto> getAppGrpMiscByAppGrpIdTypeStatus(@PathVariable(name = "appGrpId") String appGrpId,
-                                                                           @PathVariable(name = "miscType") String miscType,
-                                                                           @PathVariable(name = "status") String status);
+                                                                             @PathVariable(name = "miscType") String miscType,
+                                                                             @PathVariable(name = "status") String status);
 }

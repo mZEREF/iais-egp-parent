@@ -88,12 +88,13 @@
                 </c:if>
             </div>
         </div>
-        <div class="row">
+        <div class="col-md-12">
             <div class="text-right text-center-mobile" style="margin-right:3%">
                 <button type="button" class="btn btn-secondary" onclick="doAppClear()">Clear</button>
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="appParam" result="appResult"/>
     </form>
 </div>

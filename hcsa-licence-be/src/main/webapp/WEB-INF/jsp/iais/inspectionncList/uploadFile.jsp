@@ -13,30 +13,30 @@
             </div>
             <div class="modal-body">
                 <form id="fileUploadForm" name="fileUploadForm" enctype="multipart/form-data"
-                      action="" method="post">
+                  action="" method="post">
                     <div class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Document</label>
-                            <div class="col-xs-8 col-sm-8 col-md-8">
-                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
-                                <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem"></span></small>
-                            </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Document</label>
+                        <div class="col-xs-8 col-sm-8 col-md-8">
+                            <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                            <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
-                            <div class="col-xs-8 col-sm-8 col-md-8">
-                                <div style="margin-left: -5%" class="col-md-5">
-                                    <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
-                                    </p>
-                                </div>
-                                <div style="margin-left: -8%" class="col-md-8">
-                                    <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
-                                    <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
-                                </div>
-                                <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-md-4 control-label">Upload your files <span style="color: red"> *</span></label>
+                        <div class="col-xs-8 col-sm-8 col-md-8">
+                            <div style="margin-left: -5%" class="col-md-5">
+                            <p><input  id = "selectedFileShowText" name = "selectedFileShowText"  type="text"   value="Select File" readonly>
+                                </p>
                             </div>
+                            <div style="margin-left: -8%" class="col-md-8">
+                                <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
+                                <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
+                            </div>
+                            <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file" onclick="javascript:fileClicked(event)" onchange="javascript:fileChanged(event)"></div>
+                        </div>
 
-                        </div>
+                    </div>
                     </div>
                 </form>
             </div>
@@ -69,32 +69,32 @@
     };
 
     function uploadInternalDoc(){
-        $('#uploadFileButton').attr("disabled",true);
-        showWaiting();
-        if(validateUploadInternal())
-            callAjaxUploadFile();
-        dismissWaiting();
+            $('#uploadFileButton').attr("disabled",true);
+            showWaiting();
+            if(validateUploadInternal())
+                callAjaxUploadFile();
+            dismissWaiting();
     }
 
     function deleteFile(row,repoId) {
         showWaiting();
         $(row).parent('td').parent('tr').remove();
-        callAjaxDeleteFile(repoId);
+         callAjaxDeleteFile(repoId);
         dismissWaiting();
     }
     function callAjaxDeleteFile(repoId){
         var data = {"appDocId":repoId};
         $.post(
-                "${pageContext.request.contextPath}/deleteInternalFile",
-                data,
-                function (data) {
-                    if(data != null && data.fileSn != -1){
-                        if(data.fileSn == 0){
-                            var tr ="<tr><td colspan='6'  align=\"left\" > " +data.noFilesMessage +"</td></tr> " ;
-                            doAddTr(tr);
-                        }
+            "${pageContext.request.contextPath}/deleteInternalFile",
+            data,
+            function (data) {
+                if(data != null && data.fileSn != -1){
+                    if(data.fileSn == 0){
+                        var tr ="<tr><td colspan='6'  align=\"left\" > " +data.noFilesMessage +"</td></tr> " ;
+                        doAddTr(tr);
                     }
                 }
+            }
         )
     }
 
@@ -115,8 +115,8 @@
                         removeNoData();
                     }
                     var tr = "<tr>"+"<td width=\"30%\"><p>" +data.docDesc+"</p></td>" +"<td  width=\"20%\"><p>"+  data.url +data.docName+"."+data.docType+"</p></td>"+
-                            "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"10%\"><p>" +data.submitDtString+"</p></td>"
-                            + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
+                        "<td width=\"10%\"><p>" +data.docSize+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"10%\"><p>" +data.submitDtString+"</p></td>"
+                        + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
                     doAddTr(tr);
                     $("#cancelDoc").click();
                 }else if(data != null && data.fileSn ==-1){
@@ -145,7 +145,7 @@
         file.remove();
         $('#selectedFileShowTextName').val("");
     }
-
+    
     function doAddTr(tr) {
         $("#tbodyFileListId").append(tr);
     }
@@ -191,7 +191,7 @@
                 maxSize =  parseInt(maxSize);
             }
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-            fileSize = parseInt(fileSize);
+             fileSize = parseInt(fileSize);
             if(fileSize>= maxSize){
                 $('#selectedFileShow').html($("#fileMaxMBMessage").val());
                 if(fileSize >= 100){
@@ -214,23 +214,23 @@
                 var list = fileName.split(".");
                 fileName = list[list.length-1];
                 if(fileType.indexOf(fileName.toUpperCase()) == -1){
-                    var fileTypelist = fileType.split(",");
-                    if(fileTypelist.length >5) {
-                        var stringBiff = "";
-                        for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
-                            if(indexlist== 0){
-                                stringBiff += fileTypelist[indexlist];
-                            }else if(indexlist== fileTypelist.length-1){
-                                stringBiff += fileTypelist[indexlist]+"<br/>";
-                            }  else if(indexlist %5 == 0) {
-                                stringBiff += fileTypelist[indexlist] +"," +"<br/>";
+                   var fileTypelist = fileType.split(",");
+                   if(fileTypelist.length >5) {
+                       var stringBiff = "";
+                       for(var indexlist = 0;indexlist <fileTypelist.length; indexlist++){
+                           if(indexlist== 0){
+                               stringBiff += fileTypelist[indexlist];
+                           }else if(indexlist== fileTypelist.length-1){
+                               stringBiff += fileTypelist[indexlist]+"<br/>";
+                           }  else if(indexlist %5 == 0) {
+                               stringBiff += fileTypelist[indexlist] +"," +"<br/>";
 
-                            }else {
-                                stringBiff += fileTypelist[indexlist] +",";
-                            }
-                        }
-                        fileType = stringBiff;
-                    }
+                           }else {
+                               stringBiff += fileTypelist[indexlist] +",";
+                           }
+                       }
+                       fileType = stringBiff;
+                   }
                     $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
                 }
             }catch (e){
@@ -255,7 +255,7 @@
 
 
     $('#selectedFile').change(
-            fileChange()
+        fileChange()
     );
     function fileChange(){
         var file = $("#selectedFile").val();
@@ -279,7 +279,7 @@
             if (evenMoreListeners) { addEventListenersTo(clone[fileElement.id]) }//If Needed Re-attach additional Event Listeners
         }else {
             $('#selectedFile').change(
-                    fileChange()
+                fileChange()
             );
         }
         //What ever else you want to do when File Chooser Changed

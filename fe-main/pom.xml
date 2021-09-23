@@ -31,6 +31,12 @@
             <groupId>sg.gov.moh.iais-egp</groupId>
             <artifactId>web-common</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.xhtmlrenderer</groupId>
+                    <artifactId>core-renderer</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -59,6 +65,16 @@
         <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-pdf</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcmail-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.ecquaria.sz</groupId>
@@ -99,6 +115,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</dependentWarExcludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -2,74 +2,47 @@
 <sqls catalog="vehicle">
     <sql key="generateVehicleHtml" cached="no" remarks="generate Vehicle Html">
         <![CDATA[
-            <div class="vehicleContent">
+            <div class="form-horizontal vehicleContent">
                 <input type="hidden" class="isPartEdit" name="isPartEdit${vehicleSuffix}" value="1"/>
                 <input type="hidden" name="vehicleIndexNo${vehicleSuffix}" value=""/>
-                <div class="col-md-12 col-xs-12">
-                    <p style="font-weight: 600;font-size: 2.2rem"></p>
-                </div>
-                <br>
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">
-                                    <div class="cgo-header">
-                                        <strong>Vehicle <label class="assign-psn-item">${vehicleLength}</label></strong>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="col-md-7 col-xs-7 text-right">
-                                <div class="vehicleRemoveBtn">
-                                    <h4 class="text-danger">
-                                        <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
+                <div class="form-group">
+                    <div class="col-sm-7 col-md-6 col-xs-6">
+                        <strong>Vehicle <label class="assign-psn-item">${vehicleLength}</label></strong>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Vehicle Number</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-md-7 col-xs-12">
-                                <input class="vehicleName" type="text" name="vehicleName${vehicleSuffix}" value="" maxlength="10" autocomplete="off">
-                            </div>
-                        </div>
+                    <div class="col-sm-7 col-md-6 col-xs-6 text-right vehicleRemoveBtn">
+                        <h4 class="text-danger">
+                            <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
+                        </h4>
                     </div>
+                    <div class="clear"></div>
                 </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Chassis Number</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-md-7 col-xs-12">
-                                <input class="chassisNum" type="text" name="chassisNum${vehicleSuffix}" value="" maxlength="25" autocomplete="off">
-                            </div>
-                        </div>
+
+                 <div class="form-group">
+                    <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Vehicle Number&nbsp;</label>
+                    <div class="col-sm-7 col-md-7 col-xs-7">
+                      <input class="vehicleName" type="text" name="vehicleName${vehicleSuffix}" value="" maxlength="10" autocomplete="off">
+                      <span id="error_vehicleName${vehicleSuffix}" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
-                </div>
-                <div class="col-md-12 col-xs-12">
-                    <div class="row control control-caption-horizontal">
-                        <div class=" form-group form-horizontal formgap">
-                            <div class="control-label formtext col-md-5 col-xs-5">
-                                <label class="control-label control-set-font control-font-label">Engine Number</label>
-                                <span class="mandatory">*</span>
-                            </div>
-                            <div class="col-md-7 col-xs-12">
-                                <input class="engineNum" type="text" name="engineNum${vehicleSuffix}" value="" maxlength="25" autocomplete="off">
-                            </div>
-                        </div>
+                    <div class="clear"></div>
+                 </div>
+
+                 <div class="form-group">
+                    <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Chassis Number&nbsp;<span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-7 col-xs-7">
+                      <input class="chassisNum" type="text" name="chassisNum${vehicleSuffix}" value="" maxlength="25" autocomplete="off">
+                      <span id="error_chassisNum${vehicleSuffix}" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
-                </div>
+                    <div class="clear"></div>
+                 </div>
+                 <div class="form-group">
+                    <label class="col-xs-5 col-md-5 col-sm-10 control-label control-font-label">Engine Number&nbsp;<span class="mandatory">*</span></label>
+                    <div class="col-sm-7 col-md-7 col-xs-7">
+                      <input class="engineNum" type="text" name="engineNum${vehicleSuffix}" value="" maxlength="25" autocomplete="off">
+                      <span id="error_engineNum${vehicleSuffix}" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                    <div class="clear"></div>
+                 </div>
+
                 <div class="col-md-12 col-xs-12">
                     <hr>
                 </div>

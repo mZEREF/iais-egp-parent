@@ -53,12 +53,12 @@ public interface ApplicationService {
     void alertSelfDeclNotification();
 
     /**
-     * @author: shicheng
-     * @Date 2020/4/23
-     * @Param: applicationViewDto, applicationDto, licenseeId, licenseeDto, LoginContext loginContext
-     * @return: void
-     * @Descripation: Hcsa Application Request Information And Send Email
-     */
+      * @author: shicheng
+      * @Date 2020/4/23
+      * @Param: applicationViewDto, applicationDto, licenseeId, licenseeDto, LoginContext loginContext
+      * @return: void
+      * @Descripation: Hcsa Application Request Information And Send Email
+      */
     void applicationRfiAndEmail(ApplicationViewDto applicationViewDto, ApplicationDto applicationDto, LoginContext loginContext, String externalRemarks) throws IOException, TemplateException;
     void appealRfiAndEmail(ApplicationViewDto applicationViewDto,ApplicationDto applicationDto, HashMap<String, String> maskParams,String linkURL,String externalRemarks) throws Exception;
     ApplicationDto getApplicationBytaskId(String ref);
@@ -84,47 +84,47 @@ public interface ApplicationService {
     void updateInspectionStatusByAppNo(String appId, String inspectionStatus);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/3
-     * @Param: taskDto, vehicleOpenFlag
-     * @return: String
-     * @Descripation: getVehicleFlagToShowOrEdit
-     */
+      * @author: shicheng
+      * @Date 2021/6/3
+      * @Param: taskDto, vehicleOpenFlag
+      * @return: String
+      * @Descripation: getVehicleFlagToShowOrEdit
+      */
     String getVehicleFlagToShowOrEdit(TaskDto taskDto, String vehicleOpenFlag, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/3
-     * @Param: vehicleFlag, applicationViewDto
-     * @return: List<String>
-     * @Descripation: getVehicleNoByFlag
-     */
+      * @author: shicheng
+      * @Date 2021/6/3
+      * @Param: vehicleFlag, applicationViewDto
+      * @return: List<String>
+      * @Descripation: getVehicleNoByFlag
+      */
     List<String> getVehicleNoByFlag(String vehicleFlag, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/6/4
-     * @Param: applicationViewDto
-     * @return: ApplicationViewDto
-     * @Descripation: sortAppSvcVehicleListToShow
-     */
+      * @author: shicheng
+      * @Date 2021/6/4
+      * @Param: applicationViewDto
+      * @return: ApplicationViewDto
+      * @Descripation: sortAppSvcVehicleListToShow
+      */
     ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/9/17
-     * @Param: applicationGroupDto, broadcastApplicationDto
-     * @return: broadcastApplicationDto
-     * @Descripation: setRejectOtherAppGrps
-     */
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setRejectOtherAppGrps
+      */
     BroadcastApplicationDto setRejectOtherAppGrps(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
 
     /**
-     * @author: shicheng
-     * @Date 2021/9/17
-     * @Param: applicationGroupDto, broadcastApplicationDto
-     * @return: broadcastApplicationDto
-     * @Descripation: setAppGrpMiscInactive
-     */
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setAppGrpMiscInactive
+      */
     BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
 }

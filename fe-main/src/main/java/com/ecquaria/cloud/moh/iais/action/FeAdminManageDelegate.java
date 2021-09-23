@@ -170,7 +170,7 @@ public class FeAdminManageDelegate {
             }
 
         }else if("clearInfo".equalsIgnoreCase(action)) {
-            clearInfo(bpc.request);
+          clearInfo(bpc.request);
         }
         else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));

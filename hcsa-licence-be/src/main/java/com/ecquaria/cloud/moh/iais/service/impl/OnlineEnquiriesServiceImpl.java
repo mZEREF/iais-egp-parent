@@ -741,6 +741,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
             ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
         }
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        ParamUtil.setRequestAttr(request, "appType", appType);
         ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess

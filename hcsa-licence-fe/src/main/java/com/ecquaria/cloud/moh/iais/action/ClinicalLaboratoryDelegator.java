@@ -49,6 +49,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
@@ -650,7 +651,7 @@ public class ClinicalLaboratoryDelegator {
         String rfiPremiseId = "nice-select";
         for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()){
             if (appGrpPremisesDto.isRfiCanEdit()){
-                rfiPremiseId = appGrpPremisesDto.getId();
+                rfiPremiseId = appGrpPremisesDto.getPremisesIndexNo();
             }
         }
         ParamUtil.setRequestAttr(bpc.request, "RfiPremiseId", rfiPremiseId);
@@ -1034,7 +1035,7 @@ public class ClinicalLaboratoryDelegator {
                 String rfiPremiseId = "";
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                     if (appGrpPremisesDto.isRfiCanEdit()){
-                        rfiPremiseId = appGrpPremisesDto.getId();
+                        rfiPremiseId = appGrpPremisesDto.getPremisesIndexNo();
                         break;
                     }
                 }
@@ -2771,17 +2772,6 @@ public class ClinicalLaboratoryDelegator {
             }
 
         }
-        /*if(personnelTypeSel.size() > 0){
-            log.debug("current service code is {},personnel type size is {}", svcCode, personnelTypeSel.size());
-            boolean eachTypeHadOne = true;
-            if(personCountMap.size() != personnelTypeSel.size()){
-                eachTypeHadOne = false;
-            }
-
-            if(!eachTypeHadOne){
-                errorMap.put("psnMandatory",MessageUtil.getMessageDesc("NEW_ERR0030"));
-            }
-        }*/
     }
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcCgoDto(HttpServletRequest request) {
@@ -3043,9 +3033,22 @@ public class ClinicalLaboratoryDelegator {
                 String chassisNum = ParamUtil.getString(request,"chassisNum"+i);
                 String engineNum = ParamUtil.getString(request,"engineNum"+i);
                 AppSvcVehicleDto appSvcVehicleDto = new AppSvcVehicleDto();
-                appSvcVehicleDto.setVehicleName(vehicleName);
+                appSvcVehicleDto.setVehicleNum(vehicleName);
                 appSvcVehicleDto.setChassisNum(chassisNum);
                 appSvcVehicleDto.setEngineNum(engineNum);
+                appSvcVehicleDto.setDummyVehNum(StringUtil.isEmpty(vehicleName));
+                String dummyVehNum = "";
+                AppSvcVehicleDto oldAppSvcVehicleDto = getAppSvcVehicleDtoByIndexNo(appSvcRelatedInfoDto, vehicleIndexNo);
+                if(oldAppSvcVehicleDto != null){
+                    dummyVehNum = oldAppSvcVehicleDto.getVehicleName();
+                }
+                if (StringUtil.isEmpty(dummyVehNum)){
+                    dummyVehNum = IaisEGPHelper.generateDummyVehicleNum(i);
+                }
+                appSvcVehicleDto.setVehicleName(dummyVehNum);
+                if (appSvcVehicleDto.isDummyVehNum()){
+                    appSvcVehicleDto.setVehicleNum("Vehicle_No_" + (i + 1));
+                }
                 if(StringUtil.isEmpty(vehicleIndexNo)){
                     appSvcVehicleDto.setVehicleIndexNo(UUID.randomUUID().toString());
                 }else{
@@ -3833,9 +3836,9 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         if(map.isEmpty()){
+            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
-            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             if (appSvcCgoList != null) {
                 if (daList.size() < appSvcCgoList.size()) {
                     return;
@@ -3894,7 +3897,6 @@ public class ClinicalLaboratoryDelegator {
                 if (!StringUtil.isEmpty(stringBuilder.toString())) {
                     String string = stringBuilder.toString();
                     String substring = string.substring(0, string.lastIndexOf(','));
-
                     if (substring.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }

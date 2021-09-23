@@ -74,10 +74,10 @@
                         </c:when>
                         <c:otherwise>
                             <div class="row">
-                                <div class="col-xs-12 col-sm-6 ">
+                                <div class="col-xs-12 col-md-4">
                                   <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <div class="col-xs-12 col-sm-6">
+                                <div class="col-xs-12 col-sm-8">
                                     <div class="button-group">
                                         <c:if test="${requestInformationConfig==null}">
                                           <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">

@@ -169,7 +169,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 				paymentDto.setPmtStatus(status);
 				paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 				// update the data's status and time;
 			}else{

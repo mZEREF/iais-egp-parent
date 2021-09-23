@@ -33,7 +33,7 @@
             <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
                 <span style="float:right">&nbsp;</span>
                 <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
-                   href="javascript:void(0)" >MockServer</a>
+                    href="javascript:void(0)" >MockServer</a>
             </c:if>
 
         </div>

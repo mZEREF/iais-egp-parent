@@ -205,39 +205,39 @@ public class LicenseeCompanyDelegate {
         ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,null);
     }
 
-    private String getLicDataUserIdForSolo(HttpServletRequest request,LoginContext loginContext, LicenseeDto licenseeDto){
-        if(licenseeDto.getLicenseeIndividualDto() != null){
-            //function change with wangyu
-            FeUserDto feUserDto =   orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), null);
-            licenseeDto.setMobileNo(feUserDto.getMobileNo());
-            if( loginContext.getNricNum().equalsIgnoreCase(licenseeDto.getLicenseeIndividualDto().getIdNo())){
-                //no need SOLO_lOGIN_NAME,can get login user get
-                ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,null);
-                licenseeDto.setFromMyInfo(feUserDto.getFromMyInfo());
-                ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
-            }else {
-                ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,feUserDto.getDisplayName());
-            }
-            return licenseeDto.getLicenseeIndividualDto().getIdNo();
-        }
-        log.info(StringUtil.changeForLog("----- loginId is " + loginContext.getLoginId() + " no solo id "));
-        return "";
-    }
+     private String getLicDataUserIdForSolo(HttpServletRequest request,LoginContext loginContext, LicenseeDto licenseeDto){
+         if(licenseeDto.getLicenseeIndividualDto() != null){
+             //function change with wangyu
+             FeUserDto feUserDto =   orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), null);
+             licenseeDto.setMobileNo(feUserDto.getMobileNo());
+             if( loginContext.getNricNum().equalsIgnoreCase(licenseeDto.getLicenseeIndividualDto().getIdNo())){
+                 //no need SOLO_lOGIN_NAME,can get login user get
+                 ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,null);
+                 licenseeDto.setFromMyInfo(feUserDto.getFromMyInfo());
+                 ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA,String.valueOf(feUserDto.getFromMyInfo()));
+                 ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,feUserDto);
+             }else {
+                 ParamUtil.setSessionAttr(request,SOLO_lOGIN_NAME,feUserDto.getDisplayName());
+             }
+             return licenseeDto.getLicenseeIndividualDto().getIdNo();
+         }
+         log.info(StringUtil.changeForLog("----- loginId is " + loginContext.getLoginId() + " no solo id "));
+         return "";
+     }
 
-    private void setSoloPageDto(HttpServletRequest request, LicenseeDto licenseeDto){
-        licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
-        licenseeDto.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
-        licenseeDto.setEmilAddr(ParamUtil.getString(request,"emailAddr"));
-        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
-            licenseeDto.setFromMyInfo(1);
-            ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
-            ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
-            ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.YES);
-            return;
-        }else {
-            licenseeDto.setFromMyInfo(0);
-        }
+     private void setSoloPageDto(HttpServletRequest request, LicenseeDto licenseeDto){
+         licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
+         licenseeDto.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
+         licenseeDto.setEmilAddr(ParamUtil.getString(request,"emailAddr"));
+         if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
+             licenseeDto.setFromMyInfo(1);
+             ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
+             ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+             ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION_ACTION,AppConsts.YES);
+             return;
+         }else {
+             licenseeDto.setFromMyInfo(0);
+         }
         licenseeDto.setPostalCode(ParamUtil.getString(request,"postalCode"));
         licenseeDto.setBlkNo(ParamUtil.getString(request,"blkNo"));
         licenseeDto.setFloorNo(ParamUtil.getString(request,"floorNo"));
@@ -300,7 +300,7 @@ public class LicenseeCompanyDelegate {
         List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
         if(feUserDtos!= null && feUserDtos.size() > 0){
             for (FeUserDto item:feUserDtos
-            ) {
+                 ) {
                 if(item.getId().equals(id)){
                     String nric =  ((FeUserDto) item).getIdentityNo() + " (NRIC)";
                     item.setDesignation(MasterCodeUtil.getCodeDesc(item.getDesignation()));

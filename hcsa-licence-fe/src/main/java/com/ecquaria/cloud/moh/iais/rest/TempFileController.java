@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.rest;
 import com.ecquaria.cloud.moh.iais.common.annotation.LogInfo;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import java.io.File;
@@ -40,6 +41,7 @@ public class TempFileController {
         File folder = MiscUtil.generateFolderInTempFolder(folderName);
         File file = MiscUtil.generateFile(folder, fileName);
         try (OutputStream fos = Files.newOutputStream(file.toPath())) {
+            log.info(StringUtil.changeForLog("The file pathName ==> " + file.getCanonicalPath()));
             fos.write(selectedFile.getBytes());
             fos.flush();
         } catch (Exception e) {

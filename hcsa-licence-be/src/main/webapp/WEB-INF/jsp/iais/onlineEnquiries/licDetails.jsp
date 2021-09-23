@@ -14,9 +14,6 @@
 <div class="dashboard" >
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" name="crud_action_value" value="">
-        <input type="hidden" name="crud_action_additional" value="">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">

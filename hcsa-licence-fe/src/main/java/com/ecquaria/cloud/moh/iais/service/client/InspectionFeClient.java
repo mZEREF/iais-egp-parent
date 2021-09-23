@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -61,4 +62,25 @@ public interface InspectionFeClient {
 
     @GetMapping(value = "/iais-inspection-fe/adhoc-item/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AdhocChecklistItemDto> getAdhocChecklistItemById(@PathVariable(name = "id") String id);
+
+    /**
+     * Vehicle
+     * @param appPremCorrId
+     * @return AppSvcVehicleDto
+     */
+    @GetMapping(value = "/halp-fe-svc-vehicle/svc-vehicles/{appPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getAppSvcVehicleDtoListByCorrId(@PathVariable(name = "appPremCorrId") String appPremCorrId);
+
+    @GetMapping(value = "/halp-fe-svc-vehicle/svc-vehicles-status/{appPremCorrId}/{status}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getSvcVehicleDtoListByCorrIdStatus(@PathVariable(name = "appPremCorrId") String appPremCorrId,
+                                                                                     @PathVariable(name = "status") String status);
+
+    @GetMapping(value = "/halp-fe-svc-vehicle/vehicles-three-asa/{appPremCorrId}/{status}/{actCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getVehiclesByCorrIdStatusAct(@PathVariable(name = "appPremCorrId") String appPremCorrId,
+                                                                               @PathVariable(name = "status") String status,
+                                                                               @PathVariable(name = "actCode") String actCode);
+
+    @GetMapping(value = "/halp-fe-svc-vehicle/vehicles-status-actcode/{status}/{actCode}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppSvcVehicleDto>> getVehiclesByStatusAct(@PathVariable(name = "status") String status,
+                                                                         @PathVariable(name = "actCode") String actCode);
 }

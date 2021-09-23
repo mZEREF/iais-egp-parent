@@ -440,7 +440,7 @@ public class ServiceMenuDelegator {
             return;
         }
         List<HcsaServiceDto> allbaseService = getAllBaseService(bpc);
-        List<HcsaServiceDto> allspecifiedService = getAllSpeService(bpc);
+        // List<HcsaServiceDto> allspecifiedService = getAllSpeService(bpc);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         String currentPage = "chooseSvc";
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);

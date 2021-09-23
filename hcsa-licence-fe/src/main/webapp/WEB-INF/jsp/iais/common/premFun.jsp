@@ -263,6 +263,10 @@
                                 $currForm = $premContent.find('.new-premise-form-off-site');
                             }else if(premisesType == 'easMts'){
                                 $currForm = $premContent.find('.new-premise-form-eas-mts');
+                                if (data.easMtsUseOnly == 'UOT002'){
+                                    $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().children('label').children().remove();
+                                    $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().remove();
+                                }
                             }
                             $currForm.find('div.addOpDiv').before(data.operationHtml);
 
