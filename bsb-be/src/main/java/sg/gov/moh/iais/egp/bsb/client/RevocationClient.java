@@ -52,7 +52,7 @@ public interface RevocationClient {
     @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationMisc>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
 
-    @GetMapping(value = "/bsb-application/queryActivity")
+    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
     FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 
 }

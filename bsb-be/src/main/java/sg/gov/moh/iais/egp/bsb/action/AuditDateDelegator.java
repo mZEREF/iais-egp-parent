@@ -18,11 +18,9 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityAudit;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityAuditApp;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
+import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,6 +72,12 @@ public class AuditDateDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
+            List<FacilityActivity> activityList = new ArrayList<>();
+            for (FacilityAudit audit : audits) {
+                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
+                audit.getFacility().setFacilityActivities(activityList);
+            }
+
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
@@ -103,7 +107,7 @@ public class AuditDateDelegator {
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
-        searchDto.setFacilityType(facilityType);
+        searchDto.setActiveType(facilityType);
         searchDto.setAuditType(auditType);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
     }

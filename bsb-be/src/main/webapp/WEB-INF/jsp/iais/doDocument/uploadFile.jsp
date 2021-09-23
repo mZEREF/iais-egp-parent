@@ -196,7 +196,7 @@
                 return false;
             }
             if(fileType == null || fileType == ""){
-                fileType = "PDF,JPG,PNG,DOCX,DOC";
+                fileType = "JPG,JPEG,DOC,DOCX,PNG,PDF,XLS";
             }
 
             try {

@@ -17,10 +17,10 @@
                             <td align="right">Facility Classification</td>
                             <td style="padding-left : 20px"><iais:code code="${facility.facilityClassification}"></iais:code></td>
                         </tr>
-                        <tr>
-                            <td align="right">Facility Type</td>
-                            <td style="padding-left : 20px"><iais:code code="${facility.facilityType}"></iais:code></td>
-                        </tr>
+<%--                        <tr>--%>
+<%--                            <td align="right">Facility Type</td>--%>
+<%--                            <td style="padding-left : 20px"><iais:code code="${facility.facilityType}"></iais:code></td>--%>
+<%--                        </tr>--%>
                         <tr>
                             <td align="right">Approval</td>
                             <td style="padding-left : 20px"><c:out value="${facility.approval}"/></td>

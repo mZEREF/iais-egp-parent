@@ -1,12 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -18,18 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -69,39 +62,30 @@ public class DoDocumentAjaxController {
 //            appIntranetDocDto.setNoFilesMessage(errorMap.get("selectedFile"));
 //            return  JsonUtil.parseToJson(appIntranetDocDto);
 //        }else{
-        //As a method parameter
-        FacilityDoc facilityDoc = new FacilityDoc();
-        //Only used for page display
         FacilityDoc doc = new FacilityDoc();
         if (selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
             //size
             long size = selectedFile.getSize();
-            facilityDoc.setSize(size / 1024);
             doc.setSize(size / 1024);
-            log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
+            log.info(StringUtil.changeForLog("DoDocumentAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
             //type
             String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
 //            String fileType = fileSplit[fileSplit.length - 1];
-//            facilityDoc.setDocType(fileType);
 //            doc.setDocType(fileType);
             //name
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
-            facilityDoc.setName(selectedFile.getOriginalFilename());
             doc.setName(selectedFile.getOriginalFilename());
 
             doc.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             Facility facility=new Facility();
             Facility facility1 = (Facility) ParamUtil.getSessionAttr(request, FACILITY);
             facility.setId(facility1.getId());
-            facilityDoc.setFacility(facility);
             doc.setFacility(facility);
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-            facilityDoc.setSubmitAt(new Date());
             doc.setSubmitAt(new Date());
             doc.setSubmitAtStr(formatter.format(doc.getSubmitAt()));
-            facilityDoc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             doc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             doc.setSubmitByName(doc.getAuditTrailDto().getMohUserId());
 
@@ -112,13 +96,9 @@ public class DoDocumentAjaxController {
 
             //save file to file DB
             String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
-            facilityDoc.setFileRepoId(repo_id);
             doc.setFileRepoId(repo_id);
-            //            appIntranetDocDto.set
-            String id = docClient.saveFacilityDoc(facilityDoc).getEntity();
-            facilityDoc.setId(id);
+            String id = docClient.saveFacilityDoc(doc).getEntity();
             doc.setId(id);
-
 
             // set auditDocDto to seesion
             AuditDocDto auditDocDto = (AuditDocDto)ParamUtil.getSessionAttr(request,"auditDocDto");
@@ -139,7 +119,7 @@ public class DoDocumentAjaxController {
                 index++;
             }
             ParamUtil.setSessionAttr(request,"AppIntranetDocDtoIndex",index);
-            String  mask =MaskUtil.maskValue("fileRo"+index, facilityDoc.getFileRepoId());
+            String  mask =MaskUtil.maskValue("fileRo"+index, doc.getFileRepoId());
             String url ="<a href=\"pageContext.request.contextPath/file-repo?filerepo=fileRostatus.index&fileRostatus.index=maskDec&fileRepoName=interalFile.docName&OWASP_CSRFTOKEN=csrf\" title=\"Download\" class=\"downloadFile\">";
             try{
                 String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
@@ -160,7 +140,7 @@ public class DoDocumentAjaxController {
             }
             ParamUtil.setSessionAttr(request,"auditDocDto", auditDocDto);
             //call back upload file succeeded
-            if( !StringUtil.isEmpty( facilityDoc.getId())){
+            if( !StringUtil.isEmpty( doc.getFileRepoId())){
                 doc.setMaskId(MaskUtil.maskValue("fileRepoId", doc.getFileRepoId()));
             }
             String appIntranetDocDtoJsonStr = JsonUtil.parseToJson(doc);

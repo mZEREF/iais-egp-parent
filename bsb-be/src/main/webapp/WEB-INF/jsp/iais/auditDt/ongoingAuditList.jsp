@@ -105,7 +105,7 @@
                                     <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityType" value="Activity type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
                                 </tr>
@@ -116,17 +116,28 @@
                                     <tr style="display: table-row;">
                                         <input type="text" value="<fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>" name="lastAuditDt" hidden>
                                         <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
-                                        <td>${item.facility.facilityName}</td>
-                                        <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
+                                        <td width="10%">${item.facility.facilityName}</td>
+                                        <td width="20%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
+                                        <td width="40%">
+                                            <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.last}">
+                                                        <iais:code code="${activity.activityType}"></iais:code>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="${activity.activityType}"></iais:code>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
                                         <c:choose>
                                             <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007'}">
-                                                <td>
+                                                <td width="13%">
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
-                                                <td>
+                                                <td width="13%">
                                                     <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
                                                     <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
                                                     <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>

@@ -19,7 +19,7 @@ import java.io.Serializable;
 public class AuditQueryDto extends PagingAndSortingDto implements Serializable {
     private String facilityName;
 
-    private String facilityType;
+    private String activeType;
 
     private String facilityClassification;
 
@@ -27,7 +27,7 @@ public class AuditQueryDto extends PagingAndSortingDto implements Serializable {
 
     public void clearAllFields() {
         facilityName = "";
-        facilityType = "";
+        activeType = "";
         facilityClassification = "";
         auditType = "";
     }

@@ -105,7 +105,7 @@
                                     <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityType" value="Facility type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityType" value="Activity type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="auditDt" value="Date of Last Audit" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="scenarioCategory" value="Scenario Category" isFE="false"/>
@@ -120,10 +120,19 @@
                                         <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
                                         <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td><iais:code code="${item.facility.facilityType}"></iais:code></td>
                                         <td>
-                                            <fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>
+                                            <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.last}">
+                                                        <iais:code code="${activity.activityType}"></iais:code>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="${activity.activityType}"></iais:code>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
                                         </td>
+                                        <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
                                         <td><iais:code code="${item.scenarioCategory}"></iais:code></td>
                                         <td><c:out value="${item.auditOutcome}"/></td>
