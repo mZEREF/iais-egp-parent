@@ -6768,14 +6768,13 @@ header .container {
   list-style: none;
 }
 
-/* .row {
+ .row {
   display: -ms-flexbox;
   display: inherit !important;
   -ms-flex-wrap: inherit;
- !* flex-wrap: inherit !important;*!
   margin-right: -15px;
   margin-left: -15px;
-}*/
+}
  
 .navigation .nav.nav-tabs.nav-menu li.dropdown a.dropdown-toggle::after { 
   border: none;
