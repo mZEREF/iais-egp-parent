@@ -25,7 +25,13 @@
                         Who is the Licensee?
                     </div>
                     <div class="col-md-6">
-                        Local Company
+                        <c:set var="entityType" value="${newLicenceDto.licenseeEntityDto.entityType}"/>
+                        <c:if test="${empty entityType || '-' == entityType}" var="invalidType">
+                            <iais:code code="${newLicenceDto.licenseeType}" />
+                        </c:if>
+                        <c:if test="${not invalidType}">
+                            <iais:code code="${entityType}" />
+                        </c:if>
                     </div>
                 </div>
 
@@ -115,7 +121,6 @@
                     <div class="col-md-6">
                         <div class="col-md-6">
                             <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
-
                         </div>
                         <div class="col-md-6">
                             <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none"><c:out value="${oldLicenceDto.unitNo}"/></span>

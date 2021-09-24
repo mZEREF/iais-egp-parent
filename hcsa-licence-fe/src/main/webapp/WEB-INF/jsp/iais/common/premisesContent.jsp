@@ -27,6 +27,27 @@
         -webkit-transform: scale(2,2); /* Safari and Chrome */
         -o-transform: scale(2,2); /* Opera */
     }
+
+    .input-padding {
+        padding-right:5px;
+        padding-left: 15px;
+    }
+
+    .label-padding {
+        padding-left: 0px;
+        padding-top: 14px;
+        margin-left: -3px;
+    }
+
+    .multi-sel-padding {
+        padding-bottom: 15px;
+    }
+
+    .all-day-position {
+        margin: 14px 20px 20px 5px;
+        padding: 0;
+    }
+
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -114,10 +135,10 @@
 
             <div class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-xs-12 col-md-4">
+                    <div class="col-xs-12 col-md-6">
                         <strong class="app-font-size-22 premHeader">Mode of Service Delivery ${status.index+1}</strong>
                     </div>
-                    <div class="col-xs-6 text-right">
+                    <div class="col-xs-12 col-md-4 text-right">
                         <c:choose>
                             <c:when test="${!status.first && requestInformationConfig==null && 'APTY004' !=AppSubmissionDto.appType && 'APTY005' !=AppSubmissionDto.appType}">
                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
@@ -175,10 +196,14 @@
                     <label class="col-xs-12 col-md-4 control-label error-msg-type" for="premisesType">What is your mode of service delivery ? <span class="mandatory">*</span></label>
                     <input class="premTypeValue" type="hidden" name="premType" value="${appGrpPremisesDto.premisesType}"/>
                     <input class="premSelValue" type="hidden" value="${appGrpPremisesDto.premisesSelect}"/>
+
+                    <c:set var="premTypeLen" value="${premisesType.size()}"/>
                     <c:forEach var="premType" items="${premisesType}">
+                        <c:set var="premTypeCss" value="col-md-3"/>
                         <c:choose>
                             <c:when test="${'ONSITE' == premType}">
                                 <c:set var="className" value="onSite"/>
+                                <c:set var="premTypeCss" value="${premTypeLen > 2 ? 'col-md-2' : 'col-md-3'}"/>
                             </c:when>
                             <c:when test="${'CONVEYANCE' == premType}">
                                 <c:set var="className" value="conveyance" />
@@ -190,11 +215,7 @@
                                 <c:set var="className" value="easMts" />
                             </c:when>
                         </c:choose>
-                        <div class="col-xs-12
-                             <c:if test="${'onSite'==className}">col-md-2"</c:if>
-                             <c:if test="${'conveyance'==className}">col-md-3"</c:if>
-                             <c:if test="${'offSite'==className}">col-md-3"</c:if>
-                             <c:if test="${'easMts'==className}">col-md-3"</c:if> >
+                        <div class="col-xs-12 ${premTypeCss}">
                             <c:choose>
                                 <c:when test="${premType == onSite}">
                                     <a class="btn-tooltip styleguide-tooltip" style="z-index: 999;position: absolute; right: 30px; top: 12px;" href="javascript:void(0);" data-placement="top"  data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message  key="NEW_ACK019"></iais:message>&lt;/p&gt;">i</a>
@@ -338,7 +359,7 @@
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code" mandatory="true" width="4"/>
-                        <iais:value  cssClass="col-md-5">
+                        <iais:value cssClass="col-xs-10 col-md-5">
                             <iais:input cssClass="postalCode" maxLength="6" type="text"  name="onSitePostalCode"  value="${appGrpPremisesDto.postalCode}"></iais:input>
                             <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                         </iais:value>
@@ -356,7 +377,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field value="Block / House No." width="4"/>
-                        <iais:value cssClass="col-md-5">
+                        <iais:value cssClass="col-xs-7 col-md-5">
                             <iais:input cssClass="siteBlkNo" maxLength="10"  type="text" name="onSiteBlkNo" id="siteBlkNo" value="${appGrpPremisesDto.blkNo}"></iais:input>
                             <span class="error-msg" name="iaisErrorMsg" id="error_blkNo${status.index}"></span>
                         </iais:value>
@@ -444,15 +465,14 @@
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="other-lic-content co-location-div">
-                        <iais:field value="Are you co-locating with<br/>another licensee?" mandatory="true" width="4"
-                                    style="width:34%;"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
+                        <iais:field value="Are you co-locating with<br/>another licensee?" mandatory="true" width="4" />
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-1%;">
                             <input type="hidden" class="co-location-val" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
-                            <div class="form-check col-sm-3">
+                            <div class="form-check col-xs-6 col-md-3 col-5">
                                 <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                             </div>
-                            <div class="form-check col-sm-3">
+                            <div class="form-check col-xs-6 col-md-3 col-5">
                                 <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic co-location"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
@@ -466,16 +486,16 @@
                         <div class="col-md-12 col-xs-12">
                             <label class="control-label">Operating Hours</label>
                         </div>
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4 col-xs-4  hidden-xs hidden-sm">
                             <label class="control-label">Weekly <span class="mandatory">*</span></label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
                             <label class="control-label">Start</label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 input-padding hidden-xs hidden-sm">
                             <label class="control-label">End</label>
                         </div>
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
                             <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
@@ -492,8 +512,11 @@
                                             </div>
                                         </c:if>
                                         <div>
-                                            <div class="col-md-4 col-xs-4">
-                                                <div class="row">
+                                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                    </div>
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select name="${premValue}onSiteWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList"  multiSelect="true"/>
                                                     </div>
@@ -502,18 +525,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartMM" name="${premValue}onSiteWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -521,18 +547,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding" >
                                                         <iais:select cssClass="WeeklyEndHH" name="${premValue}onSiteWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyEndMM" name="${premValue}onSiteWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -540,12 +569,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 text-center col-xs-5 all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}onSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${weeklyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
                                                         </c:if>
@@ -565,8 +597,11 @@
                                 <c:set var="suffix" value="0"/>
                                 <iais:row cssClass="weeklyDiv">
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                </div>
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select name="${premValue}onSiteWeekly${suffix}"  options="weeklyOpList" multiSelect="true" multiValues="" />
                                                 </div>
@@ -575,18 +610,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}onSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartMM" name="${premValue}onSiteWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -594,18 +632,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndHH" name="${premValue}onSiteWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndMM" name="${premValue}onSiteWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -613,12 +654,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}onSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -648,8 +692,8 @@
                                             <label class="control-label">Public Holiday</label>
                                         </div>
                                         <div>
-                                            <div class="col-md-4">
-                                                <div class="row">
+                                            <div class="col-md-4 multi-sel-padding">
+                                                <div class="row d-flex">
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select name="${premValue}onSitePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"/>
                                                     </div>
@@ -658,18 +702,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartMM" name="${premValue}onSitePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -677,18 +724,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndHH" name="${premValue}onSitePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndMM" name="${premValue}onSitePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -696,12 +746,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left:25px">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${phyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
                                                         </c:if>
@@ -724,51 +777,60 @@
                                         <label class="control-label">Public Holiday</label>
                                     </div>
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select name="${premValue}onSitePubHoliday${suffix}" options="phOpList"  multiSelect="true"/>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}onSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartMM" name="${premValue}onSitePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndHH" name="${premValue}onSitePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndMM" name="${premValue}onSitePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left:25px">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}onSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -902,7 +964,7 @@
                     </iais:row>
                     <iais:row cssClass="postalCodeDiv">
                         <iais:field value="Postal Code" mandatory="true" width="4"/>
-                        <iais:value cssClass="col-md-5">
+                        <iais:value cssClass="col-xs-10 col-md-5">
                             <iais:input maxLength="6" cssClass="postalCode" type="text" name="conveyancePostalCode"  value="${appGrpPremisesDto.conveyancePostalCode}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
                         </iais:value>
@@ -920,7 +982,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field value="Block / House No." width="4"/>
-                        <iais:value width="7" cssClass="col-md-5">
+                        <iais:value width="7" cssClass="col-xs-7 col-md-5">
                             <iais:input maxLength="10" cssClass="conveyanceBlkNo" type="text" name="conveyanceBlkNo" id="conveyanceBlkNo" value="${appGrpPremisesDto.conveyanceBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyanceBlockNos${status.index}"></span>
                         </iais:value>
@@ -1005,16 +1067,16 @@
                         <div class="col-md-12 col-xs-12">
                             <label class="control-label">Operating Hours</label>
                         </div>
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4 col-xs-4 hidden-xs hidden-sm">
                             <label class="control-label">Weekly <span class="mandatory">*</span></label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 hidden-xs hidden-sm">
                             <label class="control-label">Start</label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 hidden-xs hidden-sm">
                             <label class="control-label">End</label>
                         </div>
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
                             <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
@@ -1027,13 +1089,16 @@
                                     <c:set var="weekly" value="${weeklyList[weeklyStat.index]}"/>
                                     <iais:row cssClass="weeklyDiv">
                                         <c:if test="${weeklyStat.index>0}">
-                                            <div class="col-md-12 col-xs-12">
+                                            <div class="col-md-12 col-xs-12 hidden-xs hidden-sm">
                                                 <label class="control-label">Weekly <span class="mandatory">*</span></label>
                                             </div>
                                         </c:if>
                                         <div>
-                                            <div class="col-md-4 col-xs-4">
-                                                <div class="row">
+                                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                    </div>
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select  name="${premValue}conveyanceWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList"  multiSelect="true"/>
                                                     </div>
@@ -1042,18 +1107,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartMM" name="${premValue}conveyanceWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1061,18 +1129,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyEndHH" name="${premValue}conveyanceWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyEndMM" name="${premValue}conveyanceWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1080,12 +1151,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}conveyanceWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${weeklyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
                                                         </c:if>
@@ -1105,8 +1179,11 @@
                                 <c:set var="suffix" value="0"/>
                                 <iais:row cssClass="weeklyDiv">
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                </div>
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select  name="${premValue}conveyanceWeekly${suffix}"  options="weeklyOpList"  multiSelect="true"/>
                                                 </div>
@@ -1115,18 +1192,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}conveyanceWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartMM" name="${premValue}conveyanceWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -1134,18 +1214,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndHH" name="${premValue}conveyanceWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndMM" name="${premValue}conveyanceWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -1153,12 +1236,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}conveyanceWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -1188,8 +1274,8 @@
                                             <label class="control-label">Public Holiday</label>
                                         </div>
                                         <div>
-                                            <div class="col-md-4">
-                                                <div class="row">
+                                            <div class="col-md-4 multi-sel-padding">
+                                                <div class="row d-flex">
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select name="${premValue}conveyancePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"  />
                                                     </div>
@@ -1198,18 +1284,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartMM" name="${premValue}conveyancePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1217,18 +1306,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndHH" name="${premValue}conveyancePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndMM" name="${premValue}conveyancePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1236,12 +1328,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}conveyancePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${phyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
                                                         </c:if>
@@ -1264,51 +1359,60 @@
                                         <label class="control-label">Public Holiday</label>
                                     </div>
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select name="${premValue}conveyancePubHoliday${suffix}" options="phOpList" multiSelect="true"  />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}conveyancePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartMM" name="${premValue}conveyancePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndHH" name="${premValue}conveyancePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndMM" name="${premValue}conveyancePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}conveyancePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -1454,14 +1558,14 @@
                     </iais:row>
                     <iais:row>
                         <iais:field value="Block / House No." width="4"/>
-                        <iais:value width="7" cssClass="col-md-5">
+                        <iais:value width="7" cssClass="col-xs-7 col-md-5">
                             <iais:input maxLength="10" cssClass="offSiteBlkNo" type="text" name="offSiteBlkNo" id="offSiteBlkNo" value="${appGrpPremisesDto.offSiteBlockNo}"></iais:input>
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSiteBlockNo${status.index}"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field value="Floor / Unit No." width="4"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 ">
+                        <iais:value cssClass="col-xs-7 col-md-5">
                             <div class="row">
                                 <iais:value cssClass="col-xs-12 col-md-5 ">
                                     <iais:input maxLength="3" type="text" name="offSiteFloorNo" id="offSiteFloorNo" value="${appGrpPremisesDto.offSiteFloorNo}"></iais:input>
@@ -1539,16 +1643,16 @@
                         <div class="col-md-12 col-xs-12">
                             <label class="control-label">Operating Hours</label>
                         </div>
-                        <div class="col-md-4 col-xs-4">
+                        <div class="col-md-4 col-xs-4 hidden-xs hidden-sm">
                             <label class="control-label">Weekly <span class="mandatory">*</span></label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 hidden-xs hidden-sm">
                             <label class="control-label">Start</label>
                         </div>
-                        <div class="col-md-3 col-xs-3">
+                        <div class="col-md-3 col-xs-3 hidden-xs hidden-sm">
                             <label class="control-label">End</label>
                         </div>
-                        <div class="col-md-2 col-xs-2">
+                        <div class="col-md-2 col-xs-2 hidden-xs hidden-sm">
                             <label class="control-label">24 Hours</label>
                         </div>
                     </iais:row>
@@ -1561,13 +1665,16 @@
                                     <c:set var="weekly" value="${weeklyList[weeklyStat.index]}"/>
                                     <iais:row cssClass="weeklyDiv">
                                         <c:if test="${weeklyStat.index>0}">
-                                            <div class="col-md-12 col-xs-12">
+                                            <div class="col-md-12 col-xs-12 hidden-xs hidden-sm">
                                                 <label class="control-label">Weekly <span class="mandatory">*</span></label>
                                             </div>
                                         </c:if>
                                         <div>
-                                            <div class="col-md-4 col-xs-4">
-                                                <div class="row">
+                                            <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                    </div>
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select name="${premValue}offSiteWeekly${weeklyStat.index}" multiValues="${weekly.selectValList}" options="weeklyOpList" multiSelect="true"  />
                                                     </div>
@@ -1576,18 +1683,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${weeklyStat.index}" options="premiseHours" value="${weekly.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyStartMM" name="${premValue}offSiteWeeklyStartMM${weeklyStat.index}" options="premiseMinute" value="${weekly.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1595,18 +1705,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyEndHH" name="${premValue}offSiteWeeklyEndHH${weeklyStat.index}" options="premiseHours" value="${weekly.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="WeeklyEndMM" name="${premValue}offSiteWeeklyEndMM${weeklyStat.index}" options="premiseMinute" value="${weekly.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1614,12 +1727,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-xs-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}offSiteWeeklyAllDay${weeklyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${weekly.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${weeklyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger weeklyDel"></div>
                                                         </c:if>
@@ -1639,8 +1755,11 @@
                                 <c:set var="suffix" value="0"/>
                                 <iais:row cssClass="weeklyDiv">
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">Weekly <span class="mandatory">*</span></label>
+                                                </div>
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select name="${premValue}offSiteWeekly${suffix}" options="weeklyOpList" multiSelect="true"  />
                                                 </div>
@@ -1649,18 +1768,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartHH" name="${premValue}offSiteWeeklyStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyStartMM" name="${premValue}offSiteWeeklyStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -1668,18 +1790,21 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndHH" name="${premValue}offSiteWeeklyEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="WeeklyEndMM" name="${premValue}offSiteWeeklyEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                                 <div class="col-md-12 col-xs-12">
@@ -1687,12 +1812,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
                                             <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                                <div class="col-xs-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}offSiteWeeklyAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true"  >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -1722,8 +1850,8 @@
                                             <label class="control-label">Public Holiday</label>
                                         </div>
                                         <div>
-                                            <div class="col-md-4">
-                                                <div class="row">
+                                            <div class="col-md-4 multi-sel-padding">
+                                                <div class="row d-flex">
                                                     <div class="col-md-12 multi-select col-xs-12">
                                                         <iais:select name="${premValue}offSitePubHoliday${phyStat.index}" multiValues="${ph.selectValList}" options="phOpList" multiSelect="true"  />
                                                     </div>
@@ -1732,18 +1860,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                            <div class="col-md-3 col-xs-3 start-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">Start</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${phyStat.index}" options="premiseHours" value="${ph.startFromHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhStartMM" name="${premValue}offSitePhStartMM${phyStat.index}" options="premiseMinute" value="${ph.startFromMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1751,18 +1882,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-xs-3">
-                                                <div class="row">
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                            <div class="col-md-3 col-xs-3 end-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">End</label>
+                                                    </div>
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndHH" name="${premValue}offSitePhEndHH${phyStat.index}" options="premiseHours" value="${ph.endToHH}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (HH)
                                                     </div>
-                                                    <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                    <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                         <iais:select cssClass="PhEndMM" name="${premValue}offSitePhEndMM${phyStat.index}" options="premiseMinute" value="${ph.endToMM}" firstOption="--"></iais:select>
                                                     </div>
-                                                    <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                    <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                         (MM)
                                                     </div>
                                                     <div class="col-md-12 col-xs-12">
@@ -1770,12 +1904,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-xs-2">
-                                                <div class="row">
-                                                    <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                            <div class="col-md-2 col-xs-2 all-day-div">
+                                                <div class="row d-flex">
+                                                    <div class="col-sm-12 visible-xs visible-sm">
+                                                        <label class="control-label">24 Hours</label>
+                                                    </div>
+                                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                         <input class="form-check-input allDay" name="${premValue}offSitePhAllDay${phyStat.index}"  type="checkbox" aria-invalid="false" value="true" <c:if test="${ph.selectAllDay}">checked="checked"</c:if> >
                                                     </div>
-                                                    <div class="col-md-6 col-xs-6">
+                                                    <div class="col-md-5 col-xs-5">
                                                         <c:if test="${phyStat.index>0}">
                                                             <div class="fa fa-times-circle del-size-36 text-danger pubHolidayDel"></div>
                                                         </c:if>
@@ -1798,51 +1935,60 @@
                                         <label class="control-label">Public Holiday</label>
                                     </div>
                                     <div>
-                                        <div class="col-md-4 col-xs-4">
-                                            <div class="row">
+                                        <div class="col-md-4 col-xs-4 multi-sel-padding">
+                                            <div class="row d-flex">
                                                 <div class="col-md-12 multi-select col-xs-12">
                                                     <iais:select name="${premValue}offSitePubHoliday${suffix}"  options="phOpList" multiSelect="true"  />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-4 col-xs-5" style="padding-right:5px;padding-left: 0px;">
+                                        <div class="col-md-3 col-xs-3 start-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">Start</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartHH" name="${premValue}offSitePhStartHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhStartMM" name="${premValue}offSitePhStartMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 col-xs-3">
-                                            <div class="row">
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                        <div class="col-md-3 col-xs-3 end-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">End</label>
+                                                </div>
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndHH" name="${premValue}offSitePhEndHH${suffix}" options="premiseHours" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (HH)
                                                 </div>
-                                                <div class="col-md-5 col-xs-5" style="padding-right:5px;padding-left: 20px;">
+                                                <div class="col-md-10 col-lg-5 col-9 input-padding">
                                                     <iais:select cssClass="PhEndMM" name="${premValue}offSitePhEndMM${suffix}" options="premiseMinute" value="" firstOption="--"></iais:select>
                                                 </div>
-                                                <div class="col-md-1 col-xs-1" style="padding-left: 0px;padding-top: 14px">
+                                                <div class="col-md-2 col-lg-1 col-3 label-padding">
                                                     (MM)
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2 col-xs-2">
-                                            <div class="row">
-                                                <div class="col-md-6 text-center col-xs-6" style="padding-top: 14px;padding-left: 25px;">
+                                        <div class="col-md-2 col-xs-2 all-day-div">
+                                            <div class="row d-flex">
+                                                <div class="col-sm-12 visible-xs visible-sm">
+                                                    <label class="control-label">24 Hours</label>
+                                                </div>
+                                                <div class="col-md-5 col-xs-5 text-center all-day-position">
                                                     <input class="form-check-input allDay" name="${premValue}offSitePhAllDay${suffix}"  type="checkbox" aria-invalid="false" value="true" >
                                                 </div>
-                                                <div class="col-md-6 col-xs-6">
+                                                <div class="col-md-5 col-xs-5">
                                                 </div>
                                             </div>
                                         </div>
@@ -1976,7 +2122,7 @@
                         </iais:row>
                         <iais:row cssClass="postalCodeDiv">
                             <iais:field value="Postal Code" mandatory="true" width="4"/>
-                            <iais:value cssClass="col-md-5">
+                            <iais:value cssClass="col-xs-10 col-md-5">
                                 <iais:input maxLength="6" cssClass="postalCode" type="text" name="easMtsPostalCode"  value="${appGrpPremisesDto.easMtsPostalCode}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsPostalCode${status.index}"></span>
                             </iais:value>
@@ -1994,7 +2140,7 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Block / House No." width="4"/>
-                            <iais:value width="7" cssClass="col-md-5">
+                            <iais:value width="7" cssClass="col-xs-7 col-md-5">
                                 <iais:input maxLength="10" cssClass="easMtsBlkNo" type="text" name="easMtsBlkNo" id="easMtsBlkNo" value="${appGrpPremisesDto.easMtsBlockNo}"></iais:input>
                                 <span  class="error-msg" name="iaisErrorMsg" id="error_easMtsBlockNo${status.index}"></span>
                             </iais:value>
