@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
@@ -78,6 +80,9 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
 
     @Autowired
     private InsRepService insRepService;
+
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
     private static final String SERLISTDTO ="serListDto";
     private static final String COMMONDTO ="commonDto";
@@ -151,7 +156,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
-
+            //get vehicle no
+            List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(taskDto.getRefNo()).getEntity();
             LicenceDto licenceDto = inspectionPreTaskService.getLicenceDtoByLicenceId(applicationDto.getOriginLicenceId());
             ParamUtil.setSessionAttr(bpc.request,"licenceDto", licenceDto);
             List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
@@ -169,8 +175,10 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
                     if (1 == feRecFlag && 0 == recFlag) {
                         InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
                         iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        //set Vehicle No. To Show
+                        String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
+                        iDto.setVehicleNo(vehicleNo);
                         iDto.setAppNo(applicationDto.getApplicationNo());
-                        iDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                             iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
