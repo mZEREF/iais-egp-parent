@@ -5925,6 +5925,19 @@ ul.v-numberlist li::before {
 }*/
 
 
+@media only screen and (max-width : 414px) {
+    div.blockUI.blockMsg.blockPage{
+        width:	50% !important;
+        top:	50% !important;
+        left:	25% !important;
+    }
+}
+
+.nav {
+    margin-top: 10px;
+}
+
+
 
 
 
